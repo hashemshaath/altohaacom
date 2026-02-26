@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Search, ArrowUpCircle, Mail, RefreshCw, UserCheck, AlertTriangle, CheckSquare, Download } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -275,35 +277,15 @@ export default function MembershipMembersTab() {
 
   return (
     <div className="space-y-4">
-      {/* Bulk Action Bar */}
-      {selectedIds.size > 0 && (
-        <Card className="border-primary/30 bg-primary/5 animate-fade-in">
-          <CardContent className="flex items-center justify-between py-3">
-            <div className="flex items-center gap-2">
-              <CheckSquare className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">
-                {isAr ? `${selectedIds.size} عضو محدد` : `${selectedIds.size} member(s) selected`}
-              </span>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setSelectedIds(new Set())}>
-                {isAr ? "إلغاء التحديد" : "Clear"}
-              </Button>
-              <Button size="sm" onClick={() => setBulkDialogOpen(true)}>
-                <ArrowUpCircle className="h-3.5 w-3.5 me-1.5" />
-                {isAr ? "تغيير المستوى" : "Change Tier"}
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => {
-                const selectedMembers = members?.filter(m => selectedIds.has(m.user_id)) || [];
-                exportCSV(selectedMembers);
-              }}>
-                <Download className="h-3.5 w-3.5 me-1.5" />
-                {isAr ? "تصدير" : "Export"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <BulkActionBar
+        count={selectedIds.size}
+        onClear={() => setSelectedIds(new Set())}
+        onExport={() => {
+          const selectedMembers = members?.filter(m => selectedIds.has(m.user_id)) || [];
+          exportCSV(selectedMembers);
+        }}
+        onStatusChange={() => setBulkDialogOpen(true)}
+      />
 
       <Card>
         <CardHeader>

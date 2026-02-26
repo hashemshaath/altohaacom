@@ -3,11 +3,16 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { History, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { History, ArrowUp, ArrowDown, Minus, Download } from "lucide-react";
 import { format } from "date-fns";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 interface HistoryEntry {
   id: string;
@@ -34,6 +39,18 @@ export default function MembershipHistoryTab() {
       if (error) throw error;
       return data as HistoryEntry[];
     },
+  });
+
+  const bulk = useAdminBulkActions(history || []);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "من" : "From", accessor: (r: HistoryEntry) => r.previous_tier || "basic" },
+      { header: isAr ? "إلى" : "To", accessor: (r: HistoryEntry) => r.new_tier },
+      { header: isAr ? "السبب" : "Reason", accessor: (r: HistoryEntry) => r.reason || "" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: HistoryEntry) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+    ],
+    filename: "membership-history",
   });
 
   const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
@@ -78,13 +95,27 @@ export default function MembershipHistoryTab() {
         </Card>
       </div>
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.count > 0 ? bulk.selectedItems : history || [])}
+      />
+
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <History className="h-5 w-5" />
-            {isAr ? "سجل التغييرات" : "Change History"}
-          </CardTitle>
-          <CardDescription>{isAr ? "جميع تغييرات مستويات العضوية" : "All membership tier changes"}</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <History className="h-5 w-5" />
+                {isAr ? "سجل التغييرات" : "Change History"}
+              </CardTitle>
+              <CardDescription>{isAr ? "جميع تغييرات مستويات العضوية" : "All membership tier changes"}</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => exportCSV(history || [])} className="gap-1.5">
+              <Download className="h-3.5 w-3.5" />
+              {isAr ? "تصدير" : "Export"}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -100,6 +131,9 @@ export default function MembershipHistoryTab() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                  </TableHead>
                   <TableHead>{isAr ? "التغيير" : "Change"}</TableHead>
                   <TableHead>{isAr ? "من" : "From"}</TableHead>
                   <TableHead>{isAr ? "إلى" : "To"}</TableHead>
@@ -109,7 +143,10 @@ export default function MembershipHistoryTab() {
               </TableHeader>
               <TableBody>
                 {history?.map((entry) => (
-                  <TableRow key={entry.id}>
+                  <TableRow key={entry.id} className={bulk.isSelected(entry.id) ? "bg-primary/5" : ""}>
+                    <TableCell>
+                      <Checkbox checked={bulk.isSelected(entry.id)} onCheckedChange={() => bulk.toggleOne(entry.id)} />
+                    </TableCell>
                     <TableCell>{getChangeIcon(entry.previous_tier, entry.new_tier)}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{tierLabels[entry.previous_tier || "basic"] || entry.previous_tier}</Badge>
