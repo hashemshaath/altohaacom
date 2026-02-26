@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { PollComposer } from "./PollComposer";
+import { MentionAutocomplete } from "./MentionAutocomplete";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -48,7 +49,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const isAr = language === "ar";
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLInputElement>(null);
-
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [content, setContent] = useState("");
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
   const [visibility, setVisibility] = useState<"public" | "followers">("public");
@@ -117,6 +118,23 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       default: return isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?";
     }
   };
+
+  const handleMentionSelect = useCallback((username: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const cursorPos = textarea.selectionStart;
+    const textBefore = content.slice(0, cursorPos);
+    const match = textBefore.match(/@(\w{1,20})$/);
+    if (!match) return;
+    const start = cursorPos - match[1].length;
+    const newContent = content.slice(0, start) + username + " " + content.slice(cursorPos);
+    setContent(newContent);
+    setTimeout(() => {
+      const newPos = start + username.length + 1;
+      textarea.setSelectionRange(newPos, newPos);
+      textarea.focus();
+    }, 0);
+  }, [content]);
 
   const handlePost = async () => {
     if (!user || (!content.trim() && images.length === 0 && !video)) return;
@@ -281,14 +299,22 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
             </Badge>
           )}
 
-          <Textarea
-            placeholder={getPlaceholder()}
-            value={content}
-            onChange={(e) => setContent(e.target.value.slice(0, MAX_CHARS + 50))}
-            className="resize-none border-0 bg-transparent px-0 py-1 text-base shadow-none placeholder:text-muted-foreground/60 focus-visible:ring-0"
-            rows={compact ? 1 : 3}
-            autoFocus={autoFocus}
-          />
+          <div className="relative">
+            <Textarea
+              ref={textareaRef}
+              placeholder={getPlaceholder()}
+              value={content}
+              onChange={(e) => setContent(e.target.value.slice(0, MAX_CHARS + 50))}
+              className="resize-none border-0 bg-transparent px-0 py-1 text-base shadow-none placeholder:text-muted-foreground/60 focus-visible:ring-0"
+              rows={compact ? 1 : 3}
+              autoFocus={autoFocus}
+            />
+            <MentionAutocomplete
+              content={content}
+              textareaRef={textareaRef}
+              onSelect={handleMentionSelect}
+            />
+          </div>
 
           {/* Image previews */}
           {images.length > 0 && (
