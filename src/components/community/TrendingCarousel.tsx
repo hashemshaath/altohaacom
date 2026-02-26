@@ -46,7 +46,7 @@ export function TrendingCarousel() {
       const [likesRes, commentsRes, profilesRes] = await Promise.all([
         supabase.from("post_likes").select("post_id").in("post_id", postIds),
         supabase.from("post_comments").select("post_id").in("post_id", postIds),
-        supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", authorIds),
+        supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, avatar_url").in("user_id", authorIds),
       ]);
 
       const likesMap = new Map<string, number>();
@@ -61,7 +61,7 @@ export function TrendingCarousel() {
         score: (likesMap.get(p.id) || 0) * 2 + (commentsMap.get(p.id) || 0) * 3,
         likes_count: likesMap.get(p.id) || 0,
         comments_count: commentsMap.get(p.id) || 0,
-        author_name: profileMap.get(p.author_id)?.full_name || null,
+        author_name: profileMap.get(p.author_id)?.display_name || profileMap.get(p.author_id)?.full_name || null,
         author_avatar: profileMap.get(p.author_id)?.avatar_url || null,
       }));
 

@@ -34,7 +34,7 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
       if (!user) return null;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, avatar_url, username")
+        .select("full_name, full_name_ar, display_name, display_name_ar, avatar_url, username")
         .eq("user_id", user.id)
         .single();
       return data;
@@ -96,11 +96,11 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
             <Avatar className="h-10 w-10 ring-2 ring-primary/20 transition-transform group-hover:scale-105">
               <AvatarImage src={profile.avatar_url || undefined} />
               <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                {(profile.full_name || "C")[0].toUpperCase()}
+                {((isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="text-sm font-bold truncate">{profile.full_name}</p>
+              <p className="text-sm font-bold truncate">{(isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name}</p>
               {profile.username && (
                 <p className="text-xs text-muted-foreground">@{profile.username}</p>
               )}

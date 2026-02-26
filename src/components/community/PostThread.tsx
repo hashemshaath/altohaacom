@@ -50,7 +50,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
 
     // Fetch profile
     const { data: profile } = await supabase.from("profiles")
-      .select("full_name, username, avatar_url, specialization")
+      .select("full_name, display_name, display_name_ar, username, avatar_url, specialization")
       .eq("user_id", post.author_id).single();
 
     setParentPost({ ...post, ...profile });
@@ -68,7 +68,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
       const replyIds = repliesData.map((r) => r.id);
 
       const [profilesRes, likesRes, userLikesRes] = await Promise.all([
-        supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", authorIds),
+        supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url").in("user_id", authorIds),
         supabase.from("post_likes").select("post_id").in("post_id", replyIds),
         user ? supabase.from("post_likes").select("post_id").eq("user_id", user.id).in("post_id", replyIds) : { data: [] },
       ]);
@@ -88,7 +88,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
             image_url: r.image_url,
             created_at: r.created_at,
             author_id: r.author_id,
-            author_name: p?.full_name || null,
+            author_name: p?.display_name || p?.full_name || null,
             author_username: p?.username || null,
             author_avatar: p?.avatar_url || null,
             likes_count: lMap.get(r.id) || 0,
@@ -148,12 +148,12 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={parentPost.avatar_url || undefined} />
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                      {(parentPost.full_name || "C")[0].toUpperCase()}
+                      {(parentPost.display_name || parentPost.full_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <Link to={`/${parentPost.username || parentPost.author_id}`} className="text-sm font-bold hover:underline">
-                      {parentPost.full_name || "Chef"}
+                      {parentPost.display_name || parentPost.full_name || "Chef"}
                     </Link>
                     {parentPost.username && (
                       <p className="text-xs text-muted-foreground">@{parentPost.username}</p>
