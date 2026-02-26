@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,6 +19,9 @@ import {
   Search, Upload, Image, File, Video, MoreVertical, Trash2, Copy, Download,
   Grid, List, Filter, HardDrive, ImageIcon, FileVideo, FileText,
 } from "lucide-react";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 export default function MediaAdmin() {
   const { language } = useLanguage();
@@ -132,6 +136,28 @@ export default function MediaAdmin() {
     });
   }, [media, typeFilter]);
 
+  const bulk = useAdminBulkActions(filteredMedia);
+
+  const { exportCSV: exportMedia } = useCSVExport({
+    columns: [
+      { header: language === "ar" ? "الملف" : "Filename", accessor: (r: any) => r.original_filename || r.filename },
+      { header: language === "ar" ? "النوع" : "Type", accessor: (r: any) => r.file_type },
+      { header: language === "ar" ? "الحجم" : "Size", accessor: (r: any) => r.file_size || 0 },
+      { header: language === "ar" ? "الرابط" : "URL", accessor: (r: any) => r.file_url },
+      { header: language === "ar" ? "التاريخ" : "Date", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd") },
+    ],
+    filename: "media",
+  });
+
+  const bulkDeleteMedia = async () => {
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("media_library").delete().in("id", ids);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    queryClient.invalidateQueries({ queryKey: ["admin-media"] });
+    bulk.clearSelection();
+    toast({ title: language === "ar" ? `تم حذف ${ids.length} ملف` : `${ids.length} deleted` });
+  };
+
   // Stats
   const stats = useMemo(() => {
     if (!media) return { total: 0, images: 0, videos: 0, totalSize: 0 };
@@ -159,6 +185,13 @@ export default function MediaAdmin() {
       />
 
       {uploading && <Progress value={uploadProgress} className="h-2" />}
+
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportMedia(bulk.selectedItems)}
+        onDelete={bulkDeleteMedia}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -247,9 +280,12 @@ export default function MediaAdmin() {
                 return (
                   <div 
                     key={file.id} 
-                    className="group relative rounded-lg border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary"
+                    className={`group relative rounded-lg border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary ${bulk.isSelected(file.id) ? "ring-2 ring-primary" : ""}`}
                     onClick={() => setSelectedMedia(file)}
                   >
+                    <div className="absolute top-2 start-2 z-10" onClick={e => e.stopPropagation()}>
+                      <Checkbox checked={bulk.isSelected(file.id)} onCheckedChange={() => bulk.toggleOne(file.id)} />
+                    </div>
                     {file.file_type.startsWith("image") ? (
                       <div className="aspect-square">
                         <img 
@@ -308,9 +344,12 @@ export default function MediaAdmin() {
                 return (
                   <div 
                     key={file.id}
-                    className="flex items-center gap-4 rounded-lg border p-3 hover:bg-accent/50 cursor-pointer"
+                    className={`flex items-center gap-4 rounded-lg border p-3 hover:bg-accent/50 cursor-pointer ${bulk.isSelected(file.id) ? "ring-1 ring-primary bg-primary/5" : ""}`}
                     onClick={() => setSelectedMedia(file)}
                   >
+                    <div onClick={e => e.stopPropagation()}>
+                      <Checkbox checked={bulk.isSelected(file.id)} onCheckedChange={() => bulk.toggleOne(file.id)} />
+                    </div>
                     {file.file_type.startsWith("image") ? (
                       <img 
                         src={file.file_url} 

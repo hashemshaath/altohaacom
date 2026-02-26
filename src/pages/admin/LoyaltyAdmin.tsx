@@ -5,11 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Trophy, Gift, TrendingUp } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();
@@ -90,6 +94,29 @@ export default function LoyaltyAdmin() {
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["adminRedemptions"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
+
+  const bulkRedemptions = useAdminBulkActions(redemptions);
+
+  const { exportCSV: exportRedemptions } = useCSVExport({
+    columns: [
+      { header: isAr ? "الكود" : "Code", accessor: (r: any) => r.redemption_code || "" },
+      { header: isAr ? "النقاط" : "Points", accessor: (r: any) => r.points_spent },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => new Date(r.created_at).toLocaleDateString() },
+    ],
+    filename: "redemptions",
+  });
+
+  const bulkFulfill = async () => {
+    const ids = [...bulkRedemptions.selected];
+    const { error } = await supabase.from("reward_redemptions")
+      .update({ status: "fulfilled", fulfilled_at: new Date().toISOString() })
+      .in("id", ids).eq("status", "pending");
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    qc.invalidateQueries({ queryKey: ["adminRedemptions"] });
+    bulkRedemptions.clearSelection();
+    toast({ title: isAr ? `تم تنفيذ ${ids.length} طلب` : `${ids.length} fulfilled` });
+  };
 
   const statCards = [
     { icon: Crown, label: isAr ? "المستويات" : "Tiers", value: tiers.length, color: "text-chart-1" },
@@ -252,11 +279,20 @@ export default function LoyaltyAdmin() {
         </TabsContent>
 
         <TabsContent value="redemptions">
+          <BulkActionBar
+            count={bulkRedemptions.count}
+            onClear={bulkRedemptions.clearSelection}
+            onExport={() => exportRedemptions(bulkRedemptions.selectedItems)}
+            onStatusChange={bulkFulfill}
+          />
           <Card>
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
+                    </TableHead>
                     <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
                     <TableHead className="text-center">{isAr ? "النقاط" : "Points"}</TableHead>
                     <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
@@ -266,7 +302,10 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {redemptions.map((r: any) => (
-                    <TableRow key={r.id}>
+                    <TableRow key={r.id} className={bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}>
+                      <TableCell>
+                        <Checkbox checked={bulkRedemptions.isSelected(r.id)} onCheckedChange={() => bulkRedemptions.toggleOne(r.id)} />
+                      </TableCell>
                       <TableCell className="font-mono text-xs">{r.redemption_code || "—"}</TableCell>
                       <TableCell className="text-center font-mono">{r.points_spent}</TableCell>
                       <TableCell>
@@ -293,7 +332,7 @@ export default function LoyaltyAdmin() {
                   ))}
                   {redemptions.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                         {isAr ? "لا توجد طلبات استبدال" : "No redemptions yet"}
                       </TableCell>
                     </TableRow>
