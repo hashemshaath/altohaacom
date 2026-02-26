@@ -18,8 +18,10 @@ import {
   Trash2,
   MessageSquare,
   Building2,
+  Bookmark,
+  BookmarkPlus,
 } from "lucide-react";
-import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
+import { getRecentSearches, addRecentSearch, clearRecentSearches, getSavedSearches, addSavedSearch, removeSavedSearch } from "@/lib/recentSearches";
 
 interface QuickSearchProps {
   onClose?: () => void;
@@ -29,6 +31,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [savedSearches, setSavedSearches] = useState<string[]>([]);
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +41,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
   // Load recent searches on mount
   useEffect(() => {
     setRecentSearches(getRecentSearches());
+    setSavedSearches(getSavedSearches());
   }, []);
 
   // Close on click outside
@@ -189,6 +193,19 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     setRecentSearches([]);
   };
 
+  const handleSaveSearch = (term: string) => {
+    addSavedSearch(term);
+    setSavedSearches(getSavedSearches());
+  };
+
+  const handleRemoveSaved = (term: string) => {
+    removeSavedSearch(term);
+    setSavedSearches(getSavedSearches());
+  };
+
+  const showRecent = isOpen && query.length < 2 && (recentSearches.length > 0 || savedSearches.length > 0);
+  const showResults = isOpen && query.length >= 2;
+
   const handleResultClick = () => {
     if (query.trim()) {
       addRecentSearch(query.trim());
@@ -199,8 +216,6 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     onClose?.();
   };
 
-  const showRecent = isOpen && query.length < 2 && recentSearches.length > 0;
-  const showResults = isOpen && query.length >= 2;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-sm">
@@ -236,28 +251,70 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
         </div>
       </form>
 
-      {/* Recent Searches Dropdown */}
+      {/* Recent & Saved Searches Dropdown */}
       {showRecent && (
         <div className="absolute top-full inset-x-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
-          <div className="flex items-center justify-between px-2 mb-1.5">
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
-            </p>
-            <Button variant="ghost" size="sm" className="h-6 px-1.5 text-xs text-muted-foreground" onClick={handleClearRecent}>
-              <Trash2 className="h-3 w-3 me-1" />
-              {language === "ar" ? "مسح" : "Clear"}
-            </Button>
-          </div>
-          {recentSearches.map((term) => (
-            <button
-              key={term}
-              onClick={() => handleRecentClick(term)}
-              className="flex w-full items-center gap-3 rounded-md p-2 text-sm hover:bg-accent transition-colors text-start"
-            >
-              <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <span className="truncate">{term}</span>
-            </button>
-          ))}
+          {/* Saved Searches */}
+          {savedSearches.length > 0 && (
+            <>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 mb-1">
+                {language === "ar" ? "عمليات بحث محفوظة" : "Saved Searches"}
+              </p>
+              {savedSearches.map((term) => (
+                <div key={`saved-${term}`} className="flex items-center gap-1 group">
+                  <button
+                    onClick={() => handleRecentClick(term)}
+                    className="flex flex-1 items-center gap-3 rounded-md p-2 text-sm hover:bg-accent transition-colors text-start"
+                  >
+                    <Bookmark className="h-3.5 w-3.5 text-primary shrink-0" />
+                    <span className="truncate">{term}</span>
+                  </button>
+                  <Button
+                    variant="ghost" size="icon"
+                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => handleRemoveSaved(term)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ))}
+              {recentSearches.length > 0 && <div className="border-t border-border/50 my-1.5" />}
+            </>
+          )}
+
+          {/* Recent Searches */}
+          {recentSearches.length > 0 && (
+            <>
+              <div className="flex items-center justify-between px-2 mb-1">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  {language === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
+                </p>
+                <Button variant="ghost" size="sm" className="h-6 px-1.5 text-xs text-muted-foreground" onClick={handleClearRecent}>
+                  <Trash2 className="h-3 w-3 me-1" />
+                  {language === "ar" ? "مسح" : "Clear"}
+                </Button>
+              </div>
+              {recentSearches.map((term) => (
+                <div key={term} className="flex items-center gap-1 group">
+                  <button
+                    onClick={() => handleRecentClick(term)}
+                    className="flex flex-1 items-center gap-3 rounded-md p-2 text-sm hover:bg-accent transition-colors text-start"
+                  >
+                    <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    <span className="truncate">{term}</span>
+                  </button>
+                  <Button
+                    variant="ghost" size="icon"
+                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => handleSaveSearch(term)}
+                    title={language === "ar" ? "حفظ" : "Save"}
+                  >
+                    <BookmarkPlus className="h-3 w-3 text-muted-foreground" />
+                  </Button>
+                </div>
+              ))}
+            </>
+          )}
         </div>
       )}
 
