@@ -70,7 +70,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                         <TrendingUp className="h-10 w-10 text-muted-foreground/20" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
                     <div className="absolute bottom-0 p-4">
                       <Badge className="mb-2 bg-chart-4/90 text-chart-4-foreground text-[10px]">
                         <TrendingUp className="h-2.5 w-2.5 me-1" />
