@@ -9,10 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { QrCode, Search, Eye, Copy, BarChart3, Hash, ScanLine, Filter } from "lucide-react";
+import { QrCode, Search, Eye, Copy, BarChart3, Hash, ScanLine, Filter, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { format } from "date-fns";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];
 
@@ -71,6 +75,20 @@ export default function QRCodesAdmin() {
       qr.entity_type.toLowerCase().includes(q) ||
       qr.entity_id.toLowerCase().includes(q)
     );
+  }) || [];
+
+  const bulk = useAdminBulkActions(filtered);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الكود" : "Code", accessor: (r: any) => r.code },
+      { header: isAr ? "النوع" : "Entity Type", accessor: (r: any) => r.entity_type },
+      { header: isAr ? "الفئة" : "Category", accessor: (r: any) => r.category },
+      { header: isAr ? "المسح" : "Scans", accessor: (r: any) => r.scan_count },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.is_active ? "Active" : "Inactive" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd") },
+    ],
+    filename: "qr-codes",
   });
 
   const copyCode = (code: string) => {
@@ -149,6 +167,8 @@ export default function QRCodesAdmin() {
         </CardContent>
       </Card>
 
+      <BulkActionBar count={bulk.count} onClear={bulk.clearSelection} onExport={() => exportCSV(bulk.selectedItems)} />
+
       {/* Table / Cards */}
       <Card>
         <CardHeader className="pb-3 px-3 sm:px-6">
@@ -201,6 +221,9 @@ export default function QRCodesAdmin() {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-10">
+                        <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                      </TableHead>
                       <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
                       <TableHead>{isAr ? "النوع" : "Entity Type"}</TableHead>
                       <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
@@ -212,9 +235,11 @@ export default function QRCodesAdmin() {
                   </TableHeader>
                   <TableBody>
                     {filtered?.map((qr) => (
-                      <TableRow key={qr.id}>
+                      <TableRow key={qr.id} className={bulk.isSelected(qr.id) ? "bg-primary/5" : ""}>
                         <TableCell>
-                          <span className="font-mono text-xs tracking-widest">{qr.code}</span>
+                          <Checkbox checked={bulk.isSelected(qr.id)} onCheckedChange={() => bulk.toggleOne(qr.id)} />
+                        </TableCell>
+                        <TableCell>
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-[10px]">{qr.entity_type}</Badge>
