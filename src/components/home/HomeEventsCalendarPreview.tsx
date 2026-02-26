@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { getCountdown } from "@/pages/events-calendar/utils";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
 
-export function HomeEventsCalendarPreview() {
+export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function HomeEventsCalendarPreview(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [viewMode, setViewMode] = useState<"cards" | "mini-cal">("cards");
@@ -48,7 +48,7 @@ export function HomeEventsCalendarPreview() {
   if (events.length === 0) return null;
 
   return (
-    <div>
+    <div ref={ref}>
     <TooltipProvider delayDuration={200}>
       <section className="container py-8">
         {/* Header */}
@@ -235,7 +235,7 @@ export function HomeEventsCalendarPreview() {
     </TooltipProvider>
     </div>
   );
-}
+});
 
 /* ─── Mini Tooltip ─── */
 function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
@@ -312,7 +312,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
 }
 
 /* ─── Home List Event Card (modern style matching EventsCalendar) ─── */
-function HomeListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
+const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(function HomeListEventCard({ event, isAr }, ref) {
   const colors = GLOBAL_EVENT_COLORS[event.type];
   const label = GLOBAL_EVENT_LABELS[event.type];
   const IconComp = ICONS[label?.icon] || MoreHorizontal;
@@ -389,4 +389,4 @@ function HomeListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean 
   );
 
   return event.link ? <Link to={event.link} className="block">{card}</Link> : card;
-}
+});
