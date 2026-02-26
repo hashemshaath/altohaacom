@@ -17,7 +17,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3, CheckCircle, XCircle, Layers } from "lucide-react";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3, CheckCircle, XCircle, Layers, Download } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -246,6 +250,42 @@ export default function CompetitionsAdmin() {
     onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
   });
 
+  // Bulk actions
+  const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: bulkCount, selectedItems, isSelected } =
+    useAdminBulkActions(competitions || []);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "التاريخ" : "Start Date", accessor: (r: any) => r.competition_start || "" },
+      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
+      { header: isAr ? "الدولة" : "Country", accessor: (r: any) => r.country || "" },
+      { header: isAr ? "الحد الأقصى" : "Max Participants", accessor: (r: any) => r.max_participants || "" },
+      { header: isAr ? "رقم المسابقة" : "Competition #", accessor: (r: any) => r.competition_number || "" },
+    ],
+    filename: "competitions",
+  });
+
+  const bulkStatusChange = async (status: string) => {
+    const ids = Array.from(selected);
+    const { error } = await supabase.from("competitions").update({ status: status as CompetitionStatus }).in("id", ids);
+    if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); return; }
+    queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
+    clearSelection();
+    toast({ title: isAr ? `تم تحديث ${ids.length} مسابقة` : `${ids.length} competitions updated` });
+  };
+
+  const bulkDelete = async () => {
+    if (!confirm(isAr ? "هل أنت متأكد من حذف المسابقات المحددة؟" : "Delete selected competitions?")) return;
+    const ids = Array.from(selected);
+    const { error } = await supabase.from("competitions").delete().in("id", ids);
+    if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); return; }
+    queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
+    clearSelection();
+    toast({ title: isAr ? `تم حذف ${ids.length} مسابقة` : `${ids.length} competitions deleted` });
+  };
+
   const stats = {
     total: competitions?.length || 0,
     pending: competitions?.filter(c => c.status === "pending").length || 0,
@@ -265,6 +305,10 @@ export default function CompetitionsAdmin() {
         description={isAr ? "إدارة ومراقبة جميع المسابقات" : "Manage and monitor all competitions"}
         actions={
           <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={() => exportCSV(competitions || [])}>
+              <Download className="me-2 h-4 w-4" />
+              {isAr ? "تصدير" : "Export"}
+            </Button>
             <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {isAr ? "استيراد" : "Import"}
@@ -419,6 +463,15 @@ export default function CompetitionsAdmin() {
         </CardContent>
       </Card>
 
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        count={bulkCount}
+        onClear={clearSelection}
+        onExport={() => exportCSV(selectedItems)}
+        onStatusChange={(s) => bulkStatusChange(s)}
+        onDelete={bulkDelete}
+      />
+
       {/* Table */}
       <Card className="border-border/60 overflow-hidden">
         <CardContent className="p-0">
@@ -468,6 +521,9 @@ export default function CompetitionsAdmin() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30 hover:bg-muted/30">
+                  <TableHead className="w-10">
+                    <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
+                  </TableHead>
                   <TableHead className="font-semibold">{isAr ? "المسابقة" : "Competition"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "المنظم / المعرض" : "Organizer / Exhibition"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
@@ -486,7 +542,10 @@ export default function CompetitionsAdmin() {
                   const year = comp.competition_start ? new Date(comp.competition_start).getFullYear() : null;
 
                   return (
-                    <TableRow key={comp.id} className="group hover:bg-muted/20 transition-colors duration-150">
+                    <TableRow key={comp.id} className={`group hover:bg-muted/20 transition-colors duration-150 ${isSelected(comp.id) ? "bg-primary/5" : ""}`}>
+                      <TableCell>
+                        <Checkbox checked={isSelected(comp.id)} onCheckedChange={() => toggleOne(comp.id)} />
+                      </TableCell>
                       <TableCell>
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">

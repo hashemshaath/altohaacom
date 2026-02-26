@@ -18,6 +18,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useApprovedSpecialties, useUserSpecialties } from "@/hooks/useSpecialties";
 import { useFollowStats } from "@/hooks/useFollow";
 import { UserPersonalDetailsTab } from "@/components/admin/UserPersonalDetailsTab";
@@ -203,6 +206,42 @@ export default function UserManagement() {
     if (roleFilter === "all") return true;
     return u.roles?.some((r) => r.role === roleFilter);
   });
+
+  const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: bulkCount, selectedItems, isSelected } =
+    useAdminBulkActions(filteredUsers || []);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (r: UserProfile) => r.full_name || "" },
+      { header: isAr ? "البريد" : "Email", accessor: (r: UserProfile) => r.email || "" },
+      { header: isAr ? "الهاتف" : "Phone", accessor: (r: UserProfile) => r.phone || "" },
+      { header: isAr ? "اسم المستخدم" : "Username", accessor: (r: UserProfile) => r.username || "" },
+      { header: isAr ? "رقم الحساب" : "Account #", accessor: (r: UserProfile) => r.account_number || "" },
+      { header: isAr ? "الأدوار" : "Roles", accessor: (r: UserProfile) => r.roles?.map(ro => ro.role).join(", ") || "" },
+      { header: isAr ? "العضوية" : "Membership", accessor: (r: UserProfile) => r.membership_tier || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: UserProfile) => r.account_status || "" },
+      { header: isAr ? "الدولة" : "Country", accessor: (r: UserProfile) => r.country_code || "" },
+    ],
+    filename: "users",
+  });
+
+  const bulkActivate = async () => {
+    const ids = Array.from(selected);
+    const { error } = await supabase.from("profiles").update({ account_status: "active" as AccountStatus, suspended_reason: null, suspended_at: null }).in("user_id", ids);
+    if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); return; }
+    queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+    clearSelection();
+    toast({ title: isAr ? `تم تفعيل ${ids.length} مستخدم` : `${ids.length} users activated` });
+  };
+
+  const bulkSuspend = async () => {
+    const ids = Array.from(selected);
+    const { error } = await supabase.from("profiles").update({ account_status: "suspended" as AccountStatus, suspended_reason: "Admin bulk action", suspended_at: new Date().toISOString() }).in("user_id", ids);
+    if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); return; }
+    queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+    clearSelection();
+    toast({ title: isAr ? `تم إيقاف ${ids.length} مستخدم` : `${ids.length} users suspended` });
+  };
 
   const totalPages = Math.ceil((usersData?.totalCount || 0) / pageSize);
   const editingUser = filteredUsers?.find((u) => u.user_id === editingUserId);
@@ -702,25 +741,20 @@ export default function UserManagement() {
           {isAr ? "استيراد من ملف" : "Import from File"}
         </Button>
 
-        <Button variant="outline" onClick={() => {
-          const csv = ["Name,Email,Phone,Role,Status,Account Number,Country,Membership"];
-          filteredUsers?.forEach(u => {
-            csv.push([
-              u.full_name || "", u.email || "", u.phone || "",
-              u.roles?.map(r => r.role).join(";") || "", u.account_status || "",
-              u.account_number || "", u.country_code || "", u.membership_tier || ""
-            ].join(","));
-          });
-          const blob = new Blob([csv.join("\n")], { type: "text/csv" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url; a.download = `users-export-${new Date().toISOString().slice(0, 10)}.csv`;
-          a.click(); URL.revokeObjectURL(url);
-        }}>
+        <Button variant="outline" onClick={() => exportCSV(filteredUsers || [])}>
           <Download className="me-2 h-4 w-4" />
           {isAr ? "تصدير CSV" : "Export CSV"}
         </Button>
       </div>
+
+      {/* Bulk Action Bar */}
+      <BulkActionBar
+        count={bulkCount}
+        onClear={clearSelection}
+        onExport={() => exportCSV(selectedItems)}
+        onStatusChange={() => bulkActivate()}
+        onDelete={bulkSuspend}
+      />
 
       {/* Bulk Import Panel */}
       {showBulkImport && <BulkUserImport />}
@@ -1162,6 +1196,9 @@ export default function UserManagement() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
+                    </TableHead>
                     <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
                     <TableHead>{t("accountNumber")}</TableHead>
                     <TableHead>{isAr ? "الأدوار" : "Roles"}</TableHead>
@@ -1173,7 +1210,10 @@ export default function UserManagement() {
                 </TableHeader>
                 <TableBody>
                   {filteredUsers?.map((profile) => (
-                    <TableRow key={profile.id} className={editingUserId === profile.user_id ? "bg-primary/5" : ""}>
+                    <TableRow key={profile.id} className={editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : ""}>
+                      <TableCell>
+                        <Checkbox checked={isSelected(profile.id)} onCheckedChange={() => toggleOne(profile.id)} />
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
