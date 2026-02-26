@@ -139,20 +139,25 @@ export function NetworkTab() {
                       <Avatar className="h-14 w-14 ring-2 ring-chart-2/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-chart-2/30">
                         <AvatarImage src={f.avatar_url} />
                         <AvatarFallback className="bg-chart-2/10 text-chart-2 font-bold text-lg">
-                          {(f.full_name || "U")[0]}
+                          {(isAr ? (f.display_name_ar || f.full_name_ar || f.full_name) : (f.display_name || f.full_name) || "U")[0]}
                         </AvatarFallback>
                       </Avatar>
                     </Link>
                     <div className="min-w-0 w-full space-y-0.5 text-center">
-                      <Link to={`/${f.username || f.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(f.full_name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
-                        {f.full_name}
-                      </Link>
+                      {(() => {
+                        const name = isAr ? (f.display_name_ar || f.full_name_ar || f.display_name || f.full_name) : (f.display_name || f.full_name);
+                        return (
+                          <Link to={`/${f.username || f.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
+                            {name}
+                          </Link>
+                        );
+                      })()}
                       <span className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
                         <Clock className="h-2.5 w-2.5 shrink-0" />
                         {toEnglishDigits(new Date(f.followed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }))}
                       </span>
                     </div>
-                    <FollowButton userId={f.user_id} userName={f.full_name} fullWidth />
+                    <FollowButton userId={f.user_id} userName={isAr ? (f.display_name_ar || f.full_name_ar || f.full_name) : (f.display_name || f.full_name)} fullWidth />
                   </div>
                 ))}
               </div>
@@ -186,20 +191,25 @@ export function NetworkTab() {
                     <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
                       <AvatarImage src={rec.avatar_url} />
                       <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">
-                        {(rec.full_name || "U")[0]}
+                        {(isAr ? (rec.display_name_ar || rec.full_name_ar || rec.full_name) : (rec.display_name || rec.full_name) || "U")[0]}
                       </AvatarFallback>
                     </Avatar>
                   </Link>
                   <div className="min-w-0 w-full flex-1 space-y-0.5">
-                    <Link to={`/${rec.username || rec.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(rec.full_name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
-                      {rec.full_name}
-                    </Link>
-                    {rec.specialization && (
+                    {(() => {
+                      const name = isAr ? (rec.display_name_ar || rec.full_name_ar || rec.display_name || rec.full_name) : (rec.display_name || rec.full_name);
+                      return (
+                        <Link to={`/${rec.username || rec.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
+                          {name}
+                        </Link>
+                      );
+                    })()}
+                    {((isAr ? rec.specialization_ar : null) || rec.specialization) ? (
                       <p className="text-[11px] text-muted-foreground truncate flex items-center justify-center gap-1">
                         <ChefHat className="h-3 w-3 shrink-0" />
-                        {rec.specialization}
+                        {(isAr ? rec.specialization_ar : null) || rec.specialization}
                       </p>
-                    )}
+                    ) : null}
                     {rec.country_code && (
                       <p className="text-[11px] text-muted-foreground flex items-center justify-center gap-1">
                         <MapPin className="h-3 w-3 shrink-0" />
@@ -207,7 +217,7 @@ export function NetworkTab() {
                       </p>
                     )}
                   </div>
-                  <FollowButton userId={rec.user_id} userName={rec.full_name} fullWidth />
+                  <FollowButton userId={rec.user_id} userName={isAr ? (rec.display_name_ar || rec.full_name_ar || rec.full_name) : (rec.display_name || rec.full_name)} fullWidth />
                 </div>
               ))}
             </div>

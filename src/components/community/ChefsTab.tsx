@@ -20,6 +20,8 @@ interface ChefProfile {
   user_id: string;
   full_name: string | null;
   full_name_ar: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
   username: string | null;
   avatar_url: string | null;
   specialization: string | null;
@@ -44,7 +46,8 @@ export function ChefsTab() {
     queryFn: async () => {
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("user_id, full_name, full_name_ar, username, avatar_url, specialization, specialization_ar, experience_level, location, country_code, is_verified, created_at")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, specialization, specialization_ar, experience_level, location, country_code, is_verified, created_at")
+        .eq("account_status", "active")
         .neq("user_id", user?.id || "")
         .order("is_verified", { ascending: false })
         .order("full_name", { ascending: true })
@@ -131,7 +134,9 @@ export function ChefsTab() {
       {/* Chefs Grid */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {filtered.map((chef) => {
-          const displayName = isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name;
+          const displayName = isAr
+            ? (chef.display_name_ar || chef.full_name_ar || chef.display_name || chef.full_name)
+            : (chef.display_name || chef.full_name);
           const displaySpec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
 
           return (

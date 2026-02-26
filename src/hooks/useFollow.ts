@@ -190,7 +190,7 @@ export function useNewFollowers() {
       if (ids.length === 0) return [];
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url, specialization, country_code, is_verified")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, specialization, country_code, is_verified")
         .in("user_id", ids);
       const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
       return data.map(d => ({
@@ -222,7 +222,8 @@ export function useFollowRecommendations() {
       // Get users with similar attributes
       let query = supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url, specialization, country_code, is_verified")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, specialization, country_code, is_verified")
+        .eq("account_status", "active")
         .not("user_id", "in", `(${Array.from(followingIds).join(",")})`)
         .not("full_name", "is", null)
         .limit(12);
