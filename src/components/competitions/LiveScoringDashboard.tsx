@@ -2,13 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   Radio, Users, Trophy, Activity, RefreshCw, TrendingUp,
-  Timer, BarChart3, Download,
+  Timer, BarChart3, Download, Medal, Award,
 } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
 
@@ -34,7 +34,6 @@ export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
   const [isLive, setIsLive] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
-  // Fetch scoring data
   const { data: scores, refetch } = useQuery({
     queryKey: ["live-scores", competitionId],
     queryFn: async () => {
@@ -69,16 +68,11 @@ export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
     },
   });
 
-  // Realtime subscription
   useEffect(() => {
     if (!isLive) return;
     const channel = supabase
       .channel(`live-scoring-${competitionId}`)
-      .on("postgres_changes", {
-        event: "*",
-        schema: "public",
-        table: "competition_scores",
-      }, () => {
+      .on("postgres_changes", { event: "*", schema: "public", table: "competition_scores" }, () => {
         refetch();
         setLastUpdate(new Date());
       })
@@ -86,7 +80,6 @@ export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
     return () => { supabase.removeChannel(channel); };
   }, [competitionId, isLive, refetch]);
 
-  // Process scores into leaderboard
   const leaderboard = useMemo<LiveScore[]>(() => {
     if (!scores?.length) return [];
     const map = new Map<string, LiveScore>();
@@ -147,124 +140,122 @@ export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
     );
   };
 
+  const medalIcons = [
+    { icon: Trophy, bg: "bg-chart-4/10 text-chart-4 ring-chart-4/20" },
+    { icon: Medal, bg: "bg-muted/60 text-muted-foreground ring-border/30" },
+    { icon: Award, bg: "bg-chart-3/10 text-chart-3 ring-chart-3/20" },
+  ];
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Live Status Header */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium ${isLive ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${isLive ? "bg-destructive/10 text-destructive ring-1 ring-destructive/20" : "bg-muted text-muted-foreground ring-1 ring-border/30"}`}>
             <Radio className={`h-3 w-3 ${isLive ? "animate-pulse" : ""}`} />
             {isLive ? (isAr ? "بث مباشر" : "LIVE") : (isAr ? "متوقف" : "PAUSED")}
           </div>
-          <span className="text-[10px] text-muted-foreground">
-            {isAr ? "آخر تحديث:" : "Last update:"} {lastUpdate.toLocaleTimeString()}
+          <span className="text-[10px] text-muted-foreground font-medium">
+            {isAr ? "آخر تحديث:" : "Updated:"} {lastUpdate.toLocaleTimeString()}
           </span>
         </div>
         <div className="flex items-center gap-2">
           {isOrganizer && (
-            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleExport}>
-              <Download className="me-1 h-3 w-3" /> {isAr ? "تصدير" : "Export"}
+            <Button size="sm" variant="outline" className="h-8 text-xs rounded-xl font-semibold" onClick={handleExport}>
+              <Download className="me-1.5 h-3 w-3" /> {isAr ? "تصدير" : "Export"}
             </Button>
           )}
           <Button
             size="sm"
             variant={isLive ? "destructive" : "default"}
-            className="h-7 text-xs"
+            className="h-8 text-xs rounded-xl font-semibold"
             onClick={() => setIsLive(!isLive)}
           >
             {isLive ? (
-              <><Timer className="me-1 h-3 w-3" /> {isAr ? "إيقاف" : "Pause"}</>
+              <><Timer className="me-1.5 h-3 w-3" /> {isAr ? "إيقاف" : "Pause"}</>
             ) : (
-              <><RefreshCw className="me-1 h-3 w-3" /> {isAr ? "استئناف" : "Resume"}</>
+              <><RefreshCw className="me-1.5 h-3 w-3" /> {isAr ? "استئناف" : "Resume"}</>
             )}
           </Button>
         </div>
       </div>
 
-      {/* Progress Stats */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <Users className="mx-auto mb-1 h-4 w-4 text-primary" />
-            <p className="text-lg font-bold">{totalParticipants}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "المشاركين" : "Participants"}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <BarChart3 className="mx-auto mb-1 h-4 w-4 text-chart-1" />
-            <p className="text-lg font-bold">{judges?.length || 0}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "الحكام" : "Judges"}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <Activity className="mx-auto mb-1 h-4 w-4 text-chart-5" />
-            <p className="text-lg font-bold">{fullyScoredCount}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "مكتمل التقييم" : "Fully Scored"}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60">
-          <CardContent className="p-3 text-center">
-            <TrendingUp className="mx-auto mb-1 h-4 w-4 text-chart-4" />
-            <p className="text-lg font-bold">{progressPct}%</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "التقدم" : "Progress"}</p>
-          </CardContent>
-        </Card>
+      {/* KPI Stats */}
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        {[
+          { icon: Users, value: totalParticipants, label: isAr ? "المشاركين" : "Participants", color: "text-primary", bg: "bg-primary/8" },
+          { icon: BarChart3, value: judges?.length || 0, label: isAr ? "الحكام" : "Judges", color: "text-chart-1", bg: "bg-chart-1/8" },
+          { icon: Activity, value: fullyScoredCount, label: isAr ? "مكتمل" : "Scored", color: "text-chart-5", bg: "bg-chart-5/8" },
+          { icon: TrendingUp, value: `${progressPct}%`, label: isAr ? "التقدم" : "Progress", color: "text-chart-4", bg: "bg-chart-4/8" },
+        ].map(({ icon: Icon, value, label, color, bg }) => (
+          <div key={label} className={`rounded-xl ${bg} p-3 sm:p-4 text-center transition-all hover:scale-[1.02]`}>
+            <Icon className={`mx-auto mb-1.5 h-4 w-4 ${color}`} />
+            <p className="text-xl sm:text-2xl font-bold tabular-nums">{value}</p>
+            <p className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
+          </div>
+        ))}
       </div>
 
-      <div>
-        <Progress value={progressPct} className="h-2" />
-        <p className="text-[10px] text-muted-foreground mt-1">
+      {/* Progress Bar */}
+      <div className="space-y-1.5">
+        <Progress value={progressPct} className="h-2.5 rounded-full" />
+        <p className="text-[10px] text-muted-foreground font-medium">
           {fullyScoredCount}/{totalParticipants} {isAr ? "مشارك تم تقييمه بالكامل" : "participants fully scored"}
         </p>
       </div>
 
       {/* Leaderboard */}
       {!leaderboard.length ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Trophy className="mx-auto mb-3 h-12 w-12 text-muted-foreground/30" />
-            <p className="text-muted-foreground">{isAr ? "لا توجد نتائج بعد" : "No scores yet"}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {isAr ? "ستظهر النتائج هنا فور بدء الحكام بالتقييم" : "Scores will appear here once judges begin evaluating"}
-            </p>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border border-border/30 bg-muted/10 py-14 text-center">
+          <Trophy className="mx-auto mb-3 h-14 w-14 text-muted-foreground/15" />
+          <p className="font-semibold text-muted-foreground">{isAr ? "لا توجد نتائج بعد" : "No scores yet"}</p>
+          <p className="text-xs text-muted-foreground/60 mt-1 max-w-xs mx-auto">
+            {isAr ? "ستظهر النتائج هنا فور بدء الحكام بالتقييم" : "Scores will appear here once judges begin evaluating"}
+          </p>
+        </div>
       ) : (
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {leaderboard.map(entry => {
             const scorePct = entry.maxPossible > 0 ? Math.round((entry.totalScore / (entry.maxPossible * entry.totalJudges)) * 100) : 0;
-            const medalColor = entry.rank === 1 ? "text-chart-4" : entry.rank === 2 ? "text-muted-foreground" : entry.rank === 3 ? "text-chart-3" : "";
+            const isTopThree = entry.rank <= 3;
+            const medal = isTopThree ? medalIcons[entry.rank - 1] : null;
+
             return (
-              <Card key={entry.participantId} className="border-border/40">
-                <CardContent className="flex items-center gap-3 p-3">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-sm ${entry.rank <= 3 ? "bg-chart-4/10" : "bg-muted"} ${medalColor}`}>
-                    {entry.rank <= 3 ? (
-                      <Trophy className="h-4 w-4" />
-                    ) : (
-                      entry.rank
-                    )}
+              <div
+                key={entry.participantId}
+                className={`flex items-center gap-3 rounded-xl border p-3 sm:p-4 transition-all ${
+                  isTopThree ? "border-primary/15 bg-primary/[0.02]" : "border-border/30 bg-card"
+                }`}
+              >
+                {/* Rank */}
+                <div className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl font-bold text-sm ${
+                  medal ? `${medal.bg} ring-1` : "bg-muted/60 text-muted-foreground"
+                }`}>
+                  {medal ? <medal.icon className="h-4 w-4" /> : entry.rank}
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold truncate">{entry.participantName}</p>
+                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                    <span className="truncate">{entry.categoryName}</span>
+                    <span className="shrink-0">·</span>
+                    <span className="shrink-0">{entry.judgesScored}/{entry.totalJudges} {isAr ? "حكم" : "judges"}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{entry.participantName}</p>
-                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                      <span>{entry.categoryName}</span>
-                      <span>·</span>
-                      <span>{entry.judgesScored}/{entry.totalJudges} {isAr ? "حكم" : "judges"}</span>
-                    </div>
-                  </div>
-                  <div className="text-end shrink-0">
-                    <p className="text-lg font-bold">{entry.totalScore}</p>
-                    <p className="text-[10px] text-muted-foreground">{scorePct}%</p>
-                  </div>
-                  {entry.judgesScored >= entry.totalJudges && (
-                    <Badge variant="outline" className="text-[9px] h-4 border-chart-5/40 text-chart-5 shrink-0">
-                      ✓ {isAr ? "مكتمل" : "Complete"}
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
+                </div>
+
+                {/* Score */}
+                <div className="text-end shrink-0">
+                  <p className={`text-lg sm:text-xl font-bold tabular-nums ${isTopThree ? "text-primary" : ""}`}>{entry.totalScore}</p>
+                  <p className="text-[10px] text-muted-foreground font-medium">{scorePct}%</p>
+                </div>
+
+                {entry.judgesScored >= entry.totalJudges && (
+                  <Badge variant="outline" className="text-[9px] h-5 border-chart-5/30 text-chart-5 shrink-0 rounded-lg hidden sm:flex">
+                    ✓ {isAr ? "مكتمل" : "Done"}
+                  </Badge>
+                )}
+              </div>
             );
           })}
         </div>
