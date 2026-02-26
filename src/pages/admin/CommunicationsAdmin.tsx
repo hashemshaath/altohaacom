@@ -20,10 +20,13 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import {
   MessageSquare, Send, Inbox, ArrowUpRight, ArrowDownLeft, Clock, CheckCheck,
   Reply, AlertCircle, Search, Building2, Plus, Star, StarOff, Archive,
-  Tag, StickyNote, BarChart3, Trash2, Eye, EyeOff, Filter,
+  Tag, StickyNote, BarChart3, Trash2, Eye, EyeOff, Filter, Download,
 } from "lucide-react";
 import { format, differenceInMinutes, differenceInHours } from "date-fns";
 
@@ -310,6 +313,18 @@ export default function CommunicationsAdmin() {
     },
   });
 
+  const { exportCSV: exportMessages } = useCSVExport({
+    columns: [
+      { header: isAr ? "الموضوع" : "Subject", accessor: (r: Communication) => r.subject },
+      { header: isAr ? "الاتجاه" : "Direction", accessor: (r: Communication) => r.direction },
+      { header: isAr ? "الأولوية" : "Priority", accessor: (r: Communication) => r.priority },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: Communication) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: Communication) => r.created_at?.slice(0, 10) || "" },
+      { header: isAr ? "العلامات" : "Tags", accessor: (r: Communication) => r.tags?.join(", ") || "" },
+    ],
+    filename: "communications",
+  });
+
   // ─── Local State ─────────────────────────────────────────
   const [noteText, setNoteText] = useState("");
 
@@ -484,6 +499,10 @@ export default function CommunicationsAdmin() {
                   {selectedIds.size} {isAr ? "محدد" : "selected"}
                 </span>
                 <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={() => exportMessages(filteredMessages.filter(m => selectedIds.has(m.id)))}>
+                    <Download className="me-1 h-3.5 w-3.5" />
+                    {isAr ? "تصدير" : "Export"}
+                  </Button>
                   <Button variant="outline" size="sm" onClick={() => bulkMarkReadMutation.mutate()}>
                     <Eye className="me-1 h-3.5 w-3.5" />
                     {isAr ? "قراءة" : "Mark Read"}

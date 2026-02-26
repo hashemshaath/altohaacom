@@ -19,6 +19,10 @@ import {
   BookOpen, Plus, Edit, Trash2, Users, Eye, EyeOff,
   GraduationCap, ChevronDown, ChevronUp, Save, X, ArrowLeft, MapPin,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { format } from "date-fns";
 import { ModuleLessonManager } from "@/components/masterclass/ModuleLessonManager";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -49,6 +53,8 @@ export default function MasterclassesAdmin() {
     status: "draft",
     country_code: "",
   });
+
+  const isAr = language === "ar";
 
   const { data: masterclasses = [], isLoading } = useQuery({
     queryKey: ["admin-masterclasses"],
@@ -113,6 +119,32 @@ export default function MasterclassesAdmin() {
       category: "general", level: "beginner", is_free: true, price: 0,
       duration_hours: 0, is_self_paced: true, status: "draft", country_code: "",
     });
+  };
+
+  const bulk = useAdminBulkActions(masterclasses);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "التصنيف" : "Category", accessor: (r: any) => r.category },
+      { header: isAr ? "المستوى" : "Level", accessor: (r: any) => r.level },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "المدة" : "Duration", accessor: (r: any) => r.duration_hours },
+      { header: isAr ? "المسجلين" : "Enrollments", accessor: (r: any) => r.masterclass_enrollments?.length || 0 },
+    ],
+    filename: "masterclasses",
+  });
+
+  const bulkDelete = async () => {
+    const ids = [...bulk.selected];
+    for (const id of ids) await deleteMutation.mutateAsync(id);
+    bulk.clearSelection();
+  };
+
+  const bulkPublish = async () => {
+    const ids = [...bulk.selected];
+    for (const id of ids) await updateStatusMutation.mutateAsync({ id, status: "published" });
+    bulk.clearSelection();
   };
 
   const getStatusBadge = (status: string) => {
@@ -250,6 +282,14 @@ export default function MasterclassesAdmin() {
         </Card>
       )}
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.selectedItems)}
+        onDelete={bulkDelete}
+        onStatusChange={() => bulkPublish()}
+      />
+
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
         {[
@@ -292,6 +332,9 @@ export default function MasterclassesAdmin() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-8">
+                    <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                  </TableHead>
                   <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                   <TableHead>{language === "ar" ? "المستوى" : "Level"}</TableHead>
                   <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
@@ -303,7 +346,10 @@ export default function MasterclassesAdmin() {
               </TableHeader>
               <TableBody>
                 {masterclasses.map((mc: any) => (
-                  <TableRow key={mc.id}>
+                  <TableRow key={mc.id} className={bulk.isSelected(mc.id) ? "bg-primary/5" : ""}>
+                    <TableCell>
+                      <Checkbox checked={bulk.isSelected(mc.id)} onCheckedChange={() => bulk.toggleOne(mc.id)} />
+                    </TableCell>
                     <TableCell>
                       <div>
                         <p className="font-medium">{mc.title}</p>
