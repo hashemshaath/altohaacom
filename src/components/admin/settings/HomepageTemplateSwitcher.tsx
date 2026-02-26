@@ -20,10 +20,10 @@ const TEMPLATES = [
   },
   {
     id: "v2",
-    nameEn: "Bold Magazine",
-    nameAr: "مجلة جريئة",
-    descEn: "Editorial layout with full-bleed hero, trending grid, chef spotlight, and story-driven articles.",
-    descAr: "تصميم تحريري مع بطل كامل وشبكة رائجة وأضواء على الطهاة ومقالات قصصية.",
+    nameEn: "Immersive Visual",
+    nameAr: "تجربة بصرية غامرة",
+    descEn: "Cinematic full-bleed hero with parallax, dramatic scroll reveals, dark event showcase, and immersive CTA.",
+    descAr: "بطل سينمائي كامل مع تأثير المنظر، كشف درامي عند التمرير، عرض أحداث داكن، ودعوة غامرة.",
     icon: Newspaper,
   },
 ];
