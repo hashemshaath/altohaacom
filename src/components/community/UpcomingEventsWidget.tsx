@@ -20,7 +20,6 @@ export function UpcomingEventsWidget() {
         .from("exhibitions")
         .select("id, title, title_ar, slug, start_date, end_date, city, country, cover_image_url, status")
         .eq("status", "active")
-        .eq("is_cancelled", false)
         .gte("start_date", now)
         .order("start_date", { ascending: true })
         .limit(3);

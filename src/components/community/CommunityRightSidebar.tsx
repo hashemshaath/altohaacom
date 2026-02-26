@@ -88,10 +88,10 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, is_verified, professional_title")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, is_verified, specialization")
         .eq("account_status", "active")
         .neq("user_id", user?.id || "")
-        .order("view_count", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(5);
       return data || [];
     },
@@ -182,7 +182,7 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
                         )}
                       </p>
                       <p className="text-[10px] text-muted-foreground truncate">
-                        {profile.professional_title || (isAr ? "طاهٍ" : "Chef")}
+                        {profile.specialization || (isAr ? "طاهٍ" : "Chef")}
                       </p>
                     </div>
                     <Button variant="outline" size="sm" className="h-7 text-[10px] rounded-full px-3">

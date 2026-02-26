@@ -55,8 +55,8 @@ export function CommunitySearch() {
       const searches = await Promise.all([
         // Users
         (activeFilter === "all" || activeFilter === "users") ?
-          supabase.from("profiles").select("user_id, full_name, username, avatar_url, professional_title")
-            .or(`full_name.ilike.${pattern},username.ilike.${pattern}`)
+          supabase.from("profiles").select("user_id, full_name, display_name, display_name_ar, username, avatar_url, specialization")
+            .or(`full_name.ilike.${pattern},username.ilike.${pattern},display_name.ilike.${pattern}`)
             .eq("account_status", "active").limit(5) : { data: [] },
         // Posts
         (activeFilter === "all" || activeFilter === "posts") ?
@@ -78,8 +78,8 @@ export function CommunitySearch() {
 
       (usersRes.data || []).forEach((u: any) => all.push({
         type: "user", id: u.user_id,
-        title: u.full_name || u.username || "Chef",
-        subtitle: u.professional_title || (u.username ? `@${u.username}` : undefined),
+        title: (isAr ? (u.display_name_ar || u.display_name) : u.display_name) || u.full_name || u.username || "Chef",
+        subtitle: u.specialization || (u.username ? `@${u.username}` : undefined),
         avatar: u.avatar_url,
       }));
 

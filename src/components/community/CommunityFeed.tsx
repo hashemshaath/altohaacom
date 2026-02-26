@@ -100,7 +100,7 @@ export function CommunityFeed() {
     const postIds = postsData.map((p) => p.id);
 
     const [profilesRes, likesRes, commentsRes, repliesRes, userLikesRes, userBookmarksRes, userRepostsRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name, username, specialization, avatar_url").in("user_id", authorIds),
+      supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, specialization, avatar_url").in("user_id", authorIds),
       supabase.from("post_likes").select("post_id").in("post_id", postIds),
       supabase.from("post_comments").select("post_id").in("post_id", postIds),
       supabase.from("posts").select("reply_to_post_id").in("reply_to_post_id", postIds),
@@ -136,7 +136,7 @@ export function CommunityFeed() {
         edited_at: p.edited_at || null,
         author_id: p.author_id,
         author_avatar: profile?.avatar_url || null,
-        author_name: profile?.full_name || null,
+        author_name: profile?.display_name || profile?.full_name || null,
         author_username: profile?.username || null,
         author_specialization: profile?.specialization || null,
         visibility: p.visibility || "public",
