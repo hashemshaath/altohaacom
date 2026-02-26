@@ -18,7 +18,7 @@ import { Scale, CheckCircle2, ClipboardList, Briefcase, MapPin, Crown, MoreVerti
 import { Link } from "react-router-dom";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface JudgesListProps {
   competitionId: string;
@@ -40,7 +40,7 @@ interface JudgeProfile {
   culinary_specialties: string[] | null;
 }
 
-export function JudgesList({ competitionId, isOrganizer = false }: JudgesListProps) {
+export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(function JudgesList({ competitionId, isOrganizer = false }, ref) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { data: isAdmin } = useIsAdmin();
@@ -213,7 +213,7 @@ export function JudgesList({ competitionId, isOrganizer = false }: JudgesListPro
 
   return (
     <>
-      <Card className="overflow-hidden">
+      <Card ref={ref} className="overflow-hidden">
         <div className="border-b bg-muted/30 px-4 py-3">
           <h3 className="flex items-center gap-2 font-semibold text-sm">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-4/10">
@@ -426,4 +426,4 @@ export function JudgesList({ competitionId, isOrganizer = false }: JudgesListPro
       </AlertDialog>
     </>
   );
-}
+});
