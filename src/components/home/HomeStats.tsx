@@ -6,13 +6,16 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 import { cn } from "@/lib/utils";
 
-function StatItem({ value, label, icon: Icon, color, isVisible, delay }: {
+import { forwardRef } from "react";
+
+const StatItem = forwardRef<HTMLDivElement, {
   value: number; label: string; icon: any; color: string; isVisible: boolean; delay: number;
-}) {
+}>(function StatItem({ value, label, icon: Icon, color, isVisible, delay }, ref) {
   const count = useCountUp(value, isVisible);
 
   return (
     <div
+      ref={ref}
       className={cn(
         "flex items-center gap-3 sm:flex-col sm:items-center sm:gap-2 px-3 py-2 sm:py-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -30,7 +33,7 @@ function StatItem({ value, label, icon: Icon, color, isVisible, delay }: {
       </div>
     </div>
   );
-}
+});
 
 export function HomeStats() {
   const { language } = useLanguage();
