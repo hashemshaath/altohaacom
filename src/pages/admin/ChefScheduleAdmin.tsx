@@ -27,6 +27,9 @@ import {
 import ChefScheduleEventForm from "@/components/admin/chef-schedule/ChefScheduleEventForm";
 import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminScheduleCalendar";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
@@ -50,8 +53,7 @@ export default function ChefScheduleAdmin() {
   const [editingEvent, setEditingEvent] = useState<ChefScheduleEvent | null>(null);
   const [defaultDate, setDefaultDate] = useState<string>("");
 
-  // Bulk selection
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  // Bulk selection — will be initialized after filtered is computed
 
   const { data: allEvents = [], isLoading } = useChefScheduleEvents();
   const updateEvent = useUpdateScheduleEvent();
@@ -78,6 +80,23 @@ export default function ChefScheduleAdmin() {
     return true;
   }), [allEvents, typeFilter, statusFilter, visFilter, search]);
 
+  const bulk = useAdminBulkActions(filtered);
+
+  const { exportCSV: exportScheduleCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الشيف" : "Chef", accessor: (r: any) => profileMap[r.chef_id]?.full_name || "" },
+      { header: isAr ? "النوع" : "Type", accessor: (r: any) => EVENT_TYPE_CONFIG[r.event_type as ScheduleEventType]?.en || r.event_type },
+      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => r.title },
+      { header: isAr ? "تاريخ البدء" : "Start Date", accessor: (r: any) => r.start_date },
+      { header: isAr ? "تاريخ الانتهاء" : "End Date", accessor: (r: any) => r.end_date },
+      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "الظهور" : "Visibility", accessor: (r: any) => r.visibility },
+      { header: isAr ? "الرسوم" : "Fee", accessor: (r: any) => r.fee_amount || "" },
+    ],
+    filename: "chef-schedule",
+  });
+
   const stats = {
     total: allEvents.length,
     confirmed: allEvents.filter(e => e.status === "confirmed").length,
@@ -103,7 +122,6 @@ export default function ChefScheduleAdmin() {
   const handleDelete = async (id: string) => {
     try {
       await deleteEvent.mutateAsync(id);
-      setSelectedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     } catch { toast.error(isAr ? "خطأ" : "Error"); }
   };
@@ -131,66 +149,22 @@ export default function ChefScheduleAdmin() {
     setDefaultDate("");
   };
 
-  // Bulk actions
-  const toggleSelect = (id: string) => {
-    setSelectedIds(prev => {
-      const n = new Set(prev);
-      n.has(id) ? n.delete(id) : n.add(id);
-      return n;
-    });
-  };
-
-  const toggleAll = () => {
-    if (selectedIds.size === filtered.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(filtered.map(e => e.id)));
-    }
-  };
-
   const bulkUpdateStatus = async (status: string) => {
     try {
-      await Promise.all(Array.from(selectedIds).map(id => updateEvent.mutateAsync({ id, status: status as any })));
-      toast.success(isAr ? `تم تحديث ${selectedIds.size} حدث` : `Updated ${selectedIds.size} events`);
-      setSelectedIds(new Set());
+      await Promise.all([...bulk.selected].map(id => updateEvent.mutateAsync({ id, status: status as any })));
+      toast.success(isAr ? `تم تحديث ${bulk.count} حدث` : `Updated ${bulk.count} events`);
+      bulk.clearSelection();
     } catch { toast.error(isAr ? "خطأ" : "Error"); }
   };
 
   const bulkDelete = async () => {
     try {
-      await Promise.all(Array.from(selectedIds).map(id => deleteEvent.mutateAsync(id)));
-      toast.success(isAr ? `تم حذف ${selectedIds.size} حدث` : `Deleted ${selectedIds.size} events`);
-      setSelectedIds(new Set());
+      await Promise.all([...bulk.selected].map(id => deleteEvent.mutateAsync(id)));
+      toast.success(isAr ? `تم حذف ${bulk.count} حدث` : `Deleted ${bulk.count} events`);
+      bulk.clearSelection();
     } catch { toast.error(isAr ? "خطأ" : "Error"); }
   };
 
-  const exportCSV = () => {
-    const headers = ["Chef", "Type", "Title", "Start Date", "End Date", "City", "Country", "Venue", "Status", "Visibility", "Contracted", "Fee", "Currency"];
-    const rows = filtered.map(ev => [
-      profileMap[ev.chef_id]?.full_name || "",
-      EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType]?.en || ev.event_type,
-      ev.title,
-      ev.start_date,
-      ev.end_date,
-      ev.city || "",
-      ev.country_code || "",
-      ev.venue || "",
-      ev.status,
-      ev.visibility,
-      ev.is_contracted ? "Yes" : "No",
-      ev.fee_amount || "",
-      ev.fee_currency || "",
-    ]);
-    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `chef-schedule-${format(new Date(), "yyyy-MM-dd")}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(isAr ? "تم التصدير" : "Exported");
-  };
 
   return (
     <div className="space-y-6">
@@ -200,7 +174,7 @@ export default function ChefScheduleAdmin() {
         description={isAr ? "عرض وإدارة جداول جميع الطهاة والفعاليات" : "View and manage all chef schedules and events"}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportScheduleCSV(filtered)} className="gap-1.5">
               <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
             </Button>
             <Button size="sm" onClick={handleAddNew} className="gap-1.5">
@@ -287,22 +261,17 @@ export default function ChefScheduleAdmin() {
             </Select>
           </div>
 
-          {/* Bulk Actions Bar */}
-          {selectedIds.size > 0 && (
-            <div className="flex items-center gap-2 p-2.5 rounded-lg border border-primary/20 bg-primary/5">
-              <span className="text-xs font-medium">{selectedIds.size} {isAr ? "محدد" : "selected"}</span>
-              <div className="flex-1" />
-              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("confirmed")}>
-                <CheckCircle className="h-3 w-3" />{isAr ? "تأكيد الكل" : "Confirm All"}
-              </Button>
-              <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("cancelled")}>
-                <Ban className="h-3 w-3" />{isAr ? "إلغاء الكل" : "Cancel All"}
-              </Button>
-              <Button variant="destructive" size="sm" className="h-7 text-xs gap-1" onClick={bulkDelete}>
-                <Trash2 className="h-3 w-3" />{isAr ? "حذف" : "Delete"}
-              </Button>
-            </div>
-          )}
+          <BulkActionBar
+            count={bulk.count}
+            onClear={bulk.clearSelection}
+            onDelete={bulkDelete}
+            onStatusChange={() => bulkUpdateStatus("confirmed")}
+            onExport={() => exportScheduleCSV(bulk.selectedItems)}
+          >
+            <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("cancelled")}>
+              <Ban className="h-3 w-3" />{isAr ? "إلغاء الكل" : "Cancel All"}
+            </Button>
+          </BulkActionBar>
 
           {/* Events Table */}
           <Card className="border-border/40 overflow-hidden">
@@ -311,8 +280,8 @@ export default function ChefScheduleAdmin() {
                 <TableRow>
                   <TableHead className="w-8">
                     <Checkbox
-                      checked={filtered.length > 0 && selectedIds.size === filtered.length}
-                      onCheckedChange={toggleAll}
+                      checked={bulk.isAllSelected}
+                      onCheckedChange={bulk.toggleAll}
                     />
                   </TableHead>
                   <TableHead className="text-xs">{isAr ? "الشيف" : "Chef"}</TableHead>
@@ -342,8 +311,8 @@ export default function ChefScheduleAdmin() {
                       <TableRow key={ev.id} className={ev.status === "cancelled" ? "opacity-50" : ""}>
                         <TableCell>
                           <Checkbox
-                            checked={selectedIds.has(ev.id)}
-                            onCheckedChange={() => toggleSelect(ev.id)}
+                            checked={bulk.isSelected(ev.id)}
+                            onCheckedChange={() => bulk.toggleOne(ev.id)}
                           />
                         </TableCell>
                         <TableCell className="text-xs font-medium">{isAr && chef?.full_name_ar ? chef.full_name_ar : chef?.full_name || "—"}</TableCell>
