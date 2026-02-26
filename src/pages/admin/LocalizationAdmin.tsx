@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -21,6 +22,9 @@ import {
   Copy, Eye, X
 } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 // ─── Types ───
 interface TranslationKey {
@@ -76,7 +80,7 @@ export default function LocalizationAdmin() {
   const [newKey, setNewKey] = useState({ key: "", namespace: "common", en: "", ar: "", context: "" });
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [importText, setImportText] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+  
 
   // ─── Queries ───
   const { data: translations = [], isLoading: loadingTranslations } = useQuery({
@@ -157,7 +161,7 @@ export default function LocalizationAdmin() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
-      setSelectedKeys(new Set());
+      bulk.clearSelection();
       toast({ title: isAr ? "تم الحذف" : "Deleted", description: isAr ? "تم حذف المفاتيح المحددة" : "Selected keys deleted" });
     },
   });
@@ -341,24 +345,25 @@ export default function LocalizationAdmin() {
     });
   }, [translations, search, nsFilter, statusFilter]);
 
+  const bulk = useAdminBulkActions(filteredTranslations);
+
+  const { exportCSV: exportTranslationsCSV } = useCSVExport({
+    columns: [
+      { header: "Namespace", accessor: (r: TranslationKey) => r.namespace },
+      { header: "Key", accessor: (r: TranslationKey) => r.key },
+      { header: "English", accessor: (r: TranslationKey) => r.en },
+      { header: isAr ? "عربي" : "Arabic", accessor: (r: TranslationKey) => r.ar },
+      { header: isAr ? "موثق" : "Verified", accessor: (r: TranslationKey) => r.is_verified ? "Yes" : "No" },
+      { header: isAr ? "السياق" : "Context", accessor: (r: TranslationKey) => r.context || "" },
+    ],
+    filename: "translations",
+  });
+
   const startEditing = (t: TranslationKey) => {
     setEditingId(t.id);
     setEditValues({ en: t.en, ar: t.ar, context: t.context || "" });
   };
 
-  const toggleSelectAll = () => {
-    if (selectedKeys.size === filteredTranslations.length) {
-      setSelectedKeys(new Set());
-    } else {
-      setSelectedKeys(new Set(filteredTranslations.map(t => t.id)));
-    }
-  };
-
-  const toggleSelect = (id: string) => {
-    const next = new Set(selectedKeys);
-    next.has(id) ? next.delete(id) : next.add(id);
-    setSelectedKeys(next);
-  };
 
   return (
     <div className="space-y-6">
@@ -483,17 +488,12 @@ export default function LocalizationAdmin() {
                 ? (isAr ? "جاري الترجمة..." : "Translating...")
                 : (isAr ? "ترجمة الكل تلقائياً" : "Auto-translate All")}
             </Button>
-            {selectedKeys.size > 0 && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => bulkDeleteMutation.mutate([...selectedKeys])}
-                disabled={bulkDeleteMutation.isPending}
-              >
-                <Trash2 className="h-4 w-4 me-1" />
-                {isAr ? `حذف (${selectedKeys.size})` : `Delete (${selectedKeys.size})`}
-              </Button>
-            )}
+            <BulkActionBar
+              count={bulk.count}
+              onClear={bulk.clearSelection}
+              onDelete={() => bulkDeleteMutation.mutate([...bulk.selected])}
+              onExport={() => exportTranslationsCSV(bulk.selectedItems)}
+            />
           </div>
 
           {/* Table */}
@@ -504,11 +504,9 @@ export default function LocalizationAdmin() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-10">
-                        <input
-                          type="checkbox"
-                          checked={selectedKeys.size === filteredTranslations.length && filteredTranslations.length > 0}
-                          onChange={toggleSelectAll}
-                          className="rounded border-border"
+                        <Checkbox
+                          checked={bulk.isAllSelected}
+                          onCheckedChange={bulk.toggleAll}
                         />
                       </TableHead>
                       <TableHead className="w-[100px]">{isAr ? "القسم" : "Namespace"}</TableHead>
@@ -543,11 +541,9 @@ export default function LocalizationAdmin() {
                       filteredTranslations.map(t => (
                         <TableRow key={t.id}>
                           <TableCell>
-                            <input
-                              type="checkbox"
-                              checked={selectedKeys.has(t.id)}
-                              onChange={() => toggleSelect(t.id)}
-                              className="rounded border-border"
+                            <Checkbox
+                              checked={bulk.isSelected(t.id)}
+                              onCheckedChange={() => bulk.toggleOne(t.id)}
                             />
                           </TableCell>
                           <TableCell>

@@ -20,6 +20,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import {
   Globe, Plus, Edit, Trash2, Search, CheckCircle, XCircle,
   MapPin, Star, Save, X, ChevronRight,
@@ -121,7 +124,7 @@ export default function CountriesAdmin() {
   const [form, setForm] = useState(defaultForm);
   const [activeTab, setActiveTab] = useState("overview");
   const [formTab, setFormTab] = useState("basic");
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  
   const [deleteTarget, setDeleteTarget] = useState<Country | null>(null);
   const [detailCountry, setDetailCountry] = useState<Country | null>(null);
   const [sortField, setSortField] = useState<SortField>("sort_order");
@@ -166,6 +169,23 @@ export default function CountriesAdmin() {
     });
     return list;
   }, [countries, searchQuery, regionFilter, statusFilter, continentFilter, sortField, sortAsc]);
+
+  const bulk = useAdminBulkActions(filtered);
+
+  const { exportCSV: exportCountriesCSV } = useCSVExport({
+    columns: [
+      { header: "Code", accessor: (r: Country) => r.code.trim() },
+      { header: isAr ? "الاسم" : "Name", accessor: (r: Country) => r.name },
+      { header: isAr ? "الاسم (عربي)" : "Name (AR)", accessor: (r: Country) => r.name_ar || "" },
+      { header: isAr ? "المنطقة" : "Region", accessor: (r: Country) => r.region || "" },
+      { header: isAr ? "القارة" : "Continent", accessor: (r: Country) => r.continent || "" },
+      { header: isAr ? "العملة" : "Currency", accessor: (r: Country) => `${r.currency_code.trim()} (${r.currency_symbol})` },
+      { header: isAr ? "كود الهاتف" : "Phone Code", accessor: (r: Country) => r.phone_code || "" },
+      { header: isAr ? "الضريبة" : "Tax Rate", accessor: (r: Country) => r.tax_rate || 0 },
+      { header: isAr ? "نشط" : "Active", accessor: (r: Country) => r.is_active ? "Yes" : "No" },
+    ],
+    filename: "countries",
+  });
 
   const logAudit = async (code: string, action: string, summary: string, summaryAr: string, changes?: Record<string, { old: unknown; new: unknown }>) => {
     await supabase.from("country_audit_log").insert([{
@@ -274,13 +294,13 @@ export default function CountriesAdmin() {
 
   const bulkToggleMutation = useMutation({
     mutationFn: async (active: boolean) => {
-      const ids = Array.from(selectedIds);
+      const ids = [...bulk.selected];
       const { error } = await supabase.from("countries").update({ is_active: active }).in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-countries"] });
-      setSelectedIds(new Set());
+      bulk.clearSelection();
       toast({ title: isAr ? "تم التحديث" : "Updated" });
     },
   });
@@ -350,33 +370,6 @@ export default function CountriesAdmin() {
     else { setSortField(field); setSortAsc(true); }
   };
 
-  const toggleSelectAll = () => {
-    if (selectedIds.size === filtered.length) setSelectedIds(new Set());
-    else setSelectedIds(new Set(filtered.map(c => c.id)));
-  };
-
-  const toggleSelect = (id: string) => {
-    const next = new Set(selectedIds);
-    if (next.has(id)) next.delete(id); else next.add(id);
-    setSelectedIds(next);
-  };
-
-  const exportCSV = () => {
-    const headers = ["Code", "Name", "Name (AR)", "Region", "Continent", "Currency", "Phone Code", "Tax Rate", "Active", "Featured", "Languages", "Timezone"];
-    const rows = filtered.map(c => [
-      c.code.trim(), c.name, c.name_ar || "", c.region || "", c.continent || "",
-      `${c.currency_code.trim()} (${c.currency_symbol})`, c.phone_code || "",
-      c.tax_rate || 0, c.is_active ? "Yes" : "No", c.is_featured ? "Yes" : "No",
-      (c.supported_languages || []).join("; "), c.timezone,
-    ]);
-    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(",")).join("\n");
-    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `countries-export-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click(); URL.revokeObjectURL(url);
-    toast({ title: isAr ? "تم تصدير البيانات" : "Data exported" });
-  };
 
   const stats = {
     total: countries.length,
@@ -416,7 +409,7 @@ export default function CountriesAdmin() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={exportCSV}>
+                  <Button variant="outline" size="icon" onClick={() => exportCountriesCSV(filtered)}>
                     <Download className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -492,29 +485,17 @@ export default function CountriesAdmin() {
 
         {/* All Countries */}
         <TabsContent value="countries" className="space-y-4">
-          {/* Bulk Actions Bar */}
-          {selectedIds.size > 0 && (
-            <Card className="border-primary/30 bg-primary/5">
-              <CardContent className="py-3 flex items-center justify-between flex-wrap gap-2">
-                <p className="text-sm font-medium">
-                  {selectedIds.size} {isAr ? "محدد" : "selected"}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(true)} disabled={bulkToggleMutation.isPending}>
-                    <Eye className="h-3.5 w-3.5 me-1.5" />
-                    {isAr ? "تفعيل" : "Activate"}
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)} disabled={bulkToggleMutation.isPending}>
-                    <EyeOff className="h-3.5 w-3.5 me-1.5" />
-                    {isAr ? "إلغاء التفعيل" : "Deactivate"}
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
-                    <X className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <BulkActionBar
+            count={bulk.count}
+            onClear={bulk.clearSelection}
+            onStatusChange={() => bulkToggleMutation.mutate(true)}
+            onExport={() => exportCountriesCSV(bulk.selectedItems)}
+          >
+            <Button variant="outline" size="sm" onClick={() => bulkToggleMutation.mutate(false)} disabled={bulkToggleMutation.isPending}>
+              <EyeOff className="h-3.5 w-3.5 me-1.5" />
+              {isAr ? "إلغاء التفعيل" : "Deactivate"}
+            </Button>
+          </BulkActionBar>
 
           <Card>
             <CardHeader className="pb-3">
@@ -574,8 +555,8 @@ export default function CountriesAdmin() {
                     <TableRow>
                       <TableHead className="w-[40px]">
                         <Checkbox
-                          checked={selectedIds.size === filtered.length && filtered.length > 0}
-                          onCheckedChange={toggleSelectAll}
+                          checked={bulk.isAllSelected}
+                          onCheckedChange={bulk.toggleAll}
                         />
                       </TableHead>
                       <TableHead className="w-[40px]"></TableHead>
@@ -593,7 +574,7 @@ export default function CountriesAdmin() {
                     {filtered.map(c => (
                       <TableRow key={c.id} className={`${!c.is_active ? "opacity-60" : ""} ${detailCountry?.id === c.id ? "bg-primary/5" : ""}`}>
                         <TableCell>
-                          <Checkbox checked={selectedIds.has(c.id)} onCheckedChange={() => toggleSelect(c.id)} />
+                          <Checkbox checked={bulk.isSelected(c.id)} onCheckedChange={() => bulk.toggleOne(c.id)} />
                         </TableCell>
                         <TableCell className="text-xl">{c.flag_emoji || "🏳️"}</TableCell>
                         <TableCell>
