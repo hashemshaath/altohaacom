@@ -1,3 +1,4 @@
+import React, { forwardRef } from "react";
 import { type LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
@@ -9,14 +10,14 @@ interface AdminPageHeaderProps {
   actions?: React.ReactNode;
 }
 
-export default function AdminPageHeader({
+const AdminPageHeader = forwardRef<HTMLDivElement, AdminPageHeaderProps>(function AdminPageHeader({
   icon: Icon,
   title,
   description,
   actions,
-}: AdminPageHeaderProps) {
+}, ref) {
   return (
-    <Card className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+    <Card ref={ref} className="overflow-hidden border-border/50 bg-gradient-to-br from-primary/5 via-background to-accent/5">
       <div className="flex items-center justify-between p-5 md:p-6">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
@@ -31,4 +32,6 @@ export default function AdminPageHeader({
       </div>
     </Card>
   );
-}
+});
+
+export default AdminPageHeader;
