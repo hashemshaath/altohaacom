@@ -88,7 +88,7 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, full_name, username, avatar_url, is_verified, professional_title")
+        .select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, is_verified, professional_title")
         .eq("account_status", "active")
         .neq("user_id", user?.id || "")
         .order("view_count", { ascending: false })
@@ -174,7 +174,9 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate flex items-center gap-1">
-                        {profile.full_name || profile.username}
+                        {isAr
+                          ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || profile.username)
+                          : (profile.display_name || profile.full_name || profile.username)}
                         {profile.is_verified && (
                           <Badge variant="secondary" className="h-3.5 w-3.5 p-0 rounded-full bg-primary/10 text-primary text-[8px]">✓</Badge>
                         )}
