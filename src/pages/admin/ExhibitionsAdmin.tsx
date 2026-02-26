@@ -28,6 +28,9 @@ import { ExhibitionDocumentsPanel } from "@/components/admin/ExhibitionDocuments
 import { format } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 import type { Database } from "@/integrations/supabase/types";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -147,6 +150,38 @@ export default function ExhibitionsAdmin() {
     const matchesSeries = seriesFilter === "all" || (seriesFilter === "none" ? !(ex as any).series_id : (ex as any).series_id === seriesFilter);
     return matchesSearch && matchesStatus && matchesType && matchesYear && matchesCity && matchesOrganizer && matchesSeries;
   });
+
+  const bulk = useAdminBulkActions(filteredExhibitions || []);
+
+  const { exportCSV: exportExhibitions } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.type },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.start_date ? format(new Date(r.start_date), "yyyy-MM-dd") : "" },
+      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
+      { header: isAr ? "المنظم" : "Organizer", accessor: (r: any) => r.organizer_name || "" },
+    ],
+    filename: "exhibitions",
+  });
+
+  const bulkStatusChange = async (status: string) => {
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("exhibitions").update({ status: status as any }).in("id", ids);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
+    bulk.clearSelection();
+    toast({ title: isAr ? `تم تحديث ${ids.length} فعالية` : `${ids.length} updated` });
+  };
+
+  const bulkDelete = async () => {
+    const ids = [...bulk.selected];
+    const { error } = await supabase.from("exhibitions").delete().in("id", ids);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
+    bulk.clearSelection();
+    toast({ title: isAr ? `تم حذف ${ids.length} فعالية` : `${ids.length} deleted` });
+  };
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -948,12 +983,23 @@ export default function ExhibitionsAdmin() {
         </Select>
       </div>
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportExhibitions(bulk.selectedItems)}
+        onDelete={bulkDelete}
+        onStatusChange={bulkStatusChange}
+      />
+
       {/* Table */}
       <Card className="border-border/60 overflow-hidden">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
+                <TableHead className="w-10">
+                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                </TableHead>
                 <TableHead className="font-semibold">{t("Event", "الفعالية")}</TableHead>
                 <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
                 <TableHead className="font-semibold">{t("Type", "النوع")}</TableHead>
@@ -966,14 +1012,14 @@ export default function ExhibitionsAdmin() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12">
+                  <TableCell colSpan={8} className="text-center py-12">
                     <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
                     <p className="text-sm text-muted-foreground mt-2">{t("Loading events...", "جاري تحميل الفعاليات...")}</p>
                   </TableCell>
                 </TableRow>
               ) : filteredExhibitions?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-12">
+                  <TableCell colSpan={8} className="text-center py-12">
                     <Landmark className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
                     <p className="text-sm text-muted-foreground">{t("No events found", "لا توجد فعاليات")}</p>
                   </TableCell>
@@ -982,7 +1028,10 @@ export default function ExhibitionsAdmin() {
                 filteredExhibitions?.map((ex) => {
                   const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
                   return (
-                  <TableRow key={ex.id} className="group hover:bg-muted/20 transition-colors duration-150">
+                  <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`}>
+                    <TableCell onClick={e => e.stopPropagation()}>
+                      <Checkbox checked={bulk.isSelected(ex.id)} onCheckedChange={() => bulk.toggleOne(ex.id)} />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {ex.cover_image_url && (
