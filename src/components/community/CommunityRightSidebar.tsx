@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { ActivitySidebar } from "./ActivitySidebar";
 import { CommunitySearch } from "./CommunitySearch";
+import { UpcomingEventsWidget } from "./UpcomingEventsWidget";
 import {
   TrendingUp, Hash, UserPlus, Sparkles,
   PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen,
@@ -144,6 +145,9 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
               ))}
             </div>
           </div>
+
+          {/* Upcoming Events */}
+          <UpcomingEventsWidget />
 
           {/* Activity Feed */}
           <ActivitySidebar />
