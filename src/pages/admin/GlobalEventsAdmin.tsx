@@ -20,6 +20,9 @@ import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { downloadCSV } from "@/lib/exportUtils";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Globe, Plus, Search, Edit2, Trash2, Save, X, Calendar, MapPin,
@@ -55,7 +58,6 @@ export default function GlobalEventsAdmin() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [editing, setEditing] = useState<Partial<GlobalEventRecord> | null>(null);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { data: events = [], isLoading } = useGlobalEvents({ status: statusFilter });
   const createEvent = useCreateGlobalEvent();
@@ -68,6 +70,8 @@ export default function GlobalEventsAdmin() {
     const q = search.toLowerCase();
     return ev.title?.toLowerCase().includes(q) || ev.title_ar?.toLowerCase().includes(q) || ev.city?.toLowerCase().includes(q);
   }), [events, typeFilter, search]);
+
+  const bulk = useAdminBulkActions(filtered);
 
   const handleSave = async () => {
     if (!editing?.title || !editing?.start_date) {
@@ -91,7 +95,6 @@ export default function GlobalEventsAdmin() {
   const handleDelete = async (id: string) => {
     try {
       await deleteEvent.mutateAsync(id);
-      setSelectedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     } catch {
       toast.error(isAr ? "خطأ" : "Error");
@@ -115,57 +118,34 @@ export default function GlobalEventsAdmin() {
   };
 
   // Bulk actions
-  const toggleSelect = (id: string) => {
-    setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
-  };
-  const toggleAll = () => {
-    setSelectedIds(prev => prev.size === filtered.length ? new Set() : new Set(filtered.map(e => e.id)));
-  };
   const bulkUpdateStatus = async (status: string) => {
     try {
-      await Promise.all(Array.from(selectedIds).map(id => updateEvent.mutateAsync({ id, status } as any)));
-      toast.success(isAr ? `تم تحديث ${selectedIds.size} فعالية` : `Updated ${selectedIds.size} events`);
-      setSelectedIds(new Set());
+      await Promise.all(Array.from(bulk.selected).map(id => updateEvent.mutateAsync({ id, status } as any)));
+      toast.success(isAr ? `تم تحديث ${bulk.count} فعالية` : `Updated ${bulk.count} events`);
+      bulk.clearSelection();
     } catch { toast.error(isAr ? "خطأ" : "Error"); }
   };
   const bulkDelete = async () => {
     try {
-      await Promise.all(Array.from(selectedIds).map(id => deleteEvent.mutateAsync(id)));
-      toast.success(isAr ? `تم حذف ${selectedIds.size} فعالية` : `Deleted ${selectedIds.size} events`);
-      setSelectedIds(new Set());
+      await Promise.all(Array.from(bulk.selected).map(id => deleteEvent.mutateAsync(id)));
+      toast.success(isAr ? `تم حذف ${bulk.count} فعالية` : `Deleted ${bulk.count} events`);
+      bulk.clearSelection();
     } catch { toast.error(isAr ? "خطأ" : "Error"); }
   };
 
-  const exportEvents = () => {
-    downloadCSV(filtered.map(ev => ({
-      type: GLOBAL_EVENT_LABELS[ev.type as GlobalEventType]?.en || ev.type,
-      title: ev.title,
-      title_ar: ev.title_ar || "",
-      start_date: ev.start_date,
-      end_date: ev.end_date || "",
-      city: ev.city || "",
-      country_code: ev.country_code || "",
-      venue: ev.venue || "",
-      organizer: ev.organizer || "",
-      status: ev.status,
-      international: ev.is_international ? "Yes" : "No",
-      recurring: ev.is_recurring ? "Yes" : "No",
-    })), `global-events-${format(new Date(), "yyyy-MM-dd")}`, [
-      { key: "type", label: "Type" },
-      { key: "title", label: "Title" },
-      { key: "title_ar", label: "Title (AR)" },
-      { key: "start_date", label: "Start Date" },
-      { key: "end_date", label: "End Date" },
-      { key: "city", label: "City" },
-      { key: "country_code", label: "Country" },
-      { key: "venue", label: "Venue" },
-      { key: "organizer", label: "Organizer" },
-      { key: "status", label: "Status" },
-      { key: "international", label: "International" },
-      { key: "recurring", label: "Recurring" },
-    ]);
-    toast.success(isAr ? "تم التصدير" : "Exported");
-  };
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "النوع" : "Type", accessor: (r: any) => GLOBAL_EVENT_LABELS[r.type as GlobalEventType]?.en || r.type },
+      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "تاريخ البداية" : "Start Date", accessor: (r: any) => r.start_date },
+      { header: isAr ? "تاريخ النهاية" : "End Date", accessor: (r: any) => r.end_date || "" },
+      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
+      { header: isAr ? "الدولة" : "Country", accessor: (r: any) => r.country_code || "" },
+      { header: isAr ? "المنظم" : "Organizer", accessor: (r: any) => r.organizer || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+    ],
+    filename: "global-events",
+  });
 
   // ─── Inline Edit Form ─────────────────
   if (editing) {
@@ -353,7 +333,7 @@ export default function GlobalEventsAdmin() {
         description={isAr ? "إدارة الفعاليات العالمية والمحلية المتكررة" : "Manage global and local recurring events"}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={exportEvents} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportCSV(filtered)} className="gap-1.5">
               <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export CSV"}
             </Button>
             <Button className="gap-1.5" onClick={openNew}>
@@ -452,22 +432,17 @@ export default function GlobalEventsAdmin() {
         </Select>
       </div>
 
-      {/* Bulk Actions Bar */}
-      {selectedIds.size > 0 && (
-        <div className="flex items-center gap-2 p-2.5 rounded-lg border border-primary/20 bg-primary/5">
-          <span className="text-xs font-medium">{selectedIds.size} {isAr ? "محدد" : "selected"}</span>
-          <div className="flex-1" />
-          <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("active")}>
-            <CheckCircle className="h-3 w-3" />{isAr ? "تنشيط" : "Activate"}
-          </Button>
-          <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("cancelled")}>
-            <Ban className="h-3 w-3" />{isAr ? "إلغاء" : "Cancel"}
-          </Button>
-          <Button variant="destructive" size="sm" className="h-7 text-xs gap-1" onClick={bulkDelete}>
-            <Trash2 className="h-3 w-3" />{isAr ? "حذف" : "Delete"}
-          </Button>
-        </div>
-      )}
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.selectedItems)}
+        onDelete={bulkDelete}
+        onStatusChange={() => bulkUpdateStatus("active")}
+      >
+        <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => bulkUpdateStatus("cancelled")}>
+          <Ban className="h-3 w-3" />{isAr ? "إلغاء" : "Cancel"}
+        </Button>
+      </BulkActionBar>
 
       {/* Table */}
       <Card className="border-border/40 overflow-hidden">
@@ -476,8 +451,8 @@ export default function GlobalEventsAdmin() {
             <TableRow>
               <TableHead className="w-8">
                 <Checkbox
-                  checked={filtered.length > 0 && selectedIds.size === filtered.length}
-                  onCheckedChange={toggleAll}
+                  checked={bulk.isAllSelected}
+                  onCheckedChange={bulk.toggleAll}
                 />
               </TableHead>
               <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
@@ -501,9 +476,9 @@ export default function GlobalEventsAdmin() {
                 const colors = GLOBAL_EVENT_COLORS[typeKey] || GLOBAL_EVENT_COLORS.other;
                 const IconComp = ICONS[label?.icon] || MoreHorizontal;
                 return (
-                  <TableRow key={ev.id} className={ev.status === "cancelled" ? "opacity-50" : ""}>
+                  <TableRow key={ev.id} className={cn(ev.status === "cancelled" ? "opacity-50" : "", bulk.isSelected(ev.id) && "bg-primary/5")}>
                     <TableCell>
-                      <Checkbox checked={selectedIds.has(ev.id)} onCheckedChange={() => toggleSelect(ev.id)} />
+                      <Checkbox checked={bulk.isSelected(ev.id)} onCheckedChange={() => bulk.toggleOne(ev.id)} />
                     </TableCell>
                     <TableCell>
                       <Badge className={cn("text-[9px] border gap-1", colors.bg, colors.text, colors.border)}>
