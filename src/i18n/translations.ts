@@ -529,10 +529,21 @@ export const translations = {
     judgingPanel: "لوحة التحكيم",
     
     // Notifications
-    notifications: "الإشعارات",
-    markAllRead: "تحديد الكل كمقروء",
-    noNotifications: "لا توجد إشعارات",
-    viewAll: "عرض الكل",
+     notifications: "الإشعارات",
+     notificationPreferences: "تفضيلات الإشعارات",
+     manageNotificationChannels: "اختر الطريقة التي تريد تلقي الإشعارات بها من الطهاة",
+     inApp: "إشعارات داخل التطبيق",
+     inAppDesc: "تلقي الإشعارات داخل منصة الطهاة",
+     smsDesc: "تلقي رسائل نصية للإشعارات العاجلة",
+     whatsappDesc: "تلقي الرسائل عبر واتساب",
+     pushNotifications: "الإشعارات الفورية",
+     pushDesc: "تلقي الإشعارات على أجهزتك",
+     notificationInfo: "حول الإشعارات",
+     notificationInfoDesc: "نحترم تفضيلاتك ولن نرسل لك إشعارات إلا عبر القنوات التي تفعّلها. يمكنك تغيير هذه الإعدادات في أي وقت.",
+     preferencesUpdated: "تم تحديث تفضيلاتك",
+     markAllRead: "تحديد الكل كمقروء",
+     noNotifications: "لا توجد إشعارات",
+     viewAll: "عرض الكل",
     
     // Knowledge Center
     aiAssistant: "المساعد الذكي",
