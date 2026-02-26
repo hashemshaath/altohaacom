@@ -175,67 +175,84 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     }
   };
 
+  const renderCardCanvas = async (scale: number) => {
+    if (!cardRef.current) return null;
+
+    const html2canvas = (await import("html2canvas")).default;
+
+    // Ensure web fonts (especially Arabic) are fully ready before rasterizing
+    if ("fonts" in document) {
+      await (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+    }
+
+    const bounds = cardRef.current.getBoundingClientRect();
+
+    return html2canvas(cardRef.current, {
+      scale,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      logging: false,
+      width: Math.round(bounds.width),
+      height: Math.round(bounds.height),
+      windowWidth: Math.ceil(bounds.width),
+      windowHeight: Math.ceil(bounds.height),
+    });
+  };
+
   const handlePrint = async () => {
     if (!cardRef.current) return;
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 4,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null,
-        logging: false,
-      });
-      const imgDataUrl = canvas.toDataURL("image/png");
+      const canvas = await renderCardCanvas(4);
+      if (!canvas) return;
 
       const isVert = orientation === "vertical";
       // ISO/IEC 7810 ID-1: 85.6mm × 53.98mm
       const cardW = isVert ? "53.98mm" : "85.6mm";
       const cardH = isVert ? "85.6mm" : "53.98mm";
-      const pageW = isVert ? "64mm" : "96mm";
-      const pageH = isVert ? "96mm" : "64mm";
 
+      const imgDataUrl = canvas.toDataURL("image/png");
       const printWindow = window.open("", "_blank");
       if (!printWindow) return;
 
       printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head>
+        <meta charset="utf-8" />
         <title>${isAr ? "بطاقة العضوية" : "Membership Card"}</title>
         <style>
           *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
           html, body {
-            width: 100%; height: 100%;
+            width: ${cardW};
+            height: ${cardH};
+            overflow: hidden;
+            background: transparent;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
-            font-family: system-ui, sans-serif;
           }
-          body {
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            min-height: 100vh; background: #f5f5f5;
-          }
+          body { display: block; }
           .card-img {
-            width: ${cardW}; height: ${cardH};
-            border-radius: 3mm;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+            display: block;
+            width: ${cardW};
+            height: ${cardH};
+            object-fit: cover;
           }
-          .print-footer {
-            text-align: center; margin-top: 5mm;
-            font-size: 7pt; color: #bbb; letter-spacing: 0.1em;
-          }
-          @media print {
-            @page { size: ${pageW} ${pageH}; margin: 5mm; }
-            body { min-height: auto; background: white; }
-            .card-img { filter: none; }
-            .print-footer { margin-top: 3mm; }
+          @page {
+            size: ${cardW} ${cardH};
+            margin: 0;
           }
         </style>
       </head><body>
         <img class="card-img" src="${imgDataUrl}" alt="Membership Card" />
-        <div class="print-footer">ALTOHA • ${isAr ? "بطاقة العضوية الرقمية" : "Digital Membership Card"} • ${new Date().getFullYear()}</div>
       </body></html>`);
       printWindow.document.close();
-      setTimeout(() => { printWindow.focus(); printWindow.print(); }, 500);
+
+      const triggerPrint = () => {
+        printWindow.focus();
+        printWindow.print();
+      };
+
+      printWindow.onload = triggerPrint;
+      setTimeout(triggerPrint, 500);
     } catch {
       toast({ variant: "destructive", title: isAr ? "خطأ في الطباعة" : "Print failed" });
     }
@@ -244,14 +261,9 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
   const handleSaveAsImage = async () => {
     if (!cardRef.current) return;
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null,
-        logging: false,
-      });
+      const canvas = await renderCardCanvas(4);
+      if (!canvas) return;
+
       const link = document.createElement("a");
       link.download = `altoha-membership-${profile?.account_number || "card"}.png`;
       link.href = canvas.toDataURL("image/png");
@@ -457,8 +469,18 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                     <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-8 sm:h-10 sm:w-10 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
                   </div>
                   <div>
-                    <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>ALTOHA</p>
-                    <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.12em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground))" }}>{isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}</p>
+                    <p
+                      className={`text-[11px] sm:text-xs font-bold ${isAr ? "tracking-normal" : "uppercase tracking-[0.2em]"}`}
+                      style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}
+                    >
+                      ALTOHA
+                    </p>
+                    <p
+                      className={`text-[8px] sm:text-[9px] ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
+                      style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground))" }}
+                    >
+                      {isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}
+                    </p>
                   </div>
                 </div>
                 <div
@@ -476,49 +498,48 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
               {/* ── Center: Avatar + Name + Details ── */}
               <div className={`flex-1 flex ${isVertical ? "flex-col items-center justify-center gap-3" : "items-center gap-5"} my-2`}>
                 <div className="shrink-0 relative">
-                  {profile?.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={profile.full_name || ""}
-                      className={`${isVertical ? "h-[80px] w-[80px]" : "h-[72px] w-[72px] sm:h-[80px] sm:w-[80px]"} rounded-xl object-cover`}
-                      style={cardTheme === "classic"
-                        ? { border: "2.5px solid rgba(201,168,76,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }
-                        : { border: "2.5px solid hsl(var(--primary) / 0.3)", boxShadow: "0 4px 16px hsl(var(--primary) / 0.12)" }
-                      }
-                    />
-                  ) : (
-                    <div
-                      className={`${isVertical ? "h-[80px] w-[80px]" : "h-[72px] w-[72px] sm:h-[80px] sm:w-[80px]"} rounded-xl flex items-center justify-center`}
-                      style={cardTheme === "classic"
-                        ? { background: "linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05))", border: "2.5px solid rgba(201,168,76,0.35)" }
-                        : { background: "hsl(var(--primary) / 0.08)", border: "2.5px solid hsl(var(--primary) / 0.2)" }
-                      }
-                    >
-                      <span className="text-3xl font-bold" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{(profile?.full_name || "?")[0]}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className={`flex-1 min-w-0 ${isVertical ? "text-center" : ""}`}>
-                  <p className="text-lg sm:text-xl font-bold leading-snug truncate" style={{ color: cardTheme === "classic" ? "#fff" : "hsl(var(--foreground))" }}>
+                  <p
+                    className={`font-bold leading-tight break-words ${isVertical ? "text-center" : ""} ${isAr ? "text-base sm:text-lg" : "text-lg sm:text-xl"}`}
+                    style={{ color: cardTheme === "classic" ? "#fff" : "hsl(var(--foreground))" }}
+                    dir={isAr ? "rtl" : "ltr"}
+                  >
                     {isAr ? (profile?.full_name_ar || profile?.full_name || "—") : (profile?.full_name || "—")}
                   </p>
                   {((isAr && profile?.full_name) || (!isAr && profile?.full_name_ar)) && (
-                    <p className="text-[11px] mt-0.5 truncate" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))" }} dir={!isAr ? "rtl" : "ltr"}>
+                    <p
+                      className="text-[11px] mt-1 break-words leading-snug"
+                      style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.45)" : "hsl(var(--muted-foreground))" }}
+                      dir={!isAr ? "rtl" : "ltr"}
+                    >
                       {isAr ? profile.full_name : profile.full_name_ar}
                     </p>
                   )}
                   <div className="mt-2.5">
-                    <p className="text-[7px] uppercase tracking-[0.18em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground) / 0.6)" }}>{isAr ? "رقم العضوية" : "MEMBERSHIP NO."}</p>
+                    <p
+                      className={`text-[8px] ${isAr ? "tracking-normal" : "uppercase tracking-[0.18em]"}`}
+                      style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground) / 0.6)" }}
+                    >
+                      {isAr ? "رقم العضوية" : "MEMBERSHIP NO."}
+                    </p>
                     <p className="text-sm sm:text-base font-mono font-bold tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{card.membership_number}</p>
                   </div>
                   <div className={`flex ${isVertical ? "justify-center" : ""} gap-4 sm:gap-6 mt-1.5`}>
                     <div>
-                      <p className="text-[7px] uppercase tracking-[0.12em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانضمام" : "ISSUED"}</p>
+                      <p
+                        className={`text-[8px] ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
+                        style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}
+                      >
+                        {isAr ? "الانضمام" : "ISSUED"}
+                      </p>
                       <p className="text-[10px] sm:text-[11px] font-semibold" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>{format(new Date(card.issued_at), "MM/yy")}</p>
                     </div>
                     <div>
-                      <p className="text-[7px] uppercase tracking-[0.12em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانتهاء" : "EXPIRES"}</p>
+                      <p
+                        className={`text-[8px] ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
+                        style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}
+                      >
+                        {isAr ? "الانتهاء" : "EXPIRES"}
+                      </p>
                       <p className="text-[10px] sm:text-[11px] font-semibold" style={{ color: isCardExpired ? "#f87171" : showExpiryWarning ? "#fbbf24" : cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>
                         {cardExpiresDate ? format(cardExpiresDate, "dd/MM/yyyy") : "—"}
                       </p>
@@ -538,7 +559,12 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                 <div className="flex items-end justify-between gap-3">
                   <div className="flex-1 min-w-0 space-y-1.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[8px] uppercase tracking-[0.15em] me-1" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}>{isAr ? "رمز التحقق" : "VERIFY CODE"}</span>
+                      <span
+                        className={`text-[8px] me-1 ${isAr ? "tracking-normal" : "uppercase tracking-[0.15em]"}`}
+                        style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}
+                      >
+                        {isAr ? "رمز التحقق" : "VERIFY CODE"}
+                      </span>
                       {verificationCode.split("").map((d, i) => (
                         <span
                           key={i}
@@ -588,7 +614,12 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                         bgColor="transparent"
                       />
                     </div>
-                    <span className="text-[7px] mt-1 tracking-widest uppercase" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}>{isAr ? "امسح للتحقق" : "SCAN TO VERIFY"}</span>
+                    <span
+                      className={`text-[8px] mt-1 ${isAr ? "tracking-normal" : "tracking-widest uppercase"}`}
+                      style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}
+                    >
+                      {isAr ? "امسح للتحقق" : "SCAN TO VERIFY"}
+                    </span>
                   </div>
                 </div>
               </div>
