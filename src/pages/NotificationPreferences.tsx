@@ -8,7 +8,6 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -64,7 +63,7 @@ export default function NotificationPreferences() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
-  const t = (en: string, ar: string) => isAr ? ar : en;
+  const t = (en: string, ar: string) => (isAr ? ar : en);
   const [preferences, setPreferences] = useState<NotificationPreference[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
@@ -117,7 +116,7 @@ export default function NotificationPreferences() {
         return aIdx - bIdx;
       }));
     } catch {
-      toast({ title: t("خطأ", "Error"), description: t("فشل تحميل الإعدادات", "Failed to load preferences"), variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: t("Failed to load preferences", "فشل تحميل الإعدادات"), variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -135,9 +134,9 @@ export default function NotificationPreferences() {
         if (error) throw error;
       }
       setPreferences((prev) => prev.map((p) => p.channel === channel ? { ...p, id: `saved_${channel}`, enabled } : p));
-      toast({ title: t("تم الحفظ", "Saved") });
+      toast({ title: t("Saved", "تم الحفظ") });
     } catch {
-      toast({ title: t("خطأ", "Error"), description: t("فشل التحديث", "Update failed"), variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: t("Update failed", "فشل التحديث"), variant: "destructive" });
     } finally {
       setSaving(null);
     }
@@ -154,9 +153,9 @@ export default function NotificationPreferences() {
           quiet_hours_end: enabled ? quietEnd : null,
         }).eq("id", inAppPref.id).eq("user_id", user?.id);
       }
-      toast({ title: t("تم الحفظ", "Saved") });
+      toast({ title: t("Saved", "تم الحفظ") });
     } catch {
-      toast({ title: t("خطأ", "Error"), variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), variant: "destructive" });
     } finally {
       setSaving(null);
     }
@@ -183,9 +182,9 @@ export default function NotificationPreferences() {
       if (emailPref) {
         await supabase.from("notification_preferences").update({ digest_frequency: value }).eq("id", emailPref.id).eq("user_id", user?.id);
       }
-      toast({ title: t("تم الحفظ", "Saved") });
+      toast({ title: t("Saved", "تم الحفظ") });
     } catch {
-      toast({ title: t("خطأ", "Error"), variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), variant: "destructive" });
     } finally {
       setSaving(null);
     }
@@ -204,7 +203,7 @@ export default function NotificationPreferences() {
         }).eq("id", inAppPref.id).eq("user_id", user?.id);
       }
     } catch {
-      toast({ title: t("خطأ", "Error"), variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), variant: "destructive" });
     }
   };
 
@@ -226,8 +225,8 @@ export default function NotificationPreferences() {
 
   return (
     <PageShell
-      title={t("تفضيلات الإشعارات", "Notification Preferences")}
-      description={t("تحكم بقنوات وفئات الإشعارات", "Manage your notification channels and categories")}
+      title={t("Notification Preferences", "تفضيلات الإشعارات")}
+      description={t("Manage your notification channels and categories", "تحكم بقنوات وفئات الإشعارات")}
       container={false}
       padding="none"
     >
@@ -239,16 +238,16 @@ export default function NotificationPreferences() {
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                 <Settings2 className="h-3.5 w-3.5 text-primary" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                  {t("إعدادات", "Settings")}
+                  {t("Settings", "إعدادات")}
                 </span>
               </div>
-              <h1 className="font-serif text-2xl font-bold tracking-tight md:text-3xl">
-                {t("تفضيلات الإشعارات", "Notification Preferences")}
+              <h1 className="text-2xl font-bold md:text-3xl">
+                {t("Notification Preferences", "تفضيلات الإشعارات")}
               </h1>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
                 {t(
-                  "اختر القنوات والفئات التي تناسبك لتلقي الإشعارات المهمة فقط.",
-                  "Choose the channels and categories that matter to you — stay informed without the noise."
+                  "Choose the channels and categories that matter to you — stay informed without the noise.",
+                  "اختر القنوات والفئات التي تناسبك لتلقي الإشعارات المهمة فقط."
                 )}
               </p>
             </div>
@@ -261,7 +260,7 @@ export default function NotificationPreferences() {
                 </div>
                 <div>
                   <p className="text-lg font-bold leading-none">{loading ? "—" : enabledCount}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{t("قنوات مفعّلة", "Active channels")}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{t("Active channels", "قنوات مفعّلة")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2.5 rounded-xl border bg-card px-4 py-3 shadow-sm">
@@ -270,7 +269,7 @@ export default function NotificationPreferences() {
                 </div>
                 <div>
                   <p className="text-lg font-bold leading-none">{activeCategories}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{t("فئات نشطة", "Active categories")}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{t("Active categories", "فئات نشطة")}</p>
                 </div>
               </div>
             </div>
@@ -280,7 +279,7 @@ export default function NotificationPreferences() {
           {!loading && (
             <div className="mt-6 rounded-xl border bg-card/50 p-4">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-medium">{t("اكتمال الإعداد", "Setup completion")}</p>
+                <p className="text-xs font-medium">{t("Setup completion", "اكتمال الإعداد")}</p>
                 <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-[10px]">
                   {completionScore}%
                 </Badge>
@@ -297,19 +296,19 @@ export default function NotificationPreferences() {
             <TabsList className="grid w-full grid-cols-4 h-11">
               <TabsTrigger value="channels" className="text-xs gap-1.5">
                 <Bell className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t("القنوات", "Channels")}</span>
+                <span className="hidden sm:inline">{t("Channels", "القنوات")}</span>
               </TabsTrigger>
               <TabsTrigger value="categories" className="text-xs gap-1.5">
                 <Palette className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t("الفئات", "Categories")}</span>
+                <span className="hidden sm:inline">{t("Categories", "الفئات")}</span>
               </TabsTrigger>
               <TabsTrigger value="schedule" className="text-xs gap-1.5">
                 <Clock className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t("الجدولة", "Schedule")}</span>
+                <span className="hidden sm:inline">{t("Schedule", "الجدولة")}</span>
               </TabsTrigger>
               <TabsTrigger value="general" className="text-xs gap-1.5">
                 <Settings2 className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t("عام", "General")}</span>
+                <span className="hidden sm:inline">{t("General", "عام")}</span>
               </TabsTrigger>
             </TabsList>
 
@@ -320,10 +319,10 @@ export default function NotificationPreferences() {
                 <div className="flex items-center gap-3 rounded-xl border border-chart-4/30 bg-chart-4/5 p-4">
                   <BellOff className="h-5 w-5 text-chart-4 shrink-0" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-chart-4">{t("وضع عدم الإزعاج مفعّل", "Do Not Disturb is ON")}</p>
-                    <p className="text-xs text-muted-foreground">{t("لن تتلقى أي إشعارات حتى إيقاف هذا الوضع", "You won't receive any notifications until you turn this off")}</p>
+                    <p className="text-sm font-medium text-chart-4">{t("Do Not Disturb is ON", "وضع عدم الإزعاج مفعّل")}</p>
+                    <p className="text-xs text-muted-foreground">{t("You won't receive any notifications until you turn this off", "لن تتلقى أي إشعارات حتى إيقاف هذا الوضع")}</p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => toggleDnd(false)}>{t("إيقاف", "Turn Off")}</Button>
+                  <Button variant="outline" size="sm" onClick={() => toggleDnd(false)}>{t("Turn Off", "إيقاف")}</Button>
                 </div>
               )}
 
@@ -333,10 +332,10 @@ export default function NotificationPreferences() {
                     <div>
                       <CardTitle className="text-base flex items-center gap-2">
                         <Bell className="h-4 w-4 text-primary" />
-                        {t("قنوات التوصيل", "Delivery Channels")}
+                        {t("Delivery Channels", "قنوات التوصيل")}
                       </CardTitle>
                       <CardDescription className="text-xs mt-1">
-                        {t("حدد الطرق المفضلة لاستقبال الإشعارات", "Select how you'd like to receive notifications")}
+                        {t("Select how you'd like to receive notifications", "حدد الطرق المفضلة لاستقبال الإشعارات")}
                       </CardDescription>
                     </div>
                     <Badge variant="outline" className="text-[10px] gap-1">
@@ -368,7 +367,7 @@ export default function NotificationPreferences() {
                                   <p className="text-sm font-semibold">{isAr ? config.labelAr : config.label}</p>
                                   {pref.enabled && (
                                     <Badge variant="secondary" className="text-[9px] h-4 px-1.5 bg-primary/5 text-primary">
-                                      {t("مفعّل", "Active")}
+                                      {t("Active", "مفعّل")}
                                     </Badge>
                                   )}
                                 </div>
@@ -398,10 +397,10 @@ export default function NotificationPreferences() {
                     <div>
                       <CardTitle className="text-base flex items-center gap-2">
                         <Palette className="h-4 w-4 text-primary" />
-                        {t("فئات الإشعارات", "Notification Categories")}
+                        {t("Notification Categories", "فئات الإشعارات")}
                       </CardTitle>
                       <CardDescription className="text-xs mt-1">
-                        {t("تحكم في أنواع الإشعارات التي تتلقاها", "Control the types of notifications you receive")}
+                        {t("Control the types of notifications you receive", "تحكم في أنواع الإشعارات التي تتلقاها")}
                       </CardDescription>
                     </div>
                     <Button
@@ -417,7 +416,7 @@ export default function NotificationPreferences() {
                         }
                       }}
                     >
-                      {mutedTypes.size === 0 ? t("كتم الكل", "Mute All") : t("تفعيل الكل", "Enable All")}
+                      {mutedTypes.size === 0 ? t("Mute All", "كتم الكل") : t("Enable All", "تفعيل الكل")}
                     </Button>
                   </div>
                 </CardHeader>
@@ -439,12 +438,12 @@ export default function NotificationPreferences() {
                                 <p className="text-sm font-semibold">{isAr ? cat.labelAr : cat.label}</p>
                                 {isCritical && (
                                   <Badge variant="destructive" className="text-[9px] h-4 px-1.5">
-                                    {t("مطلوب", "Required")}
+                                    {t("Required", "مطلوب")}
                                   </Badge>
                                 )}
                                 {cat.priority === "high" && !isMuted && (
                                   <Badge variant="secondary" className="text-[9px] h-4 px-1.5 bg-chart-4/10 text-chart-4">
-                                    {t("مهم", "Important")}
+                                    {t("Important", "مهم")}
                                   </Badge>
                                 )}
                               </div>
@@ -468,11 +467,11 @@ export default function NotificationPreferences() {
               <div className="flex items-start gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-4">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-chart-4" />
                 <div>
-                  <p className="text-sm font-medium">{t("ملاحظة أمنية", "Security Notice")}</p>
+                  <p className="text-sm font-medium">{t("Security Notice", "ملاحظة أمنية")}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
                     {t(
-                      "الإشعارات الأمنية والإدارية ستصلك دائماً بغض النظر عن تفضيلاتك لضمان حماية حسابك.",
-                      "Security and administrative notifications are always delivered regardless of your preferences to ensure account safety."
+                      "Security and administrative notifications are always delivered regardless of your preferences to ensure account safety.",
+                      "الإشعارات الأمنية والإدارية ستصلك دائماً بغض النظر عن تفضيلاتك لضمان حماية حسابك."
                     )}
                   </p>
                 </div>
@@ -486,10 +485,10 @@ export default function NotificationPreferences() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Moon className="h-4 w-4 text-primary" />
-                    {t("ساعات الهدوء", "Quiet Hours")}
+                    {t("Quiet Hours", "ساعات الهدوء")}
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    {t("إيقاف الإشعارات مؤقتاً خلال فترة محددة", "Pause notifications during a set time period")}
+                    {t("Pause notifications during a set time period", "إيقاف الإشعارات مؤقتاً خلال فترة محددة")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -499,8 +498,8 @@ export default function NotificationPreferences() {
                         <Clock className={`h-4.5 w-4.5 transition-colors ${quietEnabled ? "text-primary" : "text-muted-foreground"}`} />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold">{t("تفعيل ساعات الهدوء", "Enable Quiet Hours")}</p>
-                        <p className="text-xs text-muted-foreground">{t("لن تتلقى إشعارات خلال هذه الفترة", "No notifications during this period")}</p>
+                        <p className="text-sm font-semibold">{t("Enable Quiet Hours", "تفعيل ساعات الهدوء")}</p>
+                        <p className="text-xs text-muted-foreground">{t("No notifications during this period", "لن تتلقى إشعارات خلال هذه الفترة")}</p>
                       </div>
                     </div>
                     <Switch checked={quietEnabled} onCheckedChange={handleQuietHoursChange} disabled={saving === "quiet"} />
@@ -508,11 +507,11 @@ export default function NotificationPreferences() {
                   {quietEnabled && (
                     <div className="grid grid-cols-2 gap-4 ps-[52px] animate-in fade-in-50 slide-in-from-top-2 duration-300">
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-medium">{t("من", "From")}</Label>
+                        <Label className="text-xs font-medium">{t("From", "من")}</Label>
                         <Input type="time" value={quietStart} onChange={(e) => handleQuietTimeUpdate("start", e.target.value)} className="h-10" />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs font-medium">{t("إلى", "To")}</Label>
+                        <Label className="text-xs font-medium">{t("To", "إلى")}</Label>
                         <Input type="time" value={quietEnd} onChange={(e) => handleQuietTimeUpdate("end", e.target.value)} className="h-10" />
                       </div>
                     </div>
@@ -525,10 +524,10 @@ export default function NotificationPreferences() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Zap className="h-4 w-4 text-primary" />
-                    {t("تردد الملخصات", "Digest Frequency")}
+                    {t("Digest Frequency", "تردد الملخصات")}
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    {t("كيف تريد تلقي ملخصات الإشعارات عبر البريد؟", "How often should we send email digests?")}
+                    {t("How often should we send email digests?", "كيف تريد تلقي ملخصات الإشعارات عبر البريد؟")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -561,7 +560,7 @@ export default function NotificationPreferences() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Settings2 className="h-4 w-4 text-primary" />
-                    {t("إعدادات عامة", "General Settings")}
+                    {t("General Settings", "إعدادات عامة")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-0">
@@ -572,8 +571,8 @@ export default function NotificationPreferences() {
                         {soundEnabled ? <Volume2 className="h-4.5 w-4.5 text-chart-5" /> : <VolumeX className="h-4.5 w-4.5 text-muted-foreground" />}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold">{t("صوت الإشعارات", "Notification Sound")}</p>
-                        <p className="text-xs text-muted-foreground">{t("تشغيل صوت عند وصول إشعار جديد", "Play sound when a new notification arrives")}</p>
+                        <p className="text-sm font-semibold">{t("Notification Sound", "صوت الإشعارات")}</p>
+                        <p className="text-xs text-muted-foreground">{t("Play sound when a new notification arrives", "تشغيل صوت عند وصول إشعار جديد")}</p>
                       </div>
                     </div>
                     <Switch id="sound-toggle" checked={soundEnabled} onCheckedChange={toggleSound} />
@@ -588,8 +587,8 @@ export default function NotificationPreferences() {
                         {dndMode ? <BellOff className="h-4.5 w-4.5 text-chart-4" /> : <Moon className="h-4.5 w-4.5 text-muted-foreground" />}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold">{t("وضع عدم الإزعاج", "Do Not Disturb")}</p>
-                        <p className="text-xs text-muted-foreground">{t("إيقاف جميع الإشعارات مؤقتاً", "Temporarily pause all notifications")}</p>
+                        <p className="text-sm font-semibold">{t("Do Not Disturb", "وضع عدم الإزعاج")}</p>
+                        <p className="text-xs text-muted-foreground">{t("Temporarily pause all notifications", "إيقاف جميع الإشعارات مؤقتاً")}</p>
                       </div>
                     </div>
                     <Switch id="dnd-toggle" checked={dndMode} onCheckedChange={toggleDnd} />
@@ -601,11 +600,11 @@ export default function NotificationPreferences() {
               <div className="flex items-start gap-3 rounded-xl border bg-muted/30 p-4">
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">{t("ملاحظة مهمة", "Important Note")}</p>
+                  <p className="text-sm font-medium">{t("Important Note", "ملاحظة مهمة")}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
                     {t(
-                      "يتم حفظ تفضيلاتك تلقائياً عند كل تغيير. الإعدادات المحلية مثل الصوت وعدم الإزعاج تُحفظ في متصفحك.",
-                      "Your preferences are saved automatically on each change. Local settings like sound and DND are saved in your browser."
+                      "Your preferences are saved automatically on each change. Local settings like sound and DND are saved in your browser.",
+                      "يتم حفظ تفضيلاتك تلقائياً عند كل تغيير. الإعدادات المحلية مثل الصوت وعدم الإزعاج تُحفظ في متصفحك."
                     )}
                   </p>
                 </div>
