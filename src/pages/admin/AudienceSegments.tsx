@@ -45,6 +45,9 @@ import {
   Filter,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 interface Segment {
   id: string;
@@ -107,6 +110,26 @@ export default function AudienceSegments() {
       return data as Segment[];
     },
   });
+
+  const bulkSegments = useAdminBulkActions(segments);
+
+  const { exportCSV: exportSegmentsCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (s: Segment) => isAr && s.name_ar ? s.name_ar : s.name },
+      { header: isAr ? "الوصف" : "Description", accessor: (s: Segment) => s.description || "" },
+      { header: isAr ? "الوصول المقدر" : "Est. Reach", accessor: (s: Segment) => s.estimated_reach },
+      { header: isAr ? "نشط" : "Active", accessor: (s: Segment) => s.is_active ? "Yes" : "No" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (s: Segment) => format(new Date(s.created_at), "yyyy-MM-dd") },
+    ],
+    filename: "audience-segments",
+  });
+
+  const bulkDeleteSegments = async () => {
+    for (const id of bulkSegments.selected) {
+      await deleteSegment.mutateAsync(id);
+    }
+    bulkSegments.clearSelection();
+  };
 
   // Fetch countries for filter
   const { data: countries = [] } = useQuery({
@@ -328,6 +351,13 @@ export default function AudienceSegments() {
           </DialogContent>
       </Dialog>
 
+      <BulkActionBar
+        count={bulkSegments.count}
+        onClear={bulkSegments.clearSelection}
+        onExport={() => exportSegmentsCSV(bulkSegments.selectedItems)}
+        onDelete={bulkDeleteSegments}
+      />
+
       {/* Segments Grid */}
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -353,12 +383,18 @@ export default function AudienceSegments() {
             }).length;
 
             return (
-              <Card key={segment.id} className="transition-all hover:shadow-md hover:-translate-y-0.5">
+              <Card key={segment.id} className={`transition-all hover:shadow-md hover:-translate-y-0.5 ${bulkSegments.isSelected(segment.id) ? "ring-1 ring-primary/30" : ""}`}>
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
-                    <CardTitle className="text-base">
-                      {isAr && segment.name_ar ? segment.name_ar : segment.name}
-                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        checked={bulkSegments.isSelected(segment.id)}
+                        onCheckedChange={() => bulkSegments.toggleOne(segment.id)}
+                      />
+                      <CardTitle className="text-base">
+                        {isAr && segment.name_ar ? segment.name_ar : segment.name}
+                      </CardTitle>
+                    </div>
                     <div className="flex gap-1">
                       <Button
                         variant="ghost"

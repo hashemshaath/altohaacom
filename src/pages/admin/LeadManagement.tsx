@@ -4,6 +4,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -116,7 +118,7 @@ export default function LeadManagement() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [notes, setNotes] = useState("");
   const [viewMode, setViewMode] = useState<"table" | "kanban">("table");
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkActionPlaceholder] = useState(false); // moved bulk below leads
   const [bulkAction, setBulkAction] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
@@ -155,6 +157,10 @@ export default function LeadManagement() {
       return data as Lead[];
     },
   });
+
+  const bulk = useAdminBulkActions(leads);
+  const selectedIds = bulk.selected;
+  const setSelectedIds = (_v: any) => { bulk.clearSelection(); };
 
   // Lead stats
   const { data: stats } = useQuery({
@@ -301,19 +307,8 @@ export default function LeadManagement() {
     setIsDetailOpen(true);
   };
 
-  const toggleSelect = (id: string) => {
-    const next = new Set(selectedIds);
-    if (next.has(id)) next.delete(id); else next.add(id);
-    setSelectedIds(next);
-  };
-
-  const toggleSelectAll = () => {
-    if (selectedIds.size === leads.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(leads.map(l => l.id)));
-    }
-  };
+  const toggleSelect = bulk.toggleOne;
+  const toggleSelectAll = bulk.toggleAll;
 
   const { exportCSV: exportLeadsCSV } = useCSVExport({
     columns: [
@@ -413,7 +408,7 @@ export default function LeadManagement() {
         description={isAr ? "تتبع وإدارة العملاء المحتملين والصفقات" : "Track and manage leads & deals pipeline"}
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => exportLeadsCSV(selectedIds.size > 0 ? leads.filter(l => selectedIds.has(l.id)) : leads)} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportLeadsCSV(bulk.count > 0 ? bulk.selectedItems : leads)} className="gap-1.5">
               <Download className="h-3.5 w-3.5" />
               {isAr ? "تصدير" : "Export"}
             </Button>
@@ -499,43 +494,13 @@ export default function LeadManagement() {
       </Card>
 
       {/* Bulk Actions Bar */}
-      {selectedIds.size > 0 && viewMode === "table" && (
-        <Card className="border-primary/50 bg-primary/5">
-          <CardContent className="flex items-center gap-3 py-3">
-            <Badge variant="secondary">{selectedIds.size} {isAr ? "محدد" : "selected"}</Badge>
-            <Select onValueChange={v => {
-              if (v === "delete") {
-                setBulkAction("delete");
-              } else {
-                bulkUpdateMutation.mutate({ ids: [...selectedIds], status: v });
-              }
-            }}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder={isAr ? "إجراء جماعي..." : "Bulk action..."} />
-              </SelectTrigger>
-              <SelectContent>
-                {LEAD_STATUSES.map(s => (
-                  <SelectItem key={s} value={s}>
-                    <span className="flex items-center gap-2">
-                      <ArrowRight className="h-3 w-3" />
-                      {isAr ? `تغيير إلى ${stageLabels[s]?.ar}` : `Move to ${stageLabels[s]?.en}`}
-                    </span>
-                  </SelectItem>
-                ))}
-                <SelectItem value="delete">
-                  <span className="flex items-center gap-2 text-destructive">
-                    <Trash2 className="h-3 w-3" />
-                    {isAr ? "حذف" : "Delete"}
-                  </span>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
-              {isAr ? "إلغاء التحديد" : "Clear"}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportLeadsCSV(bulk.selectedItems)}
+        onDelete={() => deleteLeadMutation.mutate([...bulk.selected])}
+        onStatusChange={(status) => bulkUpdateMutation.mutate({ ids: [...bulk.selected], status })}
+      />
 
       {/* Main Content */}
       {viewMode === "table" ? (
@@ -555,7 +520,7 @@ export default function LeadManagement() {
                   <TableRow>
                     <TableHead className="w-10">
                       <Checkbox
-                        checked={selectedIds.size === leads.length && leads.length > 0}
+                        checked={bulk.isAllSelected}
                         onCheckedChange={toggleSelectAll}
                       />
                     </TableHead>
@@ -573,7 +538,7 @@ export default function LeadManagement() {
                     <TableRow key={lead.id} className="cursor-pointer hover:bg-muted/50">
                       <TableCell onClick={e => e.stopPropagation()}>
                         <Checkbox
-                          checked={selectedIds.has(lead.id)}
+                          checked={bulk.isSelected(lead.id)}
                           onCheckedChange={() => toggleSelect(lead.id)}
                         />
                       </TableCell>
