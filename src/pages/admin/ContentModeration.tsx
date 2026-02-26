@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -21,6 +22,9 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { CheckCircle, XCircle, ChevronDown, ChevronUp, AlertTriangle, Flag } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 interface Report {
   id: string;
@@ -39,6 +43,7 @@ export default function ContentModeration() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const isAr = language === "ar";
   const [expandedReportId, setExpandedReportId] = useState<string | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>({});
 
@@ -108,6 +113,27 @@ export default function ContentModeration() {
     return <Badge variant={cfg.variant}>{language === "ar" ? cfg.labelAr : cfg.label}</Badge>;
   };
 
+  const bulk = useAdminBulkActions(reports || []);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "النوع" : "Content Type", accessor: (r: Report) => r.content_type },
+      { header: isAr ? "السبب" : "Reason", accessor: (r: Report) => r.reason },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: Report) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: Report) => r.created_at?.slice(0, 10) || "" },
+      { header: isAr ? "ملاحظات" : "Notes", accessor: (r: Report) => r.resolution_notes || "" },
+    ],
+    filename: "content-reports",
+  });
+
+  const bulkDismiss = async () => {
+    const ids = [...bulk.selected];
+    for (const id of ids) {
+      await resolveReportMutation.mutateAsync({ reportId: id, status: "dismissed", notes: "Bulk dismissed" });
+    }
+    bulk.clearSelection();
+  };
+
   const pendingCount = reports?.filter(r => r.status === "pending").length || 0;
 
   const toggleExpand = (reportId: string) => {
@@ -138,6 +164,13 @@ export default function ContentModeration() {
         }
       />
 
+      <BulkActionBar
+        count={bulk.count}
+        onClear={bulk.clearSelection}
+        onExport={() => exportCSV(bulk.selectedItems)}
+        onDelete={bulkDismiss}
+      />
+
       <Card>
         <CardHeader>
           <CardTitle>{t("reports")}</CardTitle>
@@ -166,7 +199,7 @@ export default function ContentModeration() {
                     report.status === "pending" 
                       ? "border-chart-4/30 bg-chart-4/5" 
                       : "border-border"
-                  }`}
+                  } ${bulk.isSelected(report.id) ? "ring-1 ring-primary/30" : ""}`}
                 >
                   {/* Report Row Header */}
                   <div 
@@ -174,6 +207,11 @@ export default function ContentModeration() {
                     onClick={() => toggleExpand(report.id)}
                   >
                     <div className="flex items-center gap-4">
+                      <Checkbox
+                        checked={bulk.isSelected(report.id)}
+                        onCheckedChange={() => bulk.toggleOne(report.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                       <Badge variant="outline">{report.content_type}</Badge>
                       <span className="text-sm max-w-md truncate">{report.reason}</span>
                     </div>
