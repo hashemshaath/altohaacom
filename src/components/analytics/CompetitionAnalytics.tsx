@@ -37,7 +37,6 @@ export default function CompetitionAnalytics() {
         supabase.from("competition_registrations").select("created_at"),
       ]);
 
-      // Score distribution
       const scoreBuckets: Record<string, number> = { "0-20": 0, "21-40": 0, "41-60": 0, "61-80": 0, "81-100": 0 };
       (scores || []).forEach((s: any) => {
         const v = Number(s.score);
@@ -48,27 +47,23 @@ export default function CompetitionAnalytics() {
         else scoreBuckets["81-100"]++;
       });
 
-      // Competitions by month
       const monthCounts: Record<string, number> = {};
       (competitions || []).forEach((c: any) => {
         const month = c.competition_start?.substring(0, 7) || "unknown";
         monthCounts[month] = (monthCounts[month] || 0) + 1;
       });
 
-      // Status breakdown
       const statusCounts: Record<string, number> = {};
       (competitions || []).forEach((c: any) => {
         const s = c.status || "unknown";
         statusCounts[s] = (statusCounts[s] || 0) + 1;
       });
 
-      // Country breakdown
       const countryCounts: Record<string, number> = {};
       (competitions || []).forEach((c: any) => {
         if (c.country_code) countryCounts[c.country_code] = (countryCounts[c.country_code] || 0) + 1;
       });
 
-      // Registration trend
       const regMonths: Record<string, number> = {};
       (registrations || []).forEach((r: any) => {
         const m = r.created_at?.substring(0, 7);
@@ -76,6 +71,7 @@ export default function CompetitionAnalytics() {
       });
 
       const uniqueCountries = new Set((competitions || []).map((c: any) => c.country_code).filter(Boolean));
+      const activeCount = (competitions || []).filter((c: any) => c.status === "active" || c.status === "in_progress").length;
 
       return {
         totalRegistrations: totalRegistrations || 0,
@@ -83,6 +79,7 @@ export default function CompetitionAnalytics() {
         totalScores: totalScores || 0,
         totalCompetitions: (competitions || []).length,
         totalCountries: uniqueCountries.size,
+        activeCompetitions: activeCount,
         scoreDistribution: Object.entries(scoreBuckets).map(([range, count]) => ({ range, count })),
         monthlyData: Object.entries(monthCounts).sort(([a], [b]) => a.localeCompare(b)).slice(-12).map(([month, count]) => ({ month, count })),
         statusData: Object.entries(statusCounts).map(([name, value]) => ({ name, value })),

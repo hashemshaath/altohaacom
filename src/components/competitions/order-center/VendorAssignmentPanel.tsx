@@ -264,8 +264,6 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
       <VendorItemAssignment
         grouped={grouped}
         companies={companies || []}
-        filterCategory={filterCategory}
-        onFilterChange={setFilterCategory}
         onAssign={(itemId, companyId) => assignVendor.mutate({ itemId, companyId })}
         isOrganizer={isOrganizer}
         isAr={isAr}
