@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { BookmarkCollections } from "./BookmarkCollections";
 import { LikeAnimation } from "./LikeAnimation";
+import { OnlineDot } from "./PresenceIndicator";
+import { PostEngagementBar } from "./PostEngagementBar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -85,13 +87,14 @@ export function PostCard({
 
       {!isEditing && (
         <div className="flex gap-3">
-          <Link to={`/${post.author_username || post.author_id}`} className="shrink-0">
+          <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
             <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
               <AvatarImage src={post.author_avatar || undefined} />
               <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
+            <OnlineDot userId={post.author_id} />
           </Link>
           <div className="min-w-0 flex-1">
             {/* Header */}
@@ -174,6 +177,14 @@ export function PostCard({
             >
               <MentionText content={post.content} />
             </div>
+
+            {/* Engagement insights */}
+            <PostEngagementBar
+              content={post.content}
+              likesCount={post.likes_count}
+              commentsCount={post.comments_count}
+              repostsCount={post.reposts_count}
+            />
 
             {/* Images */}
             {(post.image_urls.length > 0 || post.image_url) && (

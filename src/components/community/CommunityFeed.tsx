@@ -17,6 +17,7 @@ import { PostEditHistory } from "./PostEditHistory";
 import { PostCard } from "./PostCard";
 import { FeedTabs, type FeedFilter } from "./FeedTabs";
 import { NewPostsBanner } from "./NewPostsBanner";
+import { TrendingCarousel } from "./TrendingCarousel";
 
 export interface CommunityPost {
   id: string;
@@ -459,6 +460,9 @@ export function CommunityFeed() {
           placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
         />
       )}
+
+      {/* Trending Carousel */}
+      {!tagFilter && feedFilter === "for_you" && <TrendingCarousel />}
 
       {/* AI Recommendations */}
       {!tagFilter && feedFilter === "for_you" && <FeedRecommendations />}
