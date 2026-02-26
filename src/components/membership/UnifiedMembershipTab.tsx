@@ -183,8 +183,8 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     clone.querySelectorAll("button").forEach(b => b.remove());
 
     const isVert = orientation === "vertical";
-    const cardWidth = isVert ? "340px" : "580px";
-    const pageSize = isVert ? "100mm 160mm" : "160mm 100mm";
+    const cardWidth = isVert ? "320px" : "540px";
+    const pageSize = isVert ? "90mm 143mm" : "143mm 90mm";
 
     printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head>
       <title>${isAr ? "بطاقة العضوية" : "Membership Card"}</title>
@@ -199,23 +199,23 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
         }
         body {
           display: flex; justify-content: center; align-items: center;
-          min-height: 100vh; background: #f5f5f5; padding: 20mm;
+          min-height: 100vh; background: #f0f0f0; padding: 16mm;
         }
         .print-card-container {
           width: ${cardWidth}; max-width: 100%;
-          filter: drop-shadow(0 4px 24px rgba(0,0,0,0.18));
+          filter: drop-shadow(0 4px 20px rgba(0,0,0,0.15));
           border-radius: 16px; overflow: hidden;
         }
         .print-card-container > * { border-radius: 16px; overflow: hidden; }
         .print-footer {
-          text-align: center; margin-top: 12mm;
-          font-size: 8px; color: #999; letter-spacing: 0.1em;
+          text-align: center; margin-top: 10mm;
+          font-size: 7px; color: #aaa; letter-spacing: 0.12em;
         }
         @media print {
-          @page { size: ${pageSize}; margin: 8mm; }
-          body { min-height: auto; padding: 0; background: white; align-items: flex-start; padding-top: 6mm; }
-          .print-card-container { filter: none; }
-          .print-footer { margin-top: 6mm; }
+          @page { size: ${pageSize}; margin: 5mm; }
+          body { min-height: auto; padding: 0; background: white; align-items: flex-start; padding-top: 4mm; }
+          .print-card-container { filter: none; width: 100%; }
+          .print-footer { margin-top: 4mm; }
         }
       </style>
     </head><body>
@@ -228,43 +228,25 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     setTimeout(() => { printWindow.focus(); printWindow.print(); }, 700);
   };
 
-  const handleSaveAsImage = () => {
+  const handleSaveAsImage = async () => {
     if (!cardRef.current) return;
-    // Use canvas approach for saving
-    const el = cardRef.current;
-    const clone = el.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll("button").forEach(b => b.remove());
-
-    const saveWindow = window.open("", "_blank");
-    if (!saveWindow) return;
-    const isVert = orientation === "vertical";
-    const cardWidth = isVert ? "340px" : "580px";
-
-    saveWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head>
-      <title>${isAr ? "حفظ البطاقة" : "Save Card"}</title>
-      <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          display: flex; flex-direction: column; justify-content: center; align-items: center;
-          min-height: 100vh; background: #1a1a2e; font-family: system-ui, sans-serif;
-          -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-        }
-        .card-wrapper { width: ${cardWidth}; margin: 40px auto; border-radius: 16px; overflow: hidden; }
-        .save-hint {
-          color: rgba(255,255,255,0.6); font-size: 13px; text-align: center;
-          margin-top: 24px; padding: 12px 24px; background: rgba(255,255,255,0.08);
-          border-radius: 8px; max-width: 400px;
-        }
-        .save-hint strong { color: rgba(255,255,255,0.9); }
-      </style>
-    </head><body>
-      <div class="card-wrapper">${clone.outerHTML}</div>
-      <div class="save-hint">
-        <strong>${isAr ? "لحفظ البطاقة:" : "To save this card:"}</strong><br/>
-        ${isAr ? "اضغط مطولاً أو كليك يمين → حفظ الصورة" : "Right-click or long-press → Save image"}
-      </div>
-    </body></html>`);
-    saveWindow.document.close();
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false,
+      });
+      const link = document.createElement("a");
+      link.download = `altoha-membership-${profile?.account_number || "card"}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      toast({ title: isAr ? "تم تحميل البطاقة" : "Card downloaded" });
+    } catch {
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحميل" : "Download failed" });
+    }
   };
 
   const currentTier = profile?.membership_tier || "basic";
@@ -420,7 +402,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           {/* ──── CARD ──── */}
           <div
             ref={cardRef}
-            className={`relative overflow-hidden rounded-2xl shadow-2xl mx-auto select-none ${isVertical ? "max-w-[340px]" : "w-full max-w-[580px]"}`}
+            className={`relative overflow-hidden rounded-2xl shadow-2xl mx-auto select-none ${isVertical ? "max-w-[320px]" : "w-full max-w-[540px]"}`}
             style={{
               ...(cardTheme === "classic"
                 ? { background: "linear-gradient(155deg, #1a1a2e 0%, #16213e 40%, #0f3460 80%, #1a1a2e 100%)" }
@@ -448,22 +430,22 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
               </>
             )}
 
-            <div className="relative h-full flex flex-col justify-between p-5 sm:p-6">
+            <div className="relative h-full flex flex-col justify-between p-4 sm:p-5">
               {/* ── Top Row: Logo + Tier ── */}
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div
-                    className="h-11 w-11 sm:h-14 sm:w-14 rounded-xl overflow-hidden flex items-center justify-center"
+                    className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden flex items-center justify-center"
                     style={cardTheme === "classic"
                       ? { background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)" }
                       : { background: "hsl(var(--primary) / 0.08)", border: "1px solid hsl(var(--primary) / 0.2)" }
                     }
                   >
-                    <img src="/altoha-logo.png" alt="Altoha" className="h-9 w-9 sm:h-11 sm:w-11 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
+                    <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-8 sm:h-10 sm:w-10 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>ALTOHA</p>
-                    <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground))" }}>{isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}</p>
+                    <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>ALTOHA</p>
+                    <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.12em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground))" }}>{isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}</p>
                   </div>
                 </div>
                 <div
@@ -479,52 +461,52 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
               </div>
 
               {/* ── Center: Avatar + Name + Details ── */}
-              <div className={`flex-1 flex ${isVertical ? "flex-col items-center justify-center gap-4" : "items-center gap-6"} my-3`}>
+              <div className={`flex-1 flex ${isVertical ? "flex-col items-center justify-center gap-3" : "items-center gap-5"} my-2`}>
                 <div className="shrink-0 relative">
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
                       alt={profile.full_name || ""}
-                      className={`${isVertical ? "h-[96px] w-[96px]" : "h-[84px] w-[84px] sm:h-[96px] sm:w-[96px]"} rounded-2xl object-cover`}
+                      className={`${isVertical ? "h-[80px] w-[80px]" : "h-[72px] w-[72px] sm:h-[80px] sm:w-[80px]"} rounded-xl object-cover`}
                       style={cardTheme === "classic"
-                        ? { border: "3px solid rgba(201,168,76,0.5)", boxShadow: "0 6px 24px rgba(0,0,0,0.5)" }
-                        : { border: "3px solid hsl(var(--primary) / 0.3)", boxShadow: "0 6px 24px hsl(var(--primary) / 0.15)" }
+                        ? { border: "2.5px solid rgba(201,168,76,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.4)" }
+                        : { border: "2.5px solid hsl(var(--primary) / 0.3)", boxShadow: "0 4px 16px hsl(var(--primary) / 0.12)" }
                       }
                     />
                   ) : (
                     <div
-                      className={`${isVertical ? "h-[96px] w-[96px]" : "h-[84px] w-[84px] sm:h-[96px] sm:w-[96px]"} rounded-2xl flex items-center justify-center`}
+                      className={`${isVertical ? "h-[80px] w-[80px]" : "h-[72px] w-[72px] sm:h-[80px] sm:w-[80px]"} rounded-xl flex items-center justify-center`}
                       style={cardTheme === "classic"
-                        ? { background: "linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05))", border: "3px solid rgba(201,168,76,0.35)" }
-                        : { background: "hsl(var(--primary) / 0.08)", border: "3px solid hsl(var(--primary) / 0.2)" }
+                        ? { background: "linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.05))", border: "2.5px solid rgba(201,168,76,0.35)" }
+                        : { background: "hsl(var(--primary) / 0.08)", border: "2.5px solid hsl(var(--primary) / 0.2)" }
                       }
                     >
-                      <span className="text-4xl font-bold" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{(profile?.full_name || "?")[0]}</span>
+                      <span className="text-3xl font-bold" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{(profile?.full_name || "?")[0]}</span>
                     </div>
                   )}
                 </div>
 
                 <div className={`flex-1 min-w-0 ${isVertical ? "text-center" : ""}`}>
-                  <p className="text-xl sm:text-2xl font-bold leading-tight truncate" style={{ color: cardTheme === "classic" ? "#fff" : "hsl(var(--foreground))" }}>
+                  <p className="text-lg sm:text-xl font-bold leading-snug truncate" style={{ color: cardTheme === "classic" ? "#fff" : "hsl(var(--foreground))" }}>
                     {isAr ? (profile?.full_name_ar || profile?.full_name || "—") : (profile?.full_name || "—")}
                   </p>
                   {((isAr && profile?.full_name) || (!isAr && profile?.full_name_ar)) && (
-                    <p className="text-xs mt-0.5 truncate" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))" }} dir={!isAr ? "rtl" : "ltr"}>
+                    <p className="text-[11px] mt-0.5 truncate" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))" }} dir={!isAr ? "rtl" : "ltr"}>
                       {isAr ? profile.full_name : profile.full_name_ar}
                     </p>
                   )}
-                  <div className="mt-3">
-                    <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.2em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground) / 0.6)" }}>{isAr ? "رقم العضوية" : "MEMBERSHIP NO."}</p>
-                    <p className="text-base sm:text-lg font-mono font-bold tracking-[0.18em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{card.membership_number}</p>
+                  <div className="mt-2.5">
+                    <p className="text-[7px] uppercase tracking-[0.18em]" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.5)" : "hsl(var(--muted-foreground) / 0.6)" }}>{isAr ? "رقم العضوية" : "MEMBERSHIP NO."}</p>
+                    <p className="text-sm sm:text-base font-mono font-bold tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "#c9a84c" : "hsl(var(--primary))" }}>{card.membership_number}</p>
                   </div>
-                  <div className={`flex ${isVertical ? "justify-center" : ""} gap-5 sm:gap-8 mt-2`}>
+                  <div className={`flex ${isVertical ? "justify-center" : ""} gap-4 sm:gap-6 mt-1.5`}>
                     <div>
-                      <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانضمام" : "ISSUED"}</p>
-                      <p className="text-[11px] sm:text-xs font-semibold" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>{format(new Date(card.issued_at), "MM/yy")}</p>
+                      <p className="text-[7px] uppercase tracking-[0.12em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانضمام" : "ISSUED"}</p>
+                      <p className="text-[10px] sm:text-[11px] font-semibold" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>{format(new Date(card.issued_at), "MM/yy")}</p>
                     </div>
                     <div>
-                      <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانتهاء" : "EXPIRES"}</p>
-                      <p className="text-[11px] sm:text-xs font-semibold" style={{ color: isCardExpired ? "#f87171" : showExpiryWarning ? "#fbbf24" : cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>
+                      <p className="text-[7px] uppercase tracking-[0.12em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.3)" : "hsl(var(--muted-foreground) / 0.5)" }}>{isAr ? "الانتهاء" : "EXPIRES"}</p>
+                      <p className="text-[10px] sm:text-[11px] font-semibold" style={{ color: isCardExpired ? "#f87171" : showExpiryWarning ? "#fbbf24" : cardTheme === "classic" ? "rgba(255,255,255,0.75)" : "hsl(var(--foreground) / 0.7)" }}>
                         {cardExpiresDate ? format(cardExpiresDate, "dd/MM/yyyy") : "—"}
                       </p>
                       {cardDaysLeft !== null && cardDaysLeft <= 30 && !isCardExpired && (
@@ -538,16 +520,16 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
               </div>
 
               {/* ── Bottom: Verification Code + QR ── */}
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 <div className="h-px" style={{ background: cardTheme === "classic" ? "linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent)" : "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.25), transparent)" }} />
-                <div className="flex items-end justify-between gap-4">
-                  <div className="flex-1 min-w-0 space-y-2">
+                <div className="flex items-end justify-between gap-3">
+                  <div className="flex-1 min-w-0 space-y-1.5">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[8px] uppercase tracking-[0.15em] me-1" style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.45)" : "hsl(var(--primary) / 0.5)" }}>{isAr ? "رمز التحقق" : "VERIFY CODE"}</span>
                       {verificationCode.split("").map((d, i) => (
                         <span
                           key={i}
-                          className="inline-flex h-7 w-6 sm:h-8 sm:w-7 items-center justify-center rounded-md font-mono text-sm sm:text-base font-bold"
+                          className="inline-flex h-6 w-5.5 sm:h-7 sm:w-6 items-center justify-center rounded font-mono text-xs sm:text-sm font-bold"
                           style={cardTheme === "classic"
                             ? { background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.25)", color: "#c9a84c" }
                             : { background: "hsl(var(--primary) / 0.08)", border: "1px solid hsl(var(--primary) / 0.2)", color: "hsl(var(--primary))" }
@@ -578,7 +560,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
 
                   <div className="shrink-0 flex flex-col items-center">
                     <div
-                      className="rounded-xl p-2 sm:p-2.5"
+                      className="rounded-lg p-1.5 sm:p-2"
                       style={cardTheme === "classic"
                         ? { background: "rgba(255,255,255,0.95)", boxShadow: "0 2px 12px rgba(0,0,0,0.3)" }
                         : { background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", boxShadow: "0 2px 12px hsl(var(--primary) / 0.1)" }
@@ -586,7 +568,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
                     >
                       <QRCodeSVG
                         value={`https://altoha.com/verify?code=${profile?.account_number || card.membership_number}`}
-                        size={isVertical ? 62 : 58}
+                        size={isVertical ? 56 : 52}
                         level="M"
                         includeMargin={false}
                         fgColor={cardTheme === "classic" ? "#1a1a2e" : "hsl(25, 30%, 12%)"}
