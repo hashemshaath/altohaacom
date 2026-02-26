@@ -4,7 +4,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building2, Truck } from "lucide-react";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
-import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 
 interface ListGroup {
   id: string;
@@ -22,8 +21,6 @@ interface Company {
 interface Props {
   grouped: ListGroup[];
   companies: Company[];
-  filterCategory: string;
-  onFilterChange: (v: string) => void;
   onAssign: (itemId: string, companyId: string | null) => void;
   isOrganizer?: boolean;
   isAr: boolean;
@@ -32,31 +29,9 @@ interface Props {
   onToggleSelect?: (id: string) => void;
 }
 
-export function VendorItemAssignment({ grouped, companies, filterCategory, onFilterChange, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
+export function VendorItemAssignment({ grouped, companies, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
   return (
     <div className="space-y-4">
-      {/* Category Filter */}
-      <div className="flex items-center gap-2">
-        <Truck className="h-4 w-4 text-primary" />
-        <h4 className="text-sm font-semibold">{isAr ? "تعيين الموردين" : "Assign Vendors"}</h4>
-        <div className="ms-auto">
-          <Select value={filterCategory} onValueChange={onFilterChange}>
-            <SelectTrigger className="h-7 w-36 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all" className="text-xs">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
-              {ORDER_CATEGORIES.map(cat => (
-                <SelectItem key={cat.value} value={cat.value} className="text-xs">
-                  {isAr ? cat.labelAr : cat.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* Items */}
       {!grouped.length ? (
         <Card>
           <CardContent className="py-12 text-center">
@@ -106,7 +81,7 @@ export function VendorItemAssignment({ grouped, companies, filterCategory, onFil
                         value={currentVendor || "none"}
                         onValueChange={(v) => onAssign(item.id, v === "none" ? null : v)}
                       >
-                        <SelectTrigger className="h-7 w-40 text-[10px]">
+                        <SelectTrigger className="h-7 w-32 sm:w-40 text-[10px]">
                           <Building2 className="me-1 h-3 w-3 shrink-0" />
                           <SelectValue placeholder={isAr ? "تعيين مورد..." : "Assign vendor..."} />
                         </SelectTrigger>
