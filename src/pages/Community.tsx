@@ -81,7 +81,7 @@ export default function Community() {
           <div className="flex-1 min-w-0 border-x border-border min-h-screen">
             <CommunityMobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-            {activeTab === "feed" && <CommunityFeed />}
+            {(activeTab === "feed" || activeTab === "bookmarks") && <CommunityFeed />}
             {activeTab === "chefs" && <div className="p-4"><ChefsTab /></div>}
             {activeTab === "recipes" && <div className="p-4"><RecipesTab /></div>}
             {activeTab === "groups" && <div className="p-4"><GroupsTab /></div>}

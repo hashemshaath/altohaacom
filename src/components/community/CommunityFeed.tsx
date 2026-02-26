@@ -15,6 +15,8 @@ import { StoriesBar } from "./StoriesBar";
 import { FeedRecommendations } from "./FeedRecommendations";
 import { PostEditHistory } from "./PostEditHistory";
 import { PostCard } from "./PostCard";
+import { FeedTabs, type FeedFilter } from "./FeedTabs";
+import { NewPostsBanner } from "./NewPostsBanner";
 
 export interface CommunityPost {
   id: string;
@@ -62,7 +64,33 @@ export function CommunityFeed() {
   const [reportPostId, setReportPostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
   const [historyPostId, setHistoryPostId] = useState<string | null>(null);
+  const [feedFilter, setFeedFilter] = useState<FeedFilter>("for_you");
+  const [newPostsCount, setNewPostsCount] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const feedTopRef = useRef<HTMLDivElement>(null);
+
+  // Real-time new posts counter
+  useEffect(() => {
+    const channel = supabase
+      .channel("community-new-posts")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "posts",
+          filter: "reply_to_post_id=is.null",
+        },
+        (payload) => {
+          if (payload.new && (payload.new as any).author_id !== user?.id) {
+            setNewPostsCount((prev) => prev + 1);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id]);
 
   const enrichPosts = useCallback(async (postsData: any[]) => {
     if (!postsData.length) return [];
@@ -128,39 +156,121 @@ export function CommunityFeed() {
     if (offset === 0) setLoading(true);
     else setLoadingMore(true);
 
-    let query = supabase
-      .from("posts")
-      .select("*")
-      .is("group_id", null)
-      .is("reply_to_post_id", null)
-      .eq("moderation_status", "approved");
+    try {
+      // Bookmarks filter
+      if (feedFilter === "bookmarks" && user) {
+        const { data: bookmarkData } = await supabase
+          .from("post_bookmarks")
+          .select("post_id")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .range(offset, offset + PAGE_SIZE - 1);
 
-    if (tagFilter) {
-      query = query.ilike("content", `%#${tagFilter}%`);
+        const bookmarkedIds = bookmarkData?.map((b) => b.post_id) || [];
+        if (bookmarkedIds.length === 0) {
+          setPosts([]);
+          setHasMore(false);
+          setLoading(false);
+          setLoadingMore(false);
+          return;
+        }
+
+        const { data: postsData } = await supabase
+          .from("posts")
+          .select("*")
+          .in("id", bookmarkedIds)
+          .eq("moderation_status", "approved");
+
+        const enriched = await enrichPosts(postsData || []);
+        // Sort by bookmark order
+        const idOrder = new Map(bookmarkedIds.map((id, i) => [id, i]));
+        enriched.sort((a, b) => (idOrder.get(a.id) ?? 0) - (idOrder.get(b.id) ?? 0));
+
+        if (append) setPosts((prev) => [...prev, ...enriched]);
+        else setPosts(enriched);
+        setHasMore((bookmarkData?.length || 0) >= PAGE_SIZE);
+        setLoading(false);
+        setLoadingMore(false);
+        return;
+      }
+
+      // Following filter
+      if (feedFilter === "following" && user) {
+        const { data: followData } = await supabase
+          .from("user_follows")
+          .select("following_id")
+          .eq("follower_id", user.id);
+
+        const followingIds = followData?.map((f) => f.following_id) || [];
+        if (followingIds.length === 0) {
+          setPosts([]);
+          setHasMore(false);
+          setLoading(false);
+          setLoadingMore(false);
+          return;
+        }
+
+        const { data: postsData } = await supabase
+          .from("posts")
+          .select("*")
+          .is("group_id", null)
+          .is("reply_to_post_id", null)
+          .eq("moderation_status", "approved")
+          .in("author_id", followingIds)
+          .order("created_at", { ascending: false })
+          .range(offset, offset + PAGE_SIZE - 1);
+
+        const enriched = await enrichPosts(postsData || []);
+        if (append) setPosts((prev) => [...prev, ...enriched]);
+        else setPosts(enriched);
+        setHasMore((postsData?.length || 0) >= PAGE_SIZE);
+        setLoading(false);
+        setLoadingMore(false);
+        return;
+      }
+
+      // Default: For You / Latest
+      let query = supabase
+        .from("posts")
+        .select("*")
+        .is("group_id", null)
+        .is("reply_to_post_id", null)
+        .eq("moderation_status", "approved");
+
+      if (tagFilter) {
+        query = query.ilike("content", `%#${tagFilter}%`);
+      }
+
+      if (feedFilter === "for_you") {
+        query = query
+          .order("is_pinned", { ascending: false })
+          .order("created_at", { ascending: false });
+      } else {
+        query = query.order("created_at", { ascending: false });
+      }
+
+      const { data: postsData, error } = await query.range(offset, offset + PAGE_SIZE - 1);
+
+      if (error) { setLoading(false); setLoadingMore(false); return; }
+
+      const enriched = await enrichPosts(postsData || []);
+
+      if (append) {
+        setPosts((prev) => [...prev, ...enriched]);
+      } else {
+        setPosts(enriched);
+      }
+      setHasMore((postsData?.length || 0) >= PAGE_SIZE);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
-
-    const { data: postsData, error } = await query
-      .order("is_pinned", { ascending: false })
-      .order("created_at", { ascending: false })
-      .range(offset, offset + PAGE_SIZE - 1);
-
-    if (error) { setLoading(false); setLoadingMore(false); return; }
-
-    const enriched = await enrichPosts(postsData || []);
-
-    if (append) {
-      setPosts((prev) => [...prev, ...enriched]);
-    } else {
-      setPosts(enriched);
-    }
-    setHasMore((postsData?.length || 0) >= PAGE_SIZE);
-    setLoading(false);
-    setLoadingMore(false);
-  }, [user, tagFilter, enrichPosts]);
+  }, [user, tagFilter, enrichPosts, feedFilter]);
 
   useEffect(() => {
     setPosts([]);
     setHasMore(true);
+    setNewPostsCount(0);
     fetchPosts(0, false);
   }, [fetchPosts]);
 
@@ -179,73 +289,101 @@ export function CommunityFeed() {
     return () => observer.disconnect();
   }, [hasMore, loading, loadingMore, posts.length, fetchPosts]);
 
+  // Optimistic like
   const handleLike = async (postId: string, isLiked: boolean) => {
     if (!user) return;
-    if (isLiked) {
-      await supabase.from("post_likes").delete().eq("post_id", postId).eq("user_id", user.id);
-    } else {
-      await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
-    }
+    // Optimistic update
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId ? { ...p, is_liked: !isLiked, likes_count: isLiked ? p.likes_count - 1 : p.likes_count + 1 } : p
       )
     );
+    const { error } = isLiked
+      ? await supabase.from("post_likes").delete().eq("post_id", postId).eq("user_id", user.id)
+      : await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
+    if (error) {
+      // Rollback
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId ? { ...p, is_liked: isLiked, likes_count: isLiked ? p.likes_count + 1 : p.likes_count - 1 } : p
+        )
+      );
+    }
   };
 
+  // Optimistic bookmark
   const handleBookmark = async (postId: string, isBookmarked: boolean) => {
     if (!user) return;
-    if (isBookmarked) {
-      await supabase.from("post_bookmarks").delete().eq("post_id", postId).eq("user_id", user.id);
-    } else {
-      await supabase.from("post_bookmarks").insert({ post_id: postId, user_id: user.id });
-    }
     setPosts((prev) =>
       prev.map((p) => p.id === postId ? { ...p, is_bookmarked: !isBookmarked } : p)
     );
+    const { error } = isBookmarked
+      ? await supabase.from("post_bookmarks").delete().eq("post_id", postId).eq("user_id", user.id)
+      : await supabase.from("post_bookmarks").insert({ post_id: postId, user_id: user.id });
+    if (error) {
+      setPosts((prev) =>
+        prev.map((p) => p.id === postId ? { ...p, is_bookmarked: isBookmarked } : p)
+      );
+    }
   };
 
+  // Optimistic repost
   const handleRepost = async (postId: string, isReposted: boolean) => {
     if (!user) return;
-    if (isReposted) {
-      await supabase.from("post_reposts").delete().eq("post_id", postId).eq("user_id", user.id);
-    } else {
-      await supabase.from("post_reposts").insert({ post_id: postId, user_id: user.id });
-    }
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId ? { ...p, is_reposted: !isReposted, reposts_count: isReposted ? p.reposts_count - 1 : p.reposts_count + 1 } : p
       )
     );
+    const { error } = isReposted
+      ? await supabase.from("post_reposts").delete().eq("post_id", postId).eq("user_id", user.id)
+      : await supabase.from("post_reposts").insert({ post_id: postId, user_id: user.id });
+    if (error) {
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId ? { ...p, is_reposted: isReposted, reposts_count: isReposted ? p.reposts_count + 1 : p.reposts_count - 1 } : p
+        )
+      );
+    }
   };
 
   const handleDelete = async (postId: string) => {
     if (!user) return;
     const deletedPost = posts.find((p) => p.id === postId);
+    // Optimistic remove
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
     const { error } = await supabase.from("posts").delete().eq("id", postId).eq("author_id", user.id);
-    if (!error) {
-      if (deletedPost) {
-        supabase.from("content_audit_log").insert({
-          action_type: "post_deleted",
-          entity_type: "post",
-          entity_id: postId,
-          user_id: user.id,
-          author_id: deletedPost.author_id,
-          content_snapshot: deletedPost.content,
-          image_urls: deletedPost.image_urls || [],
-          reason: "User deleted own post",
-          reason_ar: "حذف المستخدم منشوره",
-        }).then(() => {});
-      }
-      setPosts((prev) => prev.filter((p) => p.id !== postId));
-      toast({ title: isAr ? "تم حذف المنشور" : "Post deleted" });
+    if (error) {
+      // Rollback
+      if (deletedPost) setPosts((prev) => [...prev, deletedPost].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+      return;
     }
+    if (deletedPost) {
+      supabase.from("content_audit_log").insert({
+        action_type: "post_deleted",
+        entity_type: "post",
+        entity_id: postId,
+        user_id: user.id,
+        author_id: deletedPost.author_id,
+        content_snapshot: deletedPost.content,
+        image_urls: deletedPost.image_urls || [],
+        reason: "User deleted own post",
+        reason_ar: "حذف المستخدم منشوره",
+      }).then(() => {});
+    }
+    toast({ title: isAr ? "تم حذف المنشور" : "Post deleted" });
   };
 
   const handleEditSaved = (postId: string, newContent: string) => {
     setPosts((prev) =>
       prev.map((p) => p.id === postId ? { ...p, content: newContent, edited_at: new Date().toISOString() } : p)
     );
+  };
+
+  const handleLoadNewPosts = () => {
+    setNewPostsCount(0);
+    fetchPosts(0, false);
+    feedTopRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const formatDate = (dateStr: string) => {
@@ -265,6 +403,7 @@ export function CommunityFeed() {
   if (loading) {
     return (
       <div className="space-y-0 divide-y divide-border">
+        <FeedTabs active={feedFilter} onChange={setFeedFilter} isLoggedIn={!!user} />
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="px-4 py-3">
             <div className="flex gap-3">
@@ -283,6 +422,8 @@ export function CommunityFeed() {
 
   return (
     <>
+      <div ref={feedTopRef} />
+
       {/* Tag filter banner */}
       {tagFilter && (
         <div className="flex items-center gap-2 border-b border-border px-4 py-3 bg-primary/5">
@@ -299,11 +440,19 @@ export function CommunityFeed() {
         </div>
       )}
 
+      {/* Feed Tabs */}
+      {!tagFilter && <FeedTabs active={feedFilter} onChange={setFeedFilter} isLoggedIn={!!user} />}
+
+      {/* New posts banner */}
+      {newPostsCount > 0 && feedFilter !== "bookmarks" && (
+        <NewPostsBanner count={newPostsCount} onClick={handleLoadNewPosts} />
+      )}
+
       {/* Stories */}
-      {!tagFilter && <StoriesBar />}
+      {!tagFilter && feedFilter === "for_you" && <StoriesBar />}
 
       {/* Composer */}
-      {user && !tagFilter && (
+      {user && !tagFilter && feedFilter !== "bookmarks" && (
         <PostComposer
           onPosted={() => fetchPosts(0, false)}
           replyToPostId={null}
@@ -312,7 +461,7 @@ export function CommunityFeed() {
       )}
 
       {/* AI Recommendations */}
-      {!tagFilter && <FeedRecommendations />}
+      {!tagFilter && feedFilter === "for_you" && <FeedRecommendations />}
 
       {/* Feed */}
       <div className="divide-y divide-border">
@@ -322,9 +471,13 @@ export function CommunityFeed() {
               <MessageCircle className="h-7 w-7 text-muted-foreground/40" />
             </div>
             <p className="text-sm text-muted-foreground">
-              {tagFilter
-                ? (isAr ? `لا توجد منشورات بهاشتاق #${tagFilter}` : `No posts with #${tagFilter}`)
-                : (isAr ? "لا توجد منشورات. كن أول من ينشر!" : "No posts yet. Be the first to share!")}
+              {feedFilter === "bookmarks"
+                ? (isAr ? "لا توجد منشورات محفوظة" : "No saved posts yet")
+                : feedFilter === "following"
+                  ? (isAr ? "لا توجد منشورات من المتابَعين" : "No posts from people you follow")
+                  : tagFilter
+                    ? (isAr ? `لا توجد منشورات بهاشتاق #${tagFilter}` : `No posts with #${tagFilter}`)
+                    : (isAr ? "لا توجد منشورات. كن أول من ينشر!" : "No posts yet. Be the first to share!")}
             </p>
           </div>
         ) : (

@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
-  Newspaper, CalendarDays, UsersRound, UserPlus, Users, BookOpen, Radio,
+  Newspaper, CalendarDays, UsersRound, UserPlus, Users, BookOpen, Radio, Bookmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CommunityTab } from "./CommunityLeftSidebar";
@@ -22,8 +22,9 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
     { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
     { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
     { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
-    { id: "live", label: isAr ? "جلسات مباشرة" : "Live Sessions", icon: Radio },
-    { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
+    { id: "live", label: isAr ? "مباشرة" : "Live", icon: Radio },
+    { id: "bookmarks", label: isAr ? "المحفوظات" : "Saved", icon: Bookmark, requiresAuth: true },
+    { id: "network", label: isAr ? "شبكتي" : "Network", icon: UserPlus, requiresAuth: true },
   ];
 
   return (

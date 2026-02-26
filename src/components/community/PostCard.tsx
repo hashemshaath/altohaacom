@@ -61,7 +61,7 @@ export function PostCard({
   return (
     <article
       className={cn(
-        "transition-colors",
+        "transition-colors duration-200 animate-in fade-in-50",
         !isEditing && "px-4 py-3 hover:bg-muted/30 cursor-pointer",
         post.is_pinned && "bg-primary/5"
       )}

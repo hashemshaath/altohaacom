@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
+import { ActivitySidebar } from "./ActivitySidebar";
 import {
   Search, TrendingUp, Hash, UserPlus, Sparkles,
   PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen,
@@ -149,6 +150,9 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
               ))}
             </div>
           </div>
+
+          {/* Activity Feed */}
+          <ActivitySidebar />
 
           {/* Who to Follow */}
           {suggestedUsers.length > 0 && (

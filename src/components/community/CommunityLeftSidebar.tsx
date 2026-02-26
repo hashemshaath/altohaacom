@@ -7,12 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
-  Activity, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio,
+  Activity, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live";
+export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live" | "bookmarks";
 
 interface CommunityLeftSidebarProps {
   activeTab: CommunityTab;
@@ -67,6 +67,7 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
     { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
     { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
     { id: "live", label: isAr ? "جلسات مباشرة" : "Live Sessions", icon: Radio },
+    { id: "bookmarks", label: isAr ? "المحفوظات" : "Bookmarks", icon: Bookmark, requiresAuth: true },
     { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
   ];
 
