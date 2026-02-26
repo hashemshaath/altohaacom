@@ -5,10 +5,12 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import {
@@ -25,6 +27,7 @@ import {
   ChevronDown,
   LayoutDashboard,
   Settings,
+  Crown,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -40,6 +43,12 @@ interface MobileMenuProps {
   primaryNav: NavLink[];
   moreLinks: NavLink[];
 }
+
+const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
+  basic: { en: "Basic", ar: "أساسي", color: "bg-muted text-muted-foreground" },
+  professional: { en: "Professional", ar: "محترف", color: "bg-primary/10 text-primary" },
+  enterprise: { en: "Enterprise", ar: "مؤسسات", color: "bg-chart-4/15 text-chart-4" },
+};
 
 export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
   const { user, signOut } = useAuth();
@@ -62,7 +71,7 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
       if (!user) return null;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, avatar_url")
+        .select("full_name, full_name_ar, display_name, display_name_ar, avatar_url, username, membership_tier")
         .eq("user_id", user.id)
         .single();
       return data;
@@ -71,9 +80,10 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
     staleTime: 60000,
   });
 
-  const initials = profile?.full_name
-    ? profile.full_name.split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase()
-    : user?.email?.[0]?.toUpperCase() || "U";
+  const displayName = getDisplayName(profile, isAr, user?.email?.split("@")[0] || "");
+  const initials = getDisplayInitial(profile, isAr);
+  const tier = (profile as any)?.membership_tier;
+  const tierInfo = tier ? tierLabels[tier] : null;
 
   const isActive = (path: string) =>
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
@@ -142,16 +152,21 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
               <Link to="/profile" onClick={() => setOpen(false)} className="block border-b hover:bg-muted/20 transition-colors">
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-sm">
-                    <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || ""} />
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
                     <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
-                    {profile?.full_name && (
-                      <p className="text-sm font-semibold truncate">{profile.full_name}</p>
+                    <p className="text-sm font-semibold truncate">{displayName}</p>
+                    {tierInfo ? (
+                      <Badge variant="secondary" className={`mt-0.5 text-[10px] h-4 px-1.5 ${tierInfo.color}`}>
+                        <Crown className="h-2.5 w-2.5 me-0.5" />
+                        {isAr ? tierInfo.ar : tierInfo.en}
+                      </Badge>
+                    ) : (
+                      <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                     )}
-                    <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
                 </div>
