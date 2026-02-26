@@ -34,6 +34,10 @@ import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
 import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
+import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
+import { SectionPresets } from "@/components/admin/settings/homepage/SectionPresets";
+import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
+import { useHomepageSections, useUpdateHomepageSection } from "@/hooks/useHomepageSections";
 
 const tabs = [
   { value: "branding", icon: Globe, en: "Branding", ar: "العلامة التجارية", descEn: "Logo, name & identity", descAr: "الشعار والاسم والهوية" },
@@ -57,6 +61,8 @@ export default function SystemSettings() {
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("branding");
   const { settings, isLoading, saveSetting } = useSiteSettings();
+  const { data: homepageSections = [] } = useHomepageSections();
+  const updateSection = useUpdateHomepageSection();
 
   const handleSave = (key: string, value: Record<string, any>, category?: string) => {
     saveSetting.mutate({ key, value, category });
@@ -254,7 +260,24 @@ export default function SystemSettings() {
                   </CardContent>
                 </Card>
               </div>
-              <HomepageSectionsManager />
+
+              {/* Main content + sidebar */}
+              <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+                <HomepageSectionsManager />
+                <div className="space-y-4">
+                  <HomepageLivePreview sections={homepageSections} isAr={isAr} />
+                  <SectionPresets
+                    isAr={isAr}
+                    isPending={updateSection.isPending}
+                    onApply={(config) => {
+                      // Apply preset to all visible sections
+                      homepageSections.filter(s => s.is_visible).forEach(s => {
+                        updateSection.mutate({ id: s.id, ...config });
+                      });
+                    }}
+                  />
+                </div>
+              </div>
             </TabsContent>
 
             <TabsContent value="cover" className="mt-0">
@@ -304,6 +327,9 @@ export default function SystemSettings() {
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* Import/Export */}
+          <SettingsImportExport />
         </>
       )}
     </div>
