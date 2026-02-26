@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { OnlineCountBadge } from "./PresenceIndicator";
 
 export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live" | "bookmarks";
 
@@ -133,6 +134,7 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
             <Activity className="h-3.5 w-3.5 text-primary" />
             {isAr ? "إحصائيات المجتمع" : "Community Stats"}
           </h3>
+          <OnlineCountBadge className="mb-2.5" />
           <div className="space-y-2.5">
             {[
               { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
