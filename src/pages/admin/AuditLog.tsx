@@ -17,7 +17,11 @@ import {
   FileText, Trash2, ShieldAlert, Search, Download, Filter,
   Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { format, subDays, isAfter } from "date-fns";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 interface AdminAction {
   id: string;
@@ -128,6 +132,29 @@ export default function AuditLog() {
     return [...new Set(contentAudit.map(c => c.action_type))].sort();
   }, [contentAudit]);
 
+  const bulkAdmin = useAdminBulkActions(filteredActions);
+  const bulkContent = useAdminBulkActions(filteredContent);
+
+  const { exportCSV: exportAdminCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: AdminAction) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+      { header: isAr ? "الإجراء" : "Action", accessor: (r: AdminAction) => r.action_type },
+      { header: isAr ? "التفاصيل" : "Details", accessor: (r: AdminAction) => JSON.stringify(r.details || "") },
+    ],
+    filename: "audit-admin",
+  });
+
+  const { exportCSV: exportContentCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: ContentAuditEntry) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+      { header: isAr ? "الإجراء" : "Action", accessor: (r: ContentAuditEntry) => r.action_type },
+      { header: isAr ? "النوع" : "Entity", accessor: (r: ContentAuditEntry) => r.entity_type || "" },
+      { header: isAr ? "المحتوى" : "Content", accessor: (r: ContentAuditEntry) => r.content_snapshot || "" },
+      { header: isAr ? "السبب" : "Reason", accessor: (r: ContentAuditEntry) => (isAr ? r.reason_ar : r.reason) || "" },
+    ],
+    filename: "audit-content",
+  });
+
   const getActionBadge = (actionType: string) => {
     const colors: Record<string, string> = {
       suspend_user: "bg-destructive/10 text-destructive",
@@ -155,25 +182,7 @@ export default function AuditLog() {
     return <Badge className={c.color} variant="outline">{isAr ? c.labelAr : c.label}</Badge>;
   };
 
-  const exportAuditCSV = (type: "admin" | "content") => {
-    const data = type === "admin" ? filteredActions : filteredContent;
-    const headers = type === "admin"
-      ? ["Date", "Action", "Details"]
-      : ["Date", "Action", "Content", "Reason"];
-    const rows = data.map(d =>
-      type === "admin"
-        ? [format(new Date(d.created_at), "yyyy-MM-dd HH:mm"), (d as AdminAction).action_type, JSON.stringify((d as AdminAction).details || "")]
-        : [format(new Date(d.created_at), "yyyy-MM-dd HH:mm"), (d as ContentAuditEntry).action_type, (d as ContentAuditEntry).content_snapshot || "", (d as ContentAuditEntry).reason || ""]
-    );
-    const csv = "\uFEFF" + [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `audit-${type}-${format(new Date(), "yyyyMMdd")}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  // legacy export removed – now using useCSVExport
 
   return (
     <div className="space-y-6">
@@ -241,6 +250,11 @@ export default function AuditLog() {
         </TabsList>
 
         <TabsContent value="content">
+          <BulkActionBar
+            count={bulkContent.count}
+            onClear={bulkContent.clearSelection}
+            onExport={() => exportContentCSV(bulkContent.selectedItems)}
+          />
           <Card className="border-border/50">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -248,7 +262,7 @@ export default function AuditLog() {
                   <Trash2 className="h-4 w-4 text-destructive" />
                   {isAr ? "سجل الحذف والرفض" : "Deletions & Rejections Log"}
                 </CardTitle>
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => exportAuditCSV("content")}>
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => exportContentCSV(filteredContent)}>
                   <Download className="h-3.5 w-3.5" /> CSV
                 </Button>
               </div>
@@ -279,7 +293,8 @@ export default function AuditLog() {
                 <ScrollArea className="max-h-[600px]">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                     <TableRow>
+                        <TableHead className="w-8"><Checkbox checked={bulkContent.isAllSelected} onCheckedChange={bulkContent.toggleAll} /></TableHead>
                         <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "النوع" : "Entity"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "المحتوى" : "Content"}</TableHead>
@@ -289,9 +304,9 @@ export default function AuditLog() {
                     </TableHeader>
                     <TableBody>
                       {filteredContent.map(entry => (
-                        <TableRow key={entry.id}>
+                        <TableRow key={entry.id} className={bulkContent.isSelected(entry.id) ? "bg-primary/5" : ""}>
+                          <TableCell><Checkbox checked={bulkContent.isSelected(entry.id)} onCheckedChange={() => bulkContent.toggleOne(entry.id)} /></TableCell>
                           <TableCell>{getContentActionBadge(entry.action_type)}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground">{entry.entity_type || "—"}</TableCell>
                           <TableCell className="max-w-[200px] truncate text-xs text-muted-foreground">{entry.content_snapshot || "—"}</TableCell>
                           <TableCell className="max-w-[200px] truncate text-xs text-muted-foreground">
                             {isAr ? (entry.reason_ar || entry.reason) : (entry.reason || "—")}
@@ -310,11 +325,16 @@ export default function AuditLog() {
         </TabsContent>
 
         <TabsContent value="admin">
+          <BulkActionBar
+            count={bulkAdmin.count}
+            onClear={bulkAdmin.clearSelection}
+            onExport={() => exportAdminCSV(bulkAdmin.selectedItems)}
+          />
           <Card className="border-border/50">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="text-sm">{isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}</CardTitle>
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => exportAuditCSV("admin")}>
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => exportAdminCSV(filteredActions)}>
                   <Download className="h-3.5 w-3.5" /> CSV
                 </Button>
               </div>
@@ -346,6 +366,7 @@ export default function AuditLog() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-8"><Checkbox checked={bulkAdmin.isAllSelected} onCheckedChange={bulkAdmin.toggleAll} /></TableHead>
                         <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "التفاصيل" : "Details"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
@@ -353,7 +374,8 @@ export default function AuditLog() {
                     </TableHeader>
                     <TableBody>
                       {filteredActions.map(action => (
-                        <TableRow key={action.id}>
+                        <TableRow key={action.id} className={bulkAdmin.isSelected(action.id) ? "bg-primary/5" : ""}>
+                          <TableCell><Checkbox checked={bulkAdmin.isSelected(action.id)} onCheckedChange={() => bulkAdmin.toggleOne(action.id)} /></TableCell>
                           <TableCell>{getActionBadge(action.action_type)}</TableCell>
                           <TableCell className="max-w-xs truncate text-xs text-muted-foreground">
                             {action.details ? JSON.stringify(action.details) : "—"}

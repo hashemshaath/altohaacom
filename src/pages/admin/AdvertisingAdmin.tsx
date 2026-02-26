@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
@@ -25,6 +26,9 @@ import { SnapPixelPanel } from "@/components/ads/SnapPixelPanel";
 import { AdAIInsightsPanel } from "@/components/ads/AdAIInsightsPanel";
 import { AdAdvancedReporting } from "@/components/ads/AdAdvancedReporting";
 import { AdRejectionDialog } from "@/components/ads/AdRejectionDialog";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -267,6 +271,22 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const pendingCampaigns = campaigns.filter(c => c.status === "pending_approval");
   const pendingCreatives = creatives.filter(c => c.status === "pending");
 
+  const bulkCampaigns = useAdminBulkActions(campaigns);
+
+  const { exportCSV: exportCampaignsCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الشركة" : "Company", accessor: (r: any) => isAr ? r.companies?.name_ar : r.companies?.name },
+      { header: isAr ? "الحملة" : "Campaign", accessor: (r: any) => isAr ? r.name_ar || r.name : r.name },
+      { header: isAr ? "النموذج" : "Model", accessor: (r: any) => r.billing_model },
+      { header: isAr ? "الميزانية" : "Budget", accessor: (r: any) => r.budget },
+      { header: isAr ? "المصروف" : "Spent", accessor: (r: any) => r.spent },
+      { header: isAr ? "المشاهدات" : "Impressions", accessor: (r: any) => r.total_impressions || 0 },
+      { header: isAr ? "النقرات" : "Clicks", accessor: (r: any) => r.total_clicks || 0 },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+    ],
+    filename: "ad-campaigns",
+  });
+
   return (
     <div ref={ref} className="space-y-4 sm:space-y-6">
       <AdminPageHeader
@@ -401,6 +421,11 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
 
         {/* Campaigns Tab */}
         <TabsContent value="campaigns">
+          <BulkActionBar
+            count={bulkCampaigns.count}
+            onClear={bulkCampaigns.clearSelection}
+            onExport={() => exportCampaignsCSV(bulkCampaigns.selectedItems)}
+          />
           <Card>
             <CardHeader><CardTitle>{isAr ? "الحملات الإعلانية" : "Ad Campaigns"}</CardTitle></CardHeader>
             <CardContent>
@@ -410,6 +435,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-8"><Checkbox checked={bulkCampaigns.isAllSelected} onCheckedChange={bulkCampaigns.toggleAll} /></TableHead>
                       <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
                       <TableHead>{isAr ? "الحملة" : "Campaign"}</TableHead>
                       <TableHead>{isAr ? "النموذج" : "Model"}</TableHead>
@@ -422,7 +448,8 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                   </TableHeader>
                   <TableBody>
                     {campaigns.map((c: any) => (
-                      <TableRow key={c.id}>
+                      <TableRow key={c.id} className={bulkCampaigns.isSelected(c.id) ? "bg-primary/5" : ""}>
+                        <TableCell><Checkbox checked={bulkCampaigns.isSelected(c.id)} onCheckedChange={() => bulkCampaigns.toggleOne(c.id)} /></TableCell>
                         <TableCell>{isAr ? c.companies?.name_ar : c.companies?.name}</TableCell>
                         <TableCell className="font-medium">{isAr ? c.name_ar || c.name : c.name}</TableCell>
                         <TableCell><Badge variant="outline">{c.billing_model}</Badge></TableCell>

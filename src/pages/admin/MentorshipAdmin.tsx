@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -40,6 +41,9 @@ import {
   User,
   TrendingUp,
 } from "lucide-react";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 export default function MentorshipAdmin() {
   const { language } = useLanguage();
@@ -67,6 +71,19 @@ export default function MentorshipAdmin() {
 
   const pendingApps = applications.filter(a => a.status === "pending");
   const approvedMentors = applications.filter(a => a.status === "approved");
+
+  const bulkApps = useAdminBulkActions(applications);
+
+  const { exportCSV: exportAppsCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => r.profile?.full_name || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "سنوات الخبرة" : "Experience", accessor: (r: any) => r.years_experience },
+      { header: isAr ? "التخصصات" : "Expertise", accessor: (r: any) => (r.expertise || []).join(", ") },
+      { header: isAr ? "النبذة" : "Bio", accessor: (r: any) => r.bio || "" },
+    ],
+    filename: "mentor-applications",
+  });
   const pendingEnrollments = enrollments.filter(e => e.status === "pending");
 
   const statusColors: Record<string, string> = {
@@ -214,13 +231,22 @@ export default function MentorshipAdmin() {
 
         {/* Applications Tab */}
         <TabsContent value="applications" className="mt-4 space-y-3">
+          <BulkActionBar
+            count={bulkApps.count}
+            onClear={bulkApps.clearSelection}
+            onExport={() => exportAppsCSV(bulkApps.selectedItems)}
+          />
           {applications.length === 0 ? (
             <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد طلبات" : "No applications"}</CardContent></Card>
           ) : (
             applications.map(app => (
-              <Card key={app.id}>
+              <Card key={app.id} className={bulkApps.isSelected(app.id) ? "ring-1 ring-primary/30" : ""}>
                 <CardContent className="flex items-center justify-between py-4">
                   <div className="flex items-center gap-3">
+                    <Checkbox
+                      checked={bulkApps.isSelected(app.id)}
+                      onCheckedChange={() => bulkApps.toggleOne(app.id)}
+                    />
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={app.profile?.avatar_url || ""} />
                       <AvatarFallback><User className="h-4 w-4" /></AvatarFallback>
