@@ -220,14 +220,20 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
           </div>
         ) : (
           /* ─── Modern Cards View ─── */
-          <div className="space-y-3">
+          <div className="w-full">
             {upcoming.length === 0 ? (
               <div className="text-center py-10">
                 <Calendar className="h-10 w-10 text-muted-foreground/15 mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground">{isAr ? "لا توجد فعاليات قادمة" : "No upcoming events"}</p>
               </div>
             ) : (
-              upcoming.map(ev => <HomeListEventCard key={ev.id} event={ev} isAr={isAr} />)
+              <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin">
+                {upcoming.map(ev => (
+                  <div key={ev.id} className="min-w-[320px] max-w-[380px] shrink-0 snap-start">
+                    <HomeListEventCard event={ev} isAr={isAr} />
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}
