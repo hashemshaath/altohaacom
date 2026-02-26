@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { IdentityCard } from "@/components/profile/IdentityCard";
-import { UserCompetitionStats } from "@/components/profile/UserCompetitionStats";
+import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
+import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
 import { FileText, Globe } from "lucide-react";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
@@ -58,14 +59,19 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
         <UserCareerTimeline userId={userId} isAr={isAr} />
       </section>
 
-      {/* Competition Stats */}
+      {/* Certificates */}
       <section>
-        <UserCompetitionStats userId={userId} />
+        <ProfileCertificates userId={userId} isOwner={true} />
       </section>
 
       {/* Badges */}
       <section>
         <UserBadgesDisplay userId={userId} />
+      </section>
+
+      {/* Recent Activity */}
+      <section>
+        <ProfileActivityTimeline userId={userId} />
       </section>
 
       {/* Social Links */}
