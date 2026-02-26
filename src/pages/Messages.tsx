@@ -10,14 +10,14 @@ import { PageShell } from "@/components/PageShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Settings, Bell, Users, Search } from "lucide-react";
+import { MessageSquare, Settings, Bell, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Messages() {
   const data = useMessagesData();
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const t = (en: string, ar: string) => isAr ? ar : en;
+  const t = (en: string, ar: string) => (isAr ? ar : en);
 
   return (
     <PageShell title="Messages" footer={false} padding="none" container={false}>
@@ -31,10 +31,10 @@ export default function Messages() {
               </div>
               <div>
                 <h1 className="text-lg font-bold tracking-tight md:text-xl">
-                  {t("الرسائل", "Messages")}
+                  {t("Messages", "الرسائل")}
                 </h1>
                 <p className="text-xs text-muted-foreground">
-                  {t("تواصل مع زملائك ومجتمعك", "Connect with your peers and community")}
+                  {t("Connect with your peers and community", "تواصل مع زملائك ومجتمعك")}
                 </p>
               </div>
             </div>
@@ -43,7 +43,7 @@ export default function Messages() {
               {data.counts.unread > 0 && (
                 <Badge className="gap-1 text-xs px-3 py-1 animate-pulse">
                   <Bell className="h-3 w-3" />
-                  {data.counts.unread} {t("غير مقروءة", "unread")}
+                  {data.counts.unread} {t("unread", "غير مقروءة")}
                 </Badge>
               )}
               <div className="flex items-center gap-1 rounded-lg border bg-card p-1">
