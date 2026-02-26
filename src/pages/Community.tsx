@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,18 +6,31 @@ import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { CommunityFeed } from "@/components/community/CommunityFeed";
-import { ChefsTab } from "@/components/community/ChefsTab";
-import { GroupsTab } from "@/components/community/GroupsTab";
-import { RecipesTab } from "@/components/community/RecipesTab";
-import { EventsTab } from "@/components/community/EventsTab";
-import { NetworkTab } from "@/components/community/NetworkTab";
-import { LiveSessionsTab } from "@/components/community/LiveSessionsTab";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
 import { CommunityRightSidebar } from "@/components/community/CommunityRightSidebar";
 import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs";
 import { Users } from "lucide-react";
+
+// Lazy load heavy tabs
+const ChefsTab = lazy(() => import("@/components/community/ChefsTab").then(m => ({ default: m.ChefsTab })));
+const GroupsTab = lazy(() => import("@/components/community/GroupsTab").then(m => ({ default: m.GroupsTab })));
+const RecipesTab = lazy(() => import("@/components/community/RecipesTab").then(m => ({ default: m.RecipesTab })));
+const EventsTab = lazy(() => import("@/components/community/EventsTab").then(m => ({ default: m.EventsTab })));
+const NetworkTab = lazy(() => import("@/components/community/NetworkTab").then(m => ({ default: m.NetworkTab })));
+const LiveSessionsTab = lazy(() => import("@/components/community/LiveSessionsTab").then(m => ({ default: m.LiveSessionsTab })));
+
+function TabFallback() {
+  return (
+    <div className="p-4 space-y-3">
+      <Skeleton className="h-8 w-48" />
+      <Skeleton className="h-32 w-full" />
+      <Skeleton className="h-32 w-full" />
+    </div>
+  );
+}
 
 export default function Community() {
   const { language } = useLanguage();
@@ -82,12 +95,12 @@ export default function Community() {
             <CommunityMobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {(activeTab === "feed" || activeTab === "bookmarks") && <CommunityFeed />}
-            {activeTab === "chefs" && <div className="p-4"><ChefsTab /></div>}
-            {activeTab === "recipes" && <div className="p-4"><RecipesTab /></div>}
-            {activeTab === "groups" && <div className="p-4"><GroupsTab /></div>}
-            {activeTab === "events" && <div className="p-4"><EventsTab /></div>}
-            {activeTab === "live" && <div className="p-4"><LiveSessionsTab /></div>}
-            {activeTab === "network" && user && <div className="p-4"><NetworkTab /></div>}
+            {activeTab === "chefs" && <Suspense fallback={<TabFallback />}><div className="p-4"><ChefsTab /></div></Suspense>}
+            {activeTab === "recipes" && <Suspense fallback={<TabFallback />}><div className="p-4"><RecipesTab /></div></Suspense>}
+            {activeTab === "groups" && <Suspense fallback={<TabFallback />}><div className="p-4"><GroupsTab /></div></Suspense>}
+            {activeTab === "events" && <Suspense fallback={<TabFallback />}><div className="p-4"><EventsTab /></div></Suspense>}
+            {activeTab === "live" && <Suspense fallback={<TabFallback />}><div className="p-4"><LiveSessionsTab /></div></Suspense>}
+            {activeTab === "network" && user && <Suspense fallback={<TabFallback />}><div className="p-4"><NetworkTab /></div></Suspense>}
           </div>
 
           <CommunityRightSidebar
