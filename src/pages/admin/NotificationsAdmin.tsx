@@ -29,6 +29,8 @@ import {
   CheckSquare, XSquare, Download, Sparkles,
 } from "lucide-react";
 import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 // ─── Types ─────────────────────────────────────────────────
 interface Segment {
@@ -244,6 +246,8 @@ export default function NotificationsAdmin() {
     if (recentStatusFilter !== "all") items = items.filter((n: any) => (n.status || "pending") === recentStatusFilter);
     return items;
   }, [recentNotifications, recentSearch, recentTypeFilter, recentChannelFilter, recentStatusFilter]);
+
+  const bulkRecent = useAdminBulkActions(filteredRecent);
 
   const filteredQueue = useMemo(() => {
     let items = queueItems;
@@ -467,6 +471,12 @@ export default function NotificationsAdmin() {
             </Button>
           </div>
 
+          <BulkActionBar
+            count={bulkRecent.count}
+            onClear={bulkRecent.clearSelection}
+            onExport={() => exportNotifications(bulkRecent.selectedItems)}
+          />
+
           <Card>
             <CardContent className="p-0">
               {loadingRecent ? (
@@ -476,6 +486,9 @@ export default function NotificationsAdmin() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-8">
+                          <Checkbox checked={bulkRecent.isAllSelected} onCheckedChange={bulkRecent.toggleAll} />
+                        </TableHead>
                         <TableHead className="w-8"></TableHead>
                         <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
                         <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
@@ -487,7 +500,10 @@ export default function NotificationsAdmin() {
                     <TableBody>
                       {filteredRecent.map((notif: any) => (
                         <>
-                          <TableRow key={notif.id} className="cursor-pointer" onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
+                          <TableRow key={notif.id} className={`cursor-pointer ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
+                            <TableCell onClick={e => e.stopPropagation()}>
+                              <Checkbox checked={bulkRecent.isSelected(notif.id)} onCheckedChange={() => bulkRecent.toggleOne(notif.id)} />
+                            </TableCell>
                             <TableCell>
                               {expandedNotifId === notif.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                             </TableCell>
