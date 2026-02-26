@@ -336,7 +336,7 @@ export default function CompetitionDetail() {
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
         <section className="relative overflow-hidden">
-          <div className="relative h-72 w-full sm:h-80 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-56 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
               <img
                 src={competition.cover_image_url}
@@ -358,8 +358,8 @@ export default function CompetitionDetail() {
 
           {/* Hero content bar — below image overlay */}
           <div className="absolute inset-x-0 bottom-0">
-            <div className="container pb-8 sm:pb-10">
-              <div className="max-w-4xl space-y-4 animate-fade-in">
+             <div className="container pb-5 sm:pb-8 md:pb-10">
+               <div className="max-w-4xl space-y-2.5 sm:space-y-4 animate-fade-in">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -394,7 +394,7 @@ export default function CompetitionDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="font-serif text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl lg:text-[3.5rem] text-foreground">
+                <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
                   {title}
                 </h1>
 
@@ -494,19 +494,19 @@ export default function CompetitionDetail() {
         {/* ─── Navigation Pills ─── */}
         <div className="sticky top-14 z-30 border-b border-border/30 bg-background/95 backdrop-blur-xl">
           <div className="container">
-            <div className="flex gap-1 overflow-x-auto py-2.5 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x">
+            <div className="flex gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={`
-                    snap-start inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation
+                    snap-start inline-flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation
                     ${activeSection === item.id
                       ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                       : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
                   `}
                 >
-                  <span className={activeSection === item.id ? "text-primary-foreground" : "text-primary/70"}>
+                  <span className={`hidden sm:inline ${activeSection === item.id ? "text-primary-foreground" : "text-primary/70"}`}>
                     {item.icon}
                   </span>
                   <span className="whitespace-nowrap">{item.label}</span>

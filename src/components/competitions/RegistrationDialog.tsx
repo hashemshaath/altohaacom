@@ -320,17 +320,19 @@ export function RegistrationForm({
   };
 
   return (
-    <Card className="border-primary/30 shadow-lg shadow-primary/5 overflow-hidden">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={onCancel}><ArrowLeft className="h-4 w-4" /></Button>
-          <div>
-            <CardTitle>{isAr ? "التسجيل في المسابقة" : "Register for Competition"}</CardTitle>
-            <CardDescription>{competitionTitle}</CardDescription>
+    <Card className="border-primary/15 shadow-xl shadow-primary/5 overflow-hidden rounded-2xl">
+      <CardHeader className="border-b border-border/30 bg-gradient-to-r from-primary/[0.04] to-transparent pb-4">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl shrink-0" onClick={onCancel}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="min-w-0">
+            <CardTitle className="text-base sm:text-lg">{isAr ? "التسجيل في المسابقة" : "Register for Competition"}</CardTitle>
+            <CardDescription className="truncate text-xs sm:text-sm">{competitionTitle}</CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Entry Type Selection */}
           {allowedTypes.length > 1 && (
@@ -346,7 +348,7 @@ export function RegistrationForm({
                       key={type}
                       type="button"
                       onClick={() => setEntryType(type)}
-                      className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition-all ${entryType === type ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary/30"}`}
+                      className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3 sm:p-4 text-xs font-semibold transition-all duration-300 ${entryType === type ? "border-primary bg-primary/5 text-primary shadow-sm shadow-primary/10" : "border-border/40 hover:border-primary/30 hover:bg-muted/20"}`}
                     >
                       <Icon className="h-5 w-5" />
                       {isAr ? config.labelAr : config.labelEn}
@@ -359,7 +361,7 @@ export function RegistrationForm({
 
           {/* Team Info */}
           {entryType === "team" && (
-            <div className="space-y-4 rounded-lg border p-4 bg-muted/20">
+            <div className="space-y-4 rounded-xl border border-border/30 p-4 bg-muted/10">
               <p className="text-sm font-semibold flex items-center gap-1.5">
                 <Users className="h-4 w-4 text-primary" />
                 {isAr ? "معلومات الفريق" : "Team Information"}
@@ -448,7 +450,7 @@ export function RegistrationForm({
 
           {/* Organization Info */}
           {entryType === "organization" && (
-            <div className="space-y-3 rounded-lg border p-4 bg-muted/20">
+            <div className="space-y-3 rounded-xl border border-border/30 p-4 bg-muted/10">
               <p className="text-sm font-semibold flex items-center gap-1.5">
                 <Building2 className="h-4 w-4 text-primary" />
                 {isAr ? "معلومات المنظمة" : "Organization Information"}
@@ -527,11 +529,13 @@ export function RegistrationForm({
             ) : (
               <div
                 onClick={() => !uploading && fileInputRef.current?.click()}
-                className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/25 bg-muted/30 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5"
+                className="flex h-36 sm:h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/20 bg-muted/20 transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 active:scale-[0.98]"
               >
-                <Camera className="mb-2 h-8 w-8 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">{isAr ? "انقر لإضافة صورة" : "Click to add a photo"}</p>
-                <p className="text-xs text-muted-foreground">{isAr ? "الحد الأقصى 5 ميجابايت" : "Max 5MB"}</p>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/8 mb-2">
+                  <Camera className="h-5 w-5 text-primary" />
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">{isAr ? "انقر لإضافة صورة" : "Click to add a photo"}</p>
+                <p className="text-[11px] text-muted-foreground/60 mt-0.5">{isAr ? "الحد الأقصى 5 ميجابايت" : "Max 5MB • JPG, PNG, WebP"}</p>
               </div>
             )}
           </div>
@@ -544,39 +548,41 @@ export function RegistrationForm({
 
           {/* Fee Summary */}
           {isPaid && (
-            <div className="rounded-lg border bg-muted/30 p-4 space-y-2">
-              <p className="text-sm font-semibold flex items-center gap-1.5">
-                <DollarSign className="h-4 w-4 text-primary" />
+            <div className="rounded-2xl border border-primary/15 bg-primary/[0.02] p-4 sm:p-5 space-y-3">
+              <p className="text-sm font-bold flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                </div>
                 {isAr ? "ملخص الرسوم" : "Fee Summary"}
               </p>
-              <div className="text-sm space-y-1">
+              <div className="text-sm space-y-1.5">
                 <div className="flex justify-between">
-                  <span>{isAr ? "رسوم التسجيل" : "Registration Fee"}</span>
-                  <span>{fee} {currency}</span>
+                  <span className="text-muted-foreground">{isAr ? "رسوم التسجيل" : "Registration Fee"}</span>
+                  <span className="font-semibold tabular-nums">{fee} {currency}</span>
                 </div>
                 {taxRate > 0 && (
                   <div className="flex justify-between text-muted-foreground">
                     <span>{taxName} ({taxRate}%)</span>
-                    <span>{(fee * taxRate / 100).toFixed(2)} {currency}</span>
+                    <span className="tabular-nums">{(fee * taxRate / 100).toFixed(2)} {currency}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold border-t pt-1">
+                <div className="flex justify-between font-bold border-t border-border/30 pt-2 text-base">
                   <span>{isAr ? "المجموع" : "Total"}</span>
-                  <span>{(fee * (1 + taxRate / 100)).toFixed(2)} {currency}</span>
+                  <span className="text-primary tabular-nums">{(fee * (1 + taxRate / 100)).toFixed(2)} {currency}</span>
                 </div>
               </div>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-[10px] font-medium rounded-lg">
                 {isAr ? "سيتم تحصيل الرسوم بعد الموافقة" : "Fee will be collected after approval"}
               </Badge>
             </div>
           )}
 
           {/* Submit */}
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onCancel} disabled={uploading}>
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 pt-5 border-t border-border/30">
+            <Button type="button" variant="outline" onClick={onCancel} disabled={uploading} className="rounded-xl h-10 sm:h-9 font-semibold">
               {isAr ? "إلغاء" : "Cancel"}
             </Button>
-            <Button type="submit" disabled={uploading || registerMutation.isPending}>
+            <Button type="submit" disabled={uploading || registerMutation.isPending} className="rounded-xl h-10 sm:h-9 font-bold shadow-md shadow-primary/15">
               {uploading || registerMutation.isPending ? (
                 <><Loader2 className="me-2 h-4 w-4 animate-spin" />{isAr ? "جاري التسجيل..." : "Registering..."}</>
               ) : (
