@@ -4,8 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { MessageCircle, X, Loader2 } from "lucide-react";
+import { FeedSkeletonLoader } from "./PostSkeleton";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { PostComposer } from "./PostComposer";
@@ -403,20 +403,9 @@ export function CommunityFeed() {
 
   if (loading) {
     return (
-      <div className="space-y-0 divide-y divide-border">
+      <div className="space-y-0">
         <FeedTabs active={feedFilter} onChange={setFeedFilter} isLoggedIn={!!user} />
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="px-4 py-3">
-            <div className="flex gap-3">
-              <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-40" />
-                <Skeleton className="h-16 w-full" />
-                <div className="flex gap-8"><Skeleton className="h-4 w-12" /><Skeleton className="h-4 w-12" /><Skeleton className="h-4 w-12" /></div>
-              </div>
-            </div>
-          </div>
-        ))}
+        <FeedSkeletonLoader count={5} />
       </div>
     );
   }

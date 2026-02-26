@@ -50,7 +50,10 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [content, setContent] = useState("");
+  const DRAFT_KEY = replyToPostId ? `community-draft-reply-${replyToPostId}` : "community-draft";
+  const [content, setContent] = useState(() => {
+    try { return localStorage.getItem(DRAFT_KEY) || ""; } catch { return ""; }
+  });
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
   const [visibility, setVisibility] = useState<"public" | "followers">("public");
   const [posting, setPosting] = useState(false);
@@ -59,6 +62,17 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const [pollData, setPollData] = useState<{ options: string[] } | null>(null);
   const [video, setVideo] = useState<{ file: File; preview: string } | null>(null);
   const [scheduledAt, setScheduledAt] = useState<string>("");
+
+  // Auto-save draft
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      try {
+        if (content.trim()) localStorage.setItem(DRAFT_KEY, content);
+        else localStorage.removeItem(DRAFT_KEY);
+      } catch {}
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [content, DRAFT_KEY]);
 
   useEffect(() => {
     if (!user) return;
@@ -229,6 +243,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       toast({ title: isAr ? "تم النشر ✓" : "Posted ✓" });
 
       setContent("");
+      try { localStorage.removeItem(DRAFT_KEY); } catch {}
       setImages([]);
       setPostType("text");
       setPollData(null);
