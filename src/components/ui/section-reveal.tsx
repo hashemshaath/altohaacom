@@ -42,10 +42,10 @@ export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(
 
     const hiddenTransform =
       direction === "up"
-        ? "translate-y-6"
+        ? "translate-y-5"
         : direction === "left"
-        ? "-translate-x-6"
-        : "translate-x-6";
+        ? "-translate-x-5"
+        : "translate-x-5";
 
     // If not animating (already in viewport on mount), render children directly
     const isHidden = shouldAnimate && !hasAnimated;
@@ -58,8 +58,8 @@ export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(
           else if (forwardedRef) (forwardedRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
         }}
         className={cn(
-          shouldAnimate && "transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
-          isHidden ? `opacity-0 ${hiddenTransform}` : "opacity-100 translate-y-0 translate-x-0",
+          shouldAnimate && "transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          isHidden ? `opacity-0 blur-[2px] ${hiddenTransform}` : "opacity-100 blur-0 translate-y-0 translate-x-0",
           className
         )}
         style={shouldAnimate && hasAnimated ? { transitionDelay: `${delay}ms` } : undefined}

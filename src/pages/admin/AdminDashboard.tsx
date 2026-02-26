@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { 
   Users, 
   UserCheck,
@@ -20,6 +21,8 @@ import {
   FileText,
   TrendingUp,
   ArrowRight,
+  ArrowUpRight,
+  ArrowDownRight,
   Shield,
   Activity,
   CreditCard,
@@ -30,8 +33,13 @@ import {
   Zap,
   MessageSquare,
   AlertTriangle,
+  CheckCircle2,
+  Send,
+  Plus,
+  Settings,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
   const { language } = useLanguage();
@@ -109,15 +117,50 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60,
   });
 
+  // 7-day sparkline data for users
+  const { data: sparkData } = useQuery({
+    queryKey: ["admin-sparkline-7d"],
+    queryFn: async () => {
+      const days: { day: string; users: number; comps: number; exhibitions: number; articles: number }[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = subDays(new Date(), i);
+        const start = new Date(d); start.setHours(0, 0, 0, 0);
+        const end = new Date(d); end.setHours(23, 59, 59, 999);
+        const [u, c, e, a] = await Promise.all([
+          supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
+          supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
+          supabase.from("exhibitions").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
+          supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
+        ]);
+        days.push({
+          day: format(d, "EEE"),
+          users: u.count || 0,
+          comps: c.count || 0,
+          exhibitions: e.count || 0,
+          articles: a.count || 0,
+        });
+      }
+      return days;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const sparklineKeys: Record<string, string> = {
+    "Total Users": "users", "إجمالي المستخدمين": "users",
+    "Competitions": "comps", "المسابقات": "comps",
+    "Exhibitions": "exhibitions", "المعارض": "exhibitions",
+    "Articles": "articles", "المقالات": "articles",
+  };
+
   const statCards = useMemo(() => [
-    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/users" },
-    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/users?status=active" },
-    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, accent: "border-s-destructive", bg: "bg-destructive/10", color: "text-destructive", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
-    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/competitions" },
-    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/exhibitions" },
-    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/masterclasses" },
-    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/articles" },
-    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", link: "/admin/orders" },
+    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
+    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users?status=active" },
+    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, accent: "border-s-destructive", bg: "bg-destructive/10", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
+    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, accent: "border-s-chart-2", bg: "bg-chart-2/10", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
+    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, accent: "border-s-chart-3", bg: "bg-chart-3/10", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
+    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, accent: "border-s-chart-4", bg: "bg-chart-4/10", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
+    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, accent: "border-s-chart-5", bg: "bg-chart-5/10", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/articles" },
+    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/orders" },
   ], [stats, isAr]);
 
   const quickActions = useMemo(() => [
@@ -126,6 +169,15 @@ export default function AdminDashboard() {
     { title: isAr ? "العضويات" : "Memberships", description: isAr ? "ترقية وتخفيض عضويات المستخدمين" : "Upgrade and downgrade memberships", icon: CreditCard, link: "/admin/memberships" },
     { title: isAr ? "مراجعة المحتوى" : "Content Moderation", description: isAr ? "مراجعة التقارير والمحتوى المُبلغ عنه" : "Review reports and flagged content", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
   ], [isAr, stats?.pendingReports]);
+
+  const workflowShortcuts = useMemo(() => [
+    { label: isAr ? "مسابقة جديدة" : "New Competition", icon: Plus, link: "/admin/competitions", color: "text-chart-2" },
+    { label: isAr ? "نشر مقال" : "Publish Article", icon: Send, link: "/admin/articles", color: "text-chart-5" },
+    { label: isAr ? "إرسال إشعار" : "Send Notification", icon: MessageSquare, link: "/admin/notifications", color: "text-chart-3" },
+    { label: isAr ? "مراجعة البلاغات" : "Review Reports", icon: CheckCircle2, link: "/admin/moderation", color: "text-destructive" },
+    { label: isAr ? "إعدادات الموقع" : "Site Settings", icon: Settings, link: "/admin/settings", color: "text-chart-4" },
+    { label: isAr ? "إضافة معرض" : "New Exhibition", icon: Landmark, link: "/admin/exhibitions", color: "text-chart-1" },
+  ], [isAr]);
 
   const getActionBadge = (actionType: string) => {
     const colors: Record<string, string> = {
@@ -158,35 +210,93 @@ export default function AdminDashboard() {
         }
       />
 
-      {/* Stats Grid - improved with hover effects */}
+      {/* Stats Grid with sparklines */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
-        {statCards.map((stat) => (
-          <Link key={stat.title} to={stat.link}>
-            <Card className={`group border-s-[3px] ${stat.accent} transition-all duration-200 hover:shadow-lg hover:-translate-y-1 ${stat.urgent ? "ring-1 ring-destructive/30 animate-pulse" : ""}`}>
-              <CardContent className="flex items-center gap-3 p-4">
-                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${stat.bg} transition-transform group-hover:scale-110`}>
-                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                </div>
-                <div className="min-w-0">
-                  {isLoading ? (
-                    <>
-                      <Skeleton className="h-7 w-14 mb-1" />
-                      <Skeleton className="h-3 w-20" />
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-2xl font-black leading-none tracking-tight">
-                        {toEnglishDigits(stat.value.toLocaleString())}
-                      </p>
-                      <p className="mt-1 text-[11px] text-muted-foreground truncate">{stat.title}</p>
-                    </>
+        {statCards.map((stat) => {
+          const sparkKey = sparklineKeys[stat.title];
+          const sparkPoints = sparkKey && sparkData ? sparkData.map(d => ({ v: (d as any)[sparkKey] || 0 })) : null;
+          const trend = sparkPoints && sparkPoints.length >= 2
+            ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v
+            : 0;
+
+          return (
+            <Link key={stat.title} to={stat.link}>
+              <Card className={cn(
+                "group border-s-[3px] transition-all duration-200 hover:shadow-lg hover:-translate-y-1",
+                stat.accent,
+                stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
+              )}>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-110", stat.bg)}>
+                      <stat.icon className={cn("h-5 w-5", stat.color)} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      {isLoading ? (
+                        <>
+                          <Skeleton className="h-7 w-14 mb-1" />
+                          <Skeleton className="h-3 w-20" />
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-2xl font-black leading-none tracking-tight">
+                              {toEnglishDigits(stat.value.toLocaleString())}
+                            </p>
+                            {sparkPoints && trend !== 0 && (
+                              <Badge variant="outline" className={cn(
+                                "text-[9px] px-1 py-0 gap-0.5",
+                                trend > 0 ? "text-chart-2 border-chart-2/30" : "text-destructive border-destructive/30"
+                              )}>
+                                {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
+                                {Math.abs(trend)}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="mt-1 text-[11px] text-muted-foreground truncate">{stat.title}</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  {sparkPoints && sparkPoints.length > 0 && (
+                    <div className="mt-2 -mx-1">
+                      <ResponsiveContainer width="100%" height={32}>
+                        <LineChart data={sparkPoints}>
+                          <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
+
+      {/* Workflow Shortcuts */}
+      <Card className="border-border/50">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-3/10">
+              <Zap className="h-3.5 w-3.5 text-chart-3" />
+            </div>
+            <h3 className="text-sm font-bold">{isAr ? "اختصارات سريعة" : "Quick Workflows"}</h3>
+          </div>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+            {workflowShortcuts.map((shortcut) => (
+              <Link key={shortcut.label} to={shortcut.link}>
+                <div className="flex flex-col items-center gap-1.5 rounded-xl border border-border/40 p-3 transition-all hover:bg-accent/50 hover:shadow-sm hover:-translate-y-0.5 text-center">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/50">
+                    <shortcut.icon className={cn("h-4 w-4", shortcut.color)} />
+                  </div>
+                  <span className="text-[10px] font-medium text-muted-foreground leading-tight">{shortcut.label}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
 
       {/* Today's Activity Summary */}
