@@ -11,6 +11,8 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { StaggeredList } from "@/components/ui/staggered-list";
+import { CountdownBadge } from "@/components/ui/countdown-badge";
+import { ShareButton } from "@/components/ui/share-button";
 
 export function EventsByCategory() {
   const { language } = useLanguage();
@@ -77,9 +79,13 @@ export function EventsByCategory() {
                   </div>
                 )}
                 <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-background/50 to-transparent" />
-                <Badge className="absolute end-2 top-2 text-[10px]">
-                  {item.status === "registration_open" ? (isAr ? "مفتوح" : "Open") : item.status === "in_progress" ? (isAr ? "جارية" : "Live") : (isAr ? "قادمة" : "Upcoming")}
-                </Badge>
+                <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
+                  <Badge className="text-[10px]">
+                    {item.status === "registration_open" ? (isAr ? "مفتوح" : "Open") : item.status === "in_progress" ? (isAr ? "جارية" : "Live") : (isAr ? "قادمة" : "Upcoming")}
+                  </Badge>
+                  {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
+                </div>
+                <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <CardContent className="p-3">
                 <h3 className="mb-1 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
@@ -125,6 +131,8 @@ export function EventsByCategory() {
                   </div>
                 )}
                 <Badge className="absolute end-2 top-2 text-[10px]">{item.status === "open" ? (isAr ? "نشط" : "Active") : (isAr ? "قادم" : "Upcoming")}</Badge>
+                {item.start_date && <CountdownBadge targetDate={new Date(item.start_date)} isAr={isAr} className="absolute end-2 top-8" />}
+                <ShareButton title={title} url={`/exhibitions/${item.slug || item.id}`} isAr={isAr} className="absolute start-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <CardContent className="p-3">
                 <h3 className="mb-1 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
