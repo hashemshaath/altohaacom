@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +22,7 @@ import {
   ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
-  Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle,
+  Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle, Bookmark, BookmarkCheck,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -138,6 +139,7 @@ export default function CompetitionDetail() {
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
   const { data: qrCode } = useEntityQRCode("competition", id, "competition");
+  const { isWatched, toggle: toggleWatchlist } = useEventWatchlist("competition", id);
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
@@ -470,6 +472,13 @@ export default function CompetitionDetail() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                {user && (
+                  <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={toggleWatchlist}>
+                    {isWatched ? <BookmarkCheck className="me-1.5 h-3.5 w-3.5 text-primary" /> : <Bookmark className="me-1.5 h-3.5 w-3.5" />}
+                    {isWatched ? (isAr ? "في القائمة" : "Saved") : (isAr ? "أضف للقائمة" : "Watchlist")}
+                  </Button>
+                )}
 
                 {competition.status === "completed" && (
                   <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">

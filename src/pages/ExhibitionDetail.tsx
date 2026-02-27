@@ -20,6 +20,7 @@ import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
 import { useEntityQRCode } from "@/hooks/useQRCode";
+import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 
 // Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
@@ -94,7 +95,6 @@ export default function ExhibitionDetail() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // --- Core query ---
   const { data: exhibition, isLoading } = useQuery({
     queryKey: ["exhibition", slug],
     queryFn: async () => {
@@ -106,6 +106,8 @@ export default function ExhibitionDetail() {
     enabled: !!slug,
     staleTime: 1000 * 60 * 5,
   });
+
+  const { isWatched: isWatchlisted, toggle: toggleWatchlist } = useEventWatchlist("exhibition", exhibition?.id);
 
   const { data: isFollowing } = useQuery({
     queryKey: ["exhibition-follow", exhibition?.id, user?.id],
@@ -517,6 +519,7 @@ export default function ExhibitionDetail() {
               isFollowing={!!isFollowing} followerCount={followerCount || 0} user={user}
               isAr={isAr} countryFlag={countryFlag} tags={tags}
               exhibitionQrCode={exhibitionQrCode} onFollow={handleFollow} followPending={toggleFollow.isPending}
+              isWatchlisted={isWatchlisted} onToggleWatchlist={toggleWatchlist}
             />
           </Suspense>
         </div>
@@ -528,6 +531,7 @@ export default function ExhibitionDetail() {
         onFollow={handleFollow} registrationUrl={exhibition.registration_url}
         websiteUrl={exhibition.website_url} hasEnded={hasEnded} isAr={isAr}
         exhibitionTitle={title}
+        isWatchlisted={isWatchlisted} onToggleWatchlist={toggleWatchlist}
       />
 
       {lightboxOpen && (
