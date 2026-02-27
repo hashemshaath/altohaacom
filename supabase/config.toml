@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.smart-translate]
 verify_jwt = false
+
+[functions.trial-expiry-reminders]
+verify_jwt = false
