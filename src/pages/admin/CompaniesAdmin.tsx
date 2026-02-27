@@ -36,6 +36,7 @@ import {
   Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet, Factory,
 } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
+import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidget";
 import { format } from "date-fns";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
@@ -1799,6 +1800,9 @@ export default function CompaniesAdmin() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Company Analytics Widget */}
+        <CompanyAnalyticsWidget />
 
         {/* Action Bar */}
         <div className="flex flex-wrap items-center gap-2">

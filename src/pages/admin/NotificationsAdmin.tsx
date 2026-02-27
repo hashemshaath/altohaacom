@@ -29,6 +29,7 @@ import {
   CheckSquare, XSquare, Download, Sparkles,
 } from "lucide-react";
 import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
+import { NotificationAnalyticsWidget } from "@/components/admin/NotificationAnalyticsWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
@@ -395,6 +396,9 @@ export default function NotificationsAdmin() {
           </Button>
         }
       />
+
+      {/* Notification Insights Widget */}
+      <NotificationAnalyticsWidget />
 
       {/* Queue Stats */}
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
