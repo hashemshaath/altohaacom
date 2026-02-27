@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, Eye, EyeOff, Save, Lock, Globe, Users } from "lucide-react";
 import { UserDataExport } from "./UserDataExport";
+import { AccountDeletion } from "./AccountDeletion";
 
 interface ProfilePrivacySettingsProps {
   profile: any;
@@ -150,6 +151,7 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
       </Button>
 
       <UserDataExport />
+      <AccountDeletion />
     </div>
   );
 }
