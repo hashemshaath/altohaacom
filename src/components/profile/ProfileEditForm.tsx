@@ -9,6 +9,7 @@ import { PersonalInfoSection } from "./edit/PersonalInfoSection";
 import { ProfessionalInfoSection } from "./edit/ProfessionalInfoSection";
 import { LocationSection } from "./edit/LocationSection";
 import { SocialMediaSection } from "./edit/SocialMediaSection";
+import { useAccountType } from "@/hooks/useAccountType";
 
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
 
@@ -21,6 +22,7 @@ interface ProfileEditFormProps {
 export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
+  const { isFan } = useAccountType();
   const isAr = language === "ar";
   const [saving, setSaving] = useState(false);
 
@@ -78,7 +80,7 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
   return (
     <div className="space-y-6">
       <PersonalInfoSection form={form} update={update} isAr={isAr} />
-      <ProfessionalInfoSection form={form} update={update} isAr={isAr} />
+      {!isFan && <ProfessionalInfoSection form={form} update={update} isAr={isAr} />}
       <LocationSection form={form} update={update} isAr={isAr} />
       <SocialMediaSection form={form} update={update} isAr={isAr} />
 
