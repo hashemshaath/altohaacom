@@ -83,7 +83,7 @@ export default function Auth() {
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [manualRefCode, setManualRefCode] = useState("");
-  const [accountType, setAccountType] = useState<"professional" | "fan">("professional");
+  const [accountType, setAccountType] = useState<"professional" | "fan">("fan");
 
   // Password reset
   const [resetPassword, setResetPassword] = useState("");
