@@ -7,6 +7,7 @@ import { CompetitionAnalyticsWidget } from "@/components/admin/CompetitionAnalyt
 import { CompetitionLiveStatsWidget } from "@/components/admin/CompetitionLiveStatsWidget";
 import { CompetitionScoringOverview } from "@/components/admin/CompetitionScoringOverview";
 import { CompetitionJudgingTracker } from "@/components/admin/CompetitionJudgingTracker";
+import { CompetitionLifecycleWidget } from "@/components/admin/CompetitionLifecycleWidget";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -331,6 +332,7 @@ export default function CompetitionsAdmin() {
       />
 
       {/* Competition Analytics */}
+      <CompetitionLifecycleWidget />
       <CompetitionLiveStatsWidget />
       <CompetitionScoringOverview />
       <CompetitionJudgingTracker />

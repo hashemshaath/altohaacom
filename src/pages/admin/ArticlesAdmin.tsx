@@ -6,6 +6,7 @@ import { ContentQuickToolbar } from "@/components/admin/ContentQuickToolbar";
 import { ContentInsightsWidget } from "@/components/admin/ContentInsightsWidget";
 import { ContentPipelineWidget } from "@/components/admin/ContentPipelineWidget";
 import { ContentLiveStatsWidget } from "@/components/admin/ContentLiveStatsWidget";
+import { ContentPerformanceWidget } from "@/components/admin/ContentPerformanceWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -458,6 +459,7 @@ export default function ArticlesAdmin() {
       <ContentQuickToolbar />
 
       {/* Content Analytics Widget */}
+      <ContentPerformanceWidget />
       <ContentLiveStatsWidget />
       <ContentStatsWidget />
 
