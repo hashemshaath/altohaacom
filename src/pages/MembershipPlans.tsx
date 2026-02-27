@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTrialInfo, useStartTrial } from "@/hooks/useMembershipTrial";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Crown, Star, Zap, Check, X, ArrowRight, Shield,
   Users, BarChart3, Globe, MessageSquare, Award,
-  Headphones, BookOpen, ShoppingBag, Sparkles,
+  Headphones, BookOpen, ShoppingBag, Sparkles, Clock, Gift,
 } from "lucide-react";
 import { useMembershipFeatures, useFeatureTierMappings } from "@/hooks/useMembershipFeatures";
 import { cn } from "@/lib/utils";
@@ -75,7 +76,8 @@ export default function MembershipPlans() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
-
+  const { data: trialInfo } = useTrialInfo();
+  const startTrial = useStartTrial();
   const { data: features = [] } = useMembershipFeatures();
   const { data: mappings = [] } = useFeatureTierMappings();
 
@@ -135,6 +137,24 @@ export default function MembershipPlans() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Trial Banner */}
+      {trialInfo?.isInTrial && (
+        <div className="bg-primary/10 border-b border-primary/20">
+          <div className="container py-3 flex items-center justify-center gap-3 text-sm">
+            <Clock className="h-4 w-4 text-primary" />
+            <span className="font-medium">
+              {isAr
+                ? `تجربتك المجانية لـ ${trialInfo.trialTier} — ${trialInfo.daysRemaining} يوم متبقي`
+                : `Your ${trialInfo.trialTier} trial — ${trialInfo.daysRemaining} day${trialInfo.daysRemaining !== 1 ? "s" : ""} remaining`}
+            </span>
+            <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={() => navigate("/profile?tab=membership")}>
+              <Crown className="h-3 w-3" />
+              {isAr ? "ترقية الآن" : "Upgrade Now"}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       <section className="relative overflow-hidden border-b">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5" />
@@ -280,22 +300,44 @@ export default function MembershipPlans() {
                     )}
                   </ul>
 
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-2">
                     {isCurrentTier ? (
                       <Button variant="outline" disabled className="w-full">
                         {isAr ? "خطتك الحالية" : "Current Plan"}
                       </Button>
                     ) : (
-                      <Button
-                        variant={tier.featured ? "default" : "outline"}
-                        className="w-full gap-2"
-                        onClick={() => handleUpgrade(tier.id)}
-                      >
-                        {tier.id === "basic"
-                          ? (isAr ? "البدء مجاناً" : "Get Started Free")
-                          : (isAr ? "ترقية الآن" : "Upgrade Now")}
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
+                      <>
+                        <Button
+                          variant={tier.featured ? "default" : "outline"}
+                          className="w-full gap-2"
+                          onClick={() => handleUpgrade(tier.id)}
+                        >
+                          {tier.id === "basic"
+                            ? (isAr ? "البدء مجاناً" : "Get Started Free")
+                            : (isAr ? "ترقية الآن" : "Upgrade Now")}
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                        {tier.id !== "basic" && !trialInfo?.isInTrial && !(trialInfo?.trialTier === tier.id && trialInfo?.trialExpired) && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full gap-1.5 text-xs text-muted-foreground"
+                            disabled={startTrial.isPending}
+                            onClick={() => {
+                              if (!user) { navigate("/login"); return; }
+                              startTrial.mutate({ tier: tier.id });
+                            }}
+                          >
+                            <Gift className="h-3.5 w-3.5" />
+                            {isAr ? "تجربة مجانية 14 يوم" : "Start 14-Day Free Trial"}
+                          </Button>
+                        )}
+                        {tier.id !== "basic" && trialInfo?.trialTier === tier.id && trialInfo?.trialExpired && (
+                          <p className="text-[10px] text-center text-muted-foreground">
+                            {isAr ? "تم استخدام التجربة المجانية" : "Free trial already used"}
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                 </CardContent>

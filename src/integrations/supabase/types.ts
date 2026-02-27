@@ -15699,6 +15699,10 @@ export type Database = {
           suspended_at: string | null
           suspended_reason: string | null
           tiktok: string | null
+          trial_ends_at: string | null
+          trial_expired: boolean | null
+          trial_started_at: string | null
+          trial_tier: string | null
           twitter: string | null
           updated_at: string
           user_id: string
@@ -15784,6 +15788,10 @@ export type Database = {
           suspended_at?: string | null
           suspended_reason?: string | null
           tiktok?: string | null
+          trial_ends_at?: string | null
+          trial_expired?: boolean | null
+          trial_started_at?: string | null
+          trial_tier?: string | null
           twitter?: string | null
           updated_at?: string
           user_id: string
@@ -15869,6 +15877,10 @@ export type Database = {
           suspended_at?: string | null
           suspended_reason?: string | null
           tiktok?: string | null
+          trial_ends_at?: string | null
+          trial_expired?: boolean | null
+          trial_started_at?: string | null
+          trial_tier?: string | null
           twitter?: string | null
           updated_at?: string
           user_id?: string
@@ -21044,6 +21056,7 @@ export type Database = {
       }
       check_email_exists: { Args: { p_email: string }; Returns: boolean }
       check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
+      expire_membership_trials: { Args: never; Returns: number }
       generate_account_number: {
         Args: { p_role: Database["public"]["Enums"]["app_role"] }
         Returns: string
@@ -21129,6 +21142,10 @@ export type Database = {
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
         Returns: undefined
+      }
+      start_membership_trial: {
+        Args: { p_duration_days?: number; p_tier?: string; p_user_id: string }
+        Returns: Json
       }
       user_has_feature: {
         Args: { p_feature_code: string; p_user_id: string }
