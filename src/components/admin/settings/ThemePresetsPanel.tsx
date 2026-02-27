@@ -61,17 +61,27 @@ export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
                     <Check className="h-3 w-3 text-primary-foreground" />
                   </div>
                 )}
-                <div className="flex gap-1">
-                  {preset.preview.map((color, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        "h-8 rounded-md border border-border/20",
-                        i === 0 ? "w-10" : i === 1 ? "w-8" : "flex-1"
-                      )}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
+                <div className="space-y-1.5">
+                  {/* 3 Primary colors */}
+                  <div className="flex gap-1">
+                    {preset.preview.slice(0, 3).map((color, i) => (
+                      <div
+                        key={i}
+                        className="h-7 flex-1 rounded-md border border-border/20"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                  {/* 4 Secondary colors */}
+                  <div className="flex gap-0.5">
+                    {preset.preview.slice(3, 7).map((color, i) => (
+                      <div
+                        key={i}
+                        className="h-3 flex-1 rounded-sm border border-border/10"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <p className="text-sm font-semibold">
