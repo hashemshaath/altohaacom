@@ -36,6 +36,7 @@ import { UserStatsBar } from "@/components/admin/UserStatsBar";
 import { UserCardView } from "@/components/admin/UserCardView";
 import { UserGrowthTrendWidget } from "@/components/admin/UserGrowthTrendWidget";
 import { UserAnalyticsWidget } from "@/components/admin/UserAnalyticsWidget";
+import { UserDemographicsWidget } from "@/components/admin/UserDemographicsWidget";
 import { UsersLiveStatsWidget } from "@/components/admin/UsersLiveStatsWidget";
 import { UserActivityTimeline } from "@/components/admin/UserActivityTimeline";
 import { UserSearchCommand } from "@/components/admin/UserSearchCommand";
@@ -658,6 +659,9 @@ export default function UserManagement() {
 
       {/* User Analytics - Registration, Roles, Geography */}
       <UserAnalyticsWidget />
+
+      {/* User Demographics */}
+      <UserDemographicsWidget />
 
       {/* Stats Bar */}
       <UserStatsBar />
