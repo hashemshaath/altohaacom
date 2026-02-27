@@ -5,6 +5,7 @@ import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 import { cn } from "@/lib/utils";
+import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Building, ChevronLeft, ChevronRight, Menu } from "lucide-react";
@@ -13,6 +14,7 @@ export default function AdminLayout() {
   const { language } = useLanguage();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  useGlobalShortcuts();
 
   return (
     <div className="flex min-h-screen flex-col">
