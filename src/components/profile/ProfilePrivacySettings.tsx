@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, Eye, EyeOff, Save, Lock, Globe, Users } from "lucide-react";
+import { UserDataExport } from "./UserDataExport";
 
 interface ProfilePrivacySettingsProps {
   profile: any;
@@ -147,6 +148,8 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
         <Save className="me-1.5 h-4 w-4" />
         {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ الإعدادات" : "Save Settings")}
       </Button>
+
+      <UserDataExport />
     </div>
   );
 }
