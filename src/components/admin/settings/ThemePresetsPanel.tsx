@@ -61,13 +61,13 @@ export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
                     <Check className="h-3 w-3 text-primary-foreground" />
                   </div>
                 )}
-                <div className="flex gap-1.5">
+                <div className="flex gap-1">
                   {preset.preview.map((color, i) => (
                     <div
                       key={i}
                       className={cn(
-                        "h-8 rounded-lg border border-border/20",
-                        i === 0 ? "w-12" : i === 1 ? "w-8" : "flex-1"
+                        "h-8 rounded-md border border-border/20",
+                        i === 0 ? "w-10" : i === 1 ? "w-8" : "flex-1"
                       )}
                       style={{ backgroundColor: color }}
                     />
