@@ -35,6 +35,7 @@ const DashboardPersonalizationWidget = lazy(() => import("@/components/dashboard
 const QuickActionsWidget = lazy(() => import("@/components/dashboard/QuickActionsWidget").then(m => ({ default: m.QuickActionsWidget })));
 const DailyDigestWidget = lazy(() => import("@/components/dashboard/DailyDigestWidget").then(m => ({ default: m.DailyDigestWidget })));
 const StreakWidget = lazy(() => import("@/components/dashboard/StreakWidget").then(m => ({ default: m.StreakWidget })));
+const WeeklyOverviewWidget = lazy(() => import("@/components/dashboard/WeeklyOverviewWidget").then(m => ({ default: m.WeeklyOverviewWidget })));
 // Fan-specific widgets
 const FanTrendingWidget = lazy(() => import("@/components/dashboard/FanTrendingWidget").then(m => ({ default: m.FanTrendingWidget })));
 const FanSuggestedFollowsWidget = lazy(() => import("@/components/dashboard/FanSuggestedFollowsWidget").then(m => ({ default: m.FanSuggestedFollowsWidget })));
@@ -162,6 +163,7 @@ export default function Dashboard() {
           </div>
           <div className="space-y-6">
             {user && <W><QuickActionsWidget /></W>}
+            {user && <W><WeeklyOverviewWidget /></W>}
             {user && <W><StreakWidget /></W>}
             {user && <W><LiveCompetitionsWidget /></W>}
             {user && isFan && <W><FanNotificationsCenter /></W>}
