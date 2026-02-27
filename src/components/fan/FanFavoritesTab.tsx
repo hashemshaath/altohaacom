@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, ChefHat, UtensilsCrossed, HeartOff, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import { FanShareButton } from "./FanShareButton";
 
 export function FanFavoritesTab() {
   const { user } = useAuth();
@@ -86,14 +87,23 @@ export function FanFavoritesTab() {
                         <p className="text-xs text-muted-foreground truncate">{chef.specialization}</p>
                       )}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="shrink-0 text-destructive hover:text-destructive"
-                      onClick={() => toggleFavorite.mutate({ type: "chef", entityId: chef.user_id })}
-                    >
-                      <HeartOff className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <FanShareButton
+                        title={chef.full_name || "Chef"}
+                        url={`${window.location.origin}/${chef.username || chef.user_id}`}
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-muted-foreground"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 text-destructive hover:text-destructive h-8 w-8"
+                        onClick={() => toggleFavorite.mutate({ type: "chef", entityId: chef.user_id })}
+                      >
+                        <HeartOff className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}

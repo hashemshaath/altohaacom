@@ -5,10 +5,11 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Users, Heart, MessageCircle, Calendar } from "lucide-react";
+import { Users, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { FanShareButton } from "./FanShareButton";
 
 export function FanFollowingTab() {
   const { user } = useAuth();
@@ -94,8 +95,15 @@ export function FanFollowingTab() {
                     locale: isAr ? ar : enUS,
                   })}
                 </p>
-              </div>
-            </CardContent>
+                </div>
+                <FanShareButton
+                  title={chef.full_name || "Chef"}
+                  url={`${window.location.origin}/${chef.username || chef.user_id}`}
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-muted-foreground shrink-0"
+                />
+              </CardContent>
           </Card>
         ))}
       </div>
