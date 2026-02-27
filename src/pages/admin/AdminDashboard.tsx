@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { toEnglishDigits } from "@/lib/formatNumber";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
+import { LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import { 
   Users, 
   UserCheck,
@@ -38,6 +38,8 @@ import {
   Send,
   Plus,
   Settings,
+  Heart,
+  ChefHat,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -69,6 +71,8 @@ export default function AdminDashboard() {
         { count: totalExhibitions },
         { count: totalOrders },
         { count: totalMasterclasses },
+        { count: proUsers },
+        { count: fanUsers },
         { data: recentActions },
         { data: recentUsers },
       ] = await Promise.all([
@@ -82,6 +86,8 @@ export default function AdminDashboard() {
         supabase.from("exhibitions").select("*", { count: "exact", head: true }),
         supabase.from("company_orders").select("*", { count: "exact", head: true }),
         supabase.from("masterclasses").select("*", { count: "exact", head: true }),
+        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "professional"),
+        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "fan"),
         supabase.from("admin_actions").select("*").order("created_at", { ascending: false }).limit(5),
         supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
@@ -97,6 +103,8 @@ export default function AdminDashboard() {
         totalExhibitions: totalExhibitions || 0,
         totalOrders: totalOrders || 0,
         totalMasterclasses: totalMasterclasses || 0,
+        proUsers: proUsers || 0,
+        fanUsers: fanUsers || 0,
         recentActions: recentActions || [],
         recentUsers: recentUsers || [],
       };
@@ -306,6 +314,56 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
 
+      {/* Account Type Breakdown */}
+      <Card className="border-border/50">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+              <Users className="h-3.5 w-3.5 text-chart-4" />
+            </div>
+            <h3 className="text-sm font-bold">{isAr ? "أنواع الحسابات" : "Account Types"}</h3>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="w-28 h-28 shrink-0">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0 },
+                      { name: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0 },
+                    ]}
+                    cx="50%" cy="50%" innerRadius={28} outerRadius={48} paddingAngle={3} dataKey="value"
+                  >
+                    <Cell fill="hsl(var(--primary))" />
+                    <Cell fill="hsl(var(--chart-4))" />
+                  </Pie>
+                  <RechartsTooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex-1 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+                  <ChefHat className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="text-lg font-black text-primary leading-none">{toEnglishDigits((stats?.proUsers || 0).toLocaleString())}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "محترف" : "Professional"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-4/10">
+                  <Heart className="h-4 w-4 text-chart-4" />
+                </div>
+                <div>
+                  <p className="text-lg font-black text-chart-4 leading-none">{toEnglishDigits((stats?.fanUsers || 0).toLocaleString())}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متابع" : "Follower"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Today's Activity Summary */}
       <Card className="border-border/50 bg-gradient-to-r from-primary/5 to-transparent">

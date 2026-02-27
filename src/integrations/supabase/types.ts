@@ -20233,6 +20233,7 @@ export type Database = {
         Row: {
           account_number: string | null
           account_status: Database["public"]["Enums"]["account_status"] | null
+          account_type: Database["public"]["Enums"]["account_type"] | null
           avatar_url: string | null
           bio: string | null
           bio_ar: string | null
@@ -20298,6 +20299,7 @@ export type Database = {
         Insert: {
           account_number?: string | null
           account_status?: Database["public"]["Enums"]["account_status"] | null
+          account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
@@ -20365,6 +20367,7 @@ export type Database = {
         Update: {
           account_number?: string | null
           account_status?: Database["public"]["Enums"]["account_status"] | null
+          account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
