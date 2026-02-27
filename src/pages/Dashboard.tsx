@@ -42,6 +42,9 @@ const FanLeaderboard = lazy(() => import("@/components/fan/FanLeaderboard").then
 const FanEventWatchlist = lazy(() => import("@/components/fan/FanEventWatchlist").then(m => ({ default: m.FanEventWatchlist })));
 const FanSmartRecommendations = lazy(() => import("@/components/fan/FanSmartRecommendations").then(m => ({ default: m.FanSmartRecommendations })));
 const FanSocialNetwork = lazy(() => import("@/components/fan/FanSocialNetwork").then(m => ({ default: m.FanSocialNetwork })));
+const FanRecipeCollections = lazy(() => import("@/components/fan/FanRecipeCollections").then(m => ({ default: m.FanRecipeCollections })));
+const FanFollowingFeed = lazy(() => import("@/components/fan/FanFollowingFeed").then(m => ({ default: m.FanFollowingFeed })));
+const FanStreaks = lazy(() => import("@/components/fan/FanStreaks").then(m => ({ default: m.FanStreaks })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -135,6 +138,7 @@ export default function Dashboard() {
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
+            {user && isFan && <W><FanFollowingFeed /></W>}
             {user && isFan && <W><FanActivityFeed /></W>}
             {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
             {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
@@ -144,6 +148,8 @@ export default function Dashboard() {
           </div>
           <div className="space-y-6">
             {user && isFan && <W><FanNotificationsCenter /></W>}
+            {user && isFan && <W><FanStreaks /></W>}
+            {user && isFan && <W><FanRecipeCollections /></W>}
             {user && isFan && <W><FanEventWatchlist /></W>}
             {user && isFan && <W><FanSocialNetwork /></W>}
             {user && isFan && <W><FanSuggestedFollowsWidget /></W>}

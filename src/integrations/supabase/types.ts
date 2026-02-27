@@ -10819,6 +10819,80 @@ export type Database = {
           },
         ]
       }
+      fan_collection_items: {
+        Row: {
+          added_at: string
+          collection_id: string
+          id: string
+          item_id: string
+          item_type: string
+          note: string | null
+        }
+        Insert: {
+          added_at?: string
+          collection_id: string
+          id?: string
+          item_id: string
+          item_type: string
+          note?: string | null
+        }
+        Update: {
+          added_at?: string
+          collection_id?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fan_collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "fan_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fan_collections: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          emoji: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          name_ar: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          name_ar?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          emoji?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          name_ar?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       fan_favorites: {
         Row: {
           created_at: string
@@ -10839,6 +10913,36 @@ export type Database = {
           entity_id?: string
           entity_type?: string
           id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      fan_streaks: {
+        Row: {
+          current_streak: number
+          id: string
+          last_activity_date: string | null
+          longest_streak: number
+          total_active_days: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          total_active_days?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          total_active_days?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
