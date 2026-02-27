@@ -18,8 +18,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import {
   ArrowLeft, ChefHat, Clock, Users as UsersIcon, Star, Flame,
-  UtensilsCrossed, Share2, Check, Wheat, Beef, Droplets,
+  UtensilsCrossed, Check, Wheat, Beef, Droplets,
 } from "lucide-react";
+import { RecipeActionBar } from "@/components/recipes/RecipeActionBar";
 
 const RecipeReviews = lazy(() => import("@/components/fan/RecipeReviews").then(m => ({ default: m.RecipeReviews })));
 
@@ -379,13 +380,12 @@ export default function RecipeDetail() {
                 </Card>
               )}
 
-              {/* Share */}
-              <Button variant="outline" className="w-full gap-2" onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
-              }}>
-                <Share2 className="h-4 w-4" />{isAr ? "مشاركة الوصفة" : "Share Recipe"}
-              </Button>
+              {/* Save & Share */}
+              <RecipeActionBar
+                recipeId={recipe.id}
+                saveCount={(recipe as any).save_count || 0}
+                shareCount={(recipe as any).share_count || 0}
+              />
             </div>
           </div>
 
