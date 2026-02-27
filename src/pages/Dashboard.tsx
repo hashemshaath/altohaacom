@@ -61,6 +61,7 @@ const FanWeeklyDigest = lazy(() => import("@/components/fan/FanWeeklyDigest").th
 // New enhancement widgets
 const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
 const MessageSearchWidget = lazy(() => import("@/components/messages/MessageSearchWidget").then(m => ({ default: m.MessageSearchWidget })));
+const ActivityHeatmapWidget = lazy(() => import("@/components/dashboard/ActivityHeatmapWidget").then(m => ({ default: m.ActivityHeatmapWidget })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -175,6 +176,7 @@ export default function Dashboard() {
           </div>
           <div className="space-y-6">
             {user && <ProfileCompletionCard />}
+            {user && !isFan && <W><ActivityHeatmapWidget /></W>}
             {user && <W><QuickActionsWidget /></W>}
             {user && <W><NotificationGroupWidget /></W>}
             {user && <W><MessageSearchWidget /></W>}
