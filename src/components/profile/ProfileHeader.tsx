@@ -11,6 +11,7 @@ import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { Link } from "react-router-dom";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
+import { FeatureGate } from "@/components/membership/FeatureGate";
 
 interface ProfileHeaderProps {
   profile: any;
@@ -95,17 +96,19 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
 
-        <Button
-          variant="secondary"
-          size="sm"
-          className="absolute end-4 top-4 h-9 gap-2 bg-background/60 backdrop-blur-xl border-border/30 text-foreground text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/80 transition-all"
-          onClick={() => coverInputRef.current?.click()}
-          disabled={uploading}
-        >
-          <Camera className="h-3.5 w-3.5" />
-          {isAr ? "تغيير الغلاف" : "Change Cover"}
-        </Button>
-        <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], "cover")} />
+        <FeatureGate feature="feature_cover_image">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="absolute end-4 top-4 h-9 gap-2 bg-background/60 backdrop-blur-xl border-border/30 text-foreground text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/80 transition-all"
+            onClick={() => coverInputRef.current?.click()}
+            disabled={uploading}
+          >
+            <Camera className="h-3.5 w-3.5" />
+            {isAr ? "تغيير الغلاف" : "Change Cover"}
+          </Button>
+          <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0], "cover")} />
+        </FeatureGate>
       </div>
 
       {/* Profile Info */}
@@ -139,7 +142,9 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
               <h1 className={`text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm break-words ${language !== "ar" ? "font-serif" : ""}`}>
                 {isAr ? (profile?.display_name_ar || profile?.full_name_ar || profile?.full_name) : (profile?.display_name || profile?.full_name)}
               </h1>
-              {profile?.is_verified && <VerifiedBadge level={profile.verification_level} size="lg" />}
+              <FeatureGate feature="feature_verification_badge">
+                {profile?.is_verified && <VerifiedBadge level={profile.verification_level} size="lg" />}
+              </FeatureGate>
             </div>
             {profile?.display_name && (
               <p className="text-base font-bold text-primary/80 tracking-wide mt-1">{isAr ? profile.display_name_ar || profile.display_name : profile.display_name}</p>

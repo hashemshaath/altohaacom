@@ -13,6 +13,7 @@ import { PostComposer } from "./PostComposer";
 import { PostThread } from "./PostThread";
 import { ReportDialog } from "./ReportDialog";
 import { StoriesBar } from "./StoriesBar";
+import { FeatureGate } from "@/components/membership/FeatureGate";
 import { FeedRecommendations } from "./FeedRecommendations";
 import { PostEditHistory } from "./PostEditHistory";
 import { PostCard } from "./PostCard";
@@ -440,15 +441,21 @@ export function CommunityFeed() {
       )}
 
       {/* Stories */}
-      {!tagFilter && feedFilter === "for_you" && <StoriesBar />}
+      {!tagFilter && feedFilter === "for_you" && (
+        <FeatureGate feature="feature_stories">
+          <StoriesBar />
+        </FeatureGate>
+      )}
 
       {/* Composer */}
       {user && !tagFilter && feedFilter !== "bookmarks" && (
-        <PostComposer
-          onPosted={() => fetchPosts(0, false)}
-          replyToPostId={null}
-          placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
-        />
+        <FeatureGate feature="feature_posts">
+          <PostComposer
+            onPosted={() => fetchPosts(0, false)}
+            replyToPostId={null}
+            placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
+          />
+        </FeatureGate>
       )}
 
       {/* Trending Carousel */}
