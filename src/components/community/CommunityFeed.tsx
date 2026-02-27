@@ -442,7 +442,7 @@ export function CommunityFeed() {
 
       {/* Stories */}
       {!tagFilter && feedFilter === "for_you" && (
-        <FeatureGate feature="feature_stories">
+        <FeatureGate feature="feature_stories" showUpgrade upgradeVariant="inline" featureName="Stories" featureNameAr="القصص">
           <StoriesBar />
         </FeatureGate>
       )}

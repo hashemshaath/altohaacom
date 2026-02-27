@@ -3,11 +3,12 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageShell } from "@/components/PageShell";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Award, Sparkles } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Award, Sparkles, Lock } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useUserFeatures } from "@/hooks/useMembershipFeatures";
+import { UpgradePrompt } from "@/components/membership/UpgradePrompt";
 
 // Lazy-load heavy tabs for faster initial paint
 const ProfileOverviewTab = lazy(() => import("@/components/profile/ProfileOverviewTab").then(m => ({ default: m.ProfileOverviewTab })));
@@ -102,8 +103,8 @@ export default function Profile() {
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 
-  // Filter tabs by membership feature access
-  const tabs = allTabs.filter(tab => isTabAllowed(tab.id));
+  // Show all tabs but mark locked ones
+  const tabs = allTabs;
 
   return (
     <PageShell
@@ -135,6 +136,7 @@ export default function Profile() {
         <div className="sticky top-12 z-30 -mx-4 border-y border-border/30 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-2xl md:border md:mx-0 md:px-4 shadow-sm">
           <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 no-scrollbar snap-x snap-mandatory">
             {tabs.map((tab) => {
+              const locked = !isTabAllowed(tab.id);
               if ((tab as any).href) {
                 return (
                   <Link
@@ -152,10 +154,11 @@ export default function Profile() {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/20 hover:bg-muted/60"
+                  className={`group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/20 hover:bg-muted/60 ${locked ? "opacity-60" : ""}`}
                 >
                   <tab.icon className="h-3.5 w-3.5 shrink-0" />
                   <span>{tab.label}</span>
+                  {locked && <Lock className="h-3 w-3 text-muted-foreground" />}
                 </TabsTrigger>
               );
             })}
@@ -167,76 +170,54 @@ export default function Profile() {
             {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
           </TabsContent>
 
-          {isTabAllowed("competitions") && (
-            <TabsContent value="competitions" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <CompetitionHistory userId={user.id} />}
-            </TabsContent>
-          )}
+          <TabsContent value="competitions" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("competitions") ? (user && <CompetitionHistory userId={user.id} />) : <UpgradePrompt variant="card" featureName="Competitions" featureNameAr="المسابقات" />}
+          </TabsContent>
 
-          {isTabAllowed("favorites") && (
-            <TabsContent value="favorites" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <FanFavoritesTab />}
-            </TabsContent>
-          )}
+          <TabsContent value="favorites" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("favorites") ? (user && <FanFavoritesTab />) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
+          </TabsContent>
 
-          {isTabAllowed("following") && (
-            <TabsContent value="following" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <FanFollowingTab />}
-            </TabsContent>
-          )}
+          <TabsContent value="following" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("following") ? (user && <FanFollowingTab />) : <UpgradePrompt variant="card" featureName="Following" featureNameAr="المتابَعون" />}
+          </TabsContent>
 
-          {isTabAllowed("achievements") && (
-            <TabsContent value="achievements" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <FanAchievementBadges />}
-            </TabsContent>
-          )}
+          <TabsContent value="achievements" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("achievements") ? (user && <FanAchievementBadges />) : <UpgradePrompt variant="card" featureName="Achievements" featureNameAr="الإنجازات" />}
+          </TabsContent>
 
-          {isTabAllowed("customize") && (
-            <TabsContent value="customize" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <FanProfileCustomization />}
-            </TabsContent>
-          )}
+          <TabsContent value="customize" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("customize") ? (user && <FanProfileCustomization />) : <UpgradePrompt variant="card" featureName="Customization" featureNameAr="التخصيص" />}
+          </TabsContent>
 
-          {isTabAllowed("membership") && (
-            <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {profile && user && <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={refetchProfile} />}
-            </TabsContent>
-          )}
+          <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {profile && user && <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={refetchProfile} />}
+          </TabsContent>
 
-          {isTabAllowed("wallet") && (
-            <TabsContent value="wallet" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <WalletDashboard userId={user.id} />}
-            </TabsContent>
-          )}
+          <TabsContent value="wallet" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("wallet") ? (user && <WalletDashboard userId={user.id} />) : <UpgradePrompt variant="card" featureName="Wallet" featureNameAr="المحفظة" />}
+          </TabsContent>
 
-          {isTabAllowed("orders") && (
-            <TabsContent value="orders" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <ProfileOrdersTab userId={user.id} isAr={isAr} />}
-            </TabsContent>
-          )}
+          <TabsContent value="orders" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("orders") ? (user && <ProfileOrdersTab userId={user.id} isAr={isAr} />) : <UpgradePrompt variant="card" featureName="Orders" featureNameAr="الطلبات" />}
+          </TabsContent>
 
-          {isTabAllowed("referrals") && (
-            <TabsContent value="referrals" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <ProfileReferralsTab userId={user.id} />}
-            </TabsContent>
-          )}
+          <TabsContent value="referrals" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("referrals") ? (user && <ProfileReferralsTab userId={user.id} />) : <UpgradePrompt variant="card" featureName="Referrals" featureNameAr="الإحالات" />}
+          </TabsContent>
 
-          {isTabAllowed("analytics") && (
-            <TabsContent value="analytics" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && (
-                <div className="space-y-6">
-                  <ChefAnalyticsDashboard userId={user.id} />
-                  <ProfileAnalyticsDashboard userId={user.id} />
-                </div>
-              )}
-            </TabsContent>
-          )}
+          <TabsContent value="analytics" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("analytics") ? (user && (
+              <div className="space-y-6">
+                <ChefAnalyticsDashboard userId={user.id} />
+                <ProfileAnalyticsDashboard userId={user.id} />
+              </div>
+            )) : <UpgradePrompt variant="card" featureName="Analytics" featureNameAr="الإحصائيات" />}
+          </TabsContent>
 
-          {isTabAllowed("invoices") && (
-            <TabsContent value="invoices" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-              {user && <ProfileInvoicesTab userId={user.id} />}
-            </TabsContent>
-          )}
+          <TabsContent value="invoices" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {isTabAllowed("invoices") ? (user && <ProfileInvoicesTab userId={user.id} />) : <UpgradePrompt variant="card" featureName="Invoices" featureNameAr="الفواتير" />}
+          </TabsContent>
 
           <TabsContent value="edit" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={refetchProfile} />}
