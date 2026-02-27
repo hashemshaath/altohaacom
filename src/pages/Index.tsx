@@ -4,14 +4,16 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { HeroSlider } from "@/components/home/HeroSlider";
-import { HomeSearch } from "@/components/home/HomeSearch";
-import { HomeStats } from "@/components/home/HomeStats";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { prefetchCommonRoutes } from "@/lib/prefetch";
 import { useHomepageSections, type HomepageSection } from "@/hooks/useHomepageSections";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
-import { HomepageV2 } from "@/components/home/HomepageV2";
+
+// Above-fold components — lazy loaded for code splitting
+const HeroSlider = lazy(() => import("@/components/home/HeroSlider").then(m => ({ default: m.HeroSlider })));
+const HomeSearch = lazy(() => import("@/components/home/HomeSearch").then(m => ({ default: m.HomeSearch })));
+const HomeStats = lazy(() => import("@/components/home/HomeStats").then(m => ({ default: m.HomeStats })));
+const HomepageV2 = lazy(() => import("@/components/home/HomepageV2").then(m => ({ default: m.HomepageV2 })));
 
 // Lazy load below-fold components
 const EventsByCategory = lazy(() => import("@/components/home/EventsByCategory").then(m => ({ default: m.EventsByCategory })));
