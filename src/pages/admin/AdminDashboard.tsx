@@ -26,6 +26,7 @@ import { CompanyDashboardWidget } from "@/components/admin/CompanyDashboardWidge
 import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
 import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytics";
 import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
+import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -265,6 +266,9 @@ export default function AdminDashboard() {
           </div>
         }
       />
+
+      {/* Security Alerts */}
+      <SecurityAlertsBanner />
 
       {/* Mobile Nav Grid */}
       <AdminMobileNavGrid />
