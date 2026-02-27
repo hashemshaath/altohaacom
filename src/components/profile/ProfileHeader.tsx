@@ -96,7 +96,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
 
-        <FeatureGate feature="feature_cover_image">
+        <FeatureGate feature="feature_cover_image" showUpgrade upgradeVariant="minimal" featureName="Cover Image" featureNameAr="صورة الغلاف">
           <Button
             variant="secondary"
             size="sm"

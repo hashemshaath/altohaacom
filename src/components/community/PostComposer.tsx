@@ -415,7 +415,7 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
               </Button>
 
               {!replyToPostId && (
-                <FeatureGate feature="feature_polls">
+                <FeatureGate feature="feature_polls" showUpgrade upgradeVariant="minimal" featureName="Polls" featureNameAr="الاستطلاعات">
                   <PollComposer onPollChange={setPollData} />
                 </FeatureGate>
               )}
