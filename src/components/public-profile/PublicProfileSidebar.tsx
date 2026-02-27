@@ -6,6 +6,7 @@ import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { countryFlag } from "@/lib/countryFlag";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { Calendar, Earth, Globe, Mail, Shield, ExternalLink, Sparkles } from "lucide-react";
+import { FeatureGateForUser } from "@/components/membership/FeatureGate";
 
 interface Props {
   profile: any;
@@ -94,27 +95,29 @@ export function PublicProfileSidebar({ profile, qrCode, isAr, isVisible, getCoun
       )}
 
       {/* QR Code */}
-      {qrCode && (
-        <Card className="rounded-2xl border-border/30 bg-card/90 overflow-hidden hover:shadow-lg hover:shadow-primary/5 transition-all duration-500 group">
-          <CardContent className="p-4 flex flex-col items-center">
-            <div className="transition-transform duration-500 group-hover:scale-[1.02]">
-              <QRCodeDisplay
-                code={qrCode.code}
-                label={isAr ? "رمز QR" : "QR Code"}
-                size={120}
-                vCardData={{
-                  fullName: profile.full_name || "Unknown",
-                  phone: profile.phone || undefined,
-                  website: profile.website || undefined,
-                  location: profile.location || undefined,
-                  accountNumber: profile.account_number || undefined,
-                  profileUrl,
-                }}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <FeatureGateForUser feature="feature_qr_code" userId={profile?.user_id}>
+        {qrCode && (
+          <Card className="rounded-2xl border-border/30 bg-card/90 overflow-hidden hover:shadow-lg hover:shadow-primary/5 transition-all duration-500 group">
+            <CardContent className="p-4 flex flex-col items-center">
+              <div className="transition-transform duration-500 group-hover:scale-[1.02]">
+                <QRCodeDisplay
+                  code={qrCode.code}
+                  label={isAr ? "رمز QR" : "QR Code"}
+                  size={120}
+                  vCardData={{
+                    fullName: profile.full_name || "Unknown",
+                    phone: profile.phone || undefined,
+                    website: profile.website || undefined,
+                    location: profile.location || undefined,
+                    accountNumber: profile.account_number || undefined,
+                    profileUrl,
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </FeatureGateForUser>
     </div>
   );
 }

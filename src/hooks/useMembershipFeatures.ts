@@ -76,17 +76,24 @@ export function useAllMembershipFeatures() {
  */
 export function useHasFeature(featureCode: string) {
   const { user } = useAuth();
+  return useHasFeatureForUser(featureCode, user?.id);
+}
 
+/**
+ * Check if a specific user has access to a feature based on their membership tier.
+ * Useful for public profiles where you need to check the profile owner's features.
+ */
+export function useHasFeatureForUser(featureCode: string, userId?: string) {
   const { data: hasFeature = true, isLoading } = useQuery({
-    queryKey: ["userFeatureAccess", user?.id, featureCode],
+    queryKey: ["userFeatureAccess", userId, featureCode],
     queryFn: async () => {
-      if (!user?.id) return false;
+      if (!userId) return false;
 
       // Get user's membership tier
       const { data: profile } = await supabase
         .from("profiles")
         .select("membership_tier")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .single();
 
       const tier = profile?.membership_tier || "basic";
@@ -95,7 +102,7 @@ export function useHasFeature(featureCode: string) {
       const { data: override } = await supabase
         .from("membership_feature_overrides")
         .select("granted, membership_features!inner(code)")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .eq("membership_features.code", featureCode)
         .maybeSingle();
 
@@ -111,7 +118,7 @@ export function useHasFeature(featureCode: string) {
 
       return mapping?.is_enabled ?? false;
     },
-    enabled: !!user?.id,
+    enabled: !!userId,
     staleTime: 1000 * 60 * 5,
   });
 

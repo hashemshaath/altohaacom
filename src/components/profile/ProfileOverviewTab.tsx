@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
+import { FeatureGateForUser } from "@/components/membership/FeatureGate";
 
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
 import { FileText, Globe } from "lucide-react";
@@ -59,9 +60,11 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       </section>
 
       {/* Badges */}
-      <section>
-        <UserBadgesDisplay userId={userId} />
-      </section>
+      <FeatureGateForUser feature="feature_custom_badges" userId={userId}>
+        <section>
+          <UserBadgesDisplay userId={userId} />
+        </section>
+      </FeatureGateForUser>
 
       {/* Recent Activity */}
       <section>
