@@ -13,6 +13,7 @@ import { useAwardPoints } from "@/hooks/useAwardPoints";
 import { useAccountType } from "@/hooks/useAccountType";
 import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetSkeleton";
 import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboard/DashboardLayoutControl";
+import { ProfileCompletionCard } from "@/components/profile/ProfileCompletionCard";
 
 // Lazy-loaded widgets
 const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
@@ -162,6 +163,7 @@ export default function Dashboard() {
             {user && isFan && <W><FanAchievementBadges /></W>}
           </div>
           <div className="space-y-6">
+            {user && <ProfileCompletionCard />}
             {user && <W><QuickActionsWidget /></W>}
             {user && <W><WeeklyOverviewWidget /></W>}
             {user && <W><StreakWidget /></W>}

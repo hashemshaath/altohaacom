@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { prefetchCommonRoutes } from "@/lib/prefetch";
 import { useHomepageSections, type HomepageSection } from "@/hooks/useHomepageSections";
@@ -98,6 +99,7 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
+      <OfflineIndicator />
       <SEOHead
         title="Altoha — The Global Culinary Community"
         description="The premier platform for chefs, judges, organizers, and food industry professionals. Compete in world-class competitions, master new skills, and connect with a vibrant culinary community."
