@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import {
   Bell, BellOff, Calendar, Clock, ExternalLink, Globe, MapPin,
-  Tag, Ticket, Timer, Users,
+  Tag, Ticket, Timer, Users, Bookmark, BookmarkCheck,
 } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
@@ -44,13 +44,15 @@ interface Props {
   exhibitionQrCode: any;
   onFollow: () => void;
   followPending: boolean;
+  isWatchlisted?: boolean;
+  onToggleWatchlist?: () => void;
 }
 
 export function ExhibitionSidebar({
   exhibition, title, description, venue, organizer, organizerLogoUrl,
   isHappening, isUpcoming, hasEnded,
   isFollowing, followerCount, user, isAr, countryFlag, tags,
-  exhibitionQrCode, onFollow, followPending,
+  exhibitionQrCode, onFollow, followPending, isWatchlisted, onToggleWatchlist,
 }: Props) {
   const start = new Date(exhibition.start_date);
   const end = new Date(exhibition.end_date);
@@ -99,6 +101,11 @@ export function ExhibitionSidebar({
           {user && (
             <Button variant={isFollowing ? "outline" : "secondary"} className="w-full" onClick={onFollow} disabled={followPending}>
               {isFollowing ? (<><BellOff className="me-2 h-4 w-4" />{isAr ? "إلغاء المتابعة" : "Unfollow"}</>) : (<><Bell className="me-2 h-4 w-4" />{isAr ? "تابع للإشعارات" : "Follow for Updates"}</>)}
+            </Button>
+          )}
+          {user && onToggleWatchlist && (
+            <Button variant="outline" className="w-full" onClick={onToggleWatchlist}>
+              {isWatchlisted ? (<><BookmarkCheck className="me-2 h-4 w-4 text-primary" />{isAr ? "في قائمة المتابعة" : "In Watchlist"}</>) : (<><Bookmark className="me-2 h-4 w-4" />{isAr ? "أضف للقائمة" : "Add to Watchlist"}</>)}
             </Button>
           )}
           {exhibition.website_url && (

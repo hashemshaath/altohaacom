@@ -1,6 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Bell, BellOff, Ticket, Globe, Share2, Download } from "lucide-react";
+import { Bell, BellOff, Ticket, Globe, Share2, Download, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
@@ -13,10 +13,12 @@ interface Props {
   hasEnded: boolean;
   isAr: boolean;
   exhibitionTitle?: string;
+  isWatchlisted?: boolean;
+  onToggleWatchlist?: () => void;
 }
 
 export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar({
-  user, isFollowing, followPending, onFollow, registrationUrl, websiteUrl, hasEnded, isAr, exhibitionTitle,
+  user, isFollowing, followPending, onFollow, registrationUrl, websiteUrl, hasEnded, isAr, exhibitionTitle, isWatchlisted, onToggleWatchlist,
 }: Props) {
   const showRegistration = registrationUrl && !hasEnded;
   const showFollow = !!user;
@@ -74,6 +76,16 @@ export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar
         >
           <Share2 className="h-4 w-4" />
         </Button>
+        {user && onToggleWatchlist && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-10 w-10 rounded-xl p-0 shrink-0 active:scale-95 transition-transform"
+            onClick={onToggleWatchlist}
+          >
+            {isWatchlisted ? <BookmarkCheck className="h-4 w-4 text-primary" /> : <Bookmark className="h-4 w-4" />}
+          </Button>
+        )}
         {showFollow && (
           <Button
             variant={isFollowing ? "outline" : "secondary"}
