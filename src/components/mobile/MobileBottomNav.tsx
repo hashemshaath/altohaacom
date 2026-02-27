@@ -188,6 +188,10 @@ export function MobileBottomNav() {
               <Link
                 key={item.to}
                 to={item.to}
+                onClick={() => {
+                  // Haptic feedback on tap
+                  try { if ("vibrate" in navigator) navigator.vibrate(10); } catch {}
+                }}
                 className={cn(
                   "relative flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-[0.88] min-h-[48px] touch-manipulation select-none",
                   isActive ? "text-primary" : "text-muted-foreground"
