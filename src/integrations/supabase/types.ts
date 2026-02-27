@@ -13689,6 +13689,81 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_gifts: {
+        Row: {
+          amount: number
+          billing_cycle: string
+          created_at: string
+          currency: string
+          duration_months: number
+          expires_at: string
+          gift_code: string
+          id: string
+          message: string | null
+          message_ar: string | null
+          payment_reference: string | null
+          payment_status: string
+          purchased_at: string
+          recipient_email: string | null
+          recipient_id: string | null
+          recipient_name: string | null
+          redeemed_at: string | null
+          redeemed_by: string | null
+          sender_id: string
+          status: string
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          billing_cycle?: string
+          created_at?: string
+          currency?: string
+          duration_months?: number
+          expires_at?: string
+          gift_code?: string
+          id?: string
+          message?: string | null
+          message_ar?: string | null
+          payment_reference?: string | null
+          payment_status?: string
+          purchased_at?: string
+          recipient_email?: string | null
+          recipient_id?: string | null
+          recipient_name?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          sender_id: string
+          status?: string
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          billing_cycle?: string
+          created_at?: string
+          currency?: string
+          duration_months?: number
+          expires_at?: string
+          gift_code?: string
+          id?: string
+          message?: string | null
+          message_ar?: string | null
+          payment_reference?: string | null
+          payment_status?: string
+          purchased_at?: string
+          recipient_email?: string | null
+          recipient_id?: string | null
+          recipient_name?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          sender_id?: string
+          status?: string
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       membership_history: {
         Row: {
           changed_by: string | null
