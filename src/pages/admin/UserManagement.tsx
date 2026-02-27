@@ -40,7 +40,11 @@ import { UsersLiveStatsWidget } from "@/components/admin/UsersLiveStatsWidget";
 import { UserActivityTimeline } from "@/components/admin/UserActivityTimeline";
 import { UserSearchCommand } from "@/components/admin/UserSearchCommand";
 import { AdminSessionTracker } from "@/components/admin/AdminSessionTracker";
+import { AdminNotificationCenter } from "@/components/admin/AdminNotificationCenter";
+import { SecurityAuditTimeline } from "@/components/admin/SecurityAuditTimeline";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { SkeletonTable } from "@/components/ui/skeleton-table";
+import { useTableSort } from "@/hooks/useTableSort";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
@@ -227,6 +231,8 @@ export default function UserManagement() {
 
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: bulkCount, selectedItems, isSelected } =
     useAdminBulkActions(filteredUsers || []);
+
+  const { sorted: sortedUsers, sortColumn, sortDirection, toggleSort } = useTableSort(filteredUsers || [], "created_at", "desc");
 
   const { exportCSV } = useCSVExport({
     columns: [
@@ -655,6 +661,12 @@ export default function UserManagement() {
 
       {/* Stats Bar */}
       <UserStatsBar />
+
+      {/* Notification Center & Security Audit */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <AdminNotificationCenter />
+        <SecurityAuditTimeline />
+      </div>
 
       {/* Security & Sessions */}
       <AdminSessionTracker />
@@ -1216,9 +1228,7 @@ export default function UserManagement() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
+            <SkeletonTable columns={9} rows={8} />
           ) : filteredUsers?.length === 0 ? (
             <p className="py-8 text-center text-muted-foreground">{t("noResults")}</p>
           ) : viewMode === "card" ? (
@@ -1229,23 +1239,23 @@ export default function UserManagement() {
           ) : (
             <>
               <Table>
-                <TableHeader>
+                <TableHeader className="sticky top-0 bg-background z-10">
                   <TableRow>
                     <TableHead className="w-10">
                       <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                     </TableHead>
-                    <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
-                    <TableHead>{t("accountNumber")}</TableHead>
-                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
+                    <SortableTableHead column="full_name" label={isAr ? "المستخدم" : "User"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="account_number" label={t("accountNumber")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="account_type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead>{isAr ? "الأدوار" : "Roles"}</TableHead>
-                    <TableHead>{t("membershipTier")}</TableHead>
-                    <TableHead>{t("accountStatus")}</TableHead>
-                    <TableHead>{isAr ? "تاريخ الإنشاء" : "Created"}</TableHead>
+                    <SortableTableHead column="membership_tier" label={t("membershipTier")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="account_status" label={t("accountStatus")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="created_at" label={isAr ? "تاريخ الإنشاء" : "Created"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead className="w-40">{isAr ? "الإجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers?.map((profile) => (
+                  {sortedUsers?.map((profile) => (
                     <TableRow key={profile.id} className={editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : ""}>
                       <TableCell>
                         <Checkbox checked={isSelected(profile.id)} onCheckedChange={() => toggleOne(profile.id)} />
@@ -1308,14 +1318,38 @@ export default function UserManagement() {
               {totalPages > 1 && (
                 <div className="mt-4 flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
-                    {isAr ? `صفحة ${page + 1} من ${totalPages}` : `Page ${page + 1} of ${totalPages}`}
+                    {isAr
+                      ? `عرض ${page * pageSize + 1}-${Math.min((page + 1) * pageSize, usersData?.totalCount || 0)} من ${usersData?.totalCount || 0}`
+                      : `Showing ${page * pageSize + 1}-${Math.min((page + 1) * pageSize, usersData?.totalCount || 0)} of ${usersData?.totalCount || 0}`}
                   </p>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0}>
+                  <div className="flex items-center gap-1">
+                    <Button variant="outline" size="sm" onClick={() => setPage(0)} disabled={page === 0} className="h-8 w-8 p-0">
+                      <ChevronLeft className="h-3 w-3" /><ChevronLeft className="h-3 w-3 -ms-2" />
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="h-8 w-8 p-0">
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}>
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      const startPage = Math.max(0, Math.min(page - 2, totalPages - 5));
+                      const pageNum = startPage + i;
+                      if (pageNum >= totalPages) return null;
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={pageNum === page ? "default" : "outline"}
+                          size="sm"
+                          className="h-8 w-8 p-0 text-xs"
+                          onClick={() => setPage(pageNum)}
+                        >
+                          {pageNum + 1}
+                        </Button>
+                      );
+                    })}
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="h-8 w-8 p-0">
                       <ChevronRight className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1} className="h-8 w-8 p-0">
+                      <ChevronRight className="h-3 w-3" /><ChevronRight className="h-3 w-3 -ms-2" />
                     </Button>
                   </div>
                 </div>
