@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { AdminSearchCommand } from "./AdminSearchCommand";
+import { AdminMobileNavDrawer } from "./AdminMobileNavDrawer";
 import { Button } from "@/components/ui/button";
 import { Home, LogOut } from "lucide-react";
 
@@ -21,6 +22,7 @@ export function AdminHeader() {
       <div className="flex h-14 items-center justify-between px-4">
         {/* Left: Logo + Admin label */}
         <div className="flex items-center gap-3">
+          <AdminMobileNavDrawer />
           <Link to="/admin" className="flex items-center gap-2">
             <img src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-8 w-auto" />
             <span className={`text-lg font-bold text-primary ${isAr ? "" : "font-serif"}`}>
