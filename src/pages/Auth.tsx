@@ -23,7 +23,7 @@ import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Phone, Mail, KeyRound, Gift,
+  Phone, Mail, KeyRound, Gift, ChefHat, Heart,
 } from "lucide-react";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
@@ -83,6 +83,7 @@ export default function Auth() {
   const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [manualRefCode, setManualRefCode] = useState("");
+  const [accountType, setAccountType] = useState<"professional" | "fan">("professional");
 
   // Password reset
   const [resetPassword, setResetPassword] = useState("");
@@ -476,7 +477,7 @@ export default function Auth() {
     }
 
     if (data.user) {
-      await supabase.from("user_roles").insert({ user_id: data.user.id, role: "chef" as any });
+      await supabase.from("user_roles").insert({ user_id: data.user.id, role: (accountType === "fan" ? "viewer" : "chef") as any });
       await new Promise((resolve) => setTimeout(resolve, 500));
       await supabase
         .from("profiles")
@@ -486,6 +487,7 @@ export default function Auth() {
           country_code: countryCode || null,
           preferred_language: language,
           email: accountEmail,
+          account_type: accountType,
         })
         .eq("user_id", data.user.id);
 
@@ -677,6 +679,59 @@ export default function Auth() {
                     <span className="text-primary">{verifiedEmail}</span>
                   </>
                 )}
+              </div>
+            </div>
+
+            {/* Account Type Selection */}
+            <div className="space-y-2">
+              <Label className="text-xs font-medium">{isAr ? "نوع الحساب" : "Account Type"} *</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAccountType("professional")}
+                  className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${
+                    accountType === "professional"
+                      ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                      : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
+                  }`}
+                >
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                    accountType === "professional" ? "bg-primary/15" : "bg-muted"
+                  }`}>
+                    <ChefHat className={`h-5 w-5 ${accountType === "professional" ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <div>
+                    <p className={`text-sm font-bold ${accountType === "professional" ? "text-primary" : "text-foreground"}`}>
+                      {isAr ? "محترف" : "Professional"}
+                    </p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
+                      {isAr ? "طاهٍ أو محترف في مجال الطهي" : "Chef or culinary professional"}
+                    </p>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAccountType("fan")}
+                  className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${
+                    accountType === "fan"
+                      ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
+                      : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
+                  }`}
+                >
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                    accountType === "fan" ? "bg-primary/15" : "bg-muted"
+                  }`}>
+                    <Heart className={`h-5 w-5 ${accountType === "fan" ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <div>
+                    <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
+                      {isAr ? "متابع" : "Follower"}
+                    </p>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
+                      {isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}
+                    </p>
+                  </div>
+                </button>
               </div>
             </div>
 

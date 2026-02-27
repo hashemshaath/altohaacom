@@ -15211,6 +15211,7 @@ export type Database = {
         Row: {
           account_number: string | null
           account_status: Database["public"]["Enums"]["account_status"] | null
+          account_type: Database["public"]["Enums"]["account_type"]
           avatar_url: string | null
           bio: string | null
           bio_ar: string | null
@@ -15290,6 +15291,7 @@ export type Database = {
         Insert: {
           account_number?: string | null
           account_status?: Database["public"]["Enums"]["account_status"] | null
+          account_type?: Database["public"]["Enums"]["account_type"]
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
@@ -15371,6 +15373,7 @@ export type Database = {
         Update: {
           account_number?: string | null
           account_status?: Database["public"]["Enums"]["account_status"] | null
+          account_type?: Database["public"]["Enums"]["account_type"]
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
@@ -20585,6 +20588,7 @@ export type Database = {
     }
     Enums: {
       account_status: "pending" | "active" | "suspended" | "banned"
+      account_type: "professional" | "fan"
       app_role:
         | "chef"
         | "judge"
@@ -20862,6 +20866,7 @@ export const Constants = {
   public: {
     Enums: {
       account_status: ["pending", "active", "suspended", "banned"],
+      account_type: ["professional", "fan"],
       app_role: [
         "chef",
         "judge",
