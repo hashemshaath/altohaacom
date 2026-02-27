@@ -5032,6 +5032,13 @@ export type Database = {
             foreignKeyName: "competition_registrations_participant_id_fkey"
             columns: ["participant_id"]
             isOneToOne: false
+            referencedRelation: "fan_leaderboard"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "competition_registrations_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
@@ -7635,6 +7642,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_positions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "fan_leaderboard"
+            referencedColumns: ["user_id"]
           },
           {
             foreignKeyName: "entity_positions_user_id_fkey"
@@ -15257,6 +15271,7 @@ export type Database = {
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook: string | null
+          favorite_cuisines: string[] | null
           follow_privacy: string
           full_name: string | null
           full_name_ar: string | null
@@ -15264,6 +15279,7 @@ export type Database = {
           global_awards: Json | null
           id: string
           instagram: string | null
+          interests: string[] | null
           is_verified: boolean | null
           job_title: string | null
           job_title_ar: string | null
@@ -15337,6 +15353,7 @@ export type Database = {
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook?: string | null
+          favorite_cuisines?: string[] | null
           follow_privacy?: string
           full_name?: string | null
           full_name_ar?: string | null
@@ -15344,6 +15361,7 @@ export type Database = {
           global_awards?: Json | null
           id?: string
           instagram?: string | null
+          interests?: string[] | null
           is_verified?: boolean | null
           job_title?: string | null
           job_title_ar?: string | null
@@ -15419,6 +15437,7 @@ export type Database = {
             | Database["public"]["Enums"]["experience_level"]
             | null
           facebook?: string | null
+          favorite_cuisines?: string[] | null
           follow_privacy?: string
           full_name?: string | null
           full_name_ar?: string | null
@@ -15426,6 +15445,7 @@ export type Database = {
           global_awards?: Json | null
           id?: string
           instagram?: string | null
+          interests?: string[] | null
           is_verified?: boolean | null
           job_title?: string | null
           job_title_ar?: string | null
@@ -20227,6 +20247,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fan_leaderboard: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"] | null
+          avatar_url: string | null
+          comments_count: number | null
+          engagement_score: number | null
+          favorites_count: number | null
+          following_count: number | null
+          full_name: string | null
+          reviews_count: number | null
+          user_id: string | null
+          username: string | null
+        }
+        Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          avatar_url?: string | null
+          comments_count?: never
+          engagement_score?: never
+          favorites_count?: never
+          following_count?: never
+          full_name?: string | null
+          reviews_count?: never
+          user_id?: string | null
+          username?: string | null
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          avatar_url?: string | null
+          comments_count?: never
+          engagement_score?: never
+          favorites_count?: never
+          following_count?: never
+          full_name?: string | null
+          reviews_count?: never
+          user_id?: string | null
+          username?: string | null
+        }
+        Relationships: []
       }
       judge_profiles_public: {
         Row: {
