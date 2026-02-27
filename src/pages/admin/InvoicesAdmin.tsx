@@ -20,6 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
+import { FinancialOverviewCards } from "@/components/admin/FinancialOverviewCards";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   FileText, Search, Plus, Eye, ChevronLeft, Save, Trash2,
@@ -624,6 +625,9 @@ export default function InvoicesAdmin() {
           </Button>
         }
       />
+
+      {/* Financial Overview */}
+      <FinancialOverviewCards />
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
