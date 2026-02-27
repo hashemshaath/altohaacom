@@ -27,6 +27,9 @@ import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
 import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytics";
 import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
+import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
+import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
+import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -613,6 +616,13 @@ export default function AdminDashboard() {
 
       {/* Automation Rules */}
       <AdminAutomationRules />
+
+      {/* Content Calendar + Communications + Exports */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <ContentCalendarWidget />
+        <CommunicationsDashboardWidget />
+        <AdminScheduledExports />
+      </div>
 
       {/* Automation & Notifications Status */}
       <AutomationStatusWidget />
