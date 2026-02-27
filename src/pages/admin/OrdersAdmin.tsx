@@ -3,6 +3,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
 import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
 import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
+import { OrdersRevenueWidget } from "@/components/admin/OrdersRevenueWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -1213,6 +1214,7 @@ export default function OrdersAdmin() {
       />
 
       {/* Revenue & Payment Tracking */}
+      <OrdersRevenueWidget />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           <RevenueAnalyticsWidget />
