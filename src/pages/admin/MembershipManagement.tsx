@@ -1,7 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp, PieChart, Share2, ShieldAlert } from "lucide-react";
+import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp, PieChart, Share2, ShieldAlert, FileText } from "lucide-react";
 import MembershipOverview from "@/components/admin/membership/MembershipOverview";
 import MembershipMembersTab from "@/components/admin/membership/MembershipMembersTab";
 import MembershipBenefitsTab from "@/components/admin/membership/MembershipBenefitsTab";
@@ -11,6 +11,7 @@ import MembershipFeatureAnalytics from "@/components/admin/membership/Membership
 import MembershipAnalyticsDashboard from "@/components/admin/membership/MembershipAnalyticsDashboard";
 import MembershipReferralsTab from "@/components/admin/membership/MembershipReferralsTab";
 import MembershipChurnRetention from "@/components/admin/membership/MembershipChurnRetention";
+import MembershipDigestPanel from "@/components/admin/membership/MembershipDigestPanel";
 export default function MembershipManagement() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -62,6 +63,10 @@ export default function MembershipManagement() {
               <ShieldAlert className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "التسرب" : "Churn"}
             </TabsTrigger>
+            <TabsTrigger value="digest" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "الملخص" : "Digest"}
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -74,6 +79,7 @@ export default function MembershipManagement() {
         <TabsContent value="dashboard"><MembershipAnalyticsDashboard /></TabsContent>
         <TabsContent value="referrals"><MembershipReferralsTab /></TabsContent>
         <TabsContent value="churn"><MembershipChurnRetention /></TabsContent>
+        <TabsContent value="digest"><MembershipDigestPanel /></TabsContent>
       </Tabs>
     </div>
   );
