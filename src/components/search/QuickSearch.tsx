@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { TrendingSearches } from "./TrendingSearches";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -203,6 +204,7 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
     setSavedSearches(getSavedSearches());
   };
 
+  const showTrending = isOpen && query.length < 2 && recentSearches.length === 0 && savedSearches.length === 0;
   const showRecent = isOpen && query.length < 2 && (recentSearches.length > 0 || savedSearches.length > 0);
   const showResults = isOpen && query.length >= 2;
 
@@ -250,6 +252,13 @@ export function QuickSearch({ onClose }: QuickSearchProps) {
           )}
         </div>
       </form>
+
+      {/* Trending (when no recent/saved searches) */}
+      {showTrending && (
+        <div className="absolute top-full inset-x-0 z-50 mt-1 rounded-xl border bg-popover p-2.5 shadow-xl animate-fade-in">
+          <TrendingSearches onSelect={(term) => { handleRecentClick(term); }} />
+        </div>
+      )}
 
       {/* Recent & Saved Searches Dropdown */}
       {showRecent && (

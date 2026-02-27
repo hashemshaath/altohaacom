@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
 import { MLAnalyticsDashboard } from "@/components/admin/MLAnalyticsDashboard";
+import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminActivityFeed } from "@/components/admin/AdminActivityFeed";
 import { AdminModerationQueue } from "@/components/admin/AdminModerationQueue";
 import { AdminFinanceOverview } from "@/components/admin/AdminFinanceOverview";
@@ -224,10 +225,13 @@ export default function AdminDashboard() {
         title={isAr ? "لوحة التحكم" : "Admin Dashboard"}
         description={isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
         actions={
-          <Badge variant="secondary" className="gap-1.5">
-            <Shield className="h-3 w-3" />
-            {isAr ? "صلاحيات كاملة" : "Full Access"}
-          </Badge>
+          <div className="flex items-center gap-3 flex-wrap">
+            <SystemHealthBar />
+            <Badge variant="secondary" className="gap-1.5">
+              <Shield className="h-3 w-3" />
+              {isAr ? "صلاحيات كاملة" : "Full Access"}
+            </Badge>
+          </div>
         }
       />
 
