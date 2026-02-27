@@ -22,6 +22,9 @@ import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
 import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
 import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
 import { AdminPDFReportGenerator } from "@/components/admin/AdminPDFReportGenerator";
+import { CompanyDashboardWidget } from "@/components/admin/CompanyDashboardWidget";
+import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
+import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -63,6 +66,7 @@ function SectionSkeleton() {
 export default function AdminDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  useAdminCacheWarmer();
 
   // ── Main stats (single batch) ──
   const { data: stats, isLoading } = useQuery({
@@ -606,6 +610,12 @@ export default function AdminDashboard() {
 
       {/* PDF Report Generator */}
       <AdminPDFReportGenerator />
+
+      {/* Company Dashboard */}
+      <CompanyDashboardWidget />
+
+      {/* Audit Trail */}
+      <AdminAuditTrail />
 
       {/* Performance Monitor */}
       <Suspense fallback={<SectionSkeleton />}>
