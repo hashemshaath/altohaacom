@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { ActivitySidebar } from "./ActivitySidebar";
+import { TrendingTopics } from "./TrendingTopics";
 import { CommunitySearch } from "./CommunitySearch";
 import { UpcomingEventsWidget } from "./UpcomingEventsWidget";
 import {
@@ -148,6 +149,9 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
           {/* Upcoming Events */}
           <UpcomingEventsWidget />
+
+          {/* Trending Topics */}
+          <TrendingTopics />
 
           {/* Activity Feed */}
           <ActivitySidebar />

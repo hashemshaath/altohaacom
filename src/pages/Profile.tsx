@@ -24,6 +24,7 @@ const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").th
 const FanFollowingTab = lazy(() => import("@/components/fan/FanFollowingTab").then(m => ({ default: m.FanFollowingTab })));
 const FanAchievementBadges = lazy(() => import("@/components/fan/FanAchievementBadges").then(m => ({ default: m.FanAchievementBadges })));
 const FanProfileCustomization = lazy(() => import("@/components/fan/FanProfileCustomization").then(m => ({ default: m.FanProfileCustomization })));
+const ChefAnalyticsDashboard = lazy(() => import("@/components/chef/ChefAnalyticsDashboard").then(m => ({ default: m.ChefAnalyticsDashboard })));
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 
@@ -177,7 +178,12 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {user && <ProfileAnalyticsDashboard userId={user.id} />}
+            {user && (
+              <div className="space-y-6">
+                <ChefAnalyticsDashboard userId={user.id} />
+                <ProfileAnalyticsDashboard userId={user.id} />
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="invoices" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
