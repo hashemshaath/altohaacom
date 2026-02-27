@@ -31,7 +31,7 @@ export function UpgradePrompt({
     if (!user) {
       navigate("/login");
     } else {
-      navigate("/membership");
+      navigate("/membership/checkout");
     }
   };
 
