@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ContentStatsWidget } from "@/components/admin/ContentStatsWidget";
+import { ContentQuickToolbar } from "@/components/admin/ContentQuickToolbar";
 import { ContentInsightsWidget } from "@/components/admin/ContentInsightsWidget";
 import { ContentPipelineWidget } from "@/components/admin/ContentPipelineWidget";
 import { ContentLiveStatsWidget } from "@/components/admin/ContentLiveStatsWidget";
@@ -452,6 +453,9 @@ export default function ArticlesAdmin() {
           </div>
         }
       />
+
+      {/* Quick Metrics */}
+      <ContentQuickToolbar />
 
       {/* Content Analytics Widget */}
       <ContentLiveStatsWidget />
