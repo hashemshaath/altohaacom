@@ -100,7 +100,7 @@ export default function Community() {
             {activeTab === "recipes" && <Suspense fallback={<TabFallback />}><div className="p-4"><RecipesTab /></div></Suspense>}
             {activeTab === "groups" && <Suspense fallback={<TabFallback />}><div className="p-4"><GroupsTab /></div></Suspense>}
             {activeTab === "events" && <Suspense fallback={<TabFallback />}><div className="p-4"><EventsTab /></div></Suspense>}
-            {activeTab === "live" && <FeatureGate feature="feature_live_sessions"><Suspense fallback={<TabFallback />}><div className="p-4"><LiveSessionsTab /></div></Suspense></FeatureGate>}
+            {activeTab === "live" && <FeatureGate feature="feature_live_sessions" showUpgrade upgradeVariant="card" featureName="Live Sessions" featureNameAr="الجلسات المباشرة"><Suspense fallback={<TabFallback />}><div className="p-4"><LiveSessionsTab /></div></Suspense></FeatureGate>}
             {activeTab === "network" && user && <Suspense fallback={<TabFallback />}><div className="p-4"><NetworkTab /></div></Suspense>}
           </div>
 
