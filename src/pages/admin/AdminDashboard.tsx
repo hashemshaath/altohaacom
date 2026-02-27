@@ -17,6 +17,8 @@ import { CompetitionInsightsWidget } from "@/components/admin/CompetitionInsight
 import { ExhibitionInsightsWidget } from "@/components/admin/ExhibitionInsightsWidget";
 import { SupportInsightsWidget } from "@/components/admin/SupportInsightsWidget";
 import { SecurityInsightsWidget } from "@/components/admin/SecurityInsightsWidget";
+import { AutomationStatusWidget } from "@/components/admin/AutomationStatusWidget";
+import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -253,6 +255,9 @@ export default function AdminDashboard() {
           </div>
         }
       />
+
+      {/* Quick Actions Bar */}
+      <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
 
       {/* KPI Trends (week-over-week comparison) */}
       <AdminKPITrends />
@@ -588,6 +593,9 @@ export default function AdminDashboard() {
       <Suspense fallback={<SectionSkeleton />}>
         <CRMPipelineWidget />
       </Suspense>
+
+      {/* Automation & Notifications Status */}
+      <AutomationStatusWidget />
 
       {/* Performance Monitor */}
       <Suspense fallback={<SectionSkeleton />}>
