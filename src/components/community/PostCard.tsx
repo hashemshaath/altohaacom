@@ -22,6 +22,8 @@ import { ChefBadge } from "./ChefBadge";
 import { MentionText } from "./MentionText";
 import { PollDisplay } from "./PollDisplay";
 import { PostEditDialog } from "./PostEditDialog";
+import { PostReadTime } from "./PostReadTime";
+import { PostEngagementSummary } from "./PostEngagementSummary";
 import { cn } from "@/lib/utils";
 import type { CommunityPost } from "./CommunityFeed";
 
@@ -115,6 +117,7 @@ export function PostCard({
               <span className="shrink-0 text-xs text-muted-foreground">
                 {formatDate(post.created_at)}
               </span>
+              <PostReadTime content={post.content} />
               {post.edited_at && (
                 <button
                   className="shrink-0 text-[10px] text-muted-foreground hover:text-primary transition-colors"
@@ -214,6 +217,13 @@ export function PostCard({
                 <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" />
               </div>
             )}
+
+            {/* Engagement Summary */}
+            <PostEngagementSummary
+              likesCount={post.likes_count}
+              commentsCount={post.comments_count}
+              repostsCount={post.reposts_count}
+            />
 
             {/* Poll */}
             <PollDisplay postId={post.id} />
