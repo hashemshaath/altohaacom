@@ -41,6 +41,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { TicketPerformanceWidget } from "@/components/admin/TicketPerformanceWidget";
 import { TicketEscalationWidget } from "@/components/admin/TicketEscalationWidget";
 import { SupportSatisfactionWidget } from "@/components/admin/SupportSatisfactionWidget";
+import { MessagingAdminOverview } from "@/components/admin/MessagingAdminOverview";
 import {
   Ticket,
   Search,
@@ -297,6 +298,9 @@ export default function SupportTicketsAdmin() {
         title={isAr ? "تذاكر الدعم" : "Support Tickets"}
         description={isAr ? "إدارة طلبات الدعم" : "Manage support requests"}
       />
+
+      {/* Messaging Overview */}
+      <MessagingAdminOverview />
 
       {/* Performance Widget */}
       <TicketPerformanceWidget />

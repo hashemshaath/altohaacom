@@ -17,6 +17,7 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { LoyaltyOverviewWidget } from "@/components/admin/LoyaltyOverviewWidget";
 import { LoyaltyLiveStatsWidget } from "@/components/admin/LoyaltyLiveStatsWidget";
 import { WalletAdminOverview } from "@/components/admin/WalletAdminOverview";
+import { WalletTransactionHeatmap } from "@/components/admin/WalletTransactionHeatmap";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();
@@ -145,6 +146,7 @@ export default function LoyaltyAdmin() {
 
       <LoyaltyLiveStatsWidget />
       <WalletAdminOverview />
+      <WalletTransactionHeatmap />
       <LoyaltyOverviewWidget />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

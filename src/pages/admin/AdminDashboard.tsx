@@ -28,6 +28,7 @@ import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
 import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytics";
 import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
+import { PerformanceOptimizationWidget } from "@/components/admin/PerformanceOptimizationWidget";
 import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
 import { DashboardLiveMetricsWidget } from "@/components/admin/DashboardLiveMetricsWidget";
 import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
@@ -661,6 +662,9 @@ export default function AdminDashboard() {
       <Suspense fallback={<SectionSkeleton />}>
         <PerformanceMonitorWidget />
       </Suspense>
+
+      {/* App Performance */}
+      <PerformanceOptimizationWidget />
 
       {/* Quick Data Export */}
       <ScheduledExportWidget />
