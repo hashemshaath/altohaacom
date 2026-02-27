@@ -28,6 +28,7 @@ import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytic
 import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
+import { DashboardLiveMetricsWidget } from "@/components/admin/DashboardLiveMetricsWidget";
 import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
 import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
 import { ScheduledExportWidget } from "@/components/admin/ScheduledExportWidget";
@@ -288,6 +289,9 @@ export default function AdminDashboard() {
         </div>
         <ShortcutHintsCard />
       </div>
+
+      {/* Live Platform Pulse */}
+      <DashboardLiveMetricsWidget />
 
       {/* KPI Trends (week-over-week comparison) */}
       <AdminKPITrends />
