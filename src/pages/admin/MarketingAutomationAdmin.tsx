@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { MarketingOverviewWidget } from "@/components/admin/MarketingOverviewWidget";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -171,6 +172,9 @@ export default function MarketingAutomationAdmin() {
         title={isAr ? "أتمتة التسويق" : "Marketing Automation"}
         description={isAr ? "إدارة الحملات التلقائية والإشعارات والبريد الإلكتروني" : "Manage automated campaigns, notifications & emails"}
       />
+
+      {/* Marketing Overview */}
+      <MarketingOverviewWidget />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

@@ -23,6 +23,7 @@ import { CertificateDesigner } from "@/components/certificates/CertificateDesign
 import { CertificateViewPanel } from "@/components/certificates/CertificateViewPanel";
 import { CandidateSelector } from "@/components/certificates/CandidateSelector";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { CertificateAnalyticsWidget } from "@/components/admin/CertificateAnalyticsWidget";
 import {
   Award, FileText, Users, Send, Download, Search, Plus, Edit, Trash2, Eye,
   CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette,
@@ -348,6 +349,9 @@ export default function CertificatesAdmin() {
           </div>
         }
       />
+
+      {/* Certificate Analytics */}
+      <CertificateAnalyticsWidget />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
