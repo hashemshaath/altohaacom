@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
+import { AdminCommandBar } from "@/components/admin/AdminCommandBar";
 import { MLAnalyticsDashboard } from "@/components/admin/MLAnalyticsDashboard";
 import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminActivityFeed } from "@/components/admin/AdminActivityFeed";
@@ -296,6 +297,9 @@ export default function AdminDashboard() {
           );
         })}
       </div>
+
+      {/* Command Bar */}
+      <AdminCommandBar />
 
       {/* Workflow Shortcuts */}
       <Card className="border-border/50">
