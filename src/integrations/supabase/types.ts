@@ -8520,6 +8520,30 @@ export type Database = {
         }
         Relationships: []
       }
+      event_watchlist: {
+        Row: {
+          created_at: string
+          event_id: string
+          event_type: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          event_type: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          event_type?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       exhibition_agenda_favorites: {
         Row: {
           agenda_item_id: string
