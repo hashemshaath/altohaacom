@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
+import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -434,6 +435,9 @@ export default function ExhibitionsAdmin() {
 
       {/* Exhibition Analytics Widget */}
       <ExhibitionAnalyticsWidget />
+
+      {/* Exhibition Management Widget */}
+      <ExhibitionManagementWidget />
 
       {/* Quick Stats */}
       {exhibitions && exhibitions.length > 0 && (

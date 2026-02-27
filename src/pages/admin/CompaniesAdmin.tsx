@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -1563,6 +1564,9 @@ export default function CompaniesAdmin() {
         </h1>
         <p className="text-muted-foreground mt-1">{isAr ? "إدارة الشركات والرعاة والموردين والشركاء - موحّدة" : "Unified management for companies, sponsors, suppliers & partners"}</p>
       </div>
+
+      {/* Company Finance Analytics */}
+      <CompanyFinanceWidget />
 
       {/* Bulk Import & Export */}
       <div className="flex flex-wrap gap-2">
