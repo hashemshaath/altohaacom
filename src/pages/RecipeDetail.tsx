@@ -21,6 +21,7 @@ import {
   UtensilsCrossed, Check, Wheat, Beef, Droplets,
 } from "lucide-react";
 import { RecipeActionBar } from "@/components/recipes/RecipeActionBar";
+import { CookingTimer } from "@/components/recipes/CookingTimer";
 
 const RecipeReviews = lazy(() => import("@/components/fan/RecipeReviews").then(m => ({ default: m.RecipeReviews })));
 
@@ -379,6 +380,13 @@ export default function RecipeDetail() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Cooking Timer */}
+              <CookingTimer
+                prepMinutes={recipe.prep_time_minutes}
+                cookMinutes={recipe.cook_time_minutes}
+                recipeName={title}
+              />
 
               {/* Save & Share */}
               <RecipeActionBar
