@@ -13380,6 +13380,48 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_benefit_limits: {
+        Row: {
+          benefit_code: string
+          benefit_name: string
+          benefit_name_ar: string | null
+          category: string
+          created_at: string | null
+          icon_name: string | null
+          id: string
+          is_active: boolean | null
+          monthly_limit: number | null
+          sort_order: number | null
+          tier: string
+        }
+        Insert: {
+          benefit_code: string
+          benefit_name: string
+          benefit_name_ar?: string | null
+          category?: string
+          created_at?: string | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          monthly_limit?: number | null
+          sort_order?: number | null
+          tier: string
+        }
+        Update: {
+          benefit_code?: string
+          benefit_name?: string
+          benefit_name_ar?: string | null
+          category?: string
+          created_at?: string | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          monthly_limit?: number | null
+          sort_order?: number | null
+          tier?: string
+        }
+        Relationships: []
+      }
       membership_cancellation_requests: {
         Row: {
           admin_notes: string | null

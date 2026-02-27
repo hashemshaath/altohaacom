@@ -29,6 +29,7 @@ import { useVerificationStatus } from "@/hooks/useVerification";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
+import { BenefitsUsageTracker } from "./BenefitsUsageTracker";
 
 interface UnifiedMembershipTabProps {
   profile: any;
@@ -959,6 +960,9 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Benefits Usage Tracker */}
+      <BenefitsUsageTracker />
     </div>
   );
 }
