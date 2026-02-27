@@ -1,8 +1,9 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table2, Settings2, UserCog } from "lucide-react";
+import { Table2, Settings2, UserCog, SlidersHorizontal } from "lucide-react";
 import MembershipFeatureControl from "./MembershipFeatureControl";
 import MembershipUserOverrides from "./MembershipUserOverrides";
+import AdminBenefitLimitsEditor from "./AdminBenefitLimitsEditor";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Star, Crown, Zap } from "lucide-react";
@@ -45,6 +46,10 @@ export default function MembershipBenefitsTab() {
         <TabsTrigger value="comparison" className="gap-1 text-xs h-7 px-2">
           <Table2 className="h-3 w-3" />
           {isAr ? "مقارنة الباقات" : "Tier Comparison"}
+        </TabsTrigger>
+        <TabsTrigger value="limits" className="gap-1 text-xs h-7 px-2">
+          <SlidersHorizontal className="h-3 w-3" />
+          {isAr ? "حدود الاستخدام" : "Usage Limits"}
         </TabsTrigger>
       </TabsList>
 
@@ -118,6 +123,10 @@ export default function MembershipBenefitsTab() {
             </CardContent>
           </Card>
         </div>
+      </TabsContent>
+
+      <TabsContent value="limits">
+        <AdminBenefitLimitsEditor />
       </TabsContent>
     </Tabs>
   );
