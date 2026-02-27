@@ -28,12 +28,15 @@ import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
 import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
 import { BulkUserImport } from "@/components/admin/BulkUserImport";
+import { UserQuickActions } from "@/components/admin/UserQuickActions";
+import { UserAdvancedFilters, INITIAL_FILTERS, type FilterValues } from "@/components/admin/UserAdvancedFilters";
+import { AdminUserDetailsDrawer } from "@/components/admin/AdminUserDetailsDrawer";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
   Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages, Briefcase,
-  ChefHat, Pencil, Check, FileSpreadsheet, Download, Shield, BarChart3,
+  ChefHat, Pencil, Check, FileSpreadsheet, Download, Shield, BarChart3, SlidersHorizontal,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -589,6 +592,9 @@ export default function UserManagement() {
   const isSaving = updateProfileMutation.isPending || updateRolesMutation.isPending;
 
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState<FilterValues>(INITIAL_FILTERS);
+  const [drawerUserId, setDrawerUserId] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -752,6 +758,12 @@ export default function UserManagement() {
           <Download className="me-2 h-4 w-4" />
           {isAr ? "تصدير CSV" : "Export CSV"}
         </Button>
+
+        <UserAdvancedFilters
+          filters={advancedFilters}
+          onChange={setAdvancedFilters}
+          onReset={() => setAdvancedFilters(INITIAL_FILTERS)}
+        />
       </div>
 
       {/* Bulk Action Bar */}
@@ -1266,25 +1278,18 @@ export default function UserManagement() {
                       <TableCell>{getStatusBadge(profile.account_status)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{format(new Date(profile.created_at), "MMM d, yyyy")}</TableCell>
                       <TableCell>
-                        <div className="flex gap-1">
-                          <Button variant="ghost" size="sm" asChild>
-                            <Link to={`/admin/users/${profile.user_id}`}><Eye className="h-4 w-4" /></Link>
+                        <div className="flex items-center gap-1">
+                          <Button variant={editingUserId === profile.user_id ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => editingUserId === profile.user_id ? setEditingUserId(null) : handleOpenEdit(profile)}>
+                            <Edit className="h-3.5 w-3.5" />
                           </Button>
-                          <Button variant={editingUserId === profile.user_id ? "secondary" : "ghost"} size="sm" onClick={() => editingUserId === profile.user_id ? setEditingUserId(null) : handleOpenEdit(profile)}>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => { setResetUserId(profile.user_id); setResetUserName(profile.full_name || ""); setResetOpen(true); }}>
-                            <KeyRound className="h-4 w-4" />
-                          </Button>
-                          {profile.account_status === "active" ? (
-                            <Button variant="ghost" size="sm" onClick={() => updateStatusMutation.mutate({ userId: profile.user_id, newStatus: "suspended", reason: "Admin action" })}>
-                              <UserX className="h-4 w-4" />
-                            </Button>
-                          ) : (
-                            <Button variant="ghost" size="sm" onClick={() => updateStatusMutation.mutate({ userId: profile.user_id, newStatus: "active" })}>
-                              <UserCheck className="h-4 w-4" />
-                            </Button>
-                          )}
+                          <UserQuickActions
+                            userId={profile.user_id}
+                            userName={profile.full_name || profile.username || ""}
+                            email={profile.email}
+                            status={profile.account_status}
+                            isVerified={profile.is_verified}
+                            onViewProfile={() => { setDrawerUserId(profile.user_id); setDrawerOpen(true); }}
+                          />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -1311,6 +1316,9 @@ export default function UserManagement() {
           )}
         </CardContent>
       </Card>
+
+      {/* User Details Drawer */}
+      <AdminUserDetailsDrawer userId={drawerUserId} open={drawerOpen} onOpenChange={setDrawerOpen} />
     </div>
   );
 }

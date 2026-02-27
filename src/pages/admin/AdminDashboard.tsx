@@ -24,6 +24,8 @@ import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
 import { AdminPDFReportGenerator } from "@/components/admin/AdminPDFReportGenerator";
 import { CompanyDashboardWidget } from "@/components/admin/CompanyDashboardWidget";
 import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
+import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytics";
+import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -605,8 +607,14 @@ export default function AdminDashboard() {
         <CRMPipelineWidget />
       </Suspense>
 
+      {/* Automation Rules */}
+      <AdminAutomationRules />
+
       {/* Automation & Notifications Status */}
       <AutomationStatusWidget />
+
+      {/* Advanced Analytics */}
+      <AdminAdvancedAnalytics />
 
       {/* PDF Report Generator */}
       <AdminPDFReportGenerator />
