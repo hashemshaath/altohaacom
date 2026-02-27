@@ -30,6 +30,11 @@ const EngagementAnalyticsWidget = lazy(() => import("@/components/dashboard/Enga
 const ProgressReportWidget = lazy(() => import("@/components/dashboard/ProgressReportWidget").then(m => ({ default: m.ProgressReportWidget })));
 const NotificationPreferencesWidget = lazy(() => import("@/components/dashboard/NotificationPreferencesWidget").then(m => ({ default: m.NotificationPreferencesWidget })));
 const DashboardPersonalizationWidget = lazy(() => import("@/components/dashboard/DashboardPersonalizationWidget").then(m => ({ default: m.DashboardPersonalizationWidget })));
+// Fan-specific widgets
+const FanTrendingWidget = lazy(() => import("@/components/dashboard/FanTrendingWidget").then(m => ({ default: m.FanTrendingWidget })));
+const FanSuggestedFollowsWidget = lazy(() => import("@/components/dashboard/FanSuggestedFollowsWidget").then(m => ({ default: m.FanSuggestedFollowsWidget })));
+const FanRecommendationsWidget = lazy(() => import("@/components/dashboard/FanRecommendationsWidget").then(m => ({ default: m.FanRecommendationsWidget })));
+const FanUpgradeBanner = lazy(() => import("@/components/fan/FanUpgradeBanner").then(m => ({ default: m.FanUpgradeBanner })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -115,14 +120,22 @@ export default function Dashboard() {
           <div className="mb-8"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
         )}
 
+        {/* Fan Upgrade Banner */}
+        {user && isFan && (
+          <div className="mb-6"><W><FanUpgradeBanner /></W></div>
+        )}
+
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
             {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
             {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
+            {user && isFan && <W><FanRecommendationsWidget /></W>}
           </div>
           <div className="space-y-6">
+            {user && isFan && <W><FanSuggestedFollowsWidget /></W>}
+            {user && isFan && <W><FanTrendingWidget /></W>}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
             {user && !isFan && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
             {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}

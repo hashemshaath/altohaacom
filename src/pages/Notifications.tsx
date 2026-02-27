@@ -19,6 +19,7 @@ import {
 import { useNotifications } from "@/hooks/useNotifications";
 import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAccountType } from "@/hooks/useAccountType";
 import { formatDistanceToNow, format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -73,6 +74,7 @@ export default function Notifications() {
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearAllRead, loading } = useNotifications();
   const { getProfile } = useNotificationProfiles(notifications);
   const { language } = useLanguage();
+  const { isFan } = useAccountType();
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -162,8 +164,13 @@ export default function Notifications() {
     await Promise.allSettled(unreadFiltered.map((n) => markAsRead(n.id)));
   };
 
+  const FAN_SECTIONS: NotificationSection[] = ["all", "account", "competitions", "exhibitions", "orders", "community", "support"];
+  
   const activeSections = sectionConfig.filter(
-    (s) => s.key === "all" || (sectionCounts[s.key] || 0) > 0
+    (s) => {
+      if (isFan && !FAN_SECTIONS.includes(s.key)) return false;
+      return s.key === "all" || (sectionCounts[s.key] || 0) > 0;
+    }
   );
 
   return (
