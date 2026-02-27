@@ -2,6 +2,7 @@ import { useState } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
 import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
+import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -1216,7 +1217,10 @@ export default function OrdersAdmin() {
         <div className="lg:col-span-2">
           <RevenueAnalyticsWidget />
         </div>
-        <PaymentTrackerWidget />
+        <div className="space-y-4">
+          <PaymentTrackerWidget />
+          <WalletOverviewWidget />
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
