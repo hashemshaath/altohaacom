@@ -1,12 +1,13 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, BarChart3, Users, Star, UserX, History } from "lucide-react";
+import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp } from "lucide-react";
 import MembershipOverview from "@/components/admin/membership/MembershipOverview";
 import MembershipMembersTab from "@/components/admin/membership/MembershipMembersTab";
 import MembershipBenefitsTab from "@/components/admin/membership/MembershipBenefitsTab";
 import MembershipCancellationsTab from "@/components/admin/membership/MembershipCancellationsTab";
 import MembershipHistoryTab from "@/components/admin/membership/MembershipHistoryTab";
+import MembershipFeatureAnalytics from "@/components/admin/membership/MembershipFeatureAnalytics";
 
 export default function MembershipManagement() {
   const { language } = useLanguage();
@@ -43,6 +44,10 @@ export default function MembershipManagement() {
               <History className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "سجل" : "History"}
             </TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "تحليلات" : "Analytics"}
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -51,6 +56,7 @@ export default function MembershipManagement() {
         <TabsContent value="benefits"><MembershipBenefitsTab /></TabsContent>
         <TabsContent value="cancellations"><MembershipCancellationsTab /></TabsContent>
         <TabsContent value="history"><MembershipHistoryTab /></TabsContent>
+        <TabsContent value="analytics"><MembershipFeatureAnalytics /></TabsContent>
       </Tabs>
     </div>
   );
