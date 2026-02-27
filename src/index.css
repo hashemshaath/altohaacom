@@ -6,112 +6,109 @@
 
 @layer base {
   :root {
-    /* Luxury Culinary - Warm Gold + Deep Bronze on Cream */
-    
-    /* Warm cream background — slightly richer for warmth */
-    --background: 40 30% 97%;
-    --foreground: 25 35% 10%;
+    /* Luxury Culinary — Vibrant Gold + Rich Bronze on Warm Ivory */
 
-    /* Card slightly warmer than bg for clear separation */
-    --card: 38 28% 94%;
-    --card-foreground: 25 35% 10%;
+    --background: 42 40% 98%;
+    --foreground: 20 45% 8%;
 
-    --popover: 40 25% 99%;
-    --popover-foreground: 25 35% 10%;
+    --card: 40 35% 96%;
+    --card-foreground: 20 45% 8%;
 
-    /* Warm Gold primary — richer saturation */
-    --primary: 38 52% 52%;
-    --primary-foreground: 40 30% 98%;
+    --popover: 42 35% 99%;
+    --popover-foreground: 20 45% 8%;
 
-    /* Warm beige secondary — more distinct from muted */
-    --secondary: 36 22% 90%;
-    --secondary-foreground: 25 30% 15%;
+    /* Vivid Warm Gold */
+    --primary: 36 72% 50%;
+    --primary-foreground: 42 40% 99%;
 
-    /* Muted — cooler & lighter for clear contrast vs card */
-    --muted: 38 14% 94%;
-    --muted-foreground: 25 12% 46%;
+    /* Soft warm secondary */
+    --secondary: 38 28% 91%;
+    --secondary-foreground: 20 38% 14%;
 
-    /* Deep Bronze accent — richer */
-    --accent: 38 70% 34%;
-    --accent-foreground: 40 30% 97%;
+    /* Muted — subtle neutral warmth */
+    --muted: 40 16% 93%;
+    --muted-foreground: 20 14% 42%;
 
-    --destructive: 0 72% 51%;
+    /* Deep Rich Bronze accent */
+    --accent: 30 78% 30%;
+    --accent-foreground: 42 40% 98%;
+
+    --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 36 18% 84%;
-    --input: 36 18% 84%;
-    --ring: 38 52% 52%;
+    --border: 36 22% 82%;
+    --input: 36 22% 82%;
+    --ring: 36 72% 50%;
 
     --radius: 0.625rem;
 
-    --sidebar-background: 36 22% 94%;
-    --sidebar-foreground: 25 35% 10%;
-    --sidebar-primary: 38 52% 52%;
-    --sidebar-primary-foreground: 40 30% 98%;
-    --sidebar-accent: 38 70% 34%;
-    --sidebar-accent-foreground: 40 30% 97%;
-    --sidebar-border: 36 18% 84%;
-    --sidebar-ring: 38 52% 52%;
+    --sidebar-background: 38 30% 95%;
+    --sidebar-foreground: 20 45% 8%;
+    --sidebar-primary: 36 72% 50%;
+    --sidebar-primary-foreground: 42 40% 99%;
+    --sidebar-accent: 30 78% 30%;
+    --sidebar-accent-foreground: 42 40% 98%;
+    --sidebar-border: 36 22% 82%;
+    --sidebar-ring: 36 72% 50%;
 
-    /* Charts — vivid, harmonious palette */
-    --chart-1: 38 55% 50%;
-    --chart-2: 200 55% 42%;
-    --chart-3: 150 45% 38%;
-    --chart-4: 16 65% 52%;
-    --chart-5: 80 50% 42%;
+    /* Charts — vivid, modern palette */
+    --chart-1: 36 75% 48%;
+    --chart-2: 210 70% 48%;
+    --chart-3: 160 60% 38%;
+    --chart-4: 12 78% 52%;
+    --chart-5: 90 58% 42%;
 
     --font-sans: 'DM Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
   }
 
   .dark {
-    /* Dark mode - Gold + Bronze on deep charcoal-brown */
-    --background: 25 25% 7%;
-    --foreground: 38 20% 92%;
+    /* Dark mode — Vibrant Gold + Bronze on deep charcoal */
+    --background: 22 30% 6%;
+    --foreground: 38 25% 93%;
 
-    /* Card lifted from bg for depth */
-    --card: 25 22% 11%;
-    --card-foreground: 38 20% 92%;
+    --card: 22 26% 10%;
+    --card-foreground: 38 25% 93%;
 
-    --popover: 25 22% 12%;
-    --popover-foreground: 38 20% 92%;
+    --popover: 22 26% 11%;
+    --popover-foreground: 38 25% 93%;
 
-    /* Brighter gold for dark mode — better visibility */
-    --primary: 38 55% 55%;
-    --primary-foreground: 25 30% 6%;
+    /* Bright vivid gold for dark mode */
+    --primary: 36 75% 56%;
+    --primary-foreground: 22 35% 5%;
 
-    --secondary: 25 18% 15%;
-    --secondary-foreground: 38 20% 90%;
+    --secondary: 22 20% 14%;
+    --secondary-foreground: 38 22% 91%;
 
-    --muted: 25 16% 14%;
-    --muted-foreground: 32 14% 52%;
+    --muted: 22 18% 13%;
+    --muted-foreground: 34 16% 50%;
 
-    /* Lighter bronze for dark mode */
-    --accent: 38 50% 42%;
-    --accent-foreground: 25 30% 6%;
+    /* Warm bronze lifted for dark backgrounds */
+    --accent: 34 60% 44%;
+    --accent-foreground: 22 35% 5%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 80% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 16% 18%;
-    --input: 25 16% 18%;
-    --ring: 38 55% 55%;
+    --border: 22 18% 17%;
+    --input: 22 18% 17%;
+    --ring: 36 75% 56%;
 
-    --sidebar-background: 25 24% 8%;
-    --sidebar-foreground: 38 20% 92%;
-    --sidebar-primary: 38 55% 55%;
-    --sidebar-primary-foreground: 25 30% 6%;
-    --sidebar-accent: 38 50% 42%;
-    --sidebar-accent-foreground: 25 30% 6%;
-    --sidebar-border: 25 16% 18%;
-    --sidebar-ring: 38 55% 55%;
+    --sidebar-background: 22 28% 7%;
+    --sidebar-foreground: 38 25% 93%;
+    --sidebar-primary: 36 75% 56%;
+    --sidebar-primary-foreground: 22 35% 5%;
+    --sidebar-accent: 34 60% 44%;
+    --sidebar-accent-foreground: 22 35% 5%;
+    --sidebar-border: 22 18% 17%;
+    --sidebar-ring: 36 75% 56%;
 
     /* Charts — vivid for dark backgrounds */
-    --chart-1: 38 55% 58%;
-    --chart-2: 200 55% 55%;
-    --chart-3: 150 45% 50%;
-    --chart-4: 16 60% 58%;
-    --chart-5: 80 50% 50%;
+    --chart-1: 36 75% 56%;
+    --chart-2: 210 68% 56%;
+    --chart-3: 160 55% 48%;
+    --chart-4: 12 72% 58%;
+    --chart-5: 90 55% 50%;
   }
 }
 
