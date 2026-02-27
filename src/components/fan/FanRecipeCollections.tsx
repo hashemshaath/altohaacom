@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Plus, Trash2, FolderOpen } from "lucide-react";
+import { BookOpen, Plus, Trash2, FolderOpen, Share2, Lock, Globe } from "lucide-react";
+import { FanShareButton } from "@/components/fan/FanShareButton";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -132,19 +133,37 @@ export function FanRecipeCollections() {
               <div key={col.id} className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-muted/40 transition-colors group">
                 <span className="text-lg shrink-0">{col.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold truncate">{isAr ? col.name_ar || col.name : col.name}</p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs font-semibold truncate">{isAr ? col.name_ar || col.name : col.name}</p>
+                    {col.is_public ? <Globe className="h-2.5 w-2.5 text-primary shrink-0" /> : <Lock className="h-2.5 w-2.5 text-muted-foreground/50 shrink-0" />}
+                  </div>
                   <p className="text-[10px] text-muted-foreground">
                     {col.itemCount} {isAr ? "عنصر" : "items"}
                   </p>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                  onClick={() => deleteCollection(col.id)}
-                >
-                  <Trash2 className="h-3 w-3 text-destructive" />
-                </Button>
+                <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={async () => {
+                      await supabase.from("fan_collections").update({ is_public: !col.is_public }).eq("id", col.id);
+                      queryClient.invalidateQueries({ queryKey: ["fan-collections"] });
+                      toast({ title: col.is_public ? (isAr ? "تم الإخفاء" : "Made private") : (isAr ? "تم النشر" : "Made public") });
+                    }}
+                    title={col.is_public ? "Make private" : "Make public"}
+                  >
+                    {col.is_public ? <Lock className="h-3 w-3" /> : <Share2 className="h-3 w-3" />}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={() => deleteCollection(col.id)}
+                  >
+                    <Trash2 className="h-3 w-3 text-destructive" />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

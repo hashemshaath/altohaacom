@@ -36,6 +36,7 @@ import { PublicProfilePosts } from "@/components/public-profile/PublicProfilePos
 import { CollapsibleProfileSection } from "@/components/public-profile/CollapsibleProfileSection";
 import { CareerRecordCard } from "@/components/public-profile/CareerRecordCard";
 import { usePublicProfileData } from "@/hooks/usePublicProfileData";
+import { PublicProfileComments } from "@/components/public-profile/PublicProfileComments";
 
 // ── Helpers ──
 const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
@@ -386,6 +387,9 @@ export default function PublicProfile() {
               </SectionReveal>
               <SectionReveal delay={300} direction="right">
                 <PublicProfilePosts userId={profile.user_id} isOwnProfile={isOwnProfile} />
+              </SectionReveal>
+              <SectionReveal delay={350} direction="right">
+                <PublicProfileComments userId={profile.user_id} isAr={isAr} />
               </SectionReveal>
               <SectionReveal delay={400} direction="right">
                 <ProfileActivityTimeline userId={profile.user_id} />

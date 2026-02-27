@@ -8474,7 +8474,14 @@ export type Database = {
           created_at: string
           event_id: string
           event_type: string
+          flag_reason: string | null
+          flagged_at: string | null
+          flagged_by: string | null
+          hidden_at: string | null
+          hidden_by: string | null
           id: string
+          is_flagged: boolean | null
+          is_hidden: boolean | null
           likes_count: number | null
           parent_id: string | null
           updated_at: string
@@ -8485,7 +8492,14 @@ export type Database = {
           created_at?: string
           event_id: string
           event_type: string
+          flag_reason?: string | null
+          flagged_at?: string | null
+          flagged_by?: string | null
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
+          is_flagged?: boolean | null
+          is_hidden?: boolean | null
           likes_count?: number | null
           parent_id?: string | null
           updated_at?: string
@@ -8496,7 +8510,14 @@ export type Database = {
           created_at?: string
           event_id?: string
           event_type?: string
+          flag_reason?: string | null
+          flagged_at?: string | null
+          flagged_by?: string | null
+          hidden_at?: string | null
+          hidden_by?: string | null
           id?: string
+          is_flagged?: boolean | null
+          is_hidden?: boolean | null
           likes_count?: number | null
           parent_id?: string | null
           updated_at?: string
