@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
 import { ShopHero } from "@/components/shop/ShopHero";
-import { ShopFilters } from "@/components/shop/ShopFilters";
+import { ShopFilters, type SortOption } from "@/components/shop/ShopFilters";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { ShopEmptyState } from "@/components/shop/ShopEmptyState";
 import { toast } from "@/hooks/use-toast";
@@ -24,6 +24,7 @@ export default function Shop() {
   const [typeFilter, setTypeFilter] = useState("all");
   const cart = useCart();
   const [cartOpen, setCartOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["shop-products"],
@@ -42,13 +43,33 @@ export default function Shop() {
 
   const categories = [...new Set(products.map((p: any) => p.category))].sort();
 
-  const filtered = products.filter((p: any) => {
-    const title = isAr && p.title_ar ? p.title_ar : p.title;
-    const matchesSearch = !search || title.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
-    const matchesType = typeFilter === "all" || p.product_type === typeFilter;
-    return matchesSearch && matchesCategory && matchesType;
-  });
+  const filtered = (() => {
+    let result = products.filter((p: any) => {
+      const title = isAr && p.title_ar ? p.title_ar : p.title;
+      const matchesSearch = !search || title.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
+      const matchesType = typeFilter === "all" || p.product_type === typeFilter;
+      return matchesSearch && matchesCategory && matchesType;
+    });
+
+    // Apply sorting
+    if (sortBy === "price_asc") {
+      result = [...result].sort((a: any, b: any) => a.price - b.price);
+    } else if (sortBy === "price_desc") {
+      result = [...result].sort((a: any, b: any) => b.price - a.price);
+    } else if (sortBy === "name") {
+      result = [...result].sort((a: any, b: any) => {
+        const aName = isAr && a.title_ar ? a.title_ar : a.title;
+        const bName = isAr && b.title_ar ? b.title_ar : b.title;
+        return aName.localeCompare(bName);
+      });
+    } else if (sortBy === "popular") {
+      result = [...result].sort((a: any, b: any) => (b.view_count || 0) - (a.view_count || 0));
+    }
+    // "newest" is default from query order
+
+    return result;
+  })();
 
   const handleAddToCart = (product: any) => {
     if (!user) {
@@ -91,6 +112,8 @@ export default function Shop() {
           typeFilter={typeFilter}
           onTypeChange={setTypeFilter}
           categories={categories}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
         />
 
         {isLoading ? (
