@@ -20,6 +20,7 @@ Deno.serve(async (req) => {
     const in1Day = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000);
     const in3Days = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
     const in7Days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const in14Days = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
     // Find users with expiring memberships
     const { data: expiringProfiles, error } = await supabase
@@ -27,7 +28,7 @@ Deno.serve(async (req) => {
       .select("user_id, full_name, username, membership_tier, membership_expires_at")
       .not("membership_expires_at", "is", null)
       .neq("membership_tier", "basic")
-      .lte("membership_expires_at", in7Days.toISOString())
+      .lte("membership_expires_at", in14Days.toISOString())
       .gt("membership_expires_at", now.toISOString());
 
     if (error) throw error;
@@ -57,8 +58,10 @@ Deno.serve(async (req) => {
         notificationType = "membership_expiry_1d";
       } else if (daysLeft <= 3) {
         notificationType = "membership_expiry_3d";
-      } else {
+      } else if (daysLeft <= 7) {
         notificationType = "membership_expiry_7d";
+      } else {
+        notificationType = "membership_expiry_14d";
       }
 
       // Check if we already sent this notification type today
