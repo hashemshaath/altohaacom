@@ -5,6 +5,7 @@ import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
 import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
 import { OrdersRevenueWidget } from "@/components/admin/OrdersRevenueWidget";
 import { OrdersLiveStatsWidget } from "@/components/admin/OrdersLiveStatsWidget";
+import { InvoiceTrackerWidget } from "@/components/admin/InvoiceTrackerWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -1216,6 +1217,7 @@ export default function OrdersAdmin() {
 
       {/* Orders & Invoices Live Stats */}
       <OrdersLiveStatsWidget />
+      <InvoiceTrackerWidget />
 
       {/* Revenue & Payment Tracking */}
       <OrdersRevenueWidget />

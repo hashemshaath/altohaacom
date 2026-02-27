@@ -37,6 +37,7 @@ import { UserCardView } from "@/components/admin/UserCardView";
 import { UserGrowthTrendWidget } from "@/components/admin/UserGrowthTrendWidget";
 import { UserAnalyticsWidget } from "@/components/admin/UserAnalyticsWidget";
 import { UsersLiveStatsWidget } from "@/components/admin/UsersLiveStatsWidget";
+import { UserActivityTimeline } from "@/components/admin/UserActivityTimeline";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
@@ -619,6 +620,7 @@ export default function UserManagement() {
 
       {/* Users Live Stats */}
       <UsersLiveStatsWidget />
+      <UserActivityTimeline />
 
       {/* User Growth Analytics */}
       <UserGrowthTrendWidget />
