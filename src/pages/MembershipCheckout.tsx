@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { MembershipReceipt } from "@/components/membership/MembershipReceipt";
 
 const TIERS = [
   { id: "professional", icon: Star, color: "text-primary", bg: "bg-primary/10", monthly: 19, yearly: 190 },
@@ -453,30 +454,48 @@ export default function MembershipCheckout() {
 
         {/* Success */}
         {step === "success" && (
-          <Card className="border-primary/20">
-            <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Sparkles className="h-8 w-8 text-primary" />
-              </div>
-              <h2 className="text-2xl font-bold">
-                {isRenewal ? (isAr ? "تم التجديد بنجاح! 🎉" : "Renewed Successfully! 🎉") : (isAr ? "تمت الترقية بنجاح! 🎉" : "Upgraded Successfully! 🎉")}
-              </h2>
-              <p className="text-muted-foreground max-w-sm">
-                {isAr
-                  ? `أنت الآن عضو في خطة ${TIER_NAMES[selectedTier]?.ar}. استمتع بجميع المميزات!`
-                  : `You're now on the ${TIER_NAMES[selectedTier]?.en} plan. Enjoy all the benefits!`}
-              </p>
-              <div className="flex gap-3 pt-4">
-                <Button variant="outline" onClick={() => navigate("/membership")}>
-                  {isAr ? "عرض الخطط" : "View Plans"}
-                </Button>
-                <Button onClick={() => navigate("/profile?tab=membership")} className="gap-2">
-                  <Crown className="h-4 w-4" />
-                  {isAr ? "عضويتي" : "My Membership"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card className="border-primary/20">
+              <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Sparkles className="h-8 w-8 text-primary" />
+                </div>
+                <h2 className="text-2xl font-bold">
+                  {isRenewal ? (isAr ? "تم التجديد بنجاح! 🎉" : "Renewed Successfully! 🎉") : (isAr ? "تمت الترقية بنجاح! 🎉" : "Upgraded Successfully! 🎉")}
+                </h2>
+                <p className="text-muted-foreground max-w-sm">
+                  {isAr
+                    ? `أنت الآن عضو في خطة ${TIER_NAMES[selectedTier]?.ar}. استمتع بجميع المميزات!`
+                    : `You're now on the ${TIER_NAMES[selectedTier]?.en} plan. Enjoy all the benefits!`}
+                </p>
+                <div className="flex gap-3 pt-4">
+                  <Button variant="outline" onClick={() => navigate("/membership")}>
+                    {isAr ? "عرض الخطط" : "View Plans"}
+                  </Button>
+                  <Button onClick={() => navigate("/profile?tab=membership")} className="gap-2">
+                    <Crown className="h-4 w-4" />
+                    {isAr ? "عضويتي" : "My Membership"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Receipt */}
+            <MembershipReceipt
+              receiptData={{
+                userName: profile?.full_name || "Member",
+                userEmail: profile?.email || "",
+                tier: selectedTier,
+                previousTier: currentTier,
+                billingCycle,
+                amount: price,
+                currency: "SAR",
+                transactionDate: new Date(),
+                expiresAt: new Date(Date.now() + period * 30 * 24 * 60 * 60 * 1000),
+                receiptNumber: `MBR-${Date.now().toString(36).toUpperCase()}`,
+              }}
+            />
+          </div>
         )}
       </div>
     </div>
