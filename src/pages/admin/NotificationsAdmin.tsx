@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
 import { NotificationAnalyticsWidget } from "@/components/admin/NotificationAnalyticsWidget";
+import { NotificationDeliveryWidget } from "@/components/admin/NotificationDeliveryWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
@@ -396,6 +397,9 @@ export default function NotificationsAdmin() {
           </Button>
         }
       />
+
+      {/* Notification Delivery Analytics */}
+      <NotificationDeliveryWidget />
 
       {/* Notification Insights Widget */}
       <NotificationAnalyticsWidget />
