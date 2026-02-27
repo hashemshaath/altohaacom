@@ -33,11 +33,12 @@ import { UserAdvancedFilters, INITIAL_FILTERS, type FilterValues } from "@/compo
 import { AdminUserDetailsDrawer } from "@/components/admin/AdminUserDetailsDrawer";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { UserStatsBar } from "@/components/admin/UserStatsBar";
+import { UserCardView } from "@/components/admin/UserCardView";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
   Trash2, Camera, CheckCircle2, AlertCircle, History, UserCircle, Languages, Briefcase,
-  ChefHat, Pencil, Check, FileSpreadsheet, Download, Shield, BarChart3, SlidersHorizontal,
+  ChefHat, Pencil, Check, FileSpreadsheet, Download, Shield, BarChart3, SlidersHorizontal, LayoutGrid, List,
 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
@@ -86,7 +87,7 @@ export default function UserManagement() {
   const [accountTypeFilter, setAccountTypeFilter] = useState<string>("all");
   const [page, setPage] = useState(0);
   const pageSize = 20;
-
+  const [viewMode, setViewMode] = useState<"table" | "card">("table");
   // Edit user state
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [editRoles, setEditRoles] = useState<AppRole[]>([]);
@@ -1156,8 +1157,16 @@ export default function UserManagement() {
 
       {/* ── Users Table ─────────────────────────── */}
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t("allUsers")}</CardTitle>
+          <div className="flex items-center gap-1 border rounded-lg p-0.5">
+            <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => setViewMode("table")}>
+              <List className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant={viewMode === "card" ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => setViewMode("card")}>
+              <LayoutGrid className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -1166,6 +1175,11 @@ export default function UserManagement() {
             </div>
           ) : filteredUsers?.length === 0 ? (
             <p className="py-8 text-center text-muted-foreground">{t("noResults")}</p>
+          ) : viewMode === "card" ? (
+            <UserCardView
+              users={filteredUsers || []}
+              onViewUser={(userId) => { setDrawerUserId(userId); setDrawerOpen(true); }}
+            />
           ) : (
             <>
               <Table>
