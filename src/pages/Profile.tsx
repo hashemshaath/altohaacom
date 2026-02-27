@@ -4,9 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/PageShell";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2 } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
+import { useAccountType } from "@/hooks/useAccountType";
 
 // Lazy-load heavy tabs for faster initial paint
 const ProfileOverviewTab = lazy(() => import("@/components/profile/ProfileOverviewTab").then(m => ({ default: m.ProfileOverviewTab })));
@@ -19,6 +20,8 @@ const ProfileInvoicesTab = lazy(() => import("@/components/profile/ProfileInvoic
 const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileReferralsTab").then(m => ({ default: m.ProfileReferralsTab })));
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
 const ProfileOrdersTab = lazy(() => import("@/components/profile/ProfileOrdersTab").then(m => ({ default: m.ProfileOrdersTab })));
+const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").then(m => ({ default: m.FanFavoritesTab })));
+const FanFollowingTab = lazy(() => import("@/components/fan/FanFollowingTab").then(m => ({ default: m.FanFollowingTab })));
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 
@@ -33,6 +36,7 @@ export default function Profile() {
   const initialTab = searchParams.get("tab") || "overview";
   const [activeTab, setActiveTab] = useState(initialTab);
   const { user, profile, roles, isLoading, refetchProfile } = useProfileData();
+  const { isFan } = useAccountType();
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -47,19 +51,28 @@ export default function Profile() {
     );
   }
 
-  const tabs = [
+  const allTabs = [
     { id: "overview", label: isAr ? "ملفي الشخصي" : "Profile", icon: User },
-    { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy },
+    ...(isFan ? [
+      { id: "favorites", label: isAr ? "المفضلة" : "Favorites", icon: Heart },
+      { id: "following", label: isAr ? "المتابَعون" : "Following", icon: Users },
+    ] : [
+      { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy },
+    ]),
     { id: "membership", label: isAr ? "العضوية" : "Membership", icon: Crown },
     { id: "wallet", label: isAr ? "المحفظة" : "Wallet", icon: Wallet },
     { id: "orders", label: isAr ? "الطلبات" : "Orders", icon: ShoppingBag },
     { id: "referrals", label: isAr ? "الإحالات" : "Referrals", icon: Gift },
-    { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText },
-    { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
-    { id: "social-links", label: isAr ? "صفحة الروابط" : "Social Links", icon: Link2, href: "/social-links" },
+    ...(!isFan ? [
+      { id: "invoices", label: isAr ? "الفواتير" : "Invoices", icon: FileText },
+      { id: "analytics", label: isAr ? "الإحصائيات" : "Analytics", icon: BarChart3 },
+      { id: "social-links", label: isAr ? "صفحة الروابط" : "Social Links", icon: Link2, href: "/social-links" },
+    ] : []),
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
+
+  const tabs = allTabs;
 
   return (
     <PageShell
@@ -125,6 +138,14 @@ export default function Profile() {
 
           <TabsContent value="competitions" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <CompetitionHistory userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="favorites" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {user && <FanFavoritesTab />}
+          </TabsContent>
+
+          <TabsContent value="following" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {user && <FanFollowingTab />}
           </TabsContent>
 
           <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">

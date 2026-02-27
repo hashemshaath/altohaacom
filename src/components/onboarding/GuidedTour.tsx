@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAccountType } from "@/hooks/useAccountType";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { X, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
@@ -16,7 +17,7 @@ interface TourStep {
   descAr: string;
 }
 
-const STEPS: TourStep[] = [
+const PRO_STEPS: TourStep[] = [
   {
     targetSelector: '[aria-label="Quick search"], [aria-label="البحث السريع"]',
     titleEn: "Search Everything",
@@ -40,10 +41,36 @@ const STEPS: TourStep[] = [
   },
 ];
 
+const FAN_STEPS: TourStep[] = [
+  {
+    targetSelector: '[aria-label="Quick search"], [aria-label="البحث السريع"]',
+    titleEn: "Discover Chefs & Recipes",
+    titleAr: "اكتشف الطهاة والوصفات",
+    descEn: "Search for your favorite chefs, recipes, and culinary events.",
+    descAr: "ابحث عن طهاتك المفضلين والوصفات والفعاليات.",
+  },
+  {
+    targetSelector: '[aria-label="Platform statistics"], [aria-label="إحصائيات المنصة"]',
+    titleEn: "Join a Global Community",
+    titleAr: "انضم لمجتمع عالمي",
+    descEn: "Thousands of chefs and food lovers are already here!",
+    descAr: "آلاف الطهاة ومحبي الطعام موجودون هنا بالفعل!",
+  },
+  {
+    targetSelector: '#events-cat-heading',
+    titleEn: "Follow Events & Competitions",
+    titleAr: "تابع الفعاليات والمسابقات",
+    descEn: "Watch competitions, attend exhibitions, and cheer for your favorites.",
+    descAr: "شاهد المسابقات واحضر المعارض وشجع المفضلين لديك.",
+  },
+];
+
 export function GuidedTour() {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { isFan } = useAccountType();
   const isAr = language === "ar";
+  const STEPS = isFan ? FAN_STEPS : PRO_STEPS;
   const [step, setStep] = useState(-1); // -1 = not started
   const [position, setPosition] = useState({ top: 0, left: 0 });
 

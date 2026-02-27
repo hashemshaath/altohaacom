@@ -10781,6 +10781,30 @@ export type Database = {
           },
         ]
       }
+      fan_favorites: {
+        Row: {
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string
