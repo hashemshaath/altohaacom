@@ -6,7 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { MessageCircle, Heart, Send, Loader2, Trash2 } from "lucide-react";
+import { MessageCircle, Heart, Send, Loader2, Trash2, Flag } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toast } from "@/hooks/use-toast";
@@ -154,12 +154,23 @@ export function EventComments({ eventType, eventId }: EventCommentsProps) {
                   {isAr ? "رد" : "Reply"}
                 </button>
               )}
-              {comment.user_id === user.id && (
+              {comment.user_id === user.id ? (
                 <button
                   className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
                   onClick={() => deleteMutation.mutate(comment.id)}
                 >
                   <Trash2 className="h-3 w-3" />
+                </button>
+              ) : (
+                <button
+                  className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                  onClick={async () => {
+                    await supabase.from("event_comments").update({ is_flagged: true, flagged_by: user.id, flagged_at: new Date().toISOString() }).eq("id", comment.id);
+                    toast({ title: isAr ? "تم الإبلاغ" : "Comment flagged for review" });
+                  }}
+                  title={isAr ? "إبلاغ" : "Report"}
+                >
+                  <Flag className="h-3 w-3" />
                 </button>
               )}
             </>

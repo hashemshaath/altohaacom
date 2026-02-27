@@ -20,11 +20,13 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, ChevronDown, ChevronUp, AlertTriangle, Flag } from "lucide-react";
+import { CheckCircle, XCircle, ChevronDown, ChevronUp, AlertTriangle, Flag, MessageCircle } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminCommentModeration } from "@/components/admin/AdminCommentModeration";
 
 interface Report {
   id: string;
@@ -46,6 +48,7 @@ export default function ContentModeration() {
   const isAr = language === "ar";
   const [expandedReportId, setExpandedReportId] = useState<string | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>({});
+  const [activeTab, setActiveTab] = useState("reports");
 
   const { data: reports, isLoading } = useQuery({
     queryKey: ["contentReports"],
@@ -164,6 +167,17 @@ export default function ContentModeration() {
         }
       />
 
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="mb-4">
+          <TabsTrigger value="reports" className="gap-1.5"><Flag className="h-3.5 w-3.5" />{isAr ? "البلاغات" : "Reports"}</TabsTrigger>
+          <TabsTrigger value="comments" className="gap-1.5"><MessageCircle className="h-3.5 w-3.5" />{isAr ? "التعليقات" : "Comments"}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="comments">
+          <AdminCommentModeration />
+        </TabsContent>
+
+        <TabsContent value="reports">
       <BulkActionBar
         count={bulk.count}
         onClear={bulk.clearSelection}
@@ -297,6 +311,8 @@ export default function ContentModeration() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
