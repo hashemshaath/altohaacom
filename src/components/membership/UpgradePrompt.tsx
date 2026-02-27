@@ -29,9 +29,9 @@ export function UpgradePrompt({
 
   const handleUpgrade = () => {
     if (!user) {
-      navigate("/auth");
+      navigate("/login");
     } else {
-      navigate("/profile?tab=membership");
+      navigate("/membership");
     }
   };
 
