@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { ActivitySidebar } from "./ActivitySidebar";
 import { TrendingTopics } from "./TrendingTopics";
+import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
 import { CommunitySearch } from "./CommunitySearch";
 import { UpcomingEventsWidget } from "./UpcomingEventsWidget";
 import {
@@ -119,6 +120,7 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
       {rightSidebarOpen && (
         <div className="space-y-4">
+          <OnboardingChecklist />
           <CommunitySearch />
 
           <div className="rounded-2xl border border-border bg-card overflow-hidden">

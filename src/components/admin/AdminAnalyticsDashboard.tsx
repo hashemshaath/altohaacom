@@ -4,6 +4,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdminExportButton } from "./AdminExportButton";
+import { useAdminExport } from "@/hooks/useAdminExport";
 import {
   Users, FileText, Trophy, MessageSquare, TrendingUp, Eye, ShieldCheck,
   ArrowUp, ArrowDown, Activity, BarChart3, Globe,
@@ -95,7 +97,21 @@ export function AdminAnalyticsDashboard() {
     );
   }
 
+  const { exportData, isExporting } = useAdminExport();
+
   if (!analytics) return null;
+
+  const handleExport = (format: "csv" | "json") => {
+    const kpiData = kpis.map((k) => ({ label: k.label, value: k.value }));
+    exportData(
+      kpiData,
+      [
+        { key: "label", label: isAr ? "المؤشر" : "Metric" },
+        { key: "value", label: isAr ? "القيمة" : "Value" },
+      ],
+      { filename: "platform-analytics", format }
+    );
+  };
 
   const kpis = [
     { icon: Users, label: isAr ? "إجمالي المستخدمين" : "Total Users", value: analytics.totalUsers, delta: analytics.userDelta, color: "text-primary" },
@@ -112,6 +128,11 @@ export function AdminAnalyticsDashboard() {
 
   return (
     <div className="space-y-5">
+      {/* Export */}
+      <div className="flex justify-end">
+        <AdminExportButton onExport={handleExport} isExporting={isExporting} />
+      </div>
+
       {/* KPI Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {kpis.map((kpi, i) => (
