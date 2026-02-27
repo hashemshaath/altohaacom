@@ -58,6 +58,10 @@ const FanFollowingFeed = lazy(() => import("@/components/fan/FanFollowingFeed").
 const FanStreaks = lazy(() => import("@/components/fan/FanStreaks").then(m => ({ default: m.FanStreaks })));
 const FanWeeklyDigest = lazy(() => import("@/components/fan/FanWeeklyDigest").then(m => ({ default: m.FanWeeklyDigest })));
 
+// New enhancement widgets
+const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
+const MessageSearchWidget = lazy(() => import("@/components/messages/MessageSearchWidget").then(m => ({ default: m.MessageSearchWidget })));
+
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
 }
@@ -172,8 +176,9 @@ export default function Dashboard() {
           <div className="space-y-6">
             {user && <ProfileCompletionCard />}
             {user && <W><QuickActionsWidget /></W>}
+            {user && <W><NotificationGroupWidget /></W>}
+            {user && <W><MessageSearchWidget /></W>}
             {user && <W><WalletBalanceWidget /></W>}
-            {user && <W><WeeklyOverviewWidget /></W>}
             {user && <W><StreakWidget /></W>}
             {user && <W><GoalsMilestonesWidget /></W>}
             {user && <W><LiveCompetitionsWidget /></W>}

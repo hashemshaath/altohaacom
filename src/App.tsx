@@ -16,6 +16,8 @@ import { MaintenanceGuard } from "@/components/MaintenanceGuard";
 import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
+import { useEnhancedSEO } from "@/hooks/useEnhancedSEO";
+import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
 
 // Lazy-loaded shell components (non-critical for first paint)
 const FloatingHelpButton = lazy(() => import("@/components/FloatingHelpButton").then(m => ({ default: m.FloatingHelpButton })));
@@ -60,6 +62,8 @@ const queryClient = new QueryClient({
 function AppContent() {
   const ptr = usePullToRefresh();
   useRealtimeNotifications();
+  const { language } = useLanguageHook();
+  useEnhancedSEO(language);
   return (
     <>
       <Suspense fallback={null}><PullToRefreshIndicator {...ptr} /></Suspense>
