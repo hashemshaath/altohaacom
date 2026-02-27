@@ -6,109 +6,139 @@
 
 @layer base {
   :root {
-    /* Luxury Culinary — Vibrant Gold + Rich Bronze on Warm Ivory */
+    /* ── Luxury Culinary — Polished Gold & Bronze ── */
 
-    --background: 42 40% 98%;
-    --foreground: 20 45% 8%;
+    /* Clean ivory background with warmth */
+    --background: 45 30% 98%;
+    --foreground: 20 50% 7%;
 
-    --card: 40 35% 96%;
-    --card-foreground: 20 45% 8%;
+    /* Card with subtle warmth, clear lift from bg */
+    --card: 42 28% 96%;
+    --card-foreground: 20 50% 7%;
 
-    --popover: 42 35% 99%;
-    --popover-foreground: 20 45% 8%;
+    --popover: 45 30% 99%;
+    --popover-foreground: 20 50% 7%;
 
-    /* Vivid Warm Gold */
-    --primary: 36 72% 50%;
-    --primary-foreground: 42 40% 99%;
+    /* Rich Gold primary */
+    --primary: 38 78% 48%;
+    --primary-foreground: 45 30% 99%;
 
-    /* Soft warm secondary */
-    --secondary: 38 28% 91%;
-    --secondary-foreground: 20 38% 14%;
+    /* Warm neutral secondary */
+    --secondary: 40 20% 92%;
+    --secondary-foreground: 20 40% 12%;
 
-    /* Muted — subtle neutral warmth */
-    --muted: 40 16% 93%;
-    --muted-foreground: 20 14% 42%;
+    /* Muted — cool neutral for readability */
+    --muted: 42 12% 93%;
+    --muted-foreground: 20 12% 40%;
 
-    /* Deep Rich Bronze accent */
-    --accent: 30 78% 30%;
-    --accent-foreground: 42 40% 98%;
+    /* Deep Bronze accent */
+    --accent: 28 70% 28%;
+    --accent-foreground: 45 30% 98%;
 
-    --destructive: 0 80% 50%;
+    --destructive: 0 84% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 36 22% 82%;
-    --input: 36 22% 82%;
-    --ring: 36 72% 50%;
+    /* Success / Info semantic colors */
+    --success: 152 60% 38%;
+    --success-foreground: 0 0% 100%;
+    --info: 210 70% 50%;
+    --info-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 20 50% 7%;
+
+    --border: 38 18% 84%;
+    --input: 38 18% 84%;
+    --ring: 38 78% 48%;
 
     --radius: 0.625rem;
 
-    --sidebar-background: 38 30% 95%;
-    --sidebar-foreground: 20 45% 8%;
-    --sidebar-primary: 36 72% 50%;
-    --sidebar-primary-foreground: 42 40% 99%;
-    --sidebar-accent: 30 78% 30%;
-    --sidebar-accent-foreground: 42 40% 98%;
-    --sidebar-border: 36 22% 82%;
-    --sidebar-ring: 36 72% 50%;
+    --sidebar-background: 40 24% 95%;
+    --sidebar-foreground: 20 50% 7%;
+    --sidebar-primary: 38 78% 48%;
+    --sidebar-primary-foreground: 45 30% 99%;
+    --sidebar-accent: 28 70% 28%;
+    --sidebar-accent-foreground: 45 30% 98%;
+    --sidebar-border: 38 18% 84%;
+    --sidebar-ring: 38 78% 48%;
 
-    /* Charts — vivid, modern palette */
-    --chart-1: 36 75% 48%;
-    --chart-2: 210 70% 48%;
-    --chart-3: 160 60% 38%;
-    --chart-4: 12 78% 52%;
-    --chart-5: 90 58% 42%;
+    /* Charts — vibrant, balanced palette */
+    --chart-1: 38 80% 46%;
+    --chart-2: 215 72% 50%;
+    --chart-3: 158 62% 36%;
+    --chart-4: 8 80% 54%;
+    --chart-5: 92 58% 40%;
 
     --font-sans: 'DM Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
+
+    /* Elevation shadows */
+    --shadow-xs: 0 1px 2px 0 hsl(20 50% 7% / 0.04);
+    --shadow-sm: 0 2px 6px -1px hsl(20 50% 7% / 0.06), 0 1px 3px -1px hsl(20 50% 7% / 0.04);
+    --shadow-md: 0 6px 16px -4px hsl(20 50% 7% / 0.08), 0 2px 6px -2px hsl(20 50% 7% / 0.04);
+    --shadow-lg: 0 12px 32px -8px hsl(20 50% 7% / 0.10), 0 4px 12px -4px hsl(20 50% 7% / 0.05);
+    --shadow-glow: 0 0 24px hsl(38 78% 48% / 0.15);
   }
 
   .dark {
-    /* Dark mode — Vibrant Gold + Bronze on deep charcoal */
-    --background: 22 30% 6%;
-    --foreground: 38 25% 93%;
+    /* ── Dark — Polished Gold on Deep Charcoal ── */
+    --background: 20 28% 5%;
+    --foreground: 40 18% 94%;
 
-    --card: 22 26% 10%;
-    --card-foreground: 38 25% 93%;
+    --card: 20 24% 9%;
+    --card-foreground: 40 18% 94%;
 
-    --popover: 22 26% 11%;
-    --popover-foreground: 38 25% 93%;
+    --popover: 20 24% 10%;
+    --popover-foreground: 40 18% 94%;
 
-    /* Bright vivid gold for dark mode */
-    --primary: 36 75% 56%;
-    --primary-foreground: 22 35% 5%;
+    /* Vivid gold for dark surfaces */
+    --primary: 38 80% 54%;
+    --primary-foreground: 20 30% 4%;
 
-    --secondary: 22 20% 14%;
-    --secondary-foreground: 38 22% 91%;
+    --secondary: 20 18% 13%;
+    --secondary-foreground: 40 18% 92%;
 
-    --muted: 22 18% 13%;
-    --muted-foreground: 34 16% 50%;
+    --muted: 20 15% 12%;
+    --muted-foreground: 36 12% 50%;
 
-    /* Warm bronze lifted for dark backgrounds */
-    --accent: 34 60% 44%;
-    --accent-foreground: 22 35% 5%;
+    /* Warm bronze, brighter for dark */
+    --accent: 34 58% 42%;
+    --accent-foreground: 20 30% 4%;
 
-    --destructive: 0 80% 52%;
+    --destructive: 0 82% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 22 18% 17%;
-    --input: 22 18% 17%;
-    --ring: 36 75% 56%;
+    --success: 152 55% 44%;
+    --success-foreground: 0 0% 100%;
+    --info: 210 68% 56%;
+    --info-foreground: 0 0% 100%;
+    --warning: 38 90% 54%;
+    --warning-foreground: 20 50% 5%;
 
-    --sidebar-background: 22 28% 7%;
-    --sidebar-foreground: 38 25% 93%;
-    --sidebar-primary: 36 75% 56%;
-    --sidebar-primary-foreground: 22 35% 5%;
-    --sidebar-accent: 34 60% 44%;
-    --sidebar-accent-foreground: 22 35% 5%;
-    --sidebar-border: 22 18% 17%;
-    --sidebar-ring: 36 75% 56%;
+    --border: 20 16% 16%;
+    --input: 20 16% 16%;
+    --ring: 38 80% 54%;
+
+    --sidebar-background: 20 26% 6%;
+    --sidebar-foreground: 40 18% 94%;
+    --sidebar-primary: 38 80% 54%;
+    --sidebar-primary-foreground: 20 30% 4%;
+    --sidebar-accent: 34 58% 42%;
+    --sidebar-accent-foreground: 20 30% 4%;
+    --sidebar-border: 20 16% 16%;
+    --sidebar-ring: 38 80% 54%;
 
     /* Charts — vivid for dark backgrounds */
-    --chart-1: 36 75% 56%;
-    --chart-2: 210 68% 56%;
-    --chart-3: 160 55% 48%;
-    --chart-4: 12 72% 58%;
-    --chart-5: 90 55% 50%;
+    --chart-1: 38 80% 56%;
+    --chart-2: 215 70% 58%;
+    --chart-3: 158 55% 48%;
+    --chart-4: 8 74% 58%;
+    --chart-5: 92 52% 50%;
+
+    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.20);
+    --shadow-sm: 0 2px 6px -1px hsl(0 0% 0% / 0.25), 0 1px 3px -1px hsl(0 0% 0% / 0.15);
+    --shadow-md: 0 6px 16px -4px hsl(0 0% 0% / 0.30), 0 2px 6px -2px hsl(0 0% 0% / 0.18);
+    --shadow-lg: 0 12px 32px -8px hsl(0 0% 0% / 0.35), 0 4px 12px -4px hsl(0 0% 0% / 0.20);
+    --shadow-glow: 0 0 24px hsl(38 80% 54% / 0.20);
   }
 }
 
@@ -118,8 +148,6 @@
   }
   html {
     overflow-x: hidden;
-  }
-  html {
     font-size: 16px;
   }
   body {
@@ -130,6 +158,11 @@
   [dir="rtl"] {
     font-family: 'Noto Sans Arabic', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   }
+  /* Consistent heading hierarchy */
+  h1 { @apply text-3xl md:text-4xl font-bold tracking-tight font-serif; }
+  h2 { @apply text-2xl md:text-3xl font-bold tracking-tight font-serif; }
+  h3 { @apply text-xl font-semibold tracking-tight; }
+  h4 { @apply text-lg font-semibold; }
 }
 
 @layer utilities {
