@@ -26,7 +26,7 @@ export function FanEventWatchlist() {
     queryFn: async () => {
       if (!user) return [];
       const { data } = await supabase
-        .from("event_watchlist" as any)
+        .from("event_watchlist")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -56,7 +56,7 @@ export function FanEventWatchlist() {
   });
 
   const removeFromWatchlist = async (id: string) => {
-    await supabase.from("event_watchlist" as any).delete().eq("id", id);
+    await supabase.from("event_watchlist").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["fan-watchlist"] });
     toast({ title: isAr ? "تمت الإزالة" : "Removed from watchlist" });
   };
@@ -146,7 +146,7 @@ export function useEventWatchlist(eventType: "competition" | "exhibition", event
     queryFn: async () => {
       if (!user || !eventId) return false;
       const { data } = await supabase
-        .from("event_watchlist" as any)
+        .from("event_watchlist")
         .select("id")
         .eq("user_id", user.id)
         .eq("event_type", eventType)
@@ -160,10 +160,10 @@ export function useEventWatchlist(eventType: "competition" | "exhibition", event
   const toggle = async () => {
     if (!user || !eventId) return;
     if (isWatched) {
-      await supabase.from("event_watchlist" as any).delete().eq("user_id", user.id).eq("event_type", eventType).eq("event_id", eventId);
+      await supabase.from("event_watchlist").delete().eq("user_id", user.id).eq("event_type", eventType).eq("event_id", eventId);
       toast({ title: isAr ? "تمت الإزالة من القائمة" : "Removed from watchlist" });
     } else {
-      await supabase.from("event_watchlist" as any).insert({ user_id: user.id, event_type: eventType, event_id: eventId } as any);
+      await supabase.from("event_watchlist").insert({ user_id: user.id, event_type: eventType, event_id: eventId });
       toast({ title: isAr ? "✅ تمت الإضافة للقائمة" : "✅ Added to watchlist" });
     }
     queryClient.invalidateQueries({ queryKey: ["event-watched", eventType, eventId] });

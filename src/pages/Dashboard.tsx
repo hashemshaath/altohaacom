@@ -45,6 +45,7 @@ const FanSocialNetwork = lazy(() => import("@/components/fan/FanSocialNetwork").
 const FanRecipeCollections = lazy(() => import("@/components/fan/FanRecipeCollections").then(m => ({ default: m.FanRecipeCollections })));
 const FanFollowingFeed = lazy(() => import("@/components/fan/FanFollowingFeed").then(m => ({ default: m.FanFollowingFeed })));
 const FanStreaks = lazy(() => import("@/components/fan/FanStreaks").then(m => ({ default: m.FanStreaks })));
+const FanWeeklyDigest = lazy(() => import("@/components/fan/FanWeeklyDigest").then(m => ({ default: m.FanWeeklyDigest })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -138,6 +139,7 @@ export default function Dashboard() {
         {/* Main Content Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
+            {user && isFan && <W><FanWeeklyDigest /></W>}
             {user && isFan && <W><FanFollowingFeed /></W>}
             {user && isFan && <W><FanActivityFeed /></W>}
             {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}

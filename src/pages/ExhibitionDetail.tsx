@@ -21,6 +21,7 @@ import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
+import { EventComments } from "@/components/fan/EventComments";
 
 // Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
@@ -508,6 +509,11 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
             </Tabs>
+
+            {/* Comments Section */}
+            <div className="mt-6 rounded-2xl border border-border/40 bg-card p-5">
+              <EventComments eventType="exhibition" eventId={exhibition.id} />
+            </div>
           </div>
 
           {/* ======== SIDEBAR (Desktop) ======== */}

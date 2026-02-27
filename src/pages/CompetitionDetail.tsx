@@ -58,6 +58,7 @@ import { useEntityQRCode } from "@/hooks/useQRCode";
 import { LiveScoringDashboard } from "@/components/competitions/LiveScoringDashboard";
 import { TournamentRoundsPanel } from "@/components/competitions/TournamentRoundsPanel";
 import { BlindJudgingPanel } from "@/components/competitions/BlindJudgingPanel";
+import { EventComments } from "@/components/fan/EventComments";
 import { EvaluationStagesPanel } from "@/components/competitions/EvaluationStagesPanel";
 import { CompetitionSchedulePanel } from "@/components/competitions/CompetitionSchedulePanel";
 import { KitchenStationsPanel } from "@/components/competitions/KitchenStationsPanel";
@@ -890,6 +891,10 @@ export default function CompetitionDetail() {
                   </Section>
                 </div>
               )}
+              {/* Comments Section */}
+              <Card className="p-5">
+                <EventComments eventType="competition" eventId={competition.id} />
+              </Card>
             </div>
 
             {/* ─── Sidebar ─── */}
