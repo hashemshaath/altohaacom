@@ -31,6 +31,7 @@ import {
 import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
 import { NotificationAnalyticsWidget } from "@/components/admin/NotificationAnalyticsWidget";
 import { NotificationDeliveryWidget } from "@/components/admin/NotificationDeliveryWidget";
+import { NotificationInsightsWidget } from "@/components/admin/NotificationInsightsWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
@@ -402,6 +403,7 @@ export default function NotificationsAdmin() {
       <NotificationDeliveryWidget />
 
       {/* Notification Insights Widget */}
+      <NotificationInsightsWidget />
       <NotificationAnalyticsWidget />
 
       {/* Queue Stats */}
