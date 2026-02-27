@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ import {
   Headphones, BookOpen, ShoppingBag, Sparkles,
 } from "lucide-react";
 import { useMembershipFeatures, useFeatureTierMappings } from "@/hooks/useMembershipFeatures";
+import { cn } from "@/lib/utils";
 
 const TIER_CONFIG = [
   {
@@ -21,8 +23,8 @@ const TIER_CONFIG = [
     color: "text-muted-foreground",
     bg: "bg-muted/30",
     ring: "",
-    price: { en: "Free", ar: "مجاني" },
-    yearly: null,
+    monthly: 0,
+    yearly: 0,
   },
   {
     id: "professional",
@@ -31,8 +33,8 @@ const TIER_CONFIG = [
     bg: "bg-primary/5",
     ring: "ring-2 ring-primary shadow-lg",
     featured: true,
-    price: { en: "19 SAR/mo", ar: "19 ر.س/شهر" },
-    yearly: { en: "190 SAR/yr (save 17%)", ar: "190 ر.س/سنة (وفّر 17%)" },
+    monthly: 19,
+    yearly: 190,
   },
   {
     id: "enterprise",
@@ -40,8 +42,8 @@ const TIER_CONFIG = [
     color: "text-chart-2",
     bg: "bg-chart-2/5",
     ring: "",
-    price: { en: "99 SAR/mo", ar: "99 ر.س/شهر" },
-    yearly: { en: "990 SAR/yr (save 17%)", ar: "990 ر.س/سنة (وفّر 17%)" },
+    monthly: 99,
+    yearly: 990,
   },
 ];
 
@@ -62,11 +64,17 @@ const CATEGORY_ICONS: Record<string, any> = {
   competition: Award,
 };
 
+function getSavingsPercent(monthly: number, yearly: number): number {
+  if (monthly === 0) return 0;
+  return Math.round((1 - yearly / (monthly * 12)) * 100);
+}
+
 export default function MembershipPlans() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
 
   const { data: features = [] } = useMembershipFeatures();
   const { data: mappings = [] } = useFeatureTierMappings();
@@ -110,6 +118,21 @@ export default function MembershipPlans() {
     }
   };
 
+  const formatPrice = (tier: typeof TIER_CONFIG[number]) => {
+    if (tier.monthly === 0) return isAr ? "مجاني" : "Free";
+    const price = billingCycle === "yearly" ? tier.yearly : tier.monthly;
+    const suffix = billingCycle === "yearly"
+      ? (isAr ? "/سنة" : "/yr")
+      : (isAr ? "/شهر" : "/mo");
+    return `${price} ${isAr ? "ر.س" : "SAR"}${suffix}`;
+  };
+
+  const getMonthlyEquivalent = (tier: typeof TIER_CONFIG[number]) => {
+    if (billingCycle !== "yearly" || tier.yearly === 0) return null;
+    const monthlyEquiv = Math.round(tier.yearly / 12);
+    return `${monthlyEquiv} ${isAr ? "ر.س/شهر" : "SAR/mo"}`;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -131,6 +154,39 @@ export default function MembershipPlans() {
               ? "اكتشف المزايا الحصرية لكل مستوى عضوية وابدأ رحلتك الاحترافية"
               : "Discover exclusive benefits for each tier and start your professional journey"}
           </p>
+
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-3 pt-4">
+            <div className="relative inline-flex items-center rounded-full border bg-muted/50 p-1">
+              <button
+                onClick={() => setBillingCycle("monthly")}
+                className={cn(
+                  "relative z-10 rounded-full px-5 py-2 text-sm font-medium transition-all",
+                  billingCycle === "monthly"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {isAr ? "شهري" : "Monthly"}
+              </button>
+              <button
+                onClick={() => setBillingCycle("yearly")}
+                className={cn(
+                  "relative z-10 rounded-full px-5 py-2 text-sm font-medium transition-all",
+                  billingCycle === "yearly"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {isAr ? "سنوي" : "Yearly"}
+              </button>
+            </div>
+            {billingCycle === "yearly" && (
+              <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs animate-in fade-in slide-in-from-left-2">
+                {isAr ? "وفّر حتى 17%" : "Save up to 17%"}
+              </Badge>
+            )}
+          </div>
         </div>
       </section>
 
@@ -144,6 +200,8 @@ export default function MembershipPlans() {
               const lookup = tierLookup.get(f.id);
               return lookup?.[tier.id];
             }).length;
+            const savings = getSavingsPercent(tier.monthly, tier.yearly);
+            const monthlyEquiv = getMonthlyEquivalent(tier);
 
             return (
               <Card
@@ -175,14 +233,21 @@ export default function MembershipPlans() {
                   <CardTitle className="text-xl">
                     {TIER_NAMES[tier.id]?.[isAr ? "ar" : "en"]}
                   </CardTitle>
-                  <p className="text-3xl font-bold mt-2">
-                    {tier.price[isAr ? "ar" : "en"]}
-                  </p>
-                  {tier.yearly && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {tier.yearly[isAr ? "ar" : "en"]}
+                  <div className="mt-2 space-y-1">
+                    <p className="text-3xl font-bold">
+                      {formatPrice(tier)}
                     </p>
-                  )}
+                    {billingCycle === "yearly" && monthlyEquiv && (
+                      <p className="text-xs text-muted-foreground">
+                        ≈ {monthlyEquiv}
+                      </p>
+                    )}
+                    {billingCycle === "yearly" && savings > 0 && (
+                      <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-[10px]">
+                        {isAr ? `وفّر ${savings}%` : `Save ${savings}%`}
+                      </Badge>
+                    )}
+                  </div>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
