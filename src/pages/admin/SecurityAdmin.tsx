@@ -4,6 +4,7 @@ import { SecurityOverviewWidget } from "@/components/admin/SecurityOverviewWidge
 import { SecurityAuditWidget } from "@/components/admin/SecurityAuditWidget";
 import { SecurityLiveWidget } from "@/components/admin/SecurityLiveWidget";
 import { AuditLiveStatsWidget } from "@/components/admin/AuditLiveStatsWidget";
+import { SessionMonitorWidget } from "@/components/admin/SessionMonitorWidget";
 import { ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -19,6 +20,7 @@ export default function SecurityAdmin() {
         description={isAr ? "مراقبة الأحداث الأمنية والجلسات والصلاحيات" : "Monitor security events, sessions, and permissions"}
       />
       <AuditLiveStatsWidget />
+      <SessionMonitorWidget />
       <SecurityLiveWidget />
       <SecurityAuditWidget />
       <SecurityOverviewWidget />
