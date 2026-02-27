@@ -37,6 +37,8 @@ const QuickActionsWidget = lazy(() => import("@/components/dashboard/QuickAction
 const DailyDigestWidget = lazy(() => import("@/components/dashboard/DailyDigestWidget").then(m => ({ default: m.DailyDigestWidget })));
 const StreakWidget = lazy(() => import("@/components/dashboard/StreakWidget").then(m => ({ default: m.StreakWidget })));
 const WeeklyOverviewWidget = lazy(() => import("@/components/dashboard/WeeklyOverviewWidget").then(m => ({ default: m.WeeklyOverviewWidget })));
+const WalletBalanceWidget = lazy(() => import("@/components/dashboard/WalletBalanceWidget").then(m => ({ default: m.WalletBalanceWidget })));
+const GoalsMilestonesWidget = lazy(() => import("@/components/dashboard/GoalsMilestonesWidget").then(m => ({ default: m.GoalsMilestonesWidget })));
 // Fan-specific widgets
 const FanTrendingWidget = lazy(() => import("@/components/dashboard/FanTrendingWidget").then(m => ({ default: m.FanTrendingWidget })));
 const FanSuggestedFollowsWidget = lazy(() => import("@/components/dashboard/FanSuggestedFollowsWidget").then(m => ({ default: m.FanSuggestedFollowsWidget })));
@@ -165,8 +167,10 @@ export default function Dashboard() {
           <div className="space-y-6">
             {user && <ProfileCompletionCard />}
             {user && <W><QuickActionsWidget /></W>}
+            {user && <W><WalletBalanceWidget /></W>}
             {user && <W><WeeklyOverviewWidget /></W>}
             {user && <W><StreakWidget /></W>}
+            {user && <W><GoalsMilestonesWidget /></W>}
             {user && <W><LiveCompetitionsWidget /></W>}
             {user && isFan && <W><FanNotificationsCenter /></W>}
             {user && isFan && <W><FanStreaks /></W>}
