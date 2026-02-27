@@ -22,6 +22,7 @@ import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
 import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
 import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
 import { AdminPDFReportGenerator } from "@/components/admin/AdminPDFReportGenerator";
+import { AdminReportHub } from "@/components/admin/AdminReportHub";
 import { CompanyDashboardWidget } from "@/components/admin/CompanyDashboardWidget";
 import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
 import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytics";
@@ -643,6 +644,9 @@ export default function AdminDashboard() {
 
       {/* Advanced Analytics */}
       <AdminAdvancedAnalytics />
+
+      {/* Quick Report Hub */}
+      <AdminReportHub />
 
       {/* PDF Report Generator */}
       <AdminPDFReportGenerator />
