@@ -70,6 +70,7 @@ import { TeamCollaborationPanel } from "@/components/competitions/TeamCollaborat
 import { CompetitionAnalyticsDashboard } from "@/components/competitions/CompetitionAnalyticsDashboard";
 import { AdvancedSchedulingPanel } from "@/components/competitions/AdvancedSchedulingPanel";
 import { NotificationHub } from "@/components/competitions/NotificationHub";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -313,6 +314,38 @@ export default function CompetitionDetail() {
     ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-4 w-4" />, label: isAr ? "إدارة" : "Manage" }] : []),
   ];
 
+  // Breadcrumb structured data
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": isAr ? "الرئيسية" : "Home", "item": window.location.origin },
+      { "@type": "ListItem", "position": 2, "name": isAr ? "المسابقات" : "Competitions", "item": `${window.location.origin}/competitions` },
+      { "@type": "ListItem", "position": 3, "name": title },
+    ],
+  };
+
+  const eventLd = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: title,
+    description: description || undefined,
+    startDate: competition.competition_start,
+    endDate: competition.competition_end,
+    eventAttendanceMode: competition.is_virtual
+      ? "https://schema.org/OnlineEventAttendanceMode"
+      : "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: competition.status === "cancelled"
+      ? "https://schema.org/EventCancelled"
+      : "https://schema.org/EventScheduled",
+    location: competition.is_virtual
+      ? { "@type": "VirtualLocation" }
+      : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: competition.city, addressCountry: competition.country } },
+    image: competition.cover_image_url || undefined,
+    organizer: { "@type": "Organization", name: "Altoha", url: window.location.origin },
+    ...(competition.max_participants ? { maximumAttendeeCapacity: competition.max_participants } : {}),
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
@@ -320,20 +353,11 @@ export default function CompetitionDetail() {
         description={description || `${title} - Culinary competition on Altoha`}
         ogImage={competition.cover_image_url || undefined}
         ogType="article"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Event",
-          name: title,
-          description: description || undefined,
-          startDate: competition.competition_start,
-          endDate: competition.competition_end,
-          location: competition.is_virtual
-            ? { "@type": "VirtualLocation" }
-            : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: competition.city, addressCountry: competition.country } },
-          image: competition.cover_image_url || undefined,
-          eventStatus: "https://schema.org/EventScheduled",
-        }}
+        keywords={`${title}, culinary competition, ${competition.city || ""}, ${competition.country || ""}, chef competition`}
+        jsonLd={eventLd}
       />
+      {/* Breadcrumb JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <Header />
 
       <main className="flex-1">
@@ -443,7 +467,15 @@ export default function CompetitionDetail() {
               <div className="flex items-center gap-2.5">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
+                    <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={async (e) => {
+                      // Try native share first on mobile
+                      if (navigator.share) {
+                        e.preventDefault();
+                        try {
+                          await navigator.share({ title, text: description || title, url: window.location.href });
+                        } catch { /* user cancelled */ }
+                      }
+                    }}>
                       <Share2 className="me-1.5 h-3.5 w-3.5" />{isAr ? "مشاركة" : "Share"}
                     </Button>
                   </DropdownMenuTrigger>
@@ -508,7 +540,7 @@ export default function CompetitionDetail() {
               {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(item.id); }}
                   className={`
                     snap-start inline-flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation
                     ${activeSection === item.id
@@ -995,6 +1027,7 @@ export default function CompetitionDetail() {
       </main>
 
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }
