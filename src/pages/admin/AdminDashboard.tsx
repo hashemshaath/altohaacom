@@ -30,6 +30,8 @@ import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
 import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
 import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
+import { ScheduledExportWidget } from "@/components/admin/ScheduledExportWidget";
+import { AdminKeyboardShortcuts, ShortcutHintsCard } from "@/components/admin/AdminKeyboardShortcuts";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -270,14 +272,22 @@ export default function AdminDashboard() {
         }
       />
 
+      {/* Keyboard Shortcuts */}
+      <AdminKeyboardShortcuts />
+
       {/* Security Alerts */}
       <SecurityAlertsBanner />
 
       {/* Mobile Nav Grid */}
       <AdminMobileNavGrid />
 
-      {/* Quick Actions Bar */}
-      <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
+      {/* Quick Actions & Shortcuts */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+        <div className="lg:col-span-3">
+          <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
+        </div>
+        <ShortcutHintsCard />
+      </div>
 
       {/* KPI Trends (week-over-week comparison) */}
       <AdminKPITrends />
@@ -643,6 +653,9 @@ export default function AdminDashboard() {
       <Suspense fallback={<SectionSkeleton />}>
         <PerformanceMonitorWidget />
       </Suspense>
+
+      {/* Quick Data Export */}
+      <ScheduledExportWidget />
 
       {/* Deep Analytics (lazy loaded) */}
       <Suspense fallback={<SectionSkeleton />}>
