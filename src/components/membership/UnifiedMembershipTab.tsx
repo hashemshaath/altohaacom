@@ -30,6 +30,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
 import { BenefitsUsageTracker } from "./BenefitsUsageTracker";
+import { MembershipHistory } from "./MembershipHistory";
 
 interface UnifiedMembershipTabProps {
   profile: any;
@@ -963,6 +964,9 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
 
       {/* Benefits Usage Tracker */}
       <BenefitsUsageTracker />
+
+      {/* Membership History */}
+      <MembershipHistory />
     </div>
   );
 }
