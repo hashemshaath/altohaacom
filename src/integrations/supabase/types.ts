@@ -13558,6 +13558,50 @@ export type Database = {
           },
         ]
       }
+      membership_feature_usage: {
+        Row: {
+          access_count: number
+          blocked_count: number
+          created_at: string
+          feature_id: string
+          id: string
+          tier: string
+          unique_users: number
+          updated_at: string
+          usage_date: string
+        }
+        Insert: {
+          access_count?: number
+          blocked_count?: number
+          created_at?: string
+          feature_id: string
+          id?: string
+          tier?: string
+          unique_users?: number
+          updated_at?: string
+          usage_date?: string
+        }
+        Update: {
+          access_count?: number
+          blocked_count?: number
+          created_at?: string
+          feature_id?: string
+          id?: string
+          tier?: string
+          unique_users?: number
+          updated_at?: string
+          usage_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_feature_usage_feature_id_fkey"
+            columns: ["feature_id"]
+            isOneToOne: false
+            referencedRelation: "membership_features"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       membership_features: {
         Row: {
           category: string
@@ -21062,6 +21106,14 @@ export type Database = {
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      log_feature_access: {
+        Args: {
+          p_feature_code: string
+          p_tier: string
+          p_was_blocked?: boolean
+        }
+        Returns: undefined
+      }
       log_security_event: {
         Args: {
           p_description?: string
