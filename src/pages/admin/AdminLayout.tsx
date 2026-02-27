@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 import { cn } from "@/lib/utils";
@@ -79,6 +80,7 @@ export default function AdminLayout() {
         <main className="min-w-0 flex-1">
           <div className="container py-6">
             <AdminPendingBanner />
+            <AdminBreadcrumb />
             <Outlet />
           </div>
         </main>

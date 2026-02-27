@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { CRMLiveStatsWidget } from "@/components/admin/CRMLiveStatsWidget";
 import { useQuery } from "@tanstack/react-query";
 import { BehaviorAnalytics } from "@/components/crm/BehaviorAnalytics";
 import { CustomerHealthScores } from "@/components/crm/CustomerHealthScores";
@@ -268,6 +269,9 @@ export default function CRMDashboard() {
           </Select>
         }
       />
+
+      {/* CRM Live Stats */}
+      <CRMLiveStatsWidget />
 
       {/* Top KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
