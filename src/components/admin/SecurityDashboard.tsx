@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,12 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 import {
   Shield, ShieldAlert, ShieldCheck, Activity, Ban, Monitor,
   Search, RefreshCw, Loader2, AlertTriangle, Eye, Clock, Users,
   Lock, Unlock, Globe, Smartphone
-} from "lucide-react";
+}from "lucide-react";
 
 interface SecurityStats {
   events_24h: number;
@@ -47,9 +52,9 @@ const EVENT_TYPE_ICONS: Record<string, any> = {
 };
 
 const SEVERITY_STYLES: Record<string, string> = {
-  info: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  warning: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  critical: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  info: "bg-primary/10 text-primary",
+  warning: "bg-chart-4/10 text-chart-4",
+  critical: "bg-destructive/10 text-destructive",
 };
 
 export default function SecurityDashboard() {
@@ -102,10 +107,10 @@ export default function SecurityDashboard() {
   }, [events, filter, severityFilter]);
 
   const statCards = [
-    { icon: Activity, label: t("Events (24h)", "الأحداث (24 ساعة)"), value: stats.events_24h, color: "text-blue-500" },
-    { icon: ShieldAlert, label: t("Critical (7d)", "حرج (7 أيام)"), value: stats.critical_7d, color: "text-red-500" },
-    { icon: Monitor, label: t("Active Sessions", "الجلسات النشطة"), value: stats.active_sessions, color: "text-green-500" },
-    { icon: Ban, label: t("Blocked IPs", "عناوين محظورة"), value: stats.blocked_ips, color: "text-orange-500" },
+    { icon: Activity, label: t("Events (24h)", "الأحداث (24 ساعة)"), value: stats.events_24h, color: "text-primary" },
+    { icon: ShieldAlert, label: t("Critical (7d)", "حرج (7 أيام)"), value: stats.critical_7d, color: "text-destructive" },
+    { icon: Monitor, label: t("Active Sessions", "الجلسات النشطة"), value: stats.active_sessions, color: "text-chart-2" },
+    { icon: Ban, label: t("Blocked IPs", "عناوين محظورة"), value: stats.blocked_ips, color: "text-chart-4" },
   ];
 
   const topEventTypes = Object.entries(typeBreakdown)
@@ -134,6 +139,14 @@ export default function SecurityDashboard() {
           <TabsTrigger value="events" className="gap-1.5 text-xs">
             <Activity className="h-3.5 w-3.5" />
             {t("Events Log", "سجل الأحداث")}
+          </TabsTrigger>
+          <TabsTrigger value="sessions" className="gap-1.5 text-xs">
+            <Monitor className="h-3.5 w-3.5" />
+            {t("Sessions", "الجلسات")}
+          </TabsTrigger>
+          <TabsTrigger value="permissions" className="gap-1.5 text-xs">
+            <Lock className="h-3.5 w-3.5" />
+            {t("Permissions", "الصلاحيات")}
           </TabsTrigger>
           <TabsTrigger value="breakdown" className="gap-1.5 text-xs">
             <Eye className="h-3.5 w-3.5" />
@@ -190,13 +203,13 @@ export default function SecurityDashboard() {
                     <CardContent className="p-3">
                       <div className="flex items-start gap-3">
                         <div className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${
-                          event.severity === "critical" ? "bg-red-100 dark:bg-red-900/30" :
-                          event.severity === "warning" ? "bg-yellow-100 dark:bg-yellow-900/30" :
+                          event.severity === "critical" ? "bg-destructive/10" :
+                          event.severity === "warning" ? "bg-chart-4/10" :
                           "bg-muted/60"
                         }`}>
                           <Icon className={`h-4 w-4 ${
-                            event.severity === "critical" ? "text-red-600" :
-                            event.severity === "warning" ? "text-yellow-600" :
+                            event.severity === "critical" ? "text-destructive" :
+                            event.severity === "warning" ? "text-chart-4" :
                             "text-muted-foreground"
                           }`} />
                         </div>
@@ -238,6 +251,16 @@ export default function SecurityDashboard() {
           </div>
         </TabsContent>
 
+        {/* Sessions Tab */}
+        <TabsContent value="sessions" className="mt-3">
+          <SessionsPanel />
+        </TabsContent>
+
+        {/* Permissions Tab */}
+        <TabsContent value="permissions" className="mt-3">
+          <PermissionsOverview />
+        </TabsContent>
+
         <TabsContent value="breakdown" className="mt-3">
           <Card>
             <CardHeader className="pb-2">
@@ -275,6 +298,191 @@ export default function SecurityDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// ── Sessions Panel ──────────────────────────────────────
+function SessionsPanel() {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  const { data: sessions = [], isLoading } = useQuery({
+    queryKey: ["security-sessions"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("user_sessions")
+        .select("*")
+        .eq("is_active", true)
+        .order("last_active_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <Monitor className="h-4 w-4 text-chart-2" />
+          {isAr ? "الجلسات النشطة" : "Active Sessions"} ({sessions.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        {sessions.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-8">
+            {isAr ? "لا توجد جلسات نشطة" : "No active sessions"}
+          </p>
+        ) : (
+          <ScrollArea className="max-h-[400px]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-xs">{isAr ? "المستخدم" : "User"}</TableHead>
+                  <TableHead className="text-xs">{isAr ? "الجهاز" : "Device"}</TableHead>
+                  <TableHead className="text-xs">{isAr ? "IP" : "IP"}</TableHead>
+                  <TableHead className="text-xs">{isAr ? "آخر نشاط" : "Last Active"}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sessions.map((session: any) => (
+                  <TableRow key={session.id}>
+                    <TableCell className="text-xs font-mono truncate max-w-[120px]">
+                      {session.user_id?.substring(0, 8)}...
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Smartphone className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs truncate max-w-[150px]">
+                          {session.device_info || "Unknown"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-xs font-mono">
+                      {session.ip_address || "—"}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                      {session.last_active_at ? format(new Date(session.last_active_at), "MMM d, HH:mm") : "—"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Permissions Overview ──────────────────────────────────
+function PermissionsOverview() {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["security-permissions-overview"],
+    queryFn: async () => {
+      const [rolesRes, overridesRes, permissionsRes] = await Promise.all([
+        supabase.from("user_roles").select("role"),
+        supabase.from("user_permission_overrides").select("*").limit(20),
+        supabase.from("role_permissions").select("role, permissions(code, name, name_ar, category)"),
+      ]);
+      
+      // Role distribution
+      const roleCounts: Record<string, number> = {};
+      (rolesRes.data || []).forEach((r: any) => {
+        roleCounts[r.role] = (roleCounts[r.role] || 0) + 1;
+      });
+
+      return {
+        roleCounts,
+        overrides: overridesRes.data || [],
+        rolePermissions: permissionsRes.data || [],
+        totalRoleAssignments: rolesRes.data?.length || 0,
+      };
+    },
+  });
+
+  if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
+
+  const sortedRoles = Object.entries(data?.roleCounts || {}).sort(([, a], [, b]) => b - a);
+  const maxCount = sortedRoles[0]?.[1] || 1;
+
+  return (
+    <div className="space-y-4">
+      {/* Role distribution */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Shield className="h-4 w-4 text-primary" />
+            {isAr ? "توزيع الأدوار" : "Role Distribution"} ({data?.totalRoleAssignments})
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {sortedRoles.map(([role, count]) => (
+            <div key={role} className="flex items-center gap-3">
+              <Badge variant="outline" className="text-xs min-w-[80px] justify-center">
+                {role}
+              </Badge>
+              <div className="flex-1">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all"
+                    style={{ width: `${(count / maxCount) * 100}%` }}
+                  />
+                </div>
+              </div>
+              <span className="text-xs font-bold tabular-nums w-8 text-end">{count}</span>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Recent overrides */}
+      {(data?.overrides?.length || 0) > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Unlock className="h-4 w-4 text-chart-4" />
+              {isAr ? "تجاوزات الصلاحيات الأخيرة" : "Recent Permission Overrides"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ScrollArea className="max-h-[250px]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-xs">{isAr ? "المستخدم" : "User"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "السبب" : "Reason"}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data?.overrides.map((o: any) => (
+                    <TableRow key={o.id}>
+                      <TableCell className="text-xs font-mono truncate max-w-[100px]">
+                        {o.user_id?.substring(0, 8)}...
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={o.granted ? "default" : "destructive"} className="text-[9px] h-4 px-1.5">
+                          {o.granted ? (isAr ? "ممنوح" : "Granted") : (isAr ? "محظور" : "Denied")}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground truncate max-w-[150px]">
+                        {o.reason || "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { AdminActivityFeed } from "@/components/admin/AdminActivityFeed";
 import { AdminModerationQueue } from "@/components/admin/AdminModerationQueue";
 import { AdminFinanceOverview } from "@/components/admin/AdminFinanceOverview";
 import { AdminPendingActionsWidget } from "@/components/admin/AdminPendingActionsWidget";
+import { AdminAlertCenter } from "@/components/admin/AdminAlertCenter";
+import { AdminKPITrends } from "@/components/admin/AdminKPITrends";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -244,6 +246,9 @@ export default function AdminDashboard() {
         }
       />
 
+      {/* KPI Trends (week-over-week comparison) */}
+      <AdminKPITrends />
+
       {/* Stats Grid with sparklines */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
         {statCards.map((stat) => {
@@ -409,10 +414,11 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
 
-      {/* ── Row: Activity Feed + Moderation + Pending + Finance ── */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      {/* ── Row: Activity Feed + Moderation + Alerts + Finance ── */}
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
         <AdminActivityFeed />
         <AdminModerationQueue />
+        <AdminAlertCenter />
         <AdminFinanceOverview />
       </div>
 
