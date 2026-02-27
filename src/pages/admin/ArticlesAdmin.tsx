@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ContentStatsWidget } from "@/components/admin/ContentStatsWidget";
+import { ContentInsightsWidget } from "@/components/admin/ContentInsightsWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -452,6 +453,9 @@ export default function ArticlesAdmin() {
 
       {/* Content Analytics Widget */}
       <ContentStatsWidget />
+
+      {/* Content Insights */}
+      <ContentInsightsWidget />
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">

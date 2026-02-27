@@ -27,6 +27,7 @@ import { TaxComplianceAnalytics } from "@/components/analytics/TaxComplianceAnal
 import { PredictiveChurnDashboard } from "@/components/analytics/PredictiveChurnDashboard";
 import { MultiMetricComparison } from "@/components/analytics/MultiMetricComparison";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
+import { AdvancedKPIDashboard } from "@/components/admin/AdvancedKPIDashboard";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -172,7 +173,12 @@ export default function AnalyticsDashboard() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview"><PlatformOverview dateRange={dateRange} /></TabsContent>
+        <TabsContent value="overview">
+          <div className="space-y-6">
+            <AdvancedKPIDashboard />
+            <PlatformOverview dateRange={dateRange} />
+          </div>
+        </TabsContent>
         <TabsContent value="realtime"><RealTimeDashboard /></TabsContent>
         <TabsContent value="marketing"><MarketingAnalytics /></TabsContent>
         <TabsContent value="engagement"><EngagementMetrics /></TabsContent>
