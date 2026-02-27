@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SectionReveal } from "@/components/ui/section-reveal";
 
 const tierStyles: Record<string, { border: string; bg: string; label: string; labelAr: string }> = {
   platinum: { border: "border-chart-4/30", bg: "bg-gradient-to-br from-chart-4/10 to-chart-4/5", label: "Platinum", labelAr: "بلاتيني" },
@@ -71,6 +72,7 @@ export function SponsorCarousel() {
   return (
     <section className="py-8 md:py-12 overflow-hidden">
       <div className="container">
+        <SectionReveal>
         <div className="mb-8 text-center">
           <Badge variant="secondary" className="mb-3 gap-1">
             <Crown className="h-3 w-3 text-chart-4" />
@@ -83,6 +85,7 @@ export function SponsorCarousel() {
             {isAr ? "شركاؤنا الذين يصنعون معنا مستقبل الطهي" : "Our partners who shape the future of culinary arts with us"}
           </p>
         </div>
+        </SectionReveal>
 
         {/* Platinum sponsors */}
         {platinums.length > 0 && (
