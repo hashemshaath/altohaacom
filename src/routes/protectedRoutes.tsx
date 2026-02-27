@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FanRouteGuard } from "@/components/permissions/FanRouteGuard";
+import { FeatureRouteGuard } from "@/components/membership/FeatureRouteGuard";
 
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Profile = lazy(() => import("@/pages/Profile"));
@@ -44,7 +45,7 @@ export const protectedRoutes = (
     <Route path="/knowledge" element={<ProtectedRoute><KnowledgePortal /></ProtectedRoute>} />
     <Route path="/notification-preferences" element={<ProtectedRoute><NotificationPreferences /></ProtectedRoute>} />
     <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-    <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+    <Route path="/messages" element={<ProtectedRoute><FeatureRouteGuard feature="feature_messaging"><Messages /></FeatureRouteGuard></ProtectedRoute>} />
     <Route path="/support" element={<ProtectedRoute><SupportTickets /></ProtectedRoute>} />
     <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
     <Route path="/exhibitions/create" element={<ProtectedRoute><FanRouteGuard><CreateExhibition /></FanRouteGuard></ProtectedRoute>} />

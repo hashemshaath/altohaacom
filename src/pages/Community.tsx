@@ -13,6 +13,7 @@ import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/
 import { CommunityRightSidebar } from "@/components/community/CommunityRightSidebar";
 import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs";
 import { Users } from "lucide-react";
+import { FeatureGate } from "@/components/membership/FeatureGate";
 
 // Lazy load heavy tabs
 const ChefsTab = lazy(() => import("@/components/community/ChefsTab").then(m => ({ default: m.ChefsTab })));
@@ -99,7 +100,7 @@ export default function Community() {
             {activeTab === "recipes" && <Suspense fallback={<TabFallback />}><div className="p-4"><RecipesTab /></div></Suspense>}
             {activeTab === "groups" && <Suspense fallback={<TabFallback />}><div className="p-4"><GroupsTab /></div></Suspense>}
             {activeTab === "events" && <Suspense fallback={<TabFallback />}><div className="p-4"><EventsTab /></div></Suspense>}
-            {activeTab === "live" && <Suspense fallback={<TabFallback />}><div className="p-4"><LiveSessionsTab /></div></Suspense>}
+            {activeTab === "live" && <FeatureGate feature="feature_live_sessions"><Suspense fallback={<TabFallback />}><div className="p-4"><LiveSessionsTab /></div></Suspense></FeatureGate>}
             {activeTab === "network" && user && <Suspense fallback={<TabFallback />}><div className="p-4"><NetworkTab /></div></Suspense>}
           </div>
 
