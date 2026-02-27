@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import {
   TrendingUp, TrendingDown, Users, DollarSign,
-  ArrowUpCircle, ArrowDownCircle, UserPlus, Crown
+  ArrowUpCircle, ArrowDownCircle, UserPlus, Crown, Gift
 } from "lucide-react";
 import { useMemo } from "react";
 import { format, subMonths, startOfMonth, endOfMonth, differenceInDays } from "date-fns";
@@ -155,6 +155,31 @@ export default function MembershipAnalyticsDashboard() {
         .gte("created_at", subMonths(now, 1).toISOString());
 
       return { total, active, paid, newThisMonth, expiringSoon, recentChanges: totalUpgrades || 0 };
+    },
+    staleTime: 1000 * 60 * 3,
+  });
+
+  // Gift analytics
+  const { data: giftStats } = useQuery({
+    queryKey: ["membership-analytics-gifts"],
+    queryFn: async () => {
+      const { data: gifts } = await supabase
+        .from("membership_gifts")
+        .select("status, tier, amount, currency, created_at, redeemed_at");
+
+      const total = gifts?.length || 0;
+      const pending = gifts?.filter((g: any) => g.status === "pending").length || 0;
+      const redeemed = gifts?.filter((g: any) => g.status === "redeemed").length || 0;
+      const totalRevenue = gifts?.reduce((s: number, g: any) => s + (Number(g.amount) || 0), 0) || 0;
+      const redemptionRate = total > 0 ? ((redeemed / total) * 100).toFixed(1) : "0";
+
+      // Tier breakdown
+      const byTier: Record<string, number> = {};
+      for (const g of gifts || []) {
+        byTier[(g as any).tier] = (byTier[(g as any).tier] || 0) + 1;
+      }
+
+      return { total, pending, redeemed, totalRevenue, redemptionRate, byTier };
     },
     staleTime: 1000 * 60 * 3,
   });
@@ -414,6 +439,40 @@ export default function MembershipAnalyticsDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Gift Analytics */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Gift className="h-4 w-4 text-primary" />
+            {isAr ? "تحليلات الهدايا" : "Gift Analytics"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+            <div className="rounded-lg border p-3 text-center">
+              <p className="text-2xl font-bold">{giftStats?.total || 0}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الهدايا" : "Total Gifts"}</p>
+            </div>
+            <div className="rounded-lg border p-3 text-center">
+              <p className="text-2xl font-bold text-primary">{giftStats?.redeemed || 0}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
+            </div>
+            <div className="rounded-lg border p-3 text-center">
+              <p className="text-2xl font-bold text-chart-3">{giftStats?.pending || 0}</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "في الانتظار" : "Pending"}</p>
+            </div>
+            <div className="rounded-lg border p-3 text-center">
+              <p className="text-2xl font-bold text-chart-2">{giftStats?.totalRevenue?.toFixed(0) || 0} SAR</p>
+              <p className="text-[10px] text-muted-foreground">{isAr ? "إيرادات الهدايا" : "Gift Revenue"}</p>
+            </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between rounded-lg border p-3">
+            <span className="text-sm text-muted-foreground">{isAr ? "معدل الاسترداد" : "Redemption Rate"}</span>
+            <Badge variant="outline" className="font-bold">{giftStats?.redemptionRate || 0}%</Badge>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
