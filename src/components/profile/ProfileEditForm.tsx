@@ -10,6 +10,7 @@ import { ProfessionalInfoSection } from "./edit/ProfessionalInfoSection";
 import { LocationSection } from "./edit/LocationSection";
 import { SocialMediaSection } from "./edit/SocialMediaSection";
 import { useAccountType } from "@/hooks/useAccountType";
+import { AccountTypeCard } from "./AccountTypeCard";
 
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
 
@@ -79,6 +80,7 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
 
   return (
     <div className="space-y-6">
+      <AccountTypeCard />
       <PersonalInfoSection form={form} update={update} isAr={isAr} />
       {!isFan && <ProfessionalInfoSection form={form} update={update} isAr={isAr} />}
       <LocationSection form={form} update={update} isAr={isAr} />
