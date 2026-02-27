@@ -31,6 +31,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useRef } from "react";
 import { BenefitsUsageTracker } from "./BenefitsUsageTracker";
 import { MembershipHistory } from "./MembershipHistory";
+import { SubscriptionDetailsCard } from "./SubscriptionDetailsCard";
+import { MembershipInvoicesSection } from "./MembershipInvoicesSection";
 
 interface UnifiedMembershipTabProps {
   profile: any;
@@ -81,7 +83,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     },
   });
 
-  // Upgrade/Renew mutation
+  // Upgrade/Downgrade/Renew mutation
   const upgradeMutation = useMutation({
     mutationFn: async (newTier: "basic" | "professional" | "enterprise") => {
       const now = new Date();
@@ -89,18 +91,36 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
       const prevTier = (profile?.membership_tier || "basic") as "basic" | "professional" | "enterprise";
 
+      const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
+      const tierPrices: Record<string, number> = { basic: 0, professional: 19, enterprise: 99 };
+      const isDowngrade = tierOrder[newTier] < tierOrder[prevTier];
+
+      // Calculate prorated credit for downgrades
+      let proratedCredit = 0;
+      if (isDowngrade && profile?.membership_expires_at) {
+        const expiry = new Date(profile.membership_expires_at);
+        const totalDays = 365;
+        const remainingDays = Math.max(0, Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+        const dailyRate = (tierPrices[prevTier] * 12) / totalDays;
+        const newDailyRate = (tierPrices[newTier] * 12) / totalDays;
+        proratedCredit = Math.round((dailyRate - newDailyRate) * remainingDays * 100) / 100;
+      }
+
       await supabase.from("membership_history").insert([{
         user_id: userId,
         previous_tier: prevTier,
         new_tier: newTier,
+        reason: isDowngrade
+          ? `Downgrade with prorated credit: ${proratedCredit} SAR`
+          : (newTier === prevTier ? "Renewal" : "Upgrade"),
       }]);
 
       const { error } = await supabase
         .from("profiles")
         .update({
           membership_tier: newTier,
-          membership_status: "active",
-          membership_started_at: now.toISOString(),
+          membership_status: newTier === "basic" ? "active" : "active",
+          membership_started_at: isDowngrade ? profile?.membership_started_at : now.toISOString(),
           membership_expires_at: expiresAt.toISOString(),
         })
         .eq("user_id", userId);
@@ -114,17 +134,46 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
         }).eq("id", card.id);
       }
 
-      return newTier;
+      // If downgrade with credit, add to wallet
+      if (isDowngrade && proratedCredit > 0) {
+        const { data: wallet } = await supabase
+          .from("user_wallets")
+          .select("id, balance")
+          .eq("user_id", userId)
+          .maybeSingle();
+        if (wallet) {
+          await supabase.from("user_wallets").update({
+            balance: (wallet.balance || 0) + proratedCredit,
+          }).eq("id", wallet.id);
+          await supabase.from("wallet_transactions").insert([{
+            wallet_id: wallet.id,
+            transaction_number: "",
+            type: "credit",
+            amount: proratedCredit,
+            currency: "SAR",
+            description: `Prorated credit from ${prevTier} → ${newTier} downgrade`,
+            description_ar: `رصيد تناسبي من تخفيض ${prevTier} → ${newTier}`,
+            status: "completed",
+          }]);
+        }
+      }
+
+      return { newTier, isDowngrade, proratedCredit };
     },
-    onSuccess: (newTier) => {
+    onSuccess: ({ newTier, isDowngrade, proratedCredit }) => {
       queryClient.invalidateQueries({ queryKey: ["membership-history", userId] });
       queryClient.invalidateQueries({ queryKey: ["membership-card", userId] });
+      queryClient.invalidateQueries({ queryKey: ["membership-card-sub", userId] });
       onMembershipChange?.();
       toast({
-        title: isAr ? "تم تحديث العضوية!" : "Membership updated!",
-        description: isAr
-          ? `تم ترقية عضويتك إلى ${newTier === "professional" ? "احترافية" : newTier === "enterprise" ? "مؤسسية" : "أساسية"}`
-          : `Your membership has been changed to ${newTier}`,
+        title: isAr
+          ? (isDowngrade ? "تم تخفيض العضوية" : "تم تحديث العضوية!")
+          : (isDowngrade ? "Membership downgraded" : "Membership updated!"),
+        description: isDowngrade && proratedCredit > 0
+          ? (isAr ? `تم إضافة ${proratedCredit} ر.س كرصيد تناسبي لمحفظتك` : `${proratedCredit} SAR prorated credit added to your wallet`)
+          : (isAr
+            ? `تم تغيير عضويتك إلى ${newTier === "professional" ? "احترافية" : newTier === "enterprise" ? "مؤسسية" : "أساسية"}`
+            : `Your membership has been changed to ${newTier}`),
       });
     },
     onError: (err: any) => {
@@ -786,7 +835,11 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
         </Card>
       )}
 
-      {/* ═══════════ AVAILABLE PLANS ═══════════ */}
+      {/* ═══════════ SUBSCRIPTION DETAILS ═══════════ */}
+      <SubscriptionDetailsCard userId={userId} profile={profile} />
+
+      {/* ═══════════ INVOICES & PAYMENTS ═══════════ */}
+      <MembershipInvoicesSection userId={userId} />
       <div>
         <h3 className="mb-4 font-semibold">{isAr ? "الخطط المتاحة" : "Available Plans"}</h3>
         <div className="grid gap-4 md:grid-cols-3">
