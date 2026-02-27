@@ -36,6 +36,7 @@ const BioAnalytics = lazy(() => import("@/pages/BioAnalytics"));
 const MembershipCheckout = lazy(() => import("@/pages/MembershipCheckout"));
 const MembershipGift = lazy(() => import("@/pages/MembershipGift"));
 const MembershipReferral = lazy(() => import("@/pages/MembershipReferral"));
+const MembershipGiftsHistory = lazy(() => import("@/pages/MembershipGiftsHistory"));
 
 export const protectedRoutes = (
   <>
@@ -71,5 +72,6 @@ export const protectedRoutes = (
     <Route path="/membership/checkout" element={<ProtectedRoute><MembershipCheckout /></ProtectedRoute>} />
     <Route path="/membership/gift" element={<ProtectedRoute><MembershipGift /></ProtectedRoute>} />
     <Route path="/membership/referral" element={<ProtectedRoute><MembershipReferral /></ProtectedRoute>} />
+    <Route path="/membership/gifts" element={<ProtectedRoute><MembershipGiftsHistory /></ProtectedRoute>} />
   </>
 );
