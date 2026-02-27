@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CompetitionHistory } from "@/components/profile/CompetitionHistory";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
+import { FeatureGateForUser } from "@/components/membership/FeatureGate";
 import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
 import { SEOHead } from "@/components/SEOHead";
 import { SectionReveal } from "@/components/ui/section-reveal";
@@ -360,11 +361,13 @@ export default function PublicProfile() {
 
             {/* Badges */}
             {isVisible("badges") && (
-              <SectionReveal delay={500}>
-                <CollapsibleProfileSection icon={Medal} label={isAr ? "الأوسمة" : "Badges"} defaultOpen={false}>
-                  <UserBadgesDisplay userId={profile.user_id} />
-                </CollapsibleProfileSection>
-              </SectionReveal>
+              <FeatureGateForUser feature="feature_custom_badges" userId={profile.user_id}>
+                <SectionReveal delay={500}>
+                  <CollapsibleProfileSection icon={Medal} label={isAr ? "الأوسمة" : "Badges"} defaultOpen={false}>
+                    <UserBadgesDisplay userId={profile.user_id} />
+                  </CollapsibleProfileSection>
+                </SectionReveal>
+              </FeatureGateForUser>
             )}
 
             {/* Gallery */}
