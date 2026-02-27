@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { TicketPerformanceWidget } from "@/components/admin/TicketPerformanceWidget";
 import {
   Ticket,
   Search,
@@ -294,6 +295,9 @@ export default function SupportTicketsAdmin() {
         title={isAr ? "تذاكر الدعم" : "Support Tickets"}
         description={isAr ? "إدارة طلبات الدعم" : "Manage support requests"}
       />
+
+      {/* Performance Widget */}
+      <TicketPerformanceWidget />
 
       {/* Stats */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
