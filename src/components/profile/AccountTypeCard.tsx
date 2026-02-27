@@ -8,20 +8,24 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChefHat, Heart, ArrowUpCircle, Loader2 } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { ChefHat, Heart, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
 
 export function AccountTypeCard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
-  const { accountType, isFan } = useAccountType();
+  const { accountType, isFan, isProfessional } = useAccountType();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [upgrading, setUpgrading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleUpgrade = async () => {
     if (!user?.id) return;
-    setUpgrading(true);
+    setLoading(true);
     const { error } = await supabase
       .from("profiles")
       .update({ account_type: "professional" })
@@ -30,7 +34,6 @@ export function AccountTypeCard() {
     if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
     } else {
-      // Also add chef role if not present
       await supabase.from("user_roles").upsert(
         { user_id: user.id, role: "chef" as any },
         { onConflict: "user_id,role" }
@@ -39,7 +42,24 @@ export function AccountTypeCard() {
       queryClient.invalidateQueries({ queryKey: ["userRoles"] });
       toast({ title: isAr ? "تم ترقية حسابك! 🎉" : "Account upgraded! 🎉" });
     }
-    setUpgrading(false);
+    setLoading(false);
+  };
+
+  const handleDowngrade = async () => {
+    if (!user?.id) return;
+    setLoading(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ account_type: "fan" })
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["accountType"] });
+      toast({ title: isAr ? "تم تحويل حسابك إلى متابع" : "Switched to Follower account" });
+    }
+    setLoading(false);
   };
 
   return (
@@ -66,12 +86,42 @@ export function AccountTypeCard() {
               </p>
             </div>
           </div>
-          {isFan && (
-            <Button size="sm" onClick={handleUpgrade} disabled={upgrading}>
-              {upgrading ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> : <ArrowUpCircle className="me-1.5 h-3.5 w-3.5" />}
-              {isAr ? "ترقية إلى محترف" : "Upgrade to Pro"}
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {isFan && (
+              <Button size="sm" onClick={handleUpgrade} disabled={loading}>
+                {loading ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> : <ArrowUpCircle className="me-1.5 h-3.5 w-3.5" />}
+                {isAr ? "ترقية إلى محترف" : "Upgrade to Pro"}
+              </Button>
+            )}
+            {isProfessional && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button size="sm" variant="outline" disabled={loading}>
+                    {loading ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> : <ArrowDownCircle className="me-1.5 h-3.5 w-3.5" />}
+                    {isAr ? "تحويل لمتابع" : "Switch to Follower"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {isAr ? "تحويل إلى حساب متابع؟" : "Switch to Follower account?"}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {isAr
+                        ? "ستفقد الوصول إلى الأدوات المهنية مثل إنشاء المسابقات والمعارض. يمكنك الترقية مجدداً في أي وقت."
+                        : "You'll lose access to professional tools like creating competitions and exhibitions. You can upgrade again anytime."}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDowngrade}>
+                      {isAr ? "تأكيد التحويل" : "Confirm Switch"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAccountType } from "@/hooks/useAccountType";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ interface ProfileField {
   link: string;
 }
 
-const FIELDS: ProfileField[] = [
+const PRO_FIELDS: ProfileField[] = [
   { key: "avatar", labelEn: "Profile Photo", labelAr: "صورة الملف", icon: Camera, check: (p) => !!p?.avatar_url, actionEn: "Upload photo", actionAr: "رفع صورة", link: "/profile?tab=edit" },
   { key: "bio", labelEn: "Bio", labelAr: "نبذة عنك", icon: FileText, check: (p) => !!p?.bio && p.bio.length > 10, actionEn: "Write a short bio", actionAr: "اكتب نبذة مختصرة", link: "/profile?tab=edit" },
   { key: "location", labelEn: "Location", labelAr: "الموقع", icon: MapPin, check: (p) => !!p?.location || !!p?.country_code, actionEn: "Add your location", actionAr: "أضف موقعك", link: "/profile?tab=edit" },
@@ -37,11 +38,20 @@ const FIELDS: ProfileField[] = [
   { key: "social", labelEn: "Social Links", labelAr: "روابط اجتماعية", icon: Globe, check: (p) => !!p?.instagram || !!p?.twitter || !!p?.linkedin, actionEn: "Connect social accounts", actionAr: "اربط حساباتك", link: "/profile?tab=edit" },
 ];
 
+const FAN_FIELDS: ProfileField[] = [
+  { key: "avatar", labelEn: "Profile Photo", labelAr: "صورة الملف", icon: Camera, check: (p) => !!p?.avatar_url, actionEn: "Upload photo", actionAr: "رفع صورة", link: "/profile?tab=edit" },
+  { key: "bio", labelEn: "Bio", labelAr: "نبذة عنك", icon: FileText, check: (p) => !!p?.bio && p.bio.length > 10, actionEn: "Write a short bio", actionAr: "اكتب نبذة مختصرة", link: "/profile?tab=edit" },
+  { key: "location", labelEn: "Location", labelAr: "الموقع", icon: MapPin, check: (p) => !!p?.location || !!p?.country_code, actionEn: "Add your location", actionAr: "أضف موقعك", link: "/profile?tab=edit" },
+  { key: "social", labelEn: "Social Links", labelAr: "روابط اجتماعية", icon: Globe, check: (p) => !!p?.instagram || !!p?.twitter || !!p?.linkedin, actionEn: "Connect social accounts", actionAr: "اربط حساباتك", link: "/profile?tab=edit" },
+];
+
 export function WelcomeModal() {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { isFan } = useAccountType();
   const isAr = language === "ar";
   const [open, setOpen] = useState(false);
+  const FIELDS = useMemo(() => isFan ? FAN_FIELDS : PRO_FIELDS, [isFan]);
 
   const { data: profile } = useQuery({
     queryKey: ["welcome-profile", user?.id],
@@ -97,9 +107,9 @@ export function WelcomeModal() {
             {isAr ? `مرحباً ${profile.full_name || ""}! 🎉` : `Welcome ${profile.full_name || ""}! 🎉`}
           </DialogTitle>
           <DialogDescription className="text-sm">
-            {isAr
-              ? "أكمل ملفك الشخصي للحصول على أفضل تجربة"
-              : "Complete your profile for the best experience"}
+            {isFan
+              ? (isAr ? "أكمل ملفك الشخصي واستكشف الطهاة والفعاليات" : "Complete your profile and explore chefs & events")
+              : (isAr ? "أكمل ملفك الشخصي للحصول على أفضل تجربة" : "Complete your profile for the best experience")}
           </DialogDescription>
         </DialogHeader>
 
