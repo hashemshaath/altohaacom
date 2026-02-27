@@ -164,9 +164,12 @@ export function EventComments({ eventType, eventId }: EventCommentsProps) {
               ) : (
                 <button
                   className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
-                  onClick={async () => {
-                    await supabase.from("event_comments").update({ is_flagged: true, flagged_by: user.id, flagged_at: new Date().toISOString() }).eq("id", comment.id);
-                    toast({ title: isAr ? "تم الإبلاغ" : "Comment flagged for review" });
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    const { error } = await supabase.from("event_comments").update({ is_flagged: true, flagged_by: user.id, flagged_at: new Date().toISOString() }).eq("id", comment.id);
+                    if (!error) {
+                      toast({ title: isAr ? "تم الإبلاغ" : "Comment flagged for review" });
+                    }
                   }}
                   title={isAr ? "إبلاغ" : "Report"}
                 >

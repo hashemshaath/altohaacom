@@ -15975,6 +15975,67 @@ export type Database = {
           },
         ]
       }
+      recipe_saves: {
+        Row: {
+          created_at: string
+          id: string
+          recipe_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipe_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipe_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_saves_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_shares: {
+        Row: {
+          created_at: string
+          id: string
+          recipe_id: string
+          share_method: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipe_id: string
+          share_method?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipe_id?: string
+          share_method?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_shares_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipes: {
         Row: {
           author_id: string
@@ -15997,7 +16058,9 @@ export type Database = {
           is_published: boolean | null
           prep_time_minutes: number | null
           protein_g: number | null
+          save_count: number | null
           servings: number | null
+          share_count: number | null
           slug: string | null
           source_url: string | null
           steps: Json
@@ -16028,7 +16091,9 @@ export type Database = {
           is_published?: boolean | null
           prep_time_minutes?: number | null
           protein_g?: number | null
+          save_count?: number | null
           servings?: number | null
+          share_count?: number | null
           slug?: string | null
           source_url?: string | null
           steps?: Json
@@ -16059,7 +16124,9 @@ export type Database = {
           is_published?: boolean | null
           prep_time_minutes?: number | null
           protein_g?: number | null
+          save_count?: number | null
           servings?: number | null
+          share_count?: number | null
           slug?: string | null
           source_url?: string | null
           steps?: Json
