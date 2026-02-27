@@ -59,3 +59,6 @@ verify_jwt = false
 
 [functions.trial-expiry-reminders]
 verify_jwt = false
+
+[functions.membership-expiry-check]
+verify_jwt = false
