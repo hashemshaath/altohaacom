@@ -187,31 +187,31 @@ function WelcomeBanner({ greeting, subtitle, isAr, widgets, toggleWidget, resetL
 }) {
   return (
     <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 sm:p-6 md:p-8 group shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
-      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px] animate-pulse" />
-      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/15 blur-[60px] animate-pulse [animation-delay:2s]" />
+      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px]" />
+      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/15 blur-[60px]" />
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      <div className="relative flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-          <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-2 ring-primary/10 shadow-inner transition-transform duration-300 group-hover:scale-105">
-            <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-primary animate-pulse" />
+      <div className="relative">
+        {/* Top row: icon + actions */}
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-2 ring-primary/10 shadow-inner">
+            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
           </div>
-          <div className="min-w-0">
-            <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground truncate">{greeting} 👋</h1>
-            <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium line-clamp-1 sm:line-clamp-none">
-              {subtitle}
-            </p>
+          <div className="flex items-center gap-2 shrink-0">
+            <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+            <Link to="/profile?tab=edit">
+              <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
+                <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
+                <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
+                <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+              </Button>
+            </Link>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
-          <Link to="/profile?tab=edit">
-            <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
-              <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
-              <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
-          </Link>
-        </div>
+        {/* Text below — full width, no truncation */}
+        <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">{greeting} 👋</h1>
+        <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium">
+          {subtitle}
+        </p>
       </div>
     </div>
   );
@@ -269,14 +269,14 @@ function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }
     queryKey: ["dashboard-achievements", userId],
     queryFn: async (): Promise<{ certificates: number; competitions: number; badges: number }> => {
       const [certsRes, regsRes, badgesRes] = await Promise.all([
-        (supabase as any).from("certificates").select("id").eq("recipient_id", userId),
-        (supabase as any).from("competition_registrations").select("id").eq("participant_id", userId),
-        (supabase as any).from("user_badges").select("id").eq("user_id", userId),
+        supabase.from("certificates").select("*", { count: "exact", head: true }).eq("recipient_id", userId),
+        supabase.from("competition_registrations").select("*", { count: "exact", head: true }).eq("participant_id", userId),
+        supabase.from("user_badges").select("*", { count: "exact", head: true }).eq("user_id", userId),
       ]);
       return {
-        certificates: certsRes.data?.length || 0,
-        competitions: regsRes.data?.length || 0,
-        badges: badgesRes.data?.length || 0,
+        certificates: certsRes.count || 0,
+        competitions: regsRes.count || 0,
+        badges: badgesRes.count || 0,
       };
     },
     staleTime: 1000 * 60 * 5,
