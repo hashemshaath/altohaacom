@@ -14,6 +14,36 @@ interface Props {
   isPending: boolean;
 }
 
+function ToggleRow({
+  label,
+  description,
+  checked,
+  onCheckedChange,
+  isLast = false,
+}: {
+  label: string;
+  description?: string;
+  checked: boolean;
+  onCheckedChange: (v: boolean) => void;
+  isLast?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-between py-4 px-1 ${
+        !isLast ? "border-b border-border/40" : ""
+      }`}
+    >
+      <div className="space-y-0.5">
+        <p className="text-sm font-semibold">{label}</p>
+        {description && (
+          <p className="text-xs text-muted-foreground">{description}</p>
+        )}
+      </div>
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+    </div>
+  );
+}
+
 export function SecurityContentSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -30,6 +60,24 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
   useEffect(() => { setNotif(notifCfg); }, [JSON.stringify(notifCfg)]);
   useEffect(() => { setContent(contentCfg); }, [JSON.stringify(contentCfg)]);
 
+  const securityToggles = [
+    { key: "requireStrongPasswords", en: "Strong Passwords", ar: "كلمات مرور قوية", descEn: "Enforce minimum password complexity", descAr: "فرض تعقيد أدنى لكلمات المرور" },
+    { key: "enable2FA", en: "Two-Factor Auth", ar: "المصادقة الثنائية", descEn: "Enable optional 2FA for users", descAr: "تمكين المصادقة الثنائية للمستخدمين" },
+    { key: "requireEmailVerification", en: "Email Verification", ar: "التحقق من البريد", descEn: "Verify email before allowing login", descAr: "التحقق من البريد قبل السماح بالدخول" },
+  ];
+
+  const notifToggles = [
+    { key: "emailNotifications", en: "Email Notifications", ar: "إشعارات البريد", descEn: "Send notifications via email", descAr: "إرسال الإشعارات عبر البريد الإلكتروني" },
+    { key: "pushNotifications", en: "Push Notifications", ar: "إشعارات الدفع", descEn: "Browser push notifications", descAr: "إشعارات الدفع في المتصفح" },
+    { key: "smsNotifications", en: "SMS Notifications", ar: "إشعارات SMS", descEn: "Text message notifications", descAr: "إشعارات الرسائل النصية" },
+  ];
+
+  const contentToggles = [
+    { key: "autoApproveContent", en: "Auto-Approve Content", ar: "الموافقة التلقائية", descEn: "Skip moderation for new content", descAr: "تخطي الإشراف على المحتوى الجديد" },
+    { key: "enableComments", en: "Enable Comments", ar: "تمكين التعليقات", descEn: "Allow users to comment on content", descAr: "السماح للمستخدمين بالتعليق" },
+    { key: "enableReactions", en: "Enable Reactions", ar: "تمكين التفاعلات", descEn: "Allow emoji reactions on posts", descAr: "السماح بالتفاعلات على المنشورات" },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Security */}
@@ -43,21 +91,18 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
             {isAr ? "كلمات المرور، الجلسات، والحماية من الوصول غير المصرح به" : "Passwords, sessions, and unauthorized access protection"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
-          {[
-            { key: "requireStrongPasswords", en: "Strong Passwords", ar: "كلمات مرور قوية", descEn: "Enforce minimum password complexity", descAr: "فرض تعقيد أدنى لكلمات المرور" },
-            { key: "enable2FA", en: "Two-Factor Auth", ar: "المصادقة الثنائية", descEn: "Enable optional 2FA for users", descAr: "تمكين المصادقة الثنائية للمستخدمين" },
-            { key: "requireEmailVerification", en: "Email Verification", ar: "التحقق من البريد", descEn: "Verify email before allowing login", descAr: "التحقق من البريد قبل السماح بالدخول" },
-          ].map(item => (
-            <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
-              <div>
-                <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
-                <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
-              </div>
-              <Switch checked={sec[item.key] ?? false} onCheckedChange={v => setSec({ ...sec, [item.key]: v })} />
-            </div>
+        <CardContent className="space-y-0">
+          {securityToggles.map((item, idx) => (
+            <ToggleRow
+              key={item.key}
+              label={isAr ? item.ar : item.en}
+              description={isAr ? item.descAr : item.descEn}
+              checked={sec[item.key] ?? false}
+              onCheckedChange={(v) => setSec({ ...sec, [item.key]: v })}
+              isLast={idx === securityToggles.length - 1}
+            />
           ))}
-          <div className="grid gap-4 sm:grid-cols-2 mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 pt-4">
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "مهلة الجلسة (دقائق)" : "Session Timeout (min)"}</Label>
               <Input type="number" value={sec.sessionTimeoutMinutes || 60} onChange={e => setSec({ ...sec, sessionTimeoutMinutes: parseInt(e.target.value) })} />
@@ -67,9 +112,11 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
               <Input type="number" value={sec.maxLoginAttempts || 5} onChange={e => setSec({ ...sec, maxLoginAttempts: parseInt(e.target.value) })} />
             </div>
           </div>
-          <Button size="sm" className="gap-1.5 mt-2" onClick={() => onSave("security", sec, "security")} disabled={isPending}>
-            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ الأمان" : "Save Security"}
-          </Button>
+          <div className="pt-4 flex justify-end">
+            <Button size="sm" className="gap-1.5" onClick={() => onSave("security", sec, "security")} disabled={isPending}>
+              <Save className="h-3.5 w-3.5" />{isAr ? "حفظ الأمان" : "Save Security"}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -84,21 +131,21 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
             {isAr ? "قنوات الإشعارات وتردد الملخصات" : "Notification channels and digest frequency"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
-          {[
-            { key: "emailNotifications", en: "Email Notifications", ar: "إشعارات البريد" },
-            { key: "pushNotifications", en: "Push Notifications", ar: "إشعارات الدفع" },
-            { key: "smsNotifications", en: "SMS Notifications", ar: "إشعارات SMS" },
-          ].map(item => (
-            <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
-              <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
-              <Switch checked={notif[item.key] ?? false} onCheckedChange={v => setNotif({ ...notif, [item.key]: v })} />
-            </div>
+        <CardContent className="space-y-0">
+          {notifToggles.map((item, idx) => (
+            <ToggleRow
+              key={item.key}
+              label={isAr ? item.ar : item.en}
+              description={isAr ? item.descAr : item.descEn}
+              checked={notif[item.key] ?? false}
+              onCheckedChange={(v) => setNotif({ ...notif, [item.key]: v })}
+              isLast={idx === notifToggles.length - 1}
+            />
           ))}
-          <div className="space-y-1.5 mt-2">
+          <div className="pt-4 space-y-1.5">
             <Label className="text-xs">{isAr ? "تردد الملخص" : "Digest Frequency"}</Label>
             <Select value={notif.digestFrequency || "daily"} onValueChange={v => setNotif({ ...notif, digestFrequency: v })}>
-              <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="realtime">{isAr ? "فوري" : "Real-time"}</SelectItem>
                 <SelectItem value="daily">{isAr ? "يومي" : "Daily"}</SelectItem>
@@ -106,9 +153,11 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
               </SelectContent>
             </Select>
           </div>
-          <Button size="sm" className="gap-1.5 mt-2" onClick={() => onSave("notifications", notif, "notifications")} disabled={isPending}>
-            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ الإشعارات" : "Save Notifications"}
-          </Button>
+          <div className="pt-4 flex justify-end">
+            <Button size="sm" className="gap-1.5" onClick={() => onSave("notifications", notif, "notifications")} disabled={isPending}>
+              <Save className="h-3.5 w-3.5" />{isAr ? "حفظ الإشعارات" : "Save Notifications"}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -123,21 +172,18 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
             {isAr ? "الموافقة التلقائية وحدود الرفع والتفاعل" : "Auto-approval, upload limits, and engagement controls"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
-          {[
-            { key: "autoApproveContent", en: "Auto-Approve Content", ar: "الموافقة التلقائية", descEn: "Skip moderation for new content", descAr: "تخطي الإشراف على المحتوى الجديد" },
-            { key: "enableComments", en: "Enable Comments", ar: "تمكين التعليقات", descEn: "Allow users to comment on content", descAr: "السماح للمستخدمين بالتعليق" },
-            { key: "enableReactions", en: "Enable Reactions", ar: "تمكين التفاعلات", descEn: "Allow emoji reactions on posts", descAr: "السماح بالتفاعلات على المنشورات" },
-          ].map(item => (
-            <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
-              <div>
-                <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
-                <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
-              </div>
-              <Switch checked={content[item.key] ?? false} onCheckedChange={v => setContent({ ...content, [item.key]: v })} />
-            </div>
+        <CardContent className="space-y-0">
+          {contentToggles.map((item, idx) => (
+            <ToggleRow
+              key={item.key}
+              label={isAr ? item.ar : item.en}
+              description={isAr ? item.descAr : item.descEn}
+              checked={content[item.key] ?? false}
+              onCheckedChange={(v) => setContent({ ...content, [item.key]: v })}
+              isLast={idx === contentToggles.length - 1}
+            />
           ))}
-          <div className="grid gap-4 sm:grid-cols-2 mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 pt-4">
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "حجم الرفع الأقصى (MB)" : "Max Upload Size (MB)"}</Label>
               <Input type="number" value={content.maxUploadSizeMB || 10} onChange={e => setContent({ ...content, maxUploadSizeMB: parseInt(e.target.value) })} />
@@ -145,7 +191,7 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "مستوى الإشراف" : "Moderation Level"}</Label>
               <Select value={content.moderationLevel || "standard"} onValueChange={v => setContent({ ...content, moderationLevel: v })}>
-                <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="relaxed">{isAr ? "مرن" : "Relaxed"}</SelectItem>
                   <SelectItem value="standard">{isAr ? "قياسي" : "Standard"}</SelectItem>
@@ -154,9 +200,11 @@ export function SecurityContentSettings({ settings, onSave, isPending }: Props) 
               </Select>
             </div>
           </div>
-          <Button size="sm" className="gap-1.5 mt-2" onClick={() => onSave("content", content, "content")} disabled={isPending}>
-            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ المحتوى" : "Save Content"}
-          </Button>
+          <div className="pt-4 flex justify-end">
+            <Button size="sm" className="gap-1.5" onClick={() => onSave("content", content, "content")} disabled={isPending}>
+              <Save className="h-3.5 w-3.5" />{isAr ? "حفظ المحتوى" : "Save Content"}
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
