@@ -2,6 +2,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
+import { useNotifications } from "@/hooks/useNotifications";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -71,6 +72,7 @@ export function MobileBottomNav() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
+  const { unreadCount } = useNotifications();
   const location = useLocation();
   const isAr = language === "ar";
   const [fabOpen, setFabOpen] = useState(false);
@@ -210,6 +212,12 @@ export function MobileBottomNav() {
                       isActive ? "text-primary" : "text-muted-foreground"
                     )}
                   />
+                  {/* Notification badge on Dashboard/Profile tab */}
+                  {item.to === "/dashboard" && unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -end-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground animate-scale-in">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
                 </div>
                 <span
                   className={cn(

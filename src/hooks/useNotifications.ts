@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
 type Notification = Database["public"]["Tables"]["notifications"]["Row"];
@@ -180,11 +181,22 @@ export function useNotifications() {
             } catch (_) {}
           }
           
-          // Show toast alert if not DND
-          if (!dnd && toastRef.current) {
-            toastRef.current({
-              title: newNotification.title,
-              description: newNotification.body,
+          // Show rich toast alert if not DND
+          if (!dnd) {
+            const typeEmoji = newNotification.type === "success" ? "✅" :
+              newNotification.type === "warning" ? "⚠️" :
+              newNotification.type === "error" ? "❌" : "🔔";
+            
+            sonnerToast(newNotification.title || "New Notification", {
+              description: newNotification.body || undefined,
+              icon: typeEmoji,
+              duration: 5000,
+              action: newNotification.link ? {
+                label: "View",
+                onClick: () => {
+                  window.location.href = newNotification.link!;
+                },
+              } : undefined,
             });
           }
         }
