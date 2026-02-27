@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/PageShell";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Award } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -22,6 +22,7 @@ const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHi
 const ProfileOrdersTab = lazy(() => import("@/components/profile/ProfileOrdersTab").then(m => ({ default: m.ProfileOrdersTab })));
 const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").then(m => ({ default: m.FanFavoritesTab })));
 const FanFollowingTab = lazy(() => import("@/components/fan/FanFollowingTab").then(m => ({ default: m.FanFollowingTab })));
+const FanAchievementBadges = lazy(() => import("@/components/fan/FanAchievementBadges").then(m => ({ default: m.FanAchievementBadges })));
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 
@@ -56,6 +57,7 @@ export default function Profile() {
     ...(isFan ? [
       { id: "favorites", label: isAr ? "المفضلة" : "Favorites", icon: Heart },
       { id: "following", label: isAr ? "المتابَعون" : "Following", icon: Users },
+      { id: "achievements", label: isAr ? "الإنجازات" : "Achievements", icon: Award },
     ] : [
       { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy },
     ]),
@@ -146,6 +148,10 @@ export default function Profile() {
 
           <TabsContent value="following" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {user && <FanFollowingTab />}
+          </TabsContent>
+
+          <TabsContent value="achievements" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            {user && <FanAchievementBadges />}
           </TabsContent>
 
           <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
