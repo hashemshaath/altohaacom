@@ -19,6 +19,9 @@ import { SupportInsightsWidget } from "@/components/admin/SupportInsightsWidget"
 import { SecurityInsightsWidget } from "@/components/admin/SecurityInsightsWidget";
 import { AutomationStatusWidget } from "@/components/admin/AutomationStatusWidget";
 import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
+import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
+import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
+import { AdminPDFReportGenerator } from "@/components/admin/AdminPDFReportGenerator";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -247,6 +250,7 @@ export default function AdminDashboard() {
         description={isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
         actions={
           <div className="flex items-center gap-3 flex-wrap">
+            <AdminRealtimeNotificationBell />
             <SystemHealthBar />
             <Badge variant="secondary" className="gap-1.5">
               <Shield className="h-3 w-3" />
@@ -255,6 +259,9 @@ export default function AdminDashboard() {
           </div>
         }
       />
+
+      {/* Mobile Nav Grid */}
+      <AdminMobileNavGrid />
 
       {/* Quick Actions Bar */}
       <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
@@ -596,6 +603,9 @@ export default function AdminDashboard() {
 
       {/* Automation & Notifications Status */}
       <AutomationStatusWidget />
+
+      {/* PDF Report Generator */}
+      <AdminPDFReportGenerator />
 
       {/* Performance Monitor */}
       <Suspense fallback={<SectionSkeleton />}>
