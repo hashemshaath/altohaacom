@@ -16,6 +16,7 @@ import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboa
 
 // Lazy-loaded widgets
 const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
+const LiveCompetitionsWidget = lazy(() => import("@/components/dashboard/LiveCompetitionsWidget").then(m => ({ default: m.LiveCompetitionsWidget })));
 const RecentActivityWidget = lazy(() => import("@/components/dashboard/RecentActivityWidget").then(m => ({ default: m.RecentActivityWidget })));
 const ReferralWidget = lazy(() => import("@/components/dashboard/ReferralWidget").then(m => ({ default: m.ReferralWidget })));
 const QuickStatsWidget = lazy(() => import("@/components/dashboard/QuickStatsWidget").then(m => ({ default: m.QuickStatsWidget })));
@@ -160,6 +161,7 @@ export default function Dashboard() {
           </div>
           <div className="space-y-6">
             {user && <W><QuickActionsWidget /></W>}
+            {user && <W><LiveCompetitionsWidget /></W>}
             {user && isFan && <W><FanNotificationsCenter /></W>}
             {user && isFan && <W><FanStreaks /></W>}
             {user && isFan && <W><FanRecipeCollections /></W>}
