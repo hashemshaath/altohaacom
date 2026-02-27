@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
+import { MembershipExpiryBanner } from "@/components/membership/MembershipExpiryBanner";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,6 +113,9 @@ export default function Dashboard() {
 
   return (
     <PageShell title="Dashboard" description="Your personal Altoha dashboard">
+        {/* Membership Expiry Banner */}
+        <MembershipExpiryBanner className="mb-4" />
+
         {/* Welcome Banner */}
         <WelcomeBanner greeting={greeting} subtitle={subtitle} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
 
