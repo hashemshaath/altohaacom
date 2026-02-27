@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Trophy, Gift, Flame, Star, Lock, Check, Sparkles } from "lucide-react";
+import { SeasonalChallenges } from "./SeasonalChallenges";
 
 export function LoyaltyCenter() {
   const { language } = useLanguage();
@@ -109,6 +110,9 @@ export function LoyaltyCenter() {
           )}
         </CardContent>
       </Card>
+
+      {/* Seasonal/Active Challenges Widget */}
+      <SeasonalChallenges />
 
       <Tabs defaultValue="challenges">
         <TabsList className="w-full justify-start">
