@@ -2,9 +2,12 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Trophy, Award, Users, Briefcase, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Crown, Trophy, Award, Users, Briefcase, CheckCircle2, ArrowRight, Sparkles, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -21,10 +24,47 @@ const PRO_BENEFITS = [
   { icon: Sparkles, en: "Advanced analytics & insights", ar: "تحليلات ورؤى متقدمة" },
 ];
 
+const FAN_KEEPS = [
+  { en: "Your favorites & follows stay intact", ar: "مفضلاتك ومتابعاتك ستبقى" },
+  { en: "All your reviews & comments are preserved", ar: "جميع تقييماتك وتعليقاتك محفوظة" },
+  { en: "Your wallet balance & points carry over", ar: "رصيد محفظتك ونقاطك ستنتقل معك" },
+];
+
 export function FanUpgradeBanner() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [showDialog, setShowDialog] = useState(false);
+  const [upgrading, setUpgrading] = useState(false);
+
+  const handleUpgrade = async () => {
+    if (!user) return;
+    setUpgrading(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ account_type: "professional" })
+        .eq("user_id", user.id);
+      if (error) throw error;
+
+      // Assign chef role
+      await supabase.from("user_roles").upsert(
+        { user_id: user.id, role: "chef" as any },
+        { onConflict: "user_id,role" }
+      );
+
+      queryClient.invalidateQueries({ queryKey: ["accountType"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-profile"] });
+      toast({ title: isAr ? "🎉 تمت الترقية بنجاح!" : "🎉 Upgraded successfully!" });
+      setShowDialog(false);
+    } catch {
+      toast({ title: isAr ? "حدث خطأ" : "Upgrade failed", variant: "destructive" });
+    } finally {
+      setUpgrading(false);
+    }
+  };
 
   return (
     <>
@@ -66,24 +106,37 @@ export function FanUpgradeBanner() {
                 : "Discover the benefits available to Professional accounts"}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 py-4">
+
+          <div className="space-y-3 py-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              {isAr ? "مزايا جديدة ستفتح لك" : "What you'll unlock"}
+            </p>
             {PRO_BENEFITS.map((benefit) => (
               <div key={benefit.en} className="flex items-center gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                   <benefit.icon className="h-4 w-4 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{isAr ? benefit.ar : benefit.en}</p>
-                </div>
+                <p className="text-sm font-medium flex-1">{isAr ? benefit.ar : benefit.en}</p>
                 <CheckCircle2 className="h-4 w-4 text-chart-5 shrink-0" />
               </div>
             ))}
           </div>
-          <Button asChild className="w-full gap-2">
-            <Link to="/profile?tab=account" onClick={() => setShowDialog(false)}>
-              <Crown className="h-4 w-4" />
-              {isAr ? "ترقية الآن" : "Upgrade Now"}
-            </Link>
+
+          <div className="space-y-2 py-2 border-t border-border/30">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              {isAr ? "لا تقلق، بياناتك محفوظة" : "Don't worry, your data is safe"}
+            </p>
+            {FAN_KEEPS.map((item) => (
+              <div key={item.en} className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-chart-3 shrink-0" />
+                <p className="text-xs text-muted-foreground">{isAr ? item.ar : item.en}</p>
+              </div>
+            ))}
+          </div>
+
+          <Button className="w-full gap-2 mt-2" onClick={handleUpgrade} disabled={upgrading}>
+            {upgrading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Crown className="h-4 w-4" />}
+            {isAr ? "ترقية الآن" : "Upgrade Now"}
           </Button>
         </DialogContent>
       </Dialog>

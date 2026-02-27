@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
+
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipeBySlug, useRateRecipe } from "@/hooks/useRecipes";
@@ -19,6 +20,8 @@ import {
   ArrowLeft, ChefHat, Clock, Users as UsersIcon, Star, Flame,
   UtensilsCrossed, Share2, Check, Wheat, Beef, Droplets,
 } from "lucide-react";
+
+const RecipeReviews = lazy(() => import("@/components/fan/RecipeReviews").then(m => ({ default: m.RecipeReviews })));
 
 const difficultyColor = (d: string) => {
   if (d === "easy") return "bg-chart-3/10 text-chart-3";
@@ -384,6 +387,13 @@ export default function RecipeDetail() {
                 <Share2 className="h-4 w-4" />{isAr ? "مشاركة الوصفة" : "Share Recipe"}
               </Button>
             </div>
+          </div>
+
+          {/* Reviews Section */}
+          <div className="mt-8">
+            <Suspense fallback={<div className="h-32 rounded-xl bg-muted animate-pulse" />}>
+              <RecipeReviews recipeId={recipe.id} />
+            </Suspense>
           </div>
         </div>
       </main>
