@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { CompetitionPipelineTracker } from "@/components/admin/CompetitionPipelineTracker";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -327,6 +328,9 @@ export default function CompetitionsAdmin() {
       {showBulkImport && (
         <BulkImportPanel entityType="competition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />
       )}
+
+      {/* Pipeline Tracker */}
+      <CompetitionPipelineTracker />
 
       {/* View Tabs */}
       <Tabs value={viewTab} onValueChange={(v) => setViewTab(v as any)}>
