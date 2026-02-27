@@ -1,0 +1,350 @@
+import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Crown, Star, Zap, Check, X, ArrowRight, Shield,
+  Users, BarChart3, Globe, MessageSquare, Award,
+  Headphones, BookOpen, ShoppingBag, Sparkles,
+} from "lucide-react";
+import { useMembershipFeatures, useFeatureTierMappings } from "@/hooks/useMembershipFeatures";
+
+const TIER_CONFIG = [
+  {
+    id: "basic",
+    icon: Zap,
+    color: "text-muted-foreground",
+    bg: "bg-muted/30",
+    ring: "",
+    price: { en: "Free", ar: "مجاني" },
+    yearly: null,
+  },
+  {
+    id: "professional",
+    icon: Star,
+    color: "text-primary",
+    bg: "bg-primary/5",
+    ring: "ring-2 ring-primary shadow-lg",
+    featured: true,
+    price: { en: "19 SAR/mo", ar: "19 ر.س/شهر" },
+    yearly: { en: "190 SAR/yr (save 17%)", ar: "190 ر.س/سنة (وفّر 17%)" },
+  },
+  {
+    id: "enterprise",
+    icon: Crown,
+    color: "text-chart-2",
+    bg: "bg-chart-2/5",
+    ring: "",
+    price: { en: "99 SAR/mo", ar: "99 ر.س/شهر" },
+    yearly: { en: "990 SAR/yr (save 17%)", ar: "990 ر.س/سنة (وفّر 17%)" },
+  },
+];
+
+const TIER_NAMES: Record<string, { en: string; ar: string }> = {
+  basic: { en: "Basic", ar: "الأساسي" },
+  professional: { en: "Professional", ar: "الاحترافي" },
+  enterprise: { en: "Enterprise", ar: "المؤسسي" },
+};
+
+const CATEGORY_ICONS: Record<string, any> = {
+  profile: Users,
+  community: MessageSquare,
+  content: BookOpen,
+  commerce: ShoppingBag,
+  analytics: BarChart3,
+  support: Headphones,
+  branding: Globe,
+  competition: Award,
+};
+
+export default function MembershipPlans() {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const { data: features = [] } = useMembershipFeatures();
+  const { data: mappings = [] } = useFeatureTierMappings();
+
+  // Current user's tier
+  const { data: currentTier } = useQuery({
+    queryKey: ["user-tier", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return "basic";
+      const { data } = await supabase
+        .from("profiles")
+        .select("membership_tier")
+        .eq("user_id", user.id)
+        .single();
+      return data?.membership_tier || "basic";
+    },
+    enabled: !!user?.id,
+  });
+
+  // Build a lookup: featureId -> { basic, professional, enterprise }
+  const tierLookup = new Map<string, Record<string, boolean>>();
+  for (const m of mappings) {
+    if (!tierLookup.has(m.feature_id)) {
+      tierLookup.set(m.feature_id, { basic: false, professional: false, enterprise: false });
+    }
+    tierLookup.get(m.feature_id)![m.tier] = m.is_enabled;
+  }
+
+  // Group features by category
+  const categories = new Map<string, typeof features>();
+  for (const f of features) {
+    if (!categories.has(f.category)) categories.set(f.category, []);
+    categories.get(f.category)!.push(f);
+  }
+
+  const handleUpgrade = (tier: string) => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/profile?tab=membership");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5" />
+        <div className="absolute -top-32 -end-32 h-64 w-64 rounded-full bg-primary/8 blur-3xl" />
+        <div className="absolute -bottom-20 -start-20 h-48 w-48 rounded-full bg-chart-2/8 blur-3xl" />
+
+        <div className="relative container py-16 md:py-24 text-center space-y-4">
+          <Badge variant="secondary" className="gap-1.5 text-xs">
+            <Sparkles className="h-3 w-3" />
+            {isAr ? "خطط العضوية" : "Membership Plans"}
+          </Badge>
+          <h1 className="text-3xl md:text-5xl font-serif font-bold tracking-tight">
+            {isAr ? "اختر الخطة المناسبة لك" : "Choose Your Plan"}
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            {isAr
+              ? "اكتشف المزايا الحصرية لكل مستوى عضوية وابدأ رحلتك الاحترافية"
+              : "Discover exclusive benefits for each tier and start your professional journey"}
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing Cards */}
+      <section className="container py-12 md:py-16">
+        <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+          {TIER_CONFIG.map((tier) => {
+            const TierIcon = tier.icon;
+            const isCurrentTier = currentTier === tier.id;
+            const featureCount = features.filter((f) => {
+              const lookup = tierLookup.get(f.id);
+              return lookup?.[tier.id];
+            }).length;
+
+            return (
+              <Card
+                key={tier.id}
+                className={`relative transition-all hover:shadow-md ${tier.ring} ${isCurrentTier ? "border-primary/30" : ""}`}
+              >
+                {tier.featured && (
+                  <div className="absolute -top-3 start-1/2 -translate-x-1/2 z-10">
+                    <Badge className="bg-primary shadow-md">
+                      <Star className="me-1 h-3 w-3" />
+                      {isAr ? "الأكثر شعبية" : "Most Popular"}
+                    </Badge>
+                  </div>
+                )}
+
+                {isCurrentTier && (
+                  <div className="absolute top-3 end-3">
+                    <Badge variant="outline" className="gap-1 text-[10px] border-primary/40 text-primary">
+                      <Shield className="h-3 w-3" />
+                      {isAr ? "الحالي" : "Current"}
+                    </Badge>
+                  </div>
+                )}
+
+                <CardHeader className="text-center pb-2 pt-8">
+                  <div className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl ${tier.bg}`}>
+                    <TierIcon className={`h-7 w-7 ${tier.color}`} />
+                  </div>
+                  <CardTitle className="text-xl">
+                    {TIER_NAMES[tier.id]?.[isAr ? "ar" : "en"]}
+                  </CardTitle>
+                  <p className="text-3xl font-bold mt-2">
+                    {tier.price[isAr ? "ar" : "en"]}
+                  </p>
+                  {tier.yearly && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {tier.yearly[isAr ? "ar" : "en"]}
+                    </p>
+                  )}
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <Separator />
+                  <p className="text-sm text-center text-muted-foreground">
+                    {featureCount} {isAr ? "ميزة متاحة" : "features included"}
+                  </p>
+
+                  {/* Top features preview */}
+                  <ul className="space-y-2">
+                    {features.slice(0, 5).map((f) => {
+                      const enabled = tierLookup.get(f.id)?.[tier.id] ?? false;
+                      return (
+                        <li key={f.id} className="flex items-center gap-2 text-sm">
+                          {enabled ? (
+                            <Check className="h-4 w-4 text-primary shrink-0" />
+                          ) : (
+                            <X className="h-4 w-4 text-muted-foreground/30 shrink-0" />
+                          )}
+                          <span className={enabled ? "" : "text-muted-foreground/50"}>
+                            {isAr ? (f.name_ar || f.name) : f.name}
+                          </span>
+                        </li>
+                      );
+                    })}
+                    {features.length > 5 && (
+                      <li className="text-xs text-muted-foreground text-center pt-1">
+                        +{features.length - 5} {isAr ? "ميزة أخرى" : "more features"}
+                      </li>
+                    )}
+                  </ul>
+
+                  <div className="pt-2">
+                    {isCurrentTier ? (
+                      <Button variant="outline" disabled className="w-full">
+                        {isAr ? "خطتك الحالية" : "Current Plan"}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant={tier.featured ? "default" : "outline"}
+                        className="w-full gap-2"
+                        onClick={() => handleUpgrade(tier.id)}
+                      >
+                        {tier.id === "basic"
+                          ? (isAr ? "البدء مجاناً" : "Get Started Free")
+                          : (isAr ? "ترقية الآن" : "Upgrade Now")}
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Full Feature Comparison */}
+      <section className="container pb-16 md:pb-24">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold">
+              {isAr ? "مقارنة المميزات الكاملة" : "Full Feature Comparison"}
+            </h2>
+            <p className="text-muted-foreground mt-2">
+              {isAr ? "تعرّف على كل ما تتضمنه كل خطة" : "See everything included in each plan"}
+            </p>
+          </div>
+
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b bg-muted/30">
+                      <th className="text-start py-4 px-4 md:px-6 text-sm font-medium text-muted-foreground min-w-[200px]">
+                        {isAr ? "الميزة" : "Feature"}
+                      </th>
+                      {TIER_CONFIG.map((tier) => (
+                        <th key={tier.id} className="text-center py-4 px-3 md:px-6">
+                          <div className="flex flex-col items-center gap-1">
+                            <tier.icon className={`h-5 w-5 ${tier.color}`} />
+                            <span className={`text-sm font-semibold ${tier.color}`}>
+                              {TIER_NAMES[tier.id]?.[isAr ? "ar" : "en"]}
+                            </span>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.from(categories.entries()).map(([category, catFeatures]) => {
+                      const CatIcon = CATEGORY_ICONS[category] || Shield;
+                      return (
+                        <>
+                          <tr key={`cat-${category}`} className="bg-muted/15">
+                            <td colSpan={4} className="py-2.5 px-4 md:px-6">
+                              <div className="flex items-center gap-2">
+                                <CatIcon className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                  {category}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                          {catFeatures.map((feature) => (
+                            <tr key={feature.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                              <td className="py-3 px-4 md:px-6 text-sm">
+                                <div>
+                                  <p className="font-medium">{isAr ? (feature.name_ar || feature.name) : feature.name}</p>
+                                  {feature.description && (
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                      {isAr ? (feature.description_ar || feature.description) : feature.description}
+                                    </p>
+                                  )}
+                                </div>
+                              </td>
+                              {TIER_CONFIG.map((tier) => {
+                                const enabled = tierLookup.get(feature.id)?.[tier.id] ?? false;
+                                return (
+                                  <td key={tier.id} className="text-center py-3 px-3 md:px-6">
+                                    {enabled ? (
+                                      <Check className="h-5 w-5 text-primary mx-auto" />
+                                    ) : (
+                                      <X className="h-4 w-4 text-muted-foreground/25 mx-auto" />
+                                    )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* CTA */}
+          <div className="mt-12 text-center space-y-4">
+            <h3 className="text-xl font-bold">
+              {isAr ? "جاهز للبدء؟" : "Ready to get started?"}
+            </h3>
+            <p className="text-muted-foreground">
+              {isAr
+                ? "انضم إلى آلاف المحترفين الذين يستخدمون منصتنا"
+                : "Join thousands of professionals using our platform"}
+            </p>
+            <Button
+              size="lg"
+              className="gap-2 rounded-xl shadow-lg shadow-primary/20"
+              onClick={() => handleUpgrade("professional")}
+            >
+              <Crown className="h-5 w-5" />
+              {isAr ? "ابدأ الآن" : "Get Started Now"}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
