@@ -15512,6 +15512,7 @@ export type Database = {
           loyalty_points: number | null
           loyalty_tier: string | null
           membership_expires_at: string | null
+          membership_started_at: string | null
           membership_status:
             | Database["public"]["Enums"]["membership_status"]
             | null
@@ -15594,6 +15595,7 @@ export type Database = {
           loyalty_points?: number | null
           loyalty_tier?: string | null
           membership_expires_at?: string | null
+          membership_started_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
             | null
@@ -15678,6 +15680,7 @@ export type Database = {
           loyalty_points?: number | null
           loyalty_tier?: string | null
           membership_expires_at?: string | null
+          membership_started_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
             | null

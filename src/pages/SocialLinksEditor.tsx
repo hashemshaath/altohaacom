@@ -802,6 +802,13 @@ export default function SocialLinksEditor() {
                               color: pt.text,
                             }}
                           >
+                            {/* Cover image preview (mobile dialog) */}
+                            {extra.cover_image_url && (
+                              <div className="relative -mx-4 -mt-4 mb-4 h-32 overflow-hidden">
+                                <img src={extra.cover_image_url} alt="" className="w-full h-full object-cover object-center" loading="eager" />
+                                <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${pt.bg.includes('gradient') ? 'rgba(0,0,0,0.35)' : pt.bg.replace(')', ', 0.35)').replace('rgb(', 'rgba(')})` }} />
+                              </div>
+                            )}
                             <div className="relative z-10 flex flex-col items-center gap-3">
                               {form.show_avatar && (
                                 <Avatar className="h-16 w-16 shadow-xl" style={{ boxShadow: `0 0 0 2px ${pt.border}` }}>
@@ -2954,9 +2961,9 @@ export default function SocialLinksEditor() {
                         >
                           {/* Cover image preview */}
                           {extra.cover_image_url && (
-                            <div className="relative -mx-4 -mt-4 mb-4 h-20 overflow-hidden rounded-t-lg">
-                              <img src={extra.cover_image_url} alt="" className="w-full h-full object-cover" />
-                              <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent, ${pt.bg.includes('gradient') ? 'rgba(0,0,0,0.6)' : pt.bg})` }} />
+                            <div className="relative -mx-4 -mt-4 mb-4 h-32 overflow-hidden rounded-t-lg">
+                              <img src={extra.cover_image_url} alt="" className="w-full h-full object-cover object-center" loading="eager" />
+                              <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 40%, ${pt.bg.includes('gradient') ? 'rgba(0,0,0,0.35)' : pt.bg.replace(')', ', 0.35)').replace('rgb(', 'rgba(')})` }} />
                             </div>
                           )}
                           <div className="relative z-10 flex flex-col items-center gap-3">
