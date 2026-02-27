@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { FanRouteGuard } from "@/components/permissions/FanRouteGuard";
 
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Profile = lazy(() => import("@/pages/Profile"));
@@ -38,16 +39,16 @@ export const protectedRoutes = (
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
     <Route path="/profile/analytics" element={<ProtectedRoute><ProfileAnalytics /></ProtectedRoute>} />
     <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-    <Route path="/competitions/create" element={<ProtectedRoute><CreateCompetition /></ProtectedRoute>} />
-    <Route path="/competitions/:id/edit" element={<ProtectedRoute><EditCompetition /></ProtectedRoute>} />
+    <Route path="/competitions/create" element={<ProtectedRoute><FanRouteGuard><CreateCompetition /></FanRouteGuard></ProtectedRoute>} />
+    <Route path="/competitions/:id/edit" element={<ProtectedRoute><FanRouteGuard><EditCompetition /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/knowledge" element={<ProtectedRoute><KnowledgePortal /></ProtectedRoute>} />
     <Route path="/notification-preferences" element={<ProtectedRoute><NotificationPreferences /></ProtectedRoute>} />
     <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
     <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
     <Route path="/support" element={<ProtectedRoute><SupportTickets /></ProtectedRoute>} />
     <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-    <Route path="/exhibitions/create" element={<ProtectedRoute><CreateExhibition /></ProtectedRoute>} />
-    <Route path="/exhibitions/:slug/edit" element={<ProtectedRoute><EditExhibition /></ProtectedRoute>} />
+    <Route path="/exhibitions/create" element={<ProtectedRoute><FanRouteGuard><CreateExhibition /></FanRouteGuard></ProtectedRoute>} />
+    <Route path="/exhibitions/:slug/edit" element={<ProtectedRoute><FanRouteGuard><EditExhibition /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/shop/orders" element={<ProtectedRoute><ShopOrders /></ProtectedRoute>} />
     <Route path="/shop/my-products" element={<ProtectedRoute><ShopMyProducts /></ProtectedRoute>} />
     <Route path="/chefs-table/request" element={<ProtectedRoute><ChefsTableRequest /></ProtectedRoute>} />

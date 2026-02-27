@@ -1,8 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -115,21 +113,8 @@ export default function PublicProfile() {
     followersList, userSpecialties, followPrivacy, pendingRequest,
   } = usePublicProfileData(username, followListOpen);
 
-  // Determine if this profile is a fan account
-  const { data: profileAccountType } = useQuery({
-    queryKey: ["profile-account-type", profile?.user_id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("account_type")
-        .eq("user_id", profile!.user_id)
-        .single();
-      return data?.account_type || "professional";
-    },
-    enabled: !!profile?.user_id,
-    staleTime: 1000 * 60 * 10,
-  });
-  const isProfileFan = profileAccountType === "fan";
+  // Determine if this profile is a fan account (now available from profiles_public view)
+  const isProfileFan = profile?.account_type === "fan";
 
   const getCountryName = useCallback((code: string | null) => {
     if (!code) return null;
