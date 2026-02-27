@@ -31,6 +31,8 @@ const EngagementAnalyticsWidget = lazy(() => import("@/components/dashboard/Enga
 const ProgressReportWidget = lazy(() => import("@/components/dashboard/ProgressReportWidget").then(m => ({ default: m.ProgressReportWidget })));
 const NotificationPreferencesWidget = lazy(() => import("@/components/dashboard/NotificationPreferencesWidget").then(m => ({ default: m.NotificationPreferencesWidget })));
 const DashboardPersonalizationWidget = lazy(() => import("@/components/dashboard/DashboardPersonalizationWidget").then(m => ({ default: m.DashboardPersonalizationWidget })));
+const QuickActionsWidget = lazy(() => import("@/components/dashboard/QuickActionsWidget").then(m => ({ default: m.QuickActionsWidget })));
+const DailyDigestWidget = lazy(() => import("@/components/dashboard/DailyDigestWidget").then(m => ({ default: m.DailyDigestWidget })));
 // Fan-specific widgets
 const FanTrendingWidget = lazy(() => import("@/components/dashboard/FanTrendingWidget").then(m => ({ default: m.FanTrendingWidget })));
 const FanSuggestedFollowsWidget = lazy(() => import("@/components/dashboard/FanSuggestedFollowsWidget").then(m => ({ default: m.FanSuggestedFollowsWidget })));
@@ -130,6 +132,10 @@ export default function Dashboard() {
           <div className="mb-8"><W lines={1}><QuickStatsWidget /></W></div>
         )}
 
+        {/* Daily Digest */}
+        {user && (
+          <div className="mb-6"><W><DailyDigestWidget /></W></div>
+        )}
         {/* Achievements Summary */}
         {user && isVisible("achievements") && (
           <div className="mb-8"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
@@ -153,6 +159,7 @@ export default function Dashboard() {
             {user && isFan && <W><FanAchievementBadges /></W>}
           </div>
           <div className="space-y-6">
+            {user && <W><QuickActionsWidget /></W>}
             {user && isFan && <W><FanNotificationsCenter /></W>}
             {user && isFan && <W><FanStreaks /></W>}
             {user && isFan && <W><FanRecipeCollections /></W>}
