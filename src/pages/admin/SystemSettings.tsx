@@ -23,10 +23,12 @@ import {
   Activity,
   Database,
   Clock,
+  Palette,
 } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { BrandingSettings } from "@/components/admin/settings/BrandingSettings";
+import { BrandIdentityPanel } from "@/components/admin/settings/BrandIdentityPanel";
 import { HeaderFooterSettings } from "@/components/admin/settings/HeaderFooterSettings";
 import { LayoutSEOSettings } from "@/components/admin/settings/LayoutSEOSettings";
 import { SecurityContentSettings } from "@/components/admin/settings/SecurityContentSettings";
@@ -46,7 +48,8 @@ import { RecentAdminActions } from "@/components/admin/RecentAdminActions";
 import { useHomepageSections, useUpdateHomepageSection } from "@/hooks/useHomepageSections";
 
 const tabs = [
-  { value: "branding", icon: Globe, en: "Branding", ar: "العلامة التجارية", descEn: "Logo, name & identity", descAr: "الشعار والاسم والهوية" },
+  { value: "brand-identity", icon: Palette, en: "Brand Identity", ar: "الهوية البصرية", descEn: "Logos, colors & seasonal", descAr: "الشعارات والألوان والمناسبات" },
+  { value: "branding", icon: Globe, en: "Branding", ar: "العلامة التجارية", descEn: "Site name & registration", descAr: "اسم الموقع والتسجيل" },
   { value: "header-footer", icon: PanelTop, en: "Header & Footer", ar: "الرأس والتذييل", descEn: "Navigation & social links", descAr: "التنقل وروابط التواصل" },
   { value: "homepage", icon: Home, en: "Homepage", ar: "الصفحة الرئيسية", descEn: "Sections, covers & layout", descAr: "الأقسام والأغلفة والتخطيط" },
   { value: "cover", icon: Layout, en: "Cover & Themes", ar: "الأغلفة والمظهر", descEn: "Cover height, gradient & pages", descAr: "ارتفاع الغطاء والتدرج والصفحات" },
@@ -219,6 +222,10 @@ export default function SystemSettings() {
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-muted/30 to-transparent sm:hidden" />
               </CardContent>
             </Card>
+
+            <TabsContent value="brand-identity" className="mt-0">
+              <BrandIdentityPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+            </TabsContent>
 
             <TabsContent value="branding" className="mt-0">
               <BrandingSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
