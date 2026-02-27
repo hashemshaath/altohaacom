@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { LogoUploader } from "./LogoUploader";
 import {
   Save, Image, Upload, Palette, Type, AlertTriangle, Bell,
   Eye, Moon, Sun, Contrast, Check, Calendar, Trash2, Plus, Star
@@ -285,15 +286,15 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <LogoSlot label="Natural Color" labelAr="اللون الطبيعي" isAr={isAr}
+                <LogoUploader label="Natural Color" labelAr="اللون الطبيعي" isAr={isAr}
                   value={logos.natural} onChange={v => setLogos({ ...logos, natural: v })}
-                  bgClass="bg-muted/30" />
-                <LogoSlot label="Black Version" labelAr="النسخة السوداء" isAr={isAr}
+                  bgClass="bg-muted/30" folder="logos/natural" />
+                <LogoUploader label="Black Version" labelAr="النسخة السوداء" isAr={isAr}
                   value={logos.black} onChange={v => setLogos({ ...logos, black: v })}
-                  bgClass="bg-background" />
-                <LogoSlot label="White Version" labelAr="النسخة البيضاء" isAr={isAr}
+                  bgClass="bg-background" folder="logos/black" />
+                <LogoUploader label="White Version" labelAr="النسخة البيضاء" isAr={isAr}
                   value={logos.white} onChange={v => setLogos({ ...logos, white: v })}
-                  bgClass="bg-foreground/90" />
+                  bgClass="bg-foreground/90" folder="logos/white" />
               </div>
             </CardContent>
           </Card>
@@ -307,15 +308,15 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <LogoSlot label="Icon / Logomark" labelAr="الأيقونة / الرمز" isAr={isAr}
+                <LogoUploader label="Icon / Logomark" labelAr="الأيقونة / الرمز" isAr={isAr}
                   value={logos.variation1} onChange={v => setLogos({ ...logos, variation1: v })}
-                  bgClass="bg-muted/20" />
-                <LogoSlot label="Horizontal Lockup" labelAr="أفقي" isAr={isAr}
+                  folder="logos/icon" />
+                <LogoUploader label="Horizontal Lockup" labelAr="أفقي" isAr={isAr}
                   value={logos.variation2} onChange={v => setLogos({ ...logos, variation2: v })}
-                  bgClass="bg-muted/20" />
-                <LogoSlot label="Vertical Lockup" labelAr="عمودي" isAr={isAr}
+                  folder="logos/horizontal" />
+                <LogoUploader label="Vertical Lockup" labelAr="عمودي" isAr={isAr}
                   value={logos.variation3} onChange={v => setLogos({ ...logos, variation3: v })}
-                  bgClass="bg-muted/20" />
+                  folder="logos/vertical" />
               </div>
             </CardContent>
           </Card>
