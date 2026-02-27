@@ -1,4 +1,4 @@
-import { memo, forwardRef } from "react";
+import { memo, forwardRef, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -100,13 +100,19 @@ export const CompetitionCard = memo(
       const derived = getDerivedStatus(competition);
       const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
 
+      const [imgLoaded, setImgLoaded] = useState(false);
+      const onImgLoad = useCallback(() => setImgLoaded(true), []);
+
       return (
-        <Link to={`/competitions/${competition.id}`} className="group block h-full">
+        <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.98] transition-transform duration-150">
           <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-1.5 hover:border-primary/20">
             {/* Image Section */}
             <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
               {competition.cover_image_url ? (
-                <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" />
+                <>
+                  {!imgLoaded && <div className="absolute inset-0 bg-muted animate-pulse" />}
+                  <img src={competition.cover_image_url} alt={title} className={`h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`} loading="lazy" decoding="async" onLoad={onImgLoad} />
+                </>
               ) : (
                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/8 via-muted to-accent/8">
                   <Trophy className="h-12 w-12 sm:h-14 sm:w-14 text-primary/10" />
