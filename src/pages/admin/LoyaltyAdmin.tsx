@@ -15,6 +15,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { LoyaltyOverviewWidget } from "@/components/admin/LoyaltyOverviewWidget";
+import { LoyaltyLiveStatsWidget } from "@/components/admin/LoyaltyLiveStatsWidget";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();
@@ -141,6 +142,7 @@ export default function LoyaltyAdmin() {
         description={isAr ? "إدارة المستويات والتحديات والمكافآت" : "Manage tiers, challenges, and rewards"}
       />
 
+      <LoyaltyLiveStatsWidget />
       <LoyaltyOverviewWidget />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

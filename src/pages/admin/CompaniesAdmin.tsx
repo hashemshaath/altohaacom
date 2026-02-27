@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidget";
+import { CompanyLiveStatsWidget } from "@/components/admin/CompanyLiveStatsWidget";
 import { format } from "date-fns";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
@@ -1805,7 +1806,8 @@ export default function CompaniesAdmin() {
           </Card>
         </div>
 
-        {/* Company Analytics Widget */}
+        {/* Company Analytics Widgets */}
+        <CompanyLiveStatsWidget />
         <CompanyAnalyticsWidget />
 
         {/* Action Bar */}

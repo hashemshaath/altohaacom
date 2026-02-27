@@ -28,6 +28,7 @@ import { PredictiveChurnDashboard } from "@/components/analytics/PredictiveChurn
 import { MultiMetricComparison } from "@/components/analytics/MultiMetricComparison";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { AdvancedKPIDashboard } from "@/components/admin/AdvancedKPIDashboard";
+import { AdvancedExportWidget } from "@/components/admin/AdvancedExportWidget";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -176,6 +177,7 @@ export default function AnalyticsDashboard() {
         <TabsContent value="overview">
           <div className="space-y-6">
             <AdvancedKPIDashboard />
+            <AdvancedExportWidget />
             <PlatformOverview dateRange={dateRange} />
           </div>
         </TabsContent>
