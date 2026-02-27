@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
+import { useAccountType } from "@/hooks/useAccountType";
 import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetSkeleton";
 import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboard/DashboardLayoutControl";
 
@@ -39,6 +40,7 @@ export default function Dashboard() {
   const { user } = useAuth();
   const isAr = language === "ar";
   const { widgets, toggleWidget, resetLayout, isVisible } = useDashboardLayout();
+  const { isFan } = useAccountType();
 
   const { data: profile } = useQuery({
     queryKey: ["dashboard-profile", user?.id],
@@ -67,8 +69,19 @@ export default function Dashboard() {
   const greeting = isAr
     ? `مرحباً${firstName ? ` ${firstName}` : ""}`
     : `Welcome back${firstName ? `, ${firstName}` : ""}`;
+  const subtitle = isFan
+    ? (isAr ? "تابع آخر أخبار الطهاة والمسابقات والمعارض" : "Stay updated on chefs, competitions & exhibitions")
+    : (isAr ? "إليك ملخص نشاطك ومسابقاتك القادمة" : "Your culinary milestones await below.");
 
-  const sections = [
+  const sections = isFan ? [
+    { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
+    { icon: Trophy, title: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
+    { icon: Landmark, title: isAr ? "المعارض" : "Exhibits", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10", ring: "ring-chart-5/15", glow: "group-hover:shadow-chart-5/10" },
+    { icon: UtensilsCrossed, title: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "text-chart-4", bg: "bg-chart-4/10", ring: "ring-chart-4/15", glow: "group-hover:shadow-chart-4/10" },
+    { icon: GraduationCap, title: isAr ? "الدورات" : "Courses", href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10", ring: "ring-chart-3/15", glow: "group-hover:shadow-chart-3/10" },
+    { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-primary", bg: "bg-primary/8", ring: "ring-primary/10", glow: "group-hover:shadow-primary/10" },
+    { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
+  ] : [
     { icon: Trophy, title: isAr ? "المسابقات" : "Compete", href: "/competitions", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
     { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
     { icon: GraduationCap, title: isAr ? "الدورات" : "Courses", href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10", ring: "ring-chart-3/15", glow: "group-hover:shadow-chart-3/10" },
@@ -84,7 +97,7 @@ export default function Dashboard() {
   return (
     <PageShell title="Dashboard" description="Your personal Altoha dashboard">
         {/* Welcome Banner */}
-        <WelcomeBanner greeting={greeting} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+        <WelcomeBanner greeting={greeting} subtitle={subtitle} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
 
         {/* Profile Completion Nudge */}
         {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
@@ -107,16 +120,16 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-6">
             {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
             {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
-            {user && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
+            {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
           </div>
           <div className="space-y-6">
-            {user && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
-            {user && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
-            {user && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
+            {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
+            {user && !isFan && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
+            {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
             {user && isVisible("notification-activity") && <W><NotificationActivityWidget /></W>}
-            {user && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
+            {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
             {user && isVisible("referral") && <W><ReferralWidget /></W>}
-            {user && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
+            {user && !isFan && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
             {user && isVisible("events-calendar") && <W><EventsCalendarWidget /></W>}
             {user && isVisible("notification-prefs") && <W><NotificationPreferencesWidget /></W>}
             {user && isVisible("notifications") && <W><NotificationsSummaryWidget /></W>}
@@ -130,8 +143,8 @@ export default function Dashboard() {
 
 /* ---------- Sub-Components ---------- */
 
-function WelcomeBanner({ greeting, isAr, widgets, toggleWidget, resetLayout }: {
-  greeting: string; isAr: boolean;
+function WelcomeBanner({ greeting, subtitle, isAr, widgets, toggleWidget, resetLayout }: {
+  greeting: string; subtitle: string; isAr: boolean;
   widgets: any[]; toggleWidget: (id: string) => void; resetLayout: () => void;
 }) {
   return (
@@ -147,7 +160,7 @@ function WelcomeBanner({ greeting, isAr, widgets, toggleWidget, resetLayout }: {
           <div className="min-w-0">
             <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground truncate">{greeting} 👋</h1>
             <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium line-clamp-1 sm:line-clamp-none">
-              {isAr ? "إليك ملخص نشاطك ومسابقاتك القادمة" : "Your culinary milestones await below."}
+              {subtitle}
             </p>
           </div>
         </div>

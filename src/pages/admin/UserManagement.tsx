@@ -39,6 +39,7 @@ import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type AccountStatus = Database["public"]["Enums"]["account_status"];
+type AccountType = Database["public"]["Enums"]["account_type"];
 type AppRole = Database["public"]["Enums"]["app_role"];
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
@@ -52,6 +53,7 @@ interface UserProfile {
   username: string | null;
   account_number: string | null;
   account_status: AccountStatus | null;
+  account_type: AccountType;
   membership_tier: MembershipTier | null;
   avatar_url: string | null;
   cover_image_url?: string | null;
@@ -77,6 +79,7 @@ export default function UserManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [accountTypeFilter, setAccountTypeFilter] = useState<string>("all");
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
@@ -145,11 +148,11 @@ export default function UserManagement() {
   // ── Queries ──────────────────────────────────────
 
   const { data: usersData, isLoading } = useQuery({
-    queryKey: ["adminUsers", searchQuery, roleFilter, statusFilter, page],
+    queryKey: ["adminUsers", searchQuery, roleFilter, statusFilter, accountTypeFilter, page],
     queryFn: async () => {
       let query = supabase
         .from("profiles")
-        .select(`id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, account_number, account_status, membership_tier, avatar_url, created_at, location, country_code, city, specialization, specialization_ar, is_verified, email, phone, bio, bio_ar, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, education_entity_id, years_of_experience`, { count: "exact" })
+        .select(`id, user_id, full_name, full_name_ar, display_name, display_name_ar, username, account_number, account_status, account_type, membership_tier, avatar_url, created_at, location, country_code, city, specialization, specialization_ar, is_verified, email, phone, bio, bio_ar, cover_image_url, date_of_birth, gender, preferred_language, nationality, experience_level, education_level, education_institution, education_entity_id, years_of_experience`, { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -158,6 +161,9 @@ export default function UserManagement() {
       }
       if (statusFilter !== "all") {
         query = query.eq("account_status", statusFilter as AccountStatus);
+      }
+      if (accountTypeFilter !== "all") {
+        query = query.eq("account_type", accountTypeFilter as AccountType);
       }
 
       const { data: profiles, error, count } = await query;
@@ -218,6 +224,7 @@ export default function UserManagement() {
       { header: isAr ? "اسم المستخدم" : "Username", accessor: (r: UserProfile) => r.username || "" },
       { header: isAr ? "رقم الحساب" : "Account #", accessor: (r: UserProfile) => r.account_number || "" },
       { header: isAr ? "الأدوار" : "Roles", accessor: (r: UserProfile) => r.roles?.map(ro => ro.role).join(", ") || "" },
+      { header: isAr ? "نوع الحساب" : "Account Type", accessor: (r: UserProfile) => r.account_type || "professional" },
       { header: isAr ? "العضوية" : "Membership", accessor: (r: UserProfile) => r.membership_tier || "" },
       { header: isAr ? "الحالة" : "Status", accessor: (r: UserProfile) => r.account_status || "" },
       { header: isAr ? "الدولة" : "Country", accessor: (r: UserProfile) => r.country_code || "" },
@@ -813,6 +820,14 @@ export default function UserManagement() {
               <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
+            <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "نوع الحساب" : "Account Type"} /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+              <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
+              <SelectItem value="fan">{isAr ? "متابع" : "Follower"}</SelectItem>
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 
@@ -1201,6 +1216,7 @@ export default function UserManagement() {
                     </TableHead>
                     <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
                     <TableHead>{t("accountNumber")}</TableHead>
+                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
                     <TableHead>{isAr ? "الأدوار" : "Roles"}</TableHead>
                     <TableHead>{t("membershipTier")}</TableHead>
                     <TableHead>{t("accountStatus")}</TableHead>
@@ -1233,6 +1249,11 @@ export default function UserManagement() {
                         </div>
                       </TableCell>
                       <TableCell className="font-mono text-sm">{profile.account_number || "-"}</TableCell>
+                      <TableCell>
+                        <Badge variant={profile.account_type === "fan" ? "secondary" : "outline"} className="text-xs">
+                          {profile.account_type === "fan" ? (isAr ? "متابع" : "Follower") : (isAr ? "محترف" : "Pro")}
+                        </Badge>
+                      </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {profile.roles?.map((r) => (
