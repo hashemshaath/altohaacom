@@ -9,6 +9,10 @@ import { AdminFinanceOverview } from "@/components/admin/AdminFinanceOverview";
 import { AdminPendingActionsWidget } from "@/components/admin/AdminPendingActionsWidget";
 import { AdminAlertCenter } from "@/components/admin/AdminAlertCenter";
 import { AdminKPITrends } from "@/components/admin/AdminKPITrends";
+import { ContentAnalyticsWidget } from "@/components/admin/ContentAnalyticsWidget";
+import { FinanceAnalyticsWidget } from "@/components/admin/FinanceAnalyticsWidget";
+import { CRMPipelineWidget } from "@/components/admin/CRMPipelineWidget";
+import { PerformanceMonitorWidget } from "@/components/admin/PerformanceMonitorWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -545,6 +549,26 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Content Analytics */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <ContentAnalyticsWidget />
+      </Suspense>
+
+      {/* Finance Analytics */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <FinanceAnalyticsWidget />
+      </Suspense>
+
+      {/* CRM Pipeline */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <CRMPipelineWidget />
+      </Suspense>
+
+      {/* Performance Monitor */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <PerformanceMonitorWidget />
+      </Suspense>
 
       {/* Deep Analytics (lazy loaded) */}
       <Suspense fallback={<SectionSkeleton />}>
