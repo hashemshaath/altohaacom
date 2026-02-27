@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
+import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -1210,8 +1211,13 @@ export default function OrdersAdmin() {
         description={isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
       />
 
-      {/* Revenue Analytics */}
-      <RevenueAnalyticsWidget />
+      {/* Revenue & Payment Tracking */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <RevenueAnalyticsWidget />
+        </div>
+        <PaymentTrackerWidget />
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
