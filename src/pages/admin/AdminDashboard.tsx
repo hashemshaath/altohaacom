@@ -13,6 +13,10 @@ import { ContentAnalyticsWidget } from "@/components/admin/ContentAnalyticsWidge
 import { FinanceAnalyticsWidget } from "@/components/admin/FinanceAnalyticsWidget";
 import { CRMPipelineWidget } from "@/components/admin/CRMPipelineWidget";
 import { PerformanceMonitorWidget } from "@/components/admin/PerformanceMonitorWidget";
+import { CompetitionInsightsWidget } from "@/components/admin/CompetitionInsightsWidget";
+import { ExhibitionInsightsWidget } from "@/components/admin/ExhibitionInsightsWidget";
+import { SupportInsightsWidget } from "@/components/admin/SupportInsightsWidget";
+import { SecurityInsightsWidget } from "@/components/admin/SecurityInsightsWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -549,6 +553,26 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Competition & Evaluation Insights */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <CompetitionInsightsWidget />
+      </Suspense>
+
+      {/* Exhibition & Events Insights */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <ExhibitionInsightsWidget />
+      </Suspense>
+
+      {/* Support & Communications */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <SupportInsightsWidget />
+      </Suspense>
+
+      {/* Security & Permissions */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <SecurityInsightsWidget />
+      </Suspense>
 
       {/* Content Analytics */}
       <Suspense fallback={<SectionSkeleton />}>
