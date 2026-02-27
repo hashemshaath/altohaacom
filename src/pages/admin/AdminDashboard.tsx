@@ -30,6 +30,8 @@ import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { PerformanceOptimizationWidget } from "@/components/admin/PerformanceOptimizationWidget";
 import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
+import { ReportsSummaryWidget } from "@/components/admin/ReportsSummaryWidget";
+import { AdminQuickNavWidget } from "@/components/admin/AdminQuickNavWidget";
 import { DashboardLiveMetricsWidget } from "@/components/admin/DashboardLiveMetricsWidget";
 import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
 import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
@@ -462,6 +464,12 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Reports Summary & Quick Nav */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <ReportsSummaryWidget />
+        <AdminQuickNavWidget />
+      </div>
 
       {/* ── Row: Activity Feed + Moderation + Alerts + Finance ── */}
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
