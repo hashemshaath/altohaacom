@@ -61,7 +61,7 @@ export function WeeklyOverviewWidget() {
           const Icon = s.icon;
           const delta = s.value - s.prevValue;
           const TrendIcon = delta > 0 ? TrendingUp : delta < 0 ? TrendingDown : Minus;
-          const trendColor = delta > 0 ? "text-green-500" : delta < 0 ? "text-destructive" : "text-muted-foreground";
+          const trendColor = delta > 0 ? "text-chart-2" : delta < 0 ? "text-destructive" : "text-muted-foreground";
 
           return (
             <div key={s.labelEn} className="flex flex-col items-center gap-1 rounded-xl bg-muted/40 p-3 text-center">
