@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -38,6 +38,9 @@ import { UserGrowthTrendWidget } from "@/components/admin/UserGrowthTrendWidget"
 import { UserAnalyticsWidget } from "@/components/admin/UserAnalyticsWidget";
 import { UsersLiveStatsWidget } from "@/components/admin/UsersLiveStatsWidget";
 import { UserActivityTimeline } from "@/components/admin/UserActivityTimeline";
+import { UserSearchCommand } from "@/components/admin/UserSearchCommand";
+import { AdminSessionTracker } from "@/components/admin/AdminSessionTracker";
+import { SkeletonTable } from "@/components/ui/skeleton-table";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
@@ -601,9 +604,31 @@ export default function UserManagement() {
   const [advancedFilters, setAdvancedFilters] = useState<FilterValues>(INITIAL_FILTERS);
   const [drawerUserId, setDrawerUserId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userSearchOpen, setUserSearchOpen] = useState(false);
+
+  // Keyboard shortcut: Cmd+U / Ctrl+U to open user search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "u") {
+        e.preventDefault();
+        setUserSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   return (
     <div className="space-y-6">
+      {/* Quick User Search Command */}
+      <UserSearchCommand
+        open={userSearchOpen}
+        onOpenChange={setUserSearchOpen}
+        onSelectUser={(userId) => {
+          setDrawerUserId(userId);
+          setDrawerOpen(true);
+        }}
+      />
       <AdminPageHeader
         icon={Users}
         title={isAr ? "إدارة المستخدمين" : "User Management"}
@@ -631,8 +656,15 @@ export default function UserManagement() {
       {/* Stats Bar */}
       <UserStatsBar />
 
+      {/* Security & Sessions */}
+      <AdminSessionTracker />
+
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={() => setUserSearchOpen(true)}>
+          <Search className="me-2 h-4 w-4" />{isAr ? "بحث سريع" : "Quick Search"}
+          <kbd className="ms-2 text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">⌘U</kbd>
+        </Button>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button><UserPlus className="me-2 h-4 w-4" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
