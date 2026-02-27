@@ -1,20 +1,41 @@
 import { useHasFeature, useHasFeatureForUser } from "@/hooks/useMembershipFeatures";
+import { UpgradePrompt } from "./UpgradePrompt";
 
 interface FeatureGateProps {
   feature: string;
   children: React.ReactNode;
+  /** Custom fallback. If not provided and showUpgrade is true, shows UpgradePrompt */
   fallback?: React.ReactNode;
+  /** Show an upgrade prompt instead of hiding. Defaults to false (hidden) */
+  showUpgrade?: boolean;
+  /** Name of the feature for the upgrade prompt */
+  featureName?: string;
+  featureNameAr?: string;
+  /** UpgradePrompt variant */
+  upgradeVariant?: "inline" | "card" | "minimal";
 }
 
 /**
  * Conditionally renders children based on whether the current user's membership tier
  * has access to the specified feature code.
  */
-export function FeatureGate({ feature, children, fallback = null }: FeatureGateProps) {
+export function FeatureGate({
+  feature,
+  children,
+  fallback,
+  showUpgrade = false,
+  featureName,
+  featureNameAr,
+  upgradeVariant = "inline",
+}: FeatureGateProps) {
   const { hasFeature, isLoading } = useHasFeature(feature);
 
   if (isLoading) return <>{children}</>; // show while loading to avoid flash
-  if (!hasFeature) return <>{fallback}</>;
+  if (!hasFeature) {
+    if (fallback !== undefined) return <>{fallback}</>;
+    if (showUpgrade) return <UpgradePrompt featureName={featureName} featureNameAr={featureNameAr} variant={upgradeVariant} />;
+    return null;
+  }
   return <>{children}</>;
 }
 

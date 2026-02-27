@@ -449,7 +449,7 @@ export function CommunityFeed() {
 
       {/* Composer */}
       {user && !tagFilter && feedFilter !== "bookmarks" && (
-        <FeatureGate feature="feature_posts">
+        <FeatureGate feature="feature_posts" showUpgrade featureName="Create Posts" featureNameAr="إنشاء المنشورات">
           <PostComposer
             onPosted={() => fetchPosts(0, false)}
             replyToPostId={null}
