@@ -3,6 +3,7 @@ import SecurityDashboard from "@/components/admin/SecurityDashboard";
 import { SecurityOverviewWidget } from "@/components/admin/SecurityOverviewWidget";
 import { SecurityAuditWidget } from "@/components/admin/SecurityAuditWidget";
 import { SecurityLiveWidget } from "@/components/admin/SecurityLiveWidget";
+import { AuditLiveStatsWidget } from "@/components/admin/AuditLiveStatsWidget";
 import { ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -17,6 +18,7 @@ export default function SecurityAdmin() {
         title={isAr ? "مركز الأمان والحماية" : "Security Center"}
         description={isAr ? "مراقبة الأحداث الأمنية والجلسات والصلاحيات" : "Monitor security events, sessions, and permissions"}
       />
+      <AuditLiveStatsWidget />
       <SecurityLiveWidget />
       <SecurityAuditWidget />
       <SecurityOverviewWidget />

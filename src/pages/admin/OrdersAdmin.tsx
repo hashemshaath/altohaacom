@@ -4,6 +4,7 @@ import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidge
 import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
 import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
 import { OrdersRevenueWidget } from "@/components/admin/OrdersRevenueWidget";
+import { OrdersLiveStatsWidget } from "@/components/admin/OrdersLiveStatsWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -1212,6 +1213,9 @@ export default function OrdersAdmin() {
         title={isAr ? "إدارة الطلبات" : "Order Management"}
         description={isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
       />
+
+      {/* Orders & Invoices Live Stats */}
+      <OrdersLiveStatsWidget />
 
       {/* Revenue & Payment Tracking */}
       <OrdersRevenueWidget />
