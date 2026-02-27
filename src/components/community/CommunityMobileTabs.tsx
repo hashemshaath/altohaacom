@@ -5,18 +5,24 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CommunityTab } from "./CommunityLeftSidebar";
+import { useUserFeatures } from "@/hooks/useMembershipFeatures";
 
 interface CommunityMobileTabsProps {
   activeTab: CommunityTab;
   setActiveTab: (tab: CommunityTab) => void;
 }
 
+const TAB_FEATURE_MAP: Record<string, string> = {
+  live: "feature_live_sessions",
+};
+
 export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobileTabsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { data: enabledFeatures } = useUserFeatures();
 
-  const tabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
+  const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
     { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
     { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
     { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
@@ -26,6 +32,12 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
     { id: "bookmarks", label: isAr ? "المحفوظات" : "Saved", icon: Bookmark, requiresAuth: true },
     { id: "network", label: isAr ? "شبكتي" : "Network", icon: UserPlus, requiresAuth: true },
   ];
+
+  const tabs = allTabs.filter(tab => {
+    const featureCode = TAB_FEATURE_MAP[tab.id];
+    if (featureCode && enabledFeatures && !enabledFeatures.has(featureCode)) return false;
+    return true;
+  });
 
   return (
     <div className="sticky top-12 z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">

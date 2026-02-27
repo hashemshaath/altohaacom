@@ -14,6 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { PollComposer } from "./PollComposer";
+import { FeatureGate } from "@/components/membership/FeatureGate";
 import { MentionAutocomplete } from "./MentionAutocomplete";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -413,7 +414,11 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
                 <Video className="h-4 w-4" />
               </Button>
 
-              {!replyToPostId && <PollComposer onPollChange={setPollData} />}
+              {!replyToPostId && (
+                <FeatureGate feature="feature_polls">
+                  <PollComposer onPollChange={setPollData} />
+                </FeatureGate>
+              )}
 
               {!replyToPostId && (
                 <Popover>

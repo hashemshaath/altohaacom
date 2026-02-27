@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { OnlineCountBadge } from "./PresenceIndicator";
 import { ProfileCompletionCard } from "@/components/onboarding/ProfileCompletionCard";
+import { useUserFeatures } from "@/hooks/useMembershipFeatures";
 
 export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live" | "bookmarks";
 
@@ -62,7 +63,14 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
     staleTime: 1000 * 60 * 5,
   });
 
-  const tabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
+  const { data: enabledFeatures } = useUserFeatures();
+
+  // Map community tab IDs to feature codes for gating
+  const TAB_FEATURE_MAP: Record<string, string> = {
+    live: "feature_live_sessions",
+  };
+
+  const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
     { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
     { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
     { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
@@ -72,6 +80,14 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
     { id: "bookmarks", label: isAr ? "المحفوظات" : "Bookmarks", icon: Bookmark, requiresAuth: true },
     { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
   ];
+
+  // Filter tabs by membership features
+  const tabs = allTabs.filter(tab => {
+    const featureCode = TAB_FEATURE_MAP[tab.id];
+    if (!featureCode) return true;
+    if (!enabledFeatures) return true;
+    return enabledFeatures.has(featureCode);
+  });
 
   return (
     <aside className={cn(
