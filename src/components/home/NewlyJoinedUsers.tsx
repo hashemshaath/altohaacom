@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { UserPlus, ArrowRight, ChefHat, MapPin } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { StaggeredList } from "@/components/ui/staggered-list";
 import { cn } from "@/lib/utils";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -61,7 +62,7 @@ export function NewlyJoinedUsers() {
           </div>
         </SectionReveal>
 
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+        <StaggeredList className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6" stagger={60}>
           {users.map((user: any) => {
             const name = getDisplayName(user, isAr);
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
@@ -106,7 +107,7 @@ export function NewlyJoinedUsers() {
               </Link>
             );
           })}
-        </div>
+        </StaggeredList>
       </div>
     </section>
   );
