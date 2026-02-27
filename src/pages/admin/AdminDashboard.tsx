@@ -1,14 +1,12 @@
-import { useMemo } from "react";
+import { useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
-import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
-import { AdminCommandBar } from "@/components/admin/AdminCommandBar";
-import { MLAnalyticsDashboard } from "@/components/admin/MLAnalyticsDashboard";
 import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminActivityFeed } from "@/components/admin/AdminActivityFeed";
 import { AdminModerationQueue } from "@/components/admin/AdminModerationQueue";
 import { AdminFinanceOverview } from "@/components/admin/AdminFinanceOverview";
+import { AdminPendingActionsWidget } from "@/components/admin/AdminPendingActionsWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,37 +15,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { toEnglishDigits } from "@/lib/formatNumber";
-import { LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
-import { 
-  Users, 
-  UserCheck,
-  UserPlus,
-  Flag, 
-  Trophy, 
-  FileText,
-  TrendingUp,
-  ArrowRight,
-  ArrowUpRight,
-  ArrowDownRight,
-  Shield,
-  Activity,
-  CreditCard,
-  Landmark,
-  Package,
-  GraduationCap,
-  LayoutDashboard,
-  Zap,
-  MessageSquare,
-  AlertTriangle,
-  CheckCircle2,
-  Send,
-  Plus,
-  Settings,
-  Heart,
-  ChefHat,
+import { LineChart, Line, ResponsiveContainer } from "recharts";
+import {
+  Users, UserCheck, UserPlus, Flag, Trophy, FileText,
+  TrendingUp, ArrowRight, ArrowUpRight, ArrowDownRight,
+  Shield, Activity, CreditCard, Landmark, Package,
+  GraduationCap, LayoutDashboard, Zap, MessageSquare,
+  AlertTriangle, CheckCircle2, Send, Plus, Settings,
+  Heart, ChefHat,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
+
+// Lazy load heavy components
+const AdminAnalyticsWidgets = lazy(() => import("@/components/admin/AdminAnalyticsWidgets").then(m => ({ default: m.AdminAnalyticsWidgets })));
+const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
+const MLAnalyticsDashboard = lazy(() => import("@/components/admin/MLAnalyticsDashboard").then(m => ({ default: m.MLAnalyticsDashboard })));
 
 function AnimatedStatValue({ value }: { value: number }) {
   const animated = useAnimatedCounter(value);
@@ -58,10 +41,15 @@ function AnimatedStatValue({ value }: { value: number }) {
   );
 }
 
+function SectionSkeleton() {
+  return <div className="space-y-3"><Skeleton className="h-40 w-full rounded-xl" /><Skeleton className="h-32 w-full rounded-xl" /></div>;
+}
+
 export default function AdminDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  // ── Main stats (single batch) ──
   const { data: stats, isLoading } = useQuery({
     queryKey: ["superAdminStats"],
     queryFn: async () => {
@@ -117,7 +105,7 @@ export default function AdminDashboard() {
     staleTime: 1000 * 30,
   });
 
-  // Today's activity summary
+  // ── Today's activity ──
   const { data: todayStats } = useQuery({
     queryKey: ["admin-today-stats"],
     queryFn: async () => {
@@ -140,30 +128,50 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60,
   });
 
-  // 7-day sparkline data for users
+  // ── Optimized 7-day sparkline: fetch date ranges for boundary counts only ──
   const { data: sparkData } = useQuery({
-    queryKey: ["admin-sparkline-7d"],
+    queryKey: ["admin-sparkline-7d-optimized"],
     queryFn: async () => {
-      const days: { day: string; users: number; comps: number; exhibitions: number; articles: number }[] = [];
+      const tables = ["profiles", "competitions", "exhibitions", "articles"] as const;
+      const keys = ["users", "comps", "exhibitions", "articles"] as const;
+      const dateCol = ["created_at", "created_at", "created_at", "created_at"] as const;
+
+      // Build date ranges
+      const ranges: { start: string; end: string; day: string }[] = [];
       for (let i = 6; i >= 0; i--) {
         const d = subDays(new Date(), i);
         const start = new Date(d); start.setHours(0, 0, 0, 0);
         const end = new Date(d); end.setHours(23, 59, 59, 999);
-        const [u, c, e, a] = await Promise.all([
-          supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
-          supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
-          supabase.from("exhibitions").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
-          supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()).lte("created_at", end.toISOString()),
-        ]);
-        days.push({
-          day: format(d, "EEE"),
-          users: u.count || 0,
-          comps: c.count || 0,
-          exhibitions: e.count || 0,
-          articles: a.count || 0,
-        });
+        ranges.push({ start: start.toISOString(), end: end.toISOString(), day: format(d, "EEE") });
       }
-      return days;
+
+      // Fire one query per table for the full 7-day window, then bucket locally
+      const fullStart = ranges[0].start;
+      const fullEnd = ranges[ranges.length - 1].end;
+
+      const tableData = await Promise.all(
+        tables.map((table) =>
+          supabase
+            .from(table)
+            .select("created_at")
+            .gte("created_at", fullStart)
+            .lte("created_at", fullEnd)
+            .order("created_at", { ascending: true })
+            .limit(1000)
+            .then(({ data }) => data || [])
+        )
+      );
+
+      // Bucket into days
+      return ranges.map((range) => {
+        const row: Record<string, any> = { day: range.day };
+        tables.forEach((_, ti) => {
+          row[keys[ti]] = tableData[ti].filter(
+            (r: any) => r.created_at >= range.start && r.created_at <= range.end
+          ).length;
+        });
+        return row;
+      });
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -240,7 +248,7 @@ export default function AdminDashboard() {
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
         {statCards.map((stat) => {
           const sparkKey = sparklineKeys[stat.title];
-          const sparkPoints = sparkKey && sparkData ? sparkData.map(d => ({ v: (d as any)[sparkKey] || 0 })) : null;
+          const sparkPoints = sparkKey && sparkData ? sparkData.map((d: any) => ({ v: d[sparkKey] || 0 })) : null;
           const trend = sparkPoints && sparkPoints.length >= 2
             ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v
             : 0;
@@ -250,7 +258,7 @@ export default function AdminDashboard() {
               <Card className={cn(
                 "group border-s-[3px] transition-all duration-200 hover:shadow-lg hover:-translate-y-1",
                 stat.accent,
-                stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
+                stat.urgent && "ring-1 ring-destructive/30"
               )}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
@@ -299,7 +307,83 @@ export default function AdminDashboard() {
       </div>
 
       {/* Command Bar */}
-      <AdminCommandBar />
+      <Suspense fallback={null}><AdminCommandBar /></Suspense>
+
+      {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        {/* Today's Activity */}
+        <Card className="border-border/50 bg-gradient-to-br from-primary/5 to-transparent lg:col-span-1">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary" },
+                { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2" },
+                { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3" },
+                { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 rounded-lg border border-border/40 bg-card p-2.5">
+                  <item.icon className={`h-3.5 w-3.5 shrink-0 ${item.color}`} />
+                  <div>
+                    <p className={`text-base font-black leading-none ${item.color}`}>{toEnglishDigits(item.value.toString())}</p>
+                    <p className="text-[9px] text-muted-foreground mt-0.5">{item.label}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Pending Actions Widget */}
+        <AdminPendingActionsWidget />
+
+        {/* Account Type Breakdown */}
+        <Card className="border-border/50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+                <Users className="h-3.5 w-3.5 text-chart-4" />
+              </div>
+              <h3 className="text-sm font-bold">{isAr ? "أنواع الحسابات" : "Account Types"}</h3>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+                  <ChefHat className="h-4 w-4 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground">{isAr ? "محترف" : "Professional"}</p>
+                    <p className="text-sm font-black text-primary">{toEnglishDigits((stats?.proUsers || 0).toLocaleString())}</p>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${stats?.totalUsers ? ((stats.proUsers / stats.totalUsers) * 100) : 0}%` }} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-4/10">
+                  <Heart className="h-4 w-4 text-chart-4" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground">{isAr ? "متابع" : "Follower"}</p>
+                    <p className="text-sm font-black text-chart-4">{toEnglishDigits((stats?.fanUsers || 0).toLocaleString())}</p>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full bg-chart-4 transition-all" style={{ width: `${stats?.totalUsers ? ((stats.fanUsers / stats.totalUsers) * 100) : 0}%` }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Workflow Shortcuts */}
       <Card className="border-border/50">
@@ -325,98 +409,15 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
 
-      {/* Account Type Breakdown */}
-      <Card className="border-border/50">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
-              <Users className="h-3.5 w-3.5 text-chart-4" />
-            </div>
-            <h3 className="text-sm font-bold">{isAr ? "أنواع الحسابات" : "Account Types"}</h3>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="w-28 h-28 shrink-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0 },
-                      { name: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0 },
-                    ]}
-                    cx="50%" cy="50%" innerRadius={28} outerRadius={48} paddingAngle={3} dataKey="value"
-                  >
-                    <Cell fill="hsl(var(--primary))" />
-                    <Cell fill="hsl(var(--chart-4))" />
-                  </Pie>
-                  <RechartsTooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-                  <ChefHat className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="text-lg font-black text-primary leading-none">{toEnglishDigits((stats?.proUsers || 0).toLocaleString())}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "محترف" : "Professional"}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-4/10">
-                  <Heart className="h-4 w-4 text-chart-4" />
-                </div>
-                <div>
-                  <p className="text-lg font-black text-chart-4 leading-none">{toEnglishDigits((stats?.fanUsers || 0).toLocaleString())}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متابع" : "Follower"}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Today's Activity Summary */}
-      <Card className="border-border/50 bg-gradient-to-r from-primary/5 to-transparent">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
-              <Zap className="h-3.5 w-3.5 text-primary" />
-            </div>
-            <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary" },
-              { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2" },
-              { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3" },
-              { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground" },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 rounded-lg border border-border/40 bg-card p-3">
-                <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
-                <div>
-                  <p className={`text-lg font-black leading-none ${item.color}`}>{toEnglishDigits(item.value.toString())}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{item.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Analytics Widgets */}
-      <AdminAnalyticsWidgets />
-
-      {/* ML-Powered Insights */}
-      <MLAnalyticsDashboard />
-
-      <div className="grid gap-6 lg:grid-cols-3">
+      {/* ── Row: Activity Feed + Moderation + Pending + Finance ── */}
+      <div className="grid gap-4 lg:grid-cols-3">
         <AdminActivityFeed />
         <AdminModerationQueue />
         <AdminFinanceOverview />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* ── Row: Quick Actions + Recent Actions ── */}
+      <div className="grid gap-4 lg:grid-cols-2">
         {/* Quick Actions */}
         <Card className="border-border/50">
           <CardHeader className="pb-3">
@@ -513,8 +514,8 @@ export default function AdminDashboard() {
         <CardContent>
           <div className="flex flex-wrap gap-3">
             {stats?.recentUsers?.map((user: any) => (
-              <Link 
-                key={user.id} 
+              <Link
+                key={user.id}
                 to={`/${user.username || user.id}`}
                 className="flex items-center gap-3 rounded-xl border border-border/50 p-3 transition-all hover:shadow-md hover:bg-accent/30 hover:-translate-y-0.5"
               >
@@ -538,6 +539,15 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Deep Analytics (lazy loaded) */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <AdminAnalyticsWidgets />
+      </Suspense>
+
+      <Suspense fallback={<SectionSkeleton />}>
+        <MLAnalyticsDashboard />
+      </Suspense>
     </div>
   );
 }
