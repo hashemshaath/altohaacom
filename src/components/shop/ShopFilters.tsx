@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Search } from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
+
+export type SortOption = "newest" | "price_asc" | "price_desc" | "popular" | "name";
 
 interface ShopFiltersProps {
   search: string;
@@ -11,6 +13,8 @@ interface ShopFiltersProps {
   typeFilter: string;
   onTypeChange: (value: string) => void;
   categories: string[];
+  sortBy?: SortOption;
+  onSortChange?: (value: SortOption) => void;
 }
 
 export function ShopFilters({
@@ -18,6 +22,8 @@ export function ShopFilters({
   categoryFilter, onCategoryChange,
   typeFilter, onTypeChange,
   categories,
+  sortBy = "newest",
+  onSortChange,
 }: ShopFiltersProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -36,7 +42,7 @@ export function ShopFilters({
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {categories.length > 0 && (
               <Select value={categoryFilter} onValueChange={onCategoryChange}>
                 <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
@@ -62,6 +68,22 @@ export function ShopFilters({
                 <SelectItem value="service" className="rounded-lg">{isAr ? "خدمة" : "Service"}</SelectItem>
               </SelectContent>
             </Select>
+
+            {onSortChange && (
+              <Select value={sortBy} onValueChange={(v) => onSortChange(v as SortOption)}>
+                <SelectTrigger className="h-11 w-auto min-w-[42px] border-border/40 bg-muted/20 rounded-xl sm:w-44 focus:ring-primary/20">
+                  <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 sm:me-1.5" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-border/40">
+                  <SelectItem value="newest" className="rounded-lg">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+                  <SelectItem value="price_asc" className="rounded-lg">{isAr ? "السعر: الأقل" : "Price: Low → High"}</SelectItem>
+                  <SelectItem value="price_desc" className="rounded-lg">{isAr ? "السعر: الأعلى" : "Price: High → Low"}</SelectItem>
+                  <SelectItem value="popular" className="rounded-lg">{isAr ? "الأكثر شعبية" : "Most Popular"}</SelectItem>
+                  <SelectItem value="name" className="rounded-lg">{isAr ? "الاسم" : "Name"}</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
       </div>

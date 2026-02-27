@@ -10,10 +10,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
+import { usePrefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useAccountType } from "@/hooks/useAccountType";
 import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetSkeleton";
 import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboard/DashboardLayoutControl";
 import { ProfileCompletionCard } from "@/components/profile/ProfileCompletionCard";
+import { GlobalSearchWidget } from "@/components/dashboard/GlobalSearchWidget";
 
 // Lazy-loaded widgets
 const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
@@ -126,6 +128,9 @@ export default function Dashboard() {
 
         {/* Welcome Banner */}
         <WelcomeBanner greeting={greeting} subtitle={subtitle} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+
+        {/* Global Search */}
+        <GlobalSearchWidget />
 
         {/* Profile Completion Nudge */}
         {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
@@ -258,6 +263,7 @@ function ProfileNudge({ isAr }: { isAr: boolean }) {
 }
 
 function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
+  const { prefetchProps } = usePrefetchRoute();
   return (
     <div className="mb-8">
       <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
@@ -267,7 +273,7 @@ function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; titl
       <div className="relative">
         <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {sections.map((s) => (
-            <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink">
+            <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink" {...prefetchProps(s.href)}>
               <div className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-border/60 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-105`}>
                   <s.icon className={`h-4 w-4 ${s.color}`} />
