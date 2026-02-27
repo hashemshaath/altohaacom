@@ -15,8 +15,9 @@ export function RoutePrefetcher() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const id = requestIdleCallback
-      ? requestIdleCallback(() => {
+    const hasIdleCallback = "requestIdleCallback" in window;
+    const id = hasIdleCallback
+      ? window.requestIdleCallback(() => {
           routeLoaders.forEach((loader) => loader().catch(() => {}));
         })
       : window.setTimeout(() => {
@@ -24,7 +25,7 @@ export function RoutePrefetcher() {
         }, 3000);
 
     return () => {
-      if (typeof cancelIdleCallback !== "undefined") cancelIdleCallback(id as number);
+      if (hasIdleCallback) window.cancelIdleCallback(id as number);
       else clearTimeout(id as number);
     };
   }, []);
