@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,22 +9,23 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
   try {
-    // Auth check
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
+
     const client = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } }
     );
-    const { data: { user }, error: authErr } = await client.auth.getUser();
-    if (authErr || !user) throw new Error("Unauthorized");
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data, error: authErr } = await client.auth.getClaims(token);
+    if (authErr || !data?.claims?.sub) throw new Error("Unauthorized");
 
     const { text, from, to, context } = await req.json();
     if (!text || !from || !to) {
       return new Response(JSON.stringify({ error: "Missing text, from, or to" }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
@@ -64,27 +65,28 @@ ${text}`;
     });
 
     if (!res.ok) {
+      const errBody = await res.text();
+      console.error("AI API error:", res.status, errBody);
       if (res.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limited, try again later" }), {
-          status: 429,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
       throw new Error("AI translation failed");
     }
 
-    const data = await res.json();
-    const translated = data.choices?.[0]?.message?.content?.trim() || "";
+    const aiData = await res.json();
+    const translated = aiData.choices?.[0]?.message?.content?.trim() || "";
 
     return new Response(JSON.stringify({ translated }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     const msg = (error as Error).message;
+    console.error("smart-translate error:", msg);
     const status = msg === "Unauthorized" ? 401 : 500;
     return new Response(JSON.stringify({ error: msg }), {
-      status,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
