@@ -13485,6 +13485,124 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_feature_overrides: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          feature_id: string
+          granted: boolean
+          granted_by: string | null
+          id: string
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          feature_id: string
+          granted?: boolean
+          granted_by?: string | null
+          id?: string
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          feature_id?: string
+          granted?: boolean
+          granted_by?: string | null
+          id?: string
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_feature_overrides_feature_id_fkey"
+            columns: ["feature_id"]
+            isOneToOne: false
+            referencedRelation: "membership_features"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_feature_tiers: {
+        Row: {
+          created_at: string | null
+          feature_id: string
+          id: string
+          is_enabled: boolean | null
+          tier: string
+        }
+        Insert: {
+          created_at?: string | null
+          feature_id: string
+          id?: string
+          is_enabled?: boolean | null
+          tier: string
+        }
+        Update: {
+          created_at?: string | null
+          feature_id?: string
+          id?: string
+          is_enabled?: boolean | null
+          tier?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_feature_tiers_feature_id_fkey"
+            columns: ["feature_id"]
+            isOneToOne: false
+            referencedRelation: "membership_features"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_features: {
+        Row: {
+          category: string
+          code: string
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          name_ar: string | null
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          code: string
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          name_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          code?: string
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          name_ar?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       membership_history: {
         Row: {
           changed_by: string | null
@@ -20959,6 +21077,10 @@ export type Database = {
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
         Returns: undefined
+      }
+      user_has_feature: {
+        Args: { p_feature_code: string; p_user_id: string }
+        Returns: boolean
       }
       user_has_permission: {
         Args: { p_permission_code: string; p_user_id: string }
