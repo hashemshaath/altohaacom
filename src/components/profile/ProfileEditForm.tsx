@@ -64,22 +64,41 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
 
   const handleSave = async () => {
     setSaving(true);
-    // Clean empty strings to null for nullable DB fields to avoid type errors
-    const cleanedForm = { ...form };
-    const nullableFields = [
-      "date_of_birth", "gender", "country_code", "nationality", "second_nationality",
-      "city", "location", "phone", "website", "instagram", "twitter", "facebook",
-      "linkedin", "youtube", "tiktok", "snapchat", "bio", "bio_ar",
-      "job_title", "job_title_ar", "specialization", "specialization_ar",
-    ];
-    for (const key of nullableFields) {
-      if (cleanedForm[key] === "") cleanedForm[key] = null;
-    }
-    const { error } = await supabase.from("profiles").update({
-      ...cleanedForm,
+    // Build update payload, converting empty strings to null for nullable DB fields
+    const payload: Record<string, any> = {
+      full_name: form.full_name || null,
+      full_name_ar: form.full_name_ar || null,
+      display_name: form.display_name || null,
+      display_name_ar: form.display_name_ar || null,
+      bio: form.bio || null,
+      bio_ar: form.bio_ar || null,
+      job_title: form.job_title || null,
+      job_title_ar: form.job_title_ar || null,
+      specialization: form.specialization || null,
+      specialization_ar: form.specialization_ar || null,
+      experience_level: form.experience_level || null,
       years_of_experience: form.years_of_experience ? Number(form.years_of_experience) : null,
+      location: form.location || null,
+      city: form.city || null,
+      country_code: form.country_code || null,
+      nationality: form.nationality || null,
+      second_nationality: form.second_nationality || null,
+      show_nationality: form.show_nationality,
+      phone: form.phone || null,
+      website: form.website || null,
+      instagram: form.instagram || null,
+      twitter: form.twitter || null,
+      facebook: form.facebook || null,
+      linkedin: form.linkedin || null,
+      youtube: form.youtube || null,
+      tiktok: form.tiktok || null,
+      snapchat: form.snapchat || null,
+      date_of_birth: form.date_of_birth || null,
+      gender: form.gender || null,
+      preferred_language: form.preferred_language || "ar",
       profile_completed: true,
-    }).eq("user_id", userId);
+    };
+    const { error } = await supabase.from("profiles").update(payload).eq("user_id", userId);
     setSaving(false);
     if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
