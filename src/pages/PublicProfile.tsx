@@ -1,6 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -18,7 +20,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import {
   User, Award, BadgeCheck, ArrowLeft, Briefcase, GraduationCap, Building2,
-  ExternalLink, Trophy, Medal, ImageIcon, Tv, Gavel, Users,
+  ExternalLink, Trophy, Medal, ImageIcon, Tv, Gavel, Users, Heart,
 } from "lucide-react";
 import { useAllCountries } from "@/hooks/useCountries";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -112,6 +114,22 @@ export default function PublicProfile() {
     userAwards, mediaFiles, followStats, isFollowing, toggleFollow,
     followersList, userSpecialties, followPrivacy, pendingRequest,
   } = usePublicProfileData(username, followListOpen);
+
+  // Determine if this profile is a fan account
+  const { data: profileAccountType } = useQuery({
+    queryKey: ["profile-account-type", profile?.user_id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("account_type")
+        .eq("user_id", profile!.user_id)
+        .single();
+      return data?.account_type || "professional";
+    },
+    enabled: !!profile?.user_id,
+    staleTime: 1000 * 60 * 10,
+  });
+  const isProfileFan = profileAccountType === "fan";
 
   const getCountryName = useCallback((code: string | null) => {
     if (!code) return null;
@@ -258,14 +276,14 @@ export default function PublicProfile() {
               </SectionReveal>
             )}
 
-            {/* Schedule */}
-            {profile.user_id && <SectionReveal delay={200}><PublicProfileSchedule userId={profile.user_id} isAr={isAr} /></SectionReveal>}
+            {/* Schedule - pro only */}
+            {!isProfileFan && profile.user_id && <SectionReveal delay={200}><PublicProfileSchedule userId={profile.user_id} isAr={isAr} /></SectionReveal>}
 
-            {/* Achievements */}
-            {profile.user_id && <SectionReveal delay={225}><PublicProfileAchievements userId={profile.user_id} isAr={isAr} /></SectionReveal>}
+            {/* Achievements - pro only */}
+            {!isProfileFan && profile.user_id && <SectionReveal delay={225}><PublicProfileAchievements userId={profile.user_id} isAr={isAr} /></SectionReveal>}
 
-            {/* Career Sections - DRY rendering */}
-            {CAREER_SECTIONS.map((sec, i) => {
+            {/* Career Sections - pro only */}
+            {!isProfileFan && CAREER_SECTIONS.map((sec, i) => {
               if (!isVisible(sec.visKey)) return null;
               const records = categorizedRecords[sec.key as keyof typeof categorizedRecords] || [];
               if (records.length === 0 && !sec.showEmpty) return null;
@@ -302,8 +320,8 @@ export default function PublicProfile() {
               );
             })}
 
-            {/* Memberships */}
-            {isVisible("memberships") && (
+            {/* Memberships - pro only */}
+            {!isProfileFan && isVisible("memberships") && (
               <SectionReveal delay={400}>
                 <CollapsibleProfileSection icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} count={memberships.length} defaultOpen isEmpty={memberships.length === 0}>
                   {memberships.length > 0 ? (
@@ -336,8 +354,8 @@ export default function PublicProfile() {
               </SectionReveal>
             )}
 
-            {/* Certificates */}
-            {isVisible("certificates") && (
+            {/* Certificates - pro only */}
+            {!isProfileFan && isVisible("certificates") && (
               <SectionReveal delay={450}>
                 <CollapsibleProfileSection icon={Award} label={isAr ? "الشهادات" : "Certificates"} defaultOpen>
                   <ProfileCertificates userId={profile.user_id} isOwner={isOwnProfile} />
@@ -345,8 +363,8 @@ export default function PublicProfile() {
               </SectionReveal>
             )}
 
-            {/* Competitions */}
-            {isVisible("competitions") && (
+            {/* Competitions - pro only */}
+            {!isProfileFan && isVisible("competitions") && (
               <SectionReveal delay={475}>
                 <CollapsibleProfileSection icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} defaultOpen={false}>
                   <CompetitionHistory userId={profile.user_id} />

@@ -1,6 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAccountType } from "@/hooks/useAccountType";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -21,7 +22,7 @@ import { useState, useEffect } from "react";
 const navItems = [
   { to: "/", icon: Home, labelEn: "Home", labelAr: "الرئيسية", authOnly: false, exact: true },
   { to: "/competitions", icon: Trophy, labelEn: "Compete", labelAr: "المسابقات", authOnly: false },
-  { to: "__fab__", icon: Plus, labelEn: "Create", labelAr: "إنشاء", authOnly: true, isFab: true },
+  { to: "__fab__", icon: Plus, labelEn: "Create", labelAr: "إنشاء", authOnly: true, isFab: true, proOnly: true },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع", authOnly: false },
   { to: "/dashboard", icon: LayoutDashboard, labelEn: "Profile", labelAr: "ملفي", authOnly: true },
 ];
@@ -69,6 +70,7 @@ function useFabActions(pathname: string, isAr: boolean) {
 export function MobileBottomNav() {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { isFan } = useAccountType();
   const location = useLocation();
   const isAr = language === "ar";
   const [fabOpen, setFabOpen] = useState(false);
@@ -100,7 +102,11 @@ export function MobileBottomNav() {
     setFabOpen(false);
   }, [location.pathname]);
 
-  const visibleItems = navItems.filter((item) => !item.authOnly || user);
+  const visibleItems = navItems.filter((item) => {
+    if (item.authOnly && !user) return false;
+    if ((item as any).proOnly && isFan) return false;
+    return true;
+  });
 
   const hiddenPaths = ["/auth", "/admin", "/onboarding", "/install"];
   if (hiddenPaths.some((p) => location.pathname.startsWith(p))) return null;
