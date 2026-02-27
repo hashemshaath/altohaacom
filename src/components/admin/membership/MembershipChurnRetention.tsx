@@ -14,8 +14,10 @@ import {
   TrendingDown, TrendingUp, Users, AlertTriangle, ShieldAlert,
   Clock, UserMinus, RefreshCcw, ArrowRight, Crown
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
+import { AdminExportButton } from "@/components/admin/AdminExportButton";
+import { useAdminExport } from "@/hooks/useAdminExport";
 
 const TIER_COLORS: Record<string, string> = {
   basic: "hsl(var(--muted-foreground))",
@@ -219,6 +221,47 @@ export default function MembershipChurnRetention() {
 
   const totalAtRisk = (atRiskData?.critical.length || 0) + (atRiskData?.warning.length || 0) + (atRiskData?.upcoming.length || 0);
 
+  const { exportData, isExporting } = useAdminExport();
+
+  const handleExport = useCallback((fmt: "csv" | "json") => {
+    const rows: Record<string, unknown>[] = [];
+    // Churn monthly data
+    for (const m of churnData?.months || []) {
+      rows.push({ section: "Monthly Churn", month: m.label, churn_rate: m.churnRate, churned: m.churned, retained: m.retained });
+    }
+    // At-risk members
+    for (const u of [...(atRiskData?.critical || []), ...(atRiskData?.warning || []), ...(atRiskData?.upcoming || [])]) {
+      rows.push({ section: "At Risk", name: u.name, tier: u.membership_tier, days_left: u.daysLeft, status: u.membership_status });
+    }
+    // Cancel reasons
+    for (const r of cancelReasons || []) {
+      rows.push({ section: "Churn Reasons", reason: r.reason, count: r.count });
+    }
+    rows.push({
+      section: "Summary", avg_churn_rate: churnData?.avgChurn,
+      retention_rate: (100 - parseFloat(churnData?.avgChurn || "0")).toFixed(1),
+      total_at_risk: totalAtRisk, suspended: atRiskData?.statusCounts?.suspended,
+    });
+
+    exportData(rows, [
+      { key: "section", label: "Section" },
+      { key: "month", label: "Month" },
+      { key: "churn_rate", label: "Churn Rate %" },
+      { key: "churned", label: "Churned" },
+      { key: "retained", label: "Retained" },
+      { key: "name", label: "Name" },
+      { key: "tier", label: "Tier" },
+      { key: "days_left", label: "Days Left" },
+      { key: "status", label: "Status" },
+      { key: "reason", label: "Reason" },
+      { key: "count", label: "Count" },
+      { key: "avg_churn_rate", label: "Avg Churn Rate" },
+      { key: "retention_rate", label: "Retention Rate" },
+      { key: "total_at_risk", label: "Total At Risk" },
+      { key: "suspended", label: "Suspended" },
+    ], { filename: "membership-churn-retention", format: fmt });
+  }, [churnData, atRiskData, cancelReasons, totalAtRisk, exportData]);
+
   if (churnLoading || cohortLoading) {
     return (
       <div className="space-y-4">
@@ -233,9 +276,12 @@ export default function MembershipChurnRetention() {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div>
-        <h3 className="text-lg font-bold">{isAr ? "التسرب والاحتفاظ" : "Churn & Retention"}</h3>
-        <p className="text-sm text-muted-foreground">{isAr ? "تحليل معدلات التسرب والاحتفاظ بالأعضاء المدفوعين" : "Analyze paid member churn rates, retention cohorts & at-risk alerts"}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-bold">{isAr ? "التسرب والاحتفاظ" : "Churn & Retention"}</h3>
+          <p className="text-sm text-muted-foreground">{isAr ? "تحليل معدلات التسرب والاحتفاظ بالأعضاء المدفوعين" : "Analyze paid member churn rates, retention cohorts & at-risk alerts"}</p>
+        </div>
+        <AdminExportButton onExport={handleExport} isExporting={isExporting} />
       </div>
 
       {/* KPI Cards */}
