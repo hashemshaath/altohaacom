@@ -30,6 +30,8 @@ import { BrandingSettings } from "@/components/admin/settings/BrandingSettings";
 import { HeaderFooterSettings } from "@/components/admin/settings/HeaderFooterSettings";
 import { LayoutSEOSettings } from "@/components/admin/settings/LayoutSEOSettings";
 import { SecurityContentSettings } from "@/components/admin/settings/SecurityContentSettings";
+import { RegistrationSettings } from "@/components/admin/settings/RegistrationSettings";
+import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
 import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
@@ -280,7 +282,8 @@ export default function SystemSettings() {
               </div>
             </TabsContent>
 
-            <TabsContent value="cover" className="mt-0">
+            <TabsContent value="cover" className="mt-0 space-y-6">
+              <ThemePresetsPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
               <CoverSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
             </TabsContent>
 
@@ -288,7 +291,8 @@ export default function SystemSettings() {
               <LayoutSEOSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
             </TabsContent>
 
-            <TabsContent value="security" className="mt-0">
+            <TabsContent value="security" className="mt-0 space-y-6">
+              <RegistrationSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
               <SecurityContentSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
             </TabsContent>
 
