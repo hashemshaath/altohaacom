@@ -64,8 +64,19 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
 
   const handleSave = async () => {
     setSaving(true);
+    // Clean empty strings to null for nullable DB fields to avoid type errors
+    const cleanedForm = { ...form };
+    const nullableFields = [
+      "date_of_birth", "gender", "country_code", "nationality", "second_nationality",
+      "city", "location", "phone", "website", "instagram", "twitter", "facebook",
+      "linkedin", "youtube", "tiktok", "snapchat", "bio", "bio_ar",
+      "job_title", "job_title_ar", "specialization", "specialization_ar",
+    ];
+    for (const key of nullableFields) {
+      if (cleanedForm[key] === "") cleanedForm[key] = null;
+    }
     const { error } = await supabase.from("profiles").update({
-      ...form,
+      ...cleanedForm,
       years_of_experience: form.years_of_experience ? Number(form.years_of_experience) : null,
       profile_completed: true,
     }).eq("user_id", userId);
