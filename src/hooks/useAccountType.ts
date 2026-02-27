@@ -8,10 +8,10 @@ type AccountType = Database["public"]["Enums"]["account_type"];
 export function useAccountType() {
   const { user } = useAuth();
 
-  const { data: accountType = "professional", ...rest } = useQuery({
+  const { data: accountType = "fan", ...rest } = useQuery({
     queryKey: ["accountType", user?.id],
     queryFn: async (): Promise<AccountType> => {
-      if (!user?.id) return "professional";
+      if (!user?.id) return "fan";
       const { data, error } = await supabase
         .from("profiles")
         .select("account_type")
