@@ -39,6 +39,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { TicketPerformanceWidget } from "@/components/admin/TicketPerformanceWidget";
+import { TicketEscalationWidget } from "@/components/admin/TicketEscalationWidget";
 import {
   Ticket,
   Search,
@@ -298,6 +299,9 @@ export default function SupportTicketsAdmin() {
 
       {/* Performance Widget */}
       <TicketPerformanceWidget />
+
+      {/* Escalation & SLA Widget */}
+      <TicketEscalationWidget />
 
       {/* Stats */}
       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">

@@ -34,6 +34,7 @@ import { AdminUserDetailsDrawer } from "@/components/admin/AdminUserDetailsDrawe
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { UserStatsBar } from "@/components/admin/UserStatsBar";
 import { UserCardView } from "@/components/admin/UserCardView";
+import { UserGrowthTrendWidget } from "@/components/admin/UserGrowthTrendWidget";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
@@ -613,6 +614,9 @@ export default function UserManagement() {
           </div>
         }
       />
+
+      {/* User Growth Analytics */}
+      <UserGrowthTrendWidget />
 
       {/* Stats Bar */}
       <UserStatsBar />
