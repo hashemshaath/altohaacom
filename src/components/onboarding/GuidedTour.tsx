@@ -63,6 +63,20 @@ const FAN_STEPS: TourStep[] = [
     descEn: "Watch competitions, attend exhibitions, and cheer for your favorites.",
     descAr: "شاهد المسابقات واحضر المعارض وشجع المفضلين لديك.",
   },
+  {
+    targetSelector: '[href="/recipes"]',
+    titleEn: "Save Your Favorite Recipes",
+    titleAr: "احفظ وصفاتك المفضلة",
+    descEn: "Browse recipes, rate them, and save favorites to your collection.",
+    descAr: "تصفح الوصفات وقيّمها واحفظ المفضلة في مجموعتك.",
+  },
+  {
+    targetSelector: '[href="/community"]',
+    titleEn: "Connect With Chefs",
+    titleAr: "تواصل مع الطهاة",
+    descEn: "Follow chefs, comment on posts, and share content you love.",
+    descAr: "تابع الطهاة وعلّق على المنشورات وشارك المحتوى.",
+  },
 ];
 
 export function GuidedTour() {
