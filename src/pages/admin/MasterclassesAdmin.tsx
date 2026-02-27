@@ -27,6 +27,7 @@ import { format } from "date-fns";
 import { ModuleLessonManager } from "@/components/masterclass/ModuleLessonManager";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
+import { MasterclassInsightsWidget } from "@/components/admin/MasterclassInsightsWidget";
 
 export default function MasterclassesAdmin() {
   const { language } = useLanguage();
@@ -191,6 +192,8 @@ export default function MasterclassesAdmin() {
           </Button>
         }
       />
+
+      <MasterclassInsightsWidget />
 
       {/* Create Form */}
       {showCreateForm && (
