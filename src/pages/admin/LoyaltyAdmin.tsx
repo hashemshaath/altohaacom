@@ -16,6 +16,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { LoyaltyOverviewWidget } from "@/components/admin/LoyaltyOverviewWidget";
 import { LoyaltyLiveStatsWidget } from "@/components/admin/LoyaltyLiveStatsWidget";
+import { WalletAdminOverview } from "@/components/admin/WalletAdminOverview";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();
@@ -143,6 +144,7 @@ export default function LoyaltyAdmin() {
       />
 
       <LoyaltyLiveStatsWidget />
+      <WalletAdminOverview />
       <LoyaltyOverviewWidget />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

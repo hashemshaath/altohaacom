@@ -25,6 +25,7 @@ import { CandidateSelector } from "@/components/certificates/CandidateSelector";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CertificateAnalyticsWidget } from "@/components/admin/CertificateAnalyticsWidget";
 import { CertificatesLiveWidget } from "@/components/admin/CertificatesLiveWidget";
+import { CertificateWorkflowTracker } from "@/components/admin/CertificateWorkflowTracker";
 import {
   Award, FileText, Users, Send, Download, Search, Plus, Edit, Trash2, Eye,
   CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette,
@@ -350,6 +351,9 @@ export default function CertificatesAdmin() {
           </div>
         }
       />
+
+      {/* Certificate Pipeline Tracker */}
+      <CertificateWorkflowTracker />
 
       {/* Certificate Analytics */}
       <CertificatesLiveWidget />
