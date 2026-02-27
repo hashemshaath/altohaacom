@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
+import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
 import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -433,7 +434,8 @@ export default function ExhibitionsAdmin() {
         }
       />
 
-      {/* Exhibition Analytics Widget */}
+      {/* Exhibition Analytics Widgets */}
+      <ExhibitionLiveStatsWidget />
       <ExhibitionAnalyticsWidget />
 
       {/* Exhibition Management Widget */}
