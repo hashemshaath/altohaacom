@@ -13794,6 +13794,54 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          id: string
+          referral_code: string
+          referred_bonus_points: number | null
+          referred_discount_percent: number | null
+          referred_id: string
+          referrer_bonus_points: number | null
+          referrer_discount_percent: number | null
+          referrer_id: string
+          status: string
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code: string
+          referred_bonus_points?: number | null
+          referred_discount_percent?: number | null
+          referred_id: string
+          referrer_bonus_points?: number | null
+          referrer_discount_percent?: number | null
+          referrer_id: string
+          status?: string
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referred_bonus_points?: number | null
+          referred_discount_percent?: number | null
+          referred_id?: string
+          referrer_bonus_points?: number | null
+          referrer_discount_percent?: number | null
+          referrer_id?: string
+          status?: string
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mentee_enrollments: {
         Row: {
           created_at: string
