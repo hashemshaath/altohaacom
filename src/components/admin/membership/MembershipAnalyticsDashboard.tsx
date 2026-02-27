@@ -12,8 +12,10 @@ import {
   TrendingUp, TrendingDown, Users, DollarSign,
   ArrowUpCircle, ArrowDownCircle, UserPlus, Crown, Gift
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { format, subMonths, startOfMonth, endOfMonth, differenceInDays } from "date-fns";
+import { AdminExportButton } from "@/components/admin/AdminExportButton";
+import { useAdminExport } from "@/hooks/useAdminExport";
 
 const TIER_COLORS: Record<string, string> = {
   basic: "hsl(var(--muted-foreground))",
@@ -188,6 +190,49 @@ export default function MembershipAnalyticsDashboard() {
   const totalUpgrades = movementTrends?.reduce((s, m) => s + m.upgrades, 0) || 0;
   const totalDowngrades = movementTrends?.reduce((s, m) => s + m.downgrades, 0) || 0;
 
+  const { exportData, isExporting } = useAdminExport();
+
+  const handleExport = useCallback((fmt: "csv" | "json") => {
+    const rows: Record<string, unknown>[] = [];
+    // Tier distribution
+    for (const t of tierDist || []) {
+      rows.push({ section: "Tier Distribution", tier: t.tier, count: t.value, percentage: t.pct });
+    }
+    // Movement trends
+    for (const m of movementTrends || []) {
+      rows.push({ section: "Movement Trends", month: m.label, upgrades: m.upgrades, downgrades: m.downgrades, net: m.net });
+    }
+    // Revenue
+    for (const r of revenueTrend?.months || []) {
+      rows.push({ section: "Revenue", month: r.label, revenue_sar: r.revenue });
+    }
+    // Summary
+    rows.push({
+      section: "Summary", total_members: summary?.total, active: summary?.active,
+      paid: summary?.paid, new_this_month: summary?.newThisMonth, expiring_soon: summary?.expiringSoon,
+      conversion_rate: conversionRate, mrr_sar: revenueTrend?.currentMRR,
+    });
+
+    exportData(rows, [
+      { key: "section", label: "Section" },
+      { key: "tier", label: "Tier" },
+      { key: "month", label: "Month" },
+      { key: "count", label: "Count" },
+      { key: "percentage", label: "%" },
+      { key: "upgrades", label: "Upgrades" },
+      { key: "downgrades", label: "Downgrades" },
+      { key: "net", label: "Net" },
+      { key: "revenue_sar", label: "Revenue (SAR)" },
+      { key: "total_members", label: "Total Members" },
+      { key: "active", label: "Active" },
+      { key: "paid", label: "Paid" },
+      { key: "new_this_month", label: "New This Month" },
+      { key: "expiring_soon", label: "Expiring Soon" },
+      { key: "conversion_rate", label: "Conversion Rate" },
+      { key: "mrr_sar", label: "MRR (SAR)" },
+    ], { filename: "membership-analytics", format: fmt });
+  }, [tierDist, movementTrends, revenueTrend, summary, conversionRate, exportData]);
+
   if (tierLoading) {
     return (
       <div className="space-y-4">
@@ -201,6 +246,11 @@ export default function MembershipAnalyticsDashboard() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* Export */}
+      <div className="flex justify-end">
+        <AdminExportButton onExport={handleExport} isExporting={isExporting} />
+      </div>
+
       {/* KPI Cards */}
       <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
         <KPICard

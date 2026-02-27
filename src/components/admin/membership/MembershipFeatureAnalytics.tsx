@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { TrendingUp, Eye, ShieldX, Zap, Star, Crown } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { format, subDays } from "date-fns";
+import { AdminExportButton } from "@/components/admin/AdminExportButton";
+import { useAdminExport } from "@/hooks/useAdminExport";
 
 const TIER_COLORS: Record<string, string> = {
   basic: "hsl(var(--muted-foreground))",
@@ -106,16 +108,19 @@ export default function MembershipFeatureAnalytics() {
           <h3 className="text-lg font-bold">{isAr ? "تحليلات استخدام المميزات" : "Feature Usage Analytics"}</h3>
           <p className="text-sm text-muted-foreground">{isAr ? "تتبع استخدام المميزات حسب مستوى العضوية" : "Track feature access patterns by membership tier"}</p>
         </div>
-        <Select value={days} onValueChange={setDays}>
-          <SelectTrigger className="w-[140px] h-8 text-xs">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7">{isAr ? "٧ أيام" : "7 days"}</SelectItem>
-            <SelectItem value="30">{isAr ? "٣٠ يوم" : "30 days"}</SelectItem>
-            <SelectItem value="90">{isAr ? "٩٠ يوم" : "90 days"}</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={days} onValueChange={setDays}>
+            <SelectTrigger className="w-[140px] h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">{isAr ? "٧ أيام" : "7 days"}</SelectItem>
+              <SelectItem value="30">{isAr ? "٣٠ يوم" : "30 days"}</SelectItem>
+              <SelectItem value="90">{isAr ? "٩٠ يوم" : "90 days"}</SelectItem>
+            </SelectContent>
+          </Select>
+          <FeatureExportButton featureAgg={featureAgg} isAr={isAr} />
+        </div>
       </div>
 
       {/* KPI Cards */}
@@ -276,4 +281,34 @@ export default function MembershipFeatureAnalytics() {
       </Card>
     </div>
   );
+}
+
+function FeatureExportButton({ featureAgg, isAr }: { featureAgg: any[]; isAr: boolean }) {
+  const { exportData, isExporting } = useAdminExport();
+
+  const handleExport = useCallback((fmt: "csv" | "json") => {
+    const rows = featureAgg.map((f) => ({
+      feature: isAr ? f.nameAr : f.name,
+      code: f.code,
+      category: f.category,
+      basic: f.byTier.basic || 0,
+      professional: f.byTier.professional || 0,
+      enterprise: f.byTier.enterprise || 0,
+      total: f.total,
+      blocked: f.blocked,
+    }));
+
+    exportData(rows, [
+      { key: "feature", label: "Feature" },
+      { key: "code", label: "Code" },
+      { key: "category", label: "Category" },
+      { key: "basic", label: "Basic" },
+      { key: "professional", label: "Professional" },
+      { key: "enterprise", label: "Enterprise" },
+      { key: "total", label: "Total" },
+      { key: "blocked", label: "Blocked" },
+    ], { filename: "membership-feature-usage", format: fmt });
+  }, [featureAgg, isAr, exportData]);
+
+  return <AdminExportButton onExport={handleExport} isExporting={isExporting} />;
 }
