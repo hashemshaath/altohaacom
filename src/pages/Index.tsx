@@ -1,5 +1,6 @@
 import { lazy, Suspense, memo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { SectionReveal } from "@/components/ui/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -13,6 +14,7 @@ import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 const HeroSlider = lazy(() => import("@/components/home/HeroSlider").then(m => ({ default: m.HeroSlider })));
 const HomeSearch = lazy(() => import("@/components/home/HomeSearch").then(m => ({ default: m.HomeSearch })));
 const HomeStats = lazy(() => import("@/components/home/HomeStats").then(m => ({ default: m.HomeStats })));
+const HomeQuickActions = lazy(() => import("@/components/home/HomeQuickActions").then(m => ({ default: m.HomeQuickActions })));
 const HomepageV2 = lazy(() => import("@/components/home/HomepageV2").then(m => ({ default: m.HomepageV2 })));
 
 // Lazy load below-fold components
@@ -129,6 +131,9 @@ const Index = () => {
           {/* 3. Platform Stats */}
           {isVisible(sections, "stats") && <HomeStats />}
 
+          {/* 3.5 Quick Actions Grid */}
+          <Suspense fallback={null}><HomeQuickActions /></Suspense>
+
           {/* Ad banner top */}
           {isVisible(sections, "ad_banner_top") && (
             <Suspense fallback={<LazyFallback type="banner" />}>
@@ -145,9 +150,11 @@ const Index = () => {
               const entry = SECTION_MAP[s.section_key];
               if (!entry) return null;
               return (
-                <Suspense key={s.section_key} fallback={<LazyFallback type={entry.fallback} />}>
-                  <entry.Component />
-                </Suspense>
+                <SectionReveal key={s.section_key} delay={idx * 60}>
+                  <Suspense fallback={<LazyFallback type={entry.fallback} />}>
+                    <entry.Component />
+                  </Suspense>
+                </SectionReveal>
               );
             })}
 
