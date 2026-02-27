@@ -41,6 +41,8 @@ import { HomepageLivePreview } from "@/components/admin/settings/homepage/Homepa
 import { SectionPresets } from "@/components/admin/settings/homepage/SectionPresets";
 import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
 import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
+import { DatabaseOverviewWidget } from "@/components/admin/DatabaseOverviewWidget";
+import { RecentAdminActions } from "@/components/admin/RecentAdminActions";
 import { useHomepageSections, useUpdateHomepageSection } from "@/hooks/useHomepageSections";
 
 const tabs = [
@@ -152,6 +154,12 @@ export default function SystemSettings() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Data & Actions Overview */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <DatabaseOverviewWidget />
+            <RecentAdminActions />
           </div>
 
           {/* Configuration Progress */}
