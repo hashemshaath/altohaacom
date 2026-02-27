@@ -3,6 +3,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CompetitionPipelineTracker } from "@/components/admin/CompetitionPipelineTracker";
 import { JudgingOverviewWidget } from "@/components/admin/JudgingOverviewWidget";
 import { RegistrationTimelineWidget } from "@/components/admin/RegistrationTimelineWidget";
+import { CompetitionAnalyticsWidget } from "@/components/admin/CompetitionAnalyticsWidget";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -325,6 +326,9 @@ export default function CompetitionsAdmin() {
           </div>
         }
       />
+
+      {/* Competition Analytics */}
+      <CompetitionAnalyticsWidget />
 
       {/* Bulk Import */}
       {showBulkImport && (

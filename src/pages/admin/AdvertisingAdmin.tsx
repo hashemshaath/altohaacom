@@ -26,6 +26,7 @@ import { SnapPixelPanel } from "@/components/ads/SnapPixelPanel";
 import { AdAIInsightsPanel } from "@/components/ads/AdAIInsightsPanel";
 import { AdAdvancedReporting } from "@/components/ads/AdAdvancedReporting";
 import { AdRejectionDialog } from "@/components/ads/AdRejectionDialog";
+import { AdCampaignAnalyticsWidget } from "@/components/admin/AdCampaignAnalyticsWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -302,6 +303,9 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           ) : undefined
         }
       />
+
+      {/* Ad Campaign Analytics */}
+      <AdCampaignAnalyticsWidget />
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-4">
