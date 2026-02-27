@@ -21318,6 +21318,8 @@ export type Database = {
         }
         Returns: string
       }
+      notify_membership_expiry_reminders: { Args: never; Returns: undefined }
+      notify_trial_expiry_reminders: { Args: never; Returns: undefined }
       notify_upcoming_exhibitions: { Args: never; Returns: undefined }
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
