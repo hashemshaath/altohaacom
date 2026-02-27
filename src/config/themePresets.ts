@@ -1,22 +1,24 @@
 // Shared theme preset definitions used by both admin panel and runtime application
 // Designed specifically for the hospitality, culinary & hotel industry
-// Each preset: 2 primary tones + 5 coordinated secondary/accent/surface tones
+// Each preset: 3 primary tones + 7 coordinated secondary/surface tones
 
 export const THEME_PRESETS = [
   {
     id: "gold",
     nameEn: "Maison Dorée",
     nameAr: "البيت الذهبي",
-    descEn: "Warm gold & deep espresso — luxury hotel elegance with culinary warmth",
-    descAr: "ذهبي دافئ وبني إسبريسو — أناقة الفنادق الفاخرة مع دفء المطابخ",
+    descEn: "Champagne gold, espresso & rose bronze — luxury hotel elegance",
+    descAr: "ذهبي شمبانيا، إسبريسو وبرونز وردي — أناقة الفنادق الفاخرة",
     light: {
-      // Primary 1: Rich Champagne Gold
+      // Primary 1: Champagne Gold
       "--primary": "40 72% 50%",
       "--primary-foreground": "40 20% 99%",
-      // Primary 2: Deep Espresso Brown
+      // Primary 2: Deep Espresso
       "--accent": "25 55% 22%",
       "--accent-foreground": "40 20% 97%",
-      // Secondary 1: Warm Linen
+      // Primary 3: Rose Bronze (destructive slot used as 3rd primary)
+      "--chart-1": "15 50% 42%",
+      // Secondary 1: Warm Linen bg
       "--background": "42 35% 97%",
       "--foreground": "25 45% 8%",
       // Secondary 2: Cream Parchment
@@ -28,9 +30,13 @@ export const THEME_PRESETS = [
       // Secondary 4: Warm Stone
       "--muted": "36 14% 92%",
       "--muted-foreground": "25 18% 42%",
-      // Secondary 5: Antique Bisque border
+      // Secondary 5: Antique Bisque
       "--border": "38 20% 83%",
       "--input": "38 20% 83%",
+      // Secondary 6: Toasted Almond popover
+      "--popover": "41 32% 96%",
+      "--popover-foreground": "25 45% 8%",
+      // Secondary 7: Ring
       "--ring": "40 72% 50%",
     },
     dark: {
@@ -38,6 +44,7 @@ export const THEME_PRESETS = [
       "--primary-foreground": "25 35% 4%",
       "--accent": "30 50% 38%",
       "--accent-foreground": "25 20% 96%",
+      "--chart-1": "15 45% 52%",
       "--background": "22 30% 6%",
       "--foreground": "40 18% 93%",
       "--card": "24 26% 10%",
@@ -48,12 +55,16 @@ export const THEME_PRESETS = [
       "--muted-foreground": "36 14% 52%",
       "--border": "24 18% 17%",
       "--input": "24 18% 17%",
+      "--popover": "24 26% 10%",
+      "--popover-foreground": "40 18% 93%",
       "--ring": "40 75% 56%",
     },
     preview: [
       "hsl(40,72%,50%)",   // Champagne Gold
       "hsl(25,55%,22%)",   // Espresso
+      "hsl(15,50%,42%)",   // Rose Bronze
       "hsl(42,35%,97%)",   // Linen
+      "hsl(40,30%,95%)",   // Parchment
       "hsl(38,22%,91%)",   // Wheat
       "hsl(36,14%,92%)",   // Stone
     ],
@@ -62,8 +73,8 @@ export const THEME_PRESETS = [
     id: "bistro",
     nameEn: "Le Bistro",
     nameAr: "البيسترو",
-    descEn: "Burgundy wine & warm copper — classic French kitchen sophistication",
-    descAr: "نبيذ بورجوندي ونحاسي دافئ — رقي المطبخ الفرنسي الكلاسيكي",
+    descEn: "Burgundy, aged copper & truffle — classic French kitchen sophistication",
+    descAr: "بورجوندي، نحاسي وكمأة — رقي المطبخ الفرنسي الكلاسيكي",
     light: {
       // Primary 1: Rich Burgundy
       "--primary": "350 58% 38%",
@@ -71,7 +82,9 @@ export const THEME_PRESETS = [
       // Primary 2: Aged Copper
       "--accent": "18 52% 34%",
       "--accent-foreground": "18 15% 97%",
-      // Secondary 1: Soft Ecru
+      // Primary 3: Truffle
+      "--chart-1": "330 28% 30%",
+      // Secondary 1: Ecru
       "--background": "30 28% 97%",
       "--foreground": "350 30% 10%",
       // Secondary 2: Warm Ivory
@@ -80,12 +93,16 @@ export const THEME_PRESETS = [
       // Secondary 3: Blush Linen
       "--secondary": "350 14% 92%",
       "--secondary-foreground": "350 25% 15%",
-      // Secondary 4: Dusty Rose surface
+      // Secondary 4: Dusty Rose
       "--muted": "348 10% 93%",
       "--muted-foreground": "350 12% 42%",
-      // Secondary 5: Warm Mauve border
+      // Secondary 5: Warm Mauve
       "--border": "348 14% 84%",
       "--input": "348 14% 84%",
+      // Secondary 6: Petal
+      "--popover": "30 26% 96%",
+      "--popover-foreground": "350 30% 10%",
+      // Secondary 7: Ring
       "--ring": "350 58% 38%",
     },
     dark: {
@@ -93,6 +110,7 @@ export const THEME_PRESETS = [
       "--primary-foreground": "350 20% 4%",
       "--accent": "18 45% 44%",
       "--accent-foreground": "18 15% 96%",
+      "--chart-1": "330 24% 45%",
       "--background": "350 22% 6%",
       "--foreground": "30 16% 93%",
       "--card": "348 20% 10%",
@@ -103,12 +121,16 @@ export const THEME_PRESETS = [
       "--muted-foreground": "348 12% 50%",
       "--border": "350 14% 17%",
       "--input": "350 14% 17%",
+      "--popover": "348 20% 10%",
+      "--popover-foreground": "30 16% 93%",
       "--ring": "350 52% 52%",
     },
     preview: [
       "hsl(350,58%,38%)", // Burgundy
       "hsl(18,52%,34%)",  // Copper
+      "hsl(330,28%,30%)", // Truffle
       "hsl(30,28%,97%)",  // Ecru
+      "hsl(28,24%,95%)",  // Ivory
       "hsl(350,14%,92%)", // Blush
       "hsl(348,10%,93%)", // Dusty Rose
     ],
@@ -117,8 +139,8 @@ export const THEME_PRESETS = [
     id: "terroir",
     nameEn: "Terroir",
     nameAr: "تيروار",
-    descEn: "Olive grove & terracotta — Mediterranean farm-to-table warmth",
-    descAr: "أخضر زيتوني وطيني — دفء البحر المتوسط من المزرعة للمائدة",
+    descEn: "Olive, terracotta & sun-wheat — Mediterranean farm-to-table warmth",
+    descAr: "زيتوني، طيني وقمحي — دفء البحر المتوسط من المزرعة للمائدة",
     light: {
       // Primary 1: Deep Olive
       "--primary": "90 38% 32%",
@@ -126,6 +148,8 @@ export const THEME_PRESETS = [
       // Primary 2: Warm Terracotta
       "--accent": "16 48% 40%",
       "--accent-foreground": "16 15% 97%",
+      // Primary 3: Sun Wheat
+      "--chart-1": "45 55% 52%",
       // Secondary 1: Natural Parchment
       "--background": "45 25% 97%",
       "--foreground": "90 25% 10%",
@@ -138,9 +162,13 @@ export const THEME_PRESETS = [
       // Secondary 4: Dried Herb
       "--muted": "80 8% 92%",
       "--muted-foreground": "90 10% 42%",
-      // Secondary 5: Clay border
+      // Secondary 5: Clay
       "--border": "40 16% 83%",
       "--input": "40 16% 83%",
+      // Secondary 6: Harvest
+      "--popover": "44 24% 96%",
+      "--popover-foreground": "90 25% 10%",
+      // Secondary 7: Ring
       "--ring": "90 38% 32%",
     },
     dark: {
@@ -148,6 +176,7 @@ export const THEME_PRESETS = [
       "--primary-foreground": "90 20% 4%",
       "--accent": "16 42% 48%",
       "--accent-foreground": "16 15% 96%",
+      "--chart-1": "45 48% 55%",
       "--background": "80 20% 6%",
       "--foreground": "45 16% 93%",
       "--card": "80 18% 10%",
@@ -158,12 +187,16 @@ export const THEME_PRESETS = [
       "--muted-foreground": "80 10% 50%",
       "--border": "80 14% 17%",
       "--input": "80 14% 17%",
+      "--popover": "80 18% 10%",
+      "--popover-foreground": "45 16% 93%",
       "--ring": "90 35% 48%",
     },
     preview: [
       "hsl(90,38%,32%)",  // Olive
       "hsl(16,48%,40%)",  // Terracotta
+      "hsl(45,55%,52%)",  // Sun Wheat
       "hsl(45,25%,97%)",  // Parchment
+      "hsl(42,22%,95%)",  // Sandy Cream
       "hsl(100,12%,91%)", // Sage
       "hsl(80,8%,92%)",   // Herb
     ],
@@ -172,8 +205,8 @@ export const THEME_PRESETS = [
     id: "riviera",
     nameEn: "Riviera",
     nameAr: "الريفييرا",
-    descEn: "Aegean teal & sandy pearl — coastal resort luxury and freshness",
-    descAr: "أزرق بحري ولؤلؤي رملي — فخامة المنتجعات الساحلية",
+    descEn: "Aegean teal, navy & coral sand — coastal resort luxury",
+    descAr: "أزرق بحري، كحلي ومرجاني — فخامة المنتجعات الساحلية",
     light: {
       // Primary 1: Deep Teal
       "--primary": "186 52% 36%",
@@ -181,6 +214,8 @@ export const THEME_PRESETS = [
       // Primary 2: Nautical Navy
       "--accent": "210 42% 28%",
       "--accent-foreground": "210 15% 97%",
+      // Primary 3: Coral Sand
+      "--chart-1": "12 55% 60%",
       // Secondary 1: Pearl White
       "--background": "195 22% 97%",
       "--foreground": "210 35% 10%",
@@ -193,9 +228,13 @@ export const THEME_PRESETS = [
       // Secondary 4: Driftwood
       "--muted": "190 8% 92%",
       "--muted-foreground": "200 12% 42%",
-      // Secondary 5: Shore Sand border
+      // Secondary 5: Shore Sand
       "--border": "195 14% 84%",
       "--input": "195 14% 84%",
+      // Secondary 6: Lagoon
+      "--popover": "194 20% 96%",
+      "--popover-foreground": "210 35% 10%",
+      // Secondary 7: Ring
       "--ring": "186 52% 36%",
     },
     dark: {
@@ -203,6 +242,7 @@ export const THEME_PRESETS = [
       "--primary-foreground": "210 25% 4%",
       "--accent": "210 38% 40%",
       "--accent-foreground": "210 15% 96%",
+      "--chart-1": "12 48% 58%",
       "--background": "210 25% 6%",
       "--foreground": "195 14% 93%",
       "--card": "210 22% 10%",
@@ -213,12 +253,16 @@ export const THEME_PRESETS = [
       "--muted-foreground": "195 10% 50%",
       "--border": "210 16% 17%",
       "--input": "210 16% 17%",
+      "--popover": "210 22% 10%",
+      "--popover-foreground": "195 14% 93%",
       "--ring": "186 48% 48%",
     },
     preview: [
       "hsl(186,52%,36%)", // Teal
       "hsl(210,42%,28%)", // Navy
+      "hsl(12,55%,60%)",  // Coral Sand
       "hsl(195,22%,97%)", // Pearl
+      "hsl(192,18%,95%)", // Sea Foam
       "hsl(195,14%,91%)", // Mist
       "hsl(190,8%,92%)",  // Driftwood
     ],
@@ -227,8 +271,8 @@ export const THEME_PRESETS = [
     id: "noir",
     nameEn: "Chef Noir",
     nameAr: "الشيف الأسود",
-    descEn: "Charcoal & brushed silver — Michelin-star minimalism and precision",
-    descAr: "فحمي وفضي — بساطة نجوم ميشلان والدقة",
+    descEn: "Graphite, brushed silver & warm ivory — Michelin-star precision",
+    descAr: "فحمي، فضي ودافئ عاجي — دقة نجوم ميشلان",
     light: {
       // Primary 1: Deep Graphite
       "--primary": "220 14% 28%",
@@ -236,6 +280,8 @@ export const THEME_PRESETS = [
       // Primary 2: Brushed Silver
       "--accent": "220 8% 48%",
       "--accent-foreground": "220 8% 98%",
+      // Primary 3: Warm Gold Accent
+      "--chart-1": "42 50% 48%",
       // Secondary 1: Ivory Linen
       "--background": "40 12% 97%",
       "--foreground": "220 20% 8%",
@@ -248,9 +294,13 @@ export const THEME_PRESETS = [
       // Secondary 4: Smoke
       "--muted": "220 5% 93%",
       "--muted-foreground": "220 6% 42%",
-      // Secondary 5: Pewter border
+      // Secondary 5: Pewter
       "--border": "220 6% 84%",
       "--input": "220 6% 84%",
+      // Secondary 6: Bone
+      "--popover": "40 10% 96%",
+      "--popover-foreground": "220 20% 8%",
+      // Secondary 7: Ring
       "--ring": "220 14% 28%",
     },
     dark: {
@@ -258,6 +308,7 @@ export const THEME_PRESETS = [
       "--primary-foreground": "220 12% 5%",
       "--accent": "220 6% 50%",
       "--accent-foreground": "220 8% 96%",
+      "--chart-1": "42 45% 52%",
       "--background": "220 14% 5%",
       "--foreground": "220 6% 93%",
       "--card": "220 12% 9%",
@@ -268,12 +319,16 @@ export const THEME_PRESETS = [
       "--muted-foreground": "220 6% 50%",
       "--border": "220 10% 16%",
       "--input": "220 10% 16%",
+      "--popover": "220 12% 9%",
+      "--popover-foreground": "220 6% 93%",
       "--ring": "220 10% 65%",
     },
     preview: [
       "hsl(220,14%,28%)", // Graphite
       "hsl(220,8%,48%)",  // Silver
+      "hsl(42,50%,48%)",  // Gold Accent
       "hsl(40,12%,97%)",  // Ivory
+      "hsl(38,10%,95%)",  // White
       "hsl(220,6%,92%)",  // Ash
       "hsl(220,5%,93%)",  // Smoke
     ],
@@ -282,8 +337,8 @@ export const THEME_PRESETS = [
     id: "saffron",
     nameEn: "Saffron Souk",
     nameAr: "سوق الزعفران",
-    descEn: "Saffron orange & royal plum — Arabian hospitality richness",
-    descAr: "زعفراني وبنفسجي ملكي — ثراء الضيافة العربية",
+    descEn: "Saffron, royal plum & henna — Arabian hospitality richness",
+    descAr: "زعفراني، بنفسجي ملكي وحنّاء — ثراء الضيافة العربية",
     light: {
       // Primary 1: Warm Saffron
       "--primary": "28 82% 52%",
@@ -291,6 +346,8 @@ export const THEME_PRESETS = [
       // Primary 2: Royal Plum
       "--accent": "280 35% 32%",
       "--accent-foreground": "280 15% 97%",
+      // Primary 3: Henna Red
+      "--chart-1": "8 55% 40%",
       // Secondary 1: Desert Sand
       "--background": "35 28% 97%",
       "--foreground": "280 25% 10%",
@@ -303,9 +360,13 @@ export const THEME_PRESETS = [
       // Secondary 4: Sandstone
       "--muted": "30 12% 92%",
       "--muted-foreground": "28 14% 42%",
-      // Secondary 5: Date Palm border
+      // Secondary 5: Date Palm
       "--border": "30 16% 83%",
       "--input": "30 16% 83%",
+      // Secondary 6: Oud
+      "--popover": "34 26% 96%",
+      "--popover-foreground": "280 25% 10%",
+      // Secondary 7: Ring
       "--ring": "28 82% 52%",
     },
     dark: {
@@ -313,6 +374,7 @@ export const THEME_PRESETS = [
       "--primary-foreground": "28 30% 4%",
       "--accent": "280 30% 45%",
       "--accent-foreground": "280 15% 96%",
+      "--chart-1": "8 48% 50%",
       "--background": "280 18% 6%",
       "--foreground": "35 16% 93%",
       "--card": "280 16% 10%",
@@ -323,12 +385,16 @@ export const THEME_PRESETS = [
       "--muted-foreground": "28 12% 50%",
       "--border": "280 14% 17%",
       "--input": "280 14% 17%",
+      "--popover": "280 16% 10%",
+      "--popover-foreground": "35 16% 93%",
       "--ring": "28 78% 56%",
     },
     preview: [
       "hsl(28,82%,52%)",  // Saffron
       "hsl(280,35%,32%)", // Plum
+      "hsl(8,55%,40%)",   // Henna
       "hsl(35,28%,97%)",  // Desert Sand
+      "hsl(32,24%,95%)",  // Cashew
       "hsl(32,18%,91%)",  // Amber
       "hsl(30,12%,92%)",  // Sandstone
     ],
