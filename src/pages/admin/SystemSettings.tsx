@@ -40,6 +40,7 @@ import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel"
 import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
 import { SectionPresets } from "@/components/admin/settings/homepage/SectionPresets";
 import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
+import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
 import { useHomepageSections, useUpdateHomepageSection } from "@/hooks/useHomepageSections";
 
 const tabs = [
@@ -335,8 +336,9 @@ export default function SystemSettings() {
           </Tabs>
 
           {/* Import/Export & Reset */}
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             <SettingsImportExport />
+            <SettingsChangeLog />
             <Card className="border-border/50">
               <CardContent className="p-4 space-y-3">
                 <div>
@@ -351,7 +353,6 @@ export default function SystemSettings() {
                   className="gap-1.5"
                   onClick={() => {
                     if (window.confirm(isAr ? "هل أنت متأكد؟ سيتم حذف جميع الإعدادات المخصصة." : "Are you sure? All custom settings will be removed.")) {
-                      // Reset theme and typography to defaults
                       handleSave("theme", { preset: "gold" }, "appearance");
                       handleSave("typography", { bodyFont: "dm-sans", headingFont: "dm-serif" }, "appearance");
                       localStorage.removeItem("altoha_theme_preset");
