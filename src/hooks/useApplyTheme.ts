@@ -57,9 +57,9 @@ export function useApplyTheme() {
     };
   }, [settings]);
 
-  // Also re-apply when dark mode toggles
+  // Re-apply when dark mode toggles or user changes theme via personalization widget
   useEffect(() => {
-    const observer = new MutationObserver(() => {
+    const applyCurrentTheme = () => {
       const globalPresetId = (settings.theme as any)?.preset || "gold";
       const localPresetId = localStorage.getItem(LOCAL_THEME_KEY);
       const activePresetId = localPresetId || globalPresetId;
@@ -74,13 +74,31 @@ export function useApplyTheme() {
       Object.entries(vars).forEach(([prop, val]) => {
         root.style.setProperty(prop, val);
       });
-    });
 
+      // Re-apply fonts
+      const globalTypo = (settings.typography as any) || {};
+      const localBodyFont = localStorage.getItem(LOCAL_FONT_KEY);
+      const localHeadingFont = localStorage.getItem(LOCAL_HEADING_FONT_KEY);
+      const bodyFontId = localBodyFont || globalTypo.bodyFont || "dm-sans";
+      const headingFontId = localHeadingFont || globalTypo.headingFont || "dm-serif";
+      const bodyFont = FONT_OPTIONS.find((f) => f.id === bodyFontId);
+      const headingFont = HEADING_FONT_OPTIONS.find((f) => f.id === headingFontId);
+      if (bodyFont) root.style.setProperty("--font-sans", bodyFont.family);
+      if (headingFont) root.style.setProperty("--font-serif", headingFont.family);
+    };
+
+    const observer = new MutationObserver(applyCurrentTheme);
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
 
-    return () => observer.disconnect();
+    // Listen for theme-change events from personalization widget
+    window.addEventListener("theme-change", applyCurrentTheme);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("theme-change", applyCurrentTheme);
+    };
   }, [settings]);
 }
