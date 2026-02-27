@@ -13475,6 +13475,8 @@ export type Database = {
       }
       membership_cards: {
         Row: {
+          auto_renew: boolean
+          billing_cycle: string
           card_orientation: string
           card_status: string
           created_at: string
@@ -13482,7 +13484,10 @@ export type Database = {
           id: string
           is_trial: boolean
           issued_at: string
+          last_payment_amount: number | null
           membership_number: string
+          next_billing_date: string | null
+          payment_method: string | null
           renewed_at: string | null
           suspended_at: string | null
           suspended_reason: string | null
@@ -13492,6 +13497,8 @@ export type Database = {
           verification_code: string
         }
         Insert: {
+          auto_renew?: boolean
+          billing_cycle?: string
           card_orientation?: string
           card_status?: string
           created_at?: string
@@ -13499,7 +13506,10 @@ export type Database = {
           id?: string
           is_trial?: boolean
           issued_at?: string
+          last_payment_amount?: number | null
           membership_number: string
+          next_billing_date?: string | null
+          payment_method?: string | null
           renewed_at?: string | null
           suspended_at?: string | null
           suspended_reason?: string | null
@@ -13509,6 +13519,8 @@ export type Database = {
           verification_code: string
         }
         Update: {
+          auto_renew?: boolean
+          billing_cycle?: string
           card_orientation?: string
           card_status?: string
           created_at?: string
@@ -13516,7 +13528,10 @@ export type Database = {
           id?: string
           is_trial?: boolean
           issued_at?: string
+          last_payment_amount?: number | null
           membership_number?: string
+          next_billing_date?: string | null
+          payment_method?: string | null
           renewed_at?: string | null
           suspended_at?: string | null
           suspended_reason?: string | null
