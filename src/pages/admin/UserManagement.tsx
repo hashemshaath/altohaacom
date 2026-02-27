@@ -32,6 +32,7 @@ import { UserQuickActions } from "@/components/admin/UserQuickActions";
 import { UserAdvancedFilters, INITIAL_FILTERS, type FilterValues } from "@/components/admin/UserAdvancedFilters";
 import { AdminUserDetailsDrawer } from "@/components/admin/AdminUserDetailsDrawer";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { UserStatsBar } from "@/components/admin/UserStatsBar";
 import {
   Search, UserX, UserCheck, Eye, Edit, ChevronRight, ChevronLeft, X, Save,
   UserPlus, KeyRound, Mail, Loader2, Upload, Image as ImageIcon, Users, Plus,
@@ -612,61 +613,8 @@ export default function UserManagement() {
         }
       />
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المستخدمين" : "Total Users"}</p>
-                <p className="text-xl font-bold">{usersData?.totalCount || 0}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-chart-5/10 flex items-center justify-center">
-                <CheckCircle2 className="h-5 w-5 text-chart-5" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "نشط" : "Active"}</p>
-                <p className="text-xl font-bold">{filteredUsers?.filter(u => u.account_status === "active").length || 0}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                <Shield className="h-5 w-5 text-chart-4" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
-                <p className="text-xl font-bold">{filteredUsers?.filter(u => u.account_status === "pending").length || 0}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-destructive/10 flex items-center justify-center">
-                <UserX className="h-5 w-5 text-destructive" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">{isAr ? "موقوف/محظور" : "Suspended"}</p>
-                <p className="text-xl font-bold">{filteredUsers?.filter(u => u.account_status === "suspended" || u.account_status === "banned").length || 0}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Stats Bar */}
+      <UserStatsBar />
 
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-2">

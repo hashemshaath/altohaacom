@@ -1,5 +1,6 @@
 import { useState } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -1208,6 +1209,9 @@ export default function OrdersAdmin() {
         title={isAr ? "إدارة الطلبات" : "Order Management"}
         description={isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
       />
+
+      {/* Revenue Analytics */}
+      <RevenueAnalyticsWidget />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
