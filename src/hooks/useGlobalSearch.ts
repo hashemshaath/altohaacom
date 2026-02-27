@@ -7,7 +7,7 @@ type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 export interface SearchFilters {
   query: string;
-  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities";
+  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities" | "recipes";
   competitionStatus?: CompetitionStatus | "all";
   isVirtual?: boolean | null;
   articleType?: "news" | "blog" | "exhibition" | "all";
@@ -95,12 +95,27 @@ export interface EntityResult {
   _relevance?: number;
 }
 
+export interface RecipeResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  image_url: string | null;
+  prep_time: number | null;
+  cook_time: number | null;
+  average_rating: number | null;
+  slug: string | null;
+  _relevance?: number;
+}
+
 export interface SearchResults {
   competitions: CompetitionResult[];
   articles: ArticleResult[];
   members: MemberResult[];
   posts: PostResult[];
   entities: EntityResult[];
+  recipes: RecipeResult[];
 }
 
 const DEFAULT_FILTERS: SearchFilters = {
@@ -445,16 +460,43 @@ export function useGlobalSearch() {
     staleTime: 1000 * 60 * 2,
   });
 
+  // Search recipes
+  const { data: recipesData, isLoading: recipesLoading } = useQuery({
+    queryKey: ["search-recipes", debouncedQuery],
+    queryFn: async () => {
+      if (!debouncedQuery || searchWords.length === 0) return [];
+      const cols = ["title", "title_ar", "description", "description_ar"];
+      const { data, error } = await (supabase
+        .from("recipes")
+        .select("id, title, title_ar, description, description_ar, image_url, prep_time, cook_time, average_rating, slug") as any)
+        .eq("status", "published")
+        .or(buildFlexibleFilter(searchWords, cols))
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      if (!data) return [];
+      return sortByRelevance(
+        data.map((r: any) => ({
+          ...r,
+          _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.description, r.description_ar),
+        }))
+      ) as RecipeResult[];
+    },
+    enabled: !!debouncedQuery && searchWords.length > 0,
+    staleTime: 1000 * 60 * 2,
+  });
+
   const results: SearchResults = {
     competitions: competitionsData || [],
     articles: articlesData || [],
     members: membersData || [],
     posts: postsData || [],
     entities: entitiesData || [],
+    recipes: recipesData || [],
   };
 
-  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length;
-  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading;
+  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length + results.recipes.length;
+  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading || recipesLoading;
 
   return {
     filters,

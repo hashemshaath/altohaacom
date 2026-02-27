@@ -30,6 +30,8 @@ import {
   ChevronRight,
   ExternalLink,
   Building2,
+  UtensilsCrossed,
+  Star,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
@@ -132,6 +134,9 @@ export default function Search() {
   if (filters.type === "all" || filters.type === "posts") {
     results.posts.forEach((p) => allItems.push({ type: "post", data: p }));
   }
+  if (filters.type === "all" || filters.type === "recipes") {
+    results.recipes.forEach((r) => allItems.push({ type: "recipe", data: r }));
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -192,6 +197,7 @@ export default function Search() {
                    { value: "articles", icon: FileText, label: isAr ? "المقالات" : "Articles", count: results.articles.length },
                    { value: "members", icon: User, label: isAr ? "الأعضاء" : "Members", count: results.members.length },
                    { value: "entities", icon: Building2, label: isAr ? "الجهات" : "Organizations", count: results.entities.length },
+                   { value: "recipes", icon: UtensilsCrossed, label: isAr ? "الوصفات" : "Recipes", count: results.recipes.length },
                    { value: "posts", icon: MessageSquare, label: isAr ? "المنشورات" : "Posts", count: results.posts.length },
                  ].map((tab) => (
                   <TabsTrigger
@@ -368,6 +374,19 @@ export default function Search() {
                       ))}
                     </ResultSection>
                   )}
+                  {results.recipes.length > 0 && (
+                    <ResultSection
+                      icon={<UtensilsCrossed className="h-4 w-4" />}
+                      title={isAr ? "الوصفات" : "Recipes"}
+                      count={results.recipes.length}
+                      onViewAll={() => updateFilter("type", "recipes")}
+                      isAr={isAr}
+                    >
+                      {results.recipes.slice(0, 5).map((r) => (
+                        <RecipeRow key={r.id} data={r} isAr={isAr} />
+                      ))}
+                    </ResultSection>
+                  )}
                 </>
               )}
 
@@ -387,6 +406,10 @@ export default function Search() {
               {filters.type === "entities" &&
                 results.entities.map((e) => (
                   <EntityRow key={`${e.source}-${e.id}`} data={e} isAr={isAr} />
+                ))}
+              {filters.type === "recipes" &&
+                results.recipes.map((r) => (
+                  <RecipeRow key={r.id} data={r} isAr={isAr} />
                 ))}
               {filters.type === "posts" &&
                 results.posts.map((p) => (
@@ -649,6 +672,58 @@ function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
             <img src={data.image_url} alt="" className="w-full h-full object-cover" />
           </div>
         )}
+      </div>
+    </Link>
+  );
+}
+
+/* ──────────────── Recipe Row ──────────────── */
+function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const title = isAr && data.title_ar ? data.title_ar : data.title;
+  const desc = isAr && data.description_ar ? data.description_ar : data.description;
+  const totalTime = (data.prep_time || 0) + (data.cook_time || 0);
+
+  return (
+    <Link
+      to={`/recipes/${data.slug || data.id}`}
+      className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-14 h-14 rounded-lg bg-accent/30 shrink-0 overflow-hidden mt-0.5">
+          {data.image_url ? (
+            <img src={data.image_url} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <UtensilsCrossed className="h-5 w-5 text-muted-foreground/50" />
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <UtensilsCrossed className="h-3 w-3" />
+            <span>{isAr ? "وصفة" : "Recipe"}</span>
+          </div>
+          <h3 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-1">
+            {title}
+          </h3>
+          {desc && (
+            <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{desc}</p>
+          )}
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/70">
+            {totalTime > 0 && (
+              <span className="flex items-center gap-0.5">
+                <Clock className="h-3 w-3" />
+                {totalTime} {isAr ? "دقيقة" : "min"}
+              </span>
+            )}
+            {data.average_rating > 0 && (
+              <span className="flex items-center gap-0.5">
+                <Star className="h-3 w-3 text-chart-4" />
+                {data.average_rating.toFixed(1)}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </Link>
   );
