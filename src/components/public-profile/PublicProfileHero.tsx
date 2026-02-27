@@ -15,6 +15,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import {
   BadgeCheck, Briefcase, MapPin, UserPlus, UserMinus, Loader2, Clock, Lock, Hash, Heart,
 } from "lucide-react";
+import { MembershipBadge } from "@/components/membership/MembershipBadge";
 
 interface PublicProfileHeroProps {
   profile: any;
@@ -205,12 +206,10 @@ export function PublicProfileHero({
                   </div>
                 )}
 
-                {/* Role badges - only show if no hashtags cover them already */}
+                {/* Membership tier badge */}
                 {profile.membership_tier && profile.membership_tier !== "basic" && (
                   <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                    <Badge variant="outline" className="text-[10px] h-5 border-primary/30 text-primary rounded-lg">
-                      {profile.membership_tier === "professional" ? (isAr ? "محترف" : "Pro") : profile.membership_tier}
-                    </Badge>
+                    <MembershipBadge tier={profile.membership_tier} isAr={isAr} size="md" />
                   </div>
                 )}
               </div>
