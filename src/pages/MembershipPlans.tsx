@@ -13,6 +13,7 @@ import {
   Crown, Star, Zap, Check, X, ArrowRight, Shield,
   Users, BarChart3, Globe, MessageSquare, Award,
   Headphones, BookOpen, ShoppingBag, Sparkles, Clock, Gift,
+  Share2, History, CreditCard,
 } from "lucide-react";
 import { useMembershipFeatures, useFeatureTierMappings } from "@/hooks/useMembershipFeatures";
 import { cn } from "@/lib/utils";
@@ -429,6 +430,42 @@ export default function MembershipPlans() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Membership Hub */}
+          {user && (
+            <div className="mt-12 space-y-4">
+              <div className="text-center">
+                <h3 className="text-xl font-bold">
+                  {isAr ? "مركز العضوية" : "Membership Hub"}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {isAr ? "إدارة عضويتك والاستفادة من جميع المزايا" : "Manage your membership and access all benefits"}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { icon: CreditCard, label: isAr ? "الدفع والترقية" : "Checkout & Upgrade", desc: isAr ? "ترقية أو تجديد عضويتك" : "Upgrade or renew your plan", href: "/membership/checkout?tier=professional" },
+                  { icon: Gift, label: isAr ? "إهداء عضوية" : "Gift a Membership", desc: isAr ? "أهدِ عضوية لصديق" : "Send a membership as a gift", href: "/membership/gift" },
+                  { icon: Share2, label: isAr ? "برنامج الإحالة" : "Referral Program", desc: isAr ? "ادعُ أصدقاءك واكسب نقاط" : "Invite friends & earn points", href: "/membership/referral" },
+                  { icon: History, label: isAr ? "سجل الهدايا" : "Gifts History", desc: isAr ? "تتبع الهدايا المرسلة والمستلمة" : "Track sent & received gifts", href: "/membership/gifts" },
+                ].map((item) => (
+                  <Card
+                    key={item.href}
+                    className="group cursor-pointer hover:shadow-md hover:border-primary/30 transition-all"
+                    onClick={() => navigate(item.href)}
+                  >
+                    <CardContent className="pt-5 pb-4 text-center space-y-2">
+                      <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                        <item.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <p className="text-sm font-semibold">{item.label}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div className="mt-12 text-center space-y-4">
