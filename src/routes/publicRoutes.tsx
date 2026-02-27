@@ -53,6 +53,7 @@ const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
 const EventsCalendar = lazy(() => import("@/pages/EventsCalendar"));
 const SocialLinks = lazy(() => import("@/pages/SocialLinks"));
 const MembershipPlans = lazy(() => import("@/pages/MembershipPlans"));
+const MembershipRedeem = lazy(() => import("@/pages/MembershipRedeem"));
 
 function LegacyLinksRedirect() {
   const { username } = useParams<{ username: string }>();
@@ -114,6 +115,7 @@ export const publicRoutes = (
     <Route path="/about" element={<AboutUs />} />
     <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/membership" element={<MembershipPlans />} />
+    <Route path="/membership/redeem" element={<MembershipRedeem />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
     <Route path="/:username/links" element={<LegacyLinksRedirect />} />
