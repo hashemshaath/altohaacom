@@ -62,6 +62,9 @@ const FanWeeklyDigest = lazy(() => import("@/components/fan/FanWeeklyDigest").th
 const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
 const MessageSearchWidget = lazy(() => import("@/components/messages/MessageSearchWidget").then(m => ({ default: m.MessageSearchWidget })));
 const ActivityHeatmapWidget = lazy(() => import("@/components/dashboard/ActivityHeatmapWidget").then(m => ({ default: m.ActivityHeatmapWidget })));
+const ProfileSummaryCard = lazy(() => import("@/components/dashboard/ProfileSummaryCard").then(m => ({ default: m.ProfileSummaryCard })));
+const RecentOrdersWidget = lazy(() => import("@/components/dashboard/RecentOrdersWidget").then(m => ({ default: m.RecentOrdersWidget })));
+const RecentChatsWidget = lazy(() => import("@/components/dashboard/RecentChatsWidget").then(m => ({ default: m.RecentChatsWidget })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -176,9 +179,12 @@ export default function Dashboard() {
           </div>
           <div className="space-y-6">
             {user && <ProfileCompletionCard />}
+            {user && <W><ProfileSummaryCard /></W>}
             {user && !isFan && <W><ActivityHeatmapWidget /></W>}
             {user && <W><QuickActionsWidget /></W>}
+            {user && <W><RecentChatsWidget /></W>}
             {user && <W><NotificationGroupWidget /></W>}
+            {user && <W><RecentOrdersWidget /></W>}
             {user && <W><MessageSearchWidget /></W>}
             {user && <W><WalletBalanceWidget /></W>}
             {user && <W><StreakWidget /></W>}
