@@ -5,6 +5,7 @@ import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { AdminSearchCommand } from "./AdminSearchCommand";
 import { Button } from "@/components/ui/button";
 import { Home, LogOut } from "lucide-react";
 
@@ -29,6 +30,9 @@ export function AdminHeader() {
           <span className="hidden rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary sm:inline-block">
             {language === "ar" ? "لوحة الإدارة" : "Admin"}
           </span>
+          <div className="hidden sm:block ms-2">
+            <AdminSearchCommand />
+          </div>
         </div>
 
         {/* Right: Actions */}
