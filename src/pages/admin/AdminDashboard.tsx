@@ -4,6 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { AdminAnalyticsWidgets } from "@/components/admin/AdminAnalyticsWidgets";
 import { MLAnalyticsDashboard } from "@/components/admin/MLAnalyticsDashboard";
+import { AdminActivityFeed } from "@/components/admin/AdminActivityFeed";
+import { AdminModerationQueue } from "@/components/admin/AdminModerationQueue";
+import { AdminFinanceOverview } from "@/components/admin/AdminFinanceOverview";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -398,6 +401,12 @@ export default function AdminDashboard() {
 
       {/* ML-Powered Insights */}
       <MLAnalyticsDashboard />
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <AdminActivityFeed />
+        <AdminModerationQueue />
+        <AdminFinanceOverview />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Quick Actions */}
