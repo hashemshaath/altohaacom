@@ -5,93 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, Palette, Save } from "lucide-react";
+import { THEME_PRESETS } from "@/config/themePresets";
 
 interface Props {
   settings: Record<string, any>;
   onSave: (key: string, value: Record<string, any>, category?: string) => void;
   isPending: boolean;
 }
-
-const THEME_PRESETS = [
-  {
-    id: "gold",
-    nameEn: "Gold & Bronze",
-    nameAr: "ذهبي وبرونزي",
-    descEn: "Luxurious warm tones with rich gold accents",
-    descAr: "ألوان دافئة فاخرة بلمسات ذهبية غنية",
-    colors: {
-      primary: "38 78% 48%",
-      accent: "28 70% 28%",
-      background: "45 30% 98%",
-    },
-    preview: ["hsl(38,78%,48%)", "hsl(28,70%,28%)", "hsl(45,30%,98%)"],
-  },
-  {
-    id: "ocean",
-    nameEn: "Ocean Blue",
-    nameAr: "أزرق محيطي",
-    descEn: "Cool professional blues with deep navy accents",
-    descAr: "ألوان زرقاء احترافية بلمسات بحرية عميقة",
-    colors: {
-      primary: "215 72% 50%",
-      accent: "220 60% 30%",
-      background: "210 30% 98%",
-    },
-    preview: ["hsl(215,72%,50%)", "hsl(220,60%,30%)", "hsl(210,30%,98%)"],
-  },
-  {
-    id: "forest",
-    nameEn: "Forest Green",
-    nameAr: "أخضر غابي",
-    descEn: "Natural earthy greens with woodland warmth",
-    descAr: "ألوان خضراء طبيعية بدفء الغابات",
-    colors: {
-      primary: "158 62% 36%",
-      accent: "160 50% 22%",
-      background: "150 20% 98%",
-    },
-    preview: ["hsl(158,62%,36%)", "hsl(160,50%,22%)", "hsl(150,20%,98%)"],
-  },
-  {
-    id: "royal",
-    nameEn: "Royal Purple",
-    nameAr: "أرجواني ملكي",
-    descEn: "Elegant purple tones with regal sophistication",
-    descAr: "ألوان أرجوانية أنيقة بفخامة ملكية",
-    colors: {
-      primary: "270 60% 50%",
-      accent: "280 50% 30%",
-      background: "270 20% 98%",
-    },
-    preview: ["hsl(270,60%,50%)", "hsl(280,50%,30%)", "hsl(270,20%,98%)"],
-  },
-  {
-    id: "sunset",
-    nameEn: "Sunset Red",
-    nameAr: "أحمر غروب",
-    descEn: "Vibrant warm reds with fiery orange highlights",
-    descAr: "ألوان حمراء دافئة نابضة بالحياة مع لمسات برتقالية",
-    colors: {
-      primary: "8 80% 54%",
-      accent: "15 70% 30%",
-      background: "10 25% 98%",
-    },
-    preview: ["hsl(8,80%,54%)", "hsl(15,70%,30%)", "hsl(10,25%,98%)"],
-  },
-  {
-    id: "charcoal",
-    nameEn: "Charcoal & Silver",
-    nameAr: "فحمي وفضي",
-    descEn: "Sleek monochrome with silver metallic accents",
-    descAr: "تصميم أحادي اللون أنيق بلمسات فضية معدنية",
-    colors: {
-      primary: "220 10% 40%",
-      accent: "220 8% 25%",
-      background: "220 10% 98%",
-    },
-    preview: ["hsl(220,10%,40%)", "hsl(220,8%,25%)", "hsl(220,10%,98%)"],
-  },
-];
 
 export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
@@ -105,9 +25,7 @@ export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
   }, [JSON.stringify(themeCfg)]);
 
   const handleSave = () => {
-    const preset = THEME_PRESETS.find((p) => p.id === activePreset);
-    if (!preset) return;
-    onSave("theme", { preset: activePreset, colors: preset.colors }, "appearance");
+    onSave("theme", { preset: activePreset }, "appearance");
   };
 
   return (
@@ -143,7 +61,6 @@ export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
                     <Check className="h-3 w-3 text-primary-foreground" />
                   </div>
                 )}
-                {/* Color Preview */}
                 <div className="flex gap-1.5">
                   {preset.preview.map((color, i) => (
                     <div
