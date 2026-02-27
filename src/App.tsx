@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SiteSettingsProvider } from "@/contexts/SiteSettingsContext";
+import { ThemeApplicator } from "@/components/ThemeApplicator";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -110,6 +111,7 @@ const App = () => (
       <LanguageProvider>
         <AuthProvider>
           <SiteSettingsProvider>
+          <ThemeApplicator />
           <TooltipProvider>
             <Toaster />
             <Sonner />

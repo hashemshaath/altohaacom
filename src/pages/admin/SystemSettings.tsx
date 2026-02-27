@@ -32,6 +32,7 @@ import { LayoutSEOSettings } from "@/components/admin/settings/LayoutSEOSettings
 import { SecurityContentSettings } from "@/components/admin/settings/SecurityContentSettings";
 import { RegistrationSettings } from "@/components/admin/settings/RegistrationSettings";
 import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel";
+import { TypographySettings } from "@/components/admin/settings/TypographySettings";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
 import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
@@ -284,6 +285,7 @@ export default function SystemSettings() {
 
             <TabsContent value="cover" className="mt-0 space-y-6">
               <ThemePresetsPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+              <TypographySettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
               <CoverSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
             </TabsContent>
 
@@ -332,8 +334,37 @@ export default function SystemSettings() {
             </TabsContent>
           </Tabs>
 
-          {/* Import/Export */}
-          <SettingsImportExport />
+          {/* Import/Export & Reset */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <SettingsImportExport />
+            <Card className="border-border/50">
+              <CardContent className="p-4 space-y-3">
+                <div>
+                  <h4 className="text-sm font-semibold">{isAr ? "إعادة ضبط الإعدادات" : "Reset Settings"}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {isAr ? "إعادة جميع الإعدادات إلى القيم الافتراضية" : "Reset all settings to their default values"}
+                  </p>
+                </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => {
+                    if (window.confirm(isAr ? "هل أنت متأكد؟ سيتم حذف جميع الإعدادات المخصصة." : "Are you sure? All custom settings will be removed.")) {
+                      // Reset theme and typography to defaults
+                      handleSave("theme", { preset: "gold" }, "appearance");
+                      handleSave("typography", { bodyFont: "dm-sans", headingFont: "dm-serif" }, "appearance");
+                      localStorage.removeItem("altoha_theme_preset");
+                      localStorage.removeItem("altoha_body_font");
+                      localStorage.removeItem("altoha_heading_font");
+                    }
+                  }}
+                >
+                  {isAr ? "إعادة ضبط" : "Reset to Defaults"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </>
       )}
     </div>
