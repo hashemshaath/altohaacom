@@ -71,6 +71,9 @@ export default function MembershipCheckout() {
   const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
   const isDowngrade = tierOrder[selectedTier] < tierOrder[currentTier];
 
+  const REFERRAL_POINTS_REFERRER = 200;
+  const REFERRAL_POINTS_REFEREE = 100;
+
   const processMutation = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error("Not authenticated");
@@ -123,11 +126,79 @@ export default function MembershipCheckout() {
         type: "membership_upgrade",
         link: "/profile?tab=membership",
       });
+
+      // --- Referral rewards for membership upgrade ---
+      if (!isRenewal && !isDowngrade && currentTier === "basic") {
+        // Check if this user was referred
+        const { data: referralConversion } = await supabase
+          .from("referral_conversions")
+          .select("referrer_id, referral_code_id")
+          .eq("referred_user_id", user.id)
+          .eq("conversion_type", "signup")
+          .maybeSingle();
+
+        if (referralConversion?.referrer_id) {
+          // Check if membership reward already given
+          const { data: existingReward } = await supabase
+            .from("referral_conversions")
+            .select("id")
+            .eq("referred_user_id", user.id)
+            .eq("conversion_type", "membership_upgrade")
+            .maybeSingle();
+
+          if (!existingReward) {
+            // Record the membership conversion
+            await supabase.from("referral_conversions").insert({
+              referral_code_id: referralConversion.referral_code_id,
+              referrer_id: referralConversion.referrer_id,
+              referred_user_id: user.id,
+              conversion_type: "membership_upgrade",
+              points_awarded_referrer: REFERRAL_POINTS_REFERRER,
+              points_awarded_referred: REFERRAL_POINTS_REFEREE,
+              metadata: { tier: selectedTier, billing_cycle: billingCycle },
+            });
+
+            // Award points to referrer
+            await supabase.rpc("award_points", {
+              p_user_id: referralConversion.referrer_id,
+              p_action_type: "referral_membership",
+              p_points: REFERRAL_POINTS_REFERRER,
+              p_description: `Referral bonus: your invite upgraded to ${TIER_NAMES[selectedTier]?.en}`,
+              p_description_ar: `مكافأة إحالة: دعوتك ترقّت إلى ${TIER_NAMES[selectedTier]?.ar}`,
+              p_reference_type: "referral",
+              p_reference_id: user.id,
+            });
+
+            // Award points to referee (current user)
+            await supabase.rpc("award_points", {
+              p_user_id: user.id,
+              p_action_type: "referral_membership_bonus",
+              p_points: REFERRAL_POINTS_REFEREE,
+              p_description: `Welcome bonus for upgrading via referral`,
+              p_description_ar: `مكافأة ترحيبية للترقية عبر الإحالة`,
+              p_reference_type: "referral",
+              p_reference_id: referralConversion.referrer_id,
+            });
+
+            // Notify referrer
+            await supabase.from("notifications").insert({
+              user_id: referralConversion.referrer_id,
+              title: `🎉 Referral reward: +${REFERRAL_POINTS_REFERRER} points!`,
+              title_ar: `🎉 مكافأة إحالة: +${REFERRAL_POINTS_REFERRER} نقطة!`,
+              body: `Someone you referred upgraded to ${TIER_NAMES[selectedTier]?.en}. You earned ${REFERRAL_POINTS_REFERRER} bonus points!`,
+              body_ar: `شخص أحلته ترقّى إلى ${TIER_NAMES[selectedTier]?.ar}. حصلت على ${REFERRAL_POINTS_REFERRER} نقطة!`,
+              type: "referral_reward",
+              link: "/profile?tab=wallet",
+            });
+          }
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checkout-profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-tier"] });
       queryClient.invalidateQueries({ queryKey: ["membership"] });
+      queryClient.invalidateQueries({ queryKey: ["userAllFeatures"] });
       setStep("success");
     },
     onError: (err: Error) => {
