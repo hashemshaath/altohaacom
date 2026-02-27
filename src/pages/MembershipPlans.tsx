@@ -116,7 +116,7 @@ export default function MembershipPlans() {
     if (!user) {
       navigate("/login");
     } else {
-      navigate("/profile?tab=membership");
+      navigate(`/membership/checkout?tier=${tier}`);
     }
   };
 
