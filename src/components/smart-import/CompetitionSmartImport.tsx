@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -11,11 +11,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle, ArrowRight, X,
   ExternalLink, FileText, Trophy, Users, Calendar, Gavel, Award, Upload,
-  Link2, Star, Clock, Shield, ListChecks, Target, Layers,
+  Link2, Star, Clock, Shield, ListChecks, Target, Layers, AlertTriangle,
+  Edit, PlusCircle, Copy,
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import { SOURCE_CHANNELS } from "./types";
@@ -39,6 +39,15 @@ interface SearchResultItem {
   place_type: string | null;
 }
 
+interface DuplicateMatch {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  edition_year: number | null;
+  status: string;
+  competition_start: string;
+}
+
 export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -56,6 +65,31 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
   const [searchTime, setSearchTime] = useState(0);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([]);
+  const [showDuplicatePanel, setShowDuplicatePanel] = useState(false);
+
+  // Check for duplicates when detail data is loaded
+  useEffect(() => {
+    if (!detailData) return;
+    const nameEn = detailData.name_en?.trim();
+    const nameAr = detailData.name_ar?.trim();
+    if (!nameEn && !nameAr) return;
+
+    const checkDuplicates = async () => {
+      let q = supabase.from("competitions").select("id, title, title_ar, edition_year, status, competition_start").limit(10);
+      if (nameEn) q = q.or(`title.ilike.%${nameEn}%${nameAr ? `,title_ar.ilike.%${nameAr}%` : ""}`);
+      else if (nameAr) q = q.ilike("title_ar", `%${nameAr}%`);
+      const { data } = await q;
+      if (data && data.length > 0) {
+        setDuplicates(data);
+        setShowDuplicatePanel(true);
+      } else {
+        setDuplicates([]);
+        setShowDuplicatePanel(false);
+      }
+    };
+    checkDuplicates();
+  }, [detailData]);
 
   // Search for competitions
   const handleSearch = useCallback(async () => {
@@ -117,7 +151,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [urlInput, isAr]);
 
-  // Import from PDF text (paste or file)
+  // Import from PDF text
   const handlePdfImport = useCallback(async (textContent: string) => {
     if (!textContent.trim()) return;
     setPhase("loading-details");
@@ -137,7 +171,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [isAr]);
 
-  // Handle file upload - supports PDF, DOCX, TXT
+  // Handle file upload
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -172,9 +206,16 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     setPhase("idle");
     setDetailData(null);
     setResults([]);
+    setDuplicates([]);
+    setShowDuplicatePanel(false);
   };
 
   const qualityColor = dataQuality >= 70 ? "text-green-600" : dataQuality >= 40 ? "text-chart-4" : "text-destructive";
+
+  // Build display title with version
+  const displayTitle = detailData
+    ? [detailData.name_en || detailData.name_ar, detailData.edition_year && `(${detailData.edition_year})`].filter(Boolean).join(" ")
+    : "";
 
   return (
     <Card className="border-primary/20 bg-gradient-to-br from-primary/[0.02] to-transparent">
@@ -390,15 +431,15 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
           </div>
         )}
 
-        {/* Detail View */}
+        {/* Detail View — Full Browsable Preview */}
         {phase === "details" && detailData && (
           <div className="space-y-4">
-            {/* Header bar */}
-            <div className="flex items-center justify-between">
-              <Button variant="ghost" size="sm" onClick={resetToSearch} className="gap-1 text-xs">
+            {/* Header bar with title + version */}
+            <div className="flex items-center justify-between gap-2">
+              <Button variant="ghost" size="sm" onClick={resetToSearch} className="gap-1 text-xs shrink-0">
                 ← {isAr ? "بحث جديد" : "Back"}
               </Button>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap justify-end">
                 {Object.entries(sourcesUsed).filter(([, v]) => v).map(([key]) => {
                   const ch = SOURCE_CHANNELS[key as keyof typeof SOURCE_CHANNELS];
                   if (!ch) return null;
@@ -415,7 +456,81 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               </div>
             </div>
 
-            <ScrollArea className="max-h-[500px]">
+            {/* Title with version prominently displayed */}
+            <div className="rounded-lg border bg-muted/20 p-3 space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Trophy className="h-4 w-4 text-primary shrink-0" />
+                <h3 className="text-sm font-bold">{displayTitle}</h3>
+                {detailData.edition_year && (
+                  <Badge variant="secondary" className="text-[10px]">
+                    {isAr ? `النسخة ${detailData.edition_year}` : `Edition ${detailData.edition_year}`}
+                  </Badge>
+                )}
+              </div>
+              {detailData.name_ar && detailData.name_en && (
+                <p className="text-xs text-muted-foreground">{detailData.name_ar} {detailData.edition_year && `(${detailData.edition_year})`}</p>
+              )}
+              {detailData.competition_type && (
+                <Badge variant="outline" className="text-[10px]">{detailData.competition_type}</Badge>
+              )}
+            </div>
+
+            {/* Duplicate Warning Panel */}
+            {showDuplicatePanel && duplicates.length > 0 && (
+              <div className="rounded-lg border border-chart-4/40 bg-chart-4/5 p-3 space-y-2">
+                <div className="flex items-center gap-2 text-chart-4">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span className="text-xs font-semibold">
+                    {isAr ? `تم العثور على ${duplicates.length} مسابقة مشابهة` : `${duplicates.length} similar competition(s) found`}
+                  </span>
+                </div>
+                <div className="space-y-1.5">
+                  {duplicates.map((dup) => (
+                    <div key={dup.id} className="flex items-center justify-between gap-2 p-2 rounded-lg border bg-background text-xs">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">
+                          {dup.title} {dup.edition_year && `(${dup.edition_year})`}
+                        </p>
+                        {dup.title_ar && <p className="text-muted-foreground truncate">{dup.title_ar}</p>}
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Badge variant="outline" className="text-[9px] h-4 px-1">{dup.status}</Badge>
+                          {dup.competition_start && (
+                            <span className="text-muted-foreground text-[10px]">
+                              {new Date(dup.competition_start).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-[10px] gap-1"
+                          onClick={() => window.open(`/competitions/${dup.id}`, "_blank")}
+                        >
+                          <Edit className="h-3 w-3" />
+                          {isAr ? "تعديل" : "Edit"}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-1.5 text-xs"
+                    onClick={() => setShowDuplicatePanel(false)}
+                  >
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    {isAr ? "إضافة كمسابقة جديدة" : "Add as New Competition"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Full scrollable data preview */}
+            <ScrollArea className="max-h-[60vh]">
               <div className="space-y-3 pe-2">
                 {/* Basic Info */}
                 <DetailSection icon={Trophy} title={isAr ? "معلومات المسابقة" : "Competition Info"}>
@@ -424,7 +539,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                     <Field label="الاسم (AR)" value={detailData.name_ar} />
                   </div>
                   {(detailData.description_en || detailData.description_ar) && (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-2">
                       <Field label="Description (EN)" value={detailData.description_en} multi />
                       <Field label="الوصف (AR)" value={detailData.description_ar} multi />
                     </div>
@@ -455,14 +570,14 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                       {detailData.competition_schedule.map((s, i) => (
                         <div key={i} className="flex items-start gap-2 text-xs p-1.5 rounded bg-muted/30">
                           <span className="font-mono text-muted-foreground shrink-0 w-16">{s.time}</span>
-                          <span>{isAr ? s.activity_ar || s.activity : s.activity}</span>
+                          <span className="flex-1">{isAr ? s.activity_ar || s.activity : s.activity}</span>
                         </div>
                       ))}
                     </div>
                   </DetailSection>
                 ) : null}
 
-                {/* Versions */}
+                {/* Versions / Categories */}
                 {detailData.competition_versions?.length ? (
                   <DetailSection icon={Layers} title={isAr ? "فئات / نسخ المسابقة" : "Competition Versions / Categories"}>
                     <div className="space-y-1.5">
@@ -587,19 +702,39 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                 )}
 
                 {/* Extra details */}
-                <div className="grid grid-cols-3 gap-2">
-                  <Field label={isAr ? "الحد الأقصى للفريق" : "Max Team"} value={detailData.max_team_size?.toString()} />
-                  <Field label={isAr ? "الحد الأدنى للفريق" : "Min Team"} value={detailData.min_team_size?.toString()} />
-                  <Field label={isAr ? "تحكيم مخفي" : "Blind Judging"} value={detailData.blind_judging != null ? (detailData.blind_judging ? "✅" : "❌") : null} />
-                </div>
-                {detailData.dress_code && (
-                  <Field label={isAr ? "الزي المطلوب" : "Dress Code"} value={[detailData.dress_code, detailData.dress_code_ar].filter(Boolean).join(" / ")} />
-                )}
+                <DetailSection icon={ListChecks} title={isAr ? "تفاصيل إضافية" : "Additional Details"}>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Field label={isAr ? "الحد الأقصى للفريق" : "Max Team"} value={detailData.max_team_size?.toString()} />
+                    <Field label={isAr ? "الحد الأدنى للفريق" : "Min Team"} value={detailData.min_team_size?.toString()} />
+                    <Field label={isAr ? "تحكيم مخفي" : "Blind Judging"} value={detailData.blind_judging != null ? (detailData.blind_judging ? "✅" : "❌") : null} />
+                    <Field label={isAr ? "افتراضي" : "Virtual"} value={detailData.is_virtual != null ? (detailData.is_virtual ? "✅" : "❌") : null} />
+                    <Field label={isAr ? "أقصى عدد حضور" : "Max Attendees"} value={detailData.max_attendees?.toString()} />
+                  </div>
+                  {detailData.dress_code && (
+                    <Field label={isAr ? "الزي المطلوب" : "Dress Code"} value={[detailData.dress_code, detailData.dress_code_ar].filter(Boolean).join(" / ")} />
+                  )}
+                  {detailData.allowed_entry_types?.length ? (
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] font-medium text-muted-foreground uppercase">{isAr ? "أنواع المشاركة" : "Entry Types"}</span>
+                      <div className="flex flex-wrap gap-1">
+                        {detailData.allowed_entry_types.map((t, i) => (
+                          <Badge key={i} variant="outline" className="text-[10px]">{t}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </DetailSection>
               </div>
             </ScrollArea>
 
             {/* Action Buttons */}
             <div className="flex gap-2">
+              {duplicates.length > 0 && !showDuplicatePanel && (
+                <Button variant="outline" size="sm" className="gap-1.5 text-chart-4" onClick={() => setShowDuplicatePanel(true)}>
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  {isAr ? `${duplicates.length} مشابه` : `${duplicates.length} similar`}
+                </Button>
+              )}
               <Button onClick={handleUseData} className="flex-1 gap-2">
                 <CheckCircle className="h-4 w-4" />
                 {isAr ? "استخدام هذه البيانات وإنشاء مسابقة" : "Use Data & Create Competition"}
@@ -632,7 +767,7 @@ const Field = React.memo(React.forwardRef<HTMLDivElement, { label: string; value
         {multi ? (
           <p className="text-xs whitespace-pre-line leading-relaxed">{value}</p>
         ) : (
-          <p className="text-xs truncate" title={value}>{value}</p>
+          <p className="text-xs" title={value}>{value}</p>
         )}
       </div>
     );
