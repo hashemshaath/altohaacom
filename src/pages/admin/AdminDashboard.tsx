@@ -35,6 +35,9 @@ import { AdminQuickNavWidget } from "@/components/admin/AdminQuickNavWidget";
 import { PageNavigationWidget } from "@/components/admin/PageNavigationWidget";
 import { DashboardLiveMetricsWidget } from "@/components/admin/DashboardLiveMetricsWidget";
 import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
+import { CommunityEngagementWidget } from "@/components/admin/CommunityEngagementWidget";
+import { ProfileCompletenessWidget } from "@/components/admin/ProfileCompletenessWidget";
+import { ShopOrdersOverviewWidget } from "@/components/admin/ShopOrdersOverviewWidget";
 import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
 import { ScheduledExportWidget } from "@/components/admin/ScheduledExportWidget";
 import { AdminKeyboardShortcuts, ShortcutHintsCard } from "@/components/admin/AdminKeyboardShortcuts";
@@ -473,6 +476,13 @@ export default function AdminDashboard() {
       </div>
 
       <PageNavigationWidget />
+
+      {/* ── Row: Community + Profile + Shop ── */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <CommunityEngagementWidget />
+        <ProfileCompletenessWidget />
+        <ShopOrdersOverviewWidget />
+      </div>
 
       {/* ── Row: Activity Feed + Moderation + Alerts + Finance ── */}
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">

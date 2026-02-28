@@ -42,6 +42,7 @@ import { TicketPerformanceWidget } from "@/components/admin/TicketPerformanceWid
 import { TicketEscalationWidget } from "@/components/admin/TicketEscalationWidget";
 import { SupportSatisfactionWidget } from "@/components/admin/SupportSatisfactionWidget";
 import { MessagingAdminOverview } from "@/components/admin/MessagingAdminOverview";
+import { SupportOverviewWidget } from "@/components/admin/SupportOverviewWidget";
 import {
   Ticket,
   Search,
@@ -301,6 +302,9 @@ export default function SupportTicketsAdmin() {
 
       {/* Messaging Overview */}
       <MessagingAdminOverview />
+
+      {/* Support Overview */}
+      <SupportOverviewWidget />
 
       {/* Performance Widget */}
       <TicketPerformanceWidget />
