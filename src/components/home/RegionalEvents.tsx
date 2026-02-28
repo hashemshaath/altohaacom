@@ -111,7 +111,7 @@ export function RegionalEvents() {
                 <ArrowRight className="h-4 w-4" />
               </button>
 
-              <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar" style={{ scrollbarWidth: "none" }} dir={isAr ? "rtl" : "ltr"}>
+              <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as any} dir={isAr ? "rtl" : "ltr"}>
                 {filteredComps.map((item: any) => (
                   <EventCard key={item.id} item={item} isAr={isAr} />
                 ))}
@@ -149,7 +149,7 @@ function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
   const StatusIcon = s.icon;
 
   return (
-    <Link to={`/competitions/${item.id}`} className="group block w-[200px] sm:w-[220px] flex-shrink-0 snap-start">
+    <Link to={`/competitions/${item.id}`} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
       <Card interactive className="h-full overflow-hidden border-border/50">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {item.cover_image_url ? (

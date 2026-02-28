@@ -1,4 +1,4 @@
-import { lazy, Suspense, memo, useEffect, useMemo } from "react";
+import { lazy, Suspense, memo, useEffect, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,6 +10,7 @@ import { useAdTracking } from "@/hooks/useAdTracking";
 import { prefetchCommonRoutes } from "@/lib/prefetch";
 import { useHomepageSections, type HomepageSection } from "@/hooks/useHomepageSections";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
+import { useInViewport } from "@/hooks/useInViewport";
 
 // Above-fold components — eagerly imported for optimal LCP
 import { HeroSlider } from "@/components/home/HeroSlider";
@@ -65,6 +66,38 @@ const LazyFallback = memo(({ type = "grid" }: { type?: "grid" | "cards" | "banne
 });
 LazyFallback.displayName = "LazyFallback";
 
+/**
+ * Viewport-aware section wrapper — only renders the lazy component 
+ * when approaching the viewport (200px ahead), drastically reducing 
+ * initial JS execution and network requests.
+ */
+const ViewportSection = memo(({ 
+  children, 
+  fallbackType = "grid",
+  delay = 0 
+}: { 
+  children: React.ReactNode; 
+  fallbackType?: "grid" | "banner";
+  delay?: number;
+}) => {
+  const { ref, inView } = useInViewport("300px 0px");
+  
+  return (
+    <div ref={ref}>
+      {inView ? (
+        <SectionReveal delay={delay}>
+          <Suspense fallback={<LazyFallback type={fallbackType} />}>
+            {children}
+          </Suspense>
+        </SectionReveal>
+      ) : (
+        <LazyFallback type={fallbackType} />
+      )}
+    </div>
+  );
+});
+ViewportSection.displayName = "ViewportSection";
+
 /* Map section_key → component */
 const SECTION_MAP: Record<string, { Component: React.LazyExoticComponent<any>; fallback?: "grid" | "banner" }> = {
   events_by_category: { Component: EventsByCategory },
@@ -86,7 +119,7 @@ const SECTION_MAP: Record<string, { Component: React.LazyExoticComponent<any>; f
 
 function isVisible(sections: HomepageSection[], key: string): boolean {
   const s = sections.find((sec) => sec.section_key === key);
-  return s ? s.is_visible : true; // default visible if not in DB
+  return s ? s.is_visible : true;
 }
 
 const Index = () => {
@@ -96,6 +129,18 @@ const Index = () => {
   const { data: sections = [] } = useHomepageSections();
   const siteSettings = useSiteSettingsContext();
   const template = (siteSettings?.homepage as any)?.template || "v1";
+
+  const dynamicSections = useMemo(() => sections
+    .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
+    .map((s, idx) => {
+      const entry = SECTION_MAP[s.section_key];
+      if (!entry) return null;
+      return (
+        <ViewportSection key={s.section_key} fallbackType={entry.fallback} delay={idx * 40}>
+          <entry.Component />
+        </ViewportSection>
+      );
+    }), [sections]);
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
@@ -136,65 +181,53 @@ const Index = () => {
           {/* 3.5 Quick Actions Grid */}
           <HomeQuickActions />
 
-          {/* Ad banner top */}
+          {/* Ad banner top — viewport-aware */}
           {isVisible(sections, "ad_banner_top") && (
-            <Suspense fallback={<LazyFallback type="banner" />}>
+            <ViewportSection fallbackType="banner">
               <section className="container py-4">
                 <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
               </section>
-            </Suspense>
+            </ViewportSection>
           )}
 
-          {/* Dynamic lazy sections — sorted by sort_order from DB, memoized */}
-          {useMemo(() => sections
-            .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
-            .map((s, idx) => {
-              const entry = SECTION_MAP[s.section_key];
-              if (!entry) return null;
-              return (
-                <SectionReveal key={s.section_key} delay={idx * 60}>
-                  <Suspense fallback={<LazyFallback type={entry.fallback} />}>
-                    <entry.Component />
-                  </Suspense>
-                </SectionReveal>
-              );
-            }), [sections])}
+          {/* Dynamic lazy sections — viewport-aware rendering */}
+          {dynamicSections}
 
           {/* Ad banner mid */}
           {isVisible(sections, "ad_banner_mid") && (
-            <Suspense fallback={<LazyFallback type="banner" />}>
+            <ViewportSection fallbackType="banner">
               <section className="container py-4">
                 <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
               </section>
-            </Suspense>
+            </ViewportSection>
           )}
 
           {/* Fallback: render all sections if DB returned nothing */}
           {sections.length === 0 && (
             <>
-              <Suspense fallback={<LazyFallback />}><EventsByCategory /></Suspense>
-              <Suspense fallback={<LazyFallback type="banner" />}>
+              <ViewportSection><EventsByCategory /></ViewportSection>
+              <ViewportSection fallbackType="banner">
                 <section className="container py-4">
                   <AdBanner placementSlug="home-hero-banner" className="w-full rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/90] max-h-[120px]" />
                 </section>
-              </Suspense>
-              <Suspense fallback={<LazyFallback />}><RegionalEvents /></Suspense>
-              <Suspense fallback={<LazyFallback />}><HomeEventsCalendarPreview /></Suspense>
-              <Suspense fallback={<LazyFallback />}><FeaturedChefs /></Suspense>
-              <Suspense fallback={<LazyFallback />}><NewlyJoinedUsers /></Suspense>
-              <Suspense fallback={<LazyFallback />}><SponsorCarousel /></Suspense>
-              <Suspense fallback={<LazyFallback />}><HomeProSuppliers /></Suspense>
-              <Suspense fallback={<LazyFallback />}><HomeMasterclasses /></Suspense>
-              <Suspense fallback={<LazyFallback type="banner" />}>
+              </ViewportSection>
+              <ViewportSection><RegionalEvents /></ViewportSection>
+              <ViewportSection><HomeEventsCalendarPreview /></ViewportSection>
+              <ViewportSection><FeaturedChefs /></ViewportSection>
+              <ViewportSection><NewlyJoinedUsers /></ViewportSection>
+              <ViewportSection><SponsorCarousel /></ViewportSection>
+              <ViewportSection><HomeProSuppliers /></ViewportSection>
+              <ViewportSection><HomeMasterclasses /></ViewportSection>
+              <ViewportSection fallbackType="banner">
                 <section className="container py-4">
                   <AdBanner placementSlug="in-feed" className="w-full max-w-3xl mx-auto rounded-xl overflow-hidden aspect-[728/90] sm:aspect-[970/250] max-h-[250px]" />
                 </section>
-              </Suspense>
-              <Suspense fallback={<LazyFallback />}><SponsorshipOpportunities /></Suspense>
-              <Suspense fallback={<LazyFallback />}><HomeArticles /></Suspense>
-              <Suspense fallback={<LazyFallback />}><PlatformFeatures /></Suspense>
-              <Suspense fallback={<LazyFallback />}><NewsletterSignup /></Suspense>
-              <Suspense fallback={<LazyFallback />}><PartnersLogos /></Suspense>
+              </ViewportSection>
+              <ViewportSection><SponsorshipOpportunities /></ViewportSection>
+              <ViewportSection><HomeArticles /></ViewportSection>
+              <ViewportSection><PlatformFeatures /></ViewportSection>
+              <ViewportSection><NewsletterSignup /></ViewportSection>
+              <ViewportSection><PartnersLogos /></ViewportSection>
             </>
           )}
 

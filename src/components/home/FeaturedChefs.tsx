@@ -85,7 +85,12 @@ export function FeaturedChefs() {
         </SectionReveal>
 
         <SectionReveal delay={80}>
-          <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
+          {/* Mobile: larger touch-friendly horizontal scroll with better snap behavior */}
+          <div
+            className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
+            dir={isAr ? "rtl" : "ltr"}
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
             {chefs.map((chef: any, idx: number) => {
               const name = getDisplayName(chef, isAr);
               const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
@@ -98,15 +103,19 @@ export function FeaturedChefs() {
               const isTop3 = idx < 3 && chef.rank;
 
               return (
-                <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block snap-start min-w-[10rem] shrink-0 sm:min-w-0 sm:shrink">
-                  <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden">
+                <Link
+                  key={chef.user_id || idx}
+                  to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
+                  className="group block snap-start min-w-[11rem] shrink-0 sm:min-w-0 sm:shrink"
+                >
+                  <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden active:scale-[0.98]">
                     <CardContent className="p-3 sm:p-4 text-center">
                       <div className="relative mx-auto mb-3 w-fit">
                         <Avatar className={cn(
-                          "h-14 w-14 sm:h-16 sm:w-16 shadow-md transition-all duration-300 group-hover:scale-110",
+                          "h-16 w-16 sm:h-16 sm:w-16 shadow-md transition-all duration-300 group-hover:scale-110",
                           isTop3 ? "ring-2 ring-chart-4/40" : "ring-2 ring-primary/15",
                         )}>
-                          <AvatarImage src={chef.avatar_url} alt={name} />
+                          <AvatarImage src={chef.avatar_url} alt={name} loading="lazy" />
                           <AvatarFallback className="bg-primary/10 text-primary font-bold text-base">{initials}</AvatarFallback>
                         </Avatar>
                         {chef.is_verified && (
