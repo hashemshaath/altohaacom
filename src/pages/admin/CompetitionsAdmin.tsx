@@ -308,30 +308,14 @@ export default function CompetitionsAdmin() {
   const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
   const getTypesForComp = (compId: string) => typeAssignments?.filter((t: any) => t.competition_id === compId) || [];
 
-  // Smart Import handler with deduplication
-  const handleSmartImport = useCallback(async (data: ImportedData) => {
+  // Smart Import handler with create/update support and related data saving
+  const handleSmartImport = useCallback(async (data: ImportedData, mode: "create" | "update", existingId?: string) => {
     try {
-      // Deduplication: check if a competition with same name already exists
       const nameEn = data.name_en?.trim();
       const nameAr = data.name_ar?.trim();
-      if (nameEn || nameAr) {
-        let dupQuery = supabase.from("competitions").select("id, title, title_ar").limit(5);
-        if (nameEn) dupQuery = dupQuery.or(`title.ilike.%${nameEn}%${nameAr ? `,title_ar.ilike.%${nameAr}%` : ''}`);
-        else if (nameAr) dupQuery = dupQuery.ilike("title_ar", `%${nameAr}%`);
-        const { data: existing } = await dupQuery;
-        if (existing && existing.length > 0) {
-          const names = existing.map(e => e.title || e.title_ar).join(", ");
-          const confirmed = confirm(
-            isAr
-              ? `⚠️ تم العثور على مسابقات مشابهة: ${names}\n\nهل تريد المتابعة وإنشاء مسابقة جديدة؟`
-              : `⚠️ Similar competitions found: ${names}\n\nContinue creating a new competition?`
-          );
-          if (!confirmed) return;
-        }
-      }
-
       const now = new Date().toISOString();
-      const { error } = await supabase.from("competitions").insert({
+
+      const competitionPayload = {
         title: nameEn || nameAr || "Untitled",
         title_ar: nameAr || null,
         description: data.description_en || null,
@@ -347,8 +331,8 @@ export default function CompetitionsAdmin() {
         edition_year: data.edition_year || new Date().getFullYear(),
         registration_fee: data.registration_fee || null,
         registration_currency: data.currency || "SAR",
-        rules_summary: data.rules_summary_en || null,
-        rules_summary_ar: data.rules_summary_ar || null,
+        rules_summary: [data.rules_summary_en, data.terms_conditions_en, data.eligibility_en].filter(Boolean).join("\n\n---\n\n") || null,
+        rules_summary_ar: [data.rules_summary_ar, data.terms_conditions_ar, data.eligibility_ar].filter(Boolean).join("\n\n---\n\n") || null,
         scoring_notes: data.scoring_method_en || null,
         scoring_notes_ar: data.scoring_method_ar || null,
         cover_image_url: data.cover_url || null,
@@ -358,16 +342,87 @@ export default function CompetitionsAdmin() {
         allowed_entry_types: data.allowed_entry_types || null,
         blind_judging_enabled: data.blind_judging || false,
         is_virtual: data.is_virtual || false,
-        status: "draft" as CompetitionStatus,
-        organizer_id: user?.id || "",
         import_source: "smart_import",
-      });
+      };
 
-      if (error) throw error;
+      let competitionId: string;
+
+      if (mode === "update" && existingId) {
+        // Update existing competition
+        const { error } = await supabase.from("competitions").update(competitionPayload).eq("id", existingId);
+        if (error) throw error;
+        competitionId = existingId;
+      } else {
+        // Create new competition
+        const { data: inserted, error } = await supabase.from("competitions").insert({
+          ...competitionPayload,
+          status: "draft" as any,
+          organizer_id: user?.id || "",
+        }).select("id").single();
+        if (error) throw error;
+        competitionId = inserted.id;
+      }
+
+      // Save judging criteria to judging_criteria table (remove old ones on update)
+      if (data.judging_criteria?.length) {
+        if (mode === "update") {
+          await supabase.from("judging_criteria").delete().eq("competition_id", competitionId);
+        }
+        const criteriaRows = data.judging_criteria.map((c, i) => ({
+          competition_id: competitionId,
+          name: c.criterion,
+          name_ar: c.criterion_ar || null,
+          description: c.description || null,
+          description_ar: c.description_ar || null,
+          weight: c.weight || 0,
+          max_score: 100,
+          sort_order: i + 1,
+        }));
+        await supabase.from("judging_criteria").insert(criteriaRows);
+      }
+
+      // Save competition categories/versions to competition_categories table
+      if (data.competition_versions?.length) {
+        if (mode === "update") {
+          await supabase.from("competition_categories").delete().eq("competition_id", competitionId);
+        }
+        const catRows = data.competition_versions.map((v, i) => ({
+          competition_id: competitionId,
+          name: v.name,
+          name_ar: v.name_ar || null,
+          description: v.description || null,
+          description_ar: v.description_ar || null,
+          max_participants: v.max_participants || null,
+          sort_order: i + 1,
+          status: "active",
+        }));
+        await supabase.from("competition_categories").insert(catRows);
+      }
+
+      // Save competition rounds to competition_rounds table
+      if (data.competition_rounds?.length) {
+        if (mode === "update") {
+          await supabase.from("competition_rounds").delete().eq("competition_id", competitionId);
+        }
+        const roundRows = data.competition_rounds.map((r, i) => ({
+          competition_id: competitionId,
+          name: r.name,
+          name_ar: r.name_ar || null,
+          round_number: i + 1,
+          sort_order: i + 1,
+          format: "standard",
+          round_type: "elimination",
+          status: "pending",
+        }));
+        await supabase.from("competition_rounds").insert(roundRows);
+      }
+
       queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
       toast({
-        title: isAr ? "✅ تم استيراد المسابقة" : "✅ Competition Imported",
-        description: isAr ? `تم إنشاء "${nameEn || nameAr}" كمسودة` : `"${nameEn || nameAr}" created as draft`,
+        title: isAr ? (mode === "update" ? "✅ تم تحديث المسابقة" : "✅ تم استيراد المسابقة") : (mode === "update" ? "✅ Competition Updated" : "✅ Competition Imported"),
+        description: isAr
+          ? `تم ${mode === "update" ? "تحديث" : "إنشاء"} "${nameEn || nameAr}"${data.judging_criteria?.length ? ` + ${data.judging_criteria.length} معايير تحكيم` : ""}${data.competition_versions?.length ? ` + ${data.competition_versions.length} فئات` : ""}`
+          : `"${nameEn || nameAr}" ${mode === "update" ? "updated" : "created as draft"}${data.judging_criteria?.length ? ` + ${data.judging_criteria.length} judging criteria` : ""}${data.competition_versions?.length ? ` + ${data.competition_versions.length} categories` : ""}`,
       });
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
