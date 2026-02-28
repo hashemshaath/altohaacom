@@ -65,6 +65,7 @@ import { KitchenStationsPanel } from "@/components/competitions/KitchenStationsP
 import { JudgeDeliberationPanel } from "@/components/competitions/JudgeDeliberationPanel";
 import { CompetitionFeedbackPanel } from "@/components/competitions/CompetitionFeedbackPanel";
 import { PreparationChecklistPanel } from "@/components/competitions/PreparationChecklistPanel";
+import { RegistrationStatusBanner } from "@/components/competitions/RegistrationStatusBanner";
 import { JudgeAnalyticsPanel } from "@/components/competitions/JudgeAnalyticsPanel";
 import { TeamCollaborationPanel } from "@/components/competitions/TeamCollaborationPanel";
 import { CompetitionAnalyticsDashboard } from "@/components/competitions/CompetitionAnalyticsDashboard";
@@ -593,11 +594,11 @@ export default function CompetitionDetail() {
             </div>
           )}
           {myRegistration && (
-            <div className="mb-8 flex items-center gap-3 rounded-2xl border border-primary/15 bg-primary/[0.04] p-4">
-              <CheckCircle className="h-5 w-5 text-primary shrink-0" />
-              <span className="text-sm font-semibold text-primary">
-                {myRegistration.status === "approved" ? t("alreadyRegistered") : t("registrationPending")}
-              </span>
+            <div className="mb-8">
+              <RegistrationStatusBanner
+                registration={myRegistration}
+                competitionStatus={competition.status}
+              />
             </div>
           )}
 
