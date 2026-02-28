@@ -72,8 +72,9 @@ export default function AdminPendingBanner() {
 
       return list.filter(i => i.count > 0);
     },
-    staleTime: 1000 * 30,
-    refetchInterval: 1000 * 60,
+    staleTime: 1000 * 60 * 5,
+    refetchInterval: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   if (!items || items.length === 0) return null;

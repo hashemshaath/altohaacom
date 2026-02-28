@@ -159,11 +159,13 @@ export default function SystemSettings() {
             </Card>
           </div>
 
-          {/* Data & Actions Overview */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <DatabaseOverviewWidget />
-            <RecentAdminActions />
-          </div>
+          {/* Data & Actions Overview - lazy loaded */}
+          {activeTab === "branding" && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DatabaseOverviewWidget />
+              <RecentAdminActions />
+            </div>
+          )}
 
           {/* Configuration Progress */}
           <Card className="border-border/50">
