@@ -97,7 +97,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     const checkDuplicates = async () => {
       let q = supabase
         .from("competitions")
-        .select("id, title, title_ar, edition_year, status, competition_start, competition_end, description, venue, city, country_code, rules_summary, scoring_notes, max_participants, registration_fee")
+        .select("id, title, title_ar, edition_year, status, competition_start, competition_end, description, venue, city, country_code, rules_summary, scoring_notes, max_participants, registration_fee, terms_conditions, eligibility, judging_committee_data, prizes_data, schedule_data, organizer_name, registration_url")
         .limit(10);
 
       if (nameEn) q = q.or(`title.ilike.%${nameEn}%${nameAr ? `,title_ar.ilike.%${nameAr}%` : ""}`);

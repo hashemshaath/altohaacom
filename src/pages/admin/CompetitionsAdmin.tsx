@@ -315,13 +315,14 @@ export default function CompetitionsAdmin() {
       const nameAr = data.name_ar?.trim();
       const now = new Date().toISOString();
 
-      const competitionPayload = {
+      const competitionPayload: Record<string, any> = {
         title: nameEn || nameAr || "Untitled",
         title_ar: nameAr || null,
         description: data.description_en || null,
         description_ar: data.description_ar || null,
         city: data.city_en || null,
         country_code: data.country_code || null,
+        country: data.country_en || null,
         venue: data.venue_en || null,
         venue_ar: data.venue_ar || null,
         competition_start: data.start_date || now,
@@ -331,8 +332,8 @@ export default function CompetitionsAdmin() {
         edition_year: data.edition_year || new Date().getFullYear(),
         registration_fee: data.registration_fee || null,
         registration_currency: data.currency || "SAR",
-        rules_summary: [data.rules_summary_en, data.terms_conditions_en, data.eligibility_en].filter(Boolean).join("\n\n---\n\n") || null,
-        rules_summary_ar: [data.rules_summary_ar, data.terms_conditions_ar, data.eligibility_ar].filter(Boolean).join("\n\n---\n\n") || null,
+        rules_summary: data.rules_summary_en || null,
+        rules_summary_ar: data.rules_summary_ar || null,
         scoring_notes: data.scoring_method_en || null,
         scoring_notes_ar: data.scoring_method_ar || null,
         cover_image_url: data.cover_url || null,
@@ -343,27 +344,49 @@ export default function CompetitionsAdmin() {
         blind_judging_enabled: data.blind_judging || false,
         is_virtual: data.is_virtual || false,
         import_source: "smart_import",
+        // New structured columns
+        terms_conditions: data.terms_conditions_en || null,
+        terms_conditions_ar: data.terms_conditions_ar || null,
+        eligibility: data.eligibility_en || null,
+        eligibility_ar: data.eligibility_ar || null,
+        participation_requirements: data.participation_requirements_en?.length ? data.participation_requirements_en : null,
+        participation_requirements_ar: data.participation_requirements_ar?.length ? data.participation_requirements_ar : null,
+        dress_code: data.dress_code || null,
+        dress_code_ar: data.dress_code_ar || null,
+        age_restrictions: data.age_restrictions || null,
+        equipment_provided: data.equipment_provided?.length ? data.equipment_provided : null,
+        equipment_required: data.equipment_required?.length ? data.equipment_required : null,
+        organizer_name: data.organizer_name_en || null,
+        organizer_name_ar: data.organizer_name_ar || null,
+        organizer_website: data.organizer_website || null,
+        organizer_email: data.organizer_email || null,
+        competition_website: data.website || null,
+        competition_email: data.email || null,
+        competition_phone: data.phone || null,
+        registration_url: data.registration_url || null,
+        // JSONB columns for complex structured data
+        judging_committee_data: data.judging_committee?.length ? data.judging_committee : null,
+        prizes_data: data.prizes?.length ? data.prizes : null,
+        schedule_data: data.competition_schedule?.length ? data.competition_schedule : null,
       };
 
       let competitionId: string;
 
       if (mode === "update" && existingId) {
-        // Update existing competition
-        const { error } = await supabase.from("competitions").update(competitionPayload).eq("id", existingId);
+        const { error } = await supabase.from("competitions").update(competitionPayload as any).eq("id", existingId);
         if (error) throw error;
         competitionId = existingId;
       } else {
-        // Create new competition
         const { data: inserted, error } = await supabase.from("competitions").insert({
           ...competitionPayload,
           status: "draft" as any,
           organizer_id: user?.id || "",
-        }).select("id").single();
+        } as any).select("id").single();
         if (error) throw error;
         competitionId = inserted.id;
       }
 
-      // Save judging criteria to judging_criteria table (remove old ones on update)
+      // Save judging criteria to judging_criteria table
       if (data.judging_criteria?.length) {
         if (mode === "update") {
           await supabase.from("judging_criteria").delete().eq("competition_id", competitionId);
@@ -381,7 +404,7 @@ export default function CompetitionsAdmin() {
         await supabase.from("judging_criteria").insert(criteriaRows);
       }
 
-      // Save competition categories/versions to competition_categories table
+      // Save competition categories/versions
       if (data.competition_versions?.length) {
         if (mode === "update") {
           await supabase.from("competition_categories").delete().eq("competition_id", competitionId);
@@ -399,7 +422,7 @@ export default function CompetitionsAdmin() {
         await supabase.from("competition_categories").insert(catRows);
       }
 
-      // Save competition rounds to competition_rounds table
+      // Save competition rounds
       if (data.competition_rounds?.length) {
         if (mode === "update") {
           await supabase.from("competition_rounds").delete().eq("competition_id", competitionId);
@@ -417,12 +440,23 @@ export default function CompetitionsAdmin() {
         await supabase.from("competition_rounds").insert(roundRows);
       }
 
+      // Close the smart import panel after successful save
+      setShowSmartImport(false);
+
       queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
+      const savedParts: string[] = [];
+      if (data.judging_criteria?.length) savedParts.push(`${data.judging_criteria.length} ${isAr ? "معايير تحكيم" : "judging criteria"}`);
+      if (data.judging_committee?.length) savedParts.push(`${data.judging_committee.length} ${isAr ? "أعضاء لجنة" : "committee members"}`);
+      if (data.competition_versions?.length) savedParts.push(`${data.competition_versions.length} ${isAr ? "فئات" : "categories"}`);
+      if (data.competition_rounds?.length) savedParts.push(`${data.competition_rounds.length} ${isAr ? "جولات" : "rounds"}`);
+      if (data.prizes?.length) savedParts.push(`${data.prizes.length} ${isAr ? "جوائز" : "prizes"}`);
+      if (data.competition_schedule?.length) savedParts.push(`${data.competition_schedule.length} ${isAr ? "أحداث جدول" : "schedule items"}`);
+      if (data.terms_conditions_en) savedParts.push(isAr ? "الشروط والأحكام" : "terms & conditions");
+      if (data.eligibility_en) savedParts.push(isAr ? "شروط الأهلية" : "eligibility");
+
       toast({
-        title: isAr ? (mode === "update" ? "✅ تم تحديث المسابقة" : "✅ تم استيراد المسابقة") : (mode === "update" ? "✅ Competition Updated" : "✅ Competition Imported"),
-        description: isAr
-          ? `تم ${mode === "update" ? "تحديث" : "إنشاء"} "${nameEn || nameAr}"${data.judging_criteria?.length ? ` + ${data.judging_criteria.length} معايير تحكيم` : ""}${data.competition_versions?.length ? ` + ${data.competition_versions.length} فئات` : ""}`
-          : `"${nameEn || nameAr}" ${mode === "update" ? "updated" : "created as draft"}${data.judging_criteria?.length ? ` + ${data.judging_criteria.length} judging criteria` : ""}${data.competition_versions?.length ? ` + ${data.competition_versions.length} categories` : ""}`,
+        title: isAr ? (mode === "update" ? "✅ تم تحديث المسابقة بنجاح" : "✅ تم استيراد المسابقة بنجاح") : (mode === "update" ? "✅ Competition Updated Successfully" : "✅ Competition Imported Successfully"),
+        description: `"${nameEn || nameAr}" ${isAr ? (mode === "update" ? "تم تحديثها" : "تم إنشاؤها كمسودة") : (mode === "update" ? "updated" : "created as draft")}${savedParts.length ? ` + ${savedParts.join(", ")}` : ""}`,
       });
     } catch (err: any) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
