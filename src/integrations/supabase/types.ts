@@ -1242,6 +1242,80 @@ export type Database = {
         }
         Relationships: []
       }
+      bookings: {
+        Row: {
+          booking_date: string
+          booking_type: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          confirmation_code: string | null
+          confirmed_at: string | null
+          confirmed_by: string | null
+          created_at: string | null
+          end_time: string | null
+          establishment_id: string | null
+          id: string
+          notes: string | null
+          party_size: number | null
+          start_time: string | null
+          status: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          booking_date: string
+          booking_type?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmation_code?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string | null
+          end_time?: string | null
+          establishment_id?: string | null
+          id?: string
+          notes?: string | null
+          party_size?: number | null
+          start_time?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          booking_date?: string
+          booking_type?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmation_code?: string | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string | null
+          end_time?: string | null
+          establishment_id?: string | null
+          id?: string
+          notes?: string | null
+          party_size?: number | null
+          start_time?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookmark_collection_items: {
         Row: {
           added_at: string
@@ -7879,6 +7953,112 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_review_helpful: {
+        Row: {
+          created_at: string | null
+          id: string
+          review_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          review_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          review_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_review_helpful_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "establishment_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_reviews: {
+        Row: {
+          content: string | null
+          content_ar: string | null
+          created_at: string | null
+          establishment_id: string
+          helpful_count: number | null
+          id: string
+          is_verified_visit: boolean | null
+          photos: string[] | null
+          rating: number
+          replied_at: string | null
+          replied_by: string | null
+          reply_text: string | null
+          reply_text_ar: string | null
+          status: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          user_id: string
+          visit_date: string | null
+          visit_type: string | null
+        }
+        Insert: {
+          content?: string | null
+          content_ar?: string | null
+          created_at?: string | null
+          establishment_id: string
+          helpful_count?: number | null
+          id?: string
+          is_verified_visit?: boolean | null
+          photos?: string[] | null
+          rating: number
+          replied_at?: string | null
+          replied_by?: string | null
+          reply_text?: string | null
+          reply_text_ar?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id: string
+          visit_date?: string | null
+          visit_type?: string | null
+        }
+        Update: {
+          content?: string | null
+          content_ar?: string | null
+          created_at?: string | null
+          establishment_id?: string
+          helpful_count?: number | null
+          id?: string
+          is_verified_visit?: boolean | null
+          photos?: string[] | null
+          rating?: number
+          replied_at?: string | null
+          replied_by?: string | null
+          reply_text?: string | null
+          reply_text_ar?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id?: string
+          visit_date?: string | null
+          visit_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_reviews_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
             referencedColumns: ["id"]
           },
         ]
