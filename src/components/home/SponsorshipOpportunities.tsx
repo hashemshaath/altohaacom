@@ -6,12 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles, Users } from "lucide-react";
+import { Crown, Trophy, Calendar, MapPin, ArrowRight, Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { SectionHeader } from "./SectionHeader";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -59,32 +60,17 @@ export function SponsorshipOpportunities() {
     <section className="relative overflow-hidden py-8 md:py-12" dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
       <div className="container relative">
-        <SectionReveal>
-          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <div className="mb-1.5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1">
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
-                <span className="text-xs font-medium text-primary">
-                  {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
-                </span>
-              </div>
-              <h2 className={cn("text-xl font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
-                {isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
-              </h2>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {isAr
-                  ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة"
-                  : "Support world-class culinary competitions & connect your brand with top chefs"}
-              </p>
-            </div>
-            <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
-              <Link to="/sponsors">
-                {isAr ? "جميع الفرص" : "All Opportunities"}
-                <ArrowRight className="ms-1 h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
-        </SectionReveal>
+        <SectionHeader
+          icon={Sparkles}
+          badge={isAr ? "فرص رعاية حصرية" : "Sponsorship"}
+          title={isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
+          subtitle={isAr ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة" : "Support world-class culinary competitions & connect your brand with top chefs"}
+          dataSource="competitions • sponsorship_packages"
+          itemCount={opportunities.length}
+          viewAllHref="/sponsors"
+          viewAllLabel={isAr ? "جميع الفرص" : "All Opportunities"}
+          isAr={isAr}
+        />
 
         {/* Sponsorship Packages */}
         {opportunities[0]?.packages?.length > 0 && (
@@ -126,12 +112,7 @@ export function SponsorshipOpportunities() {
                   <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
                     <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                       {comp.cover_image_url ? (
-                        <img
-                          src={comp.cover_image_url}
-                          alt={title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                        />
+                        <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                           <Trophy className="h-10 w-10 text-primary/30" />
@@ -139,9 +120,7 @@ export function SponsorshipOpportunities() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
                       <div className="absolute inset-x-0 bottom-0 p-3">
-                        <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">
-                          {title}
-                        </h3>
+                        <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">{title}</h3>
                       </div>
                       <Badge className="absolute end-2 top-2 text-[10px] bg-primary/90 shadow-sm gap-1">
                         <Crown className="h-2.5 w-2.5" />

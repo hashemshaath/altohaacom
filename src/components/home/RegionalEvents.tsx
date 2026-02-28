@@ -10,18 +10,13 @@ import { ArrowRight, ArrowLeft, Calendar, MapPin, Trophy, Globe, Flame, Users } 
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { SectionReveal } from "@/components/ui/section-reveal";
 import regionalCover from "@/assets/regional-events-cover.jpg";
+import { SectionHeader } from "./SectionHeader";
+import { FilterChip } from "./FilterChip";
 
 const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG", "TN", "MA", "DZ", "LY", "SY", "PS", "YE"];
 
 type FilterTab = "saudi" | "middle-east" | "global";
-
-const TABS: { value: FilterTab; label: string; labelAr: string; icon: React.ReactNode }[] = [
-  { value: "saudi", icon: <span className="text-sm">🇸🇦</span>, label: "Saudi Arabia", labelAr: "السعودية" },
-  { value: "middle-east", icon: <span className="text-sm">🌍</span>, label: "Middle East", labelAr: "الشرق الأوسط" },
-  { value: "global", icon: <Globe className="h-3.5 w-3.5" />, label: "Global", labelAr: "عالمية" },
-];
 
 export function RegionalEvents() {
   const { language } = useLanguage();
@@ -41,6 +36,10 @@ export function RegionalEvents() {
       return data || [];
     },
   });
+
+  const saudiCount = useMemo(() => allComps.filter((c: any) => c.country_code?.toUpperCase() === "SA").length, [allComps]);
+  const meCount = useMemo(() => allComps.filter((c: any) => c.country_code && MIDDLE_EAST.includes(c.country_code.toUpperCase())).length, [allComps]);
+  const globalCount = useMemo(() => allComps.filter((c: any) => !c.country_code || !MIDDLE_EAST.includes(c.country_code.toUpperCase())).length, [allComps]);
 
   const filteredComps = useMemo(() => {
     switch (activeTab) {
@@ -66,41 +65,24 @@ export function RegionalEvents() {
 
       <div className="relative -mt-4 z-10">
         <div className="container">
-          <SectionReveal>
-            <div className="text-center mb-3">
-              <h2 id="regional-heading" className={cn("text-lg font-bold sm:text-xl md:text-2xl text-foreground", !isAr && "font-serif")}>
-                {isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
-              </h2>
-              <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                {isAr ? "اكتشف الأحداث القريبة منك والفعاليات العالمية المميزة" : "Discover events near you and standout global gatherings"}
-              </p>
-            </div>
-          </SectionReveal>
-
-          <div className="mb-3 flex items-center justify-center">
-            <div className="flex gap-1.5 rounded-xl bg-background/80 backdrop-blur-sm border border-border/50 p-1 shadow-sm">
-              {TABS.map((tab) => (
-                <button
-                  key={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                  className={cn(
-                    "flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
-                    activeTab === tab.value
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                  )}
-                >
-                  {tab.icon}
-                  {isAr ? tab.labelAr : tab.label}
-                  {filteredComps.length > 0 && activeTab === tab.value && (
-                    <span className="ms-1 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-primary-foreground/20 px-1 text-[9px] font-bold tabular-nums">
-                      {filteredComps.length}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
+          <SectionHeader
+            icon={Globe}
+            badge={isAr ? "حسب المنطقة" : "By Region"}
+            title={isAr ? "فعاليات حسب المنطقة" : "Events by Region"}
+            subtitle={isAr ? "اكتشف الأحداث القريبة منك والفعاليات العالمية المميزة" : "Discover events near you and standout global gatherings"}
+            dataSource="competitions"
+            itemCount={filteredComps.length}
+            viewAllHref="/competitions"
+            viewAllLabel={isAr ? "عرض جميع الفعاليات" : "View All Events"}
+            isAr={isAr}
+            filters={
+              <>
+                <FilterChip label={isAr ? "🇸🇦 السعودية" : "🇸🇦 Saudi Arabia"} active={activeTab === "saudi"} count={saudiCount} onClick={() => setActiveTab("saudi")} />
+                <FilterChip label={isAr ? "🌍 الشرق الأوسط" : "🌍 Middle East"} active={activeTab === "middle-east"} count={meCount} onClick={() => setActiveTab("middle-east")} />
+                <FilterChip label={isAr ? "عالمية" : "Global"} active={activeTab === "global"} count={globalCount} onClick={() => setActiveTab("global")} icon={<Globe className="h-3 w-3" />} />
+              </>
+            }
+          />
 
           {filteredComps.length > 0 ? (
             <div className="relative group/scroll">
@@ -123,14 +105,7 @@ export function RegionalEvents() {
             </div>
           )}
 
-          <div className="mt-3 pb-6 text-center">
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/competitions">
-                {isAr ? "عرض جميع الفعاليات" : "View All Events"}
-                <ArrowRight className="ms-1 h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
+          <div className="pb-6" />
         </div>
       </div>
     </section>
