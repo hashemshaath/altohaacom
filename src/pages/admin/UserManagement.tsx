@@ -626,8 +626,10 @@ export default function UserManagement() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  const [showAnalytics, setShowAnalytics] = useState(false);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Quick User Search Command */}
       <UserSearchCommand
         open={userSearchOpen}
@@ -651,132 +653,145 @@ export default function UserManagement() {
         }
       />
 
-      {/* Users Live Stats */}
-      <UsersLiveStatsWidget />
-      <UserActivityTimeline />
-
-      {/* User Growth Analytics */}
-      <UserGrowthTrendWidget />
-
-      {/* User Analytics - Registration, Roles, Geography */}
-      <UserAnalyticsWidget />
-
-      {/* User Demographics */}
-      <UserDemographicsWidget />
-
-      {/* Stats Bar */}
+      {/* Compact Stats Bar */}
       <UserStatsBar />
 
-      {/* Notification Center & Security Audit */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <AdminNotificationCenter />
-        <SecurityAuditTimeline />
+      {/* Analytics Toggle */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant={showAnalytics ? "secondary" : "outline"}
+          size="sm"
+          className="gap-1.5 text-xs"
+          onClick={() => setShowAnalytics(!showAnalytics)}
+        >
+          <BarChart3 className="h-3.5 w-3.5" />
+          {isAr ? "التحليلات والإحصائيات" : "Analytics & Insights"}
+          {showAnalytics ? <X className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        </Button>
       </div>
 
-      {/* Security & Sessions */}
-      <AdminSessionTracker />
+      {/* Collapsible Analytics Section */}
+      {showAnalytics && (
+        <div className="space-y-4 rounded-xl border border-border/50 bg-muted/20 p-4 animate-in slide-in-from-top-2 duration-300">
+          <UsersLiveStatsWidget />
+          <UserActivityTimeline />
+          <UserGrowthTrendWidget />
+          <UserAnalyticsWidget />
+          <UserDemographicsWidget />
+          <div className="grid gap-4 md:grid-cols-2">
+            <AdminNotificationCenter />
+            <SecurityAuditTimeline />
+          </div>
+          <AdminSessionTracker />
+        </div>
+      )}
 
-      {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={() => setUserSearchOpen(true)}>
-          <Search className="me-2 h-4 w-4" />{isAr ? "بحث سريع" : "Quick Search"}
-          <kbd className="ms-2 text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono">⌘U</kbd>
-        </Button>
-        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-          <DialogTrigger asChild>
-            <Button><UserPlus className="me-2 h-4 w-4" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>{isAr ? "إنشاء حساب جديد" : "Create New Account"}</DialogTitle>
-              <DialogDescription>{isAr ? "أنشئ حساب مستخدم جديد مع بيانات الدخول الأولية" : "Create a new user account with initial login credentials"}</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
-                <Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} placeholder={isAr ? "أدخل الاسم الكامل" : "Enter full name"} />
-              </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
-              </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "كلمة المرور" : "Password"} *</Label>
-                <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الأولية" : "Initial password"} dir="ltr" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+      {/* Action Toolbar */}
+      <Card className="border-border/50">
+        <CardContent className="p-3 flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5">
+            <Search className="h-3.5 w-3.5" />{isAr ? "بحث سريع" : "Quick Search"}
+            <kbd className="text-[9px] bg-muted px-1 py-0.5 rounded font-mono">⌘U</kbd>
+          </Button>
+
+          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm"><UserPlus className="me-1.5 h-3.5 w-3.5" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>{isAr ? "إنشاء حساب جديد" : "Create New Account"}</DialogTitle>
+                <DialogDescription>{isAr ? "أنشئ حساب مستخدم جديد مع بيانات الدخول الأولية" : "Create a new user account with initial login credentials"}</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
-                  <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
+                  <Label>{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+                  <Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} placeholder={isAr ? "أدخل الاسم الكامل" : "Enter full name"} />
                 </div>
                 <div className="space-y-2">
-                  <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
-                  <Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+966..." dir="ltr" />
+                  <Label>{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+                  <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
+                </div>
+                <div className="space-y-2">
+                  <Label>{isAr ? "كلمة المرور" : "Password"} *</Label>
+                  <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الأولية" : "Initial password"} dir="ltr" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
+                    <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
+                    <Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+966..." dir="ltr" />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>{isAr ? "الدور" : "Role"}</Label>
+                  <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {ALL_ROLES.map((role) => (
+                        <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>{isAr ? "الدور" : "Role"}</Label>
-                <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {ALL_ROLES.map((role) => (
-                      <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                <Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>
+                  {createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                  {isAr ? "إنشاء الحساب" : "Create Account"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm"><Mail className="me-1.5 h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>{isAr ? "إرسال دعوة بالبريد الإلكتروني" : "Send Email Invitation"}</DialogTitle>
+                <DialogDescription>{isAr ? "أرسل دعوة للمستخدم لتفعيل حسابه وتعيين كلمة مرور جديدة" : "Invite user to activate their account and set a new password"}</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                  <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-              <Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>
-                {createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                {isAr ? "إنشاء الحساب" : "Create Account"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                <Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>
+                  {inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                  {isAr ? "إرسال الدعوة" : "Send Invitation"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline"><Mail className="me-2 h-4 w-4" />{isAr ? "إرسال دعوة" : "Send Invitation"}</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>{isAr ? "إرسال دعوة بالبريد الإلكتروني" : "Send Email Invitation"}</DialogTitle>
-              <DialogDescription>{isAr ? "أرسل دعوة للمستخدم لتفعيل حسابه وتعيين كلمة مرور جديدة" : "Invite user to activate their account and set a new password"}</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-                <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-              <Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>
-                {inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                {isAr ? "إرسال الدعوة" : "Send Invitation"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          <Separator orientation="vertical" className="h-6 mx-1" />
 
-        <Button variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
-          <FileSpreadsheet className="me-2 h-4 w-4" />
-          {isAr ? "استيراد من ملف" : "Import from File"}
-        </Button>
+          <Button variant="outline" size="sm" onClick={() => setShowBulkImport(!showBulkImport)} className="gap-1.5">
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            {isAr ? "استيراد" : "Import"}
+          </Button>
 
-        <Button variant="outline" onClick={() => exportCSV(filteredUsers || [])}>
-          <Download className="me-2 h-4 w-4" />
-          {isAr ? "تصدير CSV" : "Export CSV"}
-        </Button>
+          <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers || [])} className="gap-1.5">
+            <Download className="h-3.5 w-3.5" />
+            {isAr ? "تصدير" : "Export"}
+          </Button>
 
-        <UserAdvancedFilters
-          filters={advancedFilters}
-          onChange={setAdvancedFilters}
-          onReset={() => setAdvancedFilters(INITIAL_FILTERS)}
-        />
-      </div>
+          <UserAdvancedFilters
+            filters={advancedFilters}
+            onChange={setAdvancedFilters}
+            onReset={() => setAdvancedFilters(INITIAL_FILTERS)}
+          />
+        </CardContent>
+      </Card>
 
       {/* Bulk Action Bar */}
       <BulkActionBar
@@ -814,19 +829,19 @@ export default function UserManagement() {
       </Dialog>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="flex flex-wrap gap-4 pt-6">
+      <Card className="border-border/50">
+        <CardContent className="p-3 flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="ps-10"
+              className="ps-9 h-9 text-sm"
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "تصفية حسب الدور" : "Filter by role"} /></SelectTrigger>
+            <SelectTrigger className="w-36 h-9 text-sm"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               {ALL_ROLES.map((role) => (
@@ -835,7 +850,7 @@ export default function UserManagement() {
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "تصفية حسب الحالة" : "Filter by status"} /></SelectTrigger>
+            <SelectTrigger className="w-36 h-9 text-sm"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
@@ -845,7 +860,7 @@ export default function UserManagement() {
             </SelectContent>
           </Select>
           <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
-            <SelectTrigger className="w-40"><SelectValue placeholder={isAr ? "نوع الحساب" : "Account Type"} /></SelectTrigger>
+            <SelectTrigger className="w-36 h-9 text-sm"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
               <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
@@ -1219,10 +1234,17 @@ export default function UserManagement() {
       )}
 
       {/* ── Users Table ─────────────────────────── */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{t("allUsers")}</CardTitle>
-          <div className="flex items-center gap-1 border rounded-lg p-0.5">
+      <Card className="border-border/50">
+        <CardHeader className="flex flex-row items-center justify-between pb-3 pt-4 px-4">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            {t("allUsers")}
+            {filteredUsers && (
+              <Badge variant="outline" className="text-[10px] font-normal">
+                {filteredUsers.length} {isAr ? "نتيجة" : "results"}
+              </Badge>
+            )}
+          </CardTitle>
+          <div className="flex items-center gap-1 border rounded-lg p-0.5 bg-muted/30">
             <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => setViewMode("table")}>
               <List className="h-3.5 w-3.5" />
             </Button>
