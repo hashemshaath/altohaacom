@@ -19073,6 +19073,8 @@ export type Database = {
           id: string
           priority: string
           resolved_at: string | null
+          satisfaction_feedback: string | null
+          satisfaction_rating: number | null
           status: string
           subject: string
           subject_ar: string | null
@@ -19091,6 +19093,8 @@ export type Database = {
           id?: string
           priority?: string
           resolved_at?: string | null
+          satisfaction_feedback?: string | null
+          satisfaction_rating?: number | null
           status?: string
           subject: string
           subject_ar?: string | null
@@ -19109,6 +19113,8 @@ export type Database = {
           id?: string
           priority?: string
           resolved_at?: string | null
+          satisfaction_feedback?: string | null
+          satisfaction_rating?: number | null
           status?: string
           subject?: string
           subject_ar?: string | null
