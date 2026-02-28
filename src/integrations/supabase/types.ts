@@ -14191,6 +14191,7 @@ export type Database = {
           created_at: string
           id: string
           is_archived: boolean
+          is_pinned: boolean
           is_read: boolean
           is_starred: boolean
           message_type: string
@@ -14209,6 +14210,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_archived?: boolean
+          is_pinned?: boolean
           is_read?: boolean
           is_starred?: boolean
           message_type?: string
@@ -14227,6 +14229,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_archived?: boolean
+          is_pinned?: boolean
           is_read?: boolean
           is_starred?: boolean
           message_type?: string
