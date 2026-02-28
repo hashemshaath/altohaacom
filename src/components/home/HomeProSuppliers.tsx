@@ -1,19 +1,22 @@
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { countryFlag } from "@/lib/countryFlag";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
-import { Building2, ArrowRight, Factory, CheckCircle, MapPin } from "lucide-react";
+import { Building2, Factory, CheckCircle, MapPin } from "lucide-react";
+import { SectionHeader } from "./SectionHeader";
+import { FilterChip } from "./FilterChip";
 
 export function HomeProSuppliers() {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
+  const [catFilter, setCatFilter] = useState<string | null>(null);
 
   const { data: suppliers = [] } = useQuery({
     queryKey: ["homeProSuppliers"],
@@ -30,32 +33,49 @@ export function HomeProSuppliers() {
     staleTime: 1000 * 60 * 10,
   });
 
+  const categories = useMemo(() => {
+    const s = new Set<string>();
+    suppliers.forEach((sup: any) => { if (sup.supplier_category) s.add(sup.supplier_category); });
+    return Array.from(s);
+  }, [suppliers]);
+
+  const filtered = useMemo(() => {
+    if (!catFilter) return suppliers;
+    return suppliers.filter((s: any) => s.supplier_category === catFilter);
+  }, [suppliers, catFilter]);
+
   if (suppliers.length === 0) return null;
 
   return (
     <SectionReveal>
       <section className="container py-8 md:py-12" dir={isAr ? "rtl" : "ltr"}>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-6">
-          <div>
-            <Badge variant="secondary" className="mb-1.5 gap-1">
-              <Factory className="h-3 w-3" />
-              {isAr ? "الموردون المحترفون" : "Pro Suppliers"}
-            </Badge>
-            <h2 className={cn("text-xl font-bold sm:text-2xl text-foreground tracking-tight", !isAr && "font-serif")}>
-              {isAr ? "شركاء التوريد المعتمدون" : "Trusted Supply Partners"}
-            </h2>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {isAr ? "شركات متخصصة في منتجات الشيفات المحترفين" : "Companies specializing in professional chef products"}
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => navigate("/pro-suppliers")} className="hidden sm:flex">
-            {isAr ? "عرض الكل" : "View All"}
-            <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
-          </Button>
-        </div>
+        <SectionHeader
+          icon={Factory}
+          badge={isAr ? "الموردون المحترفون" : "Pro Suppliers"}
+          title={isAr ? "شركاء التوريد المعتمدون" : "Trusted Supply Partners"}
+          subtitle={isAr ? "شركات متخصصة في منتجات الشيفات المحترفين" : "Companies specializing in professional chef products"}
+          dataSource="companies (is_pro_supplier)"
+          itemCount={filtered.length}
+          viewAllHref="/pro-suppliers"
+          isAr={isAr}
+          filters={categories.length > 1 ? (
+            <>
+              <FilterChip label={isAr ? "الكل" : "All"} active={!catFilter} count={suppliers.length} onClick={() => setCatFilter(null)} />
+              {categories.map(c => (
+                <FilterChip
+                  key={c}
+                  label={c}
+                  active={catFilter === c}
+                  count={suppliers.filter((s: any) => s.supplier_category === c).length}
+                  onClick={() => setCatFilter(catFilter === c ? null : c)}
+                />
+              ))}
+            </>
+          ) : undefined}
+        />
 
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-          {suppliers.map((s: any) => {
+          {filtered.map((s: any) => {
             const name = isAr && s.name_ar ? s.name_ar : s.name;
             const tagline = isAr && s.tagline_ar ? s.tagline_ar : s.tagline;
             return (
@@ -97,13 +117,6 @@ export function HomeProSuppliers() {
               </Card>
             );
           })}
-        </div>
-
-        <div className="mt-4 text-center sm:hidden">
-          <Button variant="outline" size="sm" onClick={() => navigate("/pro-suppliers")}>
-            {isAr ? "عرض كل الموردين" : "View All Suppliers"}
-            <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
-          </Button>
         </div>
       </section>
     </SectionReveal>

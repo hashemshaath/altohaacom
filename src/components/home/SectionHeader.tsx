@@ -1,0 +1,104 @@
+import { memo, type ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Database, Filter } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { SectionReveal } from "@/components/ui/section-reveal";
+
+export interface SectionHeaderProps {
+  /** Section icon component */
+  icon: React.ElementType;
+  /** Badge label */
+  badge: string;
+  /** Main heading */
+  title: string;
+  /** Subtitle text */
+  subtitle?: string;
+  /** Data source label (e.g. "competitions • 8 items") */
+  dataSource?: string;
+  /** Total items loaded */
+  itemCount?: number;
+  /** "View All" link */
+  viewAllHref?: string;
+  /** "View All" label */
+  viewAllLabel?: string;
+  /** RTL mode */
+  isAr?: boolean;
+  /** Additional actions (filters, toggles) rendered inline */
+  actions?: ReactNode;
+  /** Filter chips rendered below header */
+  filters?: ReactNode;
+  /** Custom class */
+  className?: string;
+}
+
+export const SectionHeader = memo(function SectionHeader({
+  icon: Icon,
+  badge,
+  title,
+  subtitle,
+  dataSource,
+  itemCount,
+  viewAllHref,
+  viewAllLabel,
+  isAr = false,
+  actions,
+  filters,
+  className,
+}: SectionHeaderProps) {
+  return (
+    <SectionReveal>
+      <div className={cn("mb-6", className)}>
+        {/* Top row: badge + title + view all */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+              <Badge variant="secondary" className="gap-1">
+                <Icon className="h-3 w-3" />
+                {badge}
+              </Badge>
+              {dataSource && (
+                <Badge variant="outline" className="gap-1 text-[9px] font-normal text-muted-foreground border-dashed">
+                  <Database className="h-2.5 w-2.5" />
+                  {dataSource}
+                  {typeof itemCount === "number" && (
+                    <span className="font-bold tabular-nums ms-0.5">{itemCount}</span>
+                  )}
+                </Badge>
+              )}
+            </div>
+            <h2 className={cn(
+              "text-xl font-bold sm:text-2xl text-foreground tracking-tight",
+              !isAr && "font-serif"
+            )}>
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="mt-0.5 text-sm text-muted-foreground">{subtitle}</p>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {actions}
+            {viewAllHref && (
+              <Button variant="outline" size="sm" asChild>
+                <Link to={viewAllHref}>
+                  {viewAllLabel || (isAr ? "عرض الكل" : "View All")}
+                  <ArrowRight className="ms-1 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter row */}
+        {filters && (
+          <div className="mt-3 flex items-center gap-1.5 flex-wrap">
+            <Filter className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+            {filters}
+          </div>
+        )}
+      </div>
+    </SectionReveal>
+  );
+});

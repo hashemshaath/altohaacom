@@ -1,25 +1,26 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { UserPlus, ArrowRight, ChefHat, MapPin } from "lucide-react";
-import { SectionReveal } from "@/components/ui/section-reveal";
+import { UserPlus, ChefHat, MapPin } from "lucide-react";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { cn } from "@/lib/utils";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { SectionHeader } from "./SectionHeader";
+import { FilterChip } from "./FilterChip";
 
 export function NewlyJoinedUsers() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
+  const [countryFilter, setCountryFilter] = useState<string | null>(null);
 
   const { data: users = [] } = useQuery({
     queryKey: ["newly-joined-users"],
@@ -34,38 +35,59 @@ export function NewlyJoinedUsers() {
     staleTime: 1000 * 60 * 3,
   });
 
+  const countries = useMemo(() => {
+    const m = new Map<string, number>();
+    users.forEach((u: any) => {
+      if (u.country_code) m.set(u.country_code, (m.get(u.country_code) || 0) + 1);
+    });
+    return Array.from(m.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([code, count]) => ({ code, count }));
+  }, [users]);
+
+  const filtered = useMemo(() => {
+    if (!countryFilter) return users;
+    return users.filter((u: any) => u.country_code === countryFilter);
+  }, [users, countryFilter]);
+
   if (users.length === 0) return null;
 
   return (
     <section className="py-8 md:py-12" aria-labelledby="new-users-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        <SectionReveal>
-          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <Badge variant="secondary" className="mb-1.5 gap-1">
-                <UserPlus className="h-3 w-3" />
-                {isAr ? "انضموا حديثاً" : "Newly Joined"}
-              </Badge>
-              <h2 id="new-users-heading" className={cn("text-xl font-bold sm:text-2xl text-foreground tracking-tight", !isAr && "font-serif")}>
-                {isAr ? "أحدث الأعضاء في مجتمعنا" : "Welcome Our Newest Members"}
-              </h2>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {isAr
-                  ? "انضم إلى مجتمع متنامٍ من الطهاة والمحترفين حول العالم"
-                  : "Join a growing community of chefs and professionals worldwide"}
-              </p>
-            </div>
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/community">
-                {isAr ? "عرض المجتمع" : "View Community"}
-                <ArrowRight className="ms-1 h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
-        </SectionReveal>
+        <SectionHeader
+          icon={UserPlus}
+          badge={isAr ? "انضموا حديثاً" : "Newly Joined"}
+          title={isAr ? "أحدث الأعضاء في مجتمعنا" : "Welcome Our Newest Members"}
+          subtitle={isAr ? "انضم إلى مجتمع متنامٍ من الطهاة والمحترفين حول العالم" : "Join a growing community of chefs and professionals worldwide"}
+          dataSource="profiles"
+          itemCount={filtered.length}
+          viewAllHref="/community"
+          viewAllLabel={isAr ? "عرض المجتمع" : "View Community"}
+          isAr={isAr}
+          filters={countries.length > 1 ? (
+            <>
+              <FilterChip label={isAr ? "الكل" : "All"} active={!countryFilter} count={users.length} onClick={() => setCountryFilter(null)} />
+              {countries.map(({ code, count }) => {
+                const co = allCountries.find((c: any) => c.code === code);
+                const name = co ? (isAr ? co.name_ar || co.name : co.name) : code;
+                return (
+                  <FilterChip
+                    key={code}
+                    label={`${countryFlag(code)} ${name}`}
+                    active={countryFilter === code}
+                    count={count}
+                    onClick={() => setCountryFilter(countryFilter === code ? null : code)}
+                  />
+                );
+              })}
+            </>
+          ) : undefined}
+        />
 
         <StaggeredList className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6" stagger={60}>
-          {users.map((user: any) => {
+          {filtered.map((user: any) => {
             const name = getDisplayName(user, isAr);
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
             const initials = name
