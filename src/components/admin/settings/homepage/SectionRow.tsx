@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -58,6 +59,8 @@ interface SectionRowProps {
   section: HomepageSection;
   index: number;
   isOpen: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
   onToggle: () => void;
   onUpdate: (u: Partial<HomepageSection>) => void;
   onQuickToggle: (visible: boolean) => void;
@@ -73,8 +76,36 @@ interface SectionRowProps {
   };
 }
 
+// Mini grid visualization component
+function GridPreview({ itemsPerRow, itemCount, size, isAr }: {
+  itemsPerRow: number;
+  itemCount: number;
+  size: string;
+  isAr: boolean;
+}) {
+  const rows = Math.ceil(Math.min(itemCount, 12) / itemsPerRow);
+  const cellH = size === "large" ? 6 : size === "medium" ? 4 : 3;
+
+  return (
+    <div className="rounded-md border border-border/40 bg-muted/30 p-1.5 w-fit">
+      <div
+        className="grid gap-0.5"
+        style={{ gridTemplateColumns: `repeat(${itemsPerRow}, 1fr)` }}
+      >
+        {Array.from({ length: Math.min(itemCount, itemsPerRow * rows) }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-[2px] bg-primary/20"
+            style={{ width: 10, height: cellH }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function SectionRow({
-  section, index, isOpen, onToggle, onUpdate, onQuickToggle,
+  section, index, isOpen, isSelected, onSelect, onToggle, onUpdate, onQuickToggle,
   onDuplicate, isPending, isAr, isDragging, dragHandleProps,
 }, ref) {
   const [local, setLocal] = useState<Partial<HomepageSection>>({});
@@ -102,6 +133,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
           "rounded-lg border transition-all",
           isOpen ? "border-primary/30 bg-card shadow-sm" : "border-border/50 hover:border-border",
           !merged.is_visible && "opacity-50",
+          isSelected && "ring-2 ring-primary/30 border-primary/40",
           isDragging && "opacity-30 scale-95"
         )}
         draggable
@@ -109,6 +141,14 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
       >
         {/* Header */}
         <div className="flex items-center gap-1 px-1.5 py-1.5 sm:px-3 sm:py-2.5">
+          {/* Selection checkbox */}
+          <Checkbox
+            checked={isSelected}
+            onCheckedChange={() => onSelect?.()}
+            className="h-3.5 w-3.5 shrink-0"
+            onClick={(e) => e.stopPropagation()}
+          />
+
           <GripVertical className="h-4 w-4 text-muted-foreground/40 shrink-0 cursor-grab active:cursor-grabbing" />
 
           <button
@@ -134,6 +174,16 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">
+                {/* Mini grid preview */}
+                <div className="hidden sm:block">
+                  <GridPreview
+                    itemsPerRow={merged.items_per_row}
+                    itemCount={merged.item_count}
+                    size={merged.item_size}
+                    isAr={isAr}
+                  />
+                </div>
+
                 {merged.cover_type !== "none" && (
                   <Badge variant="secondary" className="text-[8px] sm:text-[9px] gap-0.5 px-1.5 py-0">
                     <Image className="h-2.5 w-2.5" /> {isAr ? "غلاف" : "Cover"}
@@ -144,9 +194,6 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                     <Sparkles className="h-2.5 w-2.5" /> {merged.animation}
                   </Badge>
                 )}
-                <Badge variant="outline" className="text-[8px] sm:text-[9px] font-mono px-1.5 py-0 hidden sm:flex">
-                  {merged.item_count}×{merged.items_per_row}
-                </Badge>
                 <Badge variant="outline" className="text-[9px] font-mono px-1 py-0 bg-muted/50">
                   #{index + 1}
                 </Badge>
@@ -258,6 +305,35 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
 
               {/* Layout Tab */}
               <TabsContent value="layout" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
+                {/* Visual grid preview */}
+                <div className="rounded-lg border border-border/50 bg-muted/20 p-4 flex flex-col items-center gap-3">
+                  <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "معاينة الشبكة" : "Grid Preview"}</p>
+                  <div
+                    className="grid gap-1.5"
+                    style={{ gridTemplateColumns: `repeat(${merged.items_per_row}, 1fr)` }}
+                  >
+                    {Array.from({ length: Math.min(merged.item_count, merged.items_per_row * 3) }).map((_, i) => {
+                      const h = merged.item_size === "large" ? 24 : merged.item_size === "medium" ? 18 : 12;
+                      return (
+                        <div
+                          key={i}
+                          className="rounded bg-primary/15 border border-primary/20 flex items-center justify-center"
+                          style={{ width: 36, height: h }}
+                        >
+                          <span className="text-[7px] text-primary/50">{i + 1}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
+                    <span>{merged.items_per_row} {isAr ? "في الصف" : "per row"}</span>
+                    <span>·</span>
+                    <span>{merged.item_count} {isAr ? "عنصر" : "items"}</span>
+                    <span>·</span>
+                    <span>{isAr ? SIZE_OPTIONS.find(s => s.value === merged.item_size)?.ar : merged.item_size}</span>
+                  </div>
+                </div>
+
                 <div className="space-y-3">
                   <Label className="text-xs font-semibold">{isAr ? "شبكة العرض" : "Grid Layout"}</Label>
                   <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
@@ -388,14 +464,23 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   <Label className="text-xs font-semibold flex items-center gap-1.5">
                     <Sparkles className="h-3 w-3" /> {isAr ? "الحركة" : "Animation"}
                   </Label>
-                  <Select value={merged.animation} onValueChange={(v) => set("animation", v as HomepageSection["animation"])}>
-                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {ANIMATION_OPTIONS.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  {/* Animation visual selector */}
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                    {ANIMATION_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => set("animation", opt.value as HomepageSection["animation"])}
+                        className={cn(
+                          "rounded-lg border px-2 py-2 text-center transition-all",
+                          merged.animation === opt.value
+                            ? "border-primary bg-primary/10 shadow-sm"
+                            : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
+                        )}
+                      >
+                        <span className="text-[9px] font-medium block">{isAr ? opt.ar : opt.en}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <Separator />
@@ -526,6 +611,9 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   <Button size="sm" variant="ghost" onClick={() => { setLocal({}); setJsonError(null); }} className="text-xs h-8">
                     {isAr ? "إلغاء" : "Cancel"}
                   </Button>
+                  <Badge variant="secondary" className="text-[9px]">
+                    {Object.keys(local).length} {isAr ? "تغيير" : "changes"}
+                  </Badge>
                 </div>
               ) : <div />}
 
