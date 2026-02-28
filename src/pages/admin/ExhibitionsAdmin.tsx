@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
+import { deriveExhibitionStatus, EXHIBITION_STATUS_LEGEND } from "@/lib/exhibitionStatus";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
 import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -993,6 +995,21 @@ export default function ExhibitionsAdmin() {
         </Select>
       </div>
 
+      {/* Status Legend */}
+      <Card className="border-border/40">
+        <CardContent className="p-3">
+          <p className="text-[10px] font-semibold text-muted-foreground mb-2">{t("Status Key", "مفتاح الحالة")}</p>
+          <div className="flex flex-wrap gap-2">
+            {EXHIBITION_STATUS_LEGEND.map(s => (
+              <span key={s.status} className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium ${s.color}`}>
+                <span className={`h-2 w-2 rounded-full ${s.dot}`} />
+                {isAr ? s.labelAr : s.label}
+              </span>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       <BulkActionBar
         count={bulk.count}
         onClear={bulk.clearSelection}
@@ -1077,9 +1094,57 @@ export default function ExhibitionsAdmin() {
                       <Badge variant="secondary" className="text-[10px]">{getTypeName(ex.type)}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={`text-[10px] border-0 ${statusColorMap[ex.status] || ""}`}>
-                        {getStatusName(ex.status)}
-                      </Badge>
+                      {(() => {
+                        const derived = deriveExhibitionStatus({
+                          dbStatus: ex.status,
+                          startDate: ex.start_date,
+                          endDate: ex.end_date,
+                          registrationDeadline: ex.registration_deadline,
+                        });
+                        return (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className={`inline-flex items-center gap-1.5 rounded-full border-0 px-2.5 py-1 text-[10px] font-medium cursor-pointer hover:ring-2 hover:ring-ring/30 transition-all ${derived.color}`}>
+                                {derived.status === "started" ? (
+                                  <span className="relative flex h-2 w-2">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+                                  </span>
+                                ) : (
+                                  <span className={`h-2 w-2 rounded-full ${derived.dot}`} />
+                                )}
+                                {isAr ? derived.labelAr : derived.label}
+                                {derived.urgent && derived.daysLeft && (
+                                  <span className="font-bold">({derived.daysLeft}d)</span>
+                                )}
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="min-w-[180px]">
+                              <p className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground">{t("Change Status", "تغيير الحالة")}</p>
+                              {statusOptions.map(opt => (
+                                <DropdownMenuItem
+                                  key={opt.value}
+                                  disabled={ex.status === opt.value}
+                                  onClick={async () => {
+                                    const { error } = await supabase.from("exhibitions").update({ status: opt.value }).eq("id", ex.id);
+                                    if (error) {
+                                      toast({ title: "Error", description: error.message, variant: "destructive" });
+                                      return;
+                                    }
+                                    queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
+                                    toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
+                                  }}
+                                  className="text-xs"
+                                >
+                                  <span className={`h-2 w-2 rounded-full me-2 ${statusColorMap[opt.value]?.split(" ")[0] || "bg-muted"}`} />
+                                  {isAr ? opt.ar : opt.en}
+                                  {ex.status === opt.value && <span className="ms-auto text-[9px] text-muted-foreground">{t("Current", "الحالية")}</span>}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        );
+                      })()}
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                       {format(new Date(ex.start_date), "dd MMM yyyy")}
