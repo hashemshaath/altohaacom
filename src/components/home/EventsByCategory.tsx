@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin } from "lucide-react";
+import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin, Users, Flame } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
@@ -59,17 +59,123 @@ export function EventsByCategory() {
   });
 
   const statusBadge = (status: string) => {
-    const map: Record<string, { label: string; labelAr: string; cls: string }> = {
-      registration_open: { label: "Open", labelAr: "مفتوح", cls: "bg-chart-2/90 text-chart-2-foreground" },
-      in_progress: { label: "Live", labelAr: "جارية", cls: "bg-destructive/90 text-destructive-foreground animate-pulse" },
+    const map: Record<string, { label: string; labelAr: string; cls: string; icon?: any }> = {
+      registration_open: { label: "Open", labelAr: "مفتوح", cls: "bg-chart-2/90 text-chart-2-foreground", icon: Users },
+      in_progress: { label: "Live", labelAr: "جارية", cls: "bg-destructive/90 text-destructive-foreground animate-pulse", icon: Flame },
       upcoming: { label: "Upcoming", labelAr: "قادمة", cls: "" },
       active: { label: "Active", labelAr: "نشط", cls: "bg-chart-2/90 text-chart-2-foreground" },
     };
     const s = map[status] || map.upcoming;
+    const Icon = s.icon;
     return (
-      <Badge className={cn("text-[10px] shadow-sm", s.cls)}>
+      <Badge className={cn("text-[10px] shadow-sm gap-1", s.cls)}>
+        {Icon && <Icon className="h-2.5 w-2.5" />}
         {isAr ? s.labelAr : s.label}
       </Badge>
+    );
+  };
+
+  /* Featured card (first item, larger) */
+  const renderFeaturedCompetition = (item: any) => {
+    const title = isAr && item.title_ar ? item.title_ar : item.title;
+    return (
+      <Link key={item.id} to={`/competitions/${item.id}`} className="group block col-span-2 row-span-2">
+        <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/25">
+          <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
+            {item.cover_image_url ? (
+              <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+            ) : (
+              <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                <Trophy className="h-12 w-12 text-primary/30" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+            <div className="absolute end-3 top-3 flex flex-col items-end gap-1.5">
+              {statusBadge(item.status)}
+              {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
+            </div>
+            <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+            {/* Overlaid content on featured card */}
+            <div className="absolute bottom-0 inset-x-0 p-4">
+              <Badge variant="outline" className="mb-2 bg-background/60 backdrop-blur-sm text-[10px]">
+                <Trophy className="me-1 h-2.5 w-2.5" />
+                {isAr ? "مميز" : "Featured"}
+              </Badge>
+              <h3 className="line-clamp-2 text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                {title}
+              </h3>
+              <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                {item.competition_start && (
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3 text-primary/60" />
+                    {format(new Date(item.competition_start), "MMM d, yyyy")}
+                  </span>
+                )}
+                {item.is_virtual ? (
+                  <span className="flex items-center gap-1">
+                    <Globe className="h-3 w-3 text-primary/60" />
+                    {isAr ? "افتراضي" : "Virtual"}
+                  </span>
+                ) : item.city ? (
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3 text-primary/60" />
+                    {item.city}{item.country ? `, ${item.country}` : ""}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </Card>
+      </Link>
+    );
+  };
+
+  const renderCompetitionCard = (item: any) => {
+    const title = isAr && item.title_ar ? item.title_ar : item.title;
+    return (
+      <Link key={item.id} to={`/competitions/${item.id}`} className="group block">
+        <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
+          <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+            {item.cover_image_url ? (
+              <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+            ) : (
+              <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                <Trophy className="h-8 w-8 text-primary/30" />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
+              {statusBadge(item.status)}
+              {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
+            </div>
+            <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <CardContent className="p-3">
+            <h3 className="mb-1.5 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+              {title}
+            </h3>
+            <div className="space-y-1 text-[11px] text-muted-foreground">
+              {item.competition_start && (
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
+                  <span>{format(new Date(item.competition_start), "MMM d, yyyy")}</span>
+                </div>
+              )}
+              {item.is_virtual ? (
+                <div className="flex items-center gap-1.5">
+                  <Globe className="h-3 w-3 shrink-0 text-primary/50" />
+                  <span>{isAr ? "افتراضي" : "Virtual"}</span>
+                </div>
+              ) : item.city ? (
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                  <span className="truncate">{item.city}{item.country ? `, ${item.country}` : ""}</span>
+                </div>
+              ) : null}
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
     );
   };
 
@@ -80,55 +186,8 @@ export function EventsByCategory() {
       labelEn: "Competitions",
       labelAr: "المسابقات",
       items: competitions,
-      renderItem: (item: any) => {
-        const title = isAr && item.title_ar ? item.title_ar : item.title;
-        return (
-          <Link key={item.id} to={`/competitions/${item.id}`} className="group block">
-            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
-              <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                {item.cover_image_url ? (
-                  <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-                ) : (
-                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                    <Trophy className="h-8 w-8 text-primary/30" />
-                  </div>
-                )}
-                {/* Gradient overlay for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
-                  {statusBadge(item.status)}
-                  {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
-                </div>
-                <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <CardContent className="p-3">
-                <h3 className="mb-1.5 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
-                  {title}
-                </h3>
-                <div className="space-y-1 text-[11px] text-muted-foreground">
-                  {item.competition_start && (
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
-                      <span>{format(new Date(item.competition_start), "MMM d, yyyy")}</span>
-                    </div>
-                  )}
-                  {item.is_virtual ? (
-                    <div className="flex items-center gap-1.5">
-                      <Globe className="h-3 w-3 shrink-0 text-primary/50" />
-                      <span>{isAr ? "افتراضي" : "Virtual"}</span>
-                    </div>
-                  ) : item.city ? (
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-                      <span className="truncate">{item.city}{item.country ? `, ${item.country}` : ""}</span>
-                    </div>
-                  ) : null}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        );
-      },
+      renderItem: renderCompetitionCard,
+      renderFeatured: renderFeaturedCompetition,
       viewAllHref: "/competitions",
     },
     {
@@ -249,6 +308,11 @@ export function EventsByCategory() {
             <TabsTrigger key={tab.key} value={tab.key} className="gap-1 text-xs sm:text-sm sm:gap-1.5">
               <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? tab.labelAr : tab.labelEn}
+              {tab.items.length > 0 && (
+                <span className="ms-1 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-muted px-1 text-[9px] font-bold tabular-nums">
+                  {tab.items.length}
+                </span>
+              )}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -257,9 +321,17 @@ export function EventsByCategory() {
           <TabsContent key={tab.key} value={tab.key}>
             {tab.items.length > 0 ? (
               <>
-                <StaggeredList className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
-                  {tab.items.map(tab.renderItem)}
-                </StaggeredList>
+                {/* Featured layout: first card large + rest in grid */}
+                {tab.key === "competitions" && tab.items.length >= 3 && tab.renderFeatured ? (
+                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+                    {tab.renderFeatured(tab.items[0])}
+                    {tab.items.slice(1).map(tab.renderItem)}
+                  </div>
+                ) : (
+                  <StaggeredList className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
+                    {tab.items.map(tab.renderItem)}
+                  </StaggeredList>
+                )}
                 <div className="mt-5 text-center">
                   <Button variant="outline" size="sm" asChild>
                     <Link to={tab.viewAllHref}>

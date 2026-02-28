@@ -137,6 +137,15 @@ function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
 }
 
 // ── Main slider ───────────────────────────────────────────────────────────────
+// Inject progress animation keyframes
+const styleId = "hero-progress-style";
+if (typeof document !== "undefined" && !document.getElementById(styleId)) {
+  const style = document.createElement("style");
+  style.id = styleId;
+  style.textContent = `@keyframes hero-progress { from { width: 0% } to { width: 100% } }`;
+  document.head.appendChild(style);
+}
+
 export function HeroSlider() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -226,20 +235,45 @@ export function HeroSlider() {
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
-          <div className="absolute bottom-4 inset-x-0 z-30 flex justify-center gap-2">
-            {slides.map((_: HeroSlide, i: number) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={cn(
-                  "h-1.5 rounded-full transition-all duration-500",
-                  i === current
-                    ? "w-8 bg-primary shadow-sm shadow-primary/30"
-                    : "w-1.5 bg-foreground/25 hover:bg-foreground/40"
-                )}
-                aria-label={`${isAr ? "انتقل للشريحة" : "Go to slide"} ${i + 1}`}
-              />
-            ))}
+          {/* Slide indicators with progress */}
+          <div className="absolute bottom-4 inset-x-0 z-30 flex justify-center gap-2 px-4">
+            {slides.map((_: HeroSlide, i: number) => {
+              const isActive = i === current;
+              const interval = slides[i]?.autoplay_interval ?? 6000;
+              return (
+                <button
+                  key={i}
+                  onClick={() => setCurrent(i)}
+                  className={cn(
+                    "relative h-1.5 rounded-full transition-all duration-500 overflow-hidden",
+                    isActive
+                      ? "w-10 bg-foreground/20 backdrop-blur-sm"
+                      : "w-1.5 bg-foreground/25 hover:bg-foreground/40"
+                  )}
+                  aria-label={`${isAr ? "انتقل للشريحة" : "Go to slide"} ${i + 1}`}
+                >
+                  {isActive && interval > 0 && (
+                    <span
+                      key={`progress-${i}-${current}`}
+                      className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-sm shadow-primary/40"
+                      style={{
+                        animation: `hero-progress ${interval}ms linear forwards`,
+                      }}
+                    />
+                  )}
+                  {isActive && interval === 0 && (
+                    <span className="absolute inset-0 rounded-full bg-primary shadow-sm shadow-primary/40" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Slide counter badge */}
+          <div className="absolute bottom-4 end-4 z-30 flex items-center gap-1.5 rounded-full bg-background/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-medium text-foreground/80 ring-1 ring-border/20">
+            <span className="tabular-nums">{current + 1}</span>
+            <span className="text-foreground/40">/</span>
+            <span className="tabular-nums text-foreground/50">{slides.length}</span>
           </div>
         </>
       )}

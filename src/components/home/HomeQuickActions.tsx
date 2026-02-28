@@ -19,8 +19,8 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
 
   return (
     <section className="container py-3">
-      {/* Horizontal scroll on mobile, grid on desktop */}
-      <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible sm:pb-0">
+      {/* Horizontal scroll on mobile, grid on desktop — RTL-aware */}
+      <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
         {actions.map((a) => (
           <Link
             key={a.href}

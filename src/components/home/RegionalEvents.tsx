@@ -113,7 +113,7 @@ export function RegionalEvents() {
                 <ArrowRight className="h-4 w-4" />
               </button>
 
-              <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar" style={{ scrollbarWidth: "none" }}>
+              <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar" style={{ scrollbarWidth: "none" }} dir={isAr ? "rtl" : "ltr"}>
                 {filteredComps.map((item: any) => (
                   <EventCard key={item.id} item={item} isAr={isAr} />
                 ))}
