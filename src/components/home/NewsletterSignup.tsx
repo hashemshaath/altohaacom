@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Mail, Sparkles, Shield } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 
@@ -42,8 +43,7 @@ export function NewsletterSignup() {
   };
 
   return (
-    <section ref={ref} className="relative border-y overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"}>
-      {/* Vibrant gradient background */}
+    <section ref={ref} className="relative border-y overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-card/80 to-accent/8" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)]" />
 
@@ -57,19 +57,19 @@ export function NewsletterSignup() {
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/5">
             <Mail className="h-7 w-7 text-primary" />
           </div>
-          <div className="mb-1 flex items-center justify-center gap-1.5 text-xs text-primary font-medium">
-            <Sparkles className="h-3.5 w-3.5" />
+          <Badge variant="secondary" className="mb-2 gap-1">
+            <Sparkles className="h-3 w-3" />
             {isAr ? "لا تفوّت الجديد" : "Stay in the Loop"}
-          </div>
-          <h2 className={cn("text-xl font-bold sm:text-2xl", !isAr && "font-serif")}>
+          </Badge>
+          <h2 className={cn("text-xl font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
             {isAr ? "اشترك في نشرتنا الإخبارية" : "Subscribe to Our Newsletter"}
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+          <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
             {isAr
               ? "كن أول من يعرف عن المسابقات القادمة والمقالات الحصرية والفرص المميزة."
               : "Be the first to know about upcoming competitions, exclusive articles & special opportunities."}
           </p>
-          <form onSubmit={handleSubmit} className="mt-6 flex gap-2 sm:mx-auto sm:max-w-md">
+          <form onSubmit={handleSubmit} className="mt-5 flex gap-2 sm:mx-auto sm:max-w-md">
             <Input
               type="email"
               value={email}
@@ -82,9 +82,10 @@ export function NewsletterSignup() {
               {loading ? "..." : (isAr ? "اشتراك" : "Subscribe")}
             </Button>
           </form>
-          <p className="mt-3 text-[11px] text-muted-foreground/60">
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground/60">
+            <Shield className="h-3 w-3" />
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
-          </p>
+          </div>
         </div>
       </div>
     </section>

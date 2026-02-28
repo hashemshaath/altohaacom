@@ -70,21 +70,21 @@ export function SponsorCarousel() {
   const platinums = sponsors.filter(s => s.tier === "platinum");
 
   return (
-    <section className="py-8 md:py-12 overflow-hidden">
+    <section className="py-8 md:py-12 overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionReveal>
-        <div className="mb-8 text-center">
-          <Badge variant="secondary" className="mb-3 gap-1">
-            <Crown className="h-3 w-3 text-chart-4" />
-            {isAr ? "الرعاة الرسميون" : "Official Sponsors"}
-          </Badge>
-          <h2 className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
-            {isAr ? "بدعم من أفضل الشركاء" : "Powered by Top Partners"}
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground max-w-lg mx-auto">
-            {isAr ? "شركاؤنا الذين يصنعون معنا مستقبل الطهي" : "Our partners who shape the future of culinary arts with us"}
-          </p>
-        </div>
+          <div className="mb-8 text-center">
+            <Badge variant="secondary" className="mb-2 gap-1">
+              <Crown className="h-3 w-3 text-chart-4" />
+              {isAr ? "الرعاة الرسميون" : "Official Sponsors"}
+            </Badge>
+            <h2 className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+              {isAr ? "بدعم من أفضل الشركاء" : "Powered by Top Partners"}
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground max-w-lg mx-auto">
+              {isAr ? "شركاؤنا الذين يصنعون معنا مستقبل الطهي" : "Our partners who shape the future of culinary arts with us"}
+            </p>
+          </div>
         </SectionReveal>
 
         {/* Platinum sponsors */}
@@ -98,19 +98,19 @@ export function SponsorCarousel() {
               </Badge>
               <div className="h-px flex-1 bg-gradient-to-s from-transparent to-chart-4/30" />
             </div>
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
               {platinums.map(sponsor => (
                 <a
                   key={sponsor.id}
                   href={sponsor.website || "#"}
                   target={sponsor.website ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="group flex flex-col items-center gap-2 sm:gap-3 rounded-2xl border border-chart-4/30 bg-gradient-to-br from-chart-4/10 to-chart-4/5 p-4 sm:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 min-w-[130px] sm:min-w-[160px]"
+                  className="group flex flex-col items-center gap-2 sm:gap-3 rounded-2xl border border-chart-4/30 bg-gradient-to-br from-chart-4/10 to-chart-4/5 p-4 sm:p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 min-w-[120px] sm:min-w-[160px]"
                 >
-                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-background/90 p-3 shadow-md ring-1 ring-chart-4/20">
+                  <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-background/90 p-3 shadow-md ring-1 ring-chart-4/20">
                     <img src={sponsor.logo} alt={sponsor.name} className="h-full w-full object-contain transition-transform group-hover:scale-110" loading="lazy" />
                   </div>
-                  <p className="text-sm font-bold truncate max-w-[140px]">{sponsor.name}</p>
+                  <p className="text-xs sm:text-sm font-bold truncate max-w-[140px]">{sponsor.name}</p>
                 </a>
               ))}
             </div>
@@ -120,13 +120,12 @@ export function SponsorCarousel() {
         {/* Scrolling marquee for other sponsors */}
         {nonPlatinum.length > 0 && (
           <div className="relative overflow-hidden">
-            {/* Fade edges using logical gradient directions */}
-            <div className="absolute inset-y-0 start-0 w-20 z-10 pointer-events-none bg-gradient-to-e from-background to-transparent" />
-            <div className="absolute inset-y-0 end-0 w-20 z-10 pointer-events-none bg-gradient-to-s from-background to-transparent" />
+            <div className="absolute inset-y-0 start-0 w-16 sm:w-20 z-10 pointer-events-none bg-gradient-to-e from-background to-transparent" />
+            <div className="absolute inset-y-0 end-0 w-16 sm:w-20 z-10 pointer-events-none bg-gradient-to-s from-background to-transparent" />
             <style>{`@keyframes marquee-ltr { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes marquee-rtl { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }`}</style>
             <div
-              className="flex gap-6 py-4"
+              className="flex gap-4 sm:gap-6 py-4"
               style={{
                 width: "max-content",
                 animation: `${isAr ? "marquee-rtl" : "marquee-ltr"} ${Math.max(20, nonPlatinum.length * 4)}s linear infinite`,
@@ -140,13 +139,13 @@ export function SponsorCarousel() {
                     href={sponsor.website || "#"}
                     target={sponsor.website ? "_blank" : undefined}
                     rel="noopener noreferrer"
-                    className={`group flex flex-col items-center gap-3 rounded-2xl border p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 min-w-[130px] ${tier.border} ${tier.bg}`}
+                    className={cn("group flex flex-col items-center gap-2 sm:gap-3 rounded-2xl border p-4 sm:p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 min-w-[110px] sm:min-w-[130px]", tier.border, tier.bg)}
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-background/80 p-2 shadow-sm">
+                    <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-background/80 p-2 shadow-sm">
                       <img src={sponsor.logo} alt={sponsor.name} className="h-full w-full object-contain transition-all duration-300 group-hover:scale-110" loading="lazy" />
                     </div>
                     <div className="text-center">
-                      <p className="text-xs font-medium truncate max-w-[110px]">{sponsor.name}</p>
+                      <p className="text-[10px] sm:text-xs font-medium truncate max-w-[100px] sm:max-w-[110px]">{sponsor.name}</p>
                       <Badge variant="outline" className="mt-1 text-[8px] uppercase tracking-wider">
                         {isAr ? tier.labelAr : tier.label}
                       </Badge>
