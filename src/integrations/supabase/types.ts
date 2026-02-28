@@ -5683,24 +5683,35 @@ export type Database = {
       }
       competitions: {
         Row: {
+          age_restrictions: string | null
           allowed_entry_types: string[] | null
           blind_code_prefix: string | null
           blind_judging_enabled: boolean | null
           city: string | null
+          competition_email: string | null
           competition_end: string
           competition_number: string | null
+          competition_phone: string | null
           competition_start: string
+          competition_website: string | null
           country: string | null
           country_code: string | null
           cover_image_url: string | null
           created_at: string
           description: string | null
           description_ar: string | null
+          dress_code: string | null
+          dress_code_ar: string | null
           edition_year: number | null
+          eligibility: string | null
+          eligibility_ar: string | null
+          equipment_provided: string[] | null
+          equipment_required: string[] | null
           exhibition_id: string | null
           id: string
           import_source: string | null
           is_virtual: boolean | null
+          judging_committee_data: Json | null
           link_type: string | null
           linked_chef_id: string | null
           linked_entity_id: string | null
@@ -5708,7 +5719,14 @@ export type Database = {
           max_participants: number | null
           max_team_size: number | null
           min_team_size: number | null
+          organizer_email: string | null
           organizer_id: string
+          organizer_name: string | null
+          organizer_name_ar: string | null
+          organizer_website: string | null
+          participation_requirements: string[] | null
+          participation_requirements_ar: string[] | null
+          prizes_data: Json | null
           registration_currency: string | null
           registration_end: string | null
           registration_fee: number | null
@@ -5717,12 +5735,16 @@ export type Database = {
           registration_tax_name: string | null
           registration_tax_name_ar: string | null
           registration_tax_rate: number | null
+          registration_url: string | null
           rules_summary: string | null
           rules_summary_ar: string | null
+          schedule_data: Json | null
           scoring_notes: string | null
           scoring_notes_ar: string | null
           series_id: string | null
           status: Database["public"]["Enums"]["competition_status"]
+          terms_conditions: string | null
+          terms_conditions_ar: string | null
           title: string
           title_ar: string | null
           updated_at: string
@@ -5730,24 +5752,35 @@ export type Database = {
           venue_ar: string | null
         }
         Insert: {
+          age_restrictions?: string | null
           allowed_entry_types?: string[] | null
           blind_code_prefix?: string | null
           blind_judging_enabled?: boolean | null
           city?: string | null
+          competition_email?: string | null
           competition_end: string
           competition_number?: string | null
+          competition_phone?: string | null
           competition_start: string
+          competition_website?: string | null
           country?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          dress_code?: string | null
+          dress_code_ar?: string | null
           edition_year?: number | null
+          eligibility?: string | null
+          eligibility_ar?: string | null
+          equipment_provided?: string[] | null
+          equipment_required?: string[] | null
           exhibition_id?: string | null
           id?: string
           import_source?: string | null
           is_virtual?: boolean | null
+          judging_committee_data?: Json | null
           link_type?: string | null
           linked_chef_id?: string | null
           linked_entity_id?: string | null
@@ -5755,7 +5788,14 @@ export type Database = {
           max_participants?: number | null
           max_team_size?: number | null
           min_team_size?: number | null
+          organizer_email?: string | null
           organizer_id: string
+          organizer_name?: string | null
+          organizer_name_ar?: string | null
+          organizer_website?: string | null
+          participation_requirements?: string[] | null
+          participation_requirements_ar?: string[] | null
+          prizes_data?: Json | null
           registration_currency?: string | null
           registration_end?: string | null
           registration_fee?: number | null
@@ -5764,12 +5804,16 @@ export type Database = {
           registration_tax_name?: string | null
           registration_tax_name_ar?: string | null
           registration_tax_rate?: number | null
+          registration_url?: string | null
           rules_summary?: string | null
           rules_summary_ar?: string | null
+          schedule_data?: Json | null
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
           series_id?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
+          terms_conditions?: string | null
+          terms_conditions_ar?: string | null
           title: string
           title_ar?: string | null
           updated_at?: string
@@ -5777,24 +5821,35 @@ export type Database = {
           venue_ar?: string | null
         }
         Update: {
+          age_restrictions?: string | null
           allowed_entry_types?: string[] | null
           blind_code_prefix?: string | null
           blind_judging_enabled?: boolean | null
           city?: string | null
+          competition_email?: string | null
           competition_end?: string
           competition_number?: string | null
+          competition_phone?: string | null
           competition_start?: string
+          competition_website?: string | null
           country?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           description_ar?: string | null
+          dress_code?: string | null
+          dress_code_ar?: string | null
           edition_year?: number | null
+          eligibility?: string | null
+          eligibility_ar?: string | null
+          equipment_provided?: string[] | null
+          equipment_required?: string[] | null
           exhibition_id?: string | null
           id?: string
           import_source?: string | null
           is_virtual?: boolean | null
+          judging_committee_data?: Json | null
           link_type?: string | null
           linked_chef_id?: string | null
           linked_entity_id?: string | null
@@ -5802,7 +5857,14 @@ export type Database = {
           max_participants?: number | null
           max_team_size?: number | null
           min_team_size?: number | null
+          organizer_email?: string | null
           organizer_id?: string
+          organizer_name?: string | null
+          organizer_name_ar?: string | null
+          organizer_website?: string | null
+          participation_requirements?: string[] | null
+          participation_requirements_ar?: string[] | null
+          prizes_data?: Json | null
           registration_currency?: string | null
           registration_end?: string | null
           registration_fee?: number | null
@@ -5811,12 +5873,16 @@ export type Database = {
           registration_tax_name?: string | null
           registration_tax_name_ar?: string | null
           registration_tax_rate?: number | null
+          registration_url?: string | null
           rules_summary?: string | null
           rules_summary_ar?: string | null
+          schedule_data?: Json | null
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
           series_id?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
+          terms_conditions?: string | null
+          terms_conditions_ar?: string | null
           title?: string
           title_ar?: string | null
           updated_at?: string
