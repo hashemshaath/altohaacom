@@ -87,6 +87,7 @@ export const adminNavSections: NavSection[] = [
     titleEn: "Competitions & Events",
     titleAr: "المسابقات والفعاليات",
     items: [
+      { to: "/admin/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمين" },
       { to: "/admin/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
       { to: "/admin/evaluation", icon: ClipboardCheck, labelEn: "Evaluation", labelAr: "مركز التقييم" },
       { to: "/admin/certificates", icon: Award, labelEn: "Certificates", labelAr: "الشهادات" },

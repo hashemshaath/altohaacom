@@ -49,6 +49,7 @@ const GlobalEventsAdmin = lazy(() => import("@/pages/admin/GlobalEventsAdmin"));
 const SmartImportAdmin = lazy(() => import("@/pages/admin/SmartImportAdmin"));
 const LoyaltyAdmin = lazy(() => import("@/pages/admin/LoyaltyAdmin"));
 const SecurityAdmin = lazy(() => import("@/pages/admin/SecurityAdmin"));
+const OrganizersAdmin = lazy(() => import("@/pages/admin/OrganizersAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -70,6 +71,7 @@ export const adminRoutes = (
     <Route path="audience-segments" element={<AudienceSegments />} />
 
     {/* Competitions & Events */}
+    <Route path="organizers" element={<OrganizersAdmin />} />
     <Route path="competitions" element={<CompetitionsAdmin />} />
     <Route path="evaluation" element={<EvaluationCenter />} />
     <Route path="certificates" element={<CertificatesAdmin />} />
