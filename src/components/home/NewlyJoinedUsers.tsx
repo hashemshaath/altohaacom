@@ -13,6 +13,8 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { cn } from "@/lib/utils";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { formatDistanceToNow } from "date-fns";
+import { ar } from "date-fns/locale";
 
 export function NewlyJoinedUsers() {
   const { language } = useLanguage();
@@ -35,7 +37,7 @@ export function NewlyJoinedUsers() {
   if (users.length === 0) return null;
 
   return (
-    <section className="py-8 md:py-12" aria-labelledby="new-users-heading">
+    <section className="py-8 md:py-12" aria-labelledby="new-users-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionReveal>
           <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -102,6 +104,11 @@ export function NewlyJoinedUsers() {
                       <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0" />
                       <span className="truncate">{countryFlag(user.country_code)} {locationParts}</span>
                     </div>
+                  )}
+                  {user.created_at && (
+                    <p className="mt-1 text-[9px] text-muted-foreground/50">
+                      {formatDistanceToNow(new Date(user.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
+                    </p>
                   )}
                 </Card>
               </Link>

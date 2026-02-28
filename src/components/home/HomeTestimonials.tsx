@@ -32,17 +32,15 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
   const next = useCallback(() => setCurrent(c => (c + 1) % Math.max(testimonials.length, 1)), [testimonials.length]);
   const prev = useCallback(() => setCurrent(c => (c - 1 + testimonials.length) % Math.max(testimonials.length, 1)), [testimonials.length]);
 
-  // Touch swipe support
   const touchStart = useRef<number | null>(null);
   const handleTouchStart = (e: React.TouchEvent) => { touchStart.current = e.touches[0].clientX; };
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStart.current === null) return;
     const diff = touchStart.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) { diff > 0 ? next() : prev(); }
+    if (Math.abs(diff) > 50) { diff > 0 ? (isAr ? prev() : next()) : (isAr ? next() : prev()); }
     touchStart.current = null;
   };
 
-  // Auto-rotate
   useEffect(() => {
     if (testimonials.length <= 1) return;
     const interval = setInterval(next, 6000);
@@ -59,15 +57,15 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
 
   return (
     <div ref={ref}>
-      <section className="py-10 md:py-14" aria-label={isAr ? "آراء المستخدمين" : "Testimonials"}>
+      <section className="py-10 md:py-14" aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container max-w-3xl">
           <SectionReveal>
             <div className="text-center mb-8">
-              <Badge variant="secondary" className="mb-3">
-                <Quote className="me-1 h-3 w-3" />
+              <Badge variant="secondary" className="mb-3 gap-1">
+                <Quote className="h-3 w-3" />
                 {isAr ? "آراء المجتمع" : "Community Voices"}
               </Badge>
-              <h2 className="text-2xl font-bold sm:text-3xl">
+              <h2 className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
                 {isAr ? "ماذا يقول أعضاؤنا" : "What Our Members Say"}
               </h2>
             </div>
@@ -75,10 +73,10 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
 
           <SectionReveal delay={100}>
             <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y bg-gradient-to-br from-card to-card/80" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-              <div className="absolute top-4 start-4 opacity-[0.03]">
+              <div className="absolute top-4 start-4 opacity-[0.04]">
                 <Quote className="h-24 w-24" />
               </div>
-              <div className="absolute bottom-4 end-4 opacity-[0.03] rotate-180">
+              <div className="absolute bottom-4 end-4 opacity-[0.04] rotate-180">
                 <Quote className="h-16 w-16" />
               </div>
               <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">

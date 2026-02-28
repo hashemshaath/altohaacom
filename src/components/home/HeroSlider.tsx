@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Pause, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import type { HeroSlide } from "@/components/admin/hero/HeroSlideAdmin";
@@ -60,7 +61,7 @@ const FallbackHero = memo(function FallbackHero({ isAr }: { isAr: boolean }) {
   );
 });
 
-// ── Height helper (mirrors HeroSlidePreview) ─────────────────────────────────
+// ── Height helper ─────────────────────────────────────────────────────────────
 function resolveHeight(slide: HeroSlide): number {
   if (slide.height_preset === "viewport") return window.innerHeight;
   if (slide.height_preset === "custom" && slide.custom_height) return slide.custom_height;
@@ -68,35 +69,23 @@ function resolveHeight(slide: HeroSlide): number {
   return map[slide.height_preset] ?? 520;
 }
 
-// ── Slide wrapper with per-slide transition ───────────────────────────────────
+// ── Slide wrapper ─────────────────────────────────────────────────────────────
 const SlideWrapper = memo(function SlideWrapper({
-  slide,
-  isActive,
-  height,
-  isFirst,
-}: {
-  slide: HeroSlide;
-  isActive: boolean;
-  height: number;
-  isFirst?: boolean;
-}) {
+  slide, isActive, height, isFirst,
+}: { slide: HeroSlide; isActive: boolean; height: number; isFirst?: boolean }) {
   const effect = slide.animation_effect || "fade";
-
   return (
     <>
-      {/* Preload first slide's image for LCP */}
-      {isFirst && slide.image_url && (
-        <link rel="preload" as="image" href={slide.image_url} />
-      )}
+      {isFirst && slide.image_url && <link rel="preload" as="image" href={slide.image_url} />}
       <div
         className={cn(
           "w-full transition-all duration-700",
           !isActive && "absolute inset-0 pointer-events-none",
-          effect === "fade"  && (isActive ? "opacity-100"                       : "opacity-0"),
-          effect === "slide" && (isActive ? "translate-x-0 opacity-100"         : "translate-x-full opacity-0"),
-          effect === "zoom"  && (isActive ? "scale-100 opacity-100"             : "scale-110 opacity-0"),
-          effect === "blur"  && (isActive ? "blur-0 opacity-100"                : "blur-md opacity-0"),
-          effect === "none"  && (isActive ? "opacity-100"                       : "opacity-0"),
+          effect === "fade"  && (isActive ? "opacity-100" : "opacity-0"),
+          effect === "slide" && (isActive ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"),
+          effect === "zoom"  && (isActive ? "scale-100 opacity-100" : "scale-110 opacity-0"),
+          effect === "blur"  && (isActive ? "blur-0 opacity-100" : "blur-md opacity-0"),
+          effect === "none"  && (isActive ? "opacity-100" : "opacity-0"),
         )}
         aria-hidden={!isActive}
         style={!isActive ? { height } : undefined}
@@ -111,33 +100,25 @@ const SlideWrapper = memo(function SlideWrapper({
 function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const touchEnd = useRef<{ x: number; y: number } | null>(null);
-  const minSwipeDistance = 50;
-
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     touchEnd.current = null;
     touchStart.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
   }, []);
-
   const onTouchMove = useCallback((e: React.TouchEvent) => {
     touchEnd.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
   }, []);
-
   const onTouchEnd = useCallback(() => {
     if (!touchStart.current || !touchEnd.current) return;
     const distX = touchStart.current.x - touchEnd.current.x;
     const distY = Math.abs(touchStart.current.y - touchEnd.current.y);
-    // Only trigger if horizontal swipe is dominant
-    if (Math.abs(distX) > minSwipeDistance && Math.abs(distX) > distY) {
-      if (distX > 0) onSwipeLeft();
-      else onSwipeRight();
+    if (Math.abs(distX) > 50 && Math.abs(distX) > distY) {
+      if (distX > 0) onSwipeLeft(); else onSwipeRight();
     }
   }, [onSwipeLeft, onSwipeRight]);
-
   return { onTouchStart, onTouchMove, onTouchEnd };
 }
 
-// ── Main slider ───────────────────────────────────────────────────────────────
-// Inject progress animation keyframes
+// ── Inject progress animation keyframes ───────────────────────────────────────
 const styleId = "hero-progress-style";
 if (typeof document !== "undefined" && !document.getElementById(styleId)) {
   const style = document.createElement("style");
@@ -146,10 +127,12 @@ if (typeof document !== "undefined" && !document.getElementById(styleId)) {
   document.head.appendChild(style);
 }
 
+// ── Main slider ───────────────────────────────────────────────────────────────
 export function HeroSlider() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   const { data: rawSlides = [] } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides"],
@@ -182,98 +165,100 @@ export function HeroSlider() {
     if (slides.length > 0) setCurrent((c) => (c - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
-  // Touch swipe — respect RTL direction
-  const swipe = useSwipe(
-    isAr ? prev : next, // swipe left
-    isAr ? next : prev  // swipe right
-  );
+  const swipe = useSwipe(isAr ? prev : next, isAr ? next : prev);
 
   useEffect(() => {
-    if (slides.length <= 1) return;
+    if (slides.length <= 1 || paused) return;
     const interval = slides[current]?.autoplay_interval ?? 6000;
     if (interval === 0) return;
     const timer = setInterval(next, interval);
     return () => clearInterval(timer);
-  }, [next, slides.length, slides, current]);
+  }, [next, slides.length, slides, current, paused]);
 
   if (!slides.length) return <FallbackHero isAr={isAr} />;
 
   const activeHeight = resolveHeight(slides[current]);
+  const activeSlide = slides[current];
 
   return (
     <section
-      className="relative overflow-hidden will-change-[height]"
+      className="relative overflow-hidden will-change-[height] group/hero"
       style={{ height: activeHeight, transition: "height 0.5s ease" }}
       aria-label={isAr ? "القسم الرئيسي" : "Hero slider"}
       role="region"
       {...swipe}
     >
       {slides.map((slide, i) => (
-        <SlideWrapper
-          key={slide.id}
-          slide={slide}
-          isActive={i === current}
-          height={activeHeight}
-          isFirst={i === 0}
-        />
+        <SlideWrapper key={slide.id} slide={slide} isActive={i === current} height={activeHeight} isFirst={i === 0} />
       ))}
 
       {slides.length > 1 && (
         <>
+          {/* Navigation arrows */}
           <button
             onClick={prev}
-            className="absolute start-2 sm:start-4 top-1/2 z-30 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-background/60 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105 opacity-60 hover:opacity-100 hidden sm:flex"
+            className="absolute start-2 sm:start-4 top-1/2 z-30 -translate-y-1/2 hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-background/50 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/80 hover:scale-110 opacity-0 group-hover/hero:opacity-80"
             aria-label={isAr ? "الشريحة السابقة" : "Previous slide"}
           >
-            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
-            className="absolute end-2 sm:end-4 top-1/2 z-30 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-background/60 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105 opacity-60 hover:opacity-100 hidden sm:flex"
+            className="absolute end-2 sm:end-4 top-1/2 z-30 -translate-y-1/2 hidden sm:flex h-10 w-10 items-center justify-center rounded-full bg-background/50 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/80 hover:scale-110 opacity-0 group-hover/hero:opacity-80"
             aria-label={isAr ? "الشريحة التالية" : "Next slide"}
           >
-            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronRight className="h-5 w-5" />
           </button>
 
-          {/* Slide indicators with progress */}
-          <div className="absolute bottom-4 inset-x-0 z-30 flex justify-center gap-2 px-4">
-            {slides.map((_: HeroSlide, i: number) => {
-              const isActive = i === current;
-              const interval = slides[i]?.autoplay_interval ?? 6000;
-              return (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={cn(
-                    "relative h-1.5 rounded-full transition-all duration-500 overflow-hidden",
-                    isActive
-                      ? "w-10 bg-foreground/20 backdrop-blur-sm"
-                      : "w-1.5 bg-foreground/25 hover:bg-foreground/40"
-                  )}
-                  aria-label={`${isAr ? "انتقل للشريحة" : "Go to slide"} ${i + 1}`}
-                >
-                  {isActive && interval > 0 && (
-                    <span
-                      key={`progress-${i}-${current}`}
-                      className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-sm shadow-primary/40"
-                      style={{
-                        animation: `hero-progress ${interval}ms linear forwards`,
-                      }}
-                    />
-                  )}
-                  {isActive && interval === 0 && (
-                    <span className="absolute inset-0 rounded-full bg-primary shadow-sm shadow-primary/40" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          {/* Bottom bar: progress indicators + counter + pause */}
+          <div className="absolute bottom-0 inset-x-0 z-30">
+            <div className="flex items-end justify-between px-4 pb-4">
+              {/* Progress dots */}
+              <div className="flex items-center gap-1.5">
+                {slides.map((_: HeroSlide, i: number) => {
+                  const isActive = i === current;
+                  const interval = slides[i]?.autoplay_interval ?? 6000;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setCurrent(i)}
+                      className={cn(
+                        "relative h-1.5 rounded-full transition-all duration-500 overflow-hidden",
+                        isActive ? "w-10 bg-foreground/20 backdrop-blur-sm" : "w-1.5 bg-foreground/25 hover:bg-foreground/40"
+                      )}
+                      aria-label={`${isAr ? "انتقل للشريحة" : "Go to slide"} ${i + 1}`}
+                    >
+                      {isActive && interval > 0 && !paused && (
+                        <span
+                          key={`progress-${i}-${current}`}
+                          className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-sm shadow-primary/40"
+                          style={{ animation: `hero-progress ${interval}ms linear forwards` }}
+                        />
+                      )}
+                      {isActive && (interval === 0 || paused) && (
+                        <span className="absolute inset-0 rounded-full bg-primary shadow-sm shadow-primary/40" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-          {/* Slide counter badge */}
-          <div className="absolute bottom-4 end-4 z-30 flex items-center gap-1.5 rounded-full bg-background/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-medium text-foreground/80 ring-1 ring-border/20">
-            <span className="tabular-nums">{current + 1}</span>
-            <span className="text-foreground/40">/</span>
-            <span className="tabular-nums text-foreground/50">{slides.length}</span>
+              {/* Counter + Pause */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPaused(p => !p)}
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-background/50 backdrop-blur-md text-foreground/70 ring-1 ring-border/20 hover:bg-background/80 transition-all"
+                  aria-label={paused ? (isAr ? "تشغيل" : "Play") : (isAr ? "إيقاف" : "Pause")}
+                >
+                  {paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
+                </button>
+                <div className="flex items-center gap-1 rounded-full bg-background/50 backdrop-blur-md px-2.5 py-1 text-[10px] font-medium text-foreground/80 ring-1 ring-border/20">
+                  <span className="tabular-nums font-bold">{String(current + 1).padStart(2, "0")}</span>
+                  <span className="text-foreground/30">/</span>
+                  <span className="tabular-nums text-foreground/50">{String(slides.length).padStart(2, "0")}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </>
       )}

@@ -5,18 +5,18 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Newspaper, Clock } from "lucide-react";
+import { ArrowRight, Newspaper, Clock, Eye } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 
-const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
-  news: { en: "News", ar: "أخبار" },
-  article: { en: "Article", ar: "مقال" },
-  event: { en: "Event", ar: "فعالية" },
-  blog: { en: "Blog", ar: "مدونة" },
-  interview: { en: "Interview", ar: "مقابلة" },
+const TYPE_LABELS: Record<string, { en: string; ar: string; color: string }> = {
+  news: { en: "News", ar: "أخبار", color: "bg-chart-1/10 text-chart-1 border-chart-1/20" },
+  article: { en: "Article", ar: "مقال", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
+  event: { en: "Event", ar: "فعالية", color: "bg-chart-3/10 text-chart-3 border-chart-3/20" },
+  blog: { en: "Blog", ar: "مدونة", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
+  interview: { en: "Interview", ar: "مقابلة", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
 };
 
 export function HomeArticles() {
@@ -44,13 +44,19 @@ export function HomeArticles() {
   const rest = articles.slice(1);
   const featuredTitle = isAr && featured.title_ar ? featured.title_ar : featured.title;
   const featuredExcerpt = isAr && featured.excerpt_ar ? featured.excerpt_ar : featured.excerpt;
-  const typeLabel = (type: string) => {
+
+  const typeTag = (type: string) => {
     const t = TYPE_LABELS[type];
-    return t ? (isAr ? t.ar : t.en) : type;
+    if (!t) return <Badge variant="outline" className="text-[10px]">{type}</Badge>;
+    return (
+      <Badge variant="outline" className={cn("text-[10px] border", t.color)}>
+        {isAr ? t.ar : t.en}
+      </Badge>
+    );
   };
 
   return (
-    <section className="container py-8 md:py-12" aria-labelledby="articles-heading">
+    <section className="container py-8 md:py-12" aria-labelledby="articles-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionReveal>
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -75,11 +81,10 @@ export function HomeArticles() {
       </SectionReveal>
 
       <SectionReveal delay={80}>
-        {/* Magazine layout: featured + sidebar */}
         <div className="grid gap-3 lg:grid-cols-5">
-          {/* Featured article — large */}
+          {/* Featured article */}
           <Link to={`/news/${featured.slug}`} className="group block lg:col-span-3">
-            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/25">
+            <Card interactive className="h-full overflow-hidden border-border/40">
               <div className="relative aspect-[16/9] overflow-hidden bg-muted">
                 {featured.featured_image_url ? (
                   <img src={featured.featured_image_url} alt={featuredTitle} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
@@ -88,14 +93,20 @@ export function HomeArticles() {
                     <Newspaper className="h-12 w-12 text-primary/20" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
                 <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary" className="text-[10px]">{typeLabel(featured.type)}</Badge>
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    {typeTag(featured.type)}
                     {featured.published_at && (
                       <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                         <Clock className="h-2.5 w-2.5" />
                         {formatDistanceToNow(new Date(featured.published_at), { addSuffix: true, locale: isAr ? ar : undefined })}
+                      </span>
+                    )}
+                    {featured.view_count > 0 && (
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                        <Eye className="h-2.5 w-2.5" />
+                        {featured.view_count}
                       </span>
                     )}
                   </div>
@@ -116,9 +127,8 @@ export function HomeArticles() {
               const title = isAr && article.title_ar ? article.title_ar : article.title;
               return (
                 <Link key={article.id} to={`/news/${article.slug}`} className="group block">
-                  <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+                  <Card interactive className="h-full overflow-hidden border-border/40">
                     <div className="flex gap-3 p-2.5 lg:p-3">
-                      {/* Thumbnail */}
                       <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
                         {article.featured_image_url ? (
                           <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
@@ -128,20 +138,27 @@ export function HomeArticles() {
                           </div>
                         )}
                       </div>
-                      {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <Badge variant="outline" className="text-[9px] px-1.5 py-0">{typeLabel(article.type)}</Badge>
+                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                          {typeTag(article.type)}
                         </div>
                         <h3 className="line-clamp-2 text-xs sm:text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                           {title}
                         </h3>
-                        {article.published_at && (
-                          <p className="mt-1 text-[10px] text-muted-foreground/70 flex items-center gap-1">
-                            <Clock className="h-2.5 w-2.5" />
-                            {format(new Date(article.published_at), "MMM d, yyyy")}
-                          </p>
-                        )}
+                        <div className="mt-1 flex items-center gap-2">
+                          {article.published_at && (
+                            <p className="text-[10px] text-muted-foreground/70 flex items-center gap-1">
+                              <Clock className="h-2.5 w-2.5" />
+                              {format(new Date(article.published_at), "d MMM yyyy", { locale: isAr ? ar : undefined })}
+                            </p>
+                          )}
+                          {article.view_count > 0 && (
+                            <span className="text-[10px] text-muted-foreground/70 flex items-center gap-1">
+                              <Eye className="h-2.5 w-2.5" />
+                              {article.view_count}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Card>

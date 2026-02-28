@@ -6,8 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin, Users, Flame } from "lucide-react";
+import { Trophy, Globe, Coffee, ArrowRight, Calendar, MapPin, Users, Flame, Zap } from "lucide-react";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { StaggeredList } from "@/components/ui/staggered-list";
@@ -62,8 +63,8 @@ export function EventsByCategory() {
     const map: Record<string, { label: string; labelAr: string; cls: string; icon?: any }> = {
       registration_open: { label: "Open", labelAr: "مفتوح", cls: "bg-chart-2/90 text-chart-2-foreground", icon: Users },
       in_progress: { label: "Live", labelAr: "جارية", cls: "bg-destructive/90 text-destructive-foreground animate-pulse", icon: Flame },
-      upcoming: { label: "Upcoming", labelAr: "قادمة", cls: "" },
-      active: { label: "Active", labelAr: "نشط", cls: "bg-chart-2/90 text-chart-2-foreground" },
+      upcoming: { label: "Upcoming", labelAr: "قادمة", cls: "bg-secondary text-secondary-foreground" },
+      active: { label: "Active", labelAr: "نشط", cls: "bg-chart-2/90 text-chart-2-foreground", icon: Zap },
     };
     const s = map[status] || map.upcoming;
     const Icon = s.icon;
@@ -75,12 +76,11 @@ export function EventsByCategory() {
     );
   };
 
-  /* Featured card (first item, larger) */
   const renderFeaturedCompetition = (item: any) => {
     const title = isAr && item.title_ar ? item.title_ar : item.title;
     return (
       <Link key={item.id} to={`/competitions/${item.id}`} className="group block col-span-2 row-span-2">
-        <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/25">
+        <Card interactive className="h-full overflow-hidden border-border/40">
           <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-muted">
             {item.cover_image_url ? (
               <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
@@ -89,14 +89,13 @@ export function EventsByCategory() {
                 <Trophy className="h-12 w-12 text-primary/30" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
             <div className="absolute end-3 top-3 flex flex-col items-end gap-1.5">
               {statusBadge(item.status)}
               {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
             </div>
             <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-            {/* Overlaid content on featured card */}
-            <div className="absolute bottom-0 inset-x-0 p-4">
+            <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
               <Badge variant="outline" className="mb-2 bg-background/60 backdrop-blur-sm text-[10px]">
                 <Trophy className="me-1 h-2.5 w-2.5" />
                 {isAr ? "مميز" : "Featured"}
@@ -108,7 +107,7 @@ export function EventsByCategory() {
                 {item.competition_start && (
                   <span className="flex items-center gap-1">
                     <Calendar className="h-3 w-3 text-primary/60" />
-                    {format(new Date(item.competition_start), "MMM d, yyyy")}
+                    {format(new Date(item.competition_start), "d MMM yyyy", { locale: isAr ? ar : undefined })}
                   </span>
                 )}
                 {item.is_virtual ? (
@@ -134,7 +133,7 @@ export function EventsByCategory() {
     const title = isAr && item.title_ar ? item.title_ar : item.title;
     return (
       <Link key={item.id} to={`/competitions/${item.id}`} className="group block">
-        <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
+        <Card interactive className="h-full overflow-hidden border-border/40">
           <div className="relative aspect-[16/10] overflow-hidden bg-muted">
             {item.cover_image_url ? (
               <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
@@ -143,7 +142,7 @@ export function EventsByCategory() {
                 <Trophy className="h-8 w-8 text-primary/30" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
               {statusBadge(item.status)}
               {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
@@ -158,7 +157,7 @@ export function EventsByCategory() {
               {item.competition_start && (
                 <div className="flex items-center gap-1.5">
                   <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
-                  <span>{format(new Date(item.competition_start), "MMM d, yyyy")}</span>
+                  <span>{format(new Date(item.competition_start), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>
                 </div>
               )}
               {item.is_virtual ? (
@@ -202,7 +201,7 @@ export function EventsByCategory() {
         const organizerName = isAr && item.organizer_name_ar ? item.organizer_name_ar : item.organizer_name;
         return (
           <Link key={item.id} to={`/exhibitions/${item.slug || item.id}`} className="group block">
-            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
+            <Card interactive className="h-full overflow-hidden border-border/40">
               <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                 {item.cover_image_url ? (
                   <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
@@ -211,7 +210,7 @@ export function EventsByCategory() {
                     <Globe className="h-8 w-8 text-primary/30" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
                   {statusBadge(item.status)}
                   {item.start_date && <CountdownBadge targetDate={new Date(item.start_date)} isAr={isAr} />}
@@ -236,7 +235,7 @@ export function EventsByCategory() {
                   {item.start_date && (
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
-                      <span>{format(new Date(item.start_date), "MMM d, yyyy")}</span>
+                      <span>{format(new Date(item.start_date), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>
                     </div>
                   )}
                   {(venue || item.city) && (
@@ -263,7 +262,7 @@ export function EventsByCategory() {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         return (
           <Link key={item.id} to={`/chefs-table/${item.id}`} className="group block">
-            <Card interactive className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
+            <Card interactive className="h-full border-border/40">
               <CardContent className="p-4">
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/15">
                   <Coffee className="h-5 w-5 text-primary" />
@@ -276,7 +275,7 @@ export function EventsByCategory() {
                   {item.session_date && (
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
-                      <span>{format(new Date(item.session_date), "MMM d, yyyy")}</span>
+                      <span>{format(new Date(item.session_date), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>
                     </div>
                   )}
                 </div>
@@ -290,9 +289,13 @@ export function EventsByCategory() {
   ];
 
   return (
-    <section className="container py-8 md:py-12" aria-labelledby="events-cat-heading">
+    <section className="container py-8 md:py-12" aria-labelledby="events-cat-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionReveal>
         <div className="mb-6 text-center">
+          <Badge variant="secondary" className="mb-2 gap-1">
+            <Trophy className="h-3 w-3" />
+            {isAr ? "الفعاليات" : "Events"}
+          </Badge>
           <h2 id="events-cat-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl text-foreground tracking-tight", !isAr && "font-serif")}>
             {isAr ? "استكشف عالم الفعاليات" : "Explore the World of Events"}
           </h2>
@@ -321,9 +324,8 @@ export function EventsByCategory() {
           <TabsContent key={tab.key} value={tab.key}>
             {tab.items.length > 0 ? (
               <>
-                {/* Featured layout: first card large + rest in grid */}
                 {tab.key === "competitions" && tab.items.length >= 3 && tab.renderFeatured ? (
-                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-4" dir={isAr ? "rtl" : "ltr"}>
                     {tab.renderFeatured(tab.items[0])}
                     {tab.items.slice(1).map(tab.renderItem)}
                   </div>
