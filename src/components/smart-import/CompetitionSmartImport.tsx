@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import { SOURCE_CHANNELS } from "./types";
+import { extractTextFromFile } from "@/components/cv-import/fileParser";
 
 interface CompetitionSmartImportProps {
   onImport: (data: ImportedData) => void;
@@ -136,29 +137,24 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [isAr]);
 
-  // Handle file upload
+  // Handle file upload - supports PDF, DOCX, TXT
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setPdfFile(file);
     setUploading(true);
     try {
-      const text = await file.text();
+      const text = await extractTextFromFile(file);
       setPdfText(text);
+    } catch (err: any) {
+      const msg = err.message === "OLD_DOC_FORMAT"
+        ? (isAr ? "صيغة .doc القديمة غير مدعومة، استخدم .docx أو .pdf" : "Legacy .doc format not supported, use .docx or .pdf")
+        : err.message === "UNSUPPORTED_FORMAT"
+        ? (isAr ? "صيغة الملف غير مدعومة" : "Unsupported file format")
+        : (isAr ? "فشل قراءة الملف" : "Failed to read file");
+      toast({ title: isAr ? "خطأ" : "Error", description: msg, variant: "destructive" });
+    } finally {
       setUploading(false);
-    } catch {
-      // For PDF files, read as ArrayBuffer and extract what we can
-      const reader = new FileReader();
-      reader.onload = () => {
-        const content = reader.result as string;
-        setPdfText(content);
-        setUploading(false);
-      };
-      reader.onerror = () => {
-        toast({ title: isAr ? "خطأ" : "Error", description: isAr ? "فشل قراءة الملف" : "Failed to read file", variant: "destructive" });
-        setUploading(false);
-      };
-      reader.readAsText(file);
     }
   }, [isAr]);
 
@@ -627,16 +623,19 @@ function DetailSection({ icon: Icon, title, children }: { icon: React.ComponentT
   );
 }
 
-function Field({ label, value, multi }: { label: string; value?: string | null; multi?: boolean }) {
-  if (!value) return null;
-  return (
-    <div className="space-y-0.5">
-      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
-      {multi ? (
-        <p className="text-xs whitespace-pre-line leading-relaxed">{value}</p>
-      ) : (
-        <p className="text-xs truncate" title={value}>{value}</p>
-      )}
-    </div>
-  );
-}
+const Field = React.memo(React.forwardRef<HTMLDivElement, { label: string; value?: string | null; multi?: boolean }>(
+  ({ label, value, multi }, ref) => {
+    if (!value) return null;
+    return (
+      <div ref={ref} className="space-y-0.5">
+        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
+        {multi ? (
+          <p className="text-xs whitespace-pre-line leading-relaxed">{value}</p>
+        ) : (
+          <p className="text-xs truncate" title={value}>{value}</p>
+        )}
+      </div>
+    );
+  }
+));
+Field.displayName = "Field";
