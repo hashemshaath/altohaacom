@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  Calendar, MapPin, MoreHorizontal, ArrowRight, Globe,
+  Calendar, MapPin, MoreHorizontal, Globe,
   ChevronLeft, ChevronRight, List, Timer, Building2,
 } from "lucide-react";
 import { format, parseISO, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns";
@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
 import { ICONS } from "@/pages/events-calendar/constants";
 import { getCountdown } from "@/pages/events-calendar/utils";
+import { SectionHeader } from "./SectionHeader";
+import { FilterChip } from "./FilterChip";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
 
@@ -51,18 +53,17 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
     <div ref={ref}>
     <TooltipProvider delayDuration={200}>
       <section className="container py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
-              <Globe className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold tracking-tight">{isAr ? "تقويم الفعاليات" : "Events Calendar"}</h2>
-              <p className="text-xs text-muted-foreground">{isAr ? "الفعاليات القادمة محلياً ودولياً" : "Upcoming local & international events"}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+        <SectionHeader
+          icon={Globe}
+          badge={isAr ? "التقويم" : "Calendar"}
+          title={isAr ? "تقويم الفعاليات" : "Events Calendar"}
+          subtitle={isAr ? "الفعاليات القادمة محلياً ودولياً" : "Upcoming local & international events"}
+          dataSource="competitions • exhibitions"
+          itemCount={upcoming.length}
+          viewAllHref="/events-calendar"
+          viewAllLabel={isAr ? "عرض التقويم" : "View Calendar"}
+          isAr={isAr}
+          actions={
             <div className="hidden sm:flex items-center rounded-full border bg-muted/30 p-0.5">
               <Button
                 variant={viewMode === "cards" ? "default" : "ghost"}
@@ -81,43 +82,30 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
                 <Calendar className="h-3 w-3" />
               </Button>
             </div>
-            <Link to="/events-calendar">
-              <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-full">
-                {isAr ? "عرض التقويم" : "View Calendar"}
-                <ArrowRight className="h-3 w-3" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Type Filter Chips */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          <Button
-            variant={selectedFilter === null ? "default" : "outline"}
-            size="sm"
-            className="h-7 rounded-full text-xs px-3"
-            onClick={() => setSelectedFilter(null)}
-          >
-            {isAr ? "الكل" : "All"}
-          </Button>
-          {FILTER_TYPES.map(type => {
-            const label = GLOBAL_EVENT_LABELS[type];
-            const active = selectedFilter === type;
-            const count = events.filter(e => e.type === type && new Date(e.start_date) >= new Date()).length;
-            return (
-              <Button
-                key={type}
-                variant={active ? "default" : "outline"}
-                size="sm"
-                className={cn("h-7 rounded-full text-xs px-3 gap-1 transition-all", !active && "hover:bg-accent/50")}
-                onClick={() => setSelectedFilter(active ? null : type)}
-              >
-                {isAr ? label?.ar : label?.en}
-                {count > 0 && <span className="opacity-60 text-[10px]">({count})</span>}
-              </Button>
-            );
-          })}
-        </div>
+          }
+          filters={
+            <>
+              <FilterChip
+                label={isAr ? "الكل" : "All"}
+                active={selectedFilter === null}
+                onClick={() => setSelectedFilter(null)}
+              />
+              {FILTER_TYPES.map(type => {
+                const label = GLOBAL_EVENT_LABELS[type];
+                const count = events.filter(e => e.type === type && new Date(e.start_date) >= new Date()).length;
+                return (
+                  <FilterChip
+                    key={type}
+                    label={isAr ? label?.ar : label?.en}
+                    active={selectedFilter === type}
+                    count={count}
+                    onClick={() => setSelectedFilter(selectedFilter === type ? null : type)}
+                  />
+                );
+              })}
+            </>
+          }
+        />
 
         {viewMode === "mini-cal" ? (
           /* ─── Modern Calendar Grid ─── */
@@ -134,13 +122,11 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
                 </Button>
               </div>
               <CardContent className="p-0">
-                {/* Day name headers */}
                 <div className="grid grid-cols-7">
                   {dayNames.map((d, i) => (
                     <div key={i} className="py-2.5 text-center text-[11px] font-medium text-muted-foreground tracking-wide border-b border-border/20">{d}</div>
                   ))}
                 </div>
-                {/* Day cells */}
                 <div className="grid grid-cols-7">
                   {calDays.map((day, i) => {
                     const dayEvts = getEventsForDay(day);
@@ -202,7 +188,6 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
               </CardContent>
             </Card>
 
-            {/* Selected Day Detail */}
             {selectedDay && selectedDayEvents.length > 0 && (
               <Card className="border-primary/20 animate-in slide-in-from-top-2 duration-200 shadow-sm">
                 <CardContent className="p-4 space-y-2">
@@ -219,7 +204,6 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
             )}
           </div>
         ) : (
-          /* ─── Modern Cards View ─── */
           <div className="w-full">
             {upcoming.length === 0 ? (
               <div className="text-center py-10">
@@ -272,7 +256,7 @@ function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
   );
 }
 
-/* ─── Compact Event Card (for selected day) ─── */
+/* ─── Compact Event Card ─── */
 function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
   const colors = GLOBAL_EVENT_COLORS[event.type];
   const label = GLOBAL_EVENT_LABELS[event.type];
@@ -317,7 +301,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
   return event.link ? <Link to={event.link}>{content}</Link> : content;
 }
 
-/* ─── Home List Event Card (modern style matching EventsCalendar) ─── */
+/* ─── Home List Event Card ─── */
 const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(function HomeListEventCard({ event, isAr }, ref) {
   const colors = GLOBAL_EVENT_COLORS[event.type];
   const label = GLOBAL_EVENT_LABELS[event.type];
@@ -356,43 +340,27 @@ const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
                 <IconComp className="h-2.5 w-2.5" />
                 {isAr ? label?.ar : label?.en}
               </Badge>
-              {event.is_recurring && (
-                <Badge variant="outline" className="text-[9px] px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>
-              )}
             </div>
-            <h4 className="text-sm font-bold line-clamp-1 group-hover:text-primary transition-colors">
+            <h3 className="text-sm font-bold line-clamp-2 group-hover:text-primary transition-colors">
               {isAr && event.title_ar ? event.title_ar : event.title}
-            </h4>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5 text-[11px] text-muted-foreground">
-              <span className="flex items-center gap-1 font-medium">
-                <Calendar className="h-3 w-3 text-primary" />
-                {format(parseISO(event.start_date), "MMM d, yyyy")}
-                {event.end_date && ` – ${format(parseISO(event.end_date), "MMM d")}`}
-              </span>
-              {event.city && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />{event.city}{event.country_code ? `, ${event.country_code}` : ""}
-                </span>
-              )}
-              {event.organizer_name && (
-                <span className="flex items-center gap-1">
-                  <Building2 className="h-3 w-3" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}
-                </span>
-              )}
-            </div>
+            </h3>
           </div>
-          {event.link && (
-            <div className="flex items-center justify-end mt-1.5 pt-1.5 border-t border-border/20">
-              <span className="text-[11px] text-primary font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                {isAr ? "التفاصيل" : "Details"}
-                <ArrowRight className="h-3 w-3" />
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-2">
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3 text-primary/50" />
+              {format(parseISO(event.start_date), "d MMM yyyy")}
+            </span>
+            {event.city && (
+              <span className="flex items-center gap-1 truncate">
+                <MapPin className="h-3 w-3 text-primary/50 shrink-0" />
+                {event.city}
               </span>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </Card>
   );
 
-  return event.link ? <Link to={event.link} className="block">{card}</Link> : card;
+  return event.link ? <Link to={event.link}>{card}</Link> : card;
 });

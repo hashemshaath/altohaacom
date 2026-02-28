@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Users, Trophy, Building2, Globe } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Users, Trophy, Building2, Globe, Database } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
 const StatItem = forwardRef<HTMLDivElement, {
-  value: number; label: string; icon: any; color: string; bgColor: string; isVisible: boolean; delay: number;
-}>(function StatItem({ value, label, icon: Icon, color, bgColor, isVisible, delay }, ref) {
+  value: number; label: string; icon: any; color: string; bgColor: string; isVisible: boolean; delay: number; source: string;
+}>(function StatItem({ value, label, icon: Icon, color, bgColor, isVisible, delay, source }, ref) {
   const count = useCountUp(value, isVisible);
 
   return (
@@ -29,6 +30,10 @@ const StatItem = forwardRef<HTMLDivElement, {
           {count.toLocaleString()}+
         </p>
         <p className="text-[10px] sm:text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
+        <Badge variant="outline" className="mt-1 hidden sm:inline-flex gap-0.5 text-[8px] font-normal text-muted-foreground/60 border-dashed px-1 py-0">
+          <Database className="h-2 w-2" />
+          {source}
+        </Badge>
       </div>
     </div>
   );
@@ -60,10 +65,10 @@ export function HomeStats() {
   });
 
   const items = [
-    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3", bgColor: "bg-chart-3/10" },
-    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1", bgColor: "bg-chart-1/10", source: "profiles" },
+    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2", bgColor: "bg-chart-2/10", source: "competitions" },
+    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3", bgColor: "bg-chart-3/10", source: "culinary_entities" },
+    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4", bgColor: "bg-chart-4/10", source: "exhibitions" },
   ];
 
   return (

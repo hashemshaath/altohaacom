@@ -3,12 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Quote, Star, ChevronLeft, ChevronRight } from "lucide-react";
-import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
+import { SectionHeader } from "./SectionHeader";
 
 export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimonials(_props, ref) {
   const { language } = useLanguage();
@@ -59,75 +58,71 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
     <div ref={ref}>
       <section className="py-10 md:py-14" aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container max-w-3xl">
-          <SectionReveal>
-            <div className="text-center mb-8">
-              <Badge variant="secondary" className="mb-3 gap-1">
-                <Quote className="h-3 w-3" />
-                {isAr ? "آراء المجتمع" : "Community Voices"}
-              </Badge>
-              <h2 className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
-                {isAr ? "ماذا يقول أعضاؤنا" : "What Our Members Say"}
-              </h2>
+          <SectionHeader
+            icon={Quote}
+            badge={isAr ? "آراء المجتمع" : "Community Voices"}
+            title={isAr ? "ماذا يقول أعضاؤنا" : "What Our Members Say"}
+            dataSource="testimonials"
+            itemCount={testimonials.length}
+            isAr={isAr}
+            className="text-center"
+          />
+
+          <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y bg-gradient-to-br from-card to-card/80" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <div className="absolute top-4 start-4 opacity-[0.04]">
+              <Quote className="h-24 w-24" />
             </div>
-          </SectionReveal>
-
-          <SectionReveal delay={100}>
-            <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y bg-gradient-to-br from-card to-card/80" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-              <div className="absolute top-4 start-4 opacity-[0.04]">
-                <Quote className="h-24 w-24" />
-              </div>
-              <div className="absolute bottom-4 end-4 opacity-[0.04] rotate-180">
-                <Quote className="h-16 w-16" />
-              </div>
-              <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">
-                {t.rating && (
-                  <div className="flex items-center justify-center gap-0.5 mb-5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={cn("h-4 w-4", i < t.rating ? "text-chart-4 fill-chart-4" : "text-muted-foreground/20")} />
-                    ))}
-                  </div>
-                )}
-
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
-                  &ldquo;{quote}&rdquo;
-                </p>
-
-                <div className="flex items-center justify-center gap-3">
-                  <Avatar className="h-12 w-12 ring-2 ring-primary/15 shadow-md">
-                    {t.avatar_url && <AvatarImage src={t.avatar_url} alt={name} />}
-                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">{initials}</AvatarFallback>
-                  </Avatar>
-                  <div className="text-start">
-                    <p className="text-sm font-bold text-foreground">{name}</p>
-                    {role && <p className="text-xs text-muted-foreground">{role}</p>}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {testimonials.length > 1 && (
-              <div className="flex items-center justify-center gap-3 mt-4">
-                <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={prev}>
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex gap-1.5">
-                  {testimonials.map((_: any, i: number) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrent(i)}
-                      className={cn(
-                        "h-2 rounded-full transition-all duration-300",
-                        i === current ? "w-6 bg-primary" : "w-2 bg-muted-foreground/20 hover:bg-muted-foreground/40"
-                      )}
-                    />
+            <div className="absolute bottom-4 end-4 opacity-[0.04] rotate-180">
+              <Quote className="h-16 w-16" />
+            </div>
+            <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">
+              {t.rating && (
+                <div className="flex items-center justify-center gap-0.5 mb-5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={cn("h-4 w-4", i < t.rating ? "text-chart-4 fill-chart-4" : "text-muted-foreground/20")} />
                   ))}
                 </div>
-                <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={next}>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+              )}
+
+              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
+                &ldquo;{quote}&rdquo;
+              </p>
+
+              <div className="flex items-center justify-center gap-3">
+                <Avatar className="h-12 w-12 ring-2 ring-primary/15 shadow-md">
+                  {t.avatar_url && <AvatarImage src={t.avatar_url} alt={name} />}
+                  <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">{initials}</AvatarFallback>
+                </Avatar>
+                <div className="text-start">
+                  <p className="text-sm font-bold text-foreground">{name}</p>
+                  {role && <p className="text-xs text-muted-foreground">{role}</p>}
+                </div>
               </div>
-            )}
-          </SectionReveal>
+            </CardContent>
+          </Card>
+
+          {testimonials.length > 1 && (
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={prev}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <div className="flex gap-1.5">
+                {testimonials.map((_: any, i: number) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrent(i)}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      i === current ? "w-6 bg-primary" : "w-2 bg-muted-foreground/20 hover:bg-muted-foreground/40"
+                    )}
+                  />
+                ))}
+              </div>
+              <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={next}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
     </div>

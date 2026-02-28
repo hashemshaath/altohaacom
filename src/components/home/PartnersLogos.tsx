@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Badge } from "@/components/ui/badge";
 import { Building2, CheckCircle } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
+import { SectionHeader } from "./SectionHeader";
 
 export function PartnersLogos() {
   const { language } = useLanguage();
@@ -55,20 +55,15 @@ export function PartnersLogos() {
   return (
     <section className="py-8 md:py-12" aria-labelledby="partners-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        <SectionReveal>
-          <div className="mb-8 text-center">
-            <Badge variant="secondary" className="mb-2 gap-1">
-              <Building2 className="h-3 w-3" />
-              {isAr ? "الشركاء" : "Partners & Associations"}
-            </Badge>
-            <h2 id="partners-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
-              {isAr ? "شركاؤنا ومؤسساتنا" : "Our Partners & Institutions"}
-            </h2>
-            <p className="mt-1.5 text-sm text-muted-foreground max-w-lg mx-auto">
-              {isAr ? "نعمل مع أفضل المؤسسات لدعم مجتمع الطهي العالمي" : "We work with leading institutions to support the global culinary community"}
-            </p>
-          </div>
-        </SectionReveal>
+        <SectionHeader
+          icon={Building2}
+          badge={isAr ? "الشركاء" : "Partners & Associations"}
+          title={isAr ? "شركاؤنا ومؤسساتنا" : "Our Partners & Institutions"}
+          subtitle={isAr ? "نعمل مع أفضل المؤسسات لدعم مجتمع الطهي العالمي" : "We work with leading institutions to support the global culinary community"}
+          dataSource="partner_logos • culinary_entities"
+          itemCount={partners.length + entities.length}
+          isAr={isAr}
+        />
 
         {Object.entries(grouped).map(([cat, items], idx) => (
           <SectionReveal key={cat} delay={idx * 100}>
