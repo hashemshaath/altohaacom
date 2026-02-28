@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -55,6 +55,7 @@ const ExhibitionIndoorMap = lazy(() => import("@/components/exhibitions/detail/E
 const ExhibitionAuctionsOffers = lazy(() => import("@/components/exhibitions/detail/ExhibitionAuctionsOffers").then(m => ({ default: m.ExhibitionAuctionsOffers })));
 const ExhibitionMyTickets = lazy(() => import("@/components/exhibitions/detail/ExhibitionMyTickets").then(m => ({ default: m.ExhibitionMyTickets })));
 const ExhibitionTicketSummary = lazy(() => import("@/components/exhibitions/detail/ExhibitionTicketSummary").then(m => ({ default: m.ExhibitionTicketSummary })));
+const ExhibitionPaymentCallback = lazy(() => import("@/components/exhibitions/detail/ExhibitionPaymentCallback").then(m => ({ default: m.ExhibitionPaymentCallback })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -99,6 +100,8 @@ export default function ExhibitionDetail() {
   const [activeTab, setActiveTab] = useState("overview");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [searchParams] = useSearchParams();
+  const hasPaymentCallback = searchParams.get("payment") === "callback";
 
   const { data: exhibition, isLoading } = useQuery({
     queryKey: ["exhibition", slug],
@@ -358,6 +361,16 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-6 pb-20 lg:pb-8 md:py-8">
+        {/* Payment Callback */}
+        {hasPaymentCallback && (
+          <Suspense fallback={null}>
+            <ExhibitionPaymentCallback
+              exhibitionId={exhibition.id}
+              isAr={isAr}
+              onDismiss={() => setActiveTab("my-tickets")}
+            />
+          </Suspense>
+        )}
         {/* Quick Stats Bar */}
         <div className="mb-4">
           <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />

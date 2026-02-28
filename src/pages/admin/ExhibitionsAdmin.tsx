@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
 import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
 import { ExhibitionActivityLog } from "@/components/admin/ExhibitionActivityLog";
+import { ExhibitionAdvancedAnalytics } from "@/components/admin/ExhibitionAdvancedAnalytics";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -452,6 +453,9 @@ export default function ExhibitionsAdmin() {
 
       {/* Exhibition Management Widget */}
       <ExhibitionManagementWidget />
+
+      {/* Advanced Analytics */}
+      <ExhibitionAdvancedAnalytics />
 
       {/* Quick Stats */}
       {exhibitions && exhibitions.length > 0 && (
