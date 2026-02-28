@@ -758,19 +758,17 @@ function DetailSection({ icon: Icon, title, children }: { icon: React.ComponentT
   );
 }
 
-const Field = React.memo(React.forwardRef<HTMLDivElement, { label: string; value?: string | null; multi?: boolean }>(
-  ({ label, value, multi }, ref) => {
-    if (!value) return null;
-    return (
-      <div ref={ref} className="space-y-0.5">
-        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
-        {multi ? (
-          <p className="text-xs whitespace-pre-line leading-relaxed">{value}</p>
-        ) : (
-          <p className="text-xs" title={value}>{value}</p>
-        )}
-      </div>
-    );
-  }
-));
+const Field = React.memo(({ label, value, multi }: { label: string; value?: string | null; multi?: boolean }) => {
+  if (!value) return null;
+  return (
+    <div className="space-y-0.5">
+      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
+      {multi ? (
+        <p className="text-xs whitespace-pre-line leading-relaxed">{value}</p>
+      ) : (
+        <p className="text-xs" title={value}>{value}</p>
+      )}
+    </div>
+  );
+});
 Field.displayName = "Field";
