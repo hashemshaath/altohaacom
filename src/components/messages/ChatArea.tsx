@@ -1,4 +1,4 @@
-import { RefObject, useState, useCallback } from "react";
+import { RefObject, useState, useCallback, useMemo } from "react";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,13 @@ import { ChatSearchBar } from "@/components/messages/ChatSearchBar";
 import { MessageReactions } from "@/components/messages/MessageReactions";
 import { ReplyPreview } from "@/components/messages/ReplyPreview";
 import { ForwardMessageDialog } from "@/components/messages/ForwardMessageDialog";
+import { PinnedMessagesBar } from "@/components/messages/PinnedMessagesBar";
+import { LocationShareButton, LocationBubble } from "@/components/messages/LocationShareButton";
+import { MediaPreviewOverlay } from "@/components/messages/MediaPreviewOverlay";
 import {
   Send, ArrowLeft, MoreVertical, Search, CheckSquare,
   Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare,
-  Plus, X, Smile, Phone, Video, Reply, Forward,
+  Plus, X, Smile, Phone, Video, Reply, Forward, Pin,
 } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -129,6 +132,23 @@ export function ChatArea({
   const { toast } = useToast();
   const [replyTo, setReplyTo] = useState<{ id: string; content: string; senderName: string } | null>(null);
   const [forwardMsg, setForwardMsg] = useState<Message | null>(null);
+  const [mediaPreview, setMediaPreview] = useState<{ urls: string[]; index: number } | null>(null);
+
+  const pinnedMessages = useMemo(() => (messages || []).filter((m) => (m as any).is_pinned), [messages]);
+
+  const handlePin = useCallback(async (msgId: string, pin: boolean) => {
+    await supabase.from("messages").update({ is_pinned: pin } as any).eq("id", msgId);
+    // Optimistic refresh
+    toast({ title: pin ? (isAr ? "تم تثبيت الرسالة" : "Message pinned") : (isAr ? "تم إلغاء التثبيت" : "Message unpinned") });
+  }, [isAr, toast]);
+
+  const handleShareLocation = useCallback((loc: { lat: number; lng: number; label: string }) => {
+    sendMessage.mutate({
+      content: `📍 ${loc.label}`,
+      message_type: "location",
+      metadata: { location: loc },
+    });
+  }, [sendMessage]);
 
   const handleReply = useCallback((msg: Message) => {
     const senderName = msg.sender_id === user?.id
@@ -262,6 +282,17 @@ export function ChatArea({
         />
       )}
 
+      {/* Pinned Messages Bar */}
+      <PinnedMessagesBar
+        pinnedMessages={pinnedMessages}
+        isAr={isAr}
+        onUnpin={(id) => handlePin(id, false)}
+        onJumpTo={(id) => {
+          setHighlightedMsgId(id);
+          document.getElementById(`msg-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }}
+      />
+
       {/* Messages */}
       <ScrollArea className="flex-1 p-4">
         {loadingMessages ? (
@@ -273,6 +304,8 @@ export function ChatArea({
             {messages?.map((msg, idx) => {
               const isMine = msg.sender_id === user?.id;
               const isApproval = msg.message_type === "approval_request" || msg.message_type === "approval_response";
+              const isLocation = msg.message_type === "location";
+              const hasImages = msg.attachment_urls?.length > 0 && (msg.message_type === "image" || msg.message_type === "video");
               const showDate = shouldShowDateSeparator(messages, idx);
 
               return (
@@ -291,30 +324,16 @@ export function ChatArea({
                   <div id={`msg-${msg.id}`} className={`group flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in ${highlightedMsgId === msg.id ? "ring-2 ring-primary/40 rounded-2xl" : ""}`}>
                     <div className="relative max-w-[75%]">
                       <div className={`absolute top-0 ${isMine ? "start-0 -translate-x-full" : "end-0 translate-x-full"} opacity-0 group-hover:opacity-100 transition-opacity flex gap-0.5 px-1`}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          title={isAr ? "رد" : "Reply"}
-                          onClick={() => handleReply(msg)}
-                        >
+                        <Button variant="ghost" size="icon" className="h-6 w-6" title={isAr ? "رد" : "Reply"} onClick={() => handleReply(msg)}>
                           <Reply className="h-3 w-3 scale-x-[-1]" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          title={isAr ? "إعادة توجيه" : "Forward"}
-                          onClick={() => setForwardMsg(msg)}
-                        >
+                        <Button variant="ghost" size="icon" className="h-6 w-6" title={isAr ? "إعادة توجيه" : "Forward"} onClick={() => setForwardMsg(msg)}>
                           <Forward className="h-3 w-3" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}
-                        >
+                        <Button variant="ghost" size="icon" className="h-6 w-6" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !(msg as any).is_pinned)}>
+                          <Pin className={`h-3 w-3 ${(msg as any).is_pinned ? "text-chart-4 fill-chart-4" : ""}`} />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
                       </div>
@@ -322,13 +341,10 @@ export function ChatArea({
                       <div className={`rounded-2xl px-3.5 py-2 transition-all duration-200 hover:shadow-md ${
                         isMine ? "bg-primary text-primary-foreground rounded-ee-md" : "bg-muted rounded-es-md"
                       }`}>
-                        {/* Reply context */}
-                        {(msg.metadata as any)?.reply_to && (
-                          <ReplyPreview
-                            replyToMessage={(msg.metadata as any).reply_to}
-                            onClear={() => {}}
-                            compact
-                          />
+                        {(msg as any).is_pinned && (
+                          <div className={`flex items-center gap-1 mb-1 text-[10px] ${isMine ? "text-primary-foreground/50" : "text-chart-4"}`}>
+                            <Pin className="h-2.5 w-2.5" /> {isAr ? "مثبتة" : "Pinned"}
+                          </div>
                         )}
                         {msg.is_starred && (
                           <Star className={`h-3 w-3 mb-1 ${isMine ? "text-primary-foreground/60" : "text-chart-4"} fill-current`} />
@@ -336,14 +352,18 @@ export function ChatArea({
 
                         {isApproval ? (
                           <ApprovalMessage messageId={msg.id} senderId={msg.sender_id} receiverId={msg.receiver_id} metadata={msg.metadata || {}} isMine={isMine} />
+                        ) : isLocation && (msg.metadata as any)?.location ? (
+                          <LocationBubble lat={(msg.metadata as any).location.lat} lng={(msg.metadata as any).location.lng} label={(msg.metadata as any).location.label} isMine={isMine} />
                         ) : msg.message_type === "audio" && msg.attachment_urls?.[0] ? (
                           <VoiceMessagePlayer url={msg.attachment_urls[0]} isMine={isMine} />
                         ) : (
                           renderContent(msg)
                         )}
 
-                        {msg.attachment_urls && msg.attachment_urls.length > 0 && (
-                          <MessageAttachments urls={msg.attachment_urls} names={msg.attachment_names || []} messageType={msg.message_type} />
+                        {msg.attachment_urls && msg.attachment_urls.length > 0 && msg.message_type !== "audio" && (
+                          <div className={hasImages ? "cursor-pointer" : ""} onClick={() => { if (hasImages) setMediaPreview({ urls: msg.attachment_urls, index: 0 }); }}>
+                            <MessageAttachments urls={msg.attachment_urls} names={msg.attachment_names || []} messageType={msg.message_type} />
+                          </div>
                         )}
 
                         <div className={`flex items-center gap-1 mt-1 text-[10px] ${isMine ? "text-primary-foreground/60 justify-end" : "text-muted-foreground"}`}>
@@ -444,6 +464,7 @@ export function ChatArea({
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-md hover:bg-primary/5 hover:text-primary transition-colors" type="button" onClick={() => fileInputRef.current?.click()}>
               <Paperclip className="h-4 w-4" />
             </Button>
+            <LocationShareButton isAr={isAr} onShare={handleShareLocation} disabled={sendMessage.isPending} />
             <VoiceMessageRecorder
               disabled={sendMessage.isPending || uploading}
               onSend={async (blob, dur) => {
@@ -498,6 +519,14 @@ export function ChatArea({
           attachment_urls: forwardMsg.attachment_urls,
           attachment_names: forwardMsg.attachment_names,
         } : null}
+      />
+
+      {/* Media Preview Overlay */}
+      <MediaPreviewOverlay
+        open={!!mediaPreview}
+        onOpenChange={(v) => { if (!v) setMediaPreview(null); }}
+        urls={mediaPreview?.urls || []}
+        initialIndex={mediaPreview?.index || 0}
       />
     </>
   );

@@ -375,6 +375,7 @@ export function useMessagesData() {
     if (categoryFilter === "unread") return c.unread_count > 0;
     if (categoryFilter === "starred") return c.is_starred;
     if (categoryFilter === "approval") return c.has_approval;
+    if (categoryFilter === "archived") return (c as any).is_archived;
     return true;
   });
 
@@ -383,7 +384,7 @@ export function useMessagesData() {
     unread: conversations?.filter((c) => c.unread_count > 0).length || 0,
     starred: conversations?.filter((c) => c.is_starred).length || 0,
     approval: conversations?.filter((c) => c.has_approval).length || 0,
-    archived: 0,
+    archived: conversations?.filter((c) => (c as any).is_archived).length || 0,
   };
 
   return {

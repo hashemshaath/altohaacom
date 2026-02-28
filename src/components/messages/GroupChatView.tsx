@@ -17,11 +17,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Send, ArrowLeft, Users, MoreVertical, UserPlus, LogOut, Paperclip, FileText, Trash2 } from "lucide-react";
+import { Send, ArrowLeft, Users, MoreVertical, UserPlus, LogOut, Paperclip, FileText, Trash2, Settings } from "lucide-react";
 import { EmojiPicker } from "@/components/messages/EmojiPicker";
 import { MessageAttachments } from "@/components/messages/MessageAttachments";
 import { VoiceMessageRecorder } from "@/components/messages/VoiceMessageRecorder";
 import { VoiceMessagePlayer } from "@/components/messages/VoiceMessagePlayer";
+import { AddGroupMembersDialog } from "@/components/messages/AddGroupMembersDialog";
+import { GroupSettingsPanel } from "@/components/messages/GroupSettingsPanel";
 import { useToast } from "@/hooks/use-toast";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -39,6 +41,8 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
   const queryClient = useQueryClient();
   const [newMessage, setNewMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [addMembersOpen, setAddMembersOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -180,9 +184,13 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem disabled>
+            <DropdownMenuItem onClick={() => setAddMembersOpen(true)}>
               <UserPlus className="h-4 w-4 me-2" />
               {isAr ? "إضافة أعضاء" : "Add Members"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+              <Settings className="h-4 w-4 me-2" />
+              {isAr ? "إعدادات المجموعة" : "Group Settings"}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => leaveMutation.mutate()} className="text-destructive">
@@ -314,6 +322,25 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
           }
         }} />
       </form>
+
+      {/* Add Members Dialog */}
+      <AddGroupMembersDialog
+        open={addMembersOpen}
+        onOpenChange={setAddMembersOpen}
+        groupId={groupId}
+        existingMemberIds={members.map((m) => m.user_id)}
+      />
+
+      {/* Group Settings Panel */}
+      {group && (
+        <GroupSettingsPanel
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
+          group={group}
+          members={members}
+          onAddMembers={() => { setSettingsOpen(false); setAddMembersOpen(true); }}
+        />
+      )}
     </div>
   );
 }

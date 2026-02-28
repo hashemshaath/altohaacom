@@ -1,4 +1,5 @@
 import { useMessagesData } from "@/hooks/useMessagesData";
+import { useMessageNotificationSound } from "@/components/messages/useMessageNotificationSound";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ConversationList } from "@/components/messages/ConversationList";
 import { ChatArea } from "@/components/messages/ChatArea";
@@ -15,6 +16,7 @@ import { Link } from "react-router-dom";
 
 export default function Messages() {
   const data = useMessagesData();
+  useMessageNotificationSound();
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
