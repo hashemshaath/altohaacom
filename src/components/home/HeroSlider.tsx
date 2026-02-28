@@ -73,29 +73,37 @@ const SlideWrapper = memo(function SlideWrapper({
   slide,
   isActive,
   height,
+  isFirst,
 }: {
   slide: HeroSlide;
   isActive: boolean;
   height: number;
+  isFirst?: boolean;
 }) {
   const effect = slide.animation_effect || "fade";
 
   return (
-    <div
-      className={cn(
-        "w-full transition-all duration-700",
-        !isActive && "absolute inset-0 pointer-events-none",
-        effect === "fade"  && (isActive ? "opacity-100"                       : "opacity-0"),
-        effect === "slide" && (isActive ? "translate-x-0 opacity-100"         : "translate-x-full opacity-0"),
-        effect === "zoom"  && (isActive ? "scale-100 opacity-100"             : "scale-110 opacity-0"),
-        effect === "blur"  && (isActive ? "blur-0 opacity-100"                : "blur-md opacity-0"),
-        effect === "none"  && (isActive ? "opacity-100"                       : "opacity-0"),
+    <>
+      {/* Preload first slide's image for LCP */}
+      {isFirst && slide.image_url && (
+        <link rel="preload" as="image" href={slide.image_url} />
       )}
-      aria-hidden={!isActive}
-      style={!isActive ? { height } : undefined}
-    >
-      <HeroSlidePreview slide={slide} />
-    </div>
+      <div
+        className={cn(
+          "w-full transition-all duration-700",
+          !isActive && "absolute inset-0 pointer-events-none",
+          effect === "fade"  && (isActive ? "opacity-100"                       : "opacity-0"),
+          effect === "slide" && (isActive ? "translate-x-0 opacity-100"         : "translate-x-full opacity-0"),
+          effect === "zoom"  && (isActive ? "scale-100 opacity-100"             : "scale-110 opacity-0"),
+          effect === "blur"  && (isActive ? "blur-0 opacity-100"                : "blur-md opacity-0"),
+          effect === "none"  && (isActive ? "opacity-100"                       : "opacity-0"),
+        )}
+        aria-hidden={!isActive}
+        style={!isActive ? { height } : undefined}
+      >
+        <HeroSlidePreview slide={slide} />
+      </div>
+    </>
   );
 });
 
@@ -144,7 +152,8 @@ export function HeroSlider() {
         .order("sort_order");
       return (data || []) as HeroSlide[];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
   });
 
   const slides: HeroSlide[] = rawSlides.map((s) => ({
@@ -196,6 +205,7 @@ export function HeroSlider() {
           slide={slide}
           isActive={i === current}
           height={activeHeight}
+          isFirst={i === 0}
         />
       ))}
 
