@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings, Search } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SwipeableNotificationCard } from "@/components/notifications/SwipeableNotificationCard";
+import { NotificationBatchActions } from "@/components/notifications/NotificationBatchActions";
 import {
   Select,
   SelectContent,
@@ -80,7 +81,26 @@ export default function Notifications() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState<NotificationSection>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const isAr = language === "ar";
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const handleBatchRead = useCallback(async () => {
+    await Promise.allSettled(Array.from(selectedIds).map(id => markAsRead(id)));
+    setSelectedIds(new Set());
+  }, [selectedIds, markAsRead]);
+
+  const handleBatchDelete = useCallback(async () => {
+    await Promise.allSettled(Array.from(selectedIds).map(id => deleteNotification(id)));
+    setSelectedIds(new Set());
+  }, [selectedIds, deleteNotification]);
 
   const sectionCounts = useMemo(() => {
     const counts: Record<string, number> = { all: notifications.length };
@@ -301,6 +321,14 @@ export default function Notifications() {
             )}
           </div>
 
+          {/* Batch Actions */}
+          <NotificationBatchActions
+            selectedCount={selectedIds.size}
+            onMarkRead={handleBatchRead}
+            onDelete={handleBatchDelete}
+            onClearSelection={() => setSelectedIds(new Set())}
+          />
+
           {/* Notifications List */}
           {loading ? (
             <div className="space-y-3">
@@ -348,6 +376,7 @@ export default function Notifications() {
                   <div className="space-y-2">
                     {items.map((notification) => {
                       const profile = getProfile(notification.metadata as any);
+                      const isSelected = selectedIds.has(notification.id);
                       return (
                         <SwipeableNotificationCard
                           key={notification.id}
@@ -358,9 +387,17 @@ export default function Notifications() {
                           <Card
                             className={cn(
                               "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group",
-                              !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5"
+                              !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5",
+                              isSelected && "ring-2 ring-primary bg-primary/10"
                             )}
-                            onClick={() => handleNotificationClick(notification)}
+                            onClick={() => {
+                              if (selectedIds.size > 0) {
+                                toggleSelect(notification.id);
+                              } else {
+                                handleNotificationClick(notification);
+                              }
+                            }}
+                            onContextMenu={(e) => { e.preventDefault(); toggleSelect(notification.id); }}
                           >
                             <CardContent className="p-4">
                               <div className="flex items-start gap-3">
