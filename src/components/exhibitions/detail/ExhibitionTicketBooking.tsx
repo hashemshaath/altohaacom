@@ -175,14 +175,14 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
 
   // Inline booking form (no dialog)
   return (
-    <Card className={`overflow-hidden transition-all ${expanded ? "border-primary/30 shadow-xl shadow-primary/10" : "border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"}`}>
+    <Card className={`overflow-hidden transition-all duration-300 ${expanded ? "border-primary/30 shadow-xl shadow-primary/10 scale-[1.01]" : "border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10"}`}>
       <CardContent className="p-0">
         {/* Header / CTA - always visible */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex w-full items-center gap-3 p-4 text-start transition-colors hover:bg-primary/5"
+          className="flex w-full items-center gap-3 p-4 text-start transition-colors hover:bg-primary/5 group"
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 ring-2 ring-primary/10 shrink-0">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 ring-2 ring-primary/10 shrink-0 transition-transform group-hover:scale-110 duration-300">
             <Ticket className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
@@ -194,12 +194,14 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
             )}
             <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "احصل على رمز QR للدخول السريع" : "Get a QR code for quick entry"}</p>
           </div>
-          {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />}
+          <div className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}>
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          </div>
         </button>
 
         {/* Expanded inline form */}
         {expanded && (
-          <div className="border-t border-border/40 px-4 pb-4 pt-3 space-y-3 animate-in slide-in-from-top-2 duration-200">
+          <div className="border-t border-border/40 px-4 pb-4 pt-3 space-y-3 animate-in slide-in-from-top-2 fade-in duration-300">
             <p className="text-xs font-medium text-muted-foreground">{exhibitionTitle}</p>
             
             <div className="space-y-2.5">
@@ -209,7 +211,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={isAr ? "الاسم (اختياري)" : "Name (optional)"}
-                  className="ps-9 h-10 rounded-xl"
+                  className="ps-9 h-10 rounded-xl transition-all focus:shadow-md focus:shadow-primary/5"
                 />
               </div>
               <div className="relative">
@@ -219,7 +221,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={user?.email || "email@example.com"}
-                  className="ps-9 h-10 rounded-xl"
+                  className="ps-9 h-10 rounded-xl transition-all focus:shadow-md focus:shadow-primary/5"
                 />
               </div>
               <div className="relative">
@@ -228,7 +230,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder={isAr ? "رقم الهاتف (اختياري)" : "Phone (optional)"}
-                  className="ps-9 h-10 rounded-xl"
+                  className="ps-9 h-10 rounded-xl transition-all focus:shadow-md focus:shadow-primary/5"
                 />
               </div>
             </div>
@@ -236,7 +238,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
             <Separator className="my-1" />
 
             <Button
-              className="w-full h-11 font-semibold shadow-lg shadow-primary/15 rounded-xl"
+              className="w-full h-11 font-semibold shadow-lg shadow-primary/15 rounded-xl transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
               onClick={() => bookTicket.mutate()}
               disabled={bookTicket.isPending || !user}
             >
