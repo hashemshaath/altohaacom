@@ -5,15 +5,15 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, BookOpen, Clock, GraduationCap, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, GraduationCap } from "lucide-react";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
 
-const LEVEL_LABELS: Record<string, { en: string; ar: string }> = {
-  beginner: { en: "Beginner", ar: "مبتدئ" },
-  intermediate: { en: "Intermediate", ar: "متوسط" },
-  advanced: { en: "Advanced", ar: "متقدم" },
-  all_levels: { en: "All Levels", ar: "جميع المستويات" },
+const LEVEL_LABELS: Record<string, { en: string; ar: string; color: string }> = {
+  beginner: { en: "Beginner", ar: "مبتدئ", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
+  intermediate: { en: "Intermediate", ar: "متوسط", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
+  advanced: { en: "Advanced", ar: "متقدم", color: "bg-destructive/10 text-destructive border-destructive/20" },
+  all_levels: { en: "All Levels", ar: "جميع المستويات", color: "bg-primary/10 text-primary border-primary/20" },
 };
 
 export function HomeMasterclasses() {
@@ -38,7 +38,7 @@ export function HomeMasterclasses() {
   if (classes.length === 0) return null;
 
   return (
-    <section className="container py-8 md:py-12" aria-labelledby="masterclasses-heading">
+    <section className="container py-8 md:py-12" aria-labelledby="masterclasses-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionReveal>
         <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -63,65 +63,67 @@ export function HomeMasterclasses() {
       </SectionReveal>
 
       <SectionReveal delay={80}>
-      {/* Horizontal scroll on mobile, responsive grid on desktop */}
-      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
-        {classes.map((mc: any) => {
-          const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
-          const levelLabel = LEVEL_LABELS[mc.level];
+        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
+          {classes.map((mc: any) => {
+            const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
+            const levelLabel = LEVEL_LABELS[mc.level];
 
-          return (
-            <Link key={mc.id} to={`/masterclasses/${mc.id}`} className="group block snap-start min-w-[14rem] shrink-0 sm:min-w-0 sm:shrink">
-              <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                  {mc.cover_image_url ? (
-                    <img src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/5">
-                      <GraduationCap className="h-10 w-10 text-primary/30" />
+            return (
+              <Link key={mc.id} to={`/masterclasses/${mc.id}`} className="group block snap-start min-w-[14rem] shrink-0 sm:min-w-0 sm:shrink">
+                <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                    {mc.cover_image_url ? (
+                      <img src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-accent/5">
+                        <GraduationCap className="h-10 w-10 text-primary/30" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute end-2 top-2 flex gap-1.5 flex-wrap justify-end">
+                      {mc.is_free && (
+                        <Badge className="bg-chart-2/90 text-[10px] shadow-sm">
+                          {isAr ? "مجاني" : "Free"}
+                        </Badge>
+                      )}
+                      {levelLabel && (
+                        <Badge variant="outline" className={cn("text-[10px] border", levelLabel.color)}>
+                          {isAr ? levelLabel.ar : levelLabel.en}
+                        </Badge>
+                      )}
                     </div>
-                  )}
-                  {/* Hover gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute end-2 top-2 flex gap-1.5">
-                    {mc.is_free && (
-                      <Badge className="bg-chart-2/90 text-[10px] shadow-sm">
-                        {isAr ? "مجاني" : "Free"}
-                      </Badge>
-                    )}
-                    {levelLabel && (
-                      <Badge variant="secondary" className="text-[10px]">
-                        {isAr ? levelLabel.ar : levelLabel.en}
-                      </Badge>
+                    {!mc.is_free && mc.price && (
+                      <div className="absolute start-2 bottom-2">
+                        <Badge variant="outline" className="bg-background/80 backdrop-blur-sm text-[10px] font-bold shadow-sm">
+                          {mc.currency || "$"} {mc.price}
+                        </Badge>
+                      </div>
                     )}
                   </div>
-                  {/* Price badge at bottom */}
-                  {!mc.is_free && mc.price && (
-                    <div className="absolute start-2 bottom-2">
-                      <Badge variant="outline" className="bg-background/80 backdrop-blur-sm text-[10px] font-bold shadow-sm">
-                        {mc.currency || "$"} {mc.price}
-                      </Badge>
+                  <CardContent className="p-3">
+                    <div className="mb-1.5">
+                      {mc.category && <Badge variant="outline" className="text-[10px] mb-1">{mc.category}</Badge>}
+                      <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
                     </div>
-                  )}
-                </div>
-                <CardContent className="p-3">
-                  <div className="mb-1.5">
-                    {mc.category && <Badge variant="outline" className="text-[10px] mb-1">{mc.category}</Badge>}
-                    <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
-                  </div>
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-                    {mc.duration_hours && (
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-primary/50" />
-                        {mc.duration_hours} {isAr ? "ساعة" : "hrs"}
-                      </span>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
+                    <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                      {mc.duration_hours && (
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3 text-primary/50" />
+                          {mc.duration_hours} {isAr ? "ساعة" : "hrs"}
+                        </span>
+                      )}
+                      {mc.status === "upcoming" && (
+                        <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
+                          {isAr ? "قريباً" : "Coming Soon"}
+                        </Badge>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
       </SectionReveal>
     </section>
   );

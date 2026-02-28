@@ -5,12 +5,11 @@ import { Users, Trophy, Building2, Globe } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 import { cn } from "@/lib/utils";
-
 import { forwardRef } from "react";
 
 const StatItem = forwardRef<HTMLDivElement, {
-  value: number; label: string; icon: any; color: string; isVisible: boolean; delay: number;
-}>(function StatItem({ value, label, icon: Icon, color, isVisible, delay }, ref) {
+  value: number; label: string; icon: any; color: string; bgColor: string; isVisible: boolean; delay: number;
+}>(function StatItem({ value, label, icon: Icon, color, bgColor, isVisible, delay }, ref) {
   const count = useCountUp(value, isVisible);
 
   return (
@@ -22,12 +21,12 @@ const StatItem = forwardRef<HTMLDivElement, {
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/8 ring-1 ring-primary/10">
-        <Icon className={`h-4.5 w-4.5 sm:h-5 sm:w-5 ${color}`} />
+      <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 ring-primary/10", bgColor)}>
+        <Icon className={cn("h-4.5 w-4.5 sm:h-5 sm:w-5", color)} />
       </div>
       <div className="sm:text-center">
         <p className="text-xl font-bold sm:text-2xl tracking-tight tabular-nums text-foreground">
-          {count}+
+          {count.toLocaleString()}+
         </p>
         <p className="text-[10px] sm:text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
       </div>
@@ -61,15 +60,15 @@ export function HomeStats() {
   });
 
   const items = [
-    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1" },
-    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2" },
-    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3" },
-    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4" },
+    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3", bgColor: "bg-chart-3/10" },
+    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4", bgColor: "bg-chart-4/10" },
   ];
 
   return (
     <section ref={ref} className="border-y border-border/30 bg-card/50 backdrop-blur-sm" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
-      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-2 py-6 sm:py-8">
+      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-2 py-6 sm:py-8" dir={isAr ? "rtl" : "ltr"}>
         {items.map((stat, i) => (
           <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 100} />
         ))}

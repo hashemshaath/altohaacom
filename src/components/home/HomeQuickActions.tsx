@@ -1,16 +1,18 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Trophy, BookOpen, Calendar, Search, Users, Utensils } from "lucide-react";
+import { Trophy, BookOpen, Calendar, Search, Users, Utensils, ChefHat, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const actions = [
-  { icon: Trophy, label: "Competitions", labelAr: "المسابقات", href: "/competitions" },
-  { icon: BookOpen, label: "Masterclasses", labelAr: "ماستركلاس", href: "/masterclasses" },
-  { icon: Calendar, label: "Events", labelAr: "الفعاليات", href: "/exhibitions" },
-  { icon: Search, label: "Search", labelAr: "بحث", href: "/search" },
-  { icon: Users, label: "Rankings", labelAr: "التصنيفات", href: "/rankings" },
-  { icon: Utensils, label: "Recipes", labelAr: "الوصفات", href: "/recipes" },
+  { icon: Trophy, label: "Competitions", labelAr: "المسابقات", href: "/competitions", color: "text-chart-1" },
+  { icon: BookOpen, label: "Masterclasses", labelAr: "ماستركلاس", href: "/masterclasses", color: "text-chart-2" },
+  { icon: Calendar, label: "Events", labelAr: "الفعاليات", href: "/exhibitions", color: "text-chart-3" },
+  { icon: Search, label: "Search", labelAr: "بحث", href: "/search", color: "text-chart-4" },
+  { icon: Users, label: "Rankings", labelAr: "التصنيفات", href: "/rankings", color: "text-chart-5" },
+  { icon: Utensils, label: "Recipes", labelAr: "الوصفات", href: "/recipes", color: "text-chart-1" },
+  { icon: ChefHat, label: "Community", labelAr: "المجتمع", href: "/community", color: "text-chart-2" },
+  { icon: Store, label: "Shop", labelAr: "المتجر", href: "/shop", color: "text-chart-3" },
 ];
 
 export const HomeQuickActions = memo(function HomeQuickActions() {
@@ -19,24 +21,26 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
 
   return (
     <section className="container py-3">
-      {/* Horizontal scroll on mobile, grid on desktop — RTL-aware */}
-      <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-6 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
+      <div
+        className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-8 sm:overflow-visible sm:pb-0"
+        dir={isAr ? "rtl" : "ltr"}
+      >
         {actions.map((a) => (
           <Link
             key={a.href}
             to={a.href}
             className={cn(
-              "flex flex-col items-center gap-1.5 rounded-xl p-3 snap-start",
-              "min-w-[5rem] shrink-0 sm:min-w-0 sm:shrink",
+              "flex flex-col items-center gap-1.5 rounded-xl p-2.5 snap-start",
+              "min-w-[4.5rem] shrink-0 sm:min-w-0 sm:shrink",
               "bg-card border border-border/40 hover:border-primary/30",
               "transition-all duration-200 hover:shadow-sm active:scale-[0.97]",
               "group"
             )}
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary/15 transition-colors">
-              <a.icon className="h-4.5 w-4.5" />
+            <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg bg-primary/8 group-hover:bg-primary/15 transition-colors", a.color)}>
+              <a.icon className="h-4 w-4" />
             </div>
-            <span className="text-[11px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 whitespace-nowrap">
+            <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 whitespace-nowrap">
               {isAr ? a.labelAr : a.label}
             </span>
           </Link>
