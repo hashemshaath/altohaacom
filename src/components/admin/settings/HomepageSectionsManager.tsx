@@ -11,10 +11,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Eye, EyeOff, ChevronDown, ChevronUp, Save, LayoutGrid,
-  Loader2, Search, RotateCcw, GripVertical, Filter,
+  Loader2, Search, RotateCcw, GripVertical, Filter, Trash2,
+  CheckSquare, Square, ArrowUpDown, Palette, Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +36,7 @@ export function HomepageSectionsManager() {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibilityFilter, setVisibilityFilter] = useState<"all" | "visible" | "hidden">("all");
   const [orderedSections, setOrderedSections] = useState<HomepageSection[] | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
 
@@ -52,6 +56,24 @@ export function HomepageSectionsManager() {
 
   const visibleCount = displaySections.filter((s) => s.is_visible).length;
   const hiddenCount = displaySections.length - visibleCount;
+  const hasSelection = selectedIds.size > 0;
+  const allSelected = filteredSections.length > 0 && filteredSections.every(s => selectedIds.has(s.id));
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredSections.map(s => s.id)));
+    }
+  };
 
   const toggle = (id: string) => {
     setOpenSections((prev) => {
@@ -86,11 +108,27 @@ export function HomepageSectionsManager() {
   };
 
   // Bulk actions
-  const toggleAll = async (visible: boolean) => {
-    const updates = displaySections.map((s) => ({ id: s.id, is_visible: visible }));
+  const bulkToggleVisibility = async (visible: boolean) => {
+    const targets = hasSelection
+      ? displaySections.filter(s => selectedIds.has(s.id))
+      : displaySections;
+    const updates = targets.map((s) => ({ id: s.id, is_visible: visible }));
+    try {
+      await bulkUpdate.mutateAsync(updates);
+      toast({ title: isAr ? "تم التحديث" : "Updated", description: `${updates.length} ${isAr ? "قسم" : "sections"}` });
+      setSelectedIds(new Set());
+    } catch {
+      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
+    }
+  };
+
+  const bulkApplyAnimation = async (animation: HomepageSection["animation"]) => {
+    if (!hasSelection) return;
+    const updates = Array.from(selectedIds).map(id => ({ id, animation }));
     try {
       await bulkUpdate.mutateAsync(updates);
       toast({ title: isAr ? "تم التحديث" : "Updated" });
+      setSelectedIds(new Set());
     } catch {
       toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
@@ -170,47 +208,43 @@ export function HomepageSectionsManager() {
 
   return (
     <div className="space-y-4">
+      {/* Stats bar */}
+      <div className="grid grid-cols-3 gap-2">
+        <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-card px-3 py-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <LayoutGrid className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-lg font-bold tabular-nums">{displaySections.length}</p>
+            <p className="text-[9px] text-muted-foreground">{isAr ? "إجمالي الأقسام" : "Total Sections"}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-card px-3 py-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <Eye className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-lg font-bold tabular-nums">{visibleCount}</p>
+            <p className="text-[9px] text-muted-foreground">{isAr ? "ظاهر" : "Visible"}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-card px-3 py-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+            <EyeOff className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <div>
+            <p className="text-lg font-bold tabular-nums">{hiddenCount}</p>
+            <p className="text-[9px] text-muted-foreground">{isAr ? "مخفي" : "Hidden"}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Toolbar */}
       <Card className="border-border/50 bg-muted/30">
-        <CardContent className="p-3 space-y-3">
-          {/* Stats row */}
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <LayoutGrid className="h-3.5 w-3.5" />
-              <span className="font-medium">{displaySections.length} {isAr ? "قسم" : "sections"}</span>
-              <span className="text-muted-foreground/40">·</span>
-              <span className="flex items-center gap-1">
-                <Eye className="h-3 w-3 text-primary" /> {visibleCount}
-              </span>
-              <span className="text-muted-foreground/40">·</span>
-              <span className="flex items-center gap-1">
-                <EyeOff className="h-3 w-3" /> {hiddenCount}
-              </span>
-            </div>
-
-            {/* Reorder save bar */}
-            {hasReorder && (
-              <div className="flex items-center gap-2">
-                <Badge variant="default" className="text-[10px] gap-1 animate-pulse">
-                  <GripVertical className="h-3 w-3" />
-                  {isAr ? "ترتيب جديد" : "New order"}
-                </Badge>
-                <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={saveOrder} disabled={bulkUpdate.isPending}>
-                  {bulkUpdate.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
-                  {isAr ? "حفظ" : "Save"}
-                </Button>
-                <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={cancelReorder}>
-                  <RotateCcw className="h-3 w-3" />
-                  {isAr ? "إلغاء" : "Cancel"}
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Actions row */}
+        <CardContent className="p-3 space-y-2.5">
+          {/* Search + Filter row */}
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Search */}
-            <div className="relative flex-1 min-w-[180px] max-w-xs">
+            <div className="relative flex-1 min-w-[160px] max-w-xs">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 value={searchQuery}
@@ -220,32 +254,109 @@ export function HomepageSectionsManager() {
               />
             </div>
 
-            <div className="flex items-center gap-1 flex-wrap">
-              <Select value={visibilityFilter} onValueChange={(v) => setVisibilityFilter(v as any)}>
-                <SelectTrigger className="h-7 w-[110px] text-[10px]">
-                  <Filter className="h-3 w-3 mr-1" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all" className="text-xs">{isAr ? "الكل" : "All"}</SelectItem>
-                  <SelectItem value="visible" className="text-xs">{isAr ? "مرئي" : "Visible"}</SelectItem>
-                  <SelectItem value="hidden" className="text-xs">{isAr ? "مخفي" : "Hidden"}</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => toggleAll(true)}>
-                <Eye className="h-3 w-3" /> {isAr ? "إظهار الكل" : "Show All"}
-              </Button>
-              <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => toggleAll(false)}>
-                <EyeOff className="h-3 w-3" /> {isAr ? "إخفاء الكل" : "Hide All"}
-              </Button>
-              <Button size="sm" variant="ghost" className="h-7 text-[10px] gap-1" onClick={expandAll}>
-                <ChevronDown className="h-3 w-3" /> {isAr ? "فتح" : "Expand"}
-              </Button>
-              <Button size="sm" variant="ghost" className="h-7 text-[10px] gap-1" onClick={collapseAll}>
-                <ChevronUp className="h-3 w-3" /> {isAr ? "إغلاق" : "Collapse"}
-              </Button>
+            <Select value={visibilityFilter} onValueChange={(v) => setVisibilityFilter(v as any)}>
+              <SelectTrigger className="h-8 w-[120px] text-xs">
+                <Filter className="h-3 w-3 mr-1" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-xs">{isAr ? "الكل" : "All"} ({displaySections.length})</SelectItem>
+                <SelectItem value="visible" className="text-xs">{isAr ? "مرئي" : "Visible"} ({visibleCount})</SelectItem>
+                <SelectItem value="hidden" className="text-xs">{isAr ? "مخفي" : "Hidden"} ({hiddenCount})</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex items-center gap-1 ms-auto">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={expandAll}>
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">{isAr ? "فتح الكل" : "Expand All"}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={collapseAll}>
+                    <ChevronUp className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">{isAr ? "إغلاق الكل" : "Collapse All"}</TooltipContent>
+              </Tooltip>
             </div>
           </div>
+
+          {/* Selection & Bulk actions row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              size="sm"
+              variant={allSelected ? "default" : "outline"}
+              className="h-7 text-[10px] gap-1.5"
+              onClick={toggleSelectAll}
+            >
+              {allSelected ? <CheckSquare className="h-3 w-3" /> : <Square className="h-3 w-3" />}
+              {allSelected ? (isAr ? "إلغاء التحديد" : "Deselect") : (isAr ? "تحديد الكل" : "Select All")}
+            </Button>
+
+            {hasSelection && (
+              <Badge variant="secondary" className="text-[10px] gap-1 px-2">
+                {selectedIds.size} {isAr ? "محدد" : "selected"}
+              </Badge>
+            )}
+
+            <div className="h-4 w-px bg-border/60 mx-0.5" />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => bulkToggleVisibility(true)}>
+                  <Eye className="h-3 w-3" /> {isAr ? "إظهار" : "Show"}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="text-xs">{hasSelection ? `${selectedIds.size} ${isAr ? "محدد" : "selected"}` : (isAr ? "جميع الأقسام" : "All sections")}</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => bulkToggleVisibility(false)}>
+                  <EyeOff className="h-3 w-3" /> {isAr ? "إخفاء" : "Hide"}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="text-xs">{hasSelection ? `${selectedIds.size} ${isAr ? "محدد" : "selected"}` : (isAr ? "جميع الأقسام" : "All sections")}</TooltipContent>
+            </Tooltip>
+
+            {hasSelection && (
+              <>
+                <div className="h-4 w-px bg-border/60 mx-0.5" />
+                <Select onValueChange={(v) => bulkApplyAnimation(v as HomepageSection["animation"])}>
+                  <SelectTrigger className="h-7 w-[130px] text-[10px]">
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    {isAr ? "تحريك المحدد" : "Animate Selected"}
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["none", "fade", "slide-up", "slide-left", "scale", "blur"].map(a => (
+                      <SelectItem key={a} value={a} className="text-xs">{a}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </>
+            )}
+          </div>
+
+          {/* Reorder save bar */}
+          {hasReorder && (
+            <div className="flex items-center gap-2 rounded-lg bg-primary/5 border border-primary/20 px-3 py-2">
+              <ArrowUpDown className="h-4 w-4 text-primary animate-pulse" />
+              <span className="text-xs font-medium flex-1">{isAr ? "تم تغيير الترتيب - احفظ التغييرات" : "Order changed — save to apply"}</span>
+              <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={saveOrder} disabled={bulkUpdate.isPending}>
+                {bulkUpdate.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+                {isAr ? "حفظ" : "Save"}
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={cancelReorder}>
+                <RotateCcw className="h-3 w-3" />
+                {isAr ? "إلغاء" : "Cancel"}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -257,6 +368,8 @@ export function HomepageSectionsManager() {
             section={section}
             index={idx}
             isOpen={openSections.has(section.id)}
+            isSelected={selectedIds.has(section.id)}
+            onSelect={() => toggleSelect(section.id)}
             onToggle={() => toggle(section.id)}
             onUpdate={(u) => handleUpdate(section, u)}
             onQuickToggle={(v) => handleQuickToggle(section, v)}
