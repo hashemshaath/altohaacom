@@ -9,7 +9,8 @@ import { CompetitionScoringOverview } from "@/components/admin/CompetitionScorin
 import { CompetitionJudgingTracker } from "@/components/admin/CompetitionJudgingTracker";
 import { CompetitionLifecycleWidget } from "@/components/admin/CompetitionLifecycleWidget";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
-import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
+import { CompetitionSmartImport } from "@/components/smart-import/CompetitionSmartImport";
+import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -348,7 +349,15 @@ export default function CompetitionsAdmin() {
         registration_currency: data.currency || "SAR",
         rules_summary: data.rules_summary_en || null,
         rules_summary_ar: data.rules_summary_ar || null,
+        scoring_notes: data.scoring_method_en || null,
+        scoring_notes_ar: data.scoring_method_ar || null,
         cover_image_url: data.cover_url || null,
+        max_participants: data.max_attendees || null,
+        max_team_size: data.max_team_size || null,
+        min_team_size: data.min_team_size || null,
+        allowed_entry_types: data.allowed_entry_types || null,
+        blind_judging_enabled: data.blind_judging || false,
+        is_virtual: data.is_virtual || false,
         status: "draft" as CompetitionStatus,
         organizer_id: user?.id || "",
         import_source: "smart_import",
@@ -377,7 +386,7 @@ export default function CompetitionsAdmin() {
               <Download className="me-2 h-4 w-4" />
               {isAr ? "تصدير" : "Export"}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => setShowSmartImport(true)}>
+            <Button variant={showSmartImport ? "secondary" : "outline"} size="sm" onClick={() => setShowSmartImport(!showSmartImport)}>
               <Sparkles className="me-2 h-4 w-4" />
               {isAr ? "استيراد ذكي" : "Smart Import"}
             </Button>
@@ -394,6 +403,14 @@ export default function CompetitionsAdmin() {
           </div>
         }
       />
+
+      {/* Smart Import Panel (inline) */}
+      {showSmartImport && (
+        <CompetitionSmartImport
+          onImport={handleSmartImport}
+          onClose={() => setShowSmartImport(false)}
+        />
+      )}
 
       {/* Competition Analytics */}
       <CompetitionLifecycleWidget />
@@ -802,13 +819,7 @@ export default function CompetitionsAdmin() {
         </TabsContent>
       </Tabs>
 
-      {/* Smart Import Dialog */}
-      <SmartImportDialog
-        open={showSmartImport}
-        onOpenChange={setShowSmartImport}
-        entityType="competition"
-        onImport={handleSmartImport}
-      />
+
     </div>
   );
 }

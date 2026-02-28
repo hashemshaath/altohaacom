@@ -657,6 +657,74 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
   return { table: 'culinary_entities', sub_type: 'culinary_association', confidence: 0.3 };
 }
 
+// ─── MODE: COMPETITION TEXT ───
+async function handleCompetitionText(text: string, lovableKey: string): Promise<{ data: any; sources_used: Record<string, boolean>; data_quality: number }> {
+  const sources = { google_maps: false, web_search: false, website: false, ai: true };
+  const truncated = text.substring(0, 15000);
+  const prompt = `You are a bilingual competition data extraction expert (Arabic & English). Extract ALL competition details from this document/text into structured JSON.
+
+DOCUMENT:
+${truncated}
+
+RULES:
+- Every _en/_ar field pair: if only one language found, TRANSLATE to the other professionally
+- Extract ALL competition versions/categories if multiple exist
+- Extract judging criteria with weights if available
+- Extract full judging committee with roles
+- Extract terms, conditions, eligibility, participation requirements
+- Extract prizes, schedule, rounds
+- Dates in ISO 8601 format
+
+Return ONLY valid JSON:
+{
+  "name_en": null, "name_ar": null,
+  "description_en": null, "description_ar": null,
+  "competition_type": null,
+  "edition_year": null,
+  "start_date": null, "end_date": null,
+  "registration_deadline": null,
+  "registration_fee": null, "currency": null,
+  "venue_en": null, "venue_ar": null,
+  "city_en": null, "city_ar": null,
+  "country_en": null, "country_ar": null, "country_code": null,
+  "rules_summary_en": null, "rules_summary_ar": null,
+  "terms_conditions_en": null, "terms_conditions_ar": null,
+  "eligibility_en": null, "eligibility_ar": null,
+  "participation_requirements_en": [], "participation_requirements_ar": [],
+  "scoring_method_en": null, "scoring_method_ar": null,
+  "max_team_size": null, "min_team_size": null,
+  "allowed_entry_types": [],
+  "blind_judging": null,
+  "max_attendees": null,
+  "competition_versions": [{"name":"...","name_ar":"...","description":"...","max_participants":null}],
+  "judging_criteria": [{"criterion":"...","criterion_ar":"...","weight":null,"description":"..."}],
+  "judging_committee": [{"name":"...","name_ar":"...","title":"...","title_ar":"...","role":"..."}],
+  "prizes": [{"place":"1st","place_ar":"الأول","prize":"...","prize_ar":"...","value":null}],
+  "competition_schedule": [{"time":"09:00","date":"...","activity":"...","activity_ar":"..."}],
+  "competition_rounds": [{"name":"...","name_ar":"...","description":"...","duration":"..."}],
+  "dress_code": null, "dress_code_ar": null,
+  "age_restrictions": null,
+  "equipment_provided": [], "equipment_required": [],
+  "organizer_name_en": null, "organizer_name_ar": null,
+  "organizer_website": null, "organizer_email": null, "organizer_phone": null,
+  "phone": null, "email": null, "website": null, "registration_url": null,
+  "cover_url": null, "logo_url": null,
+  "is_virtual": null, "virtual_link": null,
+  "social_media": {"instagram":null,"twitter":null,"facebook":null},
+  "tags": []
+}`;
+
+  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 45000);
+  let data: any = {};
+  try {
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) data = JSON.parse(jsonMatch[0]);
+  } catch (e) { console.error('[SmartImport] Competition text parse error:', e); }
+
+  const dataQuality = calculateDataQuality(data, sources);
+  return { data, sources_used: sources, data_quality: dataQuality };
+}
+
 // ─── Stats endpoint ───
 async function handleStats(client: any): Promise<any> {
   const [entities, companies, establishments, exhibitions, competitions, logs] = await Promise.all([
@@ -736,6 +804,14 @@ Deno.serve(async (req) => {
       const result = await handleUrlImport(url.trim(), firecrawlKey, lovableKey);
       const suggestion = autoDetectTargetTable(result.data);
       return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
+    }
+
+    // Competition text/PDF content extraction
+    if (mode === 'competition_text') {
+      const textContent = body.text_content;
+      if (!textContent?.trim()) return new Response(JSON.stringify({ success: false, error: "Text content required" }), { status: 400, headers: jsonHeaders });
+      const result = await handleCompetitionText(textContent.trim(), lovableKey);
+      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
     }
 
     if (!query?.trim()) return new Response(JSON.stringify({ success: false, error: "Query required" }), { status: 400, headers: jsonHeaders });
