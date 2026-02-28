@@ -22,23 +22,24 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
   return (
     <section className="container py-3">
       <div
-        className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-8 sm:overflow-visible sm:pb-0"
+        className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-8 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
         dir={isAr ? "rtl" : "ltr"}
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         {actions.map((a) => (
           <Link
             key={a.href}
             to={a.href}
             className={cn(
-              "flex flex-col items-center gap-1.5 rounded-xl p-2.5 snap-start",
-              "min-w-[4.5rem] shrink-0 sm:min-w-0 sm:shrink",
+              "flex flex-col items-center gap-1.5 rounded-xl p-2.5 sm:p-3 snap-start",
+              "min-w-[5rem] shrink-0 sm:min-w-0 sm:shrink",
               "bg-card border border-border/40 hover:border-primary/30",
-              "transition-all duration-200 hover:shadow-sm active:scale-[0.97]",
-              "group"
+              "transition-all duration-200 hover:shadow-sm active:scale-[0.95]",
+              "group touch-manipulation"
             )}
           >
-            <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg bg-primary/8 group-hover:bg-primary/15 transition-colors", a.color)}>
-              <a.icon className="h-4 w-4" />
+            <div className={cn("flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary/8 group-hover:bg-primary/15 transition-colors", a.color)}>
+              <a.icon className="h-4.5 w-4.5 sm:h-4 sm:w-4" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 whitespace-nowrap">
               {isAr ? a.labelAr : a.label}
