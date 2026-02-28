@@ -58,6 +58,21 @@ export function EventsByCategory() {
     },
   });
 
+  const statusBadge = (status: string) => {
+    const map: Record<string, { label: string; labelAr: string; cls: string }> = {
+      registration_open: { label: "Open", labelAr: "مفتوح", cls: "bg-chart-2/90 text-chart-2-foreground" },
+      in_progress: { label: "Live", labelAr: "جارية", cls: "bg-destructive/90 text-destructive-foreground animate-pulse" },
+      upcoming: { label: "Upcoming", labelAr: "قادمة", cls: "" },
+      active: { label: "Active", labelAr: "نشط", cls: "bg-chart-2/90 text-chart-2-foreground" },
+    };
+    const s = map[status] || map.upcoming;
+    return (
+      <Badge className={cn("text-[10px] shadow-sm", s.cls)}>
+        {isAr ? s.labelAr : s.label}
+      </Badge>
+    );
+  };
+
   const tabs = [
     {
       key: "competitions",
@@ -69,36 +84,44 @@ export function EventsByCategory() {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         return (
           <Link key={item.id} to={`/competitions/${item.id}`} className="group block">
-            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/25">
+            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
               <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                 {item.cover_image_url ? (
-                  <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                  <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                     <Trophy className="h-8 w-8 text-primary/30" />
                   </div>
                 )}
-                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-background/50 to-transparent" />
+                {/* Gradient overlay for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
-                  <Badge className="text-[10px]">
-                    {item.status === "registration_open" ? (isAr ? "مفتوح" : "Open") : item.status === "in_progress" ? (isAr ? "جارية" : "Live") : (isAr ? "قادمة" : "Upcoming")}
-                  </Badge>
+                  {statusBadge(item.status)}
                   {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
                 </div>
                 <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <CardContent className="p-3">
-                <h3 className="mb-1 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
-                  {title} {item.competition_start && <span className="text-primary">{new Date(item.competition_start).getFullYear()}</span>}
+                <h3 className="mb-1.5 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                  {title}
                 </h3>
-                <div className="space-y-0.5 text-[11px] text-muted-foreground">
+                <div className="space-y-1 text-[11px] text-muted-foreground">
                   {item.competition_start && (
-                    <div className="flex items-center gap-1.5"><Calendar className="h-3 w-3 shrink-0" /><span>{format(new Date(item.competition_start), "MMM d, yyyy")}</span></div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
+                      <span>{format(new Date(item.competition_start), "MMM d, yyyy")}</span>
+                    </div>
                   )}
                   {item.is_virtual ? (
-                    <div className="flex items-center gap-1.5"><Globe className="h-3 w-3 shrink-0" /><span>{isAr ? "افتراضي" : "Virtual"}</span></div>
+                    <div className="flex items-center gap-1.5">
+                      <Globe className="h-3 w-3 shrink-0 text-primary/50" />
+                      <span>{isAr ? "افتراضي" : "Virtual"}</span>
+                    </div>
                   ) : item.city ? (
-                    <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 shrink-0" /><span>{item.city}{item.country ? `, ${item.country}` : ""}</span></div>
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                      <span className="truncate">{item.city}{item.country ? `, ${item.country}` : ""}</span>
+                    </div>
                   ) : null}
                 </div>
               </CardContent>
@@ -118,42 +141,50 @@ export function EventsByCategory() {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         const venue = isAr && item.venue_ar ? item.venue_ar : item.venue;
         const organizerName = isAr && item.organizer_name_ar ? item.organizer_name_ar : item.organizer_name;
-        const year = item.start_date ? new Date(item.start_date).getFullYear() : "";
         return (
           <Link key={item.id} to={`/exhibitions/${item.slug || item.id}`} className="group block">
-            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/25">
+            <Card interactive className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
               <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                 {item.cover_image_url ? (
-                  <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                  <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                     <Globe className="h-8 w-8 text-primary/30" />
                   </div>
                 )}
-                <Badge className="absolute end-2 top-2 text-[10px]">{item.status === "open" ? (isAr ? "نشط" : "Active") : (isAr ? "قادم" : "Upcoming")}</Badge>
-                {item.start_date && <CountdownBadge targetDate={new Date(item.start_date)} isAr={isAr} className="absolute end-2 top-8" />}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
+                  {statusBadge(item.status)}
+                  {item.start_date && <CountdownBadge targetDate={new Date(item.start_date)} isAr={isAr} />}
+                </div>
                 <ShareButton title={title} url={`/exhibitions/${item.slug || item.id}`} isAr={isAr} className="absolute start-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <CardContent className="p-3">
                 <h3 className="mb-1 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
-                  {title} {year && <span className="text-primary">{year}</span>}
+                  {title}
                 </h3>
                 {organizerName && (
-                  <div className="mb-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                     {item.logo_url ? (
                       <img src={item.logo_url} alt={organizerName} className="h-4 w-4 rounded object-contain shrink-0" />
                     ) : (
-                      <Globe className="h-3 w-3 shrink-0 text-primary/60" />
+                      <Globe className="h-3 w-3 shrink-0 text-primary/50" />
                     )}
                     <span className="truncate">{organizerName}</span>
                   </div>
                 )}
-                <div className="space-y-0.5 text-[11px] text-muted-foreground">
+                <div className="space-y-1 text-[11px] text-muted-foreground">
                   {item.start_date && (
-                    <div className="flex items-center gap-1.5"><Calendar className="h-3 w-3 shrink-0" /><span>{format(new Date(item.start_date), "MMM d, yyyy")}</span></div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
+                      <span>{format(new Date(item.start_date), "MMM d, yyyy")}</span>
+                    </div>
                   )}
                   {(venue || item.city) && (
-                    <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{venue || ""}{item.city ? (venue ? `, ${item.city}` : item.city) : ""}{item.country ? `, ${item.country}` : ""}</span></div>
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                      <span className="truncate">{venue || ""}{item.city ? (venue ? `, ${item.city}` : item.city) : ""}{item.country ? `, ${item.country}` : ""}</span>
+                    </div>
                   )}
                 </div>
               </CardContent>
@@ -173,18 +204,21 @@ export function EventsByCategory() {
         const title = isAr && item.title_ar ? item.title_ar : item.title;
         return (
           <Link key={item.id} to={`/chefs-table/${item.id}`} className="group block">
-            <Card interactive className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/25">
+            <Card interactive className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/25">
               <CardContent className="p-4">
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/15">
                   <Coffee className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="mb-1 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors">{title}</h3>
-                <div className="space-y-1 text-[11px] text-muted-foreground">
+                <h3 className="mb-1.5 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors">{title}</h3>
+                <div className="space-y-1.5 text-[11px] text-muted-foreground">
                   {item.product_category && (
                     <Badge variant="secondary" className="text-[10px]">{item.product_category}</Badge>
                   )}
                   {item.session_date && (
-                    <div className="flex items-center gap-1.5"><Calendar className="h-3 w-3 shrink-0" /><span>{format(new Date(item.session_date), "MMM d, yyyy")}</span></div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
+                      <span>{format(new Date(item.session_date), "MMM d, yyyy")}</span>
+                    </div>
                   )}
                 </div>
               </CardContent>

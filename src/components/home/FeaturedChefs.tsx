@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
+import { getDisplayName } from "@/lib/getDisplayName";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -87,7 +87,8 @@ export function FeaturedChefs() {
         </SectionReveal>
 
         <SectionReveal delay={80}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+        {/* Horizontal scroll on mobile, grid on desktop */}
+        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0">
           {chefs.map((chef: any, idx: number) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
@@ -99,11 +100,11 @@ export function FeaturedChefs() {
             const locationParts = [chef.city, countryName].filter(Boolean).join(", ");
 
             return (
-              <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block">
-                <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 overflow-hidden">
-                  <CardContent className="p-3 text-center">
-                    <div className="relative mx-auto mb-2.5 w-fit">
-                      <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-transform duration-300 group-hover:scale-105">
+              <Link key={chef.user_id || idx} to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`} className="group block snap-start min-w-[10rem] shrink-0 sm:min-w-0 sm:shrink">
+                <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden">
+                  <CardContent className="p-3 sm:p-4 text-center">
+                    <div className="relative mx-auto mb-3 w-fit">
+                      <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-110 group-hover:ring-primary/30">
                         <AvatarImage src={chef.avatar_url} alt={name} />
                         <AvatarFallback className="bg-primary/10 text-primary font-bold text-base">
                           {initials}
@@ -130,11 +131,11 @@ export function FeaturedChefs() {
                     {chef.country_code && (
                       <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] text-muted-foreground/70">
                         <MapPin className="h-2.5 w-2.5 shrink-0" />
-                        <span>{countryFlag(chef.country_code)} {locationParts}</span>
+                        <span className="truncate">{countryFlag(chef.country_code)} {locationParts}</span>
                       </div>
                     )}
                     {hasMedals && (
-                      <div className="mt-1.5 flex items-center justify-center gap-2 text-[11px]">
+                      <div className="mt-2 flex items-center justify-center gap-2.5 text-[11px]">
                         {chef.gold_medals > 0 && <span className="flex items-center gap-0.5 text-chart-4"><Trophy className="h-3 w-3" />{chef.gold_medals}</span>}
                         {chef.silver_medals > 0 && <span className="flex items-center gap-0.5 text-muted-foreground"><Trophy className="h-3 w-3" />{chef.silver_medals}</span>}
                         {chef.bronze_medals > 0 && <span className="flex items-center gap-0.5 text-chart-3"><Trophy className="h-3 w-3" />{chef.bronze_medals}</span>}
