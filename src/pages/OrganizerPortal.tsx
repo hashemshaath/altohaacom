@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Landmark, Calendar, Plus, Users, Ticket, Star, TrendingUp, Eye, MapPin, CheckCircle2, Clock, BarChart3 } from "lucide-react";
+import { Landmark, Calendar, Plus, Users, Ticket, Star, TrendingUp, Eye, MapPin, CheckCircle2, Clock, BarChart3, LayoutGrid, Heart } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
@@ -42,18 +42,34 @@ export default function OrganizerPortal() {
   const { data: ticketStats } = useQuery({
     queryKey: ["organizer-ticket-stats", user?.id],
     queryFn: async () => {
-      if (!user || !exhibitions?.length) return { total: 0, checkedIn: 0, perEvent: new Map<string, number>() };
+      if (!user || !exhibitions?.length) return { total: 0, checkedIn: 0, perEvent: new Map<string, number>(), revenue: 0 };
       const ids = exhibitions.map(e => e.id);
-      const [total, checkedIn, perEventData] = await Promise.all([
+      const [total, checkedIn, perEventData, boothsData, followersData] = await Promise.all([
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", ids),
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", ids).not("checked_in_at", "is", null),
         supabase.from("exhibition_tickets").select("exhibition_id").in("exhibition_id", ids),
+        supabase.from("exhibition_booths").select("id, exhibition_id, status, assigned_to").in("exhibition_id", ids),
+        supabase.from("exhibition_followers").select("exhibition_id").in("exhibition_id", ids),
       ]);
       const perEvent = new Map<string, number>();
       for (const t of perEventData.data || []) {
         perEvent.set(t.exhibition_id, (perEvent.get(t.exhibition_id) || 0) + 1);
       }
-      return { total: total.count || 0, checkedIn: checkedIn.count || 0, perEvent };
+      const boothsPerEvent = new Map<string, { total: number; assigned: number }>();
+      for (const b of boothsData.data || []) {
+        const curr = boothsPerEvent.get(b.exhibition_id) || { total: 0, assigned: 0 };
+        curr.total++;
+        if (b.assigned_to) curr.assigned++;
+        boothsPerEvent.set(b.exhibition_id, curr);
+      }
+      const followersPerEvent = new Map<string, number>();
+      for (const f of followersData.data || []) {
+        followersPerEvent.set(f.exhibition_id, (followersPerEvent.get(f.exhibition_id) || 0) + 1);
+      }
+      const totalBooths = (boothsData.data || []).length;
+      const assignedBooths = (boothsData.data || []).filter(b => b.assigned_to).length;
+      const totalFollowers = (followersData.data || []).length;
+      return { total: total.count || 0, checkedIn: checkedIn.count || 0, perEvent, boothsPerEvent, followersPerEvent, totalBooths, assignedBooths, totalFollowers };
     },
     enabled: !!exhibitions?.length,
   });
@@ -113,7 +129,7 @@ export default function OrganizerPortal() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-3">
           {[
             { label: t("Total Events", "إجمالي"), value: stats.total, icon: Landmark, color: "text-primary" },
             { label: t("Active Now", "نشطة الآن"), value: stats.active, icon: TrendingUp, color: "text-chart-3" },
@@ -121,6 +137,8 @@ export default function OrganizerPortal() {
             { label: t("Total Views", "المشاهدات"), value: stats.views, icon: Eye, color: "text-chart-4" },
             { label: t("Tickets Sold", "التذاكر"), value: ticketStats?.total || 0, icon: Ticket, color: "text-primary" },
             { label: t("Check-ins", "الحضور"), value: ticketStats?.checkedIn || 0, icon: CheckCircle2, color: "text-chart-3" },
+            { label: t("Booths", "الأجنحة"), value: `${ticketStats?.assignedBooths || 0}/${ticketStats?.totalBooths || 0}`, icon: LayoutGrid, color: "text-chart-2" },
+            { label: t("Followers", "المتابعون"), value: ticketStats?.totalFollowers || 0, icon: Heart, color: "text-chart-4" },
           ].map(s => (
             <Card key={s.label} className="border-border/40">
               <CardContent className="p-3 flex items-center gap-3">
@@ -128,7 +146,7 @@ export default function OrganizerPortal() {
                   <s.icon className={`h-4 w-4 ${s.color}`} />
                 </div>
                 <div>
-                  <p className={`text-lg font-bold ${s.color}`}>{toEnglishDigits(s.value)}</p>
+                  <p className={`text-lg font-bold ${s.color}`}>{typeof s.value === 'number' ? toEnglishDigits(s.value) : s.value}</p>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
                 </div>
               </CardContent>
@@ -198,6 +216,18 @@ export default function OrganizerPortal() {
                                 <Ticket className="h-3 w-3" />
                                 {toEnglishDigits(ticketStats?.perEvent?.get(ex.id) || 0)} {t("tickets", "تذكرة")}
                               </span>
+                              {ticketStats?.followersPerEvent?.get(ex.id) ? (
+                                <span className="flex items-center gap-1">
+                                  <Heart className="h-3 w-3" />
+                                  {toEnglishDigits(ticketStats.followersPerEvent.get(ex.id) || 0)} {t("followers", "متابع")}
+                                </span>
+                              ) : null}
+                              {ticketStats?.boothsPerEvent?.get(ex.id) ? (
+                                <span className="flex items-center gap-1">
+                                  <LayoutGrid className="h-3 w-3" />
+                                  {ticketStats.boothsPerEvent.get(ex.id)!.assigned}/{ticketStats.boothsPerEvent.get(ex.id)!.total} {t("booths", "جناح")}
+                                </span>
+                              ) : null}
                             </div>
                           </div>
                           <Button variant="ghost" size="sm" className="shrink-0 text-xs gap-1.5">

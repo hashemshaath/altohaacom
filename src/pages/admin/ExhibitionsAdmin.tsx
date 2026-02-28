@@ -6,6 +6,7 @@ import { deriveExhibitionStatus, EXHIBITION_STATUS_LEGEND } from "@/lib/exhibiti
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
 import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
+import { ExhibitionActivityLog } from "@/components/admin/ExhibitionActivityLog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -442,7 +443,12 @@ export default function ExhibitionsAdmin() {
         <ExhibitionLiveStatsWidget />
         <ExhibitionTicketStatsWidget />
       </div>
-      <ExhibitionAnalyticsWidget />
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <ExhibitionAnalyticsWidget />
+        </div>
+        <ExhibitionActivityLog />
+      </div>
 
       {/* Exhibition Management Widget */}
       <ExhibitionManagementWidget />
