@@ -196,6 +196,7 @@ export default function UserManagement() {
 
       return { users, totalCount: count || 0 };
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const { data: groups = [] } = useQuery({

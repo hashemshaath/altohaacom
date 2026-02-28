@@ -3,43 +3,10 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
-import { AdminActivityFeed } from "@/components/admin/AdminActivityFeed";
-import { AdminModerationQueue } from "@/components/admin/AdminModerationQueue";
-import { AdminFinanceOverview } from "@/components/admin/AdminFinanceOverview";
-import { AdminPendingActionsWidget } from "@/components/admin/AdminPendingActionsWidget";
-import { AdminAlertCenter } from "@/components/admin/AdminAlertCenter";
-import { AdminKPITrends } from "@/components/admin/AdminKPITrends";
-import { ContentAnalyticsWidget } from "@/components/admin/ContentAnalyticsWidget";
-import { FinanceAnalyticsWidget } from "@/components/admin/FinanceAnalyticsWidget";
-import { CRMPipelineWidget } from "@/components/admin/CRMPipelineWidget";
-import { PerformanceMonitorWidget } from "@/components/admin/PerformanceMonitorWidget";
-import { CompetitionInsightsWidget } from "@/components/admin/CompetitionInsightsWidget";
-import { ExhibitionInsightsWidget } from "@/components/admin/ExhibitionInsightsWidget";
-import { SupportInsightsWidget } from "@/components/admin/SupportInsightsWidget";
-import { SecurityInsightsWidget } from "@/components/admin/SecurityInsightsWidget";
-import { AutomationStatusWidget } from "@/components/admin/AutomationStatusWidget";
 import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
 import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
 import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
-import { AdminPDFReportGenerator } from "@/components/admin/AdminPDFReportGenerator";
-import { AdminReportHub } from "@/components/admin/AdminReportHub";
-import { CompanyDashboardWidget } from "@/components/admin/CompanyDashboardWidget";
-import { AdminAuditTrail } from "@/components/admin/AdminAuditTrail";
-import { AdminAdvancedAnalytics } from "@/components/admin/AdminAdvancedAnalytics";
-import { AdminAutomationRules } from "@/components/admin/AdminAutomationRules";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
-import { PerformanceOptimizationWidget } from "@/components/admin/PerformanceOptimizationWidget";
-import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
-import { ReportsSummaryWidget } from "@/components/admin/ReportsSummaryWidget";
-import { AdminQuickNavWidget } from "@/components/admin/AdminQuickNavWidget";
-import { PageNavigationWidget } from "@/components/admin/PageNavigationWidget";
-import { DashboardLiveMetricsWidget } from "@/components/admin/DashboardLiveMetricsWidget";
-import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
-import { CommunityEngagementWidget } from "@/components/admin/CommunityEngagementWidget";
-import { ProfileCompletenessWidget } from "@/components/admin/ProfileCompletenessWidget";
-import { ShopOrdersOverviewWidget } from "@/components/admin/ShopOrdersOverviewWidget";
-import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
-import { ScheduledExportWidget } from "@/components/admin/ScheduledExportWidget";
 import { AdminKeyboardShortcuts, ShortcutHintsCard } from "@/components/admin/AdminKeyboardShortcuts";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -51,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
+import { useInViewport } from "@/hooks/useInViewport";
 import {
   Users, UserCheck, UserPlus, Flag, Trophy, FileText,
   TrendingUp, ArrowRight, ArrowUpRight, ArrowDownRight,
@@ -62,10 +30,53 @@ import {
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 
-// Lazy load heavy components
+// Lazy load ALL heavy widgets - they render far below the fold
+const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
+const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
+const AdminFinanceOverview = lazy(() => import("@/components/admin/AdminFinanceOverview").then(m => ({ default: m.AdminFinanceOverview })));
+const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
+const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
+const AdminKPITrends = lazy(() => import("@/components/admin/AdminKPITrends").then(m => ({ default: m.AdminKPITrends })));
+const ContentAnalyticsWidget = lazy(() => import("@/components/admin/ContentAnalyticsWidget").then(m => ({ default: m.ContentAnalyticsWidget })));
+const FinanceAnalyticsWidget = lazy(() => import("@/components/admin/FinanceAnalyticsWidget").then(m => ({ default: m.FinanceAnalyticsWidget })));
+const CRMPipelineWidget = lazy(() => import("@/components/admin/CRMPipelineWidget").then(m => ({ default: m.CRMPipelineWidget })));
+const PerformanceMonitorWidget = lazy(() => import("@/components/admin/PerformanceMonitorWidget").then(m => ({ default: m.PerformanceMonitorWidget })));
+const CompetitionInsightsWidget = lazy(() => import("@/components/admin/CompetitionInsightsWidget").then(m => ({ default: m.CompetitionInsightsWidget })));
+const ExhibitionInsightsWidget = lazy(() => import("@/components/admin/ExhibitionInsightsWidget").then(m => ({ default: m.ExhibitionInsightsWidget })));
+const SupportInsightsWidget = lazy(() => import("@/components/admin/SupportInsightsWidget").then(m => ({ default: m.SupportInsightsWidget })));
+const SecurityInsightsWidget = lazy(() => import("@/components/admin/SecurityInsightsWidget").then(m => ({ default: m.SecurityInsightsWidget })));
+const AutomationStatusWidget = lazy(() => import("@/components/admin/AutomationStatusWidget").then(m => ({ default: m.AutomationStatusWidget })));
+const AdminPDFReportGenerator = lazy(() => import("@/components/admin/AdminPDFReportGenerator").then(m => ({ default: m.AdminPDFReportGenerator })));
+const AdminReportHub = lazy(() => import("@/components/admin/AdminReportHub").then(m => ({ default: m.AdminReportHub })));
+const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
+const AdminAuditTrail = lazy(() => import("@/components/admin/AdminAuditTrail").then(m => ({ default: m.AdminAuditTrail })));
+const AdminAdvancedAnalytics = lazy(() => import("@/components/admin/AdminAdvancedAnalytics").then(m => ({ default: m.AdminAdvancedAnalytics })));
+const AdminAutomationRules = lazy(() => import("@/components/admin/AdminAutomationRules").then(m => ({ default: m.AdminAutomationRules })));
+const PerformanceOptimizationWidget = lazy(() => import("@/components/admin/PerformanceOptimizationWidget").then(m => ({ default: m.PerformanceOptimizationWidget })));
+const ContentCalendarWidget = lazy(() => import("@/components/admin/ContentCalendarWidget").then(m => ({ default: m.ContentCalendarWidget })));
+const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
+const AdminQuickNavWidget = lazy(() => import("@/components/admin/AdminQuickNavWidget").then(m => ({ default: m.AdminQuickNavWidget })));
+const PageNavigationWidget = lazy(() => import("@/components/admin/PageNavigationWidget").then(m => ({ default: m.PageNavigationWidget })));
+const DashboardLiveMetricsWidget = lazy(() => import("@/components/admin/DashboardLiveMetricsWidget").then(m => ({ default: m.DashboardLiveMetricsWidget })));
+const CommunicationsDashboardWidget = lazy(() => import("@/components/admin/CommunicationsDashboardWidget").then(m => ({ default: m.CommunicationsDashboardWidget })));
+const CommunityEngagementWidget = lazy(() => import("@/components/admin/CommunityEngagementWidget").then(m => ({ default: m.CommunityEngagementWidget })));
+const ProfileCompletenessWidget = lazy(() => import("@/components/admin/ProfileCompletenessWidget").then(m => ({ default: m.ProfileCompletenessWidget })));
+const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
+const AdminScheduledExports = lazy(() => import("@/components/admin/AdminScheduledExports").then(m => ({ default: m.AdminScheduledExports })));
+const ScheduledExportWidget = lazy(() => import("@/components/admin/ScheduledExportWidget").then(m => ({ default: m.ScheduledExportWidget })));
 const AdminAnalyticsWidgets = lazy(() => import("@/components/admin/AdminAnalyticsWidgets").then(m => ({ default: m.AdminAnalyticsWidgets })));
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
 const MLAnalyticsDashboard = lazy(() => import("@/components/admin/MLAnalyticsDashboard").then(m => ({ default: m.MLAnalyticsDashboard })));
+
+/** Renders children only when the section scrolls into view */
+function LazySection({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+  const { ref, inView } = useInViewport("400px 0px");
+  return (
+    <div ref={ref}>
+      {inView ? <Suspense fallback={fallback || <SectionSkeleton />}>{children}</Suspense> : <div className="min-h-[120px]" />}
+    </div>
+  );
+}
 
 function AnimatedStatValue({ value }: { value: number }) {
   const animated = useAnimatedCounter(value);
@@ -138,7 +149,8 @@ export default function AdminDashboard() {
         recentUsers: recentUsers || [],
       };
     },
-    staleTime: 1000 * 30,
+    staleTime: 1000 * 60 * 3,
+    refetchOnWindowFocus: false,
   });
 
   // ── Today's activity ──
@@ -161,7 +173,8 @@ export default function AdminDashboard() {
         newReports: newReports.count || 0,
       };
     },
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60 * 3,
+    refetchOnWindowFocus: false,
   });
 
   // ── Optimized 7-day sparkline: fetch date ranges for boundary counts only ──
@@ -209,7 +222,8 @@ export default function AdminDashboard() {
         return row;
       });
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   const sparklineKeys: Record<string, string> = {
@@ -299,10 +313,14 @@ export default function AdminDashboard() {
       </div>
 
       {/* Live Platform Pulse */}
-      <DashboardLiveMetricsWidget />
+      <LazySection>
+        <DashboardLiveMetricsWidget />
+      </LazySection>
 
       {/* KPI Trends (week-over-week comparison) */}
-      <AdminKPITrends />
+      <LazySection>
+        <AdminKPITrends />
+      </LazySection>
 
       {/* Stats Grid with sparklines */}
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
@@ -469,28 +487,35 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
 
-      {/* Reports Summary & Quick Nav */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <ReportsSummaryWidget />
-        <AdminQuickNavWidget />
-      </div>
+      <LazySection>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ReportsSummaryWidget />
+          <AdminQuickNavWidget />
+        </div>
+      </LazySection>
 
-      <PageNavigationWidget />
+      <LazySection>
+        <PageNavigationWidget />
+      </LazySection>
 
       {/* ── Row: Community + Profile + Shop ── */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <CommunityEngagementWidget />
-        <ProfileCompletenessWidget />
-        <ShopOrdersOverviewWidget />
-      </div>
+      <LazySection>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <CommunityEngagementWidget />
+          <ProfileCompletenessWidget />
+          <ShopOrdersOverviewWidget />
+        </div>
+      </LazySection>
 
       {/* ── Row: Activity Feed + Moderation + Alerts + Finance ── */}
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
-        <AdminActivityFeed />
-        <AdminModerationQueue />
-        <AdminAlertCenter />
-        <AdminFinanceOverview />
-      </div>
+      <LazySection>
+        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+          <AdminActivityFeed />
+          <AdminModerationQueue />
+          <AdminAlertCenter />
+          <AdminFinanceOverview />
+        </div>
+      </LazySection>
 
       {/* ── Row: Quick Actions + Recent Actions ── */}
       <div className="grid gap-4 lg:grid-cols-2">
@@ -617,87 +642,69 @@ export default function AdminDashboard() {
       </Card>
 
       {/* Competition & Evaluation Insights */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <CompetitionInsightsWidget />
-      </Suspense>
+      <LazySection><CompetitionInsightsWidget /></LazySection>
 
       {/* Exhibition & Events Insights */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <ExhibitionInsightsWidget />
-      </Suspense>
+      <LazySection><ExhibitionInsightsWidget /></LazySection>
 
       {/* Support & Communications */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <SupportInsightsWidget />
-      </Suspense>
+      <LazySection><SupportInsightsWidget /></LazySection>
 
       {/* Security & Permissions */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <SecurityInsightsWidget />
-      </Suspense>
+      <LazySection><SecurityInsightsWidget /></LazySection>
 
       {/* Content Analytics */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <ContentAnalyticsWidget />
-      </Suspense>
+      <LazySection><ContentAnalyticsWidget /></LazySection>
 
       {/* Finance Analytics */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <FinanceAnalyticsWidget />
-      </Suspense>
+      <LazySection><FinanceAnalyticsWidget /></LazySection>
 
       {/* CRM Pipeline */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <CRMPipelineWidget />
-      </Suspense>
+      <LazySection><CRMPipelineWidget /></LazySection>
 
       {/* Automation Rules */}
-      <AdminAutomationRules />
+      <LazySection><AdminAutomationRules /></LazySection>
 
       {/* Content Calendar + Communications + Exports */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <ContentCalendarWidget />
-        <CommunicationsDashboardWidget />
-        <AdminScheduledExports />
-      </div>
+      <LazySection>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <ContentCalendarWidget />
+          <CommunicationsDashboardWidget />
+          <AdminScheduledExports />
+        </div>
+      </LazySection>
 
       {/* Automation & Notifications Status */}
-      <AutomationStatusWidget />
+      <LazySection><AutomationStatusWidget /></LazySection>
 
       {/* Advanced Analytics */}
-      <AdminAdvancedAnalytics />
+      <LazySection><AdminAdvancedAnalytics /></LazySection>
 
       {/* Quick Report Hub */}
-      <AdminReportHub />
+      <LazySection><AdminReportHub /></LazySection>
 
       {/* PDF Report Generator */}
-      <AdminPDFReportGenerator />
+      <LazySection><AdminPDFReportGenerator /></LazySection>
 
       {/* Company Dashboard */}
-      <CompanyDashboardWidget />
+      <LazySection><CompanyDashboardWidget /></LazySection>
 
       {/* Audit Trail */}
-      <AdminAuditTrail />
+      <LazySection><AdminAuditTrail /></LazySection>
 
       {/* Performance Monitor */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <PerformanceMonitorWidget />
-      </Suspense>
+      <LazySection><PerformanceMonitorWidget /></LazySection>
 
       {/* App Performance */}
-      <PerformanceOptimizationWidget />
+      <LazySection><PerformanceOptimizationWidget /></LazySection>
 
       {/* Quick Data Export */}
-      <ScheduledExportWidget />
+      <LazySection><ScheduledExportWidget /></LazySection>
 
-      {/* Deep Analytics (lazy loaded) */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <AdminAnalyticsWidgets />
-      </Suspense>
+      {/* Deep Analytics */}
+      <LazySection><AdminAnalyticsWidgets /></LazySection>
 
-      <Suspense fallback={<SectionSkeleton />}>
-        <MLAnalyticsDashboard />
-      </Suspense>
+      <LazySection><MLAnalyticsDashboard /></LazySection>
     </div>
   );
 }
