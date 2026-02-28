@@ -15,6 +15,7 @@ export interface ExhibitionFormData {
   city: string;
   country: string;
   mapUrl: string;
+  organizerId: string;
   organizerName: string;
   organizerNameAr: string;
   organizerEmail: string;
@@ -50,6 +51,7 @@ export const initialExhibitionData: ExhibitionFormData = {
   city: "",
   country: "",
   mapUrl: "",
+  organizerId: "",
   organizerName: "",
   organizerNameAr: "",
   organizerEmail: "",
