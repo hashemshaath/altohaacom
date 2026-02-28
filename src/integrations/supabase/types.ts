@@ -8854,6 +8854,80 @@ export type Database = {
           },
         ]
       }
+      exhibition_attendee_schedule: {
+        Row: {
+          agenda_item_id: string | null
+          booth_id: string | null
+          created_at: string
+          custom_notes: string | null
+          custom_time: string | null
+          custom_title: string | null
+          custom_title_ar: string | null
+          exhibition_id: string
+          id: string
+          reminder_sent: boolean | null
+          schedule_item_id: string | null
+          user_id: string
+        }
+        Insert: {
+          agenda_item_id?: string | null
+          booth_id?: string | null
+          created_at?: string
+          custom_notes?: string | null
+          custom_time?: string | null
+          custom_title?: string | null
+          custom_title_ar?: string | null
+          exhibition_id: string
+          id?: string
+          reminder_sent?: boolean | null
+          schedule_item_id?: string | null
+          user_id: string
+        }
+        Update: {
+          agenda_item_id?: string | null
+          booth_id?: string | null
+          created_at?: string
+          custom_notes?: string | null
+          custom_time?: string | null
+          custom_title?: string | null
+          custom_title_ar?: string | null
+          exhibition_id?: string
+          id?: string
+          reminder_sent?: boolean | null
+          schedule_item_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_attendee_schedule_agenda_item_id_fkey"
+            columns: ["agenda_item_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_agenda_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_attendee_schedule_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_attendee_schedule_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_attendee_schedule_schedule_item_id_fkey"
+            columns: ["schedule_item_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_schedule_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_auction_bids: {
         Row: {
           amount: number
@@ -9054,6 +9128,9 @@ export type Database = {
         Row: {
           assigned_at: string | null
           assigned_to: string | null
+          booked_at: string | null
+          booked_by: string | null
+          booking_status: string | null
           booth_number: string
           category: string | null
           color_hex: string | null
@@ -9076,8 +9153,10 @@ export type Database = {
           logo_url: string | null
           name: string
           name_ar: string | null
+          notes: string | null
           price: number | null
           size: string | null
+          size_sqm: number | null
           status: string | null
           updated_at: string
           website_url: string | null
@@ -9085,6 +9164,9 @@ export type Database = {
         Insert: {
           assigned_at?: string | null
           assigned_to?: string | null
+          booked_at?: string | null
+          booked_by?: string | null
+          booking_status?: string | null
           booth_number: string
           category?: string | null
           color_hex?: string | null
@@ -9107,8 +9189,10 @@ export type Database = {
           logo_url?: string | null
           name: string
           name_ar?: string | null
+          notes?: string | null
           price?: number | null
           size?: string | null
+          size_sqm?: number | null
           status?: string | null
           updated_at?: string
           website_url?: string | null
@@ -9116,6 +9200,9 @@ export type Database = {
         Update: {
           assigned_at?: string | null
           assigned_to?: string | null
+          booked_at?: string | null
+          booked_by?: string | null
+          booking_status?: string | null
           booth_number?: string
           category?: string | null
           color_hex?: string | null
@@ -9138,8 +9225,10 @@ export type Database = {
           logo_url?: string | null
           name?: string
           name_ar?: string | null
+          notes?: string | null
           price?: number | null
           size?: string | null
+          size_sqm?: number | null
           status?: string | null
           updated_at?: string
           website_url?: string | null
@@ -10239,6 +10328,147 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "exhibition_social_posts_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_sponsor_applications: {
+        Row: {
+          admin_notes: string | null
+          applicant_email: string | null
+          applicant_name: string
+          applicant_phone: string | null
+          company_id: string | null
+          company_name: string | null
+          company_name_ar: string | null
+          created_at: string
+          exhibition_id: string
+          id: string
+          logo_url: string | null
+          message: string | null
+          package_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          applicant_email?: string | null
+          applicant_name: string
+          applicant_phone?: string | null
+          company_id?: string | null
+          company_name?: string | null
+          company_name_ar?: string | null
+          created_at?: string
+          exhibition_id: string
+          id?: string
+          logo_url?: string | null
+          message?: string | null
+          package_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          applicant_email?: string | null
+          applicant_name?: string
+          applicant_phone?: string | null
+          company_id?: string | null
+          company_name?: string | null
+          company_name_ar?: string | null
+          created_at?: string
+          exhibition_id?: string
+          id?: string
+          logo_url?: string | null
+          message?: string | null
+          package_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_sponsor_applications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_sponsor_applications_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_sponsor_applications_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_sponsor_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_sponsor_packages: {
+        Row: {
+          benefits: Json | null
+          created_at: string
+          currency: string | null
+          exhibition_id: string
+          id: string
+          is_active: boolean | null
+          max_sponsors: number | null
+          name: string
+          name_ar: string | null
+          price: number | null
+          sort_order: number | null
+          tier: string | null
+          updated_at: string
+        }
+        Insert: {
+          benefits?: Json | null
+          created_at?: string
+          currency?: string | null
+          exhibition_id: string
+          id?: string
+          is_active?: boolean | null
+          max_sponsors?: number | null
+          name: string
+          name_ar?: string | null
+          price?: number | null
+          sort_order?: number | null
+          tier?: string | null
+          updated_at?: string
+        }
+        Update: {
+          benefits?: Json | null
+          created_at?: string
+          currency?: string | null
+          exhibition_id?: string
+          id?: string
+          is_active?: boolean | null
+          max_sponsors?: number | null
+          name?: string
+          name_ar?: string | null
+          price?: number | null
+          sort_order?: number | null
+          tier?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_sponsor_packages_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"

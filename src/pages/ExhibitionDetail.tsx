@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine,
+  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
@@ -60,6 +60,10 @@ const OrganizerSalesReport = lazy(() => import("@/components/exhibitions/detail/
 const OrganizerAttendeeCommunication = lazy(() => import("@/components/exhibitions/detail/OrganizerAttendeeCommunication"));
 const ExhibitionEventScheduleWidget = lazy(() => import("@/components/exhibitions/detail/ExhibitionEventScheduleWidget"));
 const ExhibitionPaymentCallback = lazy(() => import("@/components/exhibitions/detail/ExhibitionPaymentCallback").then(m => ({ default: m.ExhibitionPaymentCallback })));
+const ExhibitionInteractiveBoothManager = lazy(() => import("@/components/exhibitions/detail/ExhibitionInteractiveBoothManager"));
+const ExhibitionSponsorshipHub = lazy(() => import("@/components/exhibitions/detail/ExhibitionSponsorshipHub"));
+const ExhibitionAttendeeSchedule = lazy(() => import("@/components/exhibitions/detail/ExhibitionAttendeeSchedule"));
+const OrganizerAdvancedReports = lazy(() => import("@/components/exhibitions/detail/OrganizerAdvancedReports"));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -416,6 +420,8 @@ export default function ExhibitionDetail() {
                   <ExhibitionTabTrigger value="auctions" icon={Gavel} label={isAr ? "مزادات" : "Auctions"} />
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
               {user && <ExhibitionTabTrigger value="my-tickets" icon={Ticket} label={isAr ? "تذاكري" : "My Tickets"} />}
+              {user && <ExhibitionTabTrigger value="my-schedule" icon={BookmarkCheck} label={isAr ? "جدولي" : "My Schedule"} />}
+              <ExhibitionTabTrigger value="sponsorship" icon={Gem} label={isAr ? "الرعاية" : "Sponsors"} />
               {isOwner && <ExhibitionTabTrigger value="checkin" icon={ScanLine} label={isAr ? "تسجيل الدخول" : "Check-in"} />}
               {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
                 </TabsList>
@@ -499,6 +505,7 @@ export default function ExhibitionDetail() {
               {hasBooths && (
                 <TabsContent value="booths" className="mt-6 space-y-6">
                   <Suspense fallback={<TabFallback />}>
+                    <ExhibitionInteractiveBoothManager exhibitionId={exhibition.id} isAr={isAr} isOwner={!!isOwner} />
                     <ExhibitionBoothNavigator exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionFloorMap exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
@@ -556,6 +563,20 @@ export default function ExhibitionDetail() {
                 </TabsContent>
               )}
 
+              {user && (
+                <TabsContent value="my-schedule" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionAttendeeSchedule exhibitionId={exhibition.id} isAr={isAr} />
+                  </Suspense>
+                </TabsContent>
+              )}
+
+              <TabsContent value="sponsorship" className="mt-6">
+                <Suspense fallback={<TabFallback />}>
+                  <ExhibitionSponsorshipHub exhibitionId={exhibition.id} isAr={isAr} />
+                </Suspense>
+              </TabsContent>
+
               {isOwner && (
                 <TabsContent value="checkin" className="mt-6">
                   <Suspense fallback={<TabFallback />}>
@@ -567,6 +588,7 @@ export default function ExhibitionDetail() {
               {isOwner && (
                 <TabsContent value="organizer" className="mt-6 space-y-6">
                   <Suspense fallback={<TabFallback />}>
+                    <OrganizerAdvancedReports exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
                     <OrganizerSalesReport exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
                     <OrganizerAttendeeCommunication exhibitionId={exhibition.id} isAr={isAr} />
                     <ExhibitionEventScheduleWidget exhibitionId={exhibition.id} isAr={isAr} />
