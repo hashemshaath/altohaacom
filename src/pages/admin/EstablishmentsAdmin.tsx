@@ -7,6 +7,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import EntityStatsCards from "@/components/admin/entities/EntityStatsCards";
 import EntityTableRow from "@/components/admin/entities/EntityTableRow";
 import EntityFormTabs, { EntityFormData, emptyForm, typeOptions, scopeOptions } from "@/components/admin/entities/EntityFormTabs";
+import EstablishmentDetailDrawer from "@/components/admin/establishments/EstablishmentDetailDrawer";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -17,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Building2, Plus, Search, XCircle, CheckCircle } from "lucide-react";
+import { Building2, Plus, Search, XCircle, CheckCircle, Eye } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function EstablishmentsAdmin() {
@@ -34,6 +35,7 @@ export default function EstablishmentsAdmin() {
   const [form, setForm] = useState<EntityFormData>(emptyForm);
   const [selectedManager, setSelectedManager] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   // Fetch culinary_entities
   const { data: entities, isLoading } = useQuery({
@@ -314,7 +316,7 @@ export default function EstablishmentsAdmin() {
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onToggleVisibility={handleToggleVisibility}
-                  onManage={(id, name) => toast({ title: isAr ? `إدارة: ${name}` : `Managing: ${name}` })}
+                  onManage={(id) => setDetailId(id)}
                   onStatusChange={handleStatusChange}
                   onVerifiedChange={handleVerifiedChange}
                   selected={selected.has(entity.id)}
@@ -325,6 +327,13 @@ export default function EstablishmentsAdmin() {
           </Table>
         </Card>
       )}
+
+      {/* Detail Drawer */}
+      <EstablishmentDetailDrawer
+        entityId={detailId}
+        open={!!detailId}
+        onClose={() => setDetailId(null)}
+      />
     </div>
   );
 }
