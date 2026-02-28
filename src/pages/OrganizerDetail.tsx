@@ -38,44 +38,63 @@ export default function OrganizerDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
     queryFn: async () => {
-      const { data: exhibitions, error } = await supabase
-        .from("exhibitions")
+      // Try to find organizer in the dedicated table first (by slug)
+      const { data: orgRecord } = await supabase
+        .from("organizers")
         .select("*")
-        .eq("organizer_name", decodedName)
-        .order("start_date", { ascending: false });
-      if (error) throw error;
+        .eq("slug", decodedName)
+        .maybeSingle();
+
+      // Fetch exhibitions linked to this organizer
+      let exhibitions: any[] = [];
+      if (orgRecord) {
+        const { data: exByOrgId } = await supabase
+          .from("exhibitions")
+          .select("*")
+          .or(`organizer_id.eq.${orgRecord.id},organizer_name.eq.${orgRecord.name}`)
+          .order("start_date", { ascending: false });
+        exhibitions = exByOrgId || [];
+      } else {
+        // Fallback: lookup by organizer_name in exhibitions
+        const { data: exByName } = await supabase
+          .from("exhibitions")
+          .select("*")
+          .eq("organizer_name", decodedName)
+          .order("start_date", { ascending: false });
+        exhibitions = exByName || [];
+      }
 
       const { data: articles } = await supabase
         .from("articles")
         .select("id, title, title_ar, slug, excerpt, excerpt_ar, featured_image_url, published_at, type, status")
         .eq("status", "published")
-        .or(`content.ilike.%${decodedName}%,title.ilike.%${decodedName}%`)
+        .or(`content.ilike.%${orgRecord?.name || decodedName}%,title.ilike.%${orgRecord?.name || decodedName}%`)
         .order("published_at", { ascending: false })
         .limit(10);
 
-      // Fetch ticket/registration stats
-      let totalRegistrations = 0;
       let totalTickets = 0;
-      if (exhibitions && exhibitions.length > 0) {
+      let totalReviews = 0;
+      if (exhibitions.length > 0) {
         const exIds = exhibitions.map(e => e.id);
-        const { count: regCount } = await supabase
+        const { count: ticketCount } = await supabase
           .from("exhibition_tickets")
           .select("id", { count: "exact", head: true })
           .in("exhibition_id", exIds);
-        totalTickets = regCount || 0;
+        totalTickets = ticketCount || 0;
 
         const { count: reviewCount } = await supabase
           .from("exhibition_reviews")
           .select("id", { count: "exact", head: true })
           .in("exhibition_id", exIds);
-        totalRegistrations = reviewCount || 0;
+        totalReviews = reviewCount || 0;
       }
 
       return {
-        exhibitions: exhibitions || [],
+        orgRecord,
+        exhibitions,
         articles: articles || [],
         totalTickets,
-        totalReviews: totalRegistrations,
+        totalReviews,
       };
     },
     enabled: !!decodedName,
@@ -83,25 +102,32 @@ export default function OrganizerDetail() {
 
   const exhibitions = data?.exhibitions || [];
   const articles = data?.articles || [];
+  const orgRecord = data?.orgRecord;
 
-  // Derive organizer info from first exhibition
-  const org = exhibitions[0] || null;
+  // Derive organizer info: prefer orgRecord, fallback to first exhibition
+  const org = orgRecord || exhibitions[0] || null;
+  const useOrgRecord = !!orgRecord;
 
   // Compute all derived data
   const computed = useMemo(() => {
-    if (!exhibitions.length) return null;
+    if (!exhibitions.length && !orgRecord) return null;
 
-    const orgName = isAr && org?.organizer_name_ar ? org.organizer_name_ar : org?.organizer_name || decodedName;
-    const orgLogo = org?.organizer_logo_url || org?.logo_url;
+    const orgName = useOrgRecord
+      ? (isAr && org?.name_ar ? org.name_ar : org?.name || decodedName)
+      : (isAr && org?.organizer_name_ar ? org.organizer_name_ar : org?.organizer_name || decodedName);
+    const orgLogo = useOrgRecord ? org?.logo_url : (org?.organizer_logo_url || org?.logo_url);
+    const orgDescription = useOrgRecord ? (isAr && org?.description_ar ? org.description_ar : org?.description) : null;
+    const orgGallery: string[] = useOrgRecord ? (org?.gallery_urls || []) : [];
+    const orgKeyContacts: any[] = useOrgRecord ? (org?.key_contacts || []) : [];
     const totalExhibitions = exhibitions.length;
-    const totalViews = exhibitions.reduce((s: number, e: ExhibitionRow) => s + (e.view_count || 0), 0);
+    const totalViews = useOrgRecord && org?.total_views ? org.total_views : exhibitions.reduce((s: number, e: ExhibitionRow) => s + (e.view_count || 0), 0);
     const countries = [...new Set(exhibitions.map((e: ExhibitionRow) => e.country).filter(Boolean))] as string[];
     const cities = [...new Set(exhibitions.map((e: ExhibitionRow) => e.city).filter(Boolean))] as string[];
     const types = [...new Set(exhibitions.map((e: ExhibitionRow) => e.type))] as string[];
     const venues = [...new Set(exhibitions.map((e: ExhibitionRow) => isAr && e.venue_ar ? e.venue_ar : e.venue).filter(Boolean))] as string[];
 
-    // Cover from latest exhibition with image
-    const coverImage = exhibitions.find((e: ExhibitionRow) => e.cover_image_url)?.cover_image_url;
+    // Cover from orgRecord or latest exhibition
+    const coverImage = useOrgRecord ? org?.cover_image_url : exhibitions.find((e: ExhibitionRow) => e.cover_image_url)?.cover_image_url;
 
     // Aggregate sectors, categories, tags
     const allSectors = new Set<string>();
@@ -180,8 +206,9 @@ export default function OrganizerDetail() {
       byYear, sortedYears, upcoming, past, active,
       firstYear, lastYear, allSectors, allCategories, allTags,
       editionStats, allSponsors, nextEvent,
+      orgDescription, orgGallery, orgKeyContacts,
     };
-  }, [exhibitions, isAr, org, decodedName]);
+  }, [exhibitions, isAr, org, decodedName, useOrgRecord, orgRecord]);
 
   if (isLoading) {
     return (
@@ -223,7 +250,13 @@ export default function OrganizerDetail() {
     byYear, sortedYears, upcoming, past, active,
     firstYear, lastYear, allSectors, allCategories, allTags,
     editionStats, allSponsors, nextEvent,
+    orgDescription, orgGallery, orgKeyContacts,
   } = computed;
+
+  // Contact info: prefer orgRecord, fallback to exhibition data
+  const contactEmail = orgRecord?.email || org?.organizer_email;
+  const contactPhone = orgRecord?.phone || org?.organizer_phone;
+  const contactWebsite = orgRecord?.website || org?.organizer_website;
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
@@ -266,10 +299,10 @@ export default function OrganizerDetail() {
                     )}
                   </div>
                   <div className="flex gap-2 shrink-0">
-                    {org.organizer_website && (
+                    {contactWebsite && (
                       <Button variant="outline" size="sm" asChild>
                         <a
-                          href={org.organizer_website.startsWith("http") ? org.organizer_website : `https://${org.organizer_website}`}
+                          href={contactWebsite.startsWith("http") ? contactWebsite : `https://${contactWebsite}`}
                           target="_blank" rel="noopener noreferrer"
                         >
                           <Globe className="h-3.5 w-3.5 me-1.5" />
@@ -327,6 +360,11 @@ export default function OrganizerDetail() {
                       </a>
                     )}
                   </div>
+                )}
+
+                {/* Description */}
+                {orgDescription && (
+                  <p className="text-sm text-muted-foreground mt-3 line-clamp-3">{orgDescription}</p>
                 )}
               </div>
             </div>
@@ -599,28 +637,28 @@ export default function OrganizerDetail() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {org.organizer_email && (
+                    {contactEmail && (
                       <div className="flex items-center gap-3 text-sm">
                         <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <a href={`mailto:${org.organizer_email}`} className="text-primary hover:underline truncate">{org.organizer_email}</a>
+                        <a href={`mailto:${contactEmail}`} className="text-primary hover:underline truncate">{contactEmail}</a>
                       </div>
                     )}
-                    {org.organizer_phone && (
+                    {contactPhone && (
                       <div className="flex items-center gap-3 text-sm">
                         <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <a href={`tel:${org.organizer_phone}`} className="text-primary hover:underline" dir="ltr">{org.organizer_phone}</a>
+                        <a href={`tel:${contactPhone}`} className="text-primary hover:underline" dir="ltr">{contactPhone}</a>
                       </div>
                     )}
-                    {org.organizer_website && (
+                    {contactWebsite && (
                       <div className="flex items-center gap-3 text-sm">
                         <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <a href={org.organizer_website.startsWith("http") ? org.organizer_website : `https://${org.organizer_website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate flex items-center gap-1">
-                          {org.organizer_website.replace(/^https?:\/\//, "")}
+                        <a href={contactWebsite.startsWith("http") ? contactWebsite : `https://${contactWebsite}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate flex items-center gap-1">
+                          {contactWebsite.replace(/^https?:\/\//, "")}
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </div>
                     )}
-                    {!org.organizer_email && !org.organizer_phone && !org.organizer_website && (
+                    {!contactEmail && !contactPhone && !contactWebsite && (
                       <p className="text-sm text-muted-foreground">{isAr ? "لا توجد معلومات تواصل" : "No contact information available"}</p>
                     )}
                   </CardContent>

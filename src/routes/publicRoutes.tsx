@@ -28,6 +28,7 @@ const Exhibitions = lazy(() => import("@/pages/Exhibitions"));
 const ExhibitionDetail = lazy(() => import("@/pages/ExhibitionDetail"));
 const OrganizerDetail = lazy(() => import("@/pages/OrganizerDetail"));
 const Entities = lazy(() => import("@/pages/Entities"));
+const Organizers = lazy(() => import("@/pages/Organizers"));
 const EntityDetail = lazy(() => import("@/pages/EntityDetail"));
 const Shop = lazy(() => import("@/pages/Shop"));
 const ShopProduct = lazy(() => import("@/pages/ShopProduct"));
@@ -93,6 +94,7 @@ export const publicRoutes = (
     <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
     <Route path="/organizers/:name" element={<OrganizerDetail />} />
     <Route path="/entities" element={<Entities />} />
+    <Route path="/organizers" element={<Organizers />} />
     <Route path="/entities/:slug" element={<EntityDetail />} />
     <Route path="/shop" element={<Shop />} />
     <Route path="/shop/:id" element={<ShopProduct />} />

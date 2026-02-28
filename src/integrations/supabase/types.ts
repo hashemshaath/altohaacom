@@ -10779,6 +10779,7 @@ export type Database = {
           organizer_company_id: string | null
           organizer_email: string | null
           organizer_entity_id: string | null
+          organizer_id: string | null
           organizer_logo_url: string | null
           organizer_name: string | null
           organizer_name_ar: string | null
@@ -10849,6 +10850,7 @@ export type Database = {
           organizer_company_id?: string | null
           organizer_email?: string | null
           organizer_entity_id?: string | null
+          organizer_id?: string | null
           organizer_logo_url?: string | null
           organizer_name?: string | null
           organizer_name_ar?: string | null
@@ -10919,6 +10921,7 @@ export type Database = {
           organizer_company_id?: string | null
           organizer_email?: string | null
           organizer_entity_id?: string | null
+          organizer_id?: string | null
           organizer_logo_url?: string | null
           organizer_name?: string | null
           organizer_name_ar?: string | null
@@ -10968,6 +10971,13 @@ export type Database = {
             columns: ["organizer_entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibitions_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "organizers"
             referencedColumns: ["id"]
           },
           {
@@ -14892,6 +14902,141 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizers: {
+        Row: {
+          address: string | null
+          address_ar: string | null
+          average_rating: number | null
+          categories: string[] | null
+          city: string | null
+          city_ar: string | null
+          company_id: string | null
+          country: string | null
+          country_ar: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          email: string | null
+          entity_id: string | null
+          gallery_urls: string[] | null
+          id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
+          key_contacts: Json | null
+          logo_url: string | null
+          metadata: Json | null
+          name: string
+          name_ar: string | null
+          phone: string | null
+          services: string[] | null
+          services_ar: string[] | null
+          slug: string
+          social_links: Json | null
+          status: string
+          targeted_sectors: string[] | null
+          total_exhibitions: number | null
+          total_views: number | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          address_ar?: string | null
+          average_rating?: number | null
+          categories?: string[] | null
+          city?: string | null
+          city_ar?: string | null
+          company_id?: string | null
+          country?: string | null
+          country_ar?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          entity_id?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          key_contacts?: Json | null
+          logo_url?: string | null
+          metadata?: Json | null
+          name: string
+          name_ar?: string | null
+          phone?: string | null
+          services?: string[] | null
+          services_ar?: string[] | null
+          slug: string
+          social_links?: Json | null
+          status?: string
+          targeted_sectors?: string[] | null
+          total_exhibitions?: number | null
+          total_views?: number | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          address_ar?: string | null
+          average_rating?: number | null
+          categories?: string[] | null
+          city?: string | null
+          city_ar?: string | null
+          company_id?: string | null
+          country?: string | null
+          country_ar?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          entity_id?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          key_contacts?: Json | null
+          logo_url?: string | null
+          metadata?: Json | null
+          name?: string
+          name_ar?: string | null
+          phone?: string | null
+          services?: string[] | null
+          services_ar?: string[] | null
+          slug?: string
+          social_links?: Json | null
+          status?: string
+          targeted_sectors?: string[] | null
+          total_exhibitions?: number | null
+          total_views?: number | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizers_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organizers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
         ]
