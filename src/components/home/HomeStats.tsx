@@ -56,7 +56,8 @@ export function HomeStats() {
         exhibitions: exhs.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
   });
 
   const items = [

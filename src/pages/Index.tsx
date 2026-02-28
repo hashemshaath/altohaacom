@@ -1,4 +1,4 @@
-import { lazy, Suspense, memo, useEffect } from "react";
+import { lazy, Suspense, memo, useEffect, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -145,8 +145,8 @@ const Index = () => {
             </Suspense>
           )}
 
-          {/* Dynamic lazy sections — sorted by sort_order from DB */}
-          {sections
+          {/* Dynamic lazy sections — sorted by sort_order from DB, memoized */}
+          {useMemo(() => sections
             .filter((s) => s.is_visible && SECTION_MAP[s.section_key])
             .map((s, idx) => {
               const entry = SECTION_MAP[s.section_key];
@@ -158,7 +158,7 @@ const Index = () => {
                   </Suspense>
                 </SectionReveal>
               );
-            })}
+            }), [sections])}
 
           {/* Ad banner mid */}
           {isVisible(sections, "ad_banner_mid") && (

@@ -31,7 +31,8 @@ export function HomeMasterclasses() {
         .limit(4);
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
   });
 
   if (classes.length === 0) return null;

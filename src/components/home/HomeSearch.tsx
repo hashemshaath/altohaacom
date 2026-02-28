@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Search, Trophy, Globe, ChefHat, Utensils } from "lucide-react";
@@ -14,7 +14,7 @@ const categories = [
   { key: "chefs-table", icon: Utensils, labelEn: "Chef's Table", labelAr: "طاولة الشيف" },
 ];
 
-export function HomeSearch() {
+export const HomeSearch = memo(function HomeSearch() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -72,4 +72,4 @@ export function HomeSearch() {
       </div>
     </section>
   );
-}
+});
