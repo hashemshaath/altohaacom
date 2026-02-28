@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useFadeIn, useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -65,6 +66,33 @@ function getCompletionInfo(settings: Record<string, any>) {
   return { configured, total: categories.length, percent: Math.round((configured / categories.length) * 100) };
 }
 
+function QuickStatsCards({ settings, completion, isAr }: { settings: Record<string, any>; completion: { percent: number }; isAr: boolean }) {
+  const { getStyle } = useStaggeredReveal(4, 80);
+  const items = [
+    { icon: Database, value: Object.keys(settings).length.toString(), label: isAr ? "مجموعات الإعدادات" : "Config Groups" },
+    { icon: Activity, value: `${completion.percent}%`, label: isAr ? "اكتمال التهيئة" : "Setup Complete" },
+    { icon: LayoutGrid, value: "7", label: isAr ? "أقسام الإعدادات" : "Setting Sections" },
+    { icon: Clock, value: isAr ? "نشط" : "Active", label: isAr ? "حالة النظام" : "System Status", isText: true },
+  ];
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {items.map((item, i) => (
+        <Card key={i} className="border-border/50 group transition-all duration-300 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5" style={getStyle(i)}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+              <item.icon className="h-5 w-5 text-primary transition-transform duration-300 group-hover:rotate-6" />
+            </div>
+            <div className="min-w-0">
+              <p className={item.isText ? "text-sm font-semibold" : "text-2xl font-bold tabular-nums"}>{item.value}</p>
+              <p className="text-[10px] text-muted-foreground truncate">{item.label}</p>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 export default function SystemSettings() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -112,52 +140,7 @@ export default function SystemSettings() {
       ) : (
         <>
           {/* Quick Stats Overview */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <Card className="border-border/50">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
-                  <Database className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-2xl font-bold tabular-nums">{Object.keys(settings).length}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{isAr ? "مجموعات الإعدادات" : "Config Groups"}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/50">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
-                  <Activity className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-2xl font-bold tabular-nums">{completion.percent}%</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{isAr ? "اكتمال التهيئة" : "Setup Complete"}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/50">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
-                  <LayoutGrid className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-2xl font-bold tabular-nums">7</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{isAr ? "أقسام الإعدادات" : "Setting Sections"}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/50">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
-                  <Clock className="h-5 w-5 text-primary" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">{isAr ? "نشط" : "Active"}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{isAr ? "حالة النظام" : "System Status"}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <QuickStatsCards settings={settings} completion={completion} isAr={isAr} />
 
           {/* Data & Actions Overview - lazy loaded */}
           {activeTab === "branding" && (
@@ -205,7 +188,7 @@ export default function SystemSettings() {
                       <TabsTrigger
                         key={tab.value}
                         value={tab.value}
-                        className="flex sm:flex-col items-center sm:items-start gap-1.5 sm:gap-0.5 rounded-lg px-3 py-2 sm:py-2.5 whitespace-nowrap sm:whitespace-normal sm:text-start transition-all shrink-0 sm:shrink data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border/60 h-auto relative"
+                        className="flex sm:flex-col items-center sm:items-start gap-1.5 sm:gap-0.5 rounded-lg px-3 py-2 sm:py-2.5 whitespace-nowrap sm:whitespace-normal sm:text-start transition-all duration-300 shrink-0 sm:shrink data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:shadow-primary/5 data-[state=active]:border data-[state=active]:border-primary/20 data-[state=active]:scale-[1.02] h-auto relative hover:bg-background/50"
                       >
                         <div className="flex items-center gap-1.5">
                           <tab.icon className="h-3.5 w-3.5 shrink-0" />

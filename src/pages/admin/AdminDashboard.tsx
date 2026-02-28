@@ -2,6 +2,7 @@ import { useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
+import { useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
 import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
@@ -89,6 +90,72 @@ function AnimatedStatValue({ value }: { value: number }) {
 
 function SectionSkeleton() {
   return <div className="space-y-3"><Skeleton className="h-40 w-full rounded-xl" /><Skeleton className="h-32 w-full rounded-xl" /></div>;
+}
+
+function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, isAr }: any) {
+  const { getStyle } = useStaggeredReveal(statCards.length, 70);
+  return (
+    <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+      {statCards.map((stat: any, index: number) => {
+        const sparkKey = sparklineKeys[stat.title];
+        const sparkPoints = sparkKey && sparkData ? sparkData.map((d: any) => ({ v: d[sparkKey] || 0 })) : null;
+        const trend = sparkPoints && sparkPoints.length >= 2
+          ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v
+          : 0;
+
+        return (
+          <Link key={stat.title} to={stat.link} style={getStyle(index)}>
+            <Card className={cn(
+              "group border-s-[3px] transition-all duration-300 hover:shadow-lg hover:-translate-y-1.5 hover:shadow-primary/5",
+              stat.accent,
+              stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
+            )}>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-md", stat.bg)}>
+                    <stat.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:rotate-6", stat.color)} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    {isLoading ? (
+                      <>
+                        <Skeleton className="h-7 w-14 mb-1" />
+                        <Skeleton className="h-3 w-20" />
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-1.5">
+                          <AnimatedStatValue value={stat.value} />
+                          {sparkPoints && trend !== 0 && (
+                            <Badge variant="outline" className={cn(
+                              "text-[9px] px-1 py-0 gap-0.5",
+                              trend > 0 ? "text-chart-2 border-chart-2/30" : "text-destructive border-destructive/30"
+                            )}>
+                              {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
+                              {Math.abs(trend)}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="mt-1 text-[11px] text-muted-foreground truncate">{stat.title}</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                {sparkPoints && sparkPoints.length > 0 && (
+                  <div className="mt-2 -mx-1">
+                    <ResponsiveContainer width="100%" height={32}>
+                      <LineChart data={sparkPoints}>
+                        <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </Link>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function AdminDashboard() {
@@ -323,66 +390,8 @@ export default function AdminDashboard() {
       </LazySection>
 
       {/* Stats Grid with sparklines */}
-      <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
-        {statCards.map((stat) => {
-          const sparkKey = sparklineKeys[stat.title];
-          const sparkPoints = sparkKey && sparkData ? sparkData.map((d: any) => ({ v: d[sparkKey] || 0 })) : null;
-          const trend = sparkPoints && sparkPoints.length >= 2
-            ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v
-            : 0;
+      <StaggeredStatsGrid statCards={statCards} isLoading={isLoading} sparklineKeys={sparklineKeys} sparkData={sparkData} isAr={isAr} />
 
-          return (
-            <Link key={stat.title} to={stat.link}>
-              <Card className={cn(
-                "group border-s-[3px] transition-all duration-200 hover:shadow-lg hover:-translate-y-1",
-                stat.accent,
-                stat.urgent && "ring-1 ring-destructive/30"
-              )}>
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-110", stat.bg)}>
-                      <stat.icon className={cn("h-5 w-5", stat.color)} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      {isLoading ? (
-                        <>
-                          <Skeleton className="h-7 w-14 mb-1" />
-                          <Skeleton className="h-3 w-20" />
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex items-center gap-1.5">
-                            <AnimatedStatValue value={stat.value} />
-                            {sparkPoints && trend !== 0 && (
-                              <Badge variant="outline" className={cn(
-                                "text-[9px] px-1 py-0 gap-0.5",
-                                trend > 0 ? "text-chart-2 border-chart-2/30" : "text-destructive border-destructive/30"
-                              )}>
-                                {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
-                                {Math.abs(trend)}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="mt-1 text-[11px] text-muted-foreground truncate">{stat.title}</p>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  {sparkPoints && sparkPoints.length > 0 && (
-                    <div className="mt-2 -mx-1">
-                      <ResponsiveContainer width="100%" height={32}>
-                        <LineChart data={sparkPoints}>
-                          <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
 
       {/* Command Bar */}
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
@@ -532,10 +541,10 @@ export default function AdminDashboard() {
           <CardContent className="space-y-2">
             {quickActions.map((action) => (
               <Link key={action.title} to={action.link}>
-                <div className="flex items-center justify-between rounded-xl border border-border/50 p-3.5 transition-all hover:bg-accent/50 hover:shadow-sm">
+                <div className="flex items-center justify-between rounded-xl border border-border/50 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 group/action">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                      <action.icon className="h-4 w-4 text-primary" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-all duration-300 group-hover/action:bg-primary/20 group-hover/action:scale-110">
+                      <action.icon className="h-4 w-4 text-primary transition-transform duration-300 group-hover/action:rotate-3" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">{action.title}</p>
@@ -546,7 +555,7 @@ export default function AdminDashboard() {
                     {action.badge && action.badge > 0 && (
                       <Badge variant="destructive" className="text-[10px]">{action.badge}</Badge>
                     )}
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform duration-300 group-hover/action:translate-x-1" />
                   </div>
                 </div>
               </Link>
