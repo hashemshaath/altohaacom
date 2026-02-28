@@ -28,6 +28,7 @@ import { AdAdvancedReporting } from "@/components/ads/AdAdvancedReporting";
 import { AdRejectionDialog } from "@/components/ads/AdRejectionDialog";
 import { AdCampaignAnalyticsWidget } from "@/components/admin/AdCampaignAnalyticsWidget";
 import { CampaignPerformanceTracker } from "@/components/admin/CampaignPerformanceTracker";
+import { AdCampaignOverviewWidget } from "@/components/admin/AdCampaignOverviewWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -304,6 +305,9 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
           ) : undefined
         }
       />
+
+      {/* Ad Campaign Overview */}
+      <AdCampaignOverviewWidget />
 
       {/* Ad Campaign Analytics */}
       <AdCampaignAnalyticsWidget />

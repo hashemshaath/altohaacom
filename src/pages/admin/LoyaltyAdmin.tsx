@@ -18,6 +18,7 @@ import { LoyaltyOverviewWidget } from "@/components/admin/LoyaltyOverviewWidget"
 import { LoyaltyLiveStatsWidget } from "@/components/admin/LoyaltyLiveStatsWidget";
 import { WalletAdminOverview } from "@/components/admin/WalletAdminOverview";
 import { WalletTransactionHeatmap } from "@/components/admin/WalletTransactionHeatmap";
+import { WalletPointsAnalyticsWidget } from "@/components/admin/WalletPointsAnalyticsWidget";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();
@@ -145,6 +146,7 @@ export default function LoyaltyAdmin() {
       />
 
       <LoyaltyLiveStatsWidget />
+      <WalletPointsAnalyticsWidget />
       <WalletAdminOverview />
       <WalletTransactionHeatmap />
       <LoyaltyOverviewWidget />

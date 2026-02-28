@@ -32,6 +32,7 @@ import { PerformanceOptimizationWidget } from "@/components/admin/PerformanceOpt
 import { ContentCalendarWidget } from "@/components/admin/ContentCalendarWidget";
 import { ReportsSummaryWidget } from "@/components/admin/ReportsSummaryWidget";
 import { AdminQuickNavWidget } from "@/components/admin/AdminQuickNavWidget";
+import { PageNavigationWidget } from "@/components/admin/PageNavigationWidget";
 import { DashboardLiveMetricsWidget } from "@/components/admin/DashboardLiveMetricsWidget";
 import { CommunicationsDashboardWidget } from "@/components/admin/CommunicationsDashboardWidget";
 import { AdminScheduledExports } from "@/components/admin/AdminScheduledExports";
@@ -470,6 +471,8 @@ export default function AdminDashboard() {
         <ReportsSummaryWidget />
         <AdminQuickNavWidget />
       </div>
+
+      <PageNavigationWidget />
 
       {/* ── Row: Activity Feed + Moderation + Alerts + Finance ── */}
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
