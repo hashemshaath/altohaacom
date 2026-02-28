@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel,
+  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
@@ -27,6 +27,7 @@ import { EventComments } from "@/components/fan/EventComments";
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
 import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
 import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
+import { ExhibitionQuickStats } from "@/components/exhibitions/detail/ExhibitionQuickStats";
 
 // Lazy-loaded components
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
@@ -52,6 +53,8 @@ const ExhibitionSocialWall = lazy(() => import("@/components/exhibitions/detail/
 const ExhibitionAnalyticsDashboardDetail = lazy(() => import("@/components/exhibitions/detail/ExhibitionAnalyticsDashboard").then(m => ({ default: m.ExhibitionAnalyticsDashboard })));
 const ExhibitionIndoorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionIndoorMap").then(m => ({ default: m.ExhibitionIndoorMap })));
 const ExhibitionAuctionsOffers = lazy(() => import("@/components/exhibitions/detail/ExhibitionAuctionsOffers").then(m => ({ default: m.ExhibitionAuctionsOffers })));
+const ExhibitionMyTickets = lazy(() => import("@/components/exhibitions/detail/ExhibitionMyTickets").then(m => ({ default: m.ExhibitionMyTickets })));
+const ExhibitionTicketSummary = lazy(() => import("@/components/exhibitions/detail/ExhibitionTicketSummary").then(m => ({ default: m.ExhibitionTicketSummary })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -355,6 +358,10 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-6 pb-20 lg:pb-8 md:py-8">
+        {/* Quick Stats Bar */}
+        <div className="mb-4">
+          <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />
+        </div>
         {/* Interactive Stats Bar */}
         <div className="mb-6">
           <ExhibitionInteractiveStats
@@ -391,7 +398,8 @@ export default function ExhibitionDetail() {
                   <ExhibitionTabTrigger value="navigation" icon={Navigation} label={isAr ? "الملاحة" : "Navigate"} />
                   <ExhibitionTabTrigger value="auctions" icon={Gavel} label={isAr ? "مزادات" : "Auctions"} />
                   {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
-                  {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
+              {user && <ExhibitionTabTrigger value="my-tickets" icon={Ticket} label={isAr ? "تذاكري" : "My Tickets"} />}
+              {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
                 </TabsList>
               </div>
 
@@ -515,6 +523,17 @@ export default function ExhibitionDetail() {
                       <ExhibitionSurveyManager exhibitionId={exhibition.id} isAr={isAr} isOrganizer={!!isOwner} />
                     )}
                     <ExhibitionLoyaltyWidget exhibitionId={exhibition.id} isAr={isAr} />
+                  </Suspense>
+                </TabsContent>
+              )}
+
+              {user && (
+                <TabsContent value="my-tickets" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionMyTickets exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionDate={exhibition.start_date} exhibitionVenue={venue || undefined} isAr={isAr} />
+                    <div className="mt-4">
+                      <ExhibitionTicketSummary exhibitionId={exhibition.id} maxAttendees={exhibition.max_attendees} isAr={isAr} />
+                    </div>
                   </Suspense>
                 </TabsContent>
               )}
