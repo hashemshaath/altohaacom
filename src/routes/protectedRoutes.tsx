@@ -37,6 +37,7 @@ const MembershipCheckout = lazy(() => import("@/pages/MembershipCheckout"));
 const MembershipGift = lazy(() => import("@/pages/MembershipGift"));
 const MembershipReferral = lazy(() => import("@/pages/MembershipReferral"));
 const MembershipGiftsHistory = lazy(() => import("@/pages/MembershipGiftsHistory"));
+const OrganizerPortal = lazy(() => import("@/pages/OrganizerPortal"));
 
 export const protectedRoutes = (
   <>
@@ -54,6 +55,7 @@ export const protectedRoutes = (
     <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
     <Route path="/exhibitions/create" element={<ProtectedRoute><FanRouteGuard><CreateExhibition /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/exhibitions/:slug/edit" element={<ProtectedRoute><FanRouteGuard><EditExhibition /></FanRouteGuard></ProtectedRoute>} />
+    <Route path="/organizer/portal" element={<ProtectedRoute><OrganizerPortal /></ProtectedRoute>} />
     <Route path="/shop/orders" element={<ProtectedRoute><ShopOrders /></ProtectedRoute>} />
     <Route path="/shop/my-products" element={<ProtectedRoute><ShopMyProducts /></ProtectedRoute>} />
     <Route path="/chefs-table/request" element={<ProtectedRoute><ChefsTableRequest /></ProtectedRoute>} />

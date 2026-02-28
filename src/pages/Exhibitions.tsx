@@ -14,9 +14,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, LayoutGrid, List } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
+import { ExhibitionListItem } from "@/components/exhibitions/ExhibitionListItem";
 import { NextEventHighlight } from "@/components/exhibitions/NextEventHighlight";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -53,6 +54,7 @@ export default function Exhibitions() {
   const [countryFilter, setCountryFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("date_asc");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { data: exhibitions, isLoading } = useQuery({
     queryKey: ["exhibitions"],
@@ -336,8 +338,48 @@ export default function Exhibitions() {
                 </Select>
               </div>
             </div>
+            {/* View Mode Toggle */}
+            <div className="flex items-center gap-1 border border-border/40 rounded-lg p-0.5 bg-muted/30 shrink-0">
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`flex items-center justify-center h-8 w-8 rounded-md transition-all ${viewMode === "grid" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                aria-label="Grid view"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`flex items-center justify-center h-8 w-8 rounded-md transition-all ${viewMode === "list" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                aria-label="List view"
+              >
+                <List className="h-3.5 w-3.5" />
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Popular Cities Quick Filter */}
+        {countries.length > 0 && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-2 px-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground shrink-0">
+              {isAr ? "مدن شائعة:" : "Popular:"}
+            </span>
+            {countries.slice(0, 8).map(c => (
+              <button
+                key={c}
+                onClick={() => setCountryFilter(countryFilter === c ? "all" : c)}
+                className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium border transition-all ${
+                  countryFilter === c
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                    : "bg-muted/30 text-muted-foreground border-border/40 hover:bg-muted/60 hover:text-foreground"
+                }`}
+              >
+                <span>{countryFlag(c)}</span>
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -391,10 +433,21 @@ export default function Exhibitions() {
                   </Button>
                 ) : undefined}
               />
-            ) : (
+            ) : viewMode === "grid" ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {filtered?.map((ex) => (
                   <ExhibitionCard
+                    key={ex.id}
+                    exhibition={ex}
+                    language={language}
+                    sponsors={sponsorsMap?.get(ex.id) || []}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filtered?.map((ex) => (
+                  <ExhibitionListItem
                     key={ex.id}
                     exhibition={ex}
                     language={language}
