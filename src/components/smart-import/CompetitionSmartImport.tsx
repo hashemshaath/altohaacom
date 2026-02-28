@@ -15,14 +15,14 @@ import {
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle, ArrowRight, X,
   ExternalLink, FileText, Trophy, Users, Calendar, Gavel, Award, Upload,
   Link2, Star, Clock, Shield, ListChecks, Target, Layers, AlertTriangle,
-  Edit, PlusCircle, Copy,
+  Edit, PlusCircle, Copy, RefreshCw, ArrowLeftRight,
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import { SOURCE_CHANNELS } from "./types";
 import { extractTextFromFile } from "@/components/cv-import/fileParser";
 
 interface CompetitionSmartImportProps {
-  onImport: (data: ImportedData) => void;
+  onImport: (data: ImportedData, mode: "create" | "update", existingId?: string) => void;
   onClose: () => void;
 }
 
@@ -46,6 +46,22 @@ interface DuplicateMatch {
   edition_year: number | null;
   status: string;
   competition_start: string;
+  competition_end: string;
+  description: string | null;
+  venue: string | null;
+  city: string | null;
+  country_code: string | null;
+  rules_summary: string | null;
+  scoring_notes: string | null;
+  max_participants: number | null;
+  registration_fee: number | null;
+}
+
+interface DataDiffItem {
+  field: string;
+  fieldAr: string;
+  oldValue: string | null;
+  newValue: string | null;
 }
 
 export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
@@ -67,8 +83,11 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
   const [uploading, setUploading] = useState(false);
   const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([]);
   const [showDuplicatePanel, setShowDuplicatePanel] = useState(false);
+  const [selectedDuplicate, setSelectedDuplicate] = useState<DuplicateMatch | null>(null);
+  const [dataDiff, setDataDiff] = useState<DataDiffItem[]>([]);
+  const [showDiffReview, setShowDiffReview] = useState(false);
 
-  // Check for duplicates when detail data is loaded
+  // Check for duplicates when detail data is loaded — match by name AND edition_year
   useEffect(() => {
     if (!detailData) return;
     const nameEn = detailData.name_en?.trim();
@@ -76,13 +95,26 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     if (!nameEn && !nameAr) return;
 
     const checkDuplicates = async () => {
-      let q = supabase.from("competitions").select("id, title, title_ar, edition_year, status, competition_start").limit(10);
+      let q = supabase
+        .from("competitions")
+        .select("id, title, title_ar, edition_year, status, competition_start, competition_end, description, venue, city, country_code, rules_summary, scoring_notes, max_participants, registration_fee")
+        .limit(10);
+
       if (nameEn) q = q.or(`title.ilike.%${nameEn}%${nameAr ? `,title_ar.ilike.%${nameAr}%` : ""}`);
       else if (nameAr) q = q.ilike("title_ar", `%${nameAr}%`);
+
       const { data } = await q;
       if (data && data.length > 0) {
         setDuplicates(data);
-        setShowDuplicatePanel(true);
+        // Auto-select exact edition match
+        const editionMatch = data.find(d => d.edition_year === detailData.edition_year);
+        if (editionMatch) {
+          setSelectedDuplicate(editionMatch);
+          buildDiff(editionMatch, detailData);
+          setShowDiffReview(true);
+        } else {
+          setShowDuplicatePanel(true);
+        }
       } else {
         setDuplicates([]);
         setShowDuplicatePanel(false);
@@ -90,6 +122,79 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     };
     checkDuplicates();
   }, [detailData]);
+
+  // Build data diff between existing record and new data
+  const buildDiff = useCallback((existing: DuplicateMatch, newData: ImportedData) => {
+    const items: DataDiffItem[] = [];
+    const compare = (field: string, fieldAr: string, oldVal: string | null | undefined, newVal: string | null | undefined) => {
+      const o = oldVal?.toString()?.trim() || null;
+      const n = newVal?.toString()?.trim() || null;
+      if (n && n !== o) {
+        items.push({ field, fieldAr, oldValue: o, newValue: n });
+      }
+    };
+
+    compare("Title (EN)", "العنوان (EN)", existing.title, newData.name_en);
+    compare("Title (AR)", "العنوان (AR)", existing.title_ar, newData.name_ar);
+    compare("Description", "الوصف", existing.description, newData.description_en);
+    compare("Venue", "المكان", existing.venue, newData.venue_en);
+    compare("City", "المدينة", existing.city, newData.city_en);
+    compare("Country", "الدولة", existing.country_code, newData.country_code);
+    compare("Start Date", "تاريخ البداية", existing.competition_start, newData.start_date);
+    compare("End Date", "تاريخ النهاية", existing.competition_end, newData.end_date);
+    compare("Rules", "القواعد", existing.rules_summary, newData.rules_summary_en);
+    compare("Scoring Notes", "ملاحظات التقييم", existing.scoring_notes, newData.scoring_method_en);
+    compare("Max Participants", "الحد الأقصى", existing.max_participants?.toString(), newData.max_attendees?.toString());
+    compare("Registration Fee", "رسوم التسجيل", existing.registration_fee?.toString(), newData.registration_fee?.toString());
+
+    // Highlight new complex data that will be added
+    if (newData.judging_criteria?.length) {
+      items.push({ field: "Judging Criteria", fieldAr: "معايير التحكيم", oldValue: null, newValue: `${newData.judging_criteria.length} criteria` });
+    }
+    if (newData.judging_committee?.length) {
+      items.push({ field: "Judging Committee", fieldAr: "لجنة التحكيم", oldValue: null, newValue: newData.judging_committee.map(j => j.name).join(", ") });
+    }
+    if (newData.competition_rounds?.length) {
+      items.push({ field: "Rounds", fieldAr: "الجولات", oldValue: null, newValue: `${newData.competition_rounds.length} rounds` });
+    }
+    if (newData.competition_versions?.length) {
+      items.push({ field: "Categories", fieldAr: "الفئات", oldValue: null, newValue: newData.competition_versions.map(v => v.name).join(", ") });
+    }
+    if (newData.prizes?.length) {
+      items.push({ field: "Prizes", fieldAr: "الجوائز", oldValue: null, newValue: newData.prizes.map(p => `${p.place}: ${p.prize}`).join(", ") });
+    }
+    if (newData.terms_conditions_en) {
+      items.push({ field: "Terms & Conditions", fieldAr: "الشروط والأحكام", oldValue: null, newValue: newData.terms_conditions_en.substring(0, 100) + "..." });
+    }
+    if (newData.eligibility_en) {
+      items.push({ field: "Eligibility", fieldAr: "الأهلية", oldValue: null, newValue: newData.eligibility_en.substring(0, 100) + "..." });
+    }
+
+    setDataDiff(items);
+  }, []);
+
+  const handleSelectDuplicateForUpdate = useCallback((dup: DuplicateMatch) => {
+    if (!detailData) return;
+    setSelectedDuplicate(dup);
+    buildDiff(dup, detailData);
+    setShowDiffReview(true);
+    setShowDuplicatePanel(false);
+  }, [detailData, buildDiff]);
+
+  const handleConfirmUpdate = useCallback(() => {
+    if (detailData && selectedDuplicate) {
+      onImport(detailData, "update", selectedDuplicate.id);
+    }
+  }, [detailData, selectedDuplicate, onImport]);
+
+  const handleAddAsNew = useCallback(() => {
+    if (detailData) {
+      setShowDiffReview(false);
+      setShowDuplicatePanel(false);
+      setSelectedDuplicate(null);
+      onImport(detailData, "create");
+    }
+  }, [detailData, onImport]);
 
   // Search for competitions
   const handleSearch = useCallback(async () => {
@@ -112,7 +217,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [query, location, isAr]);
 
-  // Get details from search result
   const handleSelectResult = useCallback(async (item: SearchResultItem) => {
     setPhase("loading-details");
     try {
@@ -131,7 +235,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [location, isAr]);
 
-  // Import from URL
   const handleUrlImport = useCallback(async () => {
     if (!urlInput.trim()) return;
     setPhase("loading-details");
@@ -151,7 +254,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [urlInput, isAr]);
 
-  // Import from PDF text
   const handlePdfImport = useCallback(async (textContent: string) => {
     if (!textContent.trim()) return;
     setPhase("loading-details");
@@ -171,7 +273,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [isAr]);
 
-  // Handle file upload
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -192,27 +293,19 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
     }
   }, [isAr]);
 
-  const handleUseData = useCallback(() => {
-    if (detailData) {
-      onImport(detailData);
-      toast({
-        title: isAr ? "✅ تم استيراد البيانات" : "✅ Data Imported",
-        description: isAr ? "تم تعبئة بيانات المسابقة" : "Competition data has been imported",
-      });
-    }
-  }, [detailData, onImport, isAr]);
-
   const resetToSearch = () => {
     setPhase("idle");
     setDetailData(null);
     setResults([]);
     setDuplicates([]);
     setShowDuplicatePanel(false);
+    setShowDiffReview(false);
+    setSelectedDuplicate(null);
+    setDataDiff([]);
   };
 
   const qualityColor = dataQuality >= 70 ? "text-green-600" : dataQuality >= 40 ? "text-chart-4" : "text-destructive";
 
-  // Build display title with version
   const displayTitle = detailData
     ? [detailData.name_en || detailData.name_ar, detailData.edition_year && `(${detailData.edition_year})`].filter(Boolean).join(" ")
     : "";
@@ -238,7 +331,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
 
       <CardContent className="space-y-4">
         {/* Mode Tabs */}
-        {(phase === "idle" || phase === "searching" || phase === "results" || phase === "loading-details") && (
+        {(phase === "idle" || phase === "searching" || phase === "results" || phase === "loading-details") && !showDiffReview && (
           <Tabs value={mode} onValueChange={(v) => { setMode(v as ImportMode); resetToSearch(); }}>
             <TabsList className="w-full">
               <TabsTrigger value="search" className="flex-1 gap-1.5">
@@ -255,28 +348,15 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               </TabsTrigger>
             </TabsList>
 
-            {/* Search Tab */}
             <TabsContent value="search" className="space-y-3 mt-3">
               <div className="flex flex-col gap-2 sm:flex-row">
                 <div className="relative flex-1">
                   <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    className="ps-9"
-                    placeholder={isAr ? "اسم المسابقة أو البطولة..." : "Competition or championship name..."}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  />
+                  <Input className="ps-9" placeholder={isAr ? "اسم المسابقة أو البطولة..." : "Competition or championship name..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                 </div>
                 <div className="relative sm:w-44">
                   <MapPin className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    className="ps-9"
-                    placeholder={isAr ? "الدولة (اختياري)" : "Country (optional)"}
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  />
+                  <Input className="ps-9" placeholder={isAr ? "الدولة (اختياري)" : "Country (optional)"} value={location} onChange={(e) => setLocation(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                 </div>
                 <Button onClick={handleSearch} disabled={phase === "searching" || !query.trim()} className="gap-2 shrink-0">
                   {phase === "searching" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
@@ -285,30 +365,19 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               </div>
             </TabsContent>
 
-            {/* URL Tab */}
             <TabsContent value="url" className="space-y-3 mt-3">
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <Globe className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    className="ps-9"
-                    placeholder={isAr ? "رابط موقع المسابقة..." : "Competition website URL..."}
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleUrlImport()}
-                  />
+                  <Input className="ps-9" placeholder={isAr ? "رابط موقع المسابقة..." : "Competition website URL..."} value={urlInput} onChange={(e) => setUrlInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleUrlImport()} />
                 </div>
                 <Button onClick={handleUrlImport} disabled={phase === "loading-details" || !urlInput.trim()} className="gap-2 shrink-0">
                   {phase === "loading-details" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
                   {isAr ? "استخراج" : "Extract"}
                 </Button>
               </div>
-              <p className="text-[10px] text-muted-foreground">
-                {isAr ? "يدعم مواقع المسابقات والمعارض وصفحات التسجيل" : "Supports competition websites, exhibition pages, and registration portals"}
-              </p>
             </TabsContent>
 
-            {/* PDF/Text Tab */}
             <TabsContent value="pdf" className="space-y-3 mt-3">
               <div className="border-2 border-dashed border-border/60 rounded-lg p-4 text-center space-y-3">
                 <Upload className="h-8 w-8 mx-auto text-muted-foreground/40" />
@@ -317,40 +386,19 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                     <span className="text-sm text-primary hover:underline font-medium">
                       {isAr ? "اختر ملف PDF أو نص" : "Choose a PDF or text file"}
                     </span>
-                    <input
-                      id="comp-file-upload"
-                      type="file"
-                      accept=".pdf,.txt,.doc,.docx,.md"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
+                    <input id="comp-file-upload" type="file" accept=".pdf,.txt,.doc,.docx,.md" className="hidden" onChange={handleFileChange} />
                   </label>
                   {pdfFile && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      📎 {pdfFile.name} ({(pdfFile.size / 1024).toFixed(0)} KB)
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">📎 {pdfFile.name} ({(pdfFile.size / 1024).toFixed(0)} KB)</p>
                   )}
                 </div>
               </div>
               <Separator />
               <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground">
-                  {isAr ? "أو الصق النص مباشرة:" : "Or paste text directly:"}
-                </p>
-                <Textarea
-                  value={pdfText}
-                  onChange={(e) => setPdfText(e.target.value)}
-                  placeholder={isAr
-                    ? "الصق محتوى ملف PDF للمسابقة هنا... (الشروط، الأحكام، المواعيد، لجنة التحكيم، إلخ)"
-                    : "Paste competition PDF content here... (rules, terms, dates, judging committee, etc.)"}
-                  className="min-h-[120px] text-xs font-mono"
-                />
+                <p className="text-xs font-medium text-muted-foreground">{isAr ? "أو الصق النص مباشرة:" : "Or paste text directly:"}</p>
+                <Textarea value={pdfText} onChange={(e) => setPdfText(e.target.value)} placeholder={isAr ? "الصق محتوى ملف PDF للمسابقة هنا... (الشروط، الأحكام، المواعيد، لجنة التحكيم، إلخ)" : "Paste competition PDF content here... (rules, terms, dates, judging committee, etc.)"} className="min-h-[120px] text-xs font-mono" />
               </div>
-              <Button
-                onClick={() => handlePdfImport(pdfText)}
-                disabled={phase === "loading-details" || !pdfText.trim()}
-                className="w-full gap-2"
-              >
+              <Button onClick={() => handlePdfImport(pdfText)} disabled={phase === "loading-details" || !pdfText.trim()} className="w-full gap-2">
                 {phase === "loading-details" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 {isAr ? "تحليل واستخراج البيانات" : "Analyze & Extract Data"}
               </Button>
@@ -390,20 +438,14 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               <ScrollArea className="max-h-[350px]">
                 <div className="space-y-1.5 pe-2">
                   {results.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleSelectResult(item)}
-                      className="w-full flex items-start gap-3 p-3 rounded-lg border border-border/60 hover:border-primary/40 hover:bg-primary/[0.03] transition-all text-start group"
-                    >
+                    <button key={item.id} onClick={() => handleSelectResult(item)} className="w-full flex items-start gap-3 p-3 rounded-lg border border-border/60 hover:border-primary/40 hover:bg-primary/[0.03] transition-all text-start group">
                       <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                         <Trophy className="h-4 w-4 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{item.name}</p>
-                        {item.description && <p className="text-xs text-muted-foreground truncate mt-0.5">{item.description}</p>}
-                        {item.place_type && (
-                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 mt-1">{item.place_type}</Badge>
-                        )}
+                        {item.description && <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{item.description}</p>}
+                        {item.place_type && <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 mt-1">{item.place_type}</Badge>}
                       </div>
                       <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary shrink-0 mt-1" />
                     </button>
@@ -419,9 +461,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
           <div className="space-y-4 py-6">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">
-                {isAr ? "جاري تحليل بيانات المسابقة..." : "Analyzing competition data..."}
-              </p>
+              <p className="text-sm text-muted-foreground">{isAr ? "جاري تحليل بيانات المسابقة..." : "Analyzing competition data..."}</p>
               <div className="flex flex-wrap gap-1.5 justify-center">
                 {["🔍 Scraping", "🤖 AI Extraction", "📋 Rules", "⚖️ Judging", "📅 Schedule"].map(s => (
                   <Badge key={s} variant="outline" className="text-[10px] animate-pulse">{s}</Badge>
@@ -431,10 +471,90 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
           </div>
         )}
 
-        {/* Detail View — Full Browsable Preview */}
-        {phase === "details" && detailData && (
+        {/* Data Diff Review Panel (Update Confirmation) */}
+        {showDiffReview && selectedDuplicate && detailData && (
           <div className="space-y-4">
-            {/* Header bar with title + version */}
+            <div className="flex items-center justify-between gap-2">
+              <Button variant="ghost" size="sm" onClick={() => { setShowDiffReview(false); setSelectedDuplicate(null); setShowDuplicatePanel(true); }} className="gap-1 text-xs shrink-0">
+                ← {isAr ? "رجوع" : "Back"}
+              </Button>
+              <Badge variant="outline" className="text-chart-4 border-chart-4/30 gap-1">
+                <RefreshCw className="h-3 w-3" />
+                {isAr ? "مراجعة التحديث" : "Update Review"}
+              </Badge>
+            </div>
+
+            {/* Existing record info */}
+            <div className="rounded-lg border border-chart-4/30 bg-chart-4/5 p-3 space-y-2">
+              <div className="flex items-center gap-2">
+                <ArrowLeftRight className="h-4 w-4 text-chart-4 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold">
+                    {isAr ? "تحديث المسابقة الموجودة:" : "Updating existing competition:"}
+                  </p>
+                  <p className="text-sm font-bold truncate">
+                    {selectedDuplicate.title} {selectedDuplicate.edition_year && `(${selectedDuplicate.edition_year})`}
+                  </p>
+                </div>
+                <Badge variant="outline" className="text-[10px] shrink-0">{selectedDuplicate.status}</Badge>
+              </div>
+            </div>
+
+            {/* Changes diff */}
+            <div className="space-y-1">
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1.5">
+                <ListChecks className="h-3 w-3" />
+                {isAr ? `${dataDiff.length} تغيير سيتم تطبيقه` : `${dataDiff.length} change(s) to apply`}
+              </h4>
+            </div>
+
+            <ScrollArea className="max-h-[50vh]">
+              <div className="space-y-1.5 pe-2">
+                {dataDiff.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <CheckCircle className="h-6 w-6 mx-auto mb-2 opacity-40" />
+                    <p className="text-xs">{isAr ? "لا توجد تغييرات — البيانات متطابقة" : "No changes — data is identical"}</p>
+                  </div>
+                ) : (
+                  dataDiff.map((item, i) => (
+                    <div key={i} className="rounded-lg border p-2.5 text-xs space-y-1">
+                      <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wide">
+                        {isAr ? item.fieldAr : item.field}
+                      </span>
+                      {item.oldValue && (
+                        <div className="flex items-start gap-1.5">
+                          <span className="text-destructive font-mono shrink-0 text-[10px] mt-0.5">−</span>
+                          <p className="text-muted-foreground line-clamp-2">{item.oldValue}</p>
+                        </div>
+                      )}
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-green-600 font-mono shrink-0 text-[10px] mt-0.5">+</span>
+                        <p className="line-clamp-3">{item.newValue}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+
+            {/* Action buttons */}
+            <div className="flex gap-2 pt-1">
+              <Button variant="outline" size="sm" className="flex-1 gap-1.5" onClick={handleAddAsNew}>
+                <PlusCircle className="h-3.5 w-3.5" />
+                {isAr ? "إضافة كجديدة" : "Add as New"}
+              </Button>
+              <Button size="sm" className="flex-1 gap-1.5" onClick={handleConfirmUpdate} disabled={dataDiff.length === 0}>
+                <RefreshCw className="h-3.5 w-3.5" />
+                {isAr ? `تحديث البيانات (${dataDiff.length})` : `Update Data (${dataDiff.length})`}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Detail View — Full Browsable Preview */}
+        {phase === "details" && detailData && !showDiffReview && (
+          <div className="space-y-4">
+            {/* Header bar */}
             <div className="flex items-center justify-between gap-2">
               <Button variant="ghost" size="sm" onClick={resetToSearch} className="gap-1 text-xs shrink-0">
                 ← {isAr ? "بحث جديد" : "Back"}
@@ -456,7 +576,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               </div>
             </div>
 
-            {/* Title with version prominently displayed */}
+            {/* Title with version */}
             <div className="rounded-lg border bg-muted/20 p-3 space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <Trophy className="h-4 w-4 text-primary shrink-0" />
@@ -470,9 +590,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               {detailData.name_ar && detailData.name_en && (
                 <p className="text-xs text-muted-foreground">{detailData.name_ar} {detailData.edition_year && `(${detailData.edition_year})`}</p>
               )}
-              {detailData.competition_type && (
-                <Badge variant="outline" className="text-[10px]">{detailData.competition_type}</Badge>
-              )}
+              {detailData.competition_type && <Badge variant="outline" className="text-[10px]">{detailData.competition_type}</Badge>}
             </div>
 
             {/* Duplicate Warning Panel */}
@@ -488,9 +606,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   {duplicates.map((dup) => (
                     <div key={dup.id} className="flex items-center justify-between gap-2 p-2 rounded-lg border bg-background text-xs">
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">
-                          {dup.title} {dup.edition_year && `(${dup.edition_year})`}
-                        </p>
+                        <p className="font-medium truncate">{dup.title} {dup.edition_year && `(${dup.edition_year})`}</p>
                         {dup.title_ar && <p className="text-muted-foreground truncate">{dup.title_ar}</p>}
                         <div className="flex items-center gap-2 mt-0.5">
                           <Badge variant="outline" className="text-[9px] h-4 px-1">{dup.status}</Badge>
@@ -501,38 +617,23 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                           )}
                         </div>
                       </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 text-[10px] gap-1"
-                          onClick={() => window.open(`/competitions/${dup.id}`, "_blank")}
-                        >
-                          <Edit className="h-3 w-3" />
-                          {isAr ? "تعديل" : "Edit"}
-                        </Button>
-                      </div>
+                      <Button variant="outline" size="sm" className="h-7 text-[10px] gap-1" onClick={() => handleSelectDuplicateForUpdate(dup)}>
+                        <Edit className="h-3 w-3" />
+                        {isAr ? "تحديث" : "Update"}
+                      </Button>
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-2 pt-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 gap-1.5 text-xs"
-                    onClick={() => setShowDuplicatePanel(false)}
-                  >
-                    <PlusCircle className="h-3.5 w-3.5" />
-                    {isAr ? "إضافة كمسابقة جديدة" : "Add as New Competition"}
-                  </Button>
-                </div>
+                <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs" onClick={() => { setShowDuplicatePanel(false); }}>
+                  <PlusCircle className="h-3.5 w-3.5" />
+                  {isAr ? "تجاهل وإضافة كمسابقة جديدة" : "Ignore & Add as New Competition"}
+                </Button>
               </div>
             )}
 
             {/* Full scrollable data preview */}
             <ScrollArea className="max-h-[60vh]">
               <div className="space-y-3 pe-2">
-                {/* Basic Info */}
                 <DetailSection icon={Trophy} title={isAr ? "معلومات المسابقة" : "Competition Info"}>
                   <div className="grid grid-cols-2 gap-2">
                     <Field label="Name (EN)" value={detailData.name_en} />
@@ -551,7 +652,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </div>
                 </DetailSection>
 
-                {/* Dates & Venue */}
                 <DetailSection icon={Calendar} title={isAr ? "المواعيد والمكان" : "Dates & Venue"}>
                   <div className="grid grid-cols-2 gap-2">
                     <Field label={isAr ? "بداية المسابقة" : "Start Date"} value={detailData.start_date} />
@@ -563,7 +663,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </div>
                 </DetailSection>
 
-                {/* Schedule */}
                 {detailData.competition_schedule?.length ? (
                   <DetailSection icon={Clock} title={isAr ? "الجدول الزمني" : "Schedule"}>
                     <div className="space-y-1">
@@ -577,7 +676,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 ) : null}
 
-                {/* Versions / Categories */}
                 {detailData.competition_versions?.length ? (
                   <DetailSection icon={Layers} title={isAr ? "فئات / نسخ المسابقة" : "Competition Versions / Categories"}>
                     <div className="space-y-1.5">
@@ -592,7 +690,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 ) : null}
 
-                {/* Rules & Eligibility */}
                 {(detailData.rules_summary_en || detailData.terms_conditions_en || detailData.eligibility_en) && (
                   <DetailSection icon={Shield} title={isAr ? "الشروط والأحكام" : "Rules & Terms"}>
                     <Field label={isAr ? "ملخص القواعد (EN)" : "Rules Summary (EN)"} value={detailData.rules_summary_en} multi />
@@ -612,12 +709,10 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 )}
 
-                {/* Judging */}
                 {(detailData.judging_criteria?.length || detailData.judging_committee?.length || detailData.scoring_method_en) && (
                   <DetailSection icon={Gavel} title={isAr ? "التحكيم والتقييم" : "Judging & Scoring"}>
                     <Field label={isAr ? "طريقة التقييم (EN)" : "Scoring Method (EN)"} value={detailData.scoring_method_en} multi />
                     <Field label={isAr ? "طريقة التقييم (AR)" : "Scoring Method (AR)"} value={detailData.scoring_method_ar} multi />
-
                     {detailData.judging_criteria?.length ? (
                       <div className="space-y-1">
                         <span className="text-[10px] font-medium text-muted-foreground uppercase">{isAr ? "معايير التحكيم" : "Judging Criteria"}</span>
@@ -629,7 +724,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                         ))}
                       </div>
                     ) : null}
-
                     {detailData.judging_committee?.length ? (
                       <div className="space-y-1">
                         <span className="text-[10px] font-medium text-muted-foreground uppercase">{isAr ? "لجنة التحكيم" : "Judging Committee"}</span>
@@ -650,7 +744,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 )}
 
-                {/* Prizes */}
                 {detailData.prizes?.length ? (
                   <DetailSection icon={Award} title={isAr ? "الجوائز" : "Prizes"}>
                     <div className="space-y-1">
@@ -664,7 +757,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 ) : null}
 
-                {/* Rounds */}
                 {detailData.competition_rounds?.length ? (
                   <DetailSection icon={ListChecks} title={isAr ? "جولات المسابقة" : "Competition Rounds"}>
                     {detailData.competition_rounds.map((r, i) => (
@@ -677,7 +769,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 ) : null}
 
-                {/* Organizer */}
                 {(detailData.organizer_name_en || detailData.organizer_name_ar) && (
                   <DetailSection icon={Target} title={isAr ? "المنظم" : "Organizer"}>
                     <div className="grid grid-cols-2 gap-2">
@@ -689,7 +780,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 )}
 
-                {/* Contact & Misc */}
                 {(detailData.phone || detailData.email || detailData.website) && (
                   <DetailSection icon={Globe} title={isAr ? "التواصل" : "Contact"}>
                     <div className="grid grid-cols-2 gap-2">
@@ -701,7 +791,6 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </DetailSection>
                 )}
 
-                {/* Extra details */}
                 <DetailSection icon={ListChecks} title={isAr ? "تفاصيل إضافية" : "Additional Details"}>
                   <div className="grid grid-cols-3 gap-2">
                     <Field label={isAr ? "الحد الأقصى للفريق" : "Max Team"} value={detailData.max_team_size?.toString()} />
@@ -735,7 +824,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   {isAr ? `${duplicates.length} مشابه` : `${duplicates.length} similar`}
                 </Button>
               )}
-              <Button onClick={handleUseData} className="flex-1 gap-2">
+              <Button onClick={handleAddAsNew} className="flex-1 gap-2">
                 <CheckCircle className="h-4 w-4" />
                 {isAr ? "استخدام هذه البيانات وإنشاء مسابقة" : "Use Data & Create Competition"}
               </Button>
