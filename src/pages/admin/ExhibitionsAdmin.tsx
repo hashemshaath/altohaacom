@@ -1085,9 +1085,13 @@ export default function ExhibitionsAdmin() {
                             <Building className="h-3.5 w-3.5 text-primary" />
                           </div>
                         ) : null}
-                        <span className="text-xs text-muted-foreground truncate max-w-[120px]">
-                          {ex.organizer_name ? (isAr && ex.organizer_name_ar ? ex.organizer_name_ar : ex.organizer_name) : "—"}
-                        </span>
+                        {ex.organizer_name ? (
+                          <Link to={`/organizers/${encodeURIComponent(ex.organizer_name)}`} className="text-xs text-muted-foreground truncate max-w-[120px] hover:text-primary hover:underline transition-colors">
+                            {isAr && ex.organizer_name_ar ? ex.organizer_name_ar : ex.organizer_name}
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>

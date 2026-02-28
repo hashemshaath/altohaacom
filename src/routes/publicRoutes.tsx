@@ -26,6 +26,7 @@ const Masterclasses = lazy(() => import("@/pages/Masterclasses"));
 const MasterclassDetail = lazy(() => import("@/pages/MasterclassDetail"));
 const Exhibitions = lazy(() => import("@/pages/Exhibitions"));
 const ExhibitionDetail = lazy(() => import("@/pages/ExhibitionDetail"));
+const OrganizerDetail = lazy(() => import("@/pages/OrganizerDetail"));
 const Entities = lazy(() => import("@/pages/Entities"));
 const EntityDetail = lazy(() => import("@/pages/EntityDetail"));
 const Shop = lazy(() => import("@/pages/Shop"));
@@ -90,6 +91,7 @@ export const publicRoutes = (
     <Route path="/install" element={<Install />} />
     <Route path="/exhibitions" element={<Exhibitions />} />
     <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
+    <Route path="/organizers/:name" element={<OrganizerDetail />} />
     <Route path="/entities" element={<Entities />} />
     <Route path="/entities/:slug" element={<EntityDetail />} />
     <Route path="/shop" element={<Shop />} />
