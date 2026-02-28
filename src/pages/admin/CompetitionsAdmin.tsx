@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CompetitionPipelineTracker } from "@/components/admin/CompetitionPipelineTracker";
 import { JudgingOverviewWidget } from "@/components/admin/JudgingOverviewWidget";
@@ -9,6 +9,7 @@ import { CompetitionScoringOverview } from "@/components/admin/CompetitionScorin
 import { CompetitionJudgingTracker } from "@/components/admin/CompetitionJudgingTracker";
 import { CompetitionLifecycleWidget } from "@/components/admin/CompetitionLifecycleWidget";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -65,6 +66,7 @@ export default function CompetitionsAdmin() {
   const [exhibitionFilter, setExhibitionFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showSmartImport, setShowSmartImport] = useState(false);
   const [viewTab, setViewTab] = useState<"list" | "judging" | "results">("list");
   const [seriesFilter, setSeriesFilter] = useState<string>("all");
 
@@ -305,6 +307,64 @@ export default function CompetitionsAdmin() {
   const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
   const getTypesForComp = (compId: string) => typeAssignments?.filter((t: any) => t.competition_id === compId) || [];
 
+  // Smart Import handler with deduplication
+  const handleSmartImport = useCallback(async (data: ImportedData) => {
+    try {
+      // Deduplication: check if a competition with same name already exists
+      const nameEn = data.name_en?.trim();
+      const nameAr = data.name_ar?.trim();
+      if (nameEn || nameAr) {
+        let dupQuery = supabase.from("competitions").select("id, title, title_ar").limit(5);
+        if (nameEn) dupQuery = dupQuery.or(`title.ilike.%${nameEn}%${nameAr ? `,title_ar.ilike.%${nameAr}%` : ''}`);
+        else if (nameAr) dupQuery = dupQuery.ilike("title_ar", `%${nameAr}%`);
+        const { data: existing } = await dupQuery;
+        if (existing && existing.length > 0) {
+          const names = existing.map(e => e.title || e.title_ar).join(", ");
+          const confirmed = confirm(
+            isAr
+              ? `⚠️ تم العثور على مسابقات مشابهة: ${names}\n\nهل تريد المتابعة وإنشاء مسابقة جديدة؟`
+              : `⚠️ Similar competitions found: ${names}\n\nContinue creating a new competition?`
+          );
+          if (!confirmed) return;
+        }
+      }
+
+      const now = new Date().toISOString();
+      const { error } = await supabase.from("competitions").insert({
+        title: nameEn || nameAr || "Untitled",
+        title_ar: nameAr || null,
+        description: data.description_en || null,
+        description_ar: data.description_ar || null,
+        city: data.city_en || null,
+        country_code: data.country_code || null,
+        venue: data.venue_en || null,
+        venue_ar: data.venue_ar || null,
+        competition_start: data.start_date || now,
+        competition_end: data.end_date || now,
+        registration_start: data.start_date || null,
+        registration_end: data.registration_deadline || null,
+        edition_year: data.edition_year || new Date().getFullYear(),
+        registration_fee: data.registration_fee || null,
+        registration_currency: data.currency || "SAR",
+        rules_summary: data.rules_summary_en || null,
+        rules_summary_ar: data.rules_summary_ar || null,
+        cover_image_url: data.cover_url || null,
+        status: "draft" as CompetitionStatus,
+        organizer_id: user?.id || "",
+        import_source: "smart_import",
+      });
+
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] });
+      toast({
+        title: isAr ? "✅ تم استيراد المسابقة" : "✅ Competition Imported",
+        description: isAr ? `تم إنشاء "${nameEn || nameAr}" كمسودة` : `"${nameEn || nameAr}" created as draft`,
+      });
+    } catch (err: any) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    }
+  }, [isAr, user, queryClient, toast]);
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
@@ -317,9 +377,13 @@ export default function CompetitionsAdmin() {
               <Download className="me-2 h-4 w-4" />
               {isAr ? "تصدير" : "Export"}
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowSmartImport(true)}>
+              <Sparkles className="me-2 h-4 w-4" />
+              {isAr ? "استيراد ذكي" : "Smart Import"}
+            </Button>
             <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
               <FileSpreadsheet className="me-2 h-4 w-4" />
-              {isAr ? "استيراد" : "Import"}
+              {isAr ? "استيراد ملف" : "File Import"}
             </Button>
             <Button asChild className="gap-2 shadow-lg shadow-primary/20">
               <Link to="/competitions/create">
@@ -737,6 +801,14 @@ export default function CompetitionsAdmin() {
       </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Smart Import Dialog */}
+      <SmartImportDialog
+        open={showSmartImport}
+        onOpenChange={setShowSmartImport}
+        entityType="competition"
+        onImport={handleSmartImport}
+      />
     </div>
   );
 }

@@ -141,7 +141,7 @@ interface SmartImportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onImport: (data: ImportedData) => void;
-  entityType?: "entity" | "company" | "establishment";
+  entityType?: "entity" | "company" | "establishment" | "competition" | "exhibition";
 }
 
 export function SmartImportDialog({
@@ -204,8 +204,8 @@ export function SmartImportDialog({
   };
 
   const entityLabel = isAr
-    ? entityType === "entity" ? "الكيان" : entityType === "company" ? "الشركة" : "المنشأة"
-    : entityType === "entity" ? "entity" : entityType === "company" ? "company" : "establishment";
+    ? entityType === "entity" ? "الكيان" : entityType === "company" ? "الشركة" : entityType === "competition" ? "المسابقة" : entityType === "exhibition" ? "المعرض" : "المنشأة"
+    : entityType === "entity" ? "entity" : entityType === "company" ? "company" : entityType === "competition" ? "competition" : entityType === "exhibition" ? "exhibition" : "establishment";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
