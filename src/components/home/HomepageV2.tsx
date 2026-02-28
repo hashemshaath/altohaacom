@@ -1,16 +1,17 @@
-import { lazy, Suspense, memo, useRef, useEffect, useState, useCallback } from "react";
+import { lazy, Suspense, memo, useRef, useEffect, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Calendar, MapPin, Trophy, Users, ChefHat, Globe, Play, Star, BookOpen, Flame } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Trophy, Users, ChefHat, Globe, Play, Star, BookOpen, Flame, Database, Filter } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useCountUp } from "@/hooks/useCountUp";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { FilterChip } from "./FilterChip";
 
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const PartnersLogos = lazy(() => import("@/components/home/PartnersLogos").then(m => ({ default: m.PartnersLogos })));
@@ -21,6 +22,17 @@ const V2Fallback = memo(() => (
   </div>
 ));
 V2Fallback.displayName = "V2Fallback";
+
+/* ─── Data Source Badge ─── */
+function SourceBadge({ source, count }: { source: string; count?: number }) {
+  return (
+    <Badge variant="outline" className="gap-1 text-[9px] font-normal text-muted-foreground/60 border-dashed">
+      <Database className="h-2.5 w-2.5" />
+      {source}
+      {typeof count === "number" && <span className="font-bold tabular-nums ms-0.5">{count}</span>}
+    </Badge>
+  );
+}
 
 /* ─── Single stat item (hook-safe) ─── */
 function V2StatItem({ stat, index }: { stat: { value: number; label: string; icon: any }; index: number }) {
@@ -44,9 +56,7 @@ function useParallax(speed = 0.3) {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
-    // Skip parallax if user prefers reduced motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     const el = ref.current;
     if (!el) return;
     let raf: number;
@@ -91,34 +101,18 @@ function CinematicHero() {
 
   return (
     <section ref={ref} className="relative h-[80vh] sm:h-[85vh] min-h-[480px] max-h-[900px] overflow-hidden">
-      {/* Parallax image with optimized loading */}
       <div className="absolute inset-0 will-change-transform" style={{ transform: `translateY(${offset}px) scale(1.08)` }}>
         {featured?.cover_image_url ? (
-          <img
-            src={featured.cover_image_url}
-            alt=""
-            className={cn("h-full w-full object-cover transition-opacity duration-700", imgLoaded ? "opacity-100" : "opacity-0")}
-            onLoad={() => setImgLoaded(true)}
-            fetchPriority="high"
-            decoding="async"
-          />
+          <img src={featured.cover_image_url} alt="" className={cn("h-full w-full object-cover transition-opacity duration-700", imgLoaded ? "opacity-100" : "opacity-0")} onLoad={() => setImgLoaded(true)} fetchPriority="high" decoding="async" />
         ) : null}
-        {/* Gradient fallback visible until image loads */}
-        <div className={cn(
-          "absolute inset-0 bg-gradient-to-br from-foreground via-foreground/90 to-primary/30 transition-opacity duration-700",
-          imgLoaded && featured?.cover_image_url ? "opacity-0" : "opacity-100"
-        )} />
+        <div className={cn("absolute inset-0 bg-gradient-to-br from-foreground via-foreground/90 to-primary/30 transition-opacity duration-700", imgLoaded && featured?.cover_image_url ? "opacity-0" : "opacity-100")} />
       </div>
 
-      {/* Multi-layer cinematic overlays */}
       <div className="absolute inset-0 bg-foreground/45" />
       <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-foreground/25" />
       <div className="absolute inset-0 bg-gradient-to-r from-foreground/50 via-transparent to-transparent rtl:bg-gradient-to-l" />
-
-      {/* Decorative accent line */}
       <div className="absolute start-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/60 to-transparent" />
 
-      {/* Content */}
       <div className="relative h-full flex flex-col justify-end container pb-12 sm:pb-16 lg:pb-20">
         <div className="max-w-2xl space-y-4 sm:space-y-5">
           <Badge className="bg-primary/90 text-primary-foreground border-0 backdrop-blur-md px-3 py-1.5 shadow-lg shadow-primary/20">
@@ -126,13 +120,8 @@ function CinematicHero() {
             {isAr ? "مسابقة مميزة" : "Featured Competition"}
           </Badge>
 
-          <h1 className={cn(
-            "text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.08] text-background tracking-tight",
-            !isAr && "font-serif"
-          )}>
-            {featured
-              ? (isAr && featured.title_ar ? featured.title_ar : featured.title)
-              : (isAr ? "اكتشف عالم الطهي" : "Discover the Culinary World")}
+          <h1 className={cn("text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.08] text-background tracking-tight", !isAr && "font-serif")}>
+            {featured ? (isAr && featured.title_ar ? featured.title_ar : featured.title) : (isAr ? "اكتشف عالم الطهي" : "Discover the Culinary World")}
           </h1>
 
           {featured && (
@@ -169,7 +158,6 @@ function CinematicHero() {
         </div>
       </div>
 
-      {/* Bottom gradient transition */}
       <div className="absolute bottom-0 inset-x-0 h-20 sm:h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
@@ -209,6 +197,9 @@ function ImmersiveStats() {
   return (
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="container">
+        <div className="flex justify-center gap-2 mb-6">
+          <SourceBadge source="profiles + competitions + entities + exhibitions" />
+        </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           {items.map((stat, i) => (
             <V2StatItem key={stat.label} stat={stat} index={i} />
@@ -223,6 +214,7 @@ function ImmersiveStats() {
 function CinematicEvents() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
   const { data: comps = [] } = useQuery({
     queryKey: ["v2-trending-comps"],
@@ -232,11 +224,28 @@ function CinematicEvents() {
         .select("id, title, title_ar, cover_image_url, city, country_code, competition_start, status")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
-        .limit(4);
+        .limit(6);
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
   });
+
+  const statuses = useMemo(() => {
+    const s = new Set<string>();
+    comps.forEach((c: any) => { if (c.status) s.add(c.status); });
+    return Array.from(s);
+  }, [comps]);
+
+  const filtered = useMemo(() => {
+    if (!statusFilter) return comps;
+    return comps.filter((c: any) => c.status === statusFilter);
+  }, [comps, statusFilter]);
+
+  const statusLabels: Record<string, { en: string; ar: string }> = {
+    registration_open: { en: "Open", ar: "مفتوح" },
+    upcoming: { en: "Upcoming", ar: "قادمة" },
+    in_progress: { en: "Live", ar: "جارية" },
+  };
 
   if (comps.length === 0) return null;
 
@@ -254,18 +263,41 @@ function CinematicEvents() {
             <h2 className={cn("text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-background", !isAr && "font-serif")}>
               {isAr ? "أحداث استثنائية" : "Extraordinary Events"}
             </h2>
+            <div className="flex justify-center gap-2 mt-3">
+              <SourceBadge source="competitions" count={filtered.length} />
+            </div>
           </div>
         </SectionReveal>
 
-        {/* Mobile: horizontal scroll, Desktop: grid */}
+        {/* Filters */}
+        {statuses.length > 1 && (
+          <div className="flex items-center justify-center gap-1.5 mb-6 flex-wrap">
+            <Filter className="h-3 w-3 text-background/40 shrink-0" />
+            <FilterChip label={isAr ? "الكل" : "All"} active={!statusFilter} count={comps.length} onClick={() => setStatusFilter(null)} />
+            {statuses.map(s => {
+              const l = statusLabels[s] || { en: s, ar: s };
+              return (
+                <FilterChip
+                  key={s}
+                  label={isAr ? l.ar : l.en}
+                  active={statusFilter === s}
+                  count={comps.filter((c: any) => c.status === s).length}
+                  onClick={() => setStatusFilter(statusFilter === s ? null : s)}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {/* Cards */}
         <div className="hidden sm:grid sm:grid-cols-2 gap-5">
-          {comps.map((comp: any, i: number) => (
+          {filtered.slice(0, 4).map((comp: any, i: number) => (
             <EventCard key={comp.id} comp={comp} i={i} isAr={isAr} />
           ))}
         </div>
         <div className="sm:hidden -mx-4 px-4 overflow-x-auto scrollbar-none snap-x snap-mandatory">
-          <div className="flex gap-3" style={{ width: `${comps.length * 85}vw` }}>
-            {comps.map((comp: any, i: number) => (
+          <div className="flex gap-3" style={{ width: `${filtered.length * 85}vw` }}>
+            {filtered.map((comp: any, i: number) => (
               <div key={comp.id} className="snap-start" style={{ width: "82vw", flexShrink: 0 }}>
                 <EventCard comp={comp} i={i} isAr={isAr} />
               </div>
@@ -294,9 +326,7 @@ const EventCard = memo(function EventCard({ comp, i, isAr }: { comp: any; i: num
       <Link to={`/competitions/${comp.id}`} className="group relative overflow-hidden rounded-2xl block">
         <div className="relative aspect-[16/10] overflow-hidden">
           {comp.cover_image_url ? (
-            <img src={comp.cover_image_url} alt={title}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              loading="lazy" decoding="async" />
+            <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
           ) : (
             <div className="h-full w-full bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center">
               <Trophy className="h-10 w-10 sm:h-12 sm:w-12 text-background/20" />
@@ -305,7 +335,7 @@ const EventCard = memo(function EventCard({ comp, i, isAr }: { comp: any; i: num
           <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/30 to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500" />
           <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 lg:p-6">
             <Badge className="mb-2 sm:mb-3 bg-primary/80 text-primary-foreground border-0 backdrop-blur-sm text-[9px] sm:text-[10px]">
-              {comp.status === "registration_open" ? (isAr ? "التسجيل مفتوح" : "Registration Open") : (isAr ? "قريباً" : "Upcoming")}
+              {comp.status === "registration_open" ? (isAr ? "التسجيل مفتوح" : "Registration Open") : comp.status === "in_progress" ? (isAr ? "جارية" : "Live") : (isAr ? "قريباً" : "Upcoming")}
             </Badge>
             <h3 className={cn("text-lg sm:text-xl lg:text-2xl font-bold text-background leading-snug line-clamp-2 mb-1.5", !isAr && "font-serif")}>{title}</h3>
             <div className="flex items-center gap-3 text-background/60 text-xs sm:text-sm">
@@ -330,6 +360,7 @@ const EventCard = memo(function EventCard({ comp, i, isAr }: { comp: any; i: num
 function ChefShowcase() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
 
   const { data: chefs = [] } = useQuery({
     queryKey: ["v2-editorial-chefs"],
@@ -358,10 +389,12 @@ function ChefShowcase() {
             <h2 className={cn("text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight", !isAr && "font-serif")}>
               {isAr ? "الطهاة المميزون" : "World-Class Chefs"}
             </h2>
+            <div className="flex justify-center gap-2 mt-3">
+              <SourceBadge source="profiles (verified)" count={chefs.length} />
+            </div>
           </div>
         </SectionReveal>
 
-        {/* Mobile: horizontal scroll for better UX */}
         <div className="hidden sm:grid sm:grid-cols-3 gap-4 lg:gap-6">
           {chefs.map((chef: any, i: number) => (
             <ChefCard key={chef.id} chef={chef} i={i} isAr={isAr} />
@@ -398,9 +431,7 @@ const ChefCard = memo(function ChefCard({ chef, i, isAr }: { chef: any; i: numbe
       <Link to={`/chef/${chef.id}`} className="group relative block">
         <div className="relative aspect-[3/4] rounded-2xl overflow-hidden">
           {chef.avatar_url ? (
-            <img src={chef.avatar_url} alt={name}
-              className="h-full w-full object-cover transition-all duration-700 group-hover:scale-105"
-              loading="lazy" decoding="async" />
+            <img src={chef.avatar_url} alt={name} className="h-full w-full object-cover transition-all duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
           ) : (
             <div className="h-full w-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
               <ChefHat className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground/20" />
@@ -434,8 +465,9 @@ const ChefCard = memo(function ChefCard({ chef, i, isAr }: { chef: any; i: numbe
 function CinematicArticles() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [typeFilter, setTypeFilter] = useState<string | null>(null);
 
-  const { data: articles = [] } = useQuery({
+  const { data: allArticles = [] } = useQuery({
     queryKey: ["v2-editorial-articles"],
     queryFn: async () => {
       const { data } = await supabase
@@ -443,15 +475,28 @@ function CinematicArticles() {
         .select("id, title, title_ar, excerpt, excerpt_ar, featured_image_url, slug, published_at, type")
         .eq("status", "published")
         .order("published_at", { ascending: false })
-        .limit(3);
+        .limit(5);
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
   });
 
+  const types = useMemo(() => {
+    const s = new Set<string>();
+    allArticles.forEach((a: any) => { if (a.type) s.add(a.type); });
+    return Array.from(s);
+  }, [allArticles]);
+
+  const articles = useMemo(() => {
+    if (!typeFilter) return allArticles;
+    return allArticles.filter((a: any) => a.type === typeFilter);
+  }, [allArticles, typeFilter]);
+
+  if (allArticles.length === 0) return null;
   if (articles.length === 0) return null;
+
   const main = articles[0];
-  const side = articles.slice(1);
+  const side = articles.slice(1, 3);
 
   return (
     <section className="relative py-16 sm:py-20 lg:py-28 overflow-hidden">
@@ -464,6 +509,24 @@ function CinematicArticles() {
             <h2 className={cn("text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight", !isAr && "font-serif")}>
               {isAr ? "أحدث المقالات" : "Latest Stories"}
             </h2>
+            <div className="flex justify-center gap-2 mt-3">
+              <SourceBadge source="articles" count={articles.length} />
+            </div>
+            {types.length > 1 && (
+              <div className="flex items-center justify-center gap-1.5 mt-4 flex-wrap">
+                <Filter className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+                <FilterChip label={isAr ? "الكل" : "All"} active={!typeFilter} count={allArticles.length} onClick={() => setTypeFilter(null)} />
+                {types.map(t => (
+                  <FilterChip
+                    key={t}
+                    label={t}
+                    active={typeFilter === t}
+                    count={allArticles.filter((a: any) => a.type === t).length}
+                    onClick={() => setTypeFilter(typeFilter === t ? null : t)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </SectionReveal>
 
@@ -472,9 +535,7 @@ function CinematicArticles() {
             <Link to={`/articles/${main.slug}`} className="group relative overflow-hidden rounded-2xl block">
               <div className="relative aspect-[4/3] sm:aspect-[4/3] overflow-hidden">
                 {main.featured_image_url ? (
-                  <img src={main.featured_image_url} alt=""
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy" decoding="async" />
+                  <img src={main.featured_image_url} alt="" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
                 ) : (
                   <div className="h-full w-full bg-gradient-to-br from-accent/10 to-primary/5 flex items-center justify-center">
                     <BookOpen className="h-12 w-12 sm:h-14 sm:w-14 text-muted-foreground/15" />
@@ -505,9 +566,7 @@ function CinematicArticles() {
                 <Link to={`/articles/${article.slug}`} className="group flex gap-3 sm:gap-5 items-start p-3 sm:p-4 rounded-2xl border border-border/50 hover:border-primary/20 hover:bg-muted/30 transition-all">
                   <div className="w-24 h-20 sm:w-32 sm:h-24 rounded-xl overflow-hidden shrink-0 bg-muted">
                     {article.featured_image_url ? (
-                      <img src={article.featured_image_url} alt=""
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy" decoding="async" />
+                      <img src={article.featured_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
                     ) : (
                       <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
                         <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground/20" />

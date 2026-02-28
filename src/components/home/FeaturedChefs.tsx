@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { useQuery } from "@tanstack/react-query";
@@ -5,18 +6,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Award, ChefHat, MapPin, Star, Trophy } from "lucide-react";
+import { Award, ChefHat, MapPin, Star, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { SectionHeader } from "./SectionHeader";
+import { FilterChip } from "./FilterChip";
 
 export function FeaturedChefs() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
+  const [specFilter, setSpecFilter] = useState<string | null>(null);
 
   const { data: chefs = [] } = useQuery({
     queryKey: ["featured-chefs-home"],
@@ -54,6 +57,24 @@ export function FeaturedChefs() {
     gcTime: 1000 * 60 * 30,
   });
 
+  // Extract unique specializations for filter
+  const specializations = useMemo(() => {
+    const specs = new Set<string>();
+    chefs.forEach((c: any) => {
+      const s = isAr && c.specialization_ar ? c.specialization_ar : c.specialization;
+      if (s) specs.add(s);
+    });
+    return Array.from(specs).slice(0, 5);
+  }, [chefs, isAr]);
+
+  const filteredChefs = useMemo(() => {
+    if (!specFilter) return chefs;
+    return chefs.filter((c: any) => {
+      const s = isAr && c.specialization_ar ? c.specialization_ar : c.specialization;
+      return s === specFilter;
+    });
+  }, [chefs, specFilter, isAr]);
+
   if (chefs.length === 0) return null;
 
   return (
@@ -61,37 +82,44 @@ export function FeaturedChefs() {
       <div className="absolute inset-0 bg-muted/20" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.03),transparent_60%)]" />
       <div className="container relative" dir={isAr ? "rtl" : "ltr"}>
-        <SectionReveal>
-          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <Badge variant="secondary" className="mb-1.5 gap-1">
-                <Award className="h-3 w-3" />
-                {isAr ? "طهاة مميزون" : "Featured Chefs"}
-              </Badge>
-              <h2 id="featured-chefs-heading" className={cn("text-xl font-bold sm:text-2xl text-foreground tracking-tight", !isAr && "font-serif")}>
-                {isAr ? "أبرز الطهاة على المنصة" : "Top Chefs on the Platform"}
-              </h2>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {isAr ? "تعرّف على أمهر الطهاة المسجلين في مجتمعنا العالمي" : "Meet the most skilled chefs in our global community"}
-              </p>
-            </div>
-            <Button variant="outline" size="sm" asChild>
-              <Link to="/community">
-                {isAr ? "عرض الكل" : "View All"}
-                <ArrowRight className="ms-1 h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
-        </SectionReveal>
+        <SectionHeader
+          icon={Award}
+          badge={isAr ? "طهاة مميزون" : "Featured Chefs"}
+          title={isAr ? "أبرز الطهاة على المنصة" : "Top Chefs on the Platform"}
+          subtitle={isAr ? "تعرّف على أمهر الطهاة المسجلين في مجتمعنا العالمي" : "Meet the most skilled chefs in our global community"}
+          dataSource={isAr ? "chef_rankings + profiles" : "chef_rankings + profiles"}
+          itemCount={filteredChefs.length}
+          viewAllHref="/community"
+          viewAllLabel={isAr ? "عرض الكل" : "View All"}
+          isAr={isAr}
+          filters={specializations.length > 1 ? (
+            <>
+              <FilterChip
+                label={isAr ? "الكل" : "All"}
+                active={!specFilter}
+                count={chefs.length}
+                onClick={() => setSpecFilter(null)}
+              />
+              {specializations.map(s => (
+                <FilterChip
+                  key={s}
+                  label={s}
+                  active={specFilter === s}
+                  count={chefs.filter((c: any) => (isAr && c.specialization_ar ? c.specialization_ar : c.specialization) === s).length}
+                  onClick={() => setSpecFilter(specFilter === s ? null : s)}
+                />
+              ))}
+            </>
+          ) : undefined}
+        />
 
         <SectionReveal delay={80}>
-          {/* Mobile: larger touch-friendly horizontal scroll with better snap behavior */}
           <div
             className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
             dir={isAr ? "rtl" : "ltr"}
             style={{ WebkitOverflowScrolling: "touch" }}
           >
-            {chefs.map((chef: any, idx: number) => {
+            {filteredChefs.map((chef: any, idx: number) => {
               const name = getDisplayName(chef, isAr);
               const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
               const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
