@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { TicketSatisfactionRating } from "@/components/support/TicketSatisfactionRating";
+import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -439,6 +441,15 @@ export default function SupportTickets() {
                       </Button>
                     </form>
                   )}
+
+                  {/* Satisfaction Rating */}
+                  <div className="mt-4">
+                    <TicketSatisfactionRating
+                      ticketId={selectedTicket.id}
+                      ticketStatus={selectedTicket.status}
+                      existingRating={(selectedTicket as any).satisfaction_rating}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -518,6 +529,7 @@ export default function SupportTickets() {
           )}
         </div>
       </main>
+      <ScrollToTopFAB />
       <Footer />
     </div>
   );
