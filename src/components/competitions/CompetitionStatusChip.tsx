@@ -1,70 +1,67 @@
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Flame, Clock, CheckCircle2, CalendarCheck, Lock } from "lucide-react";
+import { Flame, Clock, CheckCircle2, CalendarCheck, Lock, PlayCircle } from "lucide-react";
+import { deriveCompetitionStatus, type DerivedStatus } from "@/lib/competitionStatus";
 
-const STATUS_CONFIG: Record<string, {
-  icon: React.ElementType;
-  labelEn: string;
-  labelAr: string;
-  classes: string;
-}> = {
-  registration_open: {
-    icon: Flame,
-    labelEn: "Open",
-    labelAr: "مفتوح",
-    classes: "bg-chart-2/10 text-chart-2 border-chart-2/20",
-  },
-  closing_soon: {
-    icon: Clock,
-    labelEn: "Closing Soon",
-    labelAr: "يغلق قريباً",
-    classes: "bg-destructive/10 text-destructive border-destructive/20",
-  },
-  active: {
-    icon: Flame,
-    labelEn: "Live",
-    labelAr: "مباشر",
-    classes: "bg-primary/10 text-primary border-primary/20",
-  },
-  completed: {
-    icon: CheckCircle2,
-    labelEn: "Completed",
-    labelAr: "مكتمل",
-    classes: "bg-muted text-muted-foreground border-border",
-  },
-  upcoming: {
-    icon: CalendarCheck,
-    labelEn: "Upcoming",
-    labelAr: "قادم",
-    classes: "bg-chart-4/10 text-chart-4 border-chart-4/20",
-  },
-  registration_closed: {
-    icon: Lock,
-    labelEn: "Closed",
-    labelAr: "مغلق",
-    classes: "bg-muted text-muted-foreground border-border",
-  },
+const ICON_MAP: Record<DerivedStatus, React.ElementType> = {
+  registration_upcoming: CalendarCheck,
+  registration_open: Flame,
+  registration_closing_soon: Clock,
+  registration_closed: Lock,
+  competition_starting_soon: CalendarCheck,
+  in_progress: PlayCircle,
+  ended: CheckCircle2,
 };
 
 interface Props {
-  status: string;
+  status?: string;
+  registrationStart?: string | null;
+  registrationEnd?: string | null;
+  competitionStart?: string | null;
+  competitionEnd?: string | null;
   size?: "sm" | "md";
 }
 
-export function CompetitionStatusChip({ status, size = "sm" }: Props) {
+export function CompetitionStatusChip({
+  status,
+  registrationStart,
+  registrationEnd,
+  competitionStart,
+  competitionEnd,
+  size = "sm",
+}: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const config = STATUS_CONFIG[status] || STATUS_CONFIG.upcoming;
-  const Icon = config.icon;
+
+  // Use centralized date-based status engine
+  const derived = deriveCompetitionStatus({
+    registrationStart,
+    registrationEnd,
+    competitionStart,
+    competitionEnd,
+    dbStatus: status,
+  });
+
+  const Icon = ICON_MAP[derived.status] || CalendarCheck;
 
   return (
     <span className={cn(
       "inline-flex items-center gap-1 rounded-full border font-medium",
       size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs",
-      config.classes,
+      derived.color, "border-current/20",
     )}>
-      <Icon className={size === "sm" ? "h-2.5 w-2.5" : "h-3 w-3"} />
-      {isAr ? config.labelAr : config.labelEn}
+      {derived.status === "in_progress" ? (
+        <span className="relative me-0.5 flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
+        </span>
+      ) : (
+        <Icon className={size === "sm" ? "h-2.5 w-2.5" : "h-3 w-3"} />
+      )}
+      {isAr ? derived.labelAr : derived.label}
+      {derived.urgent && derived.daysLeft && (
+        <span className="ms-0.5 font-bold">({derived.daysLeft}d)</span>
+      )}
     </span>
   );
 }
