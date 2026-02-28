@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -99,6 +99,35 @@ const SlideWrapper = memo(function SlideWrapper({
   );
 });
 
+// ── Touch swipe hook ──────────────────────────────────────────────────────────
+function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const touchEnd = useRef<{ x: number; y: number } | null>(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchEnd.current = null;
+    touchStart.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    touchEnd.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+  }, []);
+
+  const onTouchEnd = useCallback(() => {
+    if (!touchStart.current || !touchEnd.current) return;
+    const distX = touchStart.current.x - touchEnd.current.x;
+    const distY = Math.abs(touchStart.current.y - touchEnd.current.y);
+    // Only trigger if horizontal swipe is dominant
+    if (Math.abs(distX) > minSwipeDistance && Math.abs(distX) > distY) {
+      if (distX > 0) onSwipeLeft();
+      else onSwipeRight();
+    }
+  }, [onSwipeLeft, onSwipeRight]);
+
+  return { onTouchStart, onTouchMove, onTouchEnd };
+}
+
 // ── Main slider ───────────────────────────────────────────────────────────────
 export function HeroSlider() {
   const { language } = useLanguage();
@@ -115,10 +144,9 @@ export function HeroSlider() {
         .order("sort_order");
       return (data || []) as HeroSlide[];
     },
-    staleTime: 1000 * 60 * 5, // 5 min cache — avoids refetch on navigation
+    staleTime: 1000 * 60 * 5,
   });
 
-  // Localise slide content for the active language
   const slides: HeroSlide[] = rawSlides.map((s) => ({
     ...s,
     title:               isAr && s.title_ar              ? s.title_ar              : s.title,
@@ -136,6 +164,12 @@ export function HeroSlider() {
     if (slides.length > 0) setCurrent((c) => (c - 1 + slides.length) % slides.length);
   }, [slides.length]);
 
+  // Touch swipe — respect RTL direction
+  const swipe = useSwipe(
+    isAr ? prev : next, // swipe left
+    isAr ? next : prev  // swipe right
+  );
+
   useEffect(() => {
     if (slides.length <= 1) return;
     const interval = slides[current]?.autoplay_interval ?? 6000;
@@ -146,17 +180,16 @@ export function HeroSlider() {
 
   if (!slides.length) return <FallbackHero isAr={isAr} />;
 
-  // The container height = active slide's resolved height so the slider never collapses
   const activeHeight = resolveHeight(slides[current]);
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden will-change-[height]"
       style={{ height: activeHeight, transition: "height 0.5s ease" }}
       aria-label={isAr ? "القسم الرئيسي" : "Hero slider"}
       role="region"
+      {...swipe}
     >
-      {/* Slide stack */}
       {slides.map((slide, i) => (
         <SlideWrapper
           key={slide.id}
@@ -166,25 +199,23 @@ export function HeroSlider() {
         />
       ))}
 
-      {/* Navigation — only with multiple slides */}
       {slides.length > 1 && (
         <>
           <button
             onClick={prev}
-            className="absolute start-2 sm:start-4 top-1/2 z-30 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-background/60 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105 opacity-60 hover:opacity-100"
+            className="absolute start-2 sm:start-4 top-1/2 z-30 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-background/60 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105 opacity-60 hover:opacity-100 hidden sm:flex"
             aria-label={isAr ? "الشريحة السابقة" : "Previous slide"}
           >
             <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
           <button
             onClick={next}
-            className="absolute end-2 sm:end-4 top-1/2 z-30 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-background/60 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105 opacity-60 hover:opacity-100"
+            className="absolute end-2 sm:end-4 top-1/2 z-30 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-background/60 backdrop-blur-md text-foreground shadow-lg ring-1 ring-border/20 transition-all hover:bg-background/90 hover:scale-105 opacity-60 hover:opacity-100 hidden sm:flex"
             aria-label={isAr ? "الشريحة التالية" : "Next slide"}
           >
             <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
 
-          {/* Progress dots */}
           <div className="absolute bottom-4 inset-x-0 z-30 flex justify-center gap-2">
             {slides.map((_: HeroSlide, i: number) => (
               <button

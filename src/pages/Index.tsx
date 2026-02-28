@@ -11,11 +11,11 @@ import { prefetchCommonRoutes } from "@/lib/prefetch";
 import { useHomepageSections, type HomepageSection } from "@/hooks/useHomepageSections";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 
-// Above-fold components — lazy loaded for code splitting
-const HeroSlider = lazy(() => import("@/components/home/HeroSlider").then(m => ({ default: m.HeroSlider })));
-const HomeSearch = lazy(() => import("@/components/home/HomeSearch").then(m => ({ default: m.HomeSearch })));
-const HomeStats = lazy(() => import("@/components/home/HomeStats").then(m => ({ default: m.HomeStats })));
-const HomeQuickActions = lazy(() => import("@/components/home/HomeQuickActions").then(m => ({ default: m.HomeQuickActions })));
+// Above-fold components — eagerly imported for optimal LCP
+import { HeroSlider } from "@/components/home/HeroSlider";
+import { HomeSearch } from "@/components/home/HomeSearch";
+import { HomeStats } from "@/components/home/HomeStats";
+import { HomeQuickActions } from "@/components/home/HomeQuickActions";
 const HomepageV2 = lazy(() => import("@/components/home/HomepageV2").then(m => ({ default: m.HomepageV2 })));
 
 // Lazy load below-fold components
@@ -124,7 +124,7 @@ const Index = () => {
         <HomepageV2 />
       ) : (
         <main className="flex flex-col">
-          {/* 1. Hero Slider */}
+          {/* 1. Hero Slider — eagerly loaded for LCP */}
           {isVisible(sections, "hero") && <HeroSlider />}
 
           {/* 2. Search Bar */}
@@ -134,7 +134,7 @@ const Index = () => {
           {isVisible(sections, "stats") && <HomeStats />}
 
           {/* 3.5 Quick Actions Grid */}
-          <Suspense fallback={null}><HomeQuickActions /></Suspense>
+          <HomeQuickActions />
 
           {/* Ad banner top */}
           {isVisible(sections, "ad_banner_top") && (
