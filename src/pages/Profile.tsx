@@ -132,21 +132,23 @@ export default function Profile() {
         <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={refetchProfile} />
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-        <div className="sticky top-12 z-30 -mx-4 border-y border-border/30 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-2xl md:border md:mx-0 md:px-4 shadow-sm">
-          <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 no-scrollbar snap-x snap-mandatory">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
+        {/* Tab Navigation */}
+        <div className="sticky top-12 z-30 -mx-4 border-y border-border/20 bg-background/95 px-3 py-2 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-3 shadow-sm">
+          <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none snap-x snap-mandatory" dir={isAr ? "rtl" : "ltr"}>
             {tabs.map((tab) => {
               const locked = !isTabAllowed(tab.id);
+              const isActive = activeTab === tab.id;
               if ((tab as any).href) {
                 return (
                   <Link
                     key={tab.id}
                     to={(tab as any).href}
-                    className="group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/60 text-muted-foreground"
+                    className="group relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/50 text-muted-foreground"
                   >
                     <tab.icon className="h-3.5 w-3.5 shrink-0" />
                     <span>{tab.label}</span>
-                    <ExternalLink className="h-3 w-3 opacity-50" />
+                    <ExternalLink className="h-2.5 w-2.5 opacity-40" />
                   </Link>
                 );
               }
@@ -154,11 +156,11 @@ export default function Profile() {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className={`group relative flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/20 hover:bg-muted/60 ${locked ? "opacity-60" : ""}`}
+                  className={`group relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 ${locked ? "opacity-50" : ""}`}
                 >
                   <tab.icon className="h-3.5 w-3.5 shrink-0" />
                   <span>{tab.label}</span>
-                  {locked && <Lock className="h-3 w-3 text-muted-foreground" />}
+                  {locked && <Lock className="h-2.5 w-2.5 text-muted-foreground/60" />}
                 </TabsTrigger>
               );
             })}

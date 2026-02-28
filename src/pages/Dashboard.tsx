@@ -4,7 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/PageShell";
-import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight, LayoutDashboard, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -59,7 +59,7 @@ const FanFollowingFeed = lazy(() => import("@/components/fan/FanFollowingFeed").
 const FanStreaks = lazy(() => import("@/components/fan/FanStreaks").then(m => ({ default: m.FanStreaks })));
 const FanWeeklyDigest = lazy(() => import("@/components/fan/FanWeeklyDigest").then(m => ({ default: m.FanWeeklyDigest })));
 
-// New enhancement widgets
+// Enhancement widgets
 const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
 const MessageSearchWidget = lazy(() => import("@/components/messages/MessageSearchWidget").then(m => ({ default: m.MessageSearchWidget })));
 const ActivityHeatmapWidget = lazy(() => import("@/components/dashboard/ActivityHeatmapWidget").then(m => ({ default: m.ActivityHeatmapWidget })));
@@ -84,7 +84,7 @@ export default function Dashboard() {
       if (!user) return null;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, username, profile_completed")
+        .select("full_name, full_name_ar, username, profile_completed, avatar_url, account_type")
         .eq("user_id", user.id)
         .single();
       return data;
@@ -101,7 +101,10 @@ export default function Dashboard() {
     }
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const firstName = profile?.full_name?.split(" ")[0] || "";
+  const firstName = isAr
+    ? (profile?.full_name_ar?.split(" ")[0] || profile?.full_name?.split(" ")[0] || "")
+    : (profile?.full_name?.split(" ")[0] || "");
+
   const greeting = isAr
     ? `مرحباً${firstName ? ` ${firstName}` : ""}`
     : `Welcome back${firstName ? `, ${firstName}` : ""}`;
@@ -132,65 +135,99 @@ export default function Dashboard() {
 
   return (
     <PageShell title="Dashboard" description="Your personal Altoha dashboard">
-        {/* Membership Expiry Banner */}
-        <MembershipExpiryBanner className="mb-4" />
+      {/* Membership Expiry Banner */}
+      <MembershipExpiryBanner className="mb-4" />
 
-        {/* Welcome Banner */}
-        <WelcomeBanner greeting={greeting} subtitle={subtitle} isAr={isAr} widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+      {/* Welcome Banner */}
+      <WelcomeBanner
+        greeting={greeting}
+        subtitle={subtitle}
+        isAr={isAr}
+        widgets={widgets}
+        toggleWidget={toggleWidget}
+        resetLayout={resetLayout}
+        avatarUrl={profile?.avatar_url}
+        firstName={firstName}
+      />
 
-        {/* Global Search */}
-        <GlobalSearchWidget />
+      {/* Global Search */}
+      <GlobalSearchWidget />
 
-        {/* Profile Completion Nudge */}
-        {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
+      {/* Profile Completion Nudge */}
+      {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
 
-        {/* Quick Navigation */}
-        <QuickAccessGrid sections={sections} isAr={isAr} />
+      {/* Quick Navigation */}
+      <QuickAccessGrid sections={sections} isAr={isAr} />
 
-        {/* Quick Stats */}
-        {user && isVisible("quick-stats") && (
-          <div className="mb-8"><W lines={1}><QuickStatsWidget /></W></div>
-        )}
+      {/* Quick Stats - Full width */}
+      {user && isVisible("quick-stats") && (
+        <div className="mb-6"><W lines={1}><QuickStatsWidget /></W></div>
+      )}
 
-        {/* Daily Digest */}
-        {user && (
-          <div className="mb-6"><W><DailyDigestWidget /></W></div>
-        )}
-        {/* Achievements Summary */}
-        {user && isVisible("achievements") && (
-          <div className="mb-8"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
-        )}
+      {/* Daily Digest - Full width */}
+      {user && (
+        <div className="mb-6"><W><DailyDigestWidget /></W></div>
+      )}
 
-        {/* Fan Upgrade Banner */}
-        {user && isFan && (
-          <div className="mb-6"><W><FanUpgradeBanner /></W></div>
-        )}
+      {/* Achievements Summary */}
+      {user && isVisible("achievements") && (
+        <div className="mb-6"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
+      )}
 
-        {/* Main Content Grid */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
-            {user && isFan && <W><FanWeeklyDigest /></W>}
-            {user && isFan && <W><FanFollowingFeed /></W>}
-            {user && isFan && <W><FanActivityFeed /></W>}
-            {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
-            {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
-            {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
-            {user && isFan && <W><FanSmartRecommendations /></W>}
-            {user && isFan && <W><FanAchievementBadges /></W>}
-          </div>
-          <div className="space-y-6">
+      {/* Fan Upgrade Banner */}
+      {user && isFan && (
+        <div className="mb-6"><W><FanUpgradeBanner /></W></div>
+      )}
+
+      {/* ─── Main 3-Column Grid ─── */}
+      <div className="grid gap-6 lg:grid-cols-12">
+        {/* Left Column - Profile & Identity (sticky on desktop) */}
+        <aside className="lg:col-span-3 space-y-4">
+          <div className="lg:sticky lg:top-20 space-y-4">
             {user && <ProfileCompletionCard />}
             {user && <W><ProfileSummaryCard /></W>}
-            {user && !isFan && <W><ActivityHeatmapWidget /></W>}
-            {user && <W><QuickActionsWidget /></W>}
-            {user && <W><RecentChatsWidget /></W>}
-            {user && <W><NotificationGroupWidget /></W>}
-            {user && <W><RecentOrdersWidget /></W>}
-            {user && <W><MessageSearchWidget /></W>}
             {user && <W><WalletBalanceWidget /></W>}
             {user && <W><StreakWidget /></W>}
+            {user && <W><QuickActionsWidget /></W>}
+          </div>
+        </aside>
+
+        {/* Center Column - Main Content Feed */}
+        <main className="lg:col-span-6 space-y-5">
+          {/* Fan content */}
+          {user && isFan && <W><FanWeeklyDigest /></W>}
+          {user && isFan && <W><FanFollowingFeed /></W>}
+          {user && isFan && <W><FanActivityFeed /></W>}
+
+          {/* Common content */}
+          {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
+          {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
+          {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
+
+          {/* Fan extras */}
+          {user && isFan && <W><FanSmartRecommendations /></W>}
+          {user && isFan && <W><FanAchievementBadges /></W>}
+
+          {/* Pro extras */}
+          {user && !isFan && <W><ActivityHeatmapWidget /></W>}
+          {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
+          {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
+          {user && !isFan && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
+
+          {/* Shared activity */}
+          {isVisible("activity") && <W><RecentActivityWidget /></W>}
+        </main>
+
+        {/* Right Column - Activity & Social */}
+        <aside className="lg:col-span-3 space-y-4">
+          <div className="lg:sticky lg:top-20 space-y-4">
+            {user && <W><NotificationGroupWidget /></W>}
+            {user && <W><RecentChatsWidget /></W>}
             {user && <W><GoalsMilestonesWidget /></W>}
+            {user && <W><RecentOrdersWidget /></W>}
             {user && <W><LiveCompetitionsWidget /></W>}
+
+            {/* Fan sidebar */}
             {user && isFan && <W><FanNotificationsCenter /></W>}
             {user && isFan && <W><FanStreaks /></W>}
             {user && isFan && <W><FanRecipeCollections /></W>}
@@ -199,58 +236,75 @@ export default function Dashboard() {
             {user && isFan && <W><FanSuggestedFollowsWidget /></W>}
             {user && isFan && <W><FanTrendingWidget /></W>}
             {user && isFan && <W><FanLeaderboard /></W>}
+
+            {/* Pro sidebar */}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
-            {user && !isFan && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
-            {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
-            {user && isVisible("notification-activity") && <W><NotificationActivityWidget /></W>}
-            {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
-            {user && isVisible("referral") && <W><ReferralWidget /></W>}
             {user && !isFan && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
+
+            {/* Shared sidebar */}
+            {user && isVisible("referral") && <W><ReferralWidget /></W>}
+            {user && isVisible("notification-activity") && <W><NotificationActivityWidget /></W>}
             {user && isVisible("events-calendar") && <W><EventsCalendarWidget /></W>}
             {user && isVisible("notification-prefs") && <W><NotificationPreferencesWidget /></W>}
             {user && isVisible("notifications") && <W><NotificationsSummaryWidget /></W>}
-            {isVisible("activity") && <W><RecentActivityWidget /></W>}
+            {user && <W><MessageSearchWidget /></W>}
             {user && <W><DashboardPersonalizationWidget /></W>}
           </div>
-        </div>
-        <ScrollToTopFAB />
+        </aside>
+      </div>
+      <ScrollToTopFAB />
     </PageShell>
   );
 }
 
 /* ---------- Sub-Components ---------- */
 
-const WelcomeBanner = memo(function WelcomeBanner({ greeting, subtitle, isAr, widgets, toggleWidget, resetLayout }: {
+const WelcomeBanner = memo(function WelcomeBanner({
+  greeting, subtitle, isAr, widgets, toggleWidget, resetLayout, avatarUrl, firstName,
+}: {
   greeting: string; subtitle: string; isAr: boolean;
   widgets: any[]; toggleWidget: (id: string) => void; resetLayout: () => void;
+  avatarUrl?: string | null; firstName: string;
 }) {
   return (
-    <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4 sm:p-6 md:p-8 group shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/20">
-      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/15 blur-[80px]" />
-      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/15 blur-[60px]" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      <div className="relative">
-        {/* Top row: icon + actions */}
-        <div className="flex items-center justify-between gap-3 mb-2">
-          <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-2 ring-primary/10 shadow-inner">
-            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+    <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/8 via-background to-accent/8 p-5 sm:p-6 md:p-8 shadow-sm">
+      {/* Decorative orbs */}
+      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px]" />
+      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/10 blur-[60px]" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+
+      <div className="relative flex items-start gap-4">
+        {/* Avatar */}
+        <Link to="/profile" className="shrink-0 hidden sm:block">
+          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow p-[2px] shadow-lg transition-transform hover:scale-105">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className="h-full w-full rounded-[14px] object-cover bg-card" />
+            ) : (
+              <div className="h-full w-full rounded-[14px] bg-primary/10 flex items-center justify-center">
+                <LayoutDashboard className="h-6 w-6 text-primary" />
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
-            <Link to="/profile?tab=edit">
-              <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs sm:text-sm">
-                <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
-                <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
-                <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
-              </Button>
-            </Link>
+        </Link>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">{greeting} 👋</h1>
+              <p className="mt-1 text-xs sm:text-sm text-muted-foreground">{subtitle}</p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+              <Link to="/profile?tab=edit">
+                <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs">
+                  <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
+                  <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
+                  <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
-        {/* Text below — full width, no truncation */}
-        <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">{greeting} 👋</h1>
-        <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground font-medium">
-          {subtitle}
-        </p>
       </div>
     </div>
   );
@@ -269,7 +323,7 @@ const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
               <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
               <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setup to unlock all features"}</p>
             </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 rtl:rotate-180" />
           </CardContent>
         </Card>
       </Link>
@@ -280,17 +334,17 @@ const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
 const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
   const { prefetchProps } = usePrefetchRoute();
   return (
-    <div className="mb-8">
-      <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+    <div className="mb-6">
+      <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
         <Sparkles className="h-3 w-3 text-primary" />
         {isAr ? "الوصول السريع" : "Quick Access"}
       </h2>
       <div className="relative">
-        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
           {sections.map((s) => (
             <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink" {...prefetchProps(s.href)}>
-              <div className={`flex flex-col items-center gap-1.5 p-2 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-border/60 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-200 group-hover:scale-105`}>
+              <div className={`flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-primary/20 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-transform duration-200 group-hover:scale-110`}>
                   <s.icon className={`h-4 w-4 ${s.color}`} />
                 </div>
                 <span className="text-[9px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
@@ -331,11 +385,11 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+    <div className="grid grid-cols-3 gap-3">
       {items.map((item) => (
-        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all duration-200 hover:shadow-md active:scale-[0.97] group`}>
-          <CardContent className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-4">
-            <div className={`hidden xs:flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} sm:flex`}>
+        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all duration-200 hover:shadow-md active:scale-[0.97]`}>
+          <CardContent className="flex items-center gap-3 p-3 sm:p-4">
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg}`}>
               <item.icon className={`h-4 w-4 ${item.color}`} />
             </div>
             <div>
