@@ -15,7 +15,7 @@ import {
   Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
-import { ImageLightbox } from "@/components/competitions/ImageLightbox";
+import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
@@ -26,6 +26,7 @@ import { EventComments } from "@/components/fan/EventComments";
 // Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
 import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
+import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
 
 // Lazy-loaded components
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
@@ -226,13 +227,17 @@ export default function ExhibitionDetail() {
   const { data: featureCounts } = useQuery({
     queryKey: ["exhibition-feature-counts", exhibition?.id],
     queryFn: async () => {
-      const [agenda, booths, reviews, scheduleItems] = await Promise.all([
+      const [agenda, booths, reviews, scheduleItems, tickets, reviewRatings] = await Promise.all([
         supabase.from("exhibition_agenda_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_schedule_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
+        supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id).eq("status", "confirmed"),
+        supabase.from("exhibition_reviews").select("rating").eq("exhibition_id", exhibition!.id),
       ]);
-      return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0, scheduleItems: scheduleItems.count || 0 };
+      const ratings = reviewRatings.data || [];
+      const avgRating = ratings.length > 0 ? ratings.reduce((s, r) => s + (r as any).rating, 0) / ratings.length : 0;
+      return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0, scheduleItems: scheduleItems.count || 0, tickets: tickets.count || 0, avgRating };
     },
     enabled: !!exhibition,
     staleTime: 1000 * 60 * 5,
@@ -350,6 +355,19 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-6 pb-20 lg:pb-8 md:py-8">
+        {/* Interactive Stats Bar */}
+        <div className="mb-6">
+          <ExhibitionInteractiveStats
+            viewCount={exhibition.view_count || 0}
+            followerCount={followerCount || 0}
+            reviewCount={reviewCount}
+            avgRating={featureCounts?.avgRating || 0}
+            boothCount={boothCount}
+            ticketCount={featureCounts?.tickets || 0}
+            isAr={isAr}
+          />
+        </div>
+
         <div className="grid gap-6 lg:grid-cols-3">
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
@@ -540,9 +558,13 @@ export default function ExhibitionDetail() {
         isWatchlisted={isWatchlisted} onToggleWatchlist={toggleWatchlist}
       />
 
-      {lightboxOpen && (
-        <ImageLightbox images={galleryUrls.map((url, i) => ({ url, title: `${title} ${i + 1}` }))} currentIndex={lightboxIndex} onClose={() => setLightboxOpen(false)} onNavigate={setLightboxIndex} />
-      )}
+      <ExhibitionGalleryLightbox
+        images={galleryUrls}
+        initialIndex={lightboxIndex}
+        title={title}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
       <Footer />
     </div>
   );
