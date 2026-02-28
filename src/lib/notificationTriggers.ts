@@ -509,7 +509,7 @@ export async function notifyAdminEntityReview(params: {
     body: `A new entity "${params.entityName}" has been submitted and requires admin review.`,
     bodyAr: `تم إرسال جهة جديدة "${params.entityNameAr || params.entityName}" وتحتاج لمراجعة الإدارة.`,
     type: "info",
-    link: "/admin/entities",
+    link: "/admin/establishments",
     channels: ["in_app", "email"],
   });
 }
@@ -538,7 +538,7 @@ export async function notifyEntityStatusChanged(params: {
     body: `The entity "${params.entityName}" has been ${label.en}.`,
     bodyAr: `الجهة "${params.entityNameAr || params.entityName}" ${label.ar}.`,
     type: params.newStatus === "active" ? "success" : params.newStatus === "suspended" ? "warning" : "info",
-    link: "/admin/entities",
+    link: "/admin/establishments",
     channels: ["in_app"],
   });
 
@@ -551,7 +551,7 @@ export async function notifyEntityStatusChanged(params: {
       body: `The entity you submitted has been ${label.en} by the administration.`,
       bodyAr: `الجهة التي قدمتها ${label.ar} من قبل الإدارة.`,
       type: params.newStatus === "active" ? "success" : params.newStatus === "suspended" ? "warning" : "info",
-      link: "/admin/entities",
+      link: "/admin/establishments",
       channels: ["in_app"],
     });
   }
@@ -637,7 +637,7 @@ export async function notifyAdminUnregisteredEntity(params: {
     body: `${params.userName} referenced "${params.entityName}" in their career record, but this entity is not yet registered in the system.`,
     bodyAr: `أشار ${params.userName} إلى "${params.entityName}" في سجله المهني، لكن هذه الجهة غير مسجلة بعد في النظام.`,
     type: "info",
-    link: "/admin/entities",
+    link: "/admin/establishments",
     channels: ["in_app"],
   });
 }

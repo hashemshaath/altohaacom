@@ -56,7 +56,7 @@ export default function AdminPendingBanner() {
       ]);
 
       const list: PendingItem[] = [
-        { key: "entities", label: "Entities", labelAr: "الجهات", count: entities.count || 0, icon: Building2, to: "/admin/entities", color: "text-chart-4" },
+        { key: "entities", label: "Entities", labelAr: "الجهات", count: entities.count || 0, icon: Building2, to: "/admin/establishments", color: "text-chart-4" },
         { key: "companies", label: "Companies", labelAr: "الشركات", count: companies.count || 0, icon: Building, to: "/admin/companies", color: "text-chart-3" },
         { key: "verification", label: "Verification", labelAr: "التوثيق", count: verification.count || 0, icon: ShieldCheck, to: "/admin/verification", color: "text-primary" },
         { key: "adRequests", label: "Ad Requests", labelAr: "طلبات الإعلان", count: adRequests.count || 0, icon: Megaphone, to: "/admin/advertising", color: "text-chart-5" },
