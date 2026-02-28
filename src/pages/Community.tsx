@@ -12,6 +12,7 @@ import { CommunityFeed } from "@/components/community/CommunityFeed";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
 import { CommunityRightSidebar } from "@/components/community/CommunityRightSidebar";
 import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs";
+import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
 import { Users } from "lucide-react";
 import { FeatureGate } from "@/components/membership/FeatureGate";
 
@@ -110,6 +111,7 @@ export default function Community() {
           />
         </div>
       </main>
+      <ScrollToTopFAB />
       <Footer />
     </div>
   );

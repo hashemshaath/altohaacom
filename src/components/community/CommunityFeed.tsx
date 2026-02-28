@@ -100,29 +100,18 @@ export function CommunityFeed() {
     const authorIds = [...new Set(postsData.map((p) => p.author_id))];
     const postIds = postsData.map((p) => p.id);
 
-    const [profilesRes, likesRes, commentsRes, repliesRes, userLikesRes, userBookmarksRes, userRepostsRes] = await Promise.all([
+    // Batch all queries in parallel — user-interaction queries only when logged in
+    const [profilesRes, userLikesRes, userBookmarksRes, userRepostsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, specialization, avatar_url").in("user_id", authorIds),
-      supabase.from("post_likes").select("post_id").in("post_id", postIds),
-      supabase.from("post_comments").select("post_id").in("post_id", postIds),
-      supabase.from("posts").select("reply_to_post_id").in("reply_to_post_id", postIds),
       user ? supabase.from("post_likes").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
       user ? supabase.from("post_bookmarks").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
       user ? supabase.from("post_reposts").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
     ]);
 
     const profilesMap = new Map(profilesRes.data?.map((p) => [p.user_id, p]) || []);
-    const likesMap = new Map<string, number>();
-    const commentsMap = new Map<string, number>();
-    const repliesMap = new Map<string, number>();
     const userLikedSet = new Set(userLikesRes.data?.map((l) => l.post_id) || []);
     const userBookmarkedSet = new Set(userBookmarksRes.data?.map((b) => b.post_id) || []);
     const userRepostedSet = new Set(userRepostsRes.data?.map((r) => r.post_id) || []);
-
-    likesRes.data?.forEach((l) => likesMap.set(l.post_id, (likesMap.get(l.post_id) || 0) + 1));
-    commentsRes.data?.forEach((c) => commentsMap.set(c.post_id, (commentsMap.get(c.post_id) || 0) + 1));
-    repliesRes.data?.forEach((r) => {
-      if (r.reply_to_post_id) repliesMap.set(r.reply_to_post_id, (repliesMap.get(r.reply_to_post_id) || 0) + 1);
-    });
 
     return postsData.map((p): CommunityPost => {
       const profile = profilesMap.get(p.author_id);
@@ -142,9 +131,9 @@ export function CommunityFeed() {
         author_specialization: profile?.specialization || null,
         visibility: p.visibility || "public",
         reply_to_post_id: p.reply_to_post_id || null,
-        likes_count: likesMap.get(p.id) || 0,
-        comments_count: commentsMap.get(p.id) || 0,
-        replies_count: repliesMap.get(p.id) || 0,
+        likes_count: p.likes_count || 0,
+        comments_count: p.comments_count || 0,
+        replies_count: p.replies_count || 0,
         reposts_count: p.reposts_count || 0,
         is_liked: userLikedSet.has(p.id),
         is_bookmarked: userBookmarkedSet.has(p.id),

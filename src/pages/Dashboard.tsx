@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef, memo } from "react";
 import { MembershipExpiryBanner } from "@/components/membership/MembershipExpiryBanner";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +16,7 @@ import { DashboardWidgetSkeleton } from "@/components/dashboard/DashboardWidgetS
 import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboard/DashboardLayoutControl";
 import { ProfileCompletionCard } from "@/components/profile/ProfileCompletionCard";
 import { GlobalSearchWidget } from "@/components/dashboard/GlobalSearchWidget";
+import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
 
 // Lazy-loaded widgets
 const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
@@ -212,13 +213,14 @@ export default function Dashboard() {
             {user && <W><DashboardPersonalizationWidget /></W>}
           </div>
         </div>
+        <ScrollToTopFAB />
     </PageShell>
   );
 }
 
 /* ---------- Sub-Components ---------- */
 
-function WelcomeBanner({ greeting, subtitle, isAr, widgets, toggleWidget, resetLayout }: {
+const WelcomeBanner = memo(function WelcomeBanner({ greeting, subtitle, isAr, widgets, toggleWidget, resetLayout }: {
   greeting: string; subtitle: string; isAr: boolean;
   widgets: any[]; toggleWidget: (id: string) => void; resetLayout: () => void;
 }) {
@@ -252,9 +254,9 @@ function WelcomeBanner({ greeting, subtitle, isAr, widgets, toggleWidget, resetL
       </div>
     </div>
   );
-}
+});
 
-function ProfileNudge({ isAr }: { isAr: boolean }) {
+const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
   return (
     <div className="mb-5 animate-fade-in">
       <Link to="/onboarding">
@@ -273,9 +275,9 @@ function ProfileNudge({ isAr }: { isAr: boolean }) {
       </Link>
     </div>
   );
-}
+});
 
-function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
+const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
   const { prefetchProps } = usePrefetchRoute();
   return (
     <div className="mb-8">
@@ -300,9 +302,9 @@ function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; titl
       </div>
     </div>
   );
-}
+});
 
-function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }) {
+const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }) {
   const { data } = useQuery({
     queryKey: ["dashboard-achievements", userId],
     queryFn: async (): Promise<{ certificates: number; competitions: number; badges: number }> => {
@@ -345,4 +347,4 @@ function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }
       ))}
     </div>
   );
-}
+});
