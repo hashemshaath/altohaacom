@@ -56,8 +56,6 @@ const AdminAutomationRules = lazy(() => import("@/components/admin/AdminAutomati
 const PerformanceOptimizationWidget = lazy(() => import("@/components/admin/PerformanceOptimizationWidget").then(m => ({ default: m.PerformanceOptimizationWidget })));
 const ContentCalendarWidget = lazy(() => import("@/components/admin/ContentCalendarWidget").then(m => ({ default: m.ContentCalendarWidget })));
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
-const AdminQuickNavWidget = lazy(() => import("@/components/admin/AdminQuickNavWidget").then(m => ({ default: m.AdminQuickNavWidget })));
-const PageNavigationWidget = lazy(() => import("@/components/admin/PageNavigationWidget").then(m => ({ default: m.PageNavigationWidget })));
 const DashboardLiveMetricsWidget = lazy(() => import("@/components/admin/DashboardLiveMetricsWidget").then(m => ({ default: m.DashboardLiveMetricsWidget })));
 const CommunicationsDashboardWidget = lazy(() => import("@/components/admin/CommunicationsDashboardWidget").then(m => ({ default: m.CommunicationsDashboardWidget })));
 const CommunityEngagementWidget = lazy(() => import("@/components/admin/CommunityEngagementWidget").then(m => ({ default: m.CommunityEngagementWidget })));
@@ -497,14 +495,7 @@ export default function AdminDashboard() {
       </Card>
 
       <LazySection>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <ReportsSummaryWidget />
-          <AdminQuickNavWidget />
-        </div>
-      </LazySection>
-
-      <LazySection>
-        <PageNavigationWidget />
+        <ReportsSummaryWidget />
       </LazySection>
 
       {/* ── Row: Community + Profile + Shop ── */}
