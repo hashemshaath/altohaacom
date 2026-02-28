@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
+import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";
 import { deriveExhibitionStatus, EXHIBITION_STATUS_LEGEND } from "@/lib/exhibitionStatus";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
@@ -437,7 +438,10 @@ export default function ExhibitionsAdmin() {
       />
 
       {/* Exhibition Analytics Widgets */}
-      <ExhibitionLiveStatsWidget />
+      <div className="grid gap-4 md:grid-cols-2">
+        <ExhibitionLiveStatsWidget />
+        <ExhibitionTicketStatsWidget />
+      </div>
       <ExhibitionAnalyticsWidget />
 
       {/* Exhibition Management Widget */}
@@ -1031,6 +1035,7 @@ export default function ExhibitionsAdmin() {
                 <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
                 <TableHead className="font-semibold">{t("Type", "النوع")}</TableHead>
                 <TableHead className="font-semibold">{t("Status", "الحالة")}</TableHead>
+                <TableHead className="font-semibold">{t("Tickets", "التذاكر")}</TableHead>
                 <TableHead className="font-semibold">{t("Date", "التاريخ")}</TableHead>
                 <TableHead className="font-semibold">{t("Location", "الموقع")}</TableHead>
                 <TableHead className="text-end font-semibold">{t("Actions", "الإجراءات")}</TableHead>
@@ -1039,14 +1044,14 @@ export default function ExhibitionsAdmin() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
+                   <TableCell colSpan={9} className="text-center py-12">
                     <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
                     <p className="text-sm text-muted-foreground mt-2">{t("Loading events...", "جاري تحميل الفعاليات...")}</p>
                   </TableCell>
                 </TableRow>
               ) : filteredExhibitions?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
+                  <TableCell colSpan={9} className="text-center py-12">
                     <Landmark className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
                     <p className="text-sm text-muted-foreground">{t("No events found", "لا توجد فعاليات")}</p>
                   </TableCell>
@@ -1149,6 +1154,12 @@ export default function ExhibitionsAdmin() {
                           </DropdownMenu>
                         );
                       })()}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-[10px] font-mono">
+                        <Ticket className="h-3 w-3 me-1" />
+                        {(ex as any).ticket_count ?? "—"}
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
                       {format(new Date(ex.start_date), "dd MMM yyyy")}

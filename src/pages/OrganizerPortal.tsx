@@ -42,13 +42,18 @@ export default function OrganizerPortal() {
   const { data: ticketStats } = useQuery({
     queryKey: ["organizer-ticket-stats", user?.id],
     queryFn: async () => {
-      if (!user || !exhibitions?.length) return { total: 0, checkedIn: 0 };
+      if (!user || !exhibitions?.length) return { total: 0, checkedIn: 0, perEvent: new Map<string, number>() };
       const ids = exhibitions.map(e => e.id);
-      const [total, checkedIn] = await Promise.all([
+      const [total, checkedIn, perEventData] = await Promise.all([
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", ids),
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", ids).not("checked_in_at", "is", null),
+        supabase.from("exhibition_tickets").select("exhibition_id").in("exhibition_id", ids),
       ]);
-      return { total: total.count || 0, checkedIn: checkedIn.count || 0 };
+      const perEvent = new Map<string, number>();
+      for (const t of perEventData.data || []) {
+        perEvent.set(t.exhibition_id, (perEvent.get(t.exhibition_id) || 0) + 1);
+      }
+      return { total: total.count || 0, checkedIn: checkedIn.count || 0, perEvent };
     },
     enabled: !!exhibitions?.length,
   });
@@ -188,6 +193,10 @@ export default function OrganizerPortal() {
                               <span className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
                                 {toEnglishDigits(ex.view_count || 0)} {t("views", "مشاهدة")}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Ticket className="h-3 w-3" />
+                                {toEnglishDigits(ticketStats?.perEvent?.get(ex.id) || 0)} {t("tickets", "تذكرة")}
                               </span>
                             </div>
                           </div>
