@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { RefObject, useState, useCallback } from "react";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,10 +18,12 @@ import { VoiceMessageRecorder } from "@/components/messages/VoiceMessageRecorder
 import { VoiceMessagePlayer } from "@/components/messages/VoiceMessagePlayer";
 import { ChatSearchBar } from "@/components/messages/ChatSearchBar";
 import { MessageReactions } from "@/components/messages/MessageReactions";
+import { ReplyPreview } from "@/components/messages/ReplyPreview";
+import { ForwardMessageDialog } from "@/components/messages/ForwardMessageDialog";
 import {
   Send, ArrowLeft, MoreVertical, Search, CheckSquare,
   Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare,
-  Plus, X, Smile, Phone, Video,
+  Plus, X, Smile, Phone, Video, Reply, Forward,
 } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
@@ -125,6 +127,35 @@ export function ChatArea({
   setIsApprovalOpen, onBack, sendMessage, toggleStarMutation,
 }: ChatAreaProps) {
   const { toast } = useToast();
+  const [replyTo, setReplyTo] = useState<{ id: string; content: string; senderName: string } | null>(null);
+  const [forwardMsg, setForwardMsg] = useState<Message | null>(null);
+
+  const handleReply = useCallback((msg: Message) => {
+    const senderName = msg.sender_id === user?.id
+      ? (isAr ? "أنت" : "You")
+      : getDisplayName(selectedPartner, isAr, "Unknown");
+    setReplyTo({ id: msg.id, content: msg.content.substring(0, 120), senderName });
+  }, [user?.id, isAr, selectedPartner]);
+
+  const handleSendWithReply = useCallback((e: React.FormEvent) => {
+    if (replyTo) {
+      // Attach reply_to metadata before sending
+      const original = handleSend;
+      // We'll intercept and add metadata
+      e.preventDefault();
+      if (!newMessage.trim() && pendingFiles.length === 0) return;
+      
+      sendMessage.mutate({
+        content: newMessage.trim() || (isAr ? "رد" : "Reply"),
+        message_type: "text",
+        metadata: { reply_to: replyTo },
+      });
+      setNewMessage("");
+      setReplyTo(null);
+      return;
+    }
+    handleSend(e);
+  }, [replyTo, handleSend, newMessage, pendingFiles, sendMessage, isAr, setNewMessage]);
 
   if (!selectedPartner) {
     return (
@@ -264,6 +295,24 @@ export function ChatArea({
                           variant="ghost"
                           size="icon"
                           className="h-6 w-6"
+                          title={isAr ? "رد" : "Reply"}
+                          onClick={() => handleReply(msg)}
+                        >
+                          <Reply className="h-3 w-3 scale-x-[-1]" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          title={isAr ? "إعادة توجيه" : "Forward"}
+                          onClick={() => setForwardMsg(msg)}
+                        >
+                          <Forward className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
                           onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}
                         >
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
@@ -273,6 +322,14 @@ export function ChatArea({
                       <div className={`rounded-2xl px-3.5 py-2 transition-all duration-200 hover:shadow-md ${
                         isMine ? "bg-primary text-primary-foreground rounded-ee-md" : "bg-muted rounded-es-md"
                       }`}>
+                        {/* Reply context */}
+                        {(msg.metadata as any)?.reply_to && (
+                          <ReplyPreview
+                            replyToMessage={(msg.metadata as any).reply_to}
+                            onClear={() => {}}
+                            compact
+                          />
+                        )}
                         {msg.is_starred && (
                           <Star className={`h-3 w-3 mb-1 ${isMine ? "text-primary-foreground/60" : "text-chart-4"} fill-current`} />
                         )}
@@ -376,8 +433,11 @@ export function ChatArea({
         </div>
       )}
 
+      {/* Reply Preview */}
+      <ReplyPreview replyToMessage={replyTo} onClear={() => setReplyTo(null)} />
+
       {/* Message Input */}
-      <form onSubmit={handleSend} className="border-t border-border/40 bg-muted/5 p-3">
+      <form onSubmit={handleSendWithReply} className="border-t border-border/40 bg-muted/5 p-3">
         <div className="flex gap-2 items-end">
           <div className="flex items-center gap-0.5 rounded-lg border border-border/30 bg-background/50 p-0.5">
             <EmojiPicker onEmojiSelect={(emoji) => setNewMessage(newMessage + emoji)} />
@@ -427,6 +487,18 @@ export function ChatArea({
           onChange={handleFileSelect}
         />
       </form>
+
+      {/* Forward Dialog */}
+      <ForwardMessageDialog
+        open={!!forwardMsg}
+        onOpenChange={(v) => { if (!v) setForwardMsg(null); }}
+        message={forwardMsg ? {
+          content: forwardMsg.content,
+          message_type: forwardMsg.message_type,
+          attachment_urls: forwardMsg.attachment_urls,
+          attachment_names: forwardMsg.attachment_names,
+        } : null}
+      />
     </>
   );
 }
