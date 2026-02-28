@@ -62,7 +62,7 @@ export function NewlyJoinedUsers() {
           </div>
         </SectionReveal>
 
-        <StaggeredList className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6" stagger={60}>
+        <StaggeredList className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6" stagger={60}>
           {users.map((user: any) => {
             const name = getDisplayName(user, isAr);
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;

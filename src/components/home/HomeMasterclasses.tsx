@@ -63,8 +63,8 @@ export function HomeMasterclasses() {
       </SectionReveal>
 
       <SectionReveal delay={80}>
-      {/* Horizontal scroll on mobile, grid on desktop */}
-      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0">
+      {/* Horizontal scroll on mobile, responsive grid on desktop */}
+      <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
         {classes.map((mc: any) => {
           const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
           const levelLabel = LEVEL_LABELS[mc.level];

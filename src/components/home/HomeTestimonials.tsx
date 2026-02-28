@@ -74,30 +74,33 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
           </SectionReveal>
 
           <SectionReveal delay={100}>
-            <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-              <div className="absolute top-4 start-4 opacity-5">
-                <Quote className="h-20 w-20" />
+            <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y bg-gradient-to-br from-card to-card/80" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+              <div className="absolute top-4 start-4 opacity-[0.03]">
+                <Quote className="h-24 w-24" />
+              </div>
+              <div className="absolute bottom-4 end-4 opacity-[0.03] rotate-180">
+                <Quote className="h-16 w-16" />
               </div>
               <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">
-                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
-                  &ldquo;{quote}&rdquo;
-                </p>
-
                 {t.rating && (
-                  <div className="flex items-center justify-center gap-0.5 mb-4">
+                  <div className="flex items-center justify-center gap-0.5 mb-5">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star key={i} className={cn("h-4 w-4", i < t.rating ? "text-chart-4 fill-chart-4" : "text-muted-foreground/20")} />
                     ))}
                   </div>
                 )}
 
+                <p className="text-base sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
+                  &ldquo;{quote}&rdquo;
+                </p>
+
                 <div className="flex items-center justify-center gap-3">
-                  <Avatar className="h-11 w-11 ring-2 ring-primary/10">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/15 shadow-md">
                     {t.avatar_url && <AvatarImage src={t.avatar_url} alt={name} />}
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">{initials}</AvatarFallback>
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-sm">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="text-start">
-                    <p className="text-sm font-semibold">{name}</p>
+                    <p className="text-sm font-bold text-foreground">{name}</p>
                     {role && <p className="text-xs text-muted-foreground">{role}</p>}
                   </div>
                 </div>

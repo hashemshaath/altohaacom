@@ -88,8 +88,8 @@ export function FeaturedChefs() {
         </SectionReveal>
 
         <SectionReveal delay={80}>
-        {/* Horizontal scroll on mobile, grid on desktop */}
-        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0">
+        {/* Horizontal scroll on mobile, responsive grid on desktop */}
+        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0" dir={isAr ? "rtl" : "ltr"}>
           {chefs.map((chef: any, idx: number) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
