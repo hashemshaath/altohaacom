@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import {
   Users, Trophy, GraduationCap, ShoppingBag, Building2,
   Globe, Scale, Award, ShieldCheck, ArrowRight, CheckCircle, ChefHat, Star,
-  Coffee, BookOpen,
+  Coffee, BookOpen, Sparkles,
 } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
+import { SectionReveal } from "@/components/ui/section-reveal";
 
 export function PlatformFeatures() {
   const { language } = useLanguage();
@@ -18,12 +19,12 @@ export function PlatformFeatures() {
   const isAr = language === "ar";
 
   const services = [
-    { icon: Trophy, title: isAr ? "مسابقات الطهي" : "Culinary Competitions", desc: isAr ? "تحدَّ نفسك في مسابقات عالمية ومحلية مع نظام تحكيم رقمي احترافي." : "Challenge yourself in global & local competitions with a professional digital judging system.", href: "/competitions" },
-    { icon: Coffee, title: isAr ? "طاولة الشيف" : "Chef's Table", desc: isAr ? "خدمة تقييم المنتجات الغذائية من قبل طهاة محترفين للشركات." : "Professional food product evaluation by expert chefs for B2B companies.", href: "/chefs-table" },
-    { icon: Globe, title: isAr ? "المعارض والفعاليات" : "Exhibitions & Events", desc: isAr ? "اكتشف أبرز معارض وفعاليات الطهي محلياً ودولياً." : "Discover top culinary exhibitions & events locally and internationally.", href: "/exhibitions" },
-    { icon: GraduationCap, title: isAr ? "الدروس المتقدمة" : "Masterclasses", desc: isAr ? "تعلّم أسرار المهنة من أمهر الطهاة عبر دروس حصرية." : "Learn the secrets of the craft from master chefs through exclusive lessons.", href: "/masterclasses" },
-    { icon: Users, title: isAr ? "المجتمع المهني" : "Professional Network", desc: isAr ? "تواصل مع طهاة ومحترفين من مختلف أنحاء العالم وابنِ شبكتك." : "Connect with chefs & professionals worldwide and build your network.", href: "/community" },
-    { icon: ShoppingBag, title: isAr ? "متجر الطهي" : "Culinary Shop", desc: isAr ? "أدوات طهي فاخرة، كتب متخصصة، وخدمات مهنية في مكان واحد." : "Premium tools, specialized books & professional services all in one place.", href: "/shop" },
+    { icon: Trophy, title: isAr ? "مسابقات الطهي" : "Culinary Competitions", desc: isAr ? "تحدَّ نفسك في مسابقات عالمية ومحلية مع نظام تحكيم رقمي احترافي." : "Challenge yourself in global & local competitions with a professional digital judging system.", href: "/competitions", color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: Coffee, title: isAr ? "طاولة الشيف" : "Chef's Table", desc: isAr ? "خدمة تقييم المنتجات الغذائية من قبل طهاة محترفين للشركات." : "Professional food product evaluation by expert chefs for B2B companies.", href: "/chefs-table", color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: Globe, title: isAr ? "المعارض والفعاليات" : "Exhibitions & Events", desc: isAr ? "اكتشف أبرز معارض وفعاليات الطهي محلياً ودولياً." : "Discover top culinary exhibitions & events locally and internationally.", href: "/exhibitions", color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: GraduationCap, title: isAr ? "الدروس المتقدمة" : "Masterclasses", desc: isAr ? "تعلّم أسرار المهنة من أمهر الطهاة عبر دروس حصرية." : "Learn the secrets of the craft from master chefs through exclusive lessons.", href: "/masterclasses", color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: Users, title: isAr ? "المجتمع المهني" : "Professional Network", desc: isAr ? "تواصل مع طهاة ومحترفين من مختلف أنحاء العالم وابنِ شبكتك." : "Connect with chefs & professionals worldwide and build your network.", href: "/community", color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: ShoppingBag, title: isAr ? "متجر الطهي" : "Culinary Shop", desc: isAr ? "أدوات طهي فاخرة، كتب متخصصة، وخدمات مهنية في مكان واحد." : "Premium tools, specialized books & professional services all in one place.", href: "/shop", color: "text-primary", bg: "bg-primary/10" },
   ];
 
   const roles = [
@@ -49,26 +50,31 @@ export function PlatformFeatures() {
   return (
     <>
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container py-8 md:py-12" aria-labelledby="services-heading">
-        <div className="mb-10 text-center">
-          <Badge variant="secondary" className="mb-3">{isAr ? "الخدمات" : "Services"}</Badge>
-          <h2 id="services-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
-            {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground leading-relaxed">
-            {isAr ? "منصة متكاملة صُممت لتمكين كل محترف في عالم الطهي" : "A comprehensive platform designed to empower every culinary professional"}
-          </p>
-        </div>
-        <div className={cn("grid gap-2.5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+      <section ref={servicesReveal.ref} className="container py-8 md:py-12" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
+        <SectionReveal>
+          <div className="mb-8 text-center">
+            <Badge variant="secondary" className="mb-2 gap-1">
+              <Sparkles className="h-3 w-3" />
+              {isAr ? "الخدمات" : "Services"}
+            </Badge>
+            <h2 id="services-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+              {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
+            </h2>
+            <p className="mx-auto mt-1.5 max-w-xl text-sm text-muted-foreground leading-relaxed">
+              {isAr ? "منصة متكاملة صُممت لتمكين كل محترف في عالم الطهي" : "A comprehensive platform designed to empower every culinary professional"}
+            </p>
+          </div>
+        </SectionReveal>
+        <div className={cn("grid gap-3 grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {services.map((s) => (
             <Link key={s.title} to={s.href} className="group block">
-              <Card className="h-full border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+              <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
                 <CardContent className="flex flex-col p-3.5 sm:p-5">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-all group-hover:bg-primary/15 group-hover:scale-110">
-                    <s.icon className="h-5 w-5 text-primary" />
+                  <div className={cn("mb-3 flex h-10 w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
+                    <s.icon className={cn("h-5 w-5", s.color)} />
                   </div>
-                  <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">{s.title}</h3>
-                  <p className="mb-3 flex-1 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  <h3 className="font-bold mb-1 text-sm sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
+                  <p className="mb-3 flex-1 text-xs sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center text-xs font-medium text-primary">
                     {isAr ? "اكتشف المزيد" : "Explore"}
                     <ArrowRight className="ms-1 h-3 w-3" />
@@ -81,27 +87,29 @@ export function PlatformFeatures() {
       </section>
 
       {/* Roles */}
-      <section ref={rolesReveal.ref} className="relative overflow-hidden py-8 md:py-12" aria-labelledby="roles-heading">
-        <div className="absolute inset-0 bg-muted/30" />
+      <section ref={rolesReveal.ref} className="relative overflow-hidden py-8 md:py-12" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
+        <div className="absolute inset-0 bg-muted/20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative">
-          <div className="mb-10 text-center">
-            <h2 id="roles-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
-              {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-              {isAr ? "مصممة لخدمة كل دور في منظومة الطهي الاحترافية" : "Designed to serve every role in the professional culinary ecosystem"}
-            </p>
-          </div>
+          <SectionReveal>
+            <div className="mb-8 text-center">
+              <h2 id="roles-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+                {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
+              </h2>
+              <p className="mx-auto mt-1.5 max-w-xl text-sm text-muted-foreground">
+                {isAr ? "مصممة لخدمة كل دور في منظومة الطهي الاحترافية" : "Designed to serve every role in the professional culinary ecosystem"}
+              </p>
+            </div>
+          </SectionReveal>
           <div className={cn("grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
             {roles.map((role) => {
               const content = (
-                <Card className="h-full text-center border-border/50 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
+                <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
                   <CardContent className="p-4">
                     <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
                       <role.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <h3 className="mb-0.5 text-sm font-semibold">{role.title}</h3>
+                    <h3 className="mb-0.5 text-sm font-bold">{role.title}</h3>
                     <p className="text-[11px] text-muted-foreground leading-snug">{role.desc}</p>
                   </CardContent>
                 </Card>
@@ -127,23 +135,25 @@ export function PlatformFeatures() {
       </section>
 
       {/* Why Altoha */}
-      <section ref={whyReveal.ref} className="container py-8 md:py-12" aria-labelledby="why-heading">
-        <div className="mb-10 text-center">
-          <h2 id="why-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
-            {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
-          </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}
-          </p>
-        </div>
-        <div className={cn("grid gap-2.5 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+      <section ref={whyReveal.ref} className="container py-8 md:py-12" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
+        <SectionReveal>
+          <div className="mb-8 text-center">
+            <h2 id="why-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+              {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
+            </h2>
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground">
+              {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}
+            </p>
+          </div>
+        </SectionReveal>
+        <div className={cn("grid gap-3 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {whyUs.map((item) => (
-            <Card key={item.title} className="border-border/50 text-center transition-all hover:shadow-md hover:-translate-y-1">
+            <Card key={item.title} className="border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1">
               <CardContent className="flex flex-col items-center p-5">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                   <item.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-1 text-sm font-semibold">{item.title}</h3>
+                <h3 className="mb-1 text-sm font-bold">{item.title}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
               </CardContent>
             </Card>
@@ -152,8 +162,8 @@ export function PlatformFeatures() {
       </section>
 
       {/* CTA Cards */}
-      <section className="container pb-8 md:pb-12">
-        <div className="grid gap-2.5 md:grid-cols-2">
+      <section className="container pb-8 md:pb-12" dir={isAr ? "rtl" : "ltr"}>
+        <div className="grid gap-3 md:grid-cols-2">
           <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 to-transparent transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
@@ -196,7 +206,7 @@ export function PlatformFeatures() {
 
       {/* Final CTA */}
       {!user && (
-        <section className="relative border-t overflow-hidden">
+        <section className="relative border-t overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
           <div className="container relative py-16 text-center md:py-24">

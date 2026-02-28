@@ -6,10 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles } from "lucide-react";
+import { Crown, Trophy, Calendar, MapPin, ArrowRight, Building2, Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { SectionReveal } from "@/components/ui/section-reveal";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -54,45 +56,47 @@ export function SponsorshipOpportunities() {
   if (opportunities.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-8 md:py-12">
+    <section className="relative overflow-hidden py-8 md:py-12" dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
       <div className="container relative">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1">
-              <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <span className="text-xs font-medium text-primary">
-                {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
-              </span>
+        <SectionReveal>
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <div className="mb-1.5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <span className="text-xs font-medium text-primary">
+                  {isAr ? "فرص رعاية حصرية" : "Exclusive Sponsorship Opportunities"}
+                </span>
+              </div>
+              <h2 className={cn("text-xl font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
+                {isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
+              </h2>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {isAr
+                  ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة"
+                  : "Support world-class culinary competitions & connect your brand with top chefs"}
+              </p>
             </div>
-            <h2 className={cn("text-2xl font-bold sm:text-3xl", !isAr && "font-serif")}>
-              {isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {isAr
-                ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة"
-                : "Support world-class culinary competitions & connect your brand with top chefs"}
-            </p>
+            <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
+              <Link to="/sponsors">
+                {isAr ? "جميع الفرص" : "All Opportunities"}
+                <ArrowRight className="ms-1 h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </div>
-          <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
-            <Link to="/sponsors">
-              {isAr ? "جميع الفرص" : "All Opportunities"}
-              <ArrowRight className="ms-1 h-3.5 w-3.5" />
-            </Link>
-          </Button>
-        </div>
+        </SectionReveal>
 
         {/* Sponsorship Packages */}
         {opportunities[0]?.packages?.length > 0 && (
-          <div className="mb-6">
+          <div className="mb-5">
             <ScrollArea className="w-full">
-              <div className="flex gap-3 pb-2">
+              <div className="flex gap-2.5 pb-2" dir={isAr ? "rtl" : "ltr"}>
                 {opportunities[0].packages.map((pkg: any) => {
                   const tier = TIER_LABELS[pkg.tier] || TIER_LABELS.bronze;
                   return (
                     <div
                       key={pkg.id}
-                      className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 ${tier.color}`}
+                      className={cn("flex shrink-0 items-center gap-2 rounded-full border px-4 py-2", tier.color)}
                     >
                       <Crown className="h-3.5 w-3.5" />
                       <span className="text-xs font-medium">
@@ -113,74 +117,76 @@ export function SponsorshipOpportunities() {
         )}
 
         {/* Competition Cards */}
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          {opportunities.slice(0, 4).map((comp: any) => {
-            const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
-            return (
-              <Link key={comp.id} to={`/competitions/${comp.id}`} className="group block">
-                <Card className="h-full overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                    {comp.cover_image_url ? (
-                      <img
-                        src={comp.cover_image_url}
-                        alt={title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                        <Trophy className="h-10 w-10 text-primary/30" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-3">
-                      <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm">
-                        {title}
-                      </h3>
-                    </div>
-                    <Badge className="absolute end-2 top-2 text-[10px] bg-primary/90">
-                      <Crown className="me-1 h-3 w-3" />
-                      {isAr ? "فرصة رعاية" : "Sponsor"}
-                    </Badge>
-                  </div>
-                  <CardContent className="p-3 space-y-2">
-                    <div className="space-y-1 text-[11px] text-muted-foreground">
-                      {comp.competition_start && (
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3 w-3 shrink-0" />
-                          <span>{format(new Date(comp.competition_start), "MMM d, yyyy")}</span>
+        <SectionReveal delay={80}>
+          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+            {opportunities.slice(0, 4).map((comp: any) => {
+              const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
+              return (
+                <Link key={comp.id} to={`/competitions/${comp.id}`} className="group block">
+                  <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                      {comp.cover_image_url ? (
+                        <img
+                          src={comp.cover_image_url}
+                          alt={title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                          <Trophy className="h-10 w-10 text-primary/30" />
                         </div>
                       )}
-                      {comp.is_virtual ? (
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3 w-3 shrink-0" />
-                          <span>{isAr ? "افتراضي" : "Virtual"}</span>
-                        </div>
-                      ) : comp.city ? (
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3 w-3 shrink-0" />
-                          <span>{comp.city}{comp.country ? `, ${comp.country}` : ""}</span>
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="flex items-center justify-between pt-1 border-t border-border/50">
-                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <Building2 className="h-3 w-3" />
-                        <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-3">
+                        <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">
+                          {title}
+                        </h3>
                       </div>
-                      <span className="text-[11px] font-medium text-primary">
-                        {isAr ? "تقدّم الآن" : "Apply Now"} →
-                      </span>
+                      <Badge className="absolute end-2 top-2 text-[10px] bg-primary/90 shadow-sm gap-1">
+                        <Crown className="h-2.5 w-2.5" />
+                        {isAr ? "فرصة رعاية" : "Sponsor"}
+                      </Badge>
                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
+                    <CardContent className="p-3 space-y-2">
+                      <div className="space-y-1 text-[11px] text-muted-foreground">
+                        {comp.competition_start && (
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
+                            <span>{format(new Date(comp.competition_start), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>
+                          </div>
+                        )}
+                        {comp.is_virtual ? (
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                            <span>{isAr ? "افتراضي" : "Virtual"}</span>
+                          </div>
+                        ) : comp.city ? (
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                            <span className="truncate">{comp.city}{comp.country ? `, ${comp.country}` : ""}</span>
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="flex items-center justify-between pt-1 border-t border-border/40">
+                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <Users className="h-3 w-3" />
+                          <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
+                        </div>
+                        <span className="text-[11px] font-medium text-primary">
+                          {isAr ? "تقدّم الآن" : "Apply Now"} →
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        </SectionReveal>
 
         {/* Mobile View All */}
-        <div className="mt-6 text-center sm:hidden">
+        <div className="mt-5 text-center sm:hidden">
           <Button variant="outline" size="sm" asChild>
             <Link to="/sponsors">
               {isAr ? "جميع فرص الرعاية" : "All Sponsorship Opportunities"}
