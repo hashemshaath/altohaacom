@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from "date-fns";
 import { ar } from "date-fns/locale";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 interface ExhibitionRow {
   [key: string]: any;
@@ -99,6 +99,13 @@ export default function OrganizerDetail() {
     },
     enabled: !!decodedName,
   });
+
+  // Increment views
+  useEffect(() => {
+    if (data?.orgRecord?.id) {
+      supabase.rpc("increment_organizer_views", { p_organizer_id: data.orgRecord.id }).then();
+    }
+  }, [data?.orgRecord?.id]);
 
   const exhibitions = data?.exhibitions || [];
   const articles = data?.articles || [];

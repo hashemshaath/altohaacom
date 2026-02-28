@@ -68,6 +68,7 @@ export default function CreateExhibition() {
           country: data.isVirtual ? null : data.country || null,
           map_url: data.mapUrl || null,
           cover_image_url: data.coverImageUrl || null,
+          organizer_id: data.organizerId || null,
           organizer_name: data.organizerName || null,
           organizer_name_ar: data.organizerNameAr || null,
           organizer_email: data.organizerEmail || null,

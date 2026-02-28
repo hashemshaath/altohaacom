@@ -14925,6 +14925,7 @@ export type Database = {
           description_ar: string | null
           email: string | null
           entity_id: string | null
+          founded_year: number | null
           gallery_urls: string[] | null
           id: string
           is_featured: boolean | null
@@ -14964,6 +14965,7 @@ export type Database = {
           description_ar?: string | null
           email?: string | null
           entity_id?: string | null
+          founded_year?: number | null
           gallery_urls?: string[] | null
           id?: string
           is_featured?: boolean | null
@@ -15003,6 +15005,7 @@ export type Database = {
           description_ar?: string | null
           email?: string | null
           entity_id?: string | null
+          founded_year?: number | null
           gallery_urls?: string[] | null
           id?: string
           is_featured?: boolean | null
@@ -21516,6 +21519,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_organizer_views: {
+        Args: { p_organizer_id: string }
+        Returns: undefined
+      }
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
@@ -21541,6 +21548,10 @@ export type Database = {
       notify_membership_expiry_reminders: { Args: never; Returns: undefined }
       notify_trial_expiry_reminders: { Args: never; Returns: undefined }
       notify_upcoming_exhibitions: { Args: never; Returns: undefined }
+      refresh_organizer_stats: {
+        Args: { p_organizer_id: string }
+        Returns: undefined
+      }
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
         Returns: undefined
