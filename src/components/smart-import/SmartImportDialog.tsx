@@ -111,6 +111,31 @@ export interface ImportedData {
   rules_summary_en?: string;
   rules_summary_ar?: string;
   edition_year?: number;
+  // Extended competition fields from PDF/website import
+  competition_type?: string;
+  competition_versions?: { name: string; name_ar?: string; description?: string; description_ar?: string; max_participants?: number }[];
+  judging_criteria?: { criterion: string; criterion_ar?: string; weight?: number; description?: string; description_ar?: string }[];
+  judging_committee?: { name: string; name_ar?: string; title?: string; title_ar?: string; role?: string; photo_url?: string }[];
+  terms_conditions_en?: string;
+  terms_conditions_ar?: string;
+  eligibility_en?: string;
+  eligibility_ar?: string;
+  participation_requirements_en?: string[];
+  participation_requirements_ar?: string[];
+  prizes?: { place: string; place_ar?: string; prize: string; prize_ar?: string; value?: number }[];
+  competition_schedule?: { time: string; date?: string; activity: string; activity_ar?: string }[];
+  scoring_method_en?: string;
+  scoring_method_ar?: string;
+  max_team_size?: number;
+  min_team_size?: number;
+  allowed_entry_types?: string[];
+  blind_judging?: boolean;
+  competition_rounds?: { name: string; name_ar?: string; description?: string; description_ar?: string; duration?: string }[];
+  age_restrictions?: string;
+  dress_code?: string;
+  dress_code_ar?: string;
+  equipment_provided?: string[];
+  equipment_required?: string[];
   // Enhanced exhibition fields
   description_short_en?: string;
   description_short_ar?: string;
