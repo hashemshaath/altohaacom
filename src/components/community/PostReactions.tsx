@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { SmilePlus } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const REACTIONS = [
   { type: "fire", emoji: "🔥", label: "Fire", labelAr: "نار" },
@@ -96,7 +96,7 @@ export function PostReactions({ postId }: PostReactionsProps) {
         >
           <span className="text-sm">{getEmoji(r.type)}</span>
           <span className="tabular-nums text-[10px] font-semibold text-muted-foreground">
-            {toEnglishDigits(`${r.count}`)}
+            <AnimatedCounter value={r.count} className="inline" />
           </span>
         </button>
       ))}
