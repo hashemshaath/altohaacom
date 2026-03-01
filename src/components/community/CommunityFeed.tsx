@@ -454,7 +454,7 @@ export function CommunityFeed() {
       {!tagFilter && feedFilter === "for_you" && <FeedRecommendations />}
 
       {/* Feed */}
-      <div className="divide-y divide-border">
+      <div className="divide-y divide-border/50">
         {posts.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-center px-6">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-border/30">
