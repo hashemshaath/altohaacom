@@ -335,9 +335,9 @@ function SponsorshipWidget({ companyId, language }: { companyId: string | null; 
           <Link
             key={comp.id}
             to={`/competitions/${comp.id}`}
-            className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+            className="flex items-center gap-3 rounded-xl border p-3 transition-colors hover:bg-muted/50"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-chart-3/10">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-3/10">
               <Trophy className="h-5 w-5 text-chart-3" />
             </div>
             <div className="flex-1 min-w-0">

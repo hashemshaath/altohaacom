@@ -61,7 +61,7 @@ export function DayEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolea
       countdown.urgent && !countdown.past && "ring-1 ring-destructive/20"
     )}>
       {event.cover_image_url ? (
-        <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-muted shadow-sm">
+        <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-muted shadow-sm">
           <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
         </div>
       ) : (

@@ -210,7 +210,7 @@ export default function ChefPortfolio() {
                         const comp = reg.competitions as any;
                         return (
                           <div key={reg.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-muted/30 transition-colors">
-                            <div className="h-12 w-16 rounded-lg overflow-hidden bg-muted shrink-0">
+                            <div className="h-12 w-16 rounded-xl overflow-hidden bg-muted shrink-0">
                               {comp?.cover_image_url ? (
                                 <img src={comp.cover_image_url} alt="" className="h-full w-full object-cover" />
                               ) : (
@@ -294,7 +294,7 @@ export default function ChefPortfolio() {
                   {certificates?.length ? (
                     <div className="space-y-2">
                       {certificates.slice(0, 5).map((cert) => (
-                        <div key={cert.id} className="flex items-center gap-2 rounded-lg bg-muted/40 p-2.5">
+                        <div key={cert.id} className="flex items-center gap-2 rounded-xl bg-muted/40 p-2.5">
                           <Award className="h-4 w-4 text-chart-5 shrink-0" />
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium truncate">{isAr && cert.event_name_ar ? cert.event_name_ar : cert.event_name}</p>

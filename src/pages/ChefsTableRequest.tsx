@@ -756,7 +756,7 @@ function StepReview({ isAr, companyName, brandName, productName, productCategory
               <p className="text-xs font-bold text-muted-foreground mb-2">{isAr ? "صور المنتج" : "Product Images"}</p>
               <div className="grid grid-cols-5 gap-2">
                 {productImages.map((url: string, i: number) => (
-                  <div key={i} className="aspect-square rounded-lg overflow-hidden border border-border/40">
+                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border/40">
                     <img src={url} alt="" className="h-full w-full object-cover" />
                   </div>
                 ))}

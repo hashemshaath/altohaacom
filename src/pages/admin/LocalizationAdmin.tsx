@@ -657,12 +657,12 @@ export default function LocalizationAdmin() {
                   {languages.map(lang => (
                     <div
                       key={lang.id}
-                      className={`flex items-center justify-between rounded-lg border p-4 transition-all ${
+                      className={`flex items-center justify-between rounded-xl border p-4 transition-all ${
                         lang.is_enabled ? "border-primary/30 bg-primary/5" : "opacity-60"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-lg">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-lg">
                           {lang.flag_emoji || lang.code.toUpperCase()}
                         </div>
                         <div>
