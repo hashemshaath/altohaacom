@@ -18,6 +18,7 @@ import { toast } from "@/hooks/use-toast";
 import { Megaphone, Eye, MousePointer, DollarSign, Plus, Package, BarChart3, FileText, TrendingUp } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -163,10 +164,10 @@ export default function CompanyAdvertising() {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
          {[
-           { icon: Megaphone, label: isAr ? "حملات نشطة" : "Active", value: activeCampaigns, color: "text-primary" },
-           { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: toEnglishDigits(totalImpressions.toLocaleString()), color: "text-chart-1" },
-           { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", value: toEnglishDigits(totalClicks.toLocaleString()), color: "text-chart-2" },
-           { icon: DollarSign, label: isAr ? "المصروف" : "Spent", value: formatCurrency(totalSpent, language as "en" | "ar"), color: "text-chart-3" },
+           { icon: Megaphone, label: isAr ? "حملات نشطة" : "Active", numValue: activeCampaigns, color: "text-primary" },
+           { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", numValue: totalImpressions, color: "text-chart-1" },
+           { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", numValue: totalClicks, color: "text-chart-2" },
+           { icon: DollarSign, label: isAr ? "المصروف" : "Spent", strValue: formatCurrency(totalSpent, language as "en" | "ar"), color: "text-chart-3" },
          ].map(k => (
           <Card key={k.label}>
             <CardContent className="flex items-center gap-3 p-4">
@@ -175,7 +176,7 @@ export default function CompanyAdvertising() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{k.label}</p>
-                <p className="text-xl font-bold">{k.value}</p>
+                {'numValue' in k ? <AnimatedCounter value={k.numValue as number} className="text-xl font-bold" format /> : <p className="text-xl font-bold">{k.strValue}</p>}
               </div>
             </CardContent>
           </Card>
