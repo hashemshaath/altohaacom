@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { countryFlag } from "@/lib/countryFlag";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -133,7 +134,7 @@ export const CompetitionCard = memo(
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
                   <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-xl">
                     <Clock className="h-2.5 w-2.5 text-primary" />
-                    {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft}D`}
+                    {isAr ? <><AnimatedCounter value={derived.daysLeft} className="inline" /> يوم</> : <><AnimatedCounter value={derived.daysLeft} className="inline" />D</>}
                   </Badge>
                 )}
               </div>
@@ -150,7 +151,7 @@ export const CompetitionCard = memo(
                   {maxP && (
                     <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-primary/10 backdrop-blur-md border-0 text-primary rounded-xl">
                       <Users className="h-2.5 w-2.5" />
-                      {toEnglishDigits(regCount)}/{toEnglishDigits(maxP)}
+                      <AnimatedCounter value={regCount} className="inline" />/{toEnglishDigits(maxP)}
                     </Badge>
                   )}
                 </div>
@@ -168,7 +169,7 @@ export const CompetitionCard = memo(
                 <div className="mb-3 space-y-1">
                   <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
                     <span>{isAr ? "السعة" : "Capacity"}</span>
-                    <span className={`tabular-nums ${fillPct > 80 ? "text-destructive" : "text-primary"}`}>{toEnglishDigits(fillPct)}%</span>
+                    <span className={`tabular-nums ${fillPct > 80 ? "text-destructive" : "text-primary"}`}><AnimatedCounter value={fillPct} className="inline" />%</span>
                   </div>
                   <div className="h-1 w-full overflow-hidden rounded-full bg-muted/40">
                     <div
@@ -254,7 +255,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
                   <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/30 rounded-xl">
                     <Clock className="h-3 w-3 text-primary" />
-                    {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft} DAYS LEFT`}
+                    {isAr ? <><AnimatedCounter value={derived.daysLeft} className="inline" /> يوم</> : <><AnimatedCounter value={derived.daysLeft} className="inline" /> DAYS LEFT</>}
                   </Badge>
                 )}
               </div>
@@ -288,7 +289,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
                 <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/50">
                   <Users className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
-                <span className="text-xs sm:text-sm">{toEnglishDigits(regCount)} {isAr ? "مسجل" : "Registered"}</span>
+                <span className="text-xs sm:text-sm"><AnimatedCounter value={regCount} className="inline" /> {isAr ? "مسجل" : "Registered"}</span>
               </div>
               <div className="ms-auto hidden sm:block">
                 <Button variant="ghost" className="gap-2 text-primary hover:bg-primary/5 group/btn h-auto p-0">

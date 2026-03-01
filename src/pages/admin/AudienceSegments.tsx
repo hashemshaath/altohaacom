@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Select,
   SelectContent,
@@ -414,7 +415,7 @@ export default function AudienceSegments() {
                   <div className="flex items-center gap-4 mb-3">
                     <div className="flex items-center gap-1.5">
                       <Users className="h-4 w-4 text-primary" />
-                      <span className="text-lg font-bold">{toEnglishDigits(segment.estimated_reach.toLocaleString())}</span>
+                      <AnimatedCounter value={segment.estimated_reach} className="text-lg font-bold" format />
                       <span className="text-xs text-muted-foreground">{isAr ? "مستخدم" : "users"}</span>
                     </div>
                     <Badge variant="outline" className="gap-1">
