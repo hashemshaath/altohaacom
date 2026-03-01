@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FileText, Eye, Star, TrendingUp, Clock, BarChart3 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function ContentStatsWidget() {
   const { language } = useLanguage();
@@ -78,7 +79,7 @@ export function ContentStatsWidget() {
                 <span className="truncate flex-1 me-2">{isAr ? a.title_ar || a.title : a.title}</span>
                 <div className="flex items-center gap-1.5 shrink-0">
                   <Badge variant="outline" className="text-[9px] px-1 py-0">{a.type}</Badge>
-                  <span className="text-muted-foreground">{(a.view_count || 0).toLocaleString()}</span>
+                  <span className="text-muted-foreground"><AnimatedCounter value={a.view_count || 0} /></span>
                   <Eye className="h-3 w-3 text-muted-foreground" />
                 </div>
               </div>

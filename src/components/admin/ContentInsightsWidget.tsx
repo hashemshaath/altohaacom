@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { FileText, Eye, TrendingUp, Calendar, Star } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
@@ -80,7 +81,7 @@ export function ContentInsightsWidget() {
           { icon: FileText, label: isAr ? "الكل" : "Total", value: data.total, color: "text-primary", bg: "bg-primary/10" },
           { icon: TrendingUp, label: isAr ? "منشور" : "Published", value: data.published, color: "text-chart-5", bg: "bg-chart-5/10" },
           { icon: FileText, label: isAr ? "مسودة" : "Drafts", value: data.drafts, color: "text-chart-4", bg: "bg-chart-4/10" },
-          { icon: Eye, label: isAr ? "مشاهدات" : "Views", value: data.totalViews.toLocaleString(), color: "text-chart-3", bg: "bg-chart-3/10" },
+          { icon: Eye, label: isAr ? "مشاهدات" : "Views", value: data.totalViews, color: "text-chart-3", bg: "bg-chart-3/10" },
           { icon: Star, label: isAr ? "مميز" : "Featured", value: data.featured, color: "text-primary", bg: "bg-primary/10" },
           { icon: Calendar, label: isAr ? "مجدول" : "Scheduled", value: data.scheduled, color: "text-chart-4", bg: "bg-chart-4/10" },
         ].map(kpi => (
@@ -89,7 +90,7 @@ export function ContentInsightsWidget() {
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3 w-3 ${kpi.color}`} /></div>
               <div>
                 <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
-                <p className="text-sm font-bold">{kpi.value}</p>
+                <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : parseInt(String(kpi.value).replace(/,/g, "")) || 0} className="text-sm font-bold" />
               </div>
             </CardContent>
           </Card>
@@ -150,7 +151,7 @@ export function ContentInsightsWidget() {
             <div key={a.id} className="flex items-center gap-2 text-[10px]">
               <span className="font-bold text-muted-foreground w-4">{i + 1}</span>
               <span className="truncate flex-1">{a.title}</span>
-              <Badge variant="outline" className="text-[9px] h-4 shrink-0">{(a.view_count || 0).toLocaleString()}</Badge>
+              <Badge variant="outline" className="text-[9px] h-4 shrink-0"><AnimatedCounter value={a.view_count || 0} /></Badge>
             </div>
           ))}
         </CardContent>

@@ -46,7 +46,7 @@ export function ContentQuickToolbar() {
 
   const metrics = [
     { icon: FileText, label: isAr ? "إجمالي المقالات" : "Total Articles", value: contentStats?.total || 0, color: "text-primary" },
-    { icon: Eye, label: isAr ? "إجمالي المشاهدات" : "Total Views", value: (contentStats?.totalViews || 0).toLocaleString(), color: "text-chart-1" },
+    { icon: Eye, label: isAr ? "إجمالي المشاهدات" : "Total Views", value: contentStats?.totalViews || 0, color: "text-chart-1" },
     { icon: TrendingUp, label: isAr ? "هذا الأسبوع" : "This Week", value: contentStats?.thisWeek || 0, color: "text-chart-2" },
     { icon: BarChart3, label: isAr ? "متوسط المشاهدات" : "Avg Views", value: contentStats?.avgViews || 0, color: "text-chart-3" },
   ];
@@ -61,7 +61,7 @@ export function ContentQuickToolbar() {
             </div>
             <div className="min-w-0">
               <p className="text-[10px] text-muted-foreground truncate">{m.label}</p>
-              <AnimatedCounter value={typeof m.value === "string" ? parseInt(m.value.replace(/,/g, "")) || 0 : m.value} className="text-lg" />
+              <AnimatedCounter value={typeof m.value === "number" ? m.value : parseInt(String(m.value).replace(/,/g, "")) || 0} className="text-lg" />
             </div>
           </CardContent>
         </Card>

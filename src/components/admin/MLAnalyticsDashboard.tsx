@@ -249,15 +249,15 @@ export function MLAnalyticsDashboard() {
                     <div className="grid grid-cols-3 gap-1 text-[10px]">
                       <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">3m</p>
-                        <p className="font-semibold">{f.forecast_3m.toLocaleString()}</p>
+                        <AnimatedCounter value={f.forecast_3m} className="font-semibold" />
                       </div>
                       <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">6m</p>
-                        <p className="font-semibold">{f.forecast_6m.toLocaleString()}</p>
+                        <AnimatedCounter value={f.forecast_6m} className="font-semibold" />
                       </div>
                       <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">12m</p>
-                        <p className="font-semibold">{f.forecast_12m.toLocaleString()}</p>
+                        <AnimatedCounter value={f.forecast_12m} className="font-semibold" />
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
