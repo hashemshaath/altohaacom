@@ -65,7 +65,6 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
 
   const { data: enabledFeatures } = useUserFeatures();
 
-  // Map community tab IDs to feature codes for gating
   const TAB_FEATURE_MAP: Record<string, string> = {
     live: "feature_live_sessions",
   };
@@ -81,7 +80,6 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
     { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
   ];
 
-  // Filter tabs by membership features
   const tabs = allTabs.filter(tab => {
     const featureCode = TAB_FEATURE_MAP[tab.id];
     if (!featureCode) return true;
@@ -91,13 +89,13 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
 
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col shrink-0 sticky top-12 self-start py-2 pe-1 transition-all duration-300 ease-in-out",
+      "hidden lg:flex flex-col shrink-0 sticky top-12 self-start py-3 pe-1 transition-all duration-300 ease-in-out",
       leftSidebarOpen ? "w-[220px]" : "w-[48px]"
     )}>
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 mb-2 self-end rounded-full text-muted-foreground hover:text-foreground"
+        className="h-8 w-8 mb-2 self-end rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50"
         onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
       >
         {leftSidebarOpen
@@ -107,11 +105,11 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
       </Button>
 
       {user && profile && leftSidebarOpen && (
-        <Link to={`/${profile.username || user.id}`} className="block mb-2 rounded-xl border border-border bg-card p-3 hover:bg-muted/30 transition-colors group">
+        <Link to={`/${profile.username || user.id}`} className="block mb-3 rounded-2xl border border-border/30 bg-card/80 p-3.5 hover:bg-muted/30 hover:shadow-sm transition-all group">
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 ring-2 ring-primary/20 transition-transform group-hover:scale-105">
-              <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary/10 text-primary font-bold">
+            <Avatar className="h-11 w-11 rounded-xl ring-2 ring-primary/15 transition-transform group-hover:scale-105 shadow-sm">
+              <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
+              <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold">
                 {((isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -135,8 +133,8 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
               "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
               !leftSidebarOpen && "justify-center px-0",
               activeTab === tab.id
-                ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                : "text-foreground hover:bg-muted active:scale-[0.98]"
+                ? "bg-primary text-primary-foreground shadow-md shadow-primary/15"
+                : "text-foreground hover:bg-muted/50 active:scale-[0.98]"
             )}
           >
             <tab.icon className="h-5 w-5 shrink-0" />
@@ -148,13 +146,13 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
       {leftSidebarOpen && <ProfileCompletionCard />}
 
       {leftSidebarOpen && (
-        <div className="mt-4 rounded-2xl border border-border/50 bg-gradient-to-b from-card to-muted/20 p-4 shadow-sm">
+        <div className="mt-4 rounded-2xl border border-border/30 bg-gradient-to-b from-card to-muted/15 p-4 shadow-sm">
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
             <Activity className="h-3.5 w-3.5 text-primary" />
             {isAr ? "إحصائيات المجتمع" : "Community Stats"}
           </h3>
-          <OnlineCountBadge className="mb-2.5" />
-          <div className="space-y-2.5">
+          <OnlineCountBadge className="mb-3" />
+          <div className="space-y-3">
             {[
               { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
               { label: isAr ? "منشور" : "Posts", value: stats.posts, color: "text-chart-2" },

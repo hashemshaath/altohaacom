@@ -27,9 +27,9 @@ const LiveSessionsTab = lazy(() => import("@/components/community/LiveSessionsTa
 function TabFallback() {
   return (
     <div className="p-4 space-y-3">
-      <Skeleton className="h-8 w-48" />
-      <Skeleton className="h-32 w-full" />
-      <Skeleton className="h-32 w-full" />
+      <Skeleton className="h-8 w-48 rounded-xl" />
+      <Skeleton className="h-32 w-full rounded-2xl" />
+      <Skeleton className="h-32 w-full rounded-2xl" />
     </div>
   );
 }
@@ -59,22 +59,22 @@ export default function Community() {
       <Header />
 
       {/* Editorial Community Hero */}
-      <section className="relative overflow-hidden border-b border-border/40">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/12 via-background to-chart-2/6" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_70%)]" />
-        <div className="container relative py-8 md:py-10">
+      <section className="relative overflow-hidden border-b border-border/30">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-chart-2/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
+        <div className="container relative py-8 md:py-12">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
-                <Users className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+            <div className="max-w-2xl space-y-3.5">
+              <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 ring-1 ring-primary/15 shadow-sm shadow-primary/5">
+                <Users className="h-4 w-4 text-primary" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-primary">
                   {isAr ? "مجتمع الطهاة" : "Culinary Community"}
                 </span>
               </div>
-              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
                 {isAr ? "المجتمع" : "Community"}
               </h1>
-              <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
+              <p className="text-muted-foreground text-sm leading-relaxed md:text-base max-w-lg">
                 {isAr
                   ? "ماذا يحدث في مجتمع الطهاة؟"
                   : "What's happening in the chef community?"}
@@ -85,7 +85,7 @@ export default function Community() {
       </section>
 
       <main className="container flex-1">
-        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-2">
+        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-3">
           <CommunityLeftSidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -93,7 +93,7 @@ export default function Community() {
             setLeftSidebarOpen={setLeftSidebarOpen}
           />
 
-          <div className="flex-1 min-w-0 border-x border-border min-h-screen">
+          <div className="flex-1 min-w-0 border-x border-border/30 min-h-screen">
             <CommunityMobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {(activeTab === "feed" || activeTab === "bookmarks") && <CommunityFeed />}

@@ -103,13 +103,13 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
   return (
     <aside className={cn(
-      "hidden xl:flex flex-col shrink-0 sticky top-12 self-start py-2 ps-1 transition-all duration-300 ease-in-out",
+      "hidden xl:flex flex-col shrink-0 sticky top-12 self-start py-3 ps-1 transition-all duration-300 ease-in-out",
       rightSidebarOpen ? "w-[260px]" : "w-[48px]"
     )}>
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 mb-2 self-start rounded-full text-muted-foreground hover:text-foreground"
+        className="h-8 w-8 mb-2 self-start rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50"
         onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
       >
         {rightSidebarOpen
@@ -123,22 +123,22 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
           <OnboardingChecklist />
           <CommunitySearch />
 
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
+          <div className="rounded-2xl border border-border/30 bg-card/80 overflow-hidden shadow-sm">
+            <h3 className="px-4 pt-3.5 pb-2 text-base font-bold flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
               {isAr ? "الأكثر تداولاً" : "Trending"}
             </h3>
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-border/30">
               {trendingTopics.map((topic, i) => (
                 <Link
                   key={i}
                   to={`/community?tag=${encodeURIComponent(topic.tag)}`}
-                  className="block px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer group"
+                  className="block px-4 py-3 hover:bg-muted/20 transition-colors cursor-pointer group"
                 >
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Hash className="h-3 w-3" />
                     <span>{isAr ? "رائج" : "Trending"}</span>
-                    {i === 0 && <span className="ms-auto text-[9px] text-primary font-bold">{isAr ? "الأول" : "#1"}</span>}
+                    {i === 0 && <span className="ms-auto text-[9px] text-primary font-bold bg-primary/10 px-1.5 py-0.5 rounded-md">{isAr ? "الأول" : "#1"}</span>}
                   </div>
                   <p className="text-sm font-bold mt-0.5 group-hover:text-primary transition-colors">#{topic.tag}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -160,21 +160,21 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
           {/* Who to Follow */}
           {suggestedUsers.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card overflow-hidden">
-              <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
+            <div className="rounded-2xl border border-border/30 bg-card/80 overflow-hidden shadow-sm">
+              <h3 className="px-4 pt-3.5 pb-2 text-base font-bold flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-chart-4" />
                 {isAr ? "من تتابع" : "Who to Follow"}
               </h3>
-              <div className="divide-y divide-border">
+              <div className="divide-y divide-border/30">
                 {suggestedUsers.slice(0, 3).map((profile: any) => (
                   <div
                     key={profile.user_id}
-                    className="flex items-center gap-2.5 px-4 py-2.5 hover:bg-muted/30 transition-colors cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 transition-colors cursor-pointer"
                     onClick={() => navigate(`/chef/${profile.user_id}`)}
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile.avatar_url || undefined} />
-                      <AvatarFallback className="text-xs">
+                    <Avatar className="h-9 w-9 rounded-xl shadow-sm">
+                      <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
+                      <AvatarFallback className="rounded-xl text-xs font-bold bg-muted">
                         {(profile.full_name || "U")[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -184,14 +184,14 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
                           ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || profile.username)
                           : (profile.display_name || profile.full_name || profile.username)}
                         {profile.is_verified && (
-                          <Badge variant="secondary" className="h-3.5 w-3.5 p-0 rounded-full bg-primary/10 text-primary text-[8px]">✓</Badge>
+                          <Badge variant="secondary" className="h-4 w-4 p-0 rounded-full bg-primary/10 text-primary text-[8px]">✓</Badge>
                         )}
                       </p>
                       <p className="text-[10px] text-muted-foreground truncate">
                         {profile.specialization || (isAr ? "طاهٍ" : "Chef")}
                       </p>
                     </div>
-                    <Button variant="outline" size="sm" className="h-7 text-[10px] rounded-full px-3">
+                    <Button variant="outline" size="sm" className="h-7 text-[10px] rounded-xl px-3 border-border/30">
                       <UserPlus className="h-3 w-3 me-1" />
                       {isAr ? "تابع" : "Follow"}
                     </Button>
@@ -203,8 +203,8 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
 
           <AdBanner placementSlug="sidebar" className="rounded-2xl overflow-hidden" />
 
-          <div className="px-4">
-            <p className="text-[10px] text-muted-foreground leading-relaxed">
+          <div className="px-4 py-2">
+            <p className="text-[10px] text-muted-foreground/60 leading-relaxed">
               {isAr ? "الشروط · الخصوصية · سياسة ملفات تعريف الارتباط · حول" : "Terms · Privacy · Cookie Policy · About"}
               <br />
               © {new Date().getFullYear()} Altoha
