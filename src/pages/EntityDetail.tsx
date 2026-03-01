@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
@@ -602,7 +603,7 @@ export default function EntityDetail() {
                   <FactRow label={isAr ? "تأسست" : "Founded"} value={toEnglishDigits(String(entity.founded_year))} />
                 )}
                 {entity.member_count && (
-                  <FactRow label={isAr ? (isEducational ? "الطلاب المسجلون" : "الأعضاء المسجلون") : (isEducational ? "Enrolled Students" : "Registered Members")} value={toEnglishDigits(entity.member_count.toLocaleString())} />
+                  <FactRow label={isAr ? (isEducational ? "الطلاب المسجلون" : "الأعضاء المسجلون") : (isEducational ? "Enrolled Students" : "Registered Members")} value={<AnimatedCounter value={entity.member_count} format />} />
                 )}
                 {entity.registration_number && (
                   <FactRow label={isAr ? "رقم التسجيل" : "Reg. #"} value={entity.registration_number} mono />
@@ -620,7 +621,7 @@ export default function EntityDetail() {
                   <FactRow label={isAr ? "مستوى التحقق" : "Verification Level"} value={entity.verification_level} />
                 )}
                 {entity.view_count != null && entity.view_count > 0 && (
-                  <FactRow label={isAr ? "المشاهدات" : "Page Views"} value={toEnglishDigits(entity.view_count.toLocaleString())} />
+                  <FactRow label={isAr ? "المشاهدات" : "Page Views"} value={<AnimatedCounter value={entity.view_count} format />} />
                 )}
               </CardContent>
             </Card>
@@ -634,7 +635,7 @@ export default function EntityDetail() {
 }
 
 
-function FactRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function FactRow({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
     <div className="flex items-center justify-between px-4 py-2.5 border-b last:border-0">
       <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
