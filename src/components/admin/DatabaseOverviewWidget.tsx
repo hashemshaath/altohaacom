@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Database, HardDrive, Users, FileText, Image, MessageSquare, Trophy } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 /**
  * Shows database table row counts for key tables — 
@@ -62,7 +63,7 @@ export function DatabaseOverviewWidget() {
               <div key={r.key} className="flex items-center gap-2 rounded-xl bg-muted/40 p-2">
                 <Icon className={`h-4 w-4 shrink-0 ${r.color}`} />
                 <div className="min-w-0">
-                  <p className="text-sm font-bold leading-none">{isLoading ? "—" : formatNumber(val)}</p>
+                  <AnimatedCounter value={isLoading ? 0 : val} className="text-sm leading-none" />
                   <p className="text-[10px] text-muted-foreground truncate">{isAr ? r.ar : r.en}</p>
                 </div>
               </div>

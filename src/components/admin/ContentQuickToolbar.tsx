@@ -10,6 +10,7 @@ import {
   FileText, Eye, Star, Clock, TrendingUp, Search,
   BarChart3, Calendar, Filter,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function ContentQuickToolbar() {
   const { language } = useLanguage();
@@ -60,7 +61,7 @@ export function ContentQuickToolbar() {
             </div>
             <div className="min-w-0">
               <p className="text-[10px] text-muted-foreground truncate">{m.label}</p>
-              <p className="text-lg font-bold">{m.value}</p>
+              <AnimatedCounter value={typeof m.value === "string" ? parseInt(m.value.replace(/,/g, "")) || 0 : m.value} className="text-lg" />
             </div>
           </CardContent>
         </Card>
