@@ -331,7 +331,7 @@ export default function MarketingAutomationAdmin() {
                           <div className="flex items-center gap-2 mt-1">
                             <Badge variant="secondary" className="text-[10px]">{t.trigger_event}</Badge>
                             <span className="text-[10px] text-muted-foreground">
-                              {t.channels?.join(", ")} · {toEnglishDigits(`${t.delay_minutes}`)} {isAr ? "دقيقة" : "min"}
+                              {t.channels?.join(", ")} · <AnimatedCounter value={t.delay_minutes || 0} className="inline" format={false} /> {isAr ? "دقيقة" : "min"}
                             </span>
                           </div>
                         </div>

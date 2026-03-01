@@ -393,7 +393,7 @@ export default function Notifications() {
                     <p className="text-sm font-semibold text-muted-foreground">{dateLabel}</p>
                     <div className="flex-1 h-px bg-border/50" />
                     <Badge variant="secondary" className="text-[10px] rounded-xl">
-                      {toEnglishDigits(items.length)}
+                      <AnimatedCounter value={items.length} className="inline" />
                     </Badge>
                   </div>
                   <div className="space-y-2">

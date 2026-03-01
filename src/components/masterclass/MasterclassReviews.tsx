@@ -43,7 +43,7 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
 
   const myReview = reviews.find((r: any) => r.user_id === user?.id);
   const avgRating = reviews.length > 0
-    ? toEnglishDigits((reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1))
+    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : null;
 
   const submitReview = useMutation({

@@ -235,10 +235,10 @@ export default function CompanyStatements() {
                           </Badge>
                         </TableCell>
                         <TableCell className={`text-end font-medium ${isCredit ? "text-chart-5" : "text-destructive"}`}>
-                          {isCredit ? "+" : "-"}{t.currency} {toEnglishDigits(Math.abs(t.amount).toLocaleString())}
+                          {isCredit ? "+" : "-"}{t.currency} <AnimatedCounter value={Math.round(Math.abs(t.amount))} className="inline" format />
                         </TableCell>
                         <TableCell className="text-end font-medium">
-                          {t.balance_after !== null ? `${t.currency} ${toEnglishDigits(t.balance_after?.toLocaleString())}` : "—"}
+                          {t.balance_after !== null ? <>{t.currency} <AnimatedCounter value={Math.round(t.balance_after)} className="inline" format /></> : "—"}
                         </TableCell>
                       </TableRow>
                     );

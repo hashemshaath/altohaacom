@@ -46,6 +46,7 @@ import {
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface SupportTicket {
   id: string;
@@ -327,7 +328,7 @@ export default function SupportTickets() {
                   <Ticket className="h-8 w-8 text-primary" />
                   <div>
                     <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-                    <p className="text-xl font-bold">{toEnglishDigits(tickets.length)}</p>
+                    <p className="text-xl font-bold"><AnimatedCounter value={tickets.length} /></p>
                   </div>
                 </CardContent>
               </Card>
@@ -336,7 +337,7 @@ export default function SupportTickets() {
                   <Clock className="h-8 w-8 text-chart-4" />
                   <div>
                     <p className="text-xs text-muted-foreground">{isAr ? "مفتوحة" : "Open"}</p>
-                    <p className="text-xl font-bold">{toEnglishDigits(openCount)}</p>
+                    <p className="text-xl font-bold"><AnimatedCounter value={openCount} /></p>
                   </div>
                 </CardContent>
               </Card>
@@ -345,7 +346,7 @@ export default function SupportTickets() {
                   <CheckCircle2 className="h-8 w-8 text-chart-5" />
                   <div>
                     <p className="text-xs text-muted-foreground">{isAr ? "محلولة" : "Resolved"}</p>
-                    <p className="text-xl font-bold">{toEnglishDigits(resolvedCount)}</p>
+                    <p className="text-xl font-bold"><AnimatedCounter value={resolvedCount} /></p>
                   </div>
                 </CardContent>
               </Card>
@@ -386,7 +387,7 @@ export default function SupportTickets() {
 
                   <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                     <MessageSquare className="h-4 w-4 text-primary" />
-                    {isAr ? "الردود" : "Replies"} ({toEnglishDigits(ticketMessages.length)})
+                    {isAr ? "الردود" : "Replies"} (<AnimatedCounter value={ticketMessages.length} className="inline" />)
                   </h4>
 
                   {loadingMessages ? (
