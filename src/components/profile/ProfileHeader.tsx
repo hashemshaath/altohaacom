@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -205,7 +206,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 hover:shadow-sm cursor-default">
                 <Eye className="h-3.5 w-3.5 text-primary/60" />
-                <span className="font-bold text-foreground tabular-nums">{toEnglishDigits(profileViews)}</span>
+                <AnimatedCounter value={profileViews} className="font-bold text-foreground" />
                 <span className="text-muted-foreground/70">{isAr ? "زيارة" : "views"}</span>
               </div>
             </TooltipTrigger>

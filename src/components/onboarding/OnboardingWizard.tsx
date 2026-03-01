@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
+import { StepProgress } from "@/components/ui/step-progress";
+import { SuccessCelebration } from "@/components/ui/success-celebration";
 import {
   ChefHat, User, Trophy, ArrowRight, ArrowLeft,
   CheckCircle2, Loader2,
@@ -33,6 +34,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const [form, setForm] = useState({
     full_name: "",
@@ -125,8 +127,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         title: isAr ? "تم إكمال الملف الشخصي!" : "Profile completed!",
         description: isAr ? "مرحباً بك في المجتمع" : "Welcome to the community",
       });
-      onComplete?.();
-      navigate("/dashboard");
+      setShowCelebration(true);
     } catch (error: any) {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
     } finally {
@@ -136,15 +137,28 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      {/* Progress */}
+      <SuccessCelebration
+        show={showCelebration}
+        variant="confetti"
+        title={isAr ? "تم إكمال ملفك! 🎉" : "Profile Complete! 🎉"}
+        description={isAr ? "أنت الآن جاهز للبدء" : "You're all set to get started"}
+        duration={2500}
+        onClose={() => {
+          setShowCelebration(false);
+          if (onComplete) onComplete();
+          else navigate("/dashboard");
+        }}
+      />
+
+      {/* Step Progress */}
       <div className="mb-6">
-        <div className="mb-1.5 flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">
-            {isAr ? `الخطوة ${step} من ${totalSteps}` : `Step ${step} of ${totalSteps}`}
-          </span>
-          <span className="font-medium">{Math.round(progress)}%</span>
-        </div>
-        <Progress value={progress} className="h-1.5" />
+        <StepProgress
+          steps={stepMeta.map((s) => ({
+            label: isAr ? s.titleAr : s.titleEn,
+            description: isAr ? s.descAr : s.descEn,
+          }))}
+          currentStep={step - 1}
+        />
       </div>
 
       {/* Step Card */}
