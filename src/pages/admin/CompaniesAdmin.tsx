@@ -1739,10 +1739,10 @@ export default function CompaniesAdmin() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <Card className="group hover:shadow-md transition-shadow">
+          <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="pt-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <Building2 className="h-5 w-5 text-primary" />
                 </div>
                 <div>
@@ -1752,10 +1752,10 @@ export default function CompaniesAdmin() {
               </div>
             </CardContent>
           </Card>
-          <Card className="group hover:shadow-md transition-shadow">
+          <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="pt-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-chart-5/10 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <CheckCircle className="h-5 w-5 text-chart-5" />
                 </div>
                 <div>
@@ -1765,10 +1765,10 @@ export default function CompaniesAdmin() {
               </div>
             </CardContent>
           </Card>
-          <Card className="group hover:shadow-md transition-shadow">
+          <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="pt-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <Clock className="h-5 w-5 text-chart-4" />
                 </div>
                 <div>
@@ -1778,10 +1778,10 @@ export default function CompaniesAdmin() {
               </div>
             </CardContent>
           </Card>
-          <Card className="group hover:shadow-md transition-shadow">
+          <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="pt-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <Star className="h-5 w-5 text-chart-3" />
                 </div>
                 <div>
@@ -1791,10 +1791,10 @@ export default function CompaniesAdmin() {
               </div>
             </CardContent>
           </Card>
-          <Card className="group hover:shadow-md transition-shadow">
+          <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="pt-4 pb-3">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-chart-2/10 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <Truck className="h-5 w-5 text-chart-2" />
                 </div>
                 <div>
