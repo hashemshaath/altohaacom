@@ -7,7 +7,7 @@ import {
   Calendar, Users, Trophy, Landmark, Target, ImageIcon,
   Star, Sparkles, CheckCircle, BarChart3, Tag,
 } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInDays, format, isFuture, isWithinInterval } from "date-fns";
 
 interface Section { name?: string; name_ar?: string; description?: string; description_ar?: string; }
@@ -51,14 +51,14 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
         {[
           { icon: Calendar, value: differenceInDays(end, start) + 1, label: isAr ? "أيام" : "Days", color: "primary" },
           { icon: Trophy, value: linkedCompetitions?.length || 0, label: isAr ? "مسابقات" : "Competitions", color: "chart-4" },
-          { icon: Users, value: exhibition.max_attendees ? toEnglishDigits(exhibition.max_attendees.toLocaleString()) : "—", label: isAr ? "سعة" : "Capacity", color: "chart-3" },
+          { icon: Users, value: exhibition.max_attendees || "—", label: isAr ? "سعة" : "Capacity", color: "chart-3" },
           { icon: Landmark, value: sections.length || "—", label: isAr ? "أقسام" : "Sections", color: "accent" },
         ].map((item) => {
           const Icon = item.icon;
           return (
             <div key={item.label} className={`rounded-xl border border-${item.color}/15 bg-gradient-to-br from-${item.color}/10 via-${item.color}/5 to-transparent p-4 text-center transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]`}>
               <Icon className={`mx-auto mb-1.5 h-5 w-5 text-${item.color}`} />
-              <p className="text-lg font-bold text-foreground">{item.value}</p>
+              <p className="text-lg font-bold text-foreground">{typeof item.value === "number" ? <AnimatedCounter value={item.value} /> : item.value}</p>
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{item.label}</p>
             </div>
           );
@@ -78,7 +78,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {statEntries.map(([key, value]) => (
                 <div key={key} className="rounded-xl border p-3 text-center">
-                  <p className="text-lg font-bold text-primary">{typeof value === "number" ? toEnglishDigits(value.toLocaleString()) : value}</p>
+                  <p className="text-lg font-bold text-primary">{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
                   <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{key.replace(/_/g, " ")}</p>
                 </div>
               ))}

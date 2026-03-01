@@ -118,15 +118,17 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
     },
     {
       label: isAr ? "المبلغ المدفوع" : "Paid Amount",
-      value: `${paidAmount.toLocaleString()} SAR`,
+      value: paidAmount,
       icon: CheckCircle,
       color: "text-chart-2",
+      isCurrency: true,
     },
     {
       label: isAr ? "المبلغ الإجمالي" : "Total Amount",
-      value: `${totalAmount.toLocaleString()} SAR`,
+      value: totalAmount,
       icon: DollarSign,
       color: "text-chart-1",
+      isCurrency: true,
     },
   ];
 
@@ -156,7 +158,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  <p className="text-lg font-bold">{typeof stat.value === "number" ? <AnimatedCounter value={stat.value} /> : stat.value}</p>
+                  <p className="text-lg font-bold">{typeof stat.value === "number" ? <><AnimatedCounter value={stat.value} className="inline" />{(stat as any).isCurrency ? " SAR" : ""}</> : stat.value}</p>
                 </div>
               </div>
             </CardContent>
