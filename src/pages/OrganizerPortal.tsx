@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Landmark, Calendar, Plus, Users, Ticket, Star, TrendingUp, Eye, MapPin, CheckCircle2, Clock, BarChart3, LayoutGrid, Heart } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
 import { countryFlag } from "@/lib/countryFlag";
 
@@ -146,7 +147,7 @@ export default function OrganizerPortal() {
                   <s.icon className={`h-4 w-4 ${s.color}`} />
                 </div>
                 <div>
-                  <p className={`text-lg font-bold ${s.color}`}>{typeof s.value === 'number' ? toEnglishDigits(s.value) : s.value}</p>
+                  <p className={`text-lg font-bold ${s.color}`}>{typeof s.value === 'number' ? <AnimatedCounter value={s.value} /> : s.value}</p>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
                 </div>
               </CardContent>

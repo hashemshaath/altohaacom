@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, Wallet, TrendingUp, Users } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function WalletTransactionHeatmap() {
   const { language } = useLanguage();
@@ -131,18 +132,18 @@ export function WalletTransactionHeatmap() {
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إيرادات الأسبوع" : "Weekly Credits"}</p>
-              <p className="text-lg font-bold text-chart-2">+{data.weekCredits.toFixed(2)}</p>
+              <p className="text-lg font-bold text-chart-2">+<AnimatedCounter value={Math.round(data.weekCredits * 100) / 100} /></p>
             </div>
             <div className="h-10 w-px bg-border" />
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "مصروفات الأسبوع" : "Weekly Debits"}</p>
-              <p className="text-lg font-bold text-destructive">-{data.weekDebits.toFixed(2)}</p>
+              <p className="text-lg font-bold text-destructive">-<AnimatedCounter value={Math.round(data.weekDebits * 100) / 100} /></p>
             </div>
             <div className="h-10 w-px bg-border" />
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "الصافي" : "Net"}</p>
-              <p className={`text-lg font-bold ${data.weekCredits - data.weekDebits >= 0 ? "text-chart-2" : "text-destructive"}`}>
-                {(data.weekCredits - data.weekDebits).toFixed(2)}
+            <p className={`text-lg font-bold ${data.weekCredits - data.weekDebits >= 0 ? "text-chart-2" : "text-destructive"}`}>
+                <AnimatedCounter value={Math.round((data.weekCredits - data.weekDebits) * 100) / 100} />
               </p>
             </div>
           </CardContent>

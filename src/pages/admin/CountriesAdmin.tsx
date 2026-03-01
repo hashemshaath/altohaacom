@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -439,7 +440,7 @@ export default function CountriesAdmin() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{s.label}</p>
-                  <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
+                  <p className={`text-xl font-bold ${s.color}`}><AnimatedCounter value={s.value} /></p>
                 </div>
                 <s.icon className={`h-5 w-5 ${s.color} opacity-60`} />
               </div>

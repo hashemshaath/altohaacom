@@ -384,7 +384,7 @@ function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, tr
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/50 mx-auto mb-1.5">
           <Icon className={`h-4.5 w-4.5 ${iconColor}`} />
         </div>
-        <p className={`font-bold ${isValueString ? "text-base" : "text-xl"}`}>{value}</p>
+        <p className={`font-bold ${isValueString ? "text-base" : "text-xl"}`}>{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
         <p className="text-[10px] text-muted-foreground uppercase">{label}</p>
         {trend !== undefined && trendLabel && (
           <p className={`text-[10px] mt-0.5 font-medium ${trendPositive ? "text-chart-5" : "text-muted-foreground"}`}>

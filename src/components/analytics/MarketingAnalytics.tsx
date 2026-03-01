@@ -254,11 +254,11 @@ export function MarketingAnalytics() {
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "متوسط CTR" : "Avg CTR"}</p>
-                    <p className="text-lg font-bold">{campaignData.avgCTR}%</p>
+                    <p className="text-lg font-bold"><AnimatedCounter value={Number(campaignData.avgCTR) || 0} suffix="%" /></p>
                   </div>
                   <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">ROI</p>
-                    <p className={`text-lg font-bold ${Number(campaignData.roi) >= 0 ? "text-chart-2" : "text-destructive"}`}>{campaignData.roi}%</p>
+                    <p className={`text-lg font-bold ${Number(campaignData.roi) >= 0 ? "text-chart-2" : "text-destructive"}`}><AnimatedCounter value={Number(campaignData.roi) || 0} suffix="%" /></p>
                   </div>
                 </div>
                 <ScrollArea className="h-[180px]">
