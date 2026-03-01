@@ -526,14 +526,14 @@ export default function CompetitionsAdmin() {
 
       {/* View Tabs */}
       <Tabs value={viewTab} onValueChange={(v) => setViewTab(v as any)}>
-        <TabsList>
-          <TabsTrigger value="list" className="gap-1.5">
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="list" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Trophy className="h-3.5 w-3.5" /> {isAr ? "المسابقات" : "Competitions"}
           </TabsTrigger>
-          <TabsTrigger value="judging" className="gap-1.5">
+          <TabsTrigger value="judging" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Gavel className="h-3.5 w-3.5" /> {isAr ? "التحكيم" : "Judging"}
           </TabsTrigger>
-          <TabsTrigger value="results" className="gap-1.5">
+          <TabsTrigger value="results" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Medal className="h-3.5 w-3.5" /> {isAr ? "النتائج" : "Results"}
           </TabsTrigger>
         </TabsList>
@@ -551,15 +551,15 @@ export default function CompetitionsAdmin() {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
-          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: <Trophy className="h-4 w-4 text-primary" /> },
-          { label: isAr ? "معلقة" : "Pending", value: stats.pending, icon: <Calendar className="h-4 w-4 text-chart-4" /> },
-          { label: isAr ? "نشطة" : "Active", value: stats.active, icon: <Sparkles className="h-4 w-4 text-chart-3" /> },
-          { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: <Calendar className="h-4 w-4 text-chart-5" /> },
-          { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: <Edit className="h-4 w-4 text-muted-foreground" /> },
+          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: <Trophy className="h-4 w-4 text-primary" />, bg: "bg-primary/10" },
+          { label: isAr ? "معلقة" : "Pending", value: stats.pending, icon: <Calendar className="h-4 w-4 text-chart-4" />, bg: "bg-chart-4/10" },
+          { label: isAr ? "نشطة" : "Active", value: stats.active, icon: <Sparkles className="h-4 w-4 text-chart-3" />, bg: "bg-chart-3/10" },
+          { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: <Calendar className="h-4 w-4 text-chart-5" />, bg: "bg-chart-5/10" },
+          { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: <Edit className="h-4 w-4 text-muted-foreground" />, bg: "bg-muted" },
         ].map((stat, i) => (
-          <Card key={i} className="border-border/60 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={i} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-3 p-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">{stat.icon}</div>
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} shrink-0`}>{stat.icon}</div>
               <div>
                 <p className="text-2xl font-bold tabular-nums">{stat.value}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
@@ -570,7 +570,7 @@ export default function CompetitionsAdmin() {
       </div>
 
       {/* Filters */}
-      <Card className="border-border/60">
+      <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
         <CardContent className="flex flex-wrap gap-3 p-4">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -578,7 +578,7 @@ export default function CompetitionsAdmin() {
               placeholder={isAr ? "بحث بالعنوان أو المدينة..." : "Search by title or city..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="ps-10"
+              className="ps-10 rounded-xl"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -669,7 +669,7 @@ export default function CompetitionsAdmin() {
       />
 
       {/* Table */}
-      <Card className="border-border/60 overflow-hidden">
+      <Card className="rounded-2xl border-border/40 overflow-hidden">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="p-0">
@@ -702,8 +702,8 @@ export default function CompetitionsAdmin() {
             </div>
           ) : competitions?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-                <Trophy className="h-6 w-6 text-muted-foreground/30" />
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
+                <Trophy className="h-6 w-6 text-primary/40" />
               </div>
               <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات" : "No competitions found"}</p>
               <Button asChild variant="outline" className="mt-4 gap-2">
@@ -952,7 +952,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
         const progress = comp.max_participants ? Math.round((uniqueParticipants / comp.max_participants) * 100) : 50;
 
         return (
-          <Card key={comp.id}>
+          <Card key={comp.id} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
@@ -964,16 +964,16 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
                 </Badge>
               </div>
               <div className="grid grid-cols-3 gap-3">
-                <div className="text-center rounded-lg border p-2">
+                <div className="text-center rounded-xl border border-border/40 p-2.5 bg-muted/20">
                   <p className="text-lg font-bold">{regs.length}</p>
                   <p className="text-[10px] text-muted-foreground">{isAr ? "مسجلين" : "Registered"}</p>
                 </div>
-                <div className="text-center rounded-lg border p-2">
-                  <p className="text-lg font-bold">{uniqueParticipants}</p>
+                <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-5/5">
+                  <p className="text-lg font-bold text-chart-5">{uniqueParticipants}</p>
                   <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدين" : "Approved"}</p>
                 </div>
-                <div className="text-center rounded-lg border p-2">
-                  <p className="text-lg font-bold">{regs.filter((r: any) => r.status === "pending").length}</p>
+                <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-4/5">
+                  <p className="text-lg font-bold text-chart-4">{regs.filter((r: any) => r.status === "pending").length}</p>
                   <p className="text-[10px] text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
                 </div>
               </div>
