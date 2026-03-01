@@ -117,7 +117,7 @@ export default function CompanyProfile() {
                   {language === "ar" ? "مناطق العمل:" : "Regions:"}
                 </span>
                 {(company.operating_countries as string[]).map((cc) => (
-                  <Badge key={cc} variant="secondary" className="rounded-lg bg-muted/40 text-[10px] font-bold px-2 py-0.5">
+                  <Badge key={cc} variant="secondary" className="rounded-xl bg-muted/40 text-[10px] font-bold px-2 py-0.5">
                     {countryFlag(cc)} {getCountryName(cc)}
                   </Badge>
                 ))}
@@ -153,7 +153,7 @@ export default function CompanyProfile() {
         <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-3 text-lg font-bold">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Phone className="h-4 w-4" />
               </div>
               {language === "ar" ? "معلومات الاتصال" : "Contact Information"}
@@ -175,7 +175,7 @@ export default function CompanyProfile() {
         <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.05s" }}>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-3 text-lg font-bold">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <CreditCard className="h-4 w-4" />
               </div>
               {language === "ar" ? "معلومات مالية" : "Financial Information"}
@@ -207,7 +207,7 @@ export default function CompanyProfile() {
           <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.1s" }}>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-3 text-lg font-bold">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <MapPin className="h-4 w-4" />
                 </div>
                 {language === "ar" ? "العنوان" : "Address"}
@@ -231,7 +231,7 @@ export default function CompanyProfile() {
           <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.15s" }}>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-3 text-lg font-bold">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Shield className="h-4 w-4" />
                 </div>
                 {language === "ar" ? "معلومات التسجيل" : "Registration Info"}
@@ -279,7 +279,7 @@ const InfoRow = React.memo(function InfoRow({
   if (!value) return null;
   return (
     <div className="flex items-center gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted">
         <Icon className="h-4 w-4 text-muted-foreground" />
       </div>
       <div className="min-w-0">

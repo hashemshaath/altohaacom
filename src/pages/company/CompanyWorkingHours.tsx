@@ -223,7 +223,7 @@ export default function CompanyWorkingHours() {
             return (
               <div
                 key={key}
-                className={`flex items-center gap-4 rounded-lg border p-4 transition-colors ${
+                className={`flex items-center gap-4 rounded-xl border p-4 transition-colors ${
                   isCopyTarget ? "border-primary/50 bg-primary/5 cursor-pointer" : ""
                 } ${copySource === key ? "border-primary bg-primary/10" : ""}`}
                 onClick={isCopyTarget ? () => handleCopy(key) : undefined}

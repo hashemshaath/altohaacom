@@ -174,7 +174,7 @@ export default function CreateTasting() {
               className={`relative flex flex-col items-start gap-3 rounded-xl border-2 p-5 text-start transition-all ${active ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/30 hover:bg-muted/30"}`}
             >
               {active && <div className="absolute end-3 top-3"><Check className="h-5 w-5 text-primary" /></div>}
-              <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
                 <Icon className="h-5 w-5" />
               </div>
               <div>
@@ -223,7 +223,7 @@ export default function CreateTasting() {
               onClick={() => setForm(f => ({ ...f, evaluation_category: cat.value, preset: "" }))}
               className={`flex items-start gap-3 rounded-xl border-2 p-4 text-start transition-all ${active ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/30 hover:bg-muted/30"}`}
             >
-              <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+              <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
                 <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0">
@@ -247,7 +247,7 @@ export default function CreateTasting() {
                 return (
                   <div key={s.en} className="flex items-center gap-2">
                     {i > 0 && <ArrowRight className="h-3 w-3 text-muted-foreground/50" />}
-                    <div className="flex items-center gap-1.5 rounded-lg bg-background px-3 py-2 shadow-sm border">
+                    <div className="flex items-center gap-1.5 rounded-xl bg-background px-3 py-2 shadow-sm border">
                       <SIcon className={`h-3.5 w-3.5 ${s.color}`} />
                       <span className="text-xs font-medium">{isAr ? s.ar : s.en}</span>
                     </div>

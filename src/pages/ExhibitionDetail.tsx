@@ -273,7 +273,7 @@ export default function ExhibitionDetail() {
           <Skeleton className="mb-4 h-8 w-32 rounded-md" />
           <Skeleton className="mb-8 h-64 w-full rounded-2xl md:h-80" />
           <div className="grid gap-8 lg:grid-cols-3">
-            <div className="space-y-4 lg:col-span-2"><Skeleton className="h-10 w-full rounded-lg" /><Skeleton className="h-40 w-full rounded-lg" /></div>
+            <div className="space-y-4 lg:col-span-2"><Skeleton className="h-10 w-full rounded-xl" /><Skeleton className="h-40 w-full rounded-xl" /></div>
             <div className="space-y-4"><Skeleton className="h-44 w-full rounded-xl" /><Skeleton className="h-56 w-full rounded-xl" /></div>
           </div>
         </main>

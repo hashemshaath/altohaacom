@@ -426,7 +426,7 @@ function VerificationResult({
         )}
 
         {/* Code display */}
-        <div className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-2">
+        <div className="flex items-center justify-between rounded-xl bg-muted/50 px-4 py-2">
           <span className="text-xs text-muted-foreground">{isAr ? "كود التحقق" : "Verification Code"}</span>
           <Badge variant="outline" className="font-mono tracking-widest">{code.toUpperCase()}</Badge>
         </div>

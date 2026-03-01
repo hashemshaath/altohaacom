@@ -216,9 +216,9 @@ export default function SupplierCompare() {
                     <button
                       key={s.id}
                       onClick={() => addSupplier(s.id)}
-                      className="flex items-center gap-3 rounded-lg border border-border/40 p-3 text-start hover:bg-muted/50 transition-colors"
+                      className="flex items-center gap-3 rounded-xl border border-border/40 p-3 text-start hover:bg-muted/50 transition-colors"
                     >
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted">
                         {s.logo_url ? (
                           <img src={s.logo_url} className="h-5 w-5 object-contain" alt="" />
                         ) : (

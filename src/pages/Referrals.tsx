@@ -497,7 +497,7 @@ export default function Referrals() {
 
                           {/* Personalized message for converted */}
                           {isConverted && (
-                            <div className="mt-2 ms-13 rounded-lg bg-chart-2/5 border border-chart-2/10 px-3 py-2 text-[11px] text-chart-2">
+                            <div className="mt-2 ms-13 rounded-xl bg-chart-2/5 border border-chart-2/10 px-3 py-2 text-[11px] text-chart-2">
                               <CheckCircle2 className="inline h-3 w-3 me-1" />
                               {isAr
                                 ? "🎉 انضم بنجاح! حصلت على نقاط مكافأة"
@@ -507,7 +507,7 @@ export default function Referrals() {
 
                           {/* Pending reminder suggestion */}
                           {isPending && daysSince >= 7 && (
-                            <div className="mt-2 ms-13 rounded-lg bg-chart-4/5 border border-chart-4/10 px-3 py-2 text-[11px] text-muted-foreground">
+                            <div className="mt-2 ms-13 rounded-xl bg-chart-4/5 border border-chart-4/10 px-3 py-2 text-[11px] text-muted-foreground">
                               <Clock className="inline h-3 w-3 me-1 text-chart-4" />
                               {isAr
                                 ? "لم يسجل بعد. أرسل تذكيراً ودياً!"
@@ -545,7 +545,7 @@ export default function Referrals() {
                       return (
                         <div key={step.stage} className="flex flex-col items-center gap-2">
                           <span className="text-xl font-bold">{step.value}</span>
-                          <div className={`w-20 rounded-t-lg ${colors[i]} transition-all`} style={{ height }} />
+                          <div className={`w-20 rounded-t-xl ${colors[i]} transition-all`} style={{ height }} />
                           <span className="text-xs text-muted-foreground text-center">
                             {isAr ? step.stageAr : step.stage}
                           </span>
@@ -612,7 +612,7 @@ export default function Referrals() {
                     { label: isAr ? "معدل النقر" : "Click Rate", value: stats?.invitationsCount ? `${Math.round(((stats?.codeStats?.total_clicks || 0) / Math.max(stats.invitationsCount, 1)) * 100)}%` : "0%" },
                     { label: isAr ? "متوسط النقاط لكل إحالة" : "Avg Points/Referral", value: stats?.conversionsCount ? Math.round((stats?.codeStats?.total_points_earned || 0) / stats.conversionsCount) : 0 },
                   ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between rounded-lg border p-3">
+                    <div key={item.label} className="flex items-center justify-between rounded-xl border p-3">
                       <span className="text-sm text-muted-foreground">{item.label}</span>
                       <span className="font-bold">{item.value}</span>
                     </div>
@@ -638,7 +638,7 @@ export default function Referrals() {
                         .map(([ch, data]) => {
                           const rate = data.sent > 0 ? Math.round((data.converted / data.sent) * 100) : 0;
                           return (
-                            <div key={ch} className="rounded-lg border p-3">
+                            <div key={ch} className="rounded-xl border p-3">
                               <div className="flex items-center justify-between mb-1.5">
                                 <span className="text-sm font-medium capitalize">{ch}</span>
                                 <div className="flex items-center gap-2 text-xs">

@@ -265,7 +265,7 @@ export default function ChefsTableAdmin() {
                         className="flex items-start sm:items-center gap-2.5 sm:gap-4 p-3 sm:p-4 cursor-pointer hover:bg-muted/30 transition-colors active:scale-[0.99]"
                         onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
                       >
-                        <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg bg-muted ${sc.color}`}>
+                        <div className={`flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-muted ${sc.color}`}>
                           <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -304,7 +304,7 @@ export default function ChefsTableAdmin() {
                       {/* Inline Rejection Form */}
                       {isRejecting && (
                         <div className="px-4 pb-4 border-t border-border/40" onClick={e => e.stopPropagation()}>
-                          <div className="mt-3 rounded-lg bg-destructive/5 border border-destructive/20 p-4 space-y-3">
+                          <div className="mt-3 rounded-xl bg-destructive/5 border border-destructive/20 p-4 space-y-3">
                             <div className="flex items-center gap-2">
                               <AlertCircle className="h-4 w-4 text-destructive" />
                               <p className="text-sm font-bold text-destructive">{isAr ? "تأكيد الرفض" : "Confirm Rejection"}</p>
@@ -335,7 +335,7 @@ export default function ChefsTableAdmin() {
                               { label: isAr ? "تاريخ البدء" : "Start", value: req.preferred_date_start ? format(new Date(req.preferred_date_start), "MMM d, yyyy") : "—", icon: Calendar },
                               { label: isAr ? "تاريخ الانتهاء" : "End", value: req.preferred_date_end ? format(new Date(req.preferred_date_end), "MMM d, yyyy") : "—", icon: Calendar },
                             ].map((item, i) => (
-                              <div key={i} className="rounded-lg border border-border/30 bg-background p-3">
+                              <div key={i} className="rounded-xl border border-border/30 bg-background p-3">
                                 <div className="flex items-center gap-1.5 mb-1">
                                   <item.icon className="h-3 w-3 text-muted-foreground" />
                                   <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
@@ -345,7 +345,7 @@ export default function ChefsTableAdmin() {
                             ))}
                           </div>
                           {req.product_description && (
-                            <div className="rounded-lg border border-border/30 bg-background p-4">
+                            <div className="rounded-xl border border-border/30 bg-background p-4">
                               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "وصف المنتج" : "Product Description"}</p>
                               <p className="text-sm leading-relaxed whitespace-pre-line">{req.product_description}</p>
                             </div>
@@ -357,7 +357,7 @@ export default function ChefsTableAdmin() {
                               </p>
                               <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
                                 {(req.product_images as string[]).map((url: string, i: number) => (
-                                  <div key={i} className="aspect-square rounded-lg overflow-hidden border border-border/30 bg-background">
+                                  <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border/30 bg-background">
                                     <img src={url} alt="" className="h-full w-full object-cover hover:scale-105 transition-transform" />
                                   </div>
                                 ))}
@@ -365,7 +365,7 @@ export default function ChefsTableAdmin() {
                             </div>
                           )}
                           {req.special_requirements && (
-                            <div className="rounded-lg border border-chart-4/20 bg-chart-4/5 p-4">
+                            <div className="rounded-xl border border-chart-4/20 bg-chart-4/5 p-4">
                               <p className="text-[10px] font-bold text-chart-4 uppercase tracking-wider mb-2">{isAr ? "متطلبات خاصة" : "Special Requirements"}</p>
                               <p className="text-sm">{req.special_requirements}</p>
                             </div>

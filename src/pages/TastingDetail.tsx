@@ -459,7 +459,7 @@ export default function TastingDetail() {
                             const entryScores = scores.filter(s => s.entry_id === e.id);
                             return (
                               <div key={e.id} className="flex items-center gap-3 py-3 group">
-                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
+                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-xs font-bold text-primary">
                                   {e.entry_number || i + 1}
                                 </span>
                                 <div className="flex-1 min-w-0">

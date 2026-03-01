@@ -713,7 +713,7 @@ export default function LeadManagement() {
                     </div>
                   )}
                   {selectedLead.company_name && (
-                    <div className="flex items-center gap-3 rounded-lg border p-3">
+                    <div className="flex items-center gap-3 rounded-xl border p-3">
                       <Building2 className="h-5 w-5 text-muted-foreground" />
                       <div>
                         <p className="text-xs text-muted-foreground">{isAr ? "الشركة" : "Company"}</p>
@@ -721,7 +721,7 @@ export default function LeadManagement() {
                       </div>
                     </div>
                   )}
-                  <div className="flex items-center gap-3 rounded-lg border p-3">
+                  <div className="flex items-center gap-3 rounded-xl border p-3">
                     <Calendar className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-xs text-muted-foreground">{isAr ? "تاريخ الإنشاء" : "Created"}</p>
@@ -736,7 +736,7 @@ export default function LeadManagement() {
                       <MessageSquare className="h-4 w-4 text-muted-foreground" />
                       <p className="text-sm font-medium">{isAr ? "الرسالة" : "Message"}</p>
                     </div>
-                    <div className="rounded-lg bg-muted p-4 text-sm">{selectedLead.message}</div>
+                    <div className="rounded-xl bg-muted p-4 text-sm">{selectedLead.message}</div>
                   </div>
                 )}
 
@@ -786,7 +786,7 @@ export default function LeadManagement() {
                           <div className="absolute start-[-18px] top-1 h-4 w-4 rounded-full bg-primary/10 ring-2 ring-background flex items-center justify-center">
                             <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                           </div>
-                          <div className="rounded-lg border p-3">
+                          <div className="rounded-xl border p-3">
                             <div className="flex items-center justify-between">
                               <p className="text-xs font-medium">
                                 {entry.details?.action === "created"
