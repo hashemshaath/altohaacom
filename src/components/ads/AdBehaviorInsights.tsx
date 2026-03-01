@@ -84,7 +84,7 @@ export function AdBehaviorInsights() {
         <CardContent className="p-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: Activity, label: isAr ? "إجمالي الأحداث" : "Total Events", value: totalEvents.toLocaleString() },
+              { icon: Activity, label: isAr ? "إجمالي الأحداث" : "Total Events", value: totalEvents },
               { icon: Users, label: isAr ? "الأيام النشطة" : "Active Days", value: uniqueSessions },
               { icon: Clock, label: isAr ? "متوسط المدة" : "Avg Duration", value: `${avgDuration}s` },
               { icon: Target, label: isAr ? "الاهتمامات" : "Interest Profiles", value: interests.length },
