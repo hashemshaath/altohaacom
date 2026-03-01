@@ -96,7 +96,7 @@ export default function AdminPendingBanner() {
               key={item.key}
               to={item.to}
               className={cn(
-                "flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm transition-all",
+                "flex items-center gap-2 rounded-xl border bg-card px-3 py-2 text-sm transition-all",
                 "hover:shadow-md hover:-translate-y-0.5 shrink-0"
               )}
             >

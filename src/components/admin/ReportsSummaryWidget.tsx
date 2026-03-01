@@ -83,7 +83,7 @@ export function ReportsSummaryWidget() {
       <CardContent className="p-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {modules.map((m, i) => (
-            <div key={i} className="p-2.5 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2.5 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-2 mb-1">
                 <m.icon className={`h-3.5 w-3.5 ${m.color}`} />
                 <span className="text-[10px] text-muted-foreground">{m.label}</span>

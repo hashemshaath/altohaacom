@@ -105,7 +105,7 @@ export function CompetitionJudgingTracker() {
       </CardHeader>
       <CardContent className="p-3 space-y-3">
         {data.competitions.map(c => (
-          <div key={c.id} className="space-y-1.5 p-2.5 rounded-lg bg-muted/30 border border-border/40">
+          <div key={c.id} className="space-y-1.5 p-2.5 rounded-xl bg-muted/30 border border-border/40">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium truncate max-w-[200px]">{c.title}</span>
               <Badge variant={c.status === "judging" ? "default" : "outline"} className="text-[9px]">

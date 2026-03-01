@@ -246,15 +246,15 @@ export function MLAnalyticsDashboard() {
                     </div>
                     <p className="text-2xl font-bold">{f.current_value.toLocaleString()}</p>
                     <div className="grid grid-cols-3 gap-1 text-[10px]">
-                      <div className="text-center rounded-lg bg-muted/50 p-1.5">
+                      <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">3m</p>
                         <p className="font-semibold">{f.forecast_3m.toLocaleString()}</p>
                       </div>
-                      <div className="text-center rounded-lg bg-muted/50 p-1.5">
+                      <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">6m</p>
                         <p className="font-semibold">{f.forecast_6m.toLocaleString()}</p>
                       </div>
-                      <div className="text-center rounded-lg bg-muted/50 p-1.5">
+                      <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">12m</p>
                         <p className="font-semibold">{f.forecast_12m.toLocaleString()}</p>
                       </div>
@@ -345,7 +345,7 @@ export function MLAnalyticsDashboard() {
                 {insights.recommendations.map((rec, i) => (
                   <div key={i} className="rounded-xl border border-border/50 p-4 space-y-2 transition-all hover:shadow-sm hover:-translate-y-0.5">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 text-primary">
                         {categoryIcon(rec.category)}
                       </div>
                       <span className="text-sm font-medium flex-1">{rec.title}</span>

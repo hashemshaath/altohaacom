@@ -106,7 +106,7 @@ export function CountryAuditLog({ countryCode }: { countryCode?: string }) {
           ) : (
             <div className="space-y-2">
               {filtered.map(entry => (
-                <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg border hover:bg-muted/30 transition-colors">
+                <div key={entry.id} className="flex items-start gap-3 p-3 rounded-xl border hover:bg-muted/30 transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant="outline" className="font-mono text-[10px]">{entry.country_code}</Badge>

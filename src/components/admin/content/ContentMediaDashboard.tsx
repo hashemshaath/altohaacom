@@ -154,7 +154,7 @@ export default function ContentMediaDashboard() {
 
         <TabsContent value="media" className="mt-4">
           {mediaLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{[1,2,3,4].map(i => <Skeleton key={i} className="aspect-square rounded-lg" />)}</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">{[1,2,3,4].map(i => <Skeleton key={i} className="aspect-square rounded-xl" />)}</div>
           ) : !mediaFiles.length ? (
             <Card className="border-dashed">
               <CardContent className="py-12 text-center">
@@ -196,7 +196,7 @@ export default function ContentMediaDashboard() {
                   const score = (hasExcerpt ? 30 : 0) + (hasImage ? 30 : 0) + (titleLen > 20 && titleLen < 60 ? 40 : titleLen > 10 ? 20 : 0);
 
                   return (
-                    <div key={a.id} className="flex items-center gap-3 p-3 rounded-lg border">
+                    <div key={a.id} className="flex items-center gap-3 p-3 rounded-xl border">
                       <div className={cn("flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold", score >= 80 ? "bg-green-100 text-green-700" : score >= 50 ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700")}>
                         {score}
                       </div>

@@ -69,10 +69,10 @@ export function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSe
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-border/40">
-              <SelectItem value="all" className="rounded-lg">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
-              <SelectItem value="scheduled" className="rounded-lg">{isAr ? "مجدول" : "Scheduled"}</SelectItem>
-              <SelectItem value="in_progress" className="rounded-lg">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
-              <SelectItem value="completed" className="rounded-lg">{isAr ? "مكتمل" : "Completed"}</SelectItem>
+              <SelectItem value="all" className="rounded-xl">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
+              <SelectItem value="scheduled" className="rounded-xl">{isAr ? "مجدول" : "Scheduled"}</SelectItem>
+              <SelectItem value="in_progress" className="rounded-xl">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
+              <SelectItem value="completed" className="rounded-xl">{isAr ? "مكتمل" : "Completed"}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -141,7 +141,7 @@ export function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSe
                 <div className="mt-4 flex flex-wrap gap-4 text-xs font-bold text-muted-foreground">
                   {session.session_date && (
                     <span className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
                         <Calendar className="h-3 w-3 text-primary" />
                       </div>
                       {format(new Date(session.session_date), "MMM d, yyyy")}
@@ -149,7 +149,7 @@ export function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSe
                   )}
                   {session.venue && (
                     <span className="flex items-center gap-2">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-4/10">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-4/10">
                         <MapPin className="h-3 w-3 text-chart-4" />
                       </div>
                       {isAr && session.venue_ar ? session.venue_ar : session.venue}

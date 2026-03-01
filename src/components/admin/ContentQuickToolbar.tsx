@@ -55,7 +55,7 @@ export function ContentQuickToolbar() {
       {metrics.map((m) => (
         <Card key={m.label} className="overflow-hidden">
           <CardContent className="p-3 flex items-center gap-3">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted ${m.color}`}>
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted ${m.color}`}>
               <m.icon className="h-4 w-4" />
             </div>
             <div className="min-w-0">

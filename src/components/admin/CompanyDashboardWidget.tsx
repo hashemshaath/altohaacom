@@ -94,7 +94,7 @@ export function CompanyDashboardWidget() {
             { icon: Package, label: isAr ? "طلبات الأسبوع" : "Weekly Orders", value: data.ordersThisWeek, color: "text-chart-4", delta: orderDelta },
             { icon: CreditCard, label: isAr ? "إيرادات الأسبوع" : "Weekly Revenue", value: `${data.thisWeekRevenue.toLocaleString()} SAR`, color: "text-primary" },
           ].map((kpi, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/40">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/40">
               <kpi.icon className={cn("h-4 w-4 mx-auto mb-1", kpi.color)} />
               <p className="text-sm font-bold">{kpi.value}</p>
               <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
@@ -135,7 +135,7 @@ export function CompanyDashboardWidget() {
                 <p className="text-[10px] text-muted-foreground text-center py-4">{isAr ? "لا توجد بيانات" : "No data"}</p>
               ) : (
                 data.topCompanies.map((company: any) => (
-                  <div key={company.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/30 text-xs">
+                  <div key={company.id} className="flex items-center justify-between p-2 rounded-xl bg-muted/30 text-xs">
                     <div className="min-w-0">
                       <p className="font-medium truncate">{isAr ? (company.name_ar || company.name) : company.name}</p>
                       <p className="text-[9px] text-muted-foreground capitalize">{company.type}</p>

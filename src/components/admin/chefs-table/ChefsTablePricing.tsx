@@ -129,7 +129,7 @@ export function ChefsTablePricing() {
           </p>
           <div className="grid grid-cols-3 gap-3">
             {chefCounts.map(count => (
-              <div key={count} className="rounded-lg border border-border/30 p-4 text-center">
+              <div key={count} className="rounded-xl border border-border/30 p-4 text-center">
                 <p className="text-xs text-muted-foreground">{count} {isAr ? "طهاة" : "Chefs"}</p>
                 <p className="text-2xl font-black tabular-nums text-primary mt-1">
                   {((editing.base_fee || 0) + (editing.per_chef_fee || 0) * count).toLocaleString()}
@@ -178,11 +178,11 @@ export function ChefsTablePricing() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="rounded-lg bg-muted/50 p-3 text-center">
+                <div className="rounded-xl bg-muted/50 p-3 text-center">
                   <p className="text-xl font-black tabular-nums">{plan.base_fee.toLocaleString()}</p>
                   <p className="text-[9px] text-muted-foreground">{isAr ? "رسوم أساسية" : "Base Fee"} (SAR)</p>
                 </div>
-                <div className="rounded-lg bg-muted/50 p-3 text-center">
+                <div className="rounded-xl bg-muted/50 p-3 text-center">
                   <p className="text-xl font-black tabular-nums">+{plan.per_chef_fee.toLocaleString()}</p>
                   <p className="text-[9px] text-muted-foreground">{isAr ? "لكل شيف" : "Per Chef"} (SAR)</p>
                 </div>

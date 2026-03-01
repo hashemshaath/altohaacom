@@ -132,7 +132,7 @@ export const SectionPresets = memo(function SectionPresets({ onApply, isAr, isPe
                 onClick={() => onApply(preset.config)}
                 disabled={isPending}
                 className={cn(
-                  "flex flex-col items-start gap-2 rounded-lg border border-border/50 p-3 text-start",
+                  "flex flex-col items-start gap-2 rounded-xl border border-border/50 p-3 text-start",
                   "transition-all hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm",
                   "disabled:opacity-50 disabled:pointer-events-none"
                 )}

@@ -157,7 +157,7 @@ export function ContentAnalyticsWidget() {
               </p>
               <div className="space-y-1.5">
                 {analytics.scheduled.map((a: any) => (
-                  <div key={a.id} className="flex items-center justify-between rounded-lg border border-border/40 px-2.5 py-1.5">
+                  <div key={a.id} className="flex items-center justify-between rounded-xl border border-border/40 px-2.5 py-1.5">
                     <span className="text-xs truncate max-w-[180px]">
                       {isAr ? a.title_ar || a.title : a.title}
                     </span>

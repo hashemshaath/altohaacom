@@ -59,17 +59,17 @@ export function PerformanceOptimizer() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-2">
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Clock className="h-4 w-4 mx-auto text-chart-3 mb-1" />
             <p className="text-lg font-bold">{loadTime}<span className="text-xs">ms</span></p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "وقت التحميل" : "Load Time"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Database className="h-4 w-4 mx-auto text-primary mb-1" />
             <p className="text-lg font-bold">{cacheStats.total}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "استعلامات مخزنة" : "Cached Queries"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <HardDrive className="h-4 w-4 mx-auto text-chart-2 mb-1" />
             <p className="text-lg font-bold">{cacheHitRate}%</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "نسبة الكاش" : "Cache Hit"}</p>
@@ -93,7 +93,7 @@ export function PerformanceOptimizer() {
           </Badge>
         </div>
 
-        <div className="p-2 rounded-lg bg-muted/30 text-xs text-muted-foreground">
+        <div className="p-2 rounded-xl bg-muted/30 text-xs text-muted-foreground">
           <TrendingDown className="h-3 w-3 inline me-1" />
           {isAr
             ? "يتم تحسين الاستعلامات تلقائياً مع التخزين المؤقت لمدة 2-5 دقائق"

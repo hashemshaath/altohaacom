@@ -72,7 +72,7 @@ export function EventCreationGate({ children, eventType }: EventCreationGateProp
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Verification Status */}
-          <div className="flex items-center justify-between rounded-lg border p-3">
+          <div className="flex items-center justify-between rounded-xl border p-3">
             <div className="flex items-center gap-2">
               <CheckCircle2 className={`h-5 w-5 ${isVerified ? "text-chart-5" : "text-muted-foreground"}`} />
               <div>

@@ -90,7 +90,7 @@ export function CRMPipelineWidget() {
               { label: isAr ? "القيمة المحققة" : "Won Value", value: `${toEnglishDigits(data.wonValue.toLocaleString())} SAR`, color: "text-chart-2" },
               { label: isAr ? "معدل التحويل" : "Conversion", value: `${data.conversionRate}%`, color: "text-chart-5" },
             ].map((kpi, i) => (
-              <div key={i} className="text-center rounded-lg border border-border/40 p-2">
+              <div key={i} className="text-center rounded-xl border border-border/40 p-2">
                 <p className={cn("text-sm font-bold", kpi.color)}>{kpi.value}</p>
                 <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
               </div>
@@ -130,7 +130,7 @@ export function CRMPipelineWidget() {
             <ScrollArea className="max-h-[200px]">
               <div className="space-y-2">
                 {data.hotLeads.map((lead: any) => (
-                  <div key={lead.id} className="flex items-center gap-3 rounded-lg border border-border/40 p-2.5">
+                  <div key={lead.id} className="flex items-center gap-3 rounded-xl border border-border/40 p-2.5">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-primary/10 text-primary text-xs">
                         {(lead.contact_name || lead.company_name || "L")[0].toUpperCase()}
@@ -174,7 +174,7 @@ export function CRMPipelineWidget() {
               { label: isAr ? "شركات نشطة" : "Active Companies", value: data.activeCompanies, color: "text-primary", link: "/admin/companies" },
             ].map((item, i) => (
               <Link key={i} to={item.link}>
-                <div className="flex items-center justify-between rounded-lg border border-border/40 p-2.5 hover:bg-accent/30 transition-all">
+                <div className="flex items-center justify-between rounded-xl border border-border/40 p-2.5 hover:bg-accent/30 transition-all">
                   <span className="text-xs text-muted-foreground">{item.label}</span>
                   <div className="flex items-center gap-2">
                     <span className={cn("text-sm font-bold", item.color)}>{item.value}</span>

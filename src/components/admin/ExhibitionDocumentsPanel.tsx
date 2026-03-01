@@ -176,7 +176,7 @@ export function ExhibitionDocumentsPanel({ exhibitionId }: Props) {
       ) : docs.length > 0 ? (
         <div className="space-y-2">
           {docs.map(doc => (
-            <div key={doc.id} className="flex items-center gap-3 rounded-lg border p-2.5 bg-muted/10">
+            <div key={doc.id} className="flex items-center gap-3 rounded-xl border p-2.5 bg-muted/10">
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 shrink-0">
                 <FileText className="h-4 w-4 text-primary" />
               </div>

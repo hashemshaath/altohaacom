@@ -68,7 +68,7 @@ function ColorSwatch({ label, labelAr, isAr, value, onChange, size = "md" }: {
       <Label className="text-xs">{isAr ? labelAr : label}</Label>
       <div className="flex items-center gap-2">
         <label className={cn(
-          "relative rounded-lg border-2 border-border/40 cursor-pointer overflow-hidden transition-shadow hover:shadow-md",
+          "relative rounded-xl border-2 border-border/40 cursor-pointer overflow-hidden transition-shadow hover:shadow-md",
           size === "md" ? "h-10 w-10" : "h-8 w-8"
         )} style={{ backgroundColor: `hsl(${value})` }}>
           <input
@@ -364,7 +364,7 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
               <div className="flex gap-1 mb-4">
                 {[secondaryColors.background, secondaryColors.card, secondaryColors.surface,
                   secondaryColors.muted, secondaryColors.border].map((c, i) => (
-                  <div key={i} className="flex-1 h-10 rounded-lg border border-border/20"
+                  <div key={i} className="flex-1 h-10 rounded-xl border border-border/20"
                     style={{ backgroundColor: `hsl(${c})` }} />
                 ))}
               </div>
@@ -401,7 +401,7 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
                 const ratio = contrastRatio(pair.c1, pair.c2);
                 const { grade, color } = getWcagGrade(ratio);
                 return (
-                  <div key={i} className="flex items-center gap-3 rounded-lg border border-border/40 p-3">
+                  <div key={i} className="flex items-center gap-3 rounded-xl border border-border/40 p-3">
                     <div className="flex gap-1">
                       <div className="h-8 w-8 rounded-md border border-border/20" style={{ backgroundColor: `hsl(${pair.c1})` }} />
                       <div className="h-8 w-8 rounded-md border border-border/20" style={{ backgroundColor: `hsl(${pair.c2})` }} />
@@ -487,7 +487,7 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
                   { key: "error", icon: "✕", en: "An error occurred", ar: "حدث خطأ" },
                   { key: "info", icon: "ℹ", en: "New feature available", ar: "ميزة جديدة متاحة" },
                 ].map(item => (
-                  <div key={item.key} className="rounded-lg p-3 border flex items-start gap-2 text-xs"
+                  <div key={item.key} className="rounded-xl p-3 border flex items-start gap-2 text-xs"
                     style={{
                       backgroundColor: `hsl(${(statusColors as any)[item.key + "Bg"]})`,
                       borderColor: `hsl(${(statusColors as any)[item.key]} / 0.3)`,

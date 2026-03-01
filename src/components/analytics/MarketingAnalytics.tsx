@@ -225,7 +225,7 @@ export function MarketingAnalytics() {
               { label: isAr ? "شراء" : "Purchase", value: conversionData?.purchases ?? 0, icon: MousePointerClick, pct: conversionData?.overallRate ?? 0 },
               { label: isAr ? "تسجيل" : "Sign Up", value: conversionData?.signups ?? 0, icon: UserPlus, pct: conversionData?.signups && conversionData?.pageViews ? Math.round((conversionData.signups / conversionData.pageViews) * 100) : 0 },
             ].map((step, i) => (
-              <div key={i} className="text-center rounded-lg border p-4 space-y-2">
+              <div key={i} className="text-center rounded-xl border p-4 space-y-2">
                 <step.icon className="h-5 w-5 mx-auto text-primary" />
                 <p className="text-xl font-bold">{toEnglishDigits(`${step.value}`)}</p>
                 <p className="text-xs text-muted-foreground">{step.label}</p>
@@ -251,11 +251,11 @@ export function MarketingAnalytics() {
             ) : (
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className="rounded-lg border p-3 text-center">
+                  <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "متوسط CTR" : "Avg CTR"}</p>
                     <p className="text-lg font-bold">{campaignData.avgCTR}%</p>
                   </div>
-                  <div className="rounded-lg border p-3 text-center">
+                  <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">ROI</p>
                     <p className={`text-lg font-bold ${Number(campaignData.roi) >= 0 ? "text-chart-2" : "text-destructive"}`}>{campaignData.roi}%</p>
                   </div>
@@ -265,7 +265,7 @@ export function MarketingAnalytics() {
                     {campaignData.campaigns.slice(0, 8).map((c: any) => {
                       const spendPct = c.budget > 0 ? Math.round(((c.spent || 0) / c.budget) * 100) : 0;
                       return (
-                        <div key={c.id} className="rounded-lg border p-3 space-y-1.5">
+                        <div key={c.id} className="rounded-xl border p-3 space-y-1.5">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-medium truncate max-w-[70%]">{c.name}</span>
                             <Badge variant={c.status === "active" ? "default" : "secondary"} className="text-[10px]">{c.status}</Badge>
@@ -300,20 +300,20 @@ export function MarketingAnalytics() {
             ) : (
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="rounded-lg border p-3 text-center">
+                  <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "مهجورة" : "Abandoned"}</p>
                     <p className="text-lg font-bold text-chart-5">{cartData.abandoned}</p>
                   </div>
-                  <div className="rounded-lg border p-3 text-center">
+                  <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "مسترجعة" : "Recovered"}</p>
                     <p className="text-lg font-bold text-chart-2">{cartData.recovered}</p>
                   </div>
-                  <div className="rounded-lg border p-3 text-center">
+                  <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "معدل الاسترداد" : "Recovery Rate"}</p>
                     <p className="text-lg font-bold">{cartData.recoveryRate}%</p>
                   </div>
                 </div>
-                <div className="rounded-lg border p-4 space-y-2">
+                <div className="rounded-xl border p-4 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{isAr ? "إيرادات مفقودة" : "Lost Revenue"}</span>
                     <span className="font-bold text-chart-5">{toEnglishDigits(cartData.lostRevenue.toLocaleString())} SAR</span>
@@ -414,7 +414,7 @@ export function MarketingAnalytics() {
                 };
                 const label = platformLabels[cfg.platform] || { en: cfg.platform, ar: cfg.platform };
                 return (
-                  <div key={cfg.id} className="rounded-lg border p-3 flex items-center justify-between">
+                  <div key={cfg.id} className="rounded-xl border p-3 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium">{isAr ? label.ar : label.en}</p>
                       <p className="text-[10px] text-muted-foreground font-mono">{cfg.tracking_id}</p>
