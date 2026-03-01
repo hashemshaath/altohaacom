@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, CheckCircle, Clock, AlertTriangle, BarChart3, Scale, ArrowRight } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface JudgeDashboardProps {
   onSelectCompetition?: (competitionId: string) => void;
@@ -139,7 +140,7 @@ export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
               <div>
-                <p className="text-2xl font-bold leading-none tracking-tight">{stat.value}</p>
+                <p className="text-2xl font-bold leading-none tracking-tight"><AnimatedCounter value={stat.value} /></p>
                 <p className="mt-1.5 text-xs text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>

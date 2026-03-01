@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Plus, Copy, Pencil, Trash2, Save, FileText, ChefHat, Trophy, Wrench, Coffee,
   Layers, Star, Eye, Package, Target,
@@ -373,15 +374,15 @@ export function TemplatesManager() {
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-2 mb-3">
                     <div className="rounded-xl bg-muted/50 p-2 text-center">
-                      <p className="text-lg font-black tabular-nums">{categories}</p>
+                      <AnimatedCounter value={categories} className="text-lg font-black tabular-nums" />
                       <p className="text-[9px] text-muted-foreground">{isAr ? "فئات" : "Categories"}</p>
                     </div>
                     <div className="rounded-xl bg-muted/50 p-2 text-center">
-                      <p className="text-lg font-black tabular-nums">{totalCriteria}</p>
+                      <AnimatedCounter value={totalCriteria} className="text-lg font-black tabular-nums" />
                       <p className="text-[9px] text-muted-foreground">{isAr ? "معايير" : "Criteria"}</p>
                     </div>
                     <div className="rounded-xl bg-muted/50 p-2 text-center">
-                      <p className="text-lg font-black tabular-nums">{totalWeight}%</p>
+                      <AnimatedCounter value={totalWeight} className="text-lg font-black tabular-nums" suffix="%" />
                       <p className="text-[9px] text-muted-foreground">{isAr ? "الأوزان" : "Weight"}</p>
                     </div>
                   </div>

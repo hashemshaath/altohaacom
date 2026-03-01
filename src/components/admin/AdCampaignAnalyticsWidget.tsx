@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Megaphone, Eye, MousePointer, DollarSign, TrendingUp, Target } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -99,7 +100,7 @@ export function AdCampaignAnalyticsWidget() {
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} /></div>
               <div className="min-w-0">
                 <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
-                <p className="text-base font-bold">{kpi.value}</p>
+                <p className="text-base font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
               </div>
             </CardContent>
           </Card>

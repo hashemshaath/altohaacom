@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { HandHeart, CheckCircle2, XCircle, Clock, ClipboardList, Plus, Users } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -129,7 +130,7 @@ export function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
         ].map((s) => (
           <Card key={s.l} className="border-border/40">
             <CardContent className="p-3 text-center">
-              <p className={`text-xl font-bold ${s.c}`}>{s.v}</p>
+              <AnimatedCounter value={s.v} className={`text-xl font-bold ${s.c}`} />
               <p className="text-[10px] text-muted-foreground">{s.l}</p>
             </CardContent>
           </Card>

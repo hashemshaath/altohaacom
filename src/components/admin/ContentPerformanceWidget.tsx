@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FileText, Eye, Star, TrendingUp, BookOpen, Landmark, GraduationCap } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function ContentPerformanceWidget() {
   const { language } = useLanguage();
@@ -82,7 +83,7 @@ export function ContentPerformanceWidget() {
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
-              <p className="text-base font-bold">{m.value}</p>
+              <p className="text-base font-bold">{typeof m.value === "number" ? <AnimatedCounter value={m.value} /> : m.value}</p>
               {m.sub && <p className="text-[8px] text-muted-foreground">{m.sub}</p>}
             </div>
           ))}

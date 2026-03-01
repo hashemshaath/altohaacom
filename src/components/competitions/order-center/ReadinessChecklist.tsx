@@ -10,6 +10,7 @@ import {
   Package, Truck, DollarSign, Users, ListChecks, ShieldCheck,
 } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   competitionId: string;
@@ -212,7 +213,7 @@ export function ReadinessChecklist({ competitionId }: Props) {
             </div>
             <div className="text-end">
               <p className={`text-2xl font-bold ${readinessScore >= 80 ? "text-chart-5" : readinessScore >= 50 ? "text-chart-4" : "text-destructive"}`}>
-                {readinessScore}%
+                <AnimatedCounter value={readinessScore} suffix="%" />
               </p>
               <p className="text-[10px] text-muted-foreground">{completeCount}/{checklistItems.length} {isAr ? "مكتمل" : "complete"}</p>
             </div>

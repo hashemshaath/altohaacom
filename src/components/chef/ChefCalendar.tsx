@@ -25,6 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, isSameDay, isSameMonth, isToday, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 import {
@@ -532,7 +533,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
           return (
             <div key={key} className={`rounded-xl border px-2 py-1.5 text-center ${config.color}`}>
               <Icon className="h-3.5 w-3.5 mx-auto mb-0.5" />
-              <p className="text-sm font-black tabular-nums">{count}</p>
+              <AnimatedCounter value={count} className="text-sm font-black tabular-nums" />
               <p className="text-[8px] font-bold uppercase tracking-wider">{isAr ? config.ar : config.en}</p>
             </div>
           );

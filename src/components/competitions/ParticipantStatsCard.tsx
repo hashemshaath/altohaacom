@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Progress } from "@/components/ui/progress";
 import { Users, CheckCircle, Clock, XCircle, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ParticipantStatsCardProps {
   competitionId: string;
@@ -66,7 +67,7 @@ export function ParticipantStatsCard({ competitionId, maxParticipants }: Partici
               <div className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-background/60 transition-transform duration-300 group-hover:scale-110`}>
                 <Icon className={`h-4 w-4 ${color}`} />
               </div>
-              <p className="text-2xl font-black tabular-nums">{value}</p>
+              <AnimatedCounter value={value} className="text-2xl font-black tabular-nums" />
               <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">{label}</p>
             </div>
           ))}

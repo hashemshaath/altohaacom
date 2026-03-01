@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Building2, Briefcase, MapPin, TrendingUp, Calendar, Zap } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ImportStatsProps {
   stats: {
@@ -55,7 +56,7 @@ export const ImportStats = React.memo(({ stats, loading, isAr }: ImportStatsProp
                 </div>
                 <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{item.label}</span>
               </div>
-              <p className={`text-xl font-bold ${item.color}`}>{item.value.toLocaleString()}</p>
+              <AnimatedCounter value={item.value} className={`text-xl font-bold ${item.color}`} />
             </CardContent>
           </Card>
         );

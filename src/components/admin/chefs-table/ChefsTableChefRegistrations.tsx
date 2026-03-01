@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { UserPlus, Check, Calendar, MapPin, Star, Clock } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 
 interface ChefRegistration {
@@ -92,19 +93,19 @@ export function ChefsTableChefRegistrations() {
       <div className="grid grid-cols-3 gap-4">
         <Card className="border-border/40">
           <CardContent className="p-4 text-center">
-            <p className="text-3xl font-black tabular-nums text-chart-5">{available.length}</p>
+            <AnimatedCounter value={available.length} className="text-3xl font-black tabular-nums text-chart-5" />
             <p className="text-xs text-muted-foreground">{isAr ? "متاح" : "Available"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-4 text-center">
-            <p className="text-3xl font-black tabular-nums text-primary">{matched.length}</p>
+            <AnimatedCounter value={matched.length} className="text-3xl font-black tabular-nums text-primary" />
             <p className="text-xs text-muted-foreground">{isAr ? "تم المطابقة" : "Matched"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-4 text-center">
-            <p className="text-3xl font-black tabular-nums">{registrations.length}</p>
+            <AnimatedCounter value={registrations.length} className="text-3xl font-black tabular-nums" />
             <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
           </CardContent>
         </Card>
