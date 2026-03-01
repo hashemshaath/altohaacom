@@ -1,8 +1,8 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User } from "lucide-react";
+import { User, Calendar, Languages } from "lucide-react";
 import { TranslatableInput } from "./TranslatableInput";
 
 const GENDERS = [
@@ -19,16 +19,20 @@ interface PersonalInfoSectionProps {
 
 export function PersonalInfoSection({ form, update, isAr }: PersonalInfoSectionProps) {
   return (
-    <Card className="rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
+    <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader className="pb-3 px-6 pt-5">
         <CardTitle className="flex items-center gap-2.5 text-base">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
             <User className="h-4 w-4 text-primary" />
           </div>
           {isAr ? "المعلومات الشخصية" : "Personal Information"}
         </CardTitle>
+        <CardDescription className="text-xs text-muted-foreground/70 ms-[46px]">
+          {isAr ? "معلوماتك الأساسية والنبذة الشخصية" : "Your basic information and bio"}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4 px-6 pb-6">
+      <CardContent className="space-y-5 px-6 pb-6">
+        {/* Names */}
         <div className="grid gap-4 sm:grid-cols-2">
           <TranslatableInput
             label={isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (English)"}
@@ -55,31 +59,41 @@ export function PersonalInfoSection({ form, update, isAr }: PersonalInfoSectionP
             pairedValue={form.display_name} onTranslated={(v) => update("display_name", v)}
           />
         </div>
+
+        {/* Date, Gender, Language */}
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs font-semibold">{isAr ? "تاريخ الميلاد" : "Date of Birth"}</Label>
-            <Input className="rounded-xl" type="date" value={form.date_of_birth} onChange={(e) => update("date_of_birth", e.target.value)} dir="ltr" max={new Date().toISOString().split("T")[0]} />
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold flex items-center gap-1.5">
+              <Calendar className="h-3 w-3 text-muted-foreground/60" />
+              {isAr ? "تاريخ الميلاد" : "Date of Birth"}
+            </Label>
+            <Input className="rounded-xl border-border/20 bg-muted/5" type="date" value={form.date_of_birth} onChange={(e) => update("date_of_birth", e.target.value)} dir="ltr" max={new Date().toISOString().split("T")[0]} />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <Label className="text-xs font-semibold">{isAr ? "الجنس" : "Gender"}</Label>
             <Select value={form.gender} onValueChange={(v) => update("gender", v)}>
-              <SelectTrigger className="rounded-xl"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="rounded-xl border-border/20 bg-muted/5"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
+              <SelectContent className="rounded-xl">
                 {GENDERS.map((g) => <SelectItem key={g.value} value={g.value}>{isAr ? g.ar : g.en}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs font-semibold">{isAr ? "اللغة المفضلة" : "Preferred Language"}</Label>
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold flex items-center gap-1.5">
+              <Languages className="h-3 w-3 text-muted-foreground/60" />
+              {isAr ? "اللغة المفضلة" : "Preferred Language"}
+            </Label>
             <Select value={form.preferred_language} onValueChange={(v) => update("preferred_language", v)}>
-              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="rounded-xl border-border/20 bg-muted/5"><SelectValue /></SelectTrigger>
+              <SelectContent className="rounded-xl">
                 <SelectItem value="ar">{isAr ? "العربية" : "Arabic"}</SelectItem>
                 <SelectItem value="en">{isAr ? "الإنجليزية" : "English"}</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
+
+        {/* Bio */}
         <div className="grid gap-4 sm:grid-cols-2">
           <TranslatableInput
             label={isAr ? "النبذة (إنجليزي)" : "Bio (English)"}
