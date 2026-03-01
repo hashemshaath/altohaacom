@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { useMembershipFeatures, useFeatureTierMappings } from "@/hooks/useMembershipFeatures";
 import { cn } from "@/lib/utils";
+import { ResultReveal } from "@/components/ui/result-reveal";
+import { SocialProofCounter } from "@/components/ui/social-proof-counter";
 
 const TIER_CONFIG = [
   {
@@ -175,6 +177,9 @@ export default function MembershipPlans() {
               ? "اكتشف المزايا الحصرية لكل مستوى عضوية وابدأ رحلتك الاحترافية"
               : "Discover exclusive benefits for each tier and start your professional journey"}
           </p>
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <SocialProofCounter type="members" value={1200} label={isAr ? "عضو نشط" : "active members"} />
+          </div>
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-3 pt-4">
@@ -225,8 +230,8 @@ export default function MembershipPlans() {
             const monthlyEquiv = getMonthlyEquivalent(tier);
 
             return (
+              <ResultReveal key={tier.id} delay={TIER_CONFIG.indexOf(tier) * 150} variant="fade-up">
               <Card
-                key={tier.id}
                 className={`relative transition-all hover:shadow-md ${tier.ring} ${isCurrentTier ? "border-primary/30" : ""}`}
               >
                 {tier.featured && (
@@ -343,6 +348,7 @@ export default function MembershipPlans() {
                   </div>
                 </CardContent>
               </Card>
+              </ResultReveal>
             );
           })}
         </div>

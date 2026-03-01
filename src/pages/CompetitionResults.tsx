@@ -14,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Trophy, Medal, Award, ArrowLeft, User, ChefHat, Sparkles, Filter, Crown } from "lucide-react";
 import { SocialShareButtons } from "@/components/competitions/SocialShareButtons";
 import { SEOHead } from "@/components/SEOHead";
+import { ResultReveal } from "@/components/ui/result-reveal";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Winner {
   rank: number;
@@ -211,8 +213,9 @@ export default function CompetitionResults() {
                   const Icon = config.icon;
                   const isFirst = config.rank === 1;
 
-                  return (
-                    <div key={winner.registration_id} className="flex flex-col items-center">
+                    return (
+                      <ResultReveal key={winner.registration_id} delay={index * 200 + 300} variant="scale">
+                      <div className="flex flex-col items-center">
                       <Card className={`mb-3 w-28 sm:w-36 md:w-44 overflow-hidden border-border/60 bg-gradient-to-b ${config.gradient} ${isFirst ? "shadow-lg shadow-chart-4/10" : ""}`}>
                         <CardContent className="p-4 md:p-5 text-center">
                           {/* Medal Icon */}
@@ -248,7 +251,8 @@ export default function CompetitionResults() {
                           )}
 
                           <p className={`text-xl md:text-2xl font-bold ${isFirst ? "text-chart-4" : "text-primary"}`}>
-                            {winner.total_score.toFixed(1)}
+                            <AnimatedCounter value={Math.round(winner.total_score * 10)} className="tabular-nums" suffix="" format={false} />
+                            <span className="text-sm font-normal text-muted-foreground">.{Math.round((winner.total_score % 1) * 10)}</span>
                           </p>
 
                           <Badge className={`mt-2 text-[9px] ${isFirst ? "bg-chart-4/10 text-chart-4 border-chart-4/20" : ""}`} variant="outline">
@@ -274,6 +278,7 @@ export default function CompetitionResults() {
                         <span className={`text-3xl md:text-4xl font-bold ${config.textColor}/50`}>{winner.rank}</span>
                       </div>
                     </div>
+                    </ResultReveal>
                   );
                 })}
               </div>
