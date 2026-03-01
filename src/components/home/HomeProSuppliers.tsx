@@ -11,6 +11,18 @@ import { cn } from "@/lib/utils";
 import { Building2, Factory, CheckCircle, MapPin } from "lucide-react";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { localizeLocation } from "@/lib/localizeLocation";
+
+const SUPPLIER_CAT_LABELS: Record<string, { en: string; ar: string }> = {
+  food: { en: "Food", ar: "أغذية" },
+  equipment: { en: "Equipment", ar: "معدات" },
+  packaging: { en: "Packaging", ar: "تغليف" },
+  ingredients: { en: "Ingredients", ar: "مكونات" },
+  beverages: { en: "Beverages", ar: "مشروبات" },
+  uniforms: { en: "Uniforms", ar: "أزياء" },
+  cleaning: { en: "Cleaning", ar: "تنظيف" },
+  technology: { en: "Technology", ar: "تقنية" },
+};
 
 export function HomeProSuppliers() {
   const { language } = useLanguage();
@@ -61,15 +73,18 @@ export function HomeProSuppliers() {
           filters={categories.length > 1 ? (
             <>
               <FilterChip label={isAr ? "الكل" : "All"} active={!catFilter} count={suppliers.length} onClick={() => setCatFilter(null)} />
-              {categories.map(c => (
+              {categories.map(c => {
+                const cl = SUPPLIER_CAT_LABELS[c.toLowerCase()];
+                return (
                 <FilterChip
                   key={c}
-                  label={c}
+                  label={cl ? (isAr ? cl.ar : cl.en) : c}
                   active={catFilter === c}
                   count={suppliers.filter((s: any) => s.supplier_category === c).length}
                   onClick={() => setCatFilter(catFilter === c ? null : c)}
                 />
-              ))}
+                );
+              })}
             </>
           ) : undefined}
         />
@@ -96,7 +111,7 @@ export function HomeProSuppliers() {
                   <div>
                     <p className="text-sm font-bold truncate text-foreground">{name}</p>
                     {s.supplier_category && (
-                      <Badge variant="outline" className="text-[9px] mt-1">{s.supplier_category}</Badge>
+                      <Badge variant="outline" className="text-[9px] mt-1">{(() => { const cl = SUPPLIER_CAT_LABELS[s.supplier_category.toLowerCase()]; return cl ? (isAr ? cl.ar : cl.en) : s.supplier_category; })()}</Badge>
                     )}
                     {s.is_verified && (
                       <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-0.5 text-[8px] mt-1 ms-1">
@@ -110,7 +125,7 @@ export function HomeProSuppliers() {
                   {s.country_code && (
                     <p className="text-[10px] text-muted-foreground/70 flex items-center justify-center gap-1">
                       <MapPin className="h-2.5 w-2.5 shrink-0" />
-                      {countryFlag(s.country_code)} {s.city || ""}
+                      {countryFlag(s.country_code)} {localizeLocation({ city: s.city, countryCode: s.country_code }, isAr)}
                     </p>
                   )}
                 </CardContent>

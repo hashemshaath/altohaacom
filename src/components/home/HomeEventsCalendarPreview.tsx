@@ -18,6 +18,7 @@ import { ICONS } from "@/pages/events-calendar/constants";
 import { getCountdown } from "@/pages/events-calendar/utils";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { localizeCity } from "@/lib/localizeLocation";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
 
@@ -251,7 +252,7 @@ function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           <Calendar className="h-2.5 w-2.5" />
           {format(parseISO(event.start_date), "MMM d, yyyy", { locale: isAr ? ar : undefined })}
         </span>
-        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{event.city}</span>}
+        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}</span>}
       </div>
     </div>
   );
@@ -292,7 +293,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
           <p className="text-xs font-bold line-clamp-1">{isAr && event.title_ar ? event.title_ar : event.title}</p>
         )}
         <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
-          {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{event.city}</span>}
+          {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}</span>}
           {event.organizer_name && <span className="flex items-center gap-0.5"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
         </div>
       </div>
@@ -354,7 +355,7 @@ const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
             {event.city && (
               <span className="flex items-center gap-1 truncate">
                 <MapPin className="h-3 w-3 text-primary/50 shrink-0" />
-                {event.city}
+                {localizeCity(event.city, isAr)}
               </span>
             )}
           </div>
