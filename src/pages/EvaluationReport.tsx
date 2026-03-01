@@ -172,7 +172,7 @@ export default function EvaluationReport() {
                 { icon: Users, label: isAr ? "المقيّمون" : "Evaluators", value: `${evaluations.length} ${isAr ? "طهاة" : "Chefs"}` },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted">
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -228,7 +228,7 @@ export default function EvaluationReport() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {evaluations.map((ev: any, i: number) => (
-                <div key={i} className="rounded-lg border border-border/30 p-4 flex items-center gap-3">
+                <div key={i} className="rounded-xl border border-border/30 p-4 flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                     {ev.profile?.avatar_url ? (
                       <img src={ev.profile.avatar_url} className="h-10 w-10 rounded-full object-cover" alt="" />
@@ -255,7 +255,7 @@ export default function EvaluationReport() {
                 </p>
                 <div className="space-y-3">
                   {evaluations.filter((e: any) => e.endorsement_text).map((ev: any, i: number) => (
-                    <div key={i} className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                    <div key={i} className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                       <p className="text-sm italic">"{isAr && ev.endorsement_text_ar ? ev.endorsement_text_ar : ev.endorsement_text}"</p>
                       <p className="text-xs text-muted-foreground mt-2">— {ev.profile?.full_name || "Chef"}</p>
                     </div>

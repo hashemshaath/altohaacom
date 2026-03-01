@@ -558,7 +558,7 @@ export default function ProSupplierDetail() {
                       <Card key={s.id} className="cursor-pointer rounded-xl transition-all hover:shadow-md hover:-translate-y-0.5"
                         onClick={() => navigate(`/competitions/${s.competitions?.id || ""}`)}>
                         <CardContent className="flex items-center gap-3 p-4">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-chart-4/10">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
                             <Crown className="h-5 w-5 text-chart-4" />
                           </div>
                           <div className="min-w-0">

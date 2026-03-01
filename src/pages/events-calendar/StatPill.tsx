@@ -14,7 +14,7 @@ export function StatPill({ icon: Icon, value, label, color }: { icon: LucideIcon
   const styles = COLOR_STYLES[color] ?? COLOR_STYLES.primary;
   return (
     <div className={cn("flex items-center gap-2 rounded-xl border px-3.5 py-2 bg-background/60 backdrop-blur-sm shadow-sm", styles.border)}>
-      <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg", styles.bg)}>
+      <div className={cn("flex h-8 w-8 items-center justify-center rounded-xl", styles.bg)}>
         <Icon className={cn("h-4 w-4", styles.text)} />
       </div>
       <div>

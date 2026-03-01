@@ -189,15 +189,15 @@ export default function CompanySponsorships() {
         </div>
         {/* Quick stats */}
         <div className="relative z-10 mt-4 flex flex-wrap gap-4">
-          <div className="rounded-lg bg-background/60 px-4 py-2 backdrop-blur-sm">
+          <div className="rounded-xl bg-background/60 px-4 py-2 backdrop-blur-sm">
             <p className="text-xs text-muted-foreground">{isAr ? "الرعايات النشطة" : "Active"}</p>
             <p className="text-xl font-bold">{mySponsors.filter((s: any) => s.status === "active").length}</p>
           </div>
-          <div className="rounded-lg bg-background/60 px-4 py-2 backdrop-blur-sm">
+          <div className="rounded-xl bg-background/60 px-4 py-2 backdrop-blur-sm">
             <p className="text-xs text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</p>
             <p className="text-xl font-bold text-chart-4">{mySponsors.filter((s: any) => s.status === "pending").length}</p>
           </div>
-          <div className="rounded-lg bg-background/60 px-4 py-2 backdrop-blur-sm">
+          <div className="rounded-xl bg-background/60 px-4 py-2 backdrop-blur-sm">
             <p className="text-xs text-muted-foreground">{isAr ? "دعوات جديدة" : "Invitations"}</p>
             <p className="text-xl font-bold text-primary">{pendingInvitations.length}</p>
           </div>
@@ -356,7 +356,7 @@ export default function CompanySponsorships() {
               return (
                 <Card key={inv.id}>
                   <CardContent className="flex items-center gap-4 p-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                       <Send className="h-5 w-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -444,7 +444,7 @@ export default function CompanySponsorships() {
           </DialogHeader>
           {applyDialog && (
             <div className="space-y-4">
-              <div className="rounded-lg border p-3">
+              <div className="rounded-xl border p-3">
                 <p className="font-medium">{isAr && applyDialog.title_ar ? applyDialog.title_ar : applyDialog.title}</p>
                 {applyDialog.competition_start && (
                   <p className="text-xs text-muted-foreground mt-1">
@@ -478,7 +478,7 @@ export default function CompanySponsorships() {
                   rows={3}
                 />
               </div>
-              <div className="rounded-lg bg-chart-4/5 border border-chart-4/20 p-3">
+              <div className="rounded-xl bg-chart-4/5 border border-chart-4/20 p-3">
                 <p className="text-xs text-muted-foreground">
                   <Clock className="inline me-1 h-3 w-3" />
                   {isAr

@@ -496,7 +496,7 @@ export default function CommunicationTemplatesAdmin() {
                                     <p className="font-medium text-sm">{t.subject}</p>
                                   </div>
                                 )}
-                                <div className="rounded-lg border bg-background p-4 text-sm whitespace-pre-wrap">
+                                <div className="rounded-xl border bg-background p-4 text-sm whitespace-pre-wrap">
                                   {t.body}
                                 </div>
                               </TabsContent>
@@ -507,7 +507,7 @@ export default function CommunicationTemplatesAdmin() {
                                     <p className="font-medium text-sm">{t.subject_ar}</p>
                                   </div>
                                 )}
-                                <div className="rounded-lg border bg-background p-4 text-sm whitespace-pre-wrap" dir="rtl">
+                                <div className="rounded-xl border bg-background p-4 text-sm whitespace-pre-wrap" dir="rtl">
                                   {t.body_ar || <span className="text-muted-foreground italic">{isAr ? "لا يوجد محتوى عربي" : "No Arabic content"}</span>}
                                 </div>
                               </TabsContent>

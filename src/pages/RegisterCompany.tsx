@@ -309,7 +309,7 @@ export default function RegisterCompany() {
                         <button
                           key={ct.value}
                           onClick={() => updateForm("type", ct.value)}
-                          className={`rounded-lg border p-3 text-start transition-colors ${
+                          className={`rounded-xl border p-3 text-start transition-colors ${
                             form.type === ct.value
                               ? "border-primary bg-primary/5"
                               : "border-border hover:border-primary/50"
@@ -550,7 +550,7 @@ export default function RegisterCompany() {
                   <CardDescription>{isAr ? "راجع المعلومات قبل التقديم" : "Review your information before submitting"}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="rounded-lg border p-4 space-y-3">
+                  <div className="rounded-xl border p-4 space-y-3">
                     <div className="flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-primary" />
                       <span className="font-medium">{form.name}</span>
@@ -564,7 +564,7 @@ export default function RegisterCompany() {
                     {form.description && <p className="text-sm text-muted-foreground">{form.description}</p>}
                   </div>
 
-                  <div className="rounded-lg border p-4 space-y-2">
+                  <div className="rounded-xl border p-4 space-y-2">
                     <p className="text-sm font-medium">{isAr ? "معلومات الاتصال" : "Contact"}</p>
                     <div className="grid gap-1 text-sm">
                       {form.email && <div className="flex items-center gap-2"><Mail className="h-3 w-3" />{form.email}</div>}
@@ -573,7 +573,7 @@ export default function RegisterCompany() {
                     </div>
                   </div>
 
-                  <div className="rounded-lg border p-4 space-y-2">
+                  <div className="rounded-xl border p-4 space-y-2">
                     <p className="text-sm font-medium">{isAr ? "المسؤول الرئيسي" : "Primary Contact"}</p>
                     <div className="grid gap-1 text-sm">
                       <div className="flex items-center gap-2"><Users className="h-3 w-3" />{form.contact_name}</div>
@@ -582,7 +582,7 @@ export default function RegisterCompany() {
                   </div>
 
                   {form.classifications.length > 0 && (
-                    <div className="rounded-lg border p-4 space-y-2">
+                    <div className="rounded-xl border p-4 space-y-2">
                       <p className="text-sm font-medium">{isAr ? "التصنيفات" : "Classifications"}</p>
                       <div className="flex flex-wrap gap-1">
                         {form.classifications.map((c) => (
@@ -594,7 +594,7 @@ export default function RegisterCompany() {
                     </div>
                   )}
 
-                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                     <div className="flex items-start gap-2">
                       <Shield className="h-4 w-4 text-primary mt-0.5" />
                       <p className="text-sm">

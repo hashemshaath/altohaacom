@@ -476,15 +476,15 @@ export default function CompanyCampaignDetail() {
 
                       {/* Stats */}
                       <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="rounded-lg bg-muted/50 p-2">
+                        <div className="rounded-xl bg-muted/50 p-2">
                           <p className="text-[10px] text-muted-foreground">{isAr ? "مشاهدات" : "Imp."}</p>
                           <p className="text-sm font-bold">{toEnglishDigits((c.impressions || 0).toLocaleString())}</p>
                         </div>
-                        <div className="rounded-lg bg-muted/50 p-2">
+                        <div className="rounded-xl bg-muted/50 p-2">
                           <p className="text-[10px] text-muted-foreground">{isAr ? "نقرات" : "Clicks"}</p>
                           <p className="text-sm font-bold">{toEnglishDigits((c.clicks || 0).toLocaleString())}</p>
                         </div>
-                        <div className="rounded-lg bg-muted/50 p-2">
+                        <div className="rounded-xl bg-muted/50 p-2">
                           <p className="text-[10px] text-muted-foreground">CTR</p>
                           <p className="text-sm font-bold">{creativeCtr}%</p>
                         </div>
