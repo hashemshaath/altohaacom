@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Trophy, Landmark, TrendingUp, ChefHat, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function FanWeeklyDigest() {
   const { user } = useAuth();
@@ -78,15 +79,15 @@ export function FanWeeklyDigest() {
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-2">
           <div className="rounded-xl bg-muted/50 p-2.5 text-center">
-            <p className="text-lg font-bold">{digest.followingCount}</p>
+            <AnimatedCounter value={digest.followingCount} className="text-lg font-bold" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "متابَع" : "Following"}</p>
           </div>
           <div className="rounded-xl bg-muted/50 p-2.5 text-center">
-            <p className="text-lg font-bold">{digest.posts.length}</p>
+            <AnimatedCounter value={digest.posts.length} className="text-lg font-bold" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "منشورات جديدة" : "New Posts"}</p>
           </div>
           <div className="rounded-xl bg-muted/50 p-2.5 text-center">
-            <p className="text-lg font-bold text-primary">+{digest.newFollowers}</p>
+            <AnimatedCounter value={digest.newFollowers} className="text-lg font-bold text-primary" prefix="+" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "متابعون جدد" : "New Followers"}</p>
           </div>
         </div>

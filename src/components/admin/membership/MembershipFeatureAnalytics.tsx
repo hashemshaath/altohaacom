@@ -159,9 +159,7 @@ export default function MembershipFeatureAnalytics() {
               <Zap className="h-4 w-4 text-chart-2" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل الحظر" : "Block Rate"}</span>
             </div>
-            <p className="text-2xl font-bold">
-              {totalAccess > 0 ? ((totalBlocked / totalAccess) * 100).toFixed(1) : "0"}%
-            </p>
+            <AnimatedCounter value={totalAccess > 0 ? Math.round((totalBlocked / totalAccess) * 100 * 10) / 10 : 0} className="text-2xl font-bold" suffix="%" />
           </CardContent>
         </Card>
       </div>
