@@ -135,7 +135,7 @@ export function ExhibitionDiscountCodes({ exhibitionId, isAr }: Props) {
         ) : (
           <div className="space-y-2">
             {codes.map((dc: any) => (
-              <div key={dc.id} className="flex items-center gap-2 p-2.5 rounded-lg bg-muted/40 border border-border/40">
+              <div key={dc.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/40 border border-border/40">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <code className="text-xs font-bold text-foreground">{dc.code}</code>

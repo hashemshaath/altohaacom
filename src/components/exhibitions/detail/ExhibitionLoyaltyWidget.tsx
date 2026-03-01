@@ -110,11 +110,11 @@ export function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
             return (
               <div
                 key={action.type}
-                className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all ${
+                className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all ${
                   completed ? "bg-chart-3/5 border-chart-3/20" : "bg-muted/30 border-border/40 hover:border-primary/30"
                 }`}
               >
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${
+                <div className={`flex h-8 w-8 items-center justify-center rounded-xl shrink-0 ${
                   completed ? "bg-chart-3/15" : "bg-muted/60"
                 }`}>
                   <action.icon className={`h-4 w-4 ${completed ? "text-chart-3" : "text-muted-foreground"}`} />
@@ -154,7 +154,7 @@ export function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
         </div>
 
         {totalEarned === totalPossible && totalPossible > 0 && (
-          <div className="mt-3 p-3 rounded-lg bg-gradient-to-r from-chart-4/10 to-chart-3/10 border border-chart-4/20 text-center">
+          <div className="mt-3 p-3 rounded-xl bg-gradient-to-r from-chart-4/10 to-chart-3/10 border border-chart-4/20 text-center">
             <Gift className="h-5 w-5 mx-auto text-chart-4 mb-1" />
             <p className="text-xs font-semibold text-foreground">{t("All rewards collected! 🏆", "تم جمع كل المكافآت! 🏆")}</p>
           </div>

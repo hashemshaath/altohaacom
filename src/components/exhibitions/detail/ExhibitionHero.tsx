@@ -88,7 +88,7 @@ export function ExhibitionHero({
           <Button
             variant="secondary"
             size="sm"
-            className="h-8 rounded-lg bg-background/80 backdrop-blur-sm text-foreground shadow-sm hover:bg-background/90 text-xs"
+            className="h-8 rounded-xl bg-background/80 backdrop-blur-sm text-foreground shadow-sm hover:bg-background/90 text-xs"
             asChild
           >
             <Link to="/exhibitions">
@@ -161,7 +161,7 @@ export function ExhibitionHero({
               <ShareDropdown isAr={isAr} title={title} shareUrl={shareUrl} />
 
               {isOwner && (
-                <Button variant="outline" size="sm" className="h-9 rounded-lg" asChild>
+                <Button variant="outline" size="sm" className="h-9 rounded-xl" asChild>
                   <Link to={`/exhibitions/${exhibition.slug}/edit`}>
                     <Pencil className="me-1.5 h-3.5 w-3.5" />
                     {isAr ? "تعديل" : "Edit"}
@@ -170,7 +170,7 @@ export function ExhibitionHero({
               )}
 
               {exhibition.registration_url && !hasEnded && (
-                <Button size="sm" className="h-9 rounded-lg shadow-sm" asChild>
+                <Button size="sm" className="h-9 rounded-xl shadow-sm" asChild>
                   <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
                     <Ticket className="me-1.5 h-3.5 w-3.5" />
                     {isAr ? "سجل الآن" : "Register"}
@@ -184,7 +184,7 @@ export function ExhibitionHero({
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1 border-t border-border/40">
             {organizer && (
               <div className="flex items-center gap-2 pt-2">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/5 ring-1 ring-primary/10">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10">
                   {organizerLogoUrl ? (
                     <img src={organizerLogoUrl} alt={organizer} className="h-5 w-5 object-contain" />
                   ) : (
@@ -210,7 +210,7 @@ export function ExhibitionHero({
           <div className="flex items-center gap-2 sm:hidden">
             <ShareDropdown isAr={isAr} title={title} shareUrl={shareUrl} />
             {isOwner && (
-              <Button variant="outline" size="sm" className="h-8 rounded-lg text-xs flex-1" asChild>
+              <Button variant="outline" size="sm" className="h-8 rounded-xl text-xs flex-1" asChild>
                 <Link to={`/exhibitions/${exhibition.slug}/edit`}>
                   <Pencil className="me-1 h-3 w-3" />
                   {isAr ? "تعديل" : "Edit"}
@@ -218,7 +218,7 @@ export function ExhibitionHero({
               </Button>
             )}
             {exhibition.registration_url && !hasEnded && (
-              <Button size="sm" className="h-8 rounded-lg text-xs flex-1" asChild>
+              <Button size="sm" className="h-8 rounded-xl text-xs flex-1" asChild>
                 <a href={exhibition.registration_url} target="_blank" rel="noopener noreferrer">
                   <Ticket className="me-1 h-3 w-3" />
                   {isAr ? "سجل" : "Register"}
@@ -237,12 +237,12 @@ function ShareDropdown({ isAr, title, shareUrl }: { isAr: boolean; title: string
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 sm:h-9 rounded-lg">
+        <Button variant="outline" size="sm" className="h-8 sm:h-9 rounded-xl">
           <Share2 className="me-1.5 h-3.5 w-3.5" />
           <span className="hidden sm:inline">{isAr ? "مشاركة" : "Share"}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48 rounded-lg p-1.5">
+      <DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5">
         <DropdownMenuItem
           className="cursor-pointer gap-2.5 rounded-md py-2 text-sm"
           onClick={() => {

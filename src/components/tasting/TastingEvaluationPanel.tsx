@@ -139,7 +139,7 @@ export function TastingEvaluationPanel({ sessionId, entries, criteria, scores, e
     const hasHelp = guidelines || guidelinesAr || (refImages && refImages.length > 0);
 
     return (
-      <div key={crit.id} className="space-y-2 rounded-lg border p-4">
+      <div key={crit.id} className="space-y-2 rounded-xl border p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div>
@@ -179,7 +179,7 @@ export function TastingEvaluationPanel({ sessionId, entries, criteria, scores, e
             <CollapsibleContent>
               <div className="flex gap-2 mt-2 overflow-x-auto pb-2">
                 {refImages.map((img, i) => (
-                  <img key={i} src={img} alt={`ref-${i}`} className="h-20 w-20 rounded-lg object-cover border" />
+                  <img key={i} src={img} alt={`ref-${i}`} className="h-20 w-20 rounded-xl object-cover border" />
                 ))}
               </div>
             </CollapsibleContent>
@@ -311,7 +311,7 @@ export function TastingEvaluationPanel({ sessionId, entries, criteria, scores, e
                     {Object.entries(stages.grouped).map(([stageKey, stageCriteria]) => (
                       <TabsContent key={stageKey} value={stageKey} className="space-y-4">
                         {/* Stage description */}
-                        <div className="rounded-lg bg-muted/50 p-3 text-xs text-muted-foreground">
+                        <div className="rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
                           {stageKey === "visual" && (isAr ? "قم بتقييم المظهر البصري والتقديم والجاذبية العامة" : "Evaluate visual appearance, presentation, and overall appeal")}
                           {stageKey === "technical" && (isAr ? "قم بتقييم المهارات الفنية والتقنيات والنظافة" : "Assess technical skills, techniques, and hygiene standards")}
                           {stageKey === "performance" && (isAr ? "قم بتقييم الأداء المهني والتواصل والانطباع العام" : "Rate professional performance, communication, and overall impression")}

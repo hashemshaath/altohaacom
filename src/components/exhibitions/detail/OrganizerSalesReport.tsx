@@ -92,7 +92,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
         ].map(s => (
           <Card key={s.label} className="border-border/40">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 shrink-0">
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
               <div>
@@ -121,7 +121,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
           <ScrollArea className="max-h-60">
             <div className="space-y-1.5">
               {data?.all.slice(0, 15).map((tk: any) => (
-                <div key={tk.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/20 text-xs">
+                <div key={tk.id} className="flex items-center justify-between p-2 rounded-xl bg-muted/20 text-xs">
                   <div className="flex items-center gap-2 min-w-0">
                     {tk.checked_in_at ? (
                       <CheckCircle2 className="h-3 w-3 text-chart-3 shrink-0" />

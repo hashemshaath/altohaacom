@@ -49,7 +49,7 @@ export function ExhibitionContactCard({ organizerName, organizerLogo, email, pho
           {email && (
             <a
               href={`mailto:${email}`}
-              className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted/50 group"
+              className="flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-colors hover:bg-muted/50 group"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/5 shrink-0">
                 <Mail className="h-3.5 w-3.5 text-primary" />
@@ -60,7 +60,7 @@ export function ExhibitionContactCard({ organizerName, organizerLogo, email, pho
           {phone && (
             <a
               href={`tel:${phone}`}
-              className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-muted/50 group"
+              className="flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-colors hover:bg-muted/50 group"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-chart-3/5 shrink-0">
                 <Phone className="h-3.5 w-3.5 text-chart-3" />

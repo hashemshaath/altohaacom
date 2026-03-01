@@ -146,7 +146,7 @@ export function ExhibitionMyTickets({ exhibitionId, exhibitionTitle, exhibitionD
               </div>
 
               {isCheckedIn && (
-                <div className="text-center rounded-lg bg-chart-3/5 py-2 border border-chart-3/15">
+                <div className="text-center rounded-xl bg-chart-3/5 py-2 border border-chart-3/15">
                   <p className="text-[11px] text-chart-3 font-medium">
                     ✓ {t("Checked in at", "تم الدخول في")} {format(new Date(ticket.checked_in_at), "MMM d, HH:mm")}
                   </p>
