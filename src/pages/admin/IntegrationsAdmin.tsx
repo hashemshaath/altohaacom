@@ -201,9 +201,9 @@ export default function IntegrationsAdmin() {
       />
 
       <Tabs defaultValue="all">
-        <TabsList className="flex-wrap h-auto">
+        <TabsList className="flex-wrap h-auto rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5">
           {categories.map(cat => (
-            <TabsTrigger key={cat.id} value={cat.id}>{cat.label}</TabsTrigger>
+            <TabsTrigger key={cat.id} value={cat.id} className="rounded-xl data-[state=active]:shadow-sm">{cat.label}</TabsTrigger>
           ))}
         </TabsList>
 
@@ -214,13 +214,13 @@ export default function IntegrationsAdmin() {
                 .filter(i => cat.id === "all" || i.category === cat.id)
                 .map((integration) => (
                   <Card key={integration.id} className={cn(
-                    "transition-all",
+                    "rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
                     integrationStates[integration.id] && "ring-2 ring-primary"
                   )}>
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                             <integration.icon className="h-5 w-5 text-primary" />
                           </div>
                           <div>
