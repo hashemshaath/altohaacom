@@ -237,7 +237,7 @@ export function CertificateViewPanel({ certificate: cert, onClose }: Certificate
         {/* Certificate Preview */}
         <div>
           <p className="text-sm font-medium mb-3">{language === "ar" ? "معاينة الشهادة" : "Certificate Preview"}</p>
-          <div ref={printRef} className="overflow-auto bg-muted/30 rounded-lg p-4 flex items-center justify-center">
+          <div ref={printRef} className="overflow-auto bg-muted/30 rounded-xl p-4 flex items-center justify-center">
             <CertificatePreview
               design={defaultDesign}
               zoom={45}

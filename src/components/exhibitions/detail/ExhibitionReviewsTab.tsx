@@ -116,7 +116,7 @@ function OrganizerResponse({ review, isAr, isOrganizer, exhibitionId }: { review
 
   if (review.organizer_response) {
     return (
-      <div className="mt-2 ms-6 rounded-lg p-2.5 border-s-2 bg-primary/5 border-primary/40">
+      <div className="mt-2 ms-6 rounded-xl p-2.5 border-s-2 bg-primary/5 border-primary/40">
         <div className="flex items-center gap-1.5">
           <Badge variant="secondary" className="text-[8px] h-3.5 px-1 bg-primary/10 text-primary border-0">
             {isAr ? "رد المنظم" : "Organizer Response"}
@@ -186,7 +186,7 @@ function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }
       {replies.map((r: any) => {
         const isOrganizerReply = exhibitionCreatorId && r.user_id === exhibitionCreatorId;
         return (
-          <div key={r.id} className={`ms-6 rounded-lg p-2.5 border-s-2 ${isOrganizerReply ? "bg-primary/5 border-primary/40" : "bg-muted/40 border-primary/20"}`}>
+          <div key={r.id} className={`ms-6 rounded-xl p-2.5 border-s-2 ${isOrganizerReply ? "bg-primary/5 border-primary/40" : "bg-muted/40 border-primary/20"}`}>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] font-semibold text-foreground">{r.profile?.full_name || r.profile?.username || (isAr ? "مستخدم" : "User")}</span>
               {isOrganizerReply && (
@@ -439,7 +439,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }
                   {photoUrls.length > 0 && (
                     <div className="flex gap-2 flex-wrap">
                       {photoUrls.map((url, i) => (
-                        <div key={i} className="relative h-16 w-16 rounded-lg overflow-hidden border border-border/50">
+                        <div key={i} className="relative h-16 w-16 rounded-xl overflow-hidden border border-border/50">
                           <img src={url} alt="" className="h-full w-full object-cover" />
                           <button onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-0.5 end-0.5 h-4 w-4 rounded-full bg-destructive/80 flex items-center justify-center">
                             <X className="h-2.5 w-2.5 text-destructive-foreground" />
@@ -548,7 +548,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }
                   {review.photo_urls && review.photo_urls.length > 0 && (
                     <div className="mt-3 flex gap-2 flex-wrap">
                       {review.photo_urls.map((url: string, i: number) => (
-                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="h-20 w-20 rounded-lg overflow-hidden border border-border/40 hover:opacity-80 transition-opacity">
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="h-20 w-20 rounded-xl overflow-hidden border border-border/40 hover:opacity-80 transition-opacity">
                           <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
                         </a>
                       ))}

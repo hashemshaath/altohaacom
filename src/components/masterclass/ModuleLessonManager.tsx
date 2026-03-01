@@ -203,7 +203,7 @@ export function ModuleLessonManager({ masterclassId }: Props) {
           {modules.map((module: any, idx: number) => {
             const lessons = [...(module.masterclass_lessons || [])].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
             return (
-              <AccordionItem key={module.id} value={module.id} className="border rounded-lg px-4">
+              <AccordionItem key={module.id} value={module.id} className="border rounded-xl px-4">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center gap-3 text-start flex-1">
                     <div className="flex flex-col gap-0.5">

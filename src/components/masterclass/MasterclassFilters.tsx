@@ -46,10 +46,10 @@ export function MasterclassFilters({
               <SelectValue placeholder={isAr ? "المستوى" : "Level"} />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-border/40">
-              <SelectItem value="all" className="rounded-lg">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
-              <SelectItem value="beginner" className="rounded-lg">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
-              <SelectItem value="intermediate" className="rounded-lg">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
-              <SelectItem value="advanced" className="rounded-lg">{isAr ? "متقدم" : "Advanced"}</SelectItem>
+              <SelectItem value="all" className="rounded-xl">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
+              <SelectItem value="beginner" className="rounded-xl">{isAr ? "مبتدئ" : "Beginner"}</SelectItem>
+              <SelectItem value="intermediate" className="rounded-xl">{isAr ? "متوسط" : "Intermediate"}</SelectItem>
+              <SelectItem value="advanced" className="rounded-xl">{isAr ? "متقدم" : "Advanced"}</SelectItem>
             </SelectContent>
           </Select>
           {categories.length > 1 && (
@@ -58,9 +58,9 @@ export function MasterclassFilters({
                 <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-border/40">
-                <SelectItem value="all" className="rounded-lg">{isAr ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="all" className="rounded-xl">{isAr ? "الكل" : "All"}</SelectItem>
                 {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                  <SelectItem key={cat} value={cat} className="rounded-xl">{cat}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -72,9 +72,9 @@ export function MasterclassFilters({
                 <SelectValue placeholder={isAr ? "الدولة" : "Country"} />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-border/40">
-                <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                <SelectItem value="all" className="rounded-xl">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
                 {countryCodes.map((code) => (
-                  <SelectItem key={code} value={code} className="rounded-lg">
+                  <SelectItem key={code} value={code} className="rounded-xl">
                     {countryFlag(code)} {getCountryName(code)}
                   </SelectItem>
                 ))}

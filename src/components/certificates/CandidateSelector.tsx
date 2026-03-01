@@ -300,7 +300,7 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
               </div>
             ) : (
               <>
-                <ScrollArea className="h-[350px] border rounded-lg">
+                <ScrollArea className="h-[350px] border rounded-xl">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -374,7 +374,7 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
 
                 {/* Already issued warning */}
                 {existingCerts.length > 0 && (
-                  <div className="flex items-center gap-2 mt-3 rounded-lg bg-chart-4/10 p-3 text-sm text-chart-4">
+                  <div className="flex items-center gap-2 mt-3 rounded-xl bg-chart-4/10 p-3 text-sm text-chart-4">
                     <AlertCircle className="h-4 w-4 shrink-0" />
                     {language === "ar"
                       ? `${existingCerts.length} شهادة صادرة بالفعل. لن يتم تكرارها.`
@@ -419,7 +419,7 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
             </div>
           </CardHeader>
           <CardContent>
-            <div className="overflow-auto bg-muted/30 rounded-lg p-4 flex items-center justify-center">
+            <div className="overflow-auto bg-muted/30 rounded-xl p-4 flex items-center justify-center">
               <CertificatePreview
                 design={defaultDesign}
                 zoom={50}

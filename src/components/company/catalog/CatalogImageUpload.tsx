@@ -64,7 +64,7 @@ export function CatalogImageUpload({ imageUrl, onImageChange, companyId, languag
     <div className="space-y-2">
       <Label>{language === "ar" ? "صورة المنتج" : "Product Image"}</Label>
       {imageUrl ? (
-        <div className="relative w-32 h-32 rounded-lg overflow-hidden border">
+        <div className="relative w-32 h-32 rounded-xl overflow-hidden border">
           <img src={imageUrl} alt="Product" className="h-full w-full object-cover" />
           <Button
             type="button"
@@ -81,7 +81,7 @@ export function CatalogImageUpload({ imageUrl, onImageChange, companyId, languag
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={uploading}
-          className="flex h-32 w-32 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+          className="flex h-32 w-32 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-muted-foreground/25 text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
         >
           {uploading ? (
             <Loader2 className="h-6 w-6 animate-spin" />
