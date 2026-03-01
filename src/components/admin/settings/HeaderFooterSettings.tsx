@@ -67,7 +67,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
         <CardContent className="space-y-3">
           <div className="grid gap-2 sm:grid-cols-2">
             {headerToggles.map(item => (
-              <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+              <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3">
                 <div>
                   <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
                   <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
@@ -96,7 +96,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
         <CardContent className="space-y-4">
           <div className="grid gap-2 sm:grid-cols-2">
             {footerToggles.map(item => (
-              <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+              <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3">
                 <div>
                   <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
                   <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>

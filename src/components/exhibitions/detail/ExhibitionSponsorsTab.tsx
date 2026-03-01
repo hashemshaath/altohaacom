@@ -49,7 +49,7 @@ export const ExhibitionSponsorsTab = memo(function ExhibitionSponsorsTab({ spons
                     {sponsor.logo_url ? (
                       <img src={sponsor.logo_url} alt={sponsor.name} className="mb-2 h-12 w-auto max-w-[120px] object-contain" loading="lazy" />
                     ) : (
-                      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-muted"><Building className="h-5 w-5 text-muted-foreground" /></div>
+                      <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-muted"><Building className="h-5 w-5 text-muted-foreground" /></div>
                     )}
                     <p className="text-xs font-medium">{isAr && sponsor.name_ar ? sponsor.name_ar : sponsor.name}</p>
                   </CardContent>

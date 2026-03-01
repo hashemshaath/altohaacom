@@ -63,7 +63,7 @@ export function CertificateIssuanceWidget() {
             { icon: Send, label: isAr ? "مُرسلة" : "Sent", value: data.sent, color: "text-chart-3" },
             { icon: Download, label: isAr ? "التحميلات" : "Downloads", value: data.totalDownloads, color: "text-primary" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>

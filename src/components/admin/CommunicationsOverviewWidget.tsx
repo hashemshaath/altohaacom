@@ -88,7 +88,7 @@ export function CommunicationsOverviewWidget() {
             { icon: Mail, label: isAr ? "الرسائل" : "Messages", value: data.totalMessages, sub: `${data.messagesToday} ${isAr ? "اليوم" : "today"}`, color: "text-primary" },
             { icon: Zap, label: isAr ? "القوالب" : "Templates", value: data.totalTemplates, sub: `${data.activeSessions} ${isAr ? "جلسة نشطة" : "active chats"}`, color: "text-chart-1" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>

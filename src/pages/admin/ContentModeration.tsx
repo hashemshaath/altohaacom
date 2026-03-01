@@ -258,7 +258,7 @@ export default function ContentModeration() {
 
                       <div>
                         <Label className="text-muted-foreground">{t("reason")}</Label>
-                        <p className="mt-1 rounded-lg bg-muted p-3 text-sm">{report.reason}</p>
+                        <p className="mt-1 rounded-xl bg-muted p-3 text-sm">{report.reason}</p>
                       </div>
 
                       {report.status === "pending" ? (
@@ -299,7 +299,7 @@ export default function ContentModeration() {
                         report.resolution_notes && (
                           <div>
                             <Label className="text-muted-foreground">{language === "ar" ? "ملاحظات القرار" : "Resolution Notes"}</Label>
-                            <p className="mt-1 rounded-lg bg-muted p-3 text-sm">{report.resolution_notes}</p>
+                            <p className="mt-1 rounded-xl bg-muted p-3 text-sm">{report.resolution_notes}</p>
                           </div>
                         )
                       )}

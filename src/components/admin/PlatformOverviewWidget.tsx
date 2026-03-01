@@ -79,7 +79,7 @@ export const PlatformOverviewWidget = memo(function PlatformOverviewWidget() {
           {data.metrics.map((m, i) => {
             const Icon = m.icon;
             return (
-              <div key={i} className="bg-muted/50 rounded-lg p-2.5">
+              <div key={i} className="bg-muted/50 rounded-xl p-2.5">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Icon className={`h-3 w-3 ${m.color}`} />
                   <span className="text-[9px] text-muted-foreground font-semibold uppercase">{m.label}</span>
