@@ -76,10 +76,10 @@ export function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
                   <img
                     src={article.featured_image_url}
                     alt={title}
-                    className="h-20 w-28 shrink-0 rounded-lg object-cover transition-transform group-hover:scale-105"
+                    className="h-20 w-28 shrink-0 rounded-xl object-cover transition-transform group-hover:scale-105"
                   />
                 ) : (
-                  <div className="flex h-20 w-28 shrink-0 items-center justify-center rounded-lg bg-primary/5">
+                  <div className="flex h-20 w-28 shrink-0 items-center justify-center rounded-xl bg-primary/5">
                     <Newspaper className="h-6 w-6 text-primary/40" />
                   </div>
                 )}

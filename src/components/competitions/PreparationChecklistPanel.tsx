@@ -183,7 +183,7 @@ export function PreparationChecklistPanel({ competitionId }: Props) {
         {items.map((item, idx) => (
           <div
             key={idx}
-            className={`flex items-center gap-3 rounded-lg border p-2.5 transition-all group ${
+            className={`flex items-center gap-3 rounded-xl border p-2.5 transition-all group ${
               item.completed ? "border-chart-5/20 bg-chart-5/5 opacity-70" : "border-border/50 hover:border-primary/20"
             }`}
           >

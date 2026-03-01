@@ -29,7 +29,7 @@ export function EntityDegreesTab({ entityId }: Props) {
   if (isLoading) {
     return (
       <div className="space-y-3">
-        {[1, 2].map(i => <Skeleton key={i} className="h-20 w-full rounded-lg" />)}
+        {[1, 2].map(i => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
       </div>
     );
   }
@@ -53,7 +53,7 @@ export function EntityDegreesTab({ entityId }: Props) {
         return (
           <Card key={d.id} className="transition-all hover:shadow-sm">
             <CardContent className="flex items-start gap-4 p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/20">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/20">
                 <Award className="h-5 w-5 text-accent-foreground" />
               </div>
               <div className="flex-1 min-w-0">

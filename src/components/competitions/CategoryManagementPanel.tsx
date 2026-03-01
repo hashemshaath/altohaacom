@@ -262,7 +262,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
               {approved.length > 0 ? (
                 <div className="space-y-2">
                   {approved.map((reg: any) => (
-                    <div key={reg.id} className="flex items-center justify-between rounded-lg border p-3">
+                    <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
                           {(reg.profiles?.full_name || "?")[0].toUpperCase()}
@@ -289,7 +289,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                 <h4 className="font-medium text-sm mb-2">{isAr ? `طلبات معلقة (${pending.length})` : `Pending Requests (${pending.length})`}</h4>
                 <div className="space-y-2">
                   {pending.map((reg: any) => (
-                    <div key={reg.id} className="flex items-center justify-between rounded-lg border border-dashed p-3">
+                    <div key={reg.id} className="flex items-center justify-between rounded-xl border border-dashed p-3">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
                           {(reg.profiles?.full_name || "?")[0].toUpperCase()}
@@ -317,7 +317,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
                       const regScores = scores.filter((s: any) => s.registration?.registration_id === reg.id || s.registration_id === reg.id);
                       const totalScore = regScores.reduce((sum: number, s: any) => sum + (s.score || 0), 0);
                       return (
-                        <div key={reg.id} className="flex items-center justify-between rounded-lg border p-3">
+                        <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3">
                           <div className="flex items-center gap-3">
                             <span className="text-sm font-bold text-muted-foreground w-6">#{idx + 1}</span>
                             <p className="text-sm font-medium">{reg.profiles?.full_name || "—"}</p>
@@ -421,7 +421,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
               <Label>{isAr ? "رابط صورة الغلاف" : "Cover Image URL"}</Label>
               <Input value={form.cover_image_url} onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })} placeholder="https://..." />
               {form.cover_image_url && (
-                <img src={form.cover_image_url} alt="Preview" className="mt-2 h-32 w-full rounded-lg object-cover" />
+                <img src={form.cover_image_url} alt="Preview" className="mt-2 h-32 w-full rounded-xl object-cover" />
               )}
             </div>
             <div className="flex gap-2 pt-2">

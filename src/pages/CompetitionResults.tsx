@@ -293,7 +293,7 @@ export default function CompetitionResults() {
           {others.length > 0 && (
             <div className="max-w-2xl mx-auto">
               <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted">
+                <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-muted">
                   <User className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
                 {isAr ? "المشاركون الآخرون" : "Other Participants"}

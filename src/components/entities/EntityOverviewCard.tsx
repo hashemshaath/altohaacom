@@ -87,7 +87,7 @@ export function EntityOverviewCard({ entity, followerCount, counts }: Props) {
     <Card className="overflow-hidden">
       <div className="border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
             <Award className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "نظرة عامة" : "At a Glance"}

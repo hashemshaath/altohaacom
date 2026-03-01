@@ -104,7 +104,7 @@ export const BulkUrlImport = React.memo(({ isAr, onComplete, userId }: BulkUrlIm
           <div className="space-y-2 mt-4">
             <p className="text-sm font-medium">{isAr ? "النتائج:" : "Results:"}</p>
             {results.map((r, i) => (
-              <div key={i} className="flex items-center gap-2 p-2 rounded-lg border text-sm">
+              <div key={i} className="flex items-center gap-2 p-2 rounded-xl border text-sm">
                 {r.success ? (
                   <CheckCircle className="h-4 w-4 text-green-600 shrink-0" />
                 ) : (

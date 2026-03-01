@@ -20,7 +20,7 @@ export function EntityContactCard({ email, phone, fax, address, city, country, p
     <Card className="overflow-hidden">
       <div className="border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent/10">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-accent/10">
             <Mail className="h-3.5 w-3.5 text-accent-foreground" />
           </div>
           {isAr ? "معلومات الاتصال" : "Contact Information"}

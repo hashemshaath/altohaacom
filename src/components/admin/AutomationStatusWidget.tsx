@@ -93,7 +93,7 @@ export function AutomationStatusWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-5 gap-2">
           {kpis.map((kpi, i) => (
-            <div key={i} className={`text-center p-2 rounded-lg ${kpi.urgent ? "bg-destructive/5 ring-1 ring-destructive/20" : "bg-muted/40"}`}>
+            <div key={i} className={`text-center p-2 rounded-xl ${kpi.urgent ? "bg-destructive/5 ring-1 ring-destructive/20" : "bg-muted/40"}`}>
               <kpi.icon className={`h-4 w-4 mx-auto mb-1 ${kpi.color}`} />
               <p className="text-lg font-bold">{kpi.value}</p>
               <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
@@ -113,7 +113,7 @@ export function AutomationStatusWidget() {
                 <p className="text-xs text-muted-foreground text-center py-4">{isAr ? "لا يوجد سجل" : "No runs yet"}</p>
               ) : (
                 data.recentRuns.map((run: any, i: number) => (
-                  <div key={i} className="flex items-center justify-between text-xs p-2 rounded-lg bg-muted/30">
+                  <div key={i} className="flex items-center justify-between text-xs p-2 rounded-xl bg-muted/30">
                     <div className="flex items-center gap-2 min-w-0">
                       <Badge variant={run.status === "completed" ? "default" : "destructive"} className="text-[9px] shrink-0">
                         {run.status === "completed" ? "✓" : "✗"}
@@ -167,7 +167,7 @@ export function AutomationStatusWidget() {
 
             {/* Quick alerts */}
             {data.queueFailed > 0 && (
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/5 border border-destructive/20">
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-destructive/5 border border-destructive/20">
                 <AlertCircle className="h-3.5 w-3.5 text-destructive shrink-0" />
                 <span className="text-[10px] text-destructive">
                   {isAr ? `${data.queueFailed} إشعار فشل في الإرسال` : `${data.queueFailed} notifications failed to send`}
@@ -178,7 +178,7 @@ export function AutomationStatusWidget() {
               </div>
             )}
             {data.queuePending > 50 && (
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-chart-4/5 border border-chart-4/20">
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-chart-4/5 border border-chart-4/20">
                 <Clock className="h-3.5 w-3.5 text-chart-4 shrink-0" />
                 <span className="text-[10px] text-chart-4">
                   {isAr ? `${data.queuePending} إشعار في الانتظار` : `${data.queuePending} notifications pending`}

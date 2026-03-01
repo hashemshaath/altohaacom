@@ -254,17 +254,17 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
       <CardContent className="space-y-4">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-lg border p-3 text-center">
+          <div className="rounded-xl border p-3 text-center">
             <Trophy className="mx-auto mb-1 h-5 w-5 text-chart-4" />
             <p className="text-lg font-bold">{winnerCount}</p>
             <p className="text-xs text-muted-foreground">{language === "ar" ? "فائزين" : "Winners"}</p>
           </div>
-          <div className="rounded-lg border p-3 text-center">
+          <div className="rounded-xl border p-3 text-center">
             <Medal className="mx-auto mb-1 h-5 w-5 text-primary" />
             <p className="text-lg font-bold">{totalParticipants}</p>
             <p className="text-xs text-muted-foreground">{language === "ar" ? "مشاركين" : "Participants"}</p>
           </div>
-          <div className="rounded-lg border p-3 text-center">
+          <div className="rounded-xl border p-3 text-center">
             <Award className="mx-auto mb-1 h-5 w-5 text-chart-5" />
             <p className="text-lg font-bold">{existingCount}</p>
             <p className="text-xs text-muted-foreground">{language === "ar" ? "شهادات صادرة" : "Issued"}</p>

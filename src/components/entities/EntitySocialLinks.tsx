@@ -36,7 +36,7 @@ export function EntitySocialLinks({ socialLinks }: Props) {
     <Card className="overflow-hidden">
       <div className="border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
             <Globe className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "التواصل الاجتماعي" : "Social Media"}
@@ -51,7 +51,7 @@ export function EntitySocialLinks({ socialLinks }: Props) {
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-lg border border-border/50 bg-muted/20 px-3 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:shadow-sm"
+              className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/20 px-3 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:shadow-sm"
             >
               <ExternalLink className={`h-3 w-3 shrink-0 ${info.color}`} />
               <span className="truncate">{info.label}</span>

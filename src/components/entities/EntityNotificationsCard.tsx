@@ -84,7 +84,7 @@ export function EntityNotificationsCard({ entityId, entityName }: Props) {
     <Card className="overflow-hidden">
       <div className="border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-4/10">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-4/10">
             <Bell className="h-3.5 w-3.5 text-chart-4" />
           </div>
           {isAr ? "آخر الأنشطة" : "Recent Activity"}
@@ -99,7 +99,7 @@ export function EntityNotificationsCard({ entityId, entityName }: Props) {
               key={i}
               className="flex items-start gap-3 border-b last:border-0 px-4 py-3 transition-colors hover:bg-muted/20"
             >
-              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted/50">
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-muted/50">
                 <Icon className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
               <div className="flex-1 min-w-0">

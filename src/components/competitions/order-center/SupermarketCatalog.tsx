@@ -310,7 +310,7 @@ export function SupermarketCatalog() {
           <button
             key={aisle.key}
             onClick={() => { setActiveAisle(aisle.key); setActiveSubcategory(null); setShowMobileAisles(false); }}
-            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-start text-sm transition-all
+            className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-start text-sm transition-all
               ${isActive ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50 text-foreground"}`}
           >
             <AisleIcon className="h-4 w-4 shrink-0" />
@@ -551,7 +551,7 @@ export function SupermarketCatalog() {
                     <div
                       key={item.id}
                       onClick={() => toggleSelect(item.id)}
-                      className={`group flex items-center gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-all
+                      className={`group flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all
                         ${isSelected ? "bg-primary/5 border-primary/30 ring-1 ring-primary/20" : "border-border/60 hover:bg-muted/50 hover:border-primary/20"}`}
                     >
                       <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all
@@ -603,7 +603,7 @@ export function SupermarketCatalog() {
                     key={list.id}
                     onClick={() => addToListMutation.mutate(list.id)}
                     disabled={addToListMutation.isPending}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-start transition-all hover:bg-muted/50 border border-transparent hover:border-border"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-start transition-all hover:bg-muted/50 border border-transparent hover:border-border"
                   >
                     <ClipboardList className="h-4 w-4 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -639,7 +639,7 @@ export function SupermarketCatalog() {
                   <button
                     key={dish.id}
                     onClick={() => loadDishTemplate(dish.id)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg text-start transition-all hover:bg-muted/50 border border-border hover:border-primary/30"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-start transition-all hover:bg-muted/50 border border-border hover:border-primary/30"
                   >
                     <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-${dish.color}/10 shrink-0`}>
                       <DishIcon className={`h-5 w-5 text-${dish.color}`} />

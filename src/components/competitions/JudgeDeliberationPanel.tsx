@@ -189,7 +189,7 @@ export function JudgeDeliberationPanel({ competitionId }: Props) {
                   <p className="text-xs text-muted-foreground text-center py-4">{isAr ? "لا توجد رسائل" : "No messages yet"}</p>
                 ) : (
                   messages.map(msg => (
-                    <div key={msg.id} className={`rounded-lg p-2.5 ${msg.sender_id === user?.id ? "bg-primary/10 ms-6" : "bg-muted/50 me-6"}`}>
+                    <div key={msg.id} className={`rounded-xl p-2.5 ${msg.sender_id === user?.id ? "bg-primary/10 ms-6" : "bg-muted/50 me-6"}`}>
                       <p className="text-xs">{msg.message}</p>
                       <p className="text-[9px] text-muted-foreground mt-1">{format(new Date(msg.created_at), "h:mm a")}</p>
                     </div>
