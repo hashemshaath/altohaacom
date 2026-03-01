@@ -9,6 +9,7 @@ import {
   Tag, Ticket, Timer, Users, Bookmark, BookmarkCheck,
 } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { ExhibitionRegistrationStatus } from "./ExhibitionRegistrationStatus";
 import { ExhibitionTicketBooking } from "./ExhibitionTicketBooking";
@@ -191,7 +192,7 @@ export function ExhibitionSidebar({
                 <Users className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{isAr ? "السعة" : "Capacity"}</p>
-                  <p className="text-sm font-medium">{toEnglishDigits(exhibition.max_attendees.toLocaleString())} {isAr ? "مقعد" : "attendees"}</p>
+                  <p className="text-sm font-medium"><AnimatedCounter value={exhibition.max_attendees} className="inline" /> {isAr ? "مقعد" : "attendees"}</p>
                 </div>
               </div>
             </>

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { ShoppingBag, ExternalLink } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
@@ -87,7 +88,7 @@ export function ProfileOrdersTab({ userId, isAr }: { userId: string; isAr: boole
                 {isAr ? STATUS_AR[order.status] || order.status : order.status}
               </Badge>
               <p className="text-sm font-bold text-primary">
-                {(order.total_amount || 0).toLocaleString()} <span className="text-xs text-muted-foreground">{order.currency || "SAR"}</span>
+                <AnimatedCounter value={Math.round(order.total_amount || 0)} className="inline" /> <span className="text-xs text-muted-foreground">{order.currency || "SAR"}</span>
               </p>
             </div>
           </CardContent>
