@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, Users, Star, Ticket, Building, Heart, Calendar, TrendingUp } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   viewCount: number;
@@ -31,7 +32,7 @@ export const ExhibitionInteractiveStats = memo(function ExhibitionInteractiveSta
         <Card key={i} className="border-border/30 hover:border-primary/20 transition-all hover:shadow-sm group cursor-default">
           <CardContent className="p-3 text-center">
             <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} group-hover:scale-110 transition-transform`} />
-            <p className={`text-sm font-bold ${s.color}`}>{typeof s.value === "number" ? toEnglishDigits(s.value) : s.value}</p>
+            <p className={`text-sm font-bold ${s.color}`}>{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
             <p className="text-[9px] text-muted-foreground">{s.label}</p>
           </CardContent>
         </Card>

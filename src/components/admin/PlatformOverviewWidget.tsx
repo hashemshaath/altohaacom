@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, TrendingUp, TrendingDown, Users, Trophy, FileText, ShoppingBag, Eye } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { format, subDays, subMonths } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const PlatformOverviewWidget = memo(function PlatformOverviewWidget() {
   const { language } = useLanguage();
@@ -85,7 +86,7 @@ export const PlatformOverviewWidget = memo(function PlatformOverviewWidget() {
                   <span className="text-[9px] text-muted-foreground font-semibold uppercase">{m.label}</span>
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg font-bold">{m.value}</span>
+                  <span className="text-lg font-bold"><AnimatedCounter value={typeof m.value === "number" ? m.value : 0} /></span>
                   {m.delta !== undefined && m.delta !== 0 && (
                     <Badge variant="secondary" className={`text-[8px] px-1 py-0 gap-0.5 ${m.delta > 0 ? "text-chart-3" : "text-destructive"}`}>
                       {m.delta > 0 ? <TrendingUp className="h-2 w-2" /> : <TrendingDown className="h-2 w-2" />}

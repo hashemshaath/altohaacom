@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -377,7 +378,7 @@ export default function CertificatesAdmin() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">{s.label}</p>
-                  <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+                  <p className={`text-2xl font-bold ${s.color}`}><AnimatedCounter value={s.value} /></p>
                 </div>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
                   <s.icon className={`h-5 w-5 ${s.color}`} />

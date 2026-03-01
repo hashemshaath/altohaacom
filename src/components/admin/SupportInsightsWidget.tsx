@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Ticket, Headphones, MessageSquare, Clock, CheckCircle2, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function SupportInsightsWidget() {
   const { language } = useLanguage();
@@ -92,7 +93,7 @@ export function SupportInsightsWidget() {
           {kpis.map((kpi, i) => (
             <div key={i} className={`text-center p-2 rounded-xl ${kpi.urgent ? "bg-destructive/5 ring-1 ring-destructive/20" : "bg-muted/40"}`}>
               <kpi.icon className={`h-4 w-4 mx-auto mb-1 ${kpi.color}`} />
-              <p className="text-lg font-bold">{kpi.value}</p>
+              <p className="text-lg font-bold"><AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} /></p>
               <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
             </div>
           ))}
@@ -151,7 +152,7 @@ export function SupportInsightsWidget() {
                     style={{ width: `${data.resolutionRate}%` }}
                   />
                 </div>
-                <span className="text-xs font-bold text-chart-2">{data.resolutionRate}%</span>
+                <span className="text-xs font-bold text-chart-2"><AnimatedCounter value={data.resolutionRate} suffix="%" /></span>
               </div>
             </div>
           </div>
