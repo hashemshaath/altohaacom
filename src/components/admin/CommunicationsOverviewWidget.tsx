@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { MessageSquare, Bell, Ticket, Mail, Send, CheckCircle, AlertCircle, Clock, Zap, Users } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CommunicationsOverviewWidget() {
   const { language } = useLanguage();
@@ -93,7 +94,7 @@ export function CommunicationsOverviewWidget() {
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
-              <p className="text-sm font-bold">{m.value.toLocaleString()}</p>
+              <p className="text-sm font-bold"><AnimatedCounter value={m.value} /></p>
               <p className="text-[8px] text-muted-foreground">{m.sub}</p>
             </div>
           ))}
