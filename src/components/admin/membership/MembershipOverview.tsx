@@ -9,6 +9,8 @@ import {
   ArrowUpCircle, UserCheck, UserX, RefreshCw
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { ActivityPulse } from "@/components/ui/activity-pulse";
 
 export default function MembershipOverview() {
   const { language } = useLanguage();
@@ -106,14 +108,17 @@ export default function MembershipOverview() {
     <div className="space-y-6">
       {/* Main Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((card) => (
+        {statCards.map((card, i) => (
           <Card key={card.label}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{card.label}</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                {card.label}
+                {i === 0 && <ActivityPulse status="live" size="sm" />}
+              </CardTitle>
               <card.icon className={`h-4 w-4 ${card.color}`} />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">{card.value}</p>
+              <AnimatedCounter value={card.value} className="text-2xl" />
             </CardContent>
           </Card>
         ))}
@@ -129,7 +134,7 @@ export default function MembershipOverview() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <p className="text-2xl font-bold">{card.value}</p>
+                <AnimatedCounter value={card.value} className="text-2xl" />
                 {card.value > 0 && card.variant === "destructive" && (
                   <Badge variant="destructive" className="text-xs">
                     {isAr ? "يحتاج إجراء" : "Action needed"}
@@ -150,7 +155,7 @@ export default function MembershipOverview() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-3xl font-bold">{stats?.monthlyRevenue || 0} SAR</p>
+            <p className="text-3xl font-bold"><AnimatedCounter value={stats?.monthlyRevenue || 0} /> SAR</p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex justify-between">
                 <span>{isAr ? "الاحترافي" : "Professional"} ({stats?.professional || 0} × 19 SAR)</span>
@@ -171,7 +176,7 @@ export default function MembershipOverview() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-3xl font-bold">{paidPercentage}%</p>
+            <p className="text-3xl font-bold"><AnimatedCounter value={paidPercentage} />%</p>
             <Progress value={paidPercentage} className="h-3" />
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>{isAr ? "مجاني" : "Free"}: {stats?.basic || 0}</span>
@@ -179,11 +184,11 @@ export default function MembershipOverview() {
             </div>
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="rounded-xl border p-3 text-center">
-                <p className="text-lg font-bold text-primary">{stats?.recentUpgrades || 0}</p>
+                <AnimatedCounter value={stats?.recentUpgrades || 0} className="text-lg text-primary" />
                 <p className="text-xs text-muted-foreground">{isAr ? "ترقيات" : "Upgrades"}</p>
               </div>
               <div className="rounded-xl border p-3 text-center">
-                <p className="text-lg font-bold text-destructive">{stats?.recentDowngrades || 0}</p>
+                <AnimatedCounter value={stats?.recentDowngrades || 0} className="text-lg text-destructive" />
                 <p className="text-xs text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
               </div>
             </div>
