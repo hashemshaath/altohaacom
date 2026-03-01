@@ -310,7 +310,7 @@ export function OrganizerSearchSelector({ value, onChange, label }: OrganizerSea
 
       {/* Selected display */}
       {value ? (
-        <div className="flex items-center gap-2.5 rounded-lg border p-2.5 bg-muted/30">
+        <div className="flex items-center gap-2.5 rounded-xl border p-2.5 bg-muted/30">
           {value.logoUrl ? (
             <img src={value.logoUrl} alt="" className="h-9 w-9 rounded-md object-cover shrink-0" />
           ) : (

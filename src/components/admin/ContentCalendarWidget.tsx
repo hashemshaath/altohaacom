@@ -121,7 +121,7 @@ export function ContentCalendarWidget() {
               <p className="text-xs text-muted-foreground">No content scheduled</p>
             ) : (
               dayItems.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                <div key={item.id} className="flex items-center justify-between p-2 rounded-xl bg-muted/50">
                   <div className="flex items-center gap-2 min-w-0">
                     <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                     <span className="text-xs truncate">{item.title}</span>

@@ -78,17 +78,17 @@ export function JudgingOverviewWidget() {
       <CardContent className="space-y-4">
         {/* Summary KPIs */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Users className="h-4 w-4 mx-auto text-primary mb-1" />
             <p className="text-lg font-bold">{data?.totalJudges || 0}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "محكمين نشطين" : "Active Judges"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Star className="h-4 w-4 mx-auto text-chart-4 mb-1" />
             <p className="text-lg font-bold">{data?.totalScores || 0}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "تقييمات" : "Scores Given"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Trophy className="h-4 w-4 mx-auto text-chart-3 mb-1" />
             <p className="text-lg font-bold">{data?.activeCompetitions || 0}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "مسابقات نشطة" : "Active Comps"}</p>

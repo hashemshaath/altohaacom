@@ -31,7 +31,7 @@ export function BulkActionBar({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-4 py-2 animate-in slide-in-from-top-2 duration-200",
+        "flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 animate-in slide-in-from-top-2 duration-200",
         className
       )}
     >

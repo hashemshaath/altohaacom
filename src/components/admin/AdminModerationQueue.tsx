@@ -35,7 +35,7 @@ export function AdminModerationQueue() {
     <Card className="border-border/50">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-destructive/10">
             <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
           </div>
           {isAr ? "طابور المراجعة" : "Moderation Queue"}
@@ -61,7 +61,7 @@ export function AdminModerationQueue() {
         ) : (
           <div className="space-y-2">
             {data?.reports.map((r: any) => (
-              <div key={r.id} className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-2.5">
+              <div key={r.id} className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-2.5">
                 <Flag className="h-3.5 w-3.5 text-destructive shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate">{r.reason || (isAr ? "بلاغ محتوى" : "Content report")}</p>
@@ -73,7 +73,7 @@ export function AdminModerationQueue() {
               </div>
             ))}
             {data?.pendingPosts.map((p: any) => (
-              <div key={p.id} className="flex items-center gap-3 rounded-lg border border-chart-4/20 bg-chart-4/5 p-2.5">
+              <div key={p.id} className="flex items-center gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-2.5">
                 <MessageSquare className="h-3.5 w-3.5 text-chart-4 shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate">{(p.content || "").slice(0, 60)}</p>
