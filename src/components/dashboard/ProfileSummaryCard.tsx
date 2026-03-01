@@ -55,14 +55,16 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
   const initials = (profile.full_name || "U").slice(0, 2).toUpperCase();
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden border-border/40 shadow-sm hover:shadow-lg transition-shadow duration-300">
       {/* Gradient header */}
-      <div className="h-16 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5" />
-      <CardContent className="relative -mt-8 px-4 pb-4">
+      <div className="h-20 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 relative">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,hsl(var(--primary)/0.15),transparent_60%)]" />
+      </div>
+      <CardContent className="relative -mt-10 px-4 pb-4">
         <div className="flex items-end gap-3 mb-3">
-          <Avatar className="h-14 w-14 border-4 border-background shadow-lg">
-            <AvatarImage src={profile.avatar_url || undefined} />
-            <AvatarFallback className="bg-primary/10 text-primary font-bold">{initials}</AvatarFallback>
+          <Avatar className="h-16 w-16 border-4 border-background shadow-xl ring-2 ring-primary/10">
+            <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
+            <AvatarFallback className="bg-primary/10 text-primary font-bold text-lg">{initials}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0 pb-1">
             <div className="flex items-center gap-1.5">
@@ -97,9 +99,9 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               { label: isAr ? "متابَعون" : "Following", value: stats.following },
               { label: isAr ? "منشورات" : "Posts", value: stats.posts },
             ].map((s, i) => (
-              <div key={i} className="text-center bg-muted/50 rounded-lg py-1.5">
-                <div className="text-sm font-bold">{s.value}</div>
-                <div className="text-[8px] text-muted-foreground uppercase font-semibold">{s.label}</div>
+              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 transition-colors">
+                <div className="text-sm font-bold tabular-nums">{s.value}</div>
+                <div className="text-[8px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
               </div>
             ))}
           </div>

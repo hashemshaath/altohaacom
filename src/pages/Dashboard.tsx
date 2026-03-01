@@ -267,21 +267,22 @@ const WelcomeBanner = memo(function WelcomeBanner({
   avatarUrl?: string | null; firstName: string;
 }) {
   return (
-    <div className="relative mb-6 overflow-hidden rounded-2xl border border-primary/10 bg-gradient-to-br from-primary/8 via-background to-accent/8 p-5 sm:p-6 md:p-8 shadow-sm">
+    <div className="relative mb-6 overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/8 via-background to-accent/8 p-5 sm:p-6 md:p-8 shadow-lg">
       {/* Decorative orbs */}
-      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px]" />
-      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/10 blur-[60px]" />
+      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px] animate-pulse" />
+      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:2s]" />
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
 
       <div className="relative flex items-start gap-4">
         {/* Avatar */}
         <Link to="/profile" className="shrink-0 hidden sm:block">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow p-[2px] shadow-lg transition-transform hover:scale-105">
+          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow p-[2px] shadow-xl transition-all hover:scale-105 hover:shadow-primary/20">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="h-full w-full rounded-[14px] object-cover bg-card" />
             ) : (
               <div className="h-full w-full rounded-[14px] bg-primary/10 flex items-center justify-center">
-                <LayoutDashboard className="h-6 w-6 text-primary" />
+                <LayoutDashboard className="h-7 w-7 text-primary" />
               </div>
             )}
           </div>
@@ -291,7 +292,7 @@ const WelcomeBanner = memo(function WelcomeBanner({
           <div className="flex items-start justify-between gap-3">
             <div>
               <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">{greeting} 👋</h1>
-              <p className="mt-1 text-xs sm:text-sm text-muted-foreground">{subtitle}</p>
+              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground/80">{subtitle}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
@@ -343,8 +344,8 @@ const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sect
         <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
           {sections.map((s) => (
             <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink" {...prefetchProps(s.href)}>
-              <div className={`flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-200 hover:shadow-md hover:border-primary/20 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-transform duration-200 group-hover:scale-110`}>
+              <div className={`flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                   <s.icon className={`h-4 w-4 ${s.color}`} />
                 </div>
                 <span className="text-[9px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
