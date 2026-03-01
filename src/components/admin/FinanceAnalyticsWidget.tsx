@@ -88,10 +88,10 @@ export function FinanceAnalyticsWidget() {
       {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: isAr ? "إجمالي الإيرادات" : "Total Revenue", value: `${toEnglishDigits(financeData.totalRevenue.toLocaleString())} SAR`, icon: DollarSign, color: "text-chart-2", bg: "bg-chart-2/10" },
-          { label: isAr ? "مبالغ معلقة" : "Pending Amount", value: `${toEnglishDigits(financeData.pendingAmount.toLocaleString())} SAR`, icon: Clock, color: "text-chart-4", bg: "bg-chart-4/10" },
-          { label: isAr ? "معدل التحصيل" : "Collection Rate", value: `${financeData.collectionRate}%`, icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
-          { label: isAr ? "فواتير متأخرة" : "Overdue Invoices", value: financeData.overdueCount.toString(), icon: AlertCircle, color: financeData.overdueCount > 0 ? "text-destructive" : "text-chart-2", bg: financeData.overdueCount > 0 ? "bg-destructive/10" : "bg-chart-2/10" },
+          { label: isAr ? "إجمالي الإيرادات" : "Total Revenue", numValue: Math.round(financeData.totalRevenue), suffix: " SAR", icon: DollarSign, color: "text-chart-2", bg: "bg-chart-2/10" },
+          { label: isAr ? "مبالغ معلقة" : "Pending Amount", numValue: Math.round(financeData.pendingAmount), suffix: " SAR", icon: Clock, color: "text-chart-4", bg: "bg-chart-4/10" },
+          { label: isAr ? "معدل التحصيل" : "Collection Rate", numValue: financeData.collectionRate, suffix: "%", icon: TrendingUp, color: "text-primary", bg: "bg-primary/10" },
+          { label: isAr ? "فواتير متأخرة" : "Overdue Invoices", numValue: financeData.overdueCount, suffix: "", icon: AlertCircle, color: financeData.overdueCount > 0 ? "text-destructive" : "text-chart-2", bg: financeData.overdueCount > 0 ? "bg-destructive/10" : "bg-chart-2/10" },
         ].map((kpi, i) => (
           <Card key={i} className="border-border/50">
             <CardContent className="flex items-center gap-3 py-4">
@@ -99,7 +99,7 @@ export function FinanceAnalyticsWidget() {
                 <kpi.icon className={cn("h-4 w-4", kpi.color)} />
               </div>
               <div>
-                <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : Number(kpi.value) || 0} className={cn("text-lg font-bold", kpi.color)} />
+                <p className={cn("text-lg font-bold", kpi.color)}><AnimatedCounter value={kpi.numValue} />{kpi.suffix}</p>
                 <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
               </div>
             </CardContent>
