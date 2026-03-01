@@ -462,15 +462,17 @@ export default function CommunicationsAdmin() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
-          { label: isAr ? "الإجمالي" : "Total", value: messages.length, icon: Inbox, color: "text-primary" },
-          { label: isAr ? "غير مقروءة" : "Unread", value: unreadCount, icon: AlertCircle, color: "text-destructive" },
-          { label: isAr ? "عاجلة" : "Urgent", value: urgentCount, icon: Clock, color: "text-chart-4" },
-          { label: isAr ? "مميّزة" : "Starred", value: starredCount, icon: Star, color: "text-chart-3" },
-          { label: isAr ? "شركات" : "Companies", value: companyIds.length, icon: Building2, color: "text-muted-foreground" },
+          { label: isAr ? "الإجمالي" : "Total", value: messages.length, icon: Inbox, color: "text-primary", bg: "bg-primary/10" },
+          { label: isAr ? "غير مقروءة" : "Unread", value: unreadCount, icon: AlertCircle, color: "text-destructive", bg: "bg-destructive/10" },
+          { label: isAr ? "عاجلة" : "Urgent", value: urgentCount, icon: Clock, color: "text-chart-4", bg: "bg-chart-4/10" },
+          { label: isAr ? "مميّزة" : "Starred", value: starredCount, icon: Star, color: "text-chart-3", bg: "bg-chart-3/10" },
+          { label: isAr ? "شركات" : "Companies", value: companyIds.length, icon: Building2, color: "text-muted-foreground", bg: "bg-muted" },
         ].map((s) => (
-          <Card key={s.label}>
+          <Card key={s.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-3 p-4">
-              <s.icon className={`h-7 w-7 ${s.color}`} />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg}`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+              </div>
               <div>
                 <p className="text-xl font-bold">{s.value}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
@@ -482,12 +484,12 @@ export default function CommunicationsAdmin() {
 
       {/* Tabs: Inbox / Analytics */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="inbox" className="gap-2">
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="inbox" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <Inbox className="h-4 w-4" />
             {isAr ? "صندوق الوارد" : "Inbox"}
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-2">
+          <TabsTrigger value="analytics" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <BarChart3 className="h-4 w-4" />
             {isAr ? "التحليلات" : "Analytics"}
           </TabsTrigger>
@@ -497,7 +499,7 @@ export default function CommunicationsAdmin() {
         <TabsContent value="inbox" className="space-y-4">
           {/* Bulk Actions Bar */}
           {selectedIds.size > 0 && (
-            <Card className="border-primary/30 bg-primary/5">
+            <Card className="rounded-2xl border-primary/30 bg-primary/5">
               <CardContent className="flex items-center justify-between p-3">
                 <span className="text-sm font-medium">
                   {selectedIds.size} {isAr ? "محدد" : "selected"}
@@ -532,7 +534,7 @@ export default function CommunicationsAdmin() {
             <div className="relative flex-1 min-w-[200px] max-w-sm">
               <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isAr ? "بحث في الرسائل..." : "Search messages..."} className="ps-10" />
+                placeholder={isAr ? "بحث في الرسائل..." : "Search messages..."} className="ps-10 rounded-xl" />
             </div>
             <Select value={filter} onValueChange={setFilter}>
               <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
@@ -591,8 +593,8 @@ export default function CommunicationsAdmin() {
                       return (
                         <Card
                           key={msg.id}
-                          className={`cursor-pointer transition-colors hover:bg-muted/50 ${
-                            selectedMessage?.id === msg.id ? "border-primary" : ""
+                          className={`cursor-pointer rounded-2xl border-border/40 transition-all duration-200 hover:shadow-sm hover:bg-muted/50 ${
+                            selectedMessage?.id === msg.id ? "border-primary ring-1 ring-primary/20" : ""
                           } ${msg.direction === "outgoing" && msg.status === "unread" ? "border-s-[3px] border-s-primary" : ""}`}
                         >
                           <CardContent className="p-3">
@@ -641,7 +643,7 @@ export default function CommunicationsAdmin() {
             {/* ── Detail Panel ── */}
             <div className="lg:col-span-3">
               {selectedMessage ? (
-                <Card>
+                <Card className="rounded-2xl border-border/40">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
@@ -688,7 +690,7 @@ export default function CommunicationsAdmin() {
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    <div className="whitespace-pre-wrap rounded-lg bg-muted/50 p-4">{selectedMessage.message}</div>
+                    <div className="whitespace-pre-wrap rounded-xl bg-muted/40 border border-border/30 p-4">{selectedMessage.message}</div>
 
                     {/* Replies */}
                     {replies.filter((r) => !r.is_internal_note).length > 0 && (

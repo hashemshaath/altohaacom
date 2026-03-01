@@ -422,7 +422,7 @@ export default function NotificationsAdmin() {
           { label: isAr ? "تم الإرسال" : "Sent", value: queueStats?.sent || 0, icon: Check, border: "border-s-chart-2", bg: "bg-chart-2/10", iconColor: "text-chart-2" },
           { label: isAr ? "فشل" : "Failed", value: queueStats?.failed || 0, icon: AlertCircle, border: "border-s-destructive", bg: "bg-destructive/10", iconColor: "text-destructive" },
         ].map((s) => (
-          <Card key={s.label} className={`border-s-[3px] ${s.border}`}>
+          <Card key={s.label} className={`rounded-2xl border-s-[3px] ${s.border} border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
             <CardContent className="flex items-center gap-3 p-4">
               <div className={`rounded-xl p-2.5 ${s.bg}`}><s.icon className={`h-5 w-5 ${s.iconColor}`} /></div>
               <div>
@@ -436,13 +436,13 @@ export default function NotificationsAdmin() {
 
       {/* Tabs */}
       <Tabs defaultValue="recent">
-        <TabsList>
-          <TabsTrigger value="recent" className="gap-1.5"><Bell className="h-3.5 w-3.5" />{isAr ? "الأخيرة" : "Recent"}</TabsTrigger>
-          <TabsTrigger value="smart-rules" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" />{isAr ? "القواعد الذكية" : "Smart Rules"}</TabsTrigger>
-          <TabsTrigger value="queue" className="gap-1.5"><Send className="h-3.5 w-3.5" />{isAr ? "التوصيل" : "Queue"}</TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "التحليلات" : "Analytics"}</TabsTrigger>
-          <TabsTrigger value="templates" className="gap-1.5"><Zap className="h-3.5 w-3.5" />{isAr ? "القوالب" : "Templates"}</TabsTrigger>
-          <TabsTrigger value="settings" className="gap-1.5"><Filter className="h-3.5 w-3.5" />{isAr ? "الإعدادات" : "Settings"}</TabsTrigger>
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto flex-wrap">
+          <TabsTrigger value="recent" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Bell className="h-3.5 w-3.5" />{isAr ? "الأخيرة" : "Recent"}</TabsTrigger>
+          <TabsTrigger value="smart-rules" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Sparkles className="h-3.5 w-3.5" />{isAr ? "القواعد الذكية" : "Smart Rules"}</TabsTrigger>
+          <TabsTrigger value="queue" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Send className="h-3.5 w-3.5" />{isAr ? "التوصيل" : "Queue"}</TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "التحليلات" : "Analytics"}</TabsTrigger>
+          <TabsTrigger value="templates" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Zap className="h-3.5 w-3.5" />{isAr ? "القوالب" : "Templates"}</TabsTrigger>
+          <TabsTrigger value="settings" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Filter className="h-3.5 w-3.5" />{isAr ? "الإعدادات" : "Settings"}</TabsTrigger>
         </TabsList>
 
         {/* ═══ RECENT TAB ═══ */}
