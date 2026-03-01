@@ -173,12 +173,17 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[400px]">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-          <h3 className="font-bold text-base">{isAr ? "الإشعارات" : "Notifications"}</h3>
+      <DropdownMenuContent align="end" className="w-[400px] rounded-xl border-border/50 shadow-xl shadow-primary/5">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl">
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-base">{isAr ? "الإشعارات" : "Notifications"}</h3>
+            {unreadCount > 0 && (
+              <Badge variant="secondary" className="text-[10px] h-5">{unreadCount} {isAr ? "جديد" : "new"}</Badge>
+            )}
+          </div>
           <div className="flex items-center gap-1">
             {unreadCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs h-7 text-primary">
+              <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs h-7 text-primary hover:text-primary">
                 {isAr ? "قراءة الكل" : "Mark all read"}
               </Button>
             )}
@@ -230,13 +235,13 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
           ) : grouped.length === 0 ? (
-            <div className="py-12 text-center space-y-3">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
-                <Bell className="h-7 w-7 text-muted-foreground/30" />
+            <div className="py-14 text-center space-y-3">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-muted/60 to-muted/20">
+                <Bell className="h-8 w-8 text-muted-foreground/20" />
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{isAr ? "لا توجد إشعارات" : "No notifications yet"}</p>
-                <p className="text-xs text-muted-foreground/60 mt-1">{isAr ? "ستظهر الإشعارات الجديدة هنا" : "New notifications will appear here"}</p>
+                <p className="text-sm font-semibold text-muted-foreground">{isAr ? "لا توجد إشعارات" : "All caught up!"}</p>
+                <p className="text-xs text-muted-foreground/50 mt-1">{isAr ? "ستظهر الإشعارات الجديدة هنا" : "New notifications will appear here"}</p>
               </div>
             </div>
           ) : (
