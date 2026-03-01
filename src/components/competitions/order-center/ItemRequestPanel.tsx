@@ -343,7 +343,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
                     className="h-auto justify-start gap-2 p-2.5 text-start"
                     onClick={() => applyTemplate(t.id)}
                   >
-                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-${t.color}/10`}>
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-${t.color}/10`}>
                       <Icon className={`h-4 w-4 text-${t.color}`} />
                     </div>
                     <div className="min-w-0">

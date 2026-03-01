@@ -216,7 +216,7 @@ function BookingCard({ booking: b, isAr, statusConfig, onCancel }: any) {
   return (
     <Card>
       <CardContent className="p-4 flex items-center gap-4">
-        <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <div className="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
           <span className="text-xs font-bold">{format(new Date(b.booking_date), "dd")}</span>
           <span className="text-[10px]">{format(new Date(b.booking_date), "MMM", { locale: isAr ? ar : undefined })}</span>
         </div>

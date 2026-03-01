@@ -254,8 +254,8 @@ export function NotificationHub({ competitionId, language, isOrganizer }: Props)
           ) : (
             <div className="space-y-2">
               {sentNotifications.map((notif: any) => (
-                <div key={notif.id} className="flex items-start gap-3 rounded-lg border p-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div key={notif.id} className="flex items-start gap-3 rounded-xl border p-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                     <Megaphone className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">

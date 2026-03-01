@@ -201,7 +201,7 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
       <CardContent className="space-y-4">
         {/* Form */}
         {showForm && (
-          <div className="rounded-lg border p-4 space-y-4">
+          <div className="rounded-xl border p-4 space-y-4">
             <div className="grid gap-3 md:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs">Name</Label>
@@ -284,7 +284,7 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
               const criteriaList = (rubric.criteria as any as CriterionItem[]) || [];
               const isExpanded = expandedId === rubric.id;
               return (
-                <div key={rubric.id} className="rounded-lg border">
+                <div key={rubric.id} className="rounded-xl border">
                   <div className="flex items-center justify-between p-3 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : rubric.id)}>
                     <div className="flex items-center gap-3 min-w-0">
                       <ClipboardList className="h-4 w-4 text-primary shrink-0" />

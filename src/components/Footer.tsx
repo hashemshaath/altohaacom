@@ -47,7 +47,7 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
             </div>
             <p className="mb-5 text-sm leading-relaxed text-muted-foreground">{siteDesc}</p>
             <a href={`mailto:${contactEmail}`} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary group">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8 group-hover:bg-primary/15 transition-colors">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/8 group-hover:bg-primary/15 transition-colors">
                 <Mail className="h-3.5 w-3.5 text-primary" />
               </div>
               {contactEmail}
@@ -139,7 +139,7 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/50 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary hover:scale-105"
+                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary hover:scale-105"
                 >
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d={social.icon} /></svg>
                 </a>

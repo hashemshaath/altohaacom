@@ -103,7 +103,7 @@ export function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantP
                   )}
                   <div
                     className={cn(
-                      "rounded-lg px-4 py-2 max-w-[80%]",
+                      "rounded-xl px-4 py-2 max-w-[80%]",
                       message.role === "user"
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted"
@@ -129,7 +129,7 @@ export function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantP
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <Bot className="h-4 w-4 text-primary" />
                   </div>
-                  <div className="bg-muted rounded-lg px-4 py-2">
+                  <div className="bg-muted rounded-xl px-4 py-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                   </div>
                 </div>

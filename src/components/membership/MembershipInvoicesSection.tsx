@@ -65,9 +65,9 @@ export function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionP
               return (
                 <div
                   key={inv.id}
-                  className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent/30 transition-colors"
+                  className="flex items-center gap-3 rounded-xl border p-3 hover:bg-accent/30 transition-colors"
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                     <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">

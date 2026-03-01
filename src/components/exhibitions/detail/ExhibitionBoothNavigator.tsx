@@ -105,7 +105,7 @@ export function ExhibitionBoothNavigator({ exhibitionId, isAr }: Props) {
           <Card key={booth.id} className="border-border/40 transition-all hover:shadow-md hover:border-primary/20 group cursor-pointer">
             <CardContent className="p-3">
               <div className="flex items-start justify-between gap-1 mb-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0">
                   <MapPin className="h-4 w-4 text-primary" />
                 </div>
                 <Badge variant="outline" className={`text-[8px] h-4 px-1.5 ${statusColor(booth.status)}`}>

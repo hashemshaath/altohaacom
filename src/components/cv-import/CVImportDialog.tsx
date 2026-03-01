@@ -192,7 +192,7 @@ export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImpor
                   )}
                 </div>
                 {cvText.length > 0 && (
-                  <div className="mt-3 p-3 rounded-lg border bg-muted/30 flex items-center gap-2">
+                  <div className="mt-3 p-3 rounded-xl border bg-muted/30 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />
                     <div className="flex-1 min-w-0">
                       {fileName && <p className="text-xs font-medium truncate">{fileName}</p>}

@@ -50,7 +50,7 @@ export function ExhibitionStats({ exhibitionId, isAr }: Props) {
   return (
     <Card className="overflow-hidden border-border/60">
       <div className="flex items-center gap-2.5 border-b border-border/40 bg-gradient-to-r from-chart-2/8 via-transparent to-transparent px-4 py-3">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-2/10">
+        <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-2/10">
           <TrendingUp className="h-3.5 w-3.5 text-chart-2" />
         </div>
         <h3 className="text-sm font-semibold">{isAr ? "إحصائيات المعرض" : "Exhibition Stats"}</h3>

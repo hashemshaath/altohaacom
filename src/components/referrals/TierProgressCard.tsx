@@ -52,7 +52,7 @@ export function TierProgressCard() {
                     : "opacity-60"
                 }`}
               >
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
                   isActive ? "bg-primary/10" : isCompleted ? "bg-chart-2/10" : "bg-muted"
                 }`}>
                   {isActive ? (

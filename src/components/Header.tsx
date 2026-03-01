@@ -78,7 +78,7 @@ export function Header() {
         <Link
           to="/"
           aria-label="Altoha homepage"
-          className="flex shrink-0 items-center gap-2 me-1 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+          className="flex shrink-0 items-center gap-2 me-1 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-xl"
         >
           {headerCfg.showLogo !== false && (
             <img

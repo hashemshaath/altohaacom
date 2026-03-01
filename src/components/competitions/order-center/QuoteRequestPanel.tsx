@@ -208,7 +208,7 @@ export function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
                       : (isAr ? "تحديد الكل" : "Select All")}
                   </Button>
                 </div>
-                <div className="max-h-48 overflow-y-auto rounded-lg border divide-y">
+                <div className="max-h-48 overflow-y-auto rounded-xl border divide-y">
                   {listItems.map((item) => {
                     const name = item.item_id && item.requirement_items
                       ? (isAr && (item.requirement_items as any).name_ar

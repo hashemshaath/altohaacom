@@ -52,7 +52,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
                 <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
                   {isAr ? "تفاصيل الخطأ" : "Error details"}
                 </summary>
-                <pre className="mt-2 text-xs bg-muted/50 rounded-lg p-3 overflow-auto max-h-32 text-destructive font-mono">
+                <pre className="mt-2 text-xs bg-muted/50 rounded-xl p-3 overflow-auto max-h-32 text-destructive font-mono">
                   {this.state.error.message}
                 </pre>
               </details>

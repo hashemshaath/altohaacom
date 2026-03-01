@@ -194,7 +194,7 @@ export function ChefAnalyticsDashboard({ userId }: ChefAnalyticsDashboardProps) 
             ) : (
               <div className="space-y-2.5">
                 {stats.topRecipes.map((recipe: any, idx: number) => (
-                  <div key={recipe.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/40 transition-colors">
+                  <div key={recipe.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/40 transition-colors">
                     <span className="text-xs font-bold text-muted-foreground w-5 text-center">{idx + 1}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold truncate">{recipe.title}</p>
