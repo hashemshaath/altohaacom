@@ -153,9 +153,11 @@ export default function LoyaltyAdmin() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((s, i) => (
-          <Card key={i}>
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4 flex items-center gap-3">
-              <s.icon className={`h-8 w-8 ${s.color}`} />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-muted`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+              </div>
               <div>
                 <p className="text-2xl font-bold">{s.value}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
@@ -166,11 +168,11 @@ export default function LoyaltyAdmin() {
       </div>
 
       <Tabs defaultValue="tiers">
-        <TabsList>
-          <TabsTrigger value="tiers">{isAr ? "المستويات" : "Tiers"}</TabsTrigger>
-          <TabsTrigger value="challenges">{isAr ? "التحديات" : "Challenges"}</TabsTrigger>
-          <TabsTrigger value="rewards">{isAr ? "المكافآت" : "Rewards"}</TabsTrigger>
-          <TabsTrigger value="redemptions">{isAr ? "الاستبدالات" : "Redemptions"}</TabsTrigger>
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="tiers" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "المستويات" : "Tiers"}</TabsTrigger>
+          <TabsTrigger value="challenges" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "التحديات" : "Challenges"}</TabsTrigger>
+          <TabsTrigger value="rewards" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "المكافآت" : "Rewards"}</TabsTrigger>
+          <TabsTrigger value="redemptions" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "الاستبدالات" : "Redemptions"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tiers">

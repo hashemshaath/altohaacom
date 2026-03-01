@@ -275,9 +275,9 @@ export default function CRMDashboard() {
 
       {/* Top KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-s-4 border-s-chart-4">
+        <Card className="rounded-2xl border-border/40 border-s-4 border-s-chart-4 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-chart-4/10 p-2.5">
+            <div className="rounded-xl bg-chart-4/10 p-2.5 transition-transform duration-300 group-hover:scale-110">
               <Ticket className="h-5 w-5 text-chart-4" />
             </div>
             <div className="flex-1">
@@ -295,9 +295,9 @@ export default function CRMDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-s-4 border-s-primary">
+        <Card className="rounded-2xl border-border/40 border-s-4 border-s-primary group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-primary/10 p-2.5">
+            <div className="rounded-xl bg-primary/10 p-2.5 transition-transform duration-300 group-hover:scale-110">
               <Headphones className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
@@ -315,9 +315,9 @@ export default function CRMDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-s-4 border-s-chart-5">
+        <Card className="rounded-2xl border-border/40 border-s-4 border-s-chart-5 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-chart-5/10 p-2.5">
+            <div className="rounded-xl bg-chart-5/10 p-2.5 transition-transform duration-300 group-hover:scale-110">
               <UserSearch className="h-5 w-5 text-chart-5" />
             </div>
             <div className="flex-1">
@@ -333,9 +333,9 @@ export default function CRMDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-s-4 border-s-chart-3">
+        <Card className="rounded-2xl border-border/40 border-s-4 border-s-chart-3 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-chart-3/10 p-2.5">
+            <div className="rounded-xl bg-chart-3/10 p-2.5 transition-transform duration-300 group-hover:scale-110">
               <Target className="h-5 w-5 text-chart-3" />
             </div>
             <div className="flex-1">

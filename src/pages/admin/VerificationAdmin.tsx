@@ -130,14 +130,16 @@ export default function VerificationAdmin() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
         {[
-          { key: "pending", icon: Clock, color: "text-chart-4", label: isAr ? "قيد الانتظار" : "Pending" },
-          { key: "ai_review", icon: Bot, color: "text-accent", label: isAr ? "مراجعة AI" : "AI Reviewed" },
-          { key: "approved", icon: CheckCircle, color: "text-primary", label: isAr ? "معتمد" : "Approved" },
-          { key: "rejected", icon: XCircle, color: "text-destructive", label: isAr ? "مرفوض" : "Rejected" },
+          { key: "pending", icon: Clock, color: "text-chart-4", bg: "bg-chart-4/10", label: isAr ? "قيد الانتظار" : "Pending" },
+          { key: "ai_review", icon: Bot, color: "text-accent", bg: "bg-accent/10", label: isAr ? "مراجعة AI" : "AI Reviewed" },
+          { key: "approved", icon: CheckCircle, color: "text-primary", bg: "bg-primary/10", label: isAr ? "معتمد" : "Approved" },
+          { key: "rejected", icon: XCircle, color: "text-destructive", bg: "bg-destructive/10", label: isAr ? "مرفوض" : "Rejected" },
         ].map((s) => (
-          <Card key={s.key} className="cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-md" onClick={() => setTab(s.key)}>
+          <Card key={s.key} className="rounded-2xl border-border/40 cursor-pointer group transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md" onClick={() => setTab(s.key)}>
             <CardContent className="flex items-center gap-3 p-4">
-              <s.icon className={`h-5 w-5 ${s.color}`} />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+              </div>
               <div>
                 <p className="text-2xl font-bold">{stats[s.key as keyof typeof stats]}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
@@ -159,12 +161,12 @@ export default function VerificationAdmin() {
           />
         </div>
         <Tabs value={tab} onValueChange={setTab}>
-          <TabsList>
-            <TabsTrigger value="pending">{isAr ? "قيد الانتظار" : "Pending"}</TabsTrigger>
-            <TabsTrigger value="ai_review">{isAr ? "مراجعة AI" : "AI Reviewed"}</TabsTrigger>
-            <TabsTrigger value="approved">{isAr ? "معتمد" : "Approved"}</TabsTrigger>
-            <TabsTrigger value="rejected">{isAr ? "مرفوض" : "Rejected"}</TabsTrigger>
-            <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
+          <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+            <TabsTrigger value="pending" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "قيد الانتظار" : "Pending"}</TabsTrigger>
+            <TabsTrigger value="ai_review" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "مراجعة AI" : "AI Reviewed"}</TabsTrigger>
+            <TabsTrigger value="approved" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "معتمد" : "Approved"}</TabsTrigger>
+            <TabsTrigger value="rejected" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "مرفوض" : "Rejected"}</TabsTrigger>
+            <TabsTrigger value="all" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -197,7 +199,7 @@ export default function VerificationAdmin() {
             const aiAnalysis = req.ai_analysis as any;
 
             return (
-              <Card key={req.id} className={`transition-all hover:-translate-y-0.5 hover:shadow-md ${bulk.isSelected(req.id) ? "ring-1 ring-primary/30" : ""}`}>
+              <Card key={req.id} className={`rounded-2xl border-border/40 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${bulk.isSelected(req.id) ? "ring-1 ring-primary/30" : ""}`}>
                 <CardContent className="p-4">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
