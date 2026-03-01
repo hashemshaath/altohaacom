@@ -211,16 +211,16 @@ export default function OrganizerPortal() {
                               )}
                               <span className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                {toEnglishDigits(ex.view_count || 0)} {t("views", "مشاهدة")}
+                                <AnimatedCounter value={ex.view_count || 0} className="inline" /> {t("views", "مشاهدة")}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Ticket className="h-3 w-3" />
-                                {toEnglishDigits(ticketStats?.perEvent?.get(ex.id) || 0)} {t("tickets", "تذكرة")}
+                                <AnimatedCounter value={ticketStats?.perEvent?.get(ex.id) || 0} className="inline" /> {t("tickets", "تذكرة")}
                               </span>
                               {ticketStats?.followersPerEvent?.get(ex.id) ? (
                                 <span className="flex items-center gap-1">
                                   <Heart className="h-3 w-3" />
-                                  {toEnglishDigits(ticketStats.followersPerEvent.get(ex.id) || 0)} {t("followers", "متابع")}
+                                  <AnimatedCounter value={ticketStats.followersPerEvent.get(ex.id) || 0} className="inline" /> {t("followers", "متابع")}
                                 </span>
                               ) : null}
                               {ticketStats?.boothsPerEvent?.get(ex.id) ? (

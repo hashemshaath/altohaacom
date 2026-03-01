@@ -9,6 +9,7 @@ import { usePointsBalance, usePointsLedger, usePointsRewards, useEarningRules, u
 import { Star, Gift, History, ShoppingBag, Zap, TrendingUp, Loader2, CheckCircle2, Crown, ArrowUp, ArrowDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function Rewards() {
   const { language } = useLanguage();
@@ -61,19 +62,19 @@ export default function Rewards() {
         <div className="grid grid-cols-3 gap-3 mt-6">
           <Card className="border-chart-4/20 bg-card/80">
             <CardContent className="p-4 text-center">
-              <p className="text-3xl font-bold text-chart-4">{toEnglishDigits(balance || 0)}</p>
+              <AnimatedCounter value={balance || 0} className="text-3xl font-bold text-chart-4" />
               <p className="text-xs text-muted-foreground mt-1">{isAr ? "الرصيد الحالي" : "Current Balance"}</p>
             </CardContent>
           </Card>
           <Card className="border-chart-2/20 bg-card/80">
             <CardContent className="p-4 text-center">
-              <p className="text-3xl font-bold text-chart-2">{toEnglishDigits(totalEarned)}</p>
+              <AnimatedCounter value={totalEarned} className="text-3xl font-bold text-chart-2" />
               <p className="text-xs text-muted-foreground mt-1">{isAr ? "إجمالي المكتسب" : "Total Earned"}</p>
             </CardContent>
           </Card>
           <Card className="border-primary/20 bg-card/80">
             <CardContent className="p-4 text-center">
-              <p className="text-3xl font-bold text-primary">{toEnglishDigits(totalSpent)}</p>
+              <AnimatedCounter value={totalSpent} className="text-3xl font-bold text-primary" />
               <p className="text-xs text-muted-foreground mt-1">{isAr ? "إجمالي المستبدل" : "Total Redeemed"}</p>
             </CardContent>
           </Card>
@@ -112,7 +113,7 @@ export default function Rewards() {
                       <Badge variant="outline" className="capitalize text-xs">{reward.category}</Badge>
                       <Badge className="bg-chart-4/20 text-chart-4 font-bold">
                         <Star className="h-3 w-3 me-1" />
-                        {toEnglishDigits(reward.points_cost)}
+                        <AnimatedCounter value={reward.points_cost} className="inline" />
                       </Badge>
                     </div>
                     <h3 className="font-semibold">{isAr ? reward.name_ar : reward.name}</h3>
@@ -160,7 +161,7 @@ export default function Rewards() {
                       </div>
                     </div>
                     <Badge className="bg-chart-4/20 text-chart-4 font-bold text-sm">
-                      +{toEnglishDigits(rule.points)}
+                      +<AnimatedCounter value={rule.points} className="inline" />
                     </Badge>
                   </div>
                 ))}
