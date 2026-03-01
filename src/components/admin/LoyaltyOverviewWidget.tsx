@@ -79,7 +79,7 @@ export function LoyaltyOverviewWidget() {
             { icon: Zap, label: isAr ? "تحديات نشطة" : "Active Challenges", value: data?.activeChallenges, color: "text-chart-2" },
             { icon: Gift, label: isAr ? "مكافآت متاحة" : "Active Rewards", value: data?.totalRewards, color: "text-chart-3" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/30">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold">{m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
@@ -106,12 +106,12 @@ export function LoyaltyOverviewWidget() {
 
         {/* Points Flow */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="text-center p-2 rounded-lg bg-chart-2/5 border border-chart-2/10">
+          <div className="text-center p-2 rounded-xl bg-chart-2/5 border border-chart-2/10">
             <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-chart-2" />
             <p className="text-sm font-bold text-chart-2">{data?.totalAwarded?.toLocaleString()}</p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط ممنوحة" : "Points Awarded"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-chart-4/5 border border-chart-4/10">
+          <div className="text-center p-2 rounded-xl bg-chart-4/5 border border-chart-4/10">
             <Gift className="h-3 w-3 mx-auto mb-0.5 text-chart-4" />
             <p className="text-sm font-bold text-chart-4">{data?.totalRedeemed?.toLocaleString()}</p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط مستبدلة" : "Points Redeemed"}</p>

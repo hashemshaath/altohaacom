@@ -83,7 +83,7 @@ export function SecurityOverviewWidget() {
             { icon: Lock, label: isAr ? "معلقين" : "Suspended", value: data?.suspendedUsers, color: "text-destructive" },
             { icon: ShieldCheck, label: isAr ? "تغيير أدوار" : "Role Changes", value: data?.roleChanges7d, color: "text-chart-3" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/30">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold">{m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>

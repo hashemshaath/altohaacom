@@ -187,7 +187,7 @@ export default function ChefScheduleEventForm({ event, onClose, defaultDate }: P
 
         {/* TV Fields */}
         {isTv && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 rounded-lg border border-chart-4/20 bg-chart-4/5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 rounded-xl border border-chart-4/20 bg-chart-4/5">
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "القناة" : "Channel"}</Label>
               <Input value={form.channel_name} onChange={e => set("channel_name", e.target.value)} className="h-9" />

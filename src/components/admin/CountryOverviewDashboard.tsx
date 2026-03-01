@@ -152,17 +152,17 @@ export function CountryOverviewDashboard() {
 
                   {/* Stat rows */}
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="rounded-lg bg-primary/5 p-2.5 text-center">
+                    <div className="rounded-xl bg-primary/5 p-2.5 text-center">
                       <Users className="h-3.5 w-3.5 mx-auto text-primary mb-1" />
                       <p className="text-lg font-bold text-primary">{country.users}</p>
                       <p className="text-[10px] text-muted-foreground">{isAr ? "مستخدم" : "Users"}</p>
                     </div>
-                    <div className="rounded-lg bg-chart-3/5 p-2.5 text-center">
+                    <div className="rounded-xl bg-chart-3/5 p-2.5 text-center">
                       <Trophy className="h-3.5 w-3.5 mx-auto text-chart-3 mb-1" />
                       <p className="text-lg font-bold text-chart-3">{country.competitions}</p>
                       <p className="text-[10px] text-muted-foreground">{isAr ? "مسابقة" : "Comps"}</p>
                     </div>
-                    <div className="rounded-lg bg-chart-4/5 p-2.5 text-center">
+                    <div className="rounded-xl bg-chart-4/5 p-2.5 text-center">
                       <Building2 className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1" />
                       <p className="text-lg font-bold text-chart-4">{country.companies}</p>
                       <p className="text-[10px] text-muted-foreground">{isAr ? "شركة" : "Co."}</p>
