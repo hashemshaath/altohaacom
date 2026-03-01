@@ -15,11 +15,11 @@ export function AdminStatsCard({ title, value, icon: Icon, trend, trendLabel, cl
   const trendDir = trend === undefined ? null : trend > 0 ? "up" : trend < 0 ? "down" : "flat";
 
   return (
-    <Card className={cn("border-border/50 hover:shadow-sm transition-shadow", className)}>
+    <Card className={cn("border-border/40 rounded-2xl group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5", className)}>
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-muted-foreground truncate">{title}</span>
-          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+          <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
             <Icon className="h-4 w-4 text-primary" />
           </div>
         </div>

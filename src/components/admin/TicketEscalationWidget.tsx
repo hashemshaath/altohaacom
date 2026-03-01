@@ -100,9 +100,9 @@ export function TicketEscalationWidget() {
         { icon: AlertTriangle, label: isAr ? "مصعّدة" : "Escalated", value: data.escalated, color: "text-destructive", bg: "bg-destructive/10" },
         { icon: Zap, label: isAr ? "غير مُعيّنة" : "Unassigned", value: data.unassigned, color: "text-chart-4", bg: "bg-chart-4/10" },
       ].map(kpi => (
-        <Card key={kpi.label}>
-          <CardContent className="flex items-center gap-3 p-3">
-            <div className={`rounded-full p-2 ${kpi.bg}`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
+        <Card key={kpi.label} className="rounded-2xl border-border/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+          <CardContent className="flex items-center gap-3 p-3 group">
+            <div className={`rounded-xl p-2 ${kpi.bg} transition-transform duration-300 group-hover:scale-110`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
             <div>
               <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
               <p className="text-lg font-bold">{kpi.value}</p>
