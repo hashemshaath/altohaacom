@@ -68,7 +68,7 @@ export function PostCard({
     <article
       className={cn(
         "transition-all duration-200 animate-in fade-in-50",
-        !isEditing && "px-4 py-3.5 hover:bg-muted/40 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30",
+        !isEditing && "px-4 py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30",
         post.is_pinned && "bg-primary/5 border-s-primary/40"
       )}
     >
@@ -81,7 +81,7 @@ export function PostCard({
       )}
 
       {!isEditing && post.is_pinned && (
-        <div className="flex items-center gap-1 ps-12 mb-1 text-[10px] font-bold text-muted-foreground">
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-muted-foreground">
           <Pin className="h-3 w-3" />
           {isAr ? "منشور مثبت" : "Pinned"}
         </div>
@@ -90,9 +90,9 @@ export function PostCard({
       {!isEditing && (
         <div className="flex gap-3">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
-            <Avatar className="h-10 w-10 ring-2 ring-border/30 transition-all hover:ring-primary/40 hover:scale-105">
-              <AvatarImage src={post.author_avatar || undefined} className="object-cover" />
-              <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+            <Avatar className="h-11 w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
+              <AvatarImage src={post.author_avatar || undefined} className="object-cover rounded-xl" />
+              <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -113,8 +113,8 @@ export function PostCard({
                   @{post.author_username}
                 </span>
               )}
-              <span className="text-muted-foreground">·</span>
-              <span className="shrink-0 text-xs text-muted-foreground">
+              <span className="text-muted-foreground/50">·</span>
+              <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
                 {formatDate(post.created_at)}
               </span>
               <PostReadTime content={post.content} />
@@ -130,31 +130,31 @@ export function PostCard({
               <div className="ms-auto">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground hover:text-foreground">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-48 rounded-xl">
                     {user?.id === post.author_id ? (
                       <>
-                        <DropdownMenuItem onClick={() => onEdit(post)}>
-                          <Pencil className="h-4 w-4 me-2" />
+                        <DropdownMenuItem onClick={() => onEdit(post)} className="rounded-lg gap-2 text-xs">
+                          <Pencil className="h-3.5 w-3.5" />
                           {isAr ? "تعديل" : "Edit"}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDelete(post.id)} className="text-destructive">
-                          <Trash2 className="h-4 w-4 me-2" />
+                        <DropdownMenuItem onClick={() => onDelete(post.id)} className="text-destructive rounded-lg gap-2 text-xs">
+                          <Trash2 className="h-3.5 w-3.5" />
                           {isAr ? "حذف" : "Delete"}
                         </DropdownMenuItem>
                       </>
                     ) : (
                       <>
-                        <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)}>
-                          <Mail className="h-4 w-4 me-2" />
+                        <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)} className="rounded-lg gap-2 text-xs">
+                          <Mail className="h-3.5 w-3.5" />
                           {isAr ? "إرسال رسالة" : "Message"}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onReport(post.id)}>
-                          <Flag className="h-4 w-4 me-2" />
+                        <DropdownMenuItem onClick={() => onReport(post.id)} className="rounded-lg gap-2 text-xs">
+                          <Flag className="h-3.5 w-3.5" />
                           {isAr ? "إبلاغ" : "Report"}
                         </DropdownMenuItem>
                       </>
@@ -162,8 +162,8 @@ export function PostCard({
                     {post.edited_at && (
                       <>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onViewHistory(post.id)}>
-                          <History className="h-4 w-4 me-2" />
+                        <DropdownMenuItem onClick={() => onViewHistory(post.id)} className="rounded-lg gap-2 text-xs">
+                          <History className="h-3.5 w-3.5" />
                           {isAr ? "سجل التعديلات" : "Edit History"}
                         </DropdownMenuItem>
                       </>
@@ -175,7 +175,7 @@ export function PostCard({
 
             {/* Content */}
             <div
-              className="mt-1.5 text-[14.5px] leading-[1.7] whitespace-pre-wrap break-words text-foreground/90"
+              className="mt-2 text-[14.5px] leading-[1.7] whitespace-pre-wrap break-words text-foreground/90"
               onClick={() => onOpenThread(post.id)}
             >
               <MentionText content={post.content} />
@@ -195,7 +195,7 @@ export function PostCard({
               const count = Math.min(urls.length, 4);
               return (
                 <div className={cn(
-                  "mt-2 overflow-hidden rounded-2xl border border-border/50",
+                  "mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm",
                   count === 1 && "max-h-[512px]",
                   count === 2 && "grid grid-cols-2 gap-0.5",
                   count === 3 && "grid grid-cols-2 gap-0.5",
@@ -231,7 +231,7 @@ export function PostCard({
 
             {/* Video */}
             {post.video_url && (
-              <div className="mt-2 overflow-hidden rounded-2xl border border-border" onClick={(e) => e.stopPropagation()}>
+              <div className="mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm" onClick={(e) => e.stopPropagation()}>
                 <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" />
               </div>
             )}
@@ -252,7 +252,7 @@ export function PostCard({
                 href={post.link_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 block rounded-2xl border border-border overflow-hidden hover:bg-muted/30 transition-colors"
+                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 transition-colors shadow-sm"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-3 text-xs text-muted-foreground truncate">{post.link_url}</div>
@@ -260,12 +260,12 @@ export function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-2.5 flex items-center justify-between -ms-2 pt-1 border-t border-border/30" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-3 flex items-center justify-between -ms-2 pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-0.5">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 gap-1 rounded-full px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
+                  className="h-8 gap-1.5 rounded-xl px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
                   onClick={() => onOpenThread(post.id)}
                 >
                   <MessageCircle className="h-4 w-4" />
@@ -275,7 +275,7 @@ export function PostCard({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-8 gap-1 rounded-full px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90",
+                    "h-8 gap-1.5 rounded-xl px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90",
                     post.is_reposted ? "text-chart-3" : "text-muted-foreground"
                   )}
                   onClick={() => onRepost(post.id, post.is_reposted)}
@@ -297,7 +297,7 @@ export function PostCard({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-8 rounded-full px-2 text-xs hover:text-primary hover:bg-primary/10 transition-transform active:scale-90",
+                    "h-8 rounded-xl px-2 text-xs hover:text-primary hover:bg-primary/10 transition-transform active:scale-90",
                     post.is_bookmarked ? "text-primary" : "text-muted-foreground"
                   )}
                   onClick={() => onBookmark(post.id, post.is_bookmarked)}
@@ -310,7 +310,7 @@ export function PostCard({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform active:scale-90"
+                  className="h-8 rounded-xl px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform active:scale-90"
                   onClick={() => {
                     navigator.clipboard.writeText(window.location.origin + `/community/post/${post.id}`);
                     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
