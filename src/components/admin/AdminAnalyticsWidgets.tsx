@@ -115,7 +115,7 @@ export function AdminAnalyticsWidgets() {
       <Card className="border-border/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <TrendingUp className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "اتجاهات التسجيل" : "Registration Trends"}
@@ -148,7 +148,7 @@ export function AdminAnalyticsWidgets() {
       <Card className="border-border/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <Trophy className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "حالة المسابقات" : "Competition Status"}
@@ -201,7 +201,7 @@ export function AdminAnalyticsWidgets() {
       <Card className="border-border/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <DollarSign className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "ملخص الإيرادات" : "Revenue Summary"}
@@ -233,7 +233,7 @@ export function AdminAnalyticsWidgets() {
       <Card className="border-border/50">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <Users className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "نشاط المنصة" : "Platform Activity"}
