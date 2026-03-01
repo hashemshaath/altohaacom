@@ -147,7 +147,7 @@ export function AdAdvancedReporting() {
           { icon: DollarSign, label: "eCPC", value: `SAR ${totals.avgCPC}` },
           { icon: DollarSign, label: isAr ? "الميزانية" : "Budget", value: `SAR ${totals.totalBudget.toLocaleString()}` },
         ].map(k => (
-          <div key={k.label} className="p-3 rounded-lg bg-muted/50 text-center">
+          <div key={k.label} className="p-3 rounded-xl bg-muted/50 text-center">
             <p className="text-[10px] text-muted-foreground">{k.label}</p>
             <p className="text-sm font-bold">{k.value}</p>
           </div>

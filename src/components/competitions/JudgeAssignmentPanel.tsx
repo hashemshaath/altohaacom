@@ -316,7 +316,7 @@ export function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProp
                 {availableJudges.map((judge) => (
                   <div
                     key={judge.user_id}
-                    className="flex items-center gap-3 rounded-lg border p-3"
+                    className="flex items-center gap-3 rounded-xl border p-3"
                   >
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={judge.avatar_url || undefined} />
@@ -378,7 +378,7 @@ export function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProp
           </DialogHeader>
 
           {judgeToRemove && (
-            <div className="flex items-center gap-3 rounded-lg border p-3">
+            <div className="flex items-center gap-3 rounded-xl border p-3">
               <Avatar>
                 <AvatarImage src={judgeToRemove.profile?.avatar_url || undefined} />
                 <AvatarFallback>

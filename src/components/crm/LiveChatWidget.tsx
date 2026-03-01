@@ -195,13 +195,13 @@ export function LiveChatWidget() {
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="rounded-lg p-1 hover:bg-primary-foreground/10 transition"
+                className="rounded-xl p-1 hover:bg-primary-foreground/10 transition"
               >
                 {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="rounded-lg p-1 hover:bg-primary-foreground/10 transition"
+                className="rounded-xl p-1 hover:bg-primary-foreground/10 transition"
               >
                 <X className="h-4 w-4" />
               </button>

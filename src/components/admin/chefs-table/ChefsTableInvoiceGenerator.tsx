@@ -107,7 +107,7 @@ export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
       </CardHeader>
       <CardContent className="space-y-4">
         {hasInvoice ? (
-          <div className="rounded-lg bg-chart-5/5 border border-chart-5/20 p-4 text-center">
+          <div className="rounded-xl bg-chart-5/5 border border-chart-5/20 p-4 text-center">
             <CheckCircle2 className="h-8 w-8 text-chart-5 mx-auto mb-2" />
             <p className="font-bold text-sm">{isAr ? "الفاتورة جاهزة" : "Invoice Generated"}</p>
             <p className="text-xl font-black text-primary tabular-nums mt-1">

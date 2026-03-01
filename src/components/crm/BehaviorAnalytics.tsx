@@ -367,7 +367,7 @@ function LifecycleTriggersList() {
           <p className="text-sm text-muted-foreground text-center py-4">{isAr ? "لا توجد محفزات" : "No triggers"}</p>
         ) : (
           triggers.map((t: any) => (
-            <div key={t.id} className="flex items-center justify-between rounded-lg border p-2.5">
+            <div key={t.id} className="flex items-center justify-between rounded-xl border p-2.5">
               <div>
                 <p className="text-xs font-medium">{isAr ? t.name_ar || t.name : t.name}</p>
                 <p className="text-[10px] text-muted-foreground">

@@ -110,7 +110,7 @@ export function AdAIInsightsPanel() {
             { label: "CTR", value: `${rawStats.overallCTR}%` },
             { label: isAr ? "الإنفاق" : "Spent", value: `SAR ${rawStats.totalSpent?.toLocaleString()}` },
           ].map(s => (
-            <div key={s.label} className="p-3 rounded-lg bg-muted/50 text-center">
+            <div key={s.label} className="p-3 rounded-xl bg-muted/50 text-center">
               <p className="text-[10px] text-muted-foreground">{s.label}</p>
               <p className="text-lg font-bold">{s.value}</p>
             </div>

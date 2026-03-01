@@ -88,7 +88,7 @@ export function AdBehaviorInsights() {
               { icon: Clock, label: isAr ? "متوسط المدة" : "Avg Duration", value: `${avgDuration}s` },
               { icon: Target, label: isAr ? "الاهتمامات" : "Interest Profiles", value: interests.length },
             ].map(s => (
-              <div key={s.label} className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+              <div key={s.label} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <s.icon className="h-5 w-5 text-primary" />
                 <div>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
@@ -162,7 +162,7 @@ export function AdBehaviorInsights() {
                 const maxScore = Math.max(...interests.map((x: any) => x.score || 1));
                 const pct = ((interest.score || 0) / maxScore) * 100;
                 return (
-                  <div key={i} className="p-3 rounded-lg bg-muted/50">
+                  <div key={i} className="p-3 rounded-xl bg-muted/50">
                     <div className="flex items-center justify-between mb-1.5">
                       <Badge variant="outline" className="text-[10px]">{interest.interest_category}</Badge>
                       <span className="text-[10px] text-muted-foreground">{interest.interaction_count} {isAr ? "تفاعل" : "actions"}</span>

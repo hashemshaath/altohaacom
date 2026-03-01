@@ -61,7 +61,7 @@ export function ExhibitionTicketStatsWidget() {
             { icon: TrendingUp, label: isAr ? "اليوم" : "Today", value: data?.ticketsToday, color: "text-chart-2" },
             { icon: Clock, label: isAr ? "معلقة" : "Pending", value: data?.pendingPayment, color: "text-chart-4" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/30">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold">{m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>

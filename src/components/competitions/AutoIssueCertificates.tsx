@@ -272,7 +272,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
         </div>
 
         {/* Options */}
-        <div className="space-y-3 rounded-lg border p-4">
+        <div className="space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-2">
             <Checkbox
               id="issue-winners"
@@ -311,7 +311,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
         </div>
 
         {existingCount > 0 && (
-          <div className="flex items-center gap-2 rounded-lg bg-chart-5/10 p-3 text-sm text-chart-5">
+          <div className="flex items-center gap-2 rounded-xl bg-chart-5/10 p-3 text-sm text-chart-5">
             <CheckCircle className="h-4 w-4" />
             {language === "ar"
               ? `يوجد ${existingCount} شهادة صادرة بالفعل. سيتم تخطي التكرارات.`

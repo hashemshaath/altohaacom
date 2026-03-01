@@ -153,7 +153,7 @@ export default function EstablishmentDetailDrawer({ entityId, open, onClose }: P
             <InfoRow icon={Calendar} label={isAr ? "تاريخ الإنشاء" : "Created"} value={entity.created_at ? new Date(entity.created_at).toLocaleDateString() : "—"} />
             <InfoRow icon={Eye} label={isAr ? "مرئي" : "Visible"} value={entity.is_visible ? (isAr ? "نعم" : "Yes") : (isAr ? "لا" : "No")} />
             {entity.internal_notes && (
-              <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+              <div className="mt-4 p-3 bg-muted/50 rounded-xl">
                 <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "ملاحظات داخلية" : "Internal Notes"}</p>
                 <p className="text-sm">{entity.internal_notes}</p>
               </div>
@@ -167,7 +167,7 @@ export default function EstablishmentDetailDrawer({ entityId, open, onClose }: P
 
 function MiniKPI({ icon: Icon, label, value }: { icon: any; label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border bg-card p-2.5 text-center">
+    <div className="rounded-xl border bg-card p-2.5 text-center">
       <Icon className="h-4 w-4 mx-auto text-muted-foreground mb-1" />
       <p className="text-lg font-bold">{value}</p>
       <p className="text-[10px] text-muted-foreground">{label}</p>

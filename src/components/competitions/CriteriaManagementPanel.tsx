@@ -328,7 +328,7 @@ export function CriteriaManagementPanel({
           {isLoading ? (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 rounded-lg bg-muted/40 animate-pulse" />
+                <div key={i} className="h-16 rounded-xl bg-muted/40 animate-pulse" />
               ))}
             </div>
           ) : criteria && criteria.length > 0 ? (
@@ -339,7 +339,7 @@ export function CriteriaManagementPanel({
                 ) : (
                   <div
                     key={crit.id}
-                    className="group flex items-start gap-3 rounded-lg border p-3 hover:bg-accent/20 transition-colors"
+                    className="group flex items-start gap-3 rounded-xl border p-3 hover:bg-accent/20 transition-colors"
                   >
                     {isOrganizer && (
                       <GripVertical className="h-4 w-4 text-muted-foreground/30 mt-0.5 shrink-0" />

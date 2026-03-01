@@ -150,7 +150,7 @@ export function SegmentBroadcastDialog({
 
         <div className="space-y-4">
           {/* Segment Info */}
-          <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+          <div className="flex items-center gap-3 rounded-xl bg-muted/50 p-3">
             <div className="rounded-full bg-primary/10 p-2">
               <Users className="h-4 w-4 text-primary" />
             </div>

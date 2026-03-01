@@ -68,7 +68,7 @@ export function PerformanceOptimizationWidget() {
       <CardContent className="p-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {metrics.map((m, i) => (
-            <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
+            <div key={i} className="flex items-center gap-2 p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-4 w-4 ${m.color}`} />
               <div>
                 <p className="text-sm font-bold">{m.value}</p>

@@ -148,7 +148,7 @@ export function ExhibitionStep({
       </CardHeader>
       <CardContent className="space-y-4">
         {hasSelection && (
-          <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+          <div className="flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3">
             <Check className="h-4 w-4 text-primary shrink-0" />
             <span className="text-sm font-medium flex-1 truncate">
               {isAr ? "تم الاختيار" : "Selected"}: {getSelectedLabel()}
@@ -225,7 +225,7 @@ export function ExhibitionStep({
                     >
                       <div className="flex gap-3">
                         {exh.cover_image_url && (
-                          <img src={exh.cover_image_url} alt="" className="h-14 w-20 rounded-lg object-cover shrink-0" />
+                          <img src={exh.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
@@ -289,9 +289,9 @@ export function ExhibitionStep({
                       }`}
                     >
                       {ent.logo_url ? (
-                        <img src={ent.logo_url} alt="" className="h-10 w-10 rounded-lg object-cover shrink-0" />
+                        <img src={ent.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted shrink-0">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted shrink-0">
                           <Building2 className="h-4 w-4 text-muted-foreground" />
                         </div>
                       )}

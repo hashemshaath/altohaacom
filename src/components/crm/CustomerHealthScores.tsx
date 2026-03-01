@@ -157,7 +157,7 @@ export function CustomerHealthScores() {
               <Link
                 key={customer.userId}
                 to={`/admin/users/${customer.userId}`}
-                className="flex items-center gap-3 rounded-lg border p-2.5 hover:bg-accent/50 transition-colors"
+                className="flex items-center gap-3 rounded-xl border p-2.5 hover:bg-accent/50 transition-colors"
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={customer.avatar || undefined} />

@@ -95,7 +95,7 @@ export function TeamPerformanceMetrics() {
         <ScrollArea className="max-h-[320px]">
           <div className="space-y-2">
             {agents.map((agent, i) => (
-              <div key={agent.userId} className="flex items-center gap-3 rounded-lg border p-3 hover:bg-accent/50 transition-colors">
+              <div key={agent.userId} className="flex items-center gap-3 rounded-xl border p-3 hover:bg-accent/50 transition-colors">
                 <div className="relative">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={agent.avatar || undefined} />
