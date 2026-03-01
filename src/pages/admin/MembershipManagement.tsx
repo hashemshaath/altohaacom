@@ -26,44 +26,44 @@ export default function MembershipManagement() {
 
       <Tabs defaultValue="overview" className="space-y-3 sm:space-y-4">
         <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
-          <TabsList className="h-8 sm:h-9 gap-0.5 sm:gap-1 w-max">
-            <TabsTrigger value="overview" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+          <TabsList className="h-8 sm:h-9 gap-0.5 sm:gap-1 w-max rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1 sm:p-1.5">
+            <TabsTrigger value="overview" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "عامة" : "Overview"}
             </TabsTrigger>
-            <TabsTrigger value="members" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="members" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <Users className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "أعضاء" : "Members"}
             </TabsTrigger>
-            <TabsTrigger value="benefits" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="benefits" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <Star className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "مميزات" : "Benefits"}
             </TabsTrigger>
-            <TabsTrigger value="cancellations" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="cancellations" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <UserX className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "إلغاء" : "Cancel"}
             </TabsTrigger>
-            <TabsTrigger value="history" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="history" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <History className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "سجل" : "History"}
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="analytics" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "تحليلات" : "Analytics"}
             </TabsTrigger>
-            <TabsTrigger value="dashboard" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="dashboard" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <PieChart className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "لوحة التحكم" : "Dashboard"}
             </TabsTrigger>
-            <TabsTrigger value="referrals" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="referrals" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <Share2 className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "الإحالات" : "Referrals"}
             </TabsTrigger>
-            <TabsTrigger value="churn" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="churn" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <ShieldAlert className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "التسرب" : "Churn"}
             </TabsTrigger>
-            <TabsTrigger value="digest" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="digest" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
               <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "الملخص" : "Digest"}
             </TabsTrigger>

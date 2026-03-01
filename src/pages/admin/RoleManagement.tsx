@@ -308,10 +308,10 @@ export default function RoleManagement() {
           const Icon = meta.icon;
           const permCount = allRolePerms.filter((rp: any) => rp.role === role).length;
           return (
-            <Card key={role} className="cursor-pointer transition-all hover:shadow-md hover:border-primary/30"
+            <Card key={role} className="rounded-2xl border-border/40 cursor-pointer group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30"
               onClick={() => { setActiveTab("permissions"); handleRoleChange(role); }}>
               <CardContent className="p-3 text-center">
-                <div className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-lg ${meta.color}`}>
+                <div className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${meta.color}`}>
                   <Icon className="h-4 w-4" />
                 </div>
                 <p className="text-xs font-medium truncate">{isAr ? meta.labelAr : meta.labelEn}</p>
@@ -325,24 +325,24 @@ export default function RoleManagement() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="h-auto flex-wrap gap-1">
-          <TabsTrigger value="overview" className="gap-1.5 text-xs">
+        <TabsList className="h-auto flex-wrap gap-1 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5">
+          <TabsTrigger value="overview" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Grid3X3 className="h-3.5 w-3.5" />
             {isAr ? "المصفوفة" : "Matrix"}
           </TabsTrigger>
-          <TabsTrigger value="permissions" className="gap-1.5 text-xs">
+          <TabsTrigger value="permissions" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <ShieldCheck className="h-3.5 w-3.5" />
             {isAr ? "الصلاحيات" : "Permissions"}
           </TabsTrigger>
-          <TabsTrigger value="users" className="gap-1.5 text-xs">
+          <TabsTrigger value="users" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <UserCog className="h-3.5 w-3.5" />
             {isAr ? "تعيين الأدوار" : "Assign Roles"}
           </TabsTrigger>
-          <TabsTrigger value="overrides" className="gap-1.5 text-xs">
+          <TabsTrigger value="overrides" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <AlertTriangle className="h-3.5 w-3.5" />
             {isAr ? "الاستثناءات" : "Overrides"}
           </TabsTrigger>
-          <TabsTrigger value="activity" className="gap-1.5 text-xs">
+          <TabsTrigger value="activity" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Activity className="h-3.5 w-3.5" />
             {isAr ? "سجل النشاط" : "Activity"}
           </TabsTrigger>
