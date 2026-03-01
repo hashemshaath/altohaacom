@@ -3,12 +3,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2, Star, Trophy, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign } from "lucide-react";
 
 /**
  * Compact profile completion card that encourages users
@@ -31,16 +29,16 @@ export function ProfileCompletionCard() {
       if (!profile) return null;
 
       const fields = [
-        { key: "full_name", filled: !!profile.full_name },
-        { key: "avatar", filled: !!profile.avatar_url },
-        { key: "bio", filled: !!profile.bio },
-        { key: "specialization", filled: !!profile.specialization },
-        { key: "country", filled: !!profile.country_code },
-        { key: "username", filled: !!profile.username },
+        { key: "full_name", filled: !!profile.full_name, icon: User },
+        { key: "avatar", filled: !!profile.avatar_url, icon: Camera },
+        { key: "bio", filled: !!profile.bio, icon: FileText },
+        { key: "specialization", filled: !!profile.specialization, icon: Briefcase },
+        { key: "country", filled: !!profile.country_code, icon: Globe },
+        { key: "username", filled: !!profile.username, icon: AtSign },
       ];
       const filled = fields.filter(f => f.filled).length;
       const percent = Math.round((filled / fields.length) * 100);
-      const missing = fields.filter(f => !f.filled).map(f => f.key);
+      const missing = fields.filter(f => !f.filled);
 
       return { ...profile, percent, missing, filled, total: fields.length };
     },
@@ -60,31 +58,53 @@ export function ProfileCompletionCard() {
   };
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold">
-            {isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}
-          </p>
-          <Badge variant="secondary" className="text-[10px]">
-            {data.percent}%
-          </Badge>
+    <Card className="overflow-hidden rounded-2xl border-primary/15 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/25">
+      <CardContent className="relative p-4 sm:p-5">
+        {/* Decorative gradient */}
+        <div className="pointer-events-none absolute -end-10 -top-10 h-28 w-28 rounded-full bg-primary/8 blur-[40px]" />
+
+        <div className="relative">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+              </div>
+              <p className="text-sm font-bold">
+                {isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}
+              </p>
+            </div>
+            <Badge variant="secondary" className="text-[10px] font-bold tabular-nums rounded-lg px-2 py-0.5">
+              {data.filled}/{data.total}
+            </Badge>
+          </div>
+
+          <div className="space-y-1.5 mb-3">
+            <Progress value={data.percent} className="h-2 rounded-full" />
+            <p className="text-[10px] text-muted-foreground font-medium text-end tabular-nums">{data.percent}%</p>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {data.missing.slice(0, 3).map(({ key, icon: Icon }) => (
+              <span key={key} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/40 rounded-lg px-2 py-1 border border-border/20">
+                <Icon className="h-2.5 w-2.5" />
+                {isAr ? missingLabels[key]?.ar : missingLabels[key]?.en}
+              </span>
+            ))}
+            {data.missing.length > 3 && (
+              <span className="text-[10px] text-muted-foreground bg-muted/40 rounded-lg px-2 py-1 border border-border/20">
+                +{data.missing.length - 3}
+              </span>
+            )}
+          </div>
+
+          <Link
+            to="/profile"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-colors group/link"
+          >
+            {isAr ? "إكمال الملف" : "Complete now"}
+            <ArrowRight className="h-3 w-3 rtl:rotate-180 transition-transform group-hover/link:translate-x-0.5 rtl:group-hover/link:-translate-x-0.5" />
+          </Link>
         </div>
-        <Progress value={data.percent} className="h-1.5 mb-2" />
-        <div className="flex flex-wrap gap-1 mb-2">
-          {data.missing.slice(0, 3).map(key => (
-            <span key={key} className="text-[10px] text-muted-foreground bg-muted rounded px-1.5 py-0.5">
-              {isAr ? missingLabels[key]?.ar : missingLabels[key]?.en}
-            </span>
-          ))}
-        </div>
-        <Link
-          to="/profile"
-          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-        >
-          {isAr ? "إكمال الملف" : "Complete now"}
-          <ArrowRight className="h-3 w-3 rtl:rotate-180" />
-        </Link>
       </CardContent>
     </Card>
   );
