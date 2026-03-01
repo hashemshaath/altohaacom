@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Users, Star, ClipboardList, Globe } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   data: {
@@ -36,7 +36,7 @@ export function AnalyticsKPICards({ data, isLoading }: Props) {
               <card.icon className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <p className="text-2xl font-black leading-none">{isLoading ? "..." : toEnglishDigits((card.value || 0).toLocaleString())}</p>
+              <p className="text-2xl font-black leading-none">{isLoading ? "..." : <AnimatedCounter value={card.value || 0} />}</p>
               <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5 truncate">{card.label}</p>
             </div>
           </CardContent>
