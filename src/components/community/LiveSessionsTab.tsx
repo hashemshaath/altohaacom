@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Radio, Users, Calendar, Clock, Plus, Loader2, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface LiveSession {
   id: string;
@@ -180,7 +181,7 @@ export function LiveSessionsTab() {
           </span>
           <span className="flex items-center gap-1">
             <Users className="h-3 w-3" />
-            {toEnglishDigits(`${session.attendee_count}`)}
+            <AnimatedCounter value={session.attendee_count} className="inline" />
           </span>
         </div>
 

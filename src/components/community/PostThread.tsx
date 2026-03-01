@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Heart, MessageCircle, Repeat2, Bookmark, Share2, User, X } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PostComposer } from "./PostComposer";
 import { MentionText } from "./MentionText";
 import { cn } from "@/lib/utils";
@@ -235,7 +236,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
                             onClick={() => handleLikeReply(reply.id, reply.is_liked)}
                           >
                             <Heart className={cn("h-3.5 w-3.5", reply.is_liked && "fill-current")} />
-                            {reply.likes_count > 0 && toEnglishDigits(`${reply.likes_count}`)}
+                            {reply.likes_count > 0 && <AnimatedCounter value={reply.likes_count} className="inline" />}
                           </Button>
                         </div>
                       </div>

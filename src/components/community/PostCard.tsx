@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PostReactions } from "./PostReactions";
 import { ChefBadge } from "./ChefBadge";
 import { MentionText } from "./MentionText";
@@ -269,7 +269,7 @@ export function PostCard({
                   onClick={() => onOpenThread(post.id)}
                 >
                   <MessageCircle className="h-4 w-4" />
-                  {(post.replies_count + post.comments_count) > 0 && toEnglishDigits(`${post.replies_count + post.comments_count}`)}
+                  {(post.replies_count + post.comments_count) > 0 && <AnimatedCounter value={post.replies_count + post.comments_count} className="inline" />}
                 </Button>
                 <Button
                   variant="ghost"
@@ -281,12 +281,12 @@ export function PostCard({
                   onClick={() => onRepost(post.id, post.is_reposted)}
                 >
                   <Repeat2 className={cn("h-4 w-4 transition-transform duration-300", post.is_reposted && "rotate-180")} />
-                  {post.reposts_count > 0 && toEnglishDigits(`${post.reposts_count}`)}
+                  {post.reposts_count > 0 && <AnimatedCounter value={post.reposts_count} className="inline" />}
                 </Button>
                 <LikeAnimation
                   isLiked={post.is_liked}
                   count={post.likes_count}
-                  displayCount={toEnglishDigits(`${post.likes_count}`)}
+                  displayCount={`${post.likes_count}`}
                   onClick={() => onLike(post.id, post.is_liked)}
                 />
                 <PostReactions postId={post.id} />
