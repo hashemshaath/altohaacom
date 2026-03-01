@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { FileText, Clock, CheckCircle2, Archive, Eye, TrendingUp } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function ContentPipelineWidget() {
   const { language } = useLanguage();
@@ -93,7 +94,7 @@ export function ContentPipelineWidget() {
               <Eye className="h-3 w-3" />
               {isAr ? "متوسط المشاهدات" : "Avg Views"}
             </span>
-            <span className="font-bold">{data.avgViews.toLocaleString()}</span>
+            <AnimatedCounter value={data.avgViews} className="font-bold" />
           </div>
 
           {/* Type breakdown */}
@@ -114,7 +115,7 @@ export function ContentPipelineWidget() {
             <TrendingUp className="h-4 w-4 text-chart-2" />
             {isAr ? "سرعة النشر (14 يوم)" : "Publishing Velocity (14 days)"}
             <Badge variant="secondary" className="text-[10px] ms-auto">
-              {data.totalViews.toLocaleString()} {isAr ? "مشاهدة إجمالية" : "total views"}
+              <AnimatedCounter value={data.totalViews} className="inline" /> {isAr ? "مشاهدة إجمالية" : "total views"}
             </Badge>
           </CardTitle>
         </CardHeader>

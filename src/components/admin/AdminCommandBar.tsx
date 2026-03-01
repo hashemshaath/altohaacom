@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Zap, Users, Trophy, FileText, AlertTriangle,
   MessageSquare, ArrowRight, Clock,
@@ -99,7 +99,7 @@ export const AdminCommandBar = memo(function AdminCommandBar() {
                     variant={a.urgent ? "destructive" : "secondary"}
                     className="absolute -top-1 -end-1 h-5 min-w-5 text-[9px] px-1 rounded-full"
                   >
-                    {toEnglishDigits(a.count)}
+                    <AnimatedCounter value={a.count} className="inline" />
                   </Badge>
                 )}
               </div>

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, Users, Star, Ticket, Building, Heart, Calendar, TrendingUp } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {

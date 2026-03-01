@@ -180,9 +180,9 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
                         </div>
                       </TableCell>
                       <TableCell className="text-end tabular-nums">{mod.totalEstimates}</TableCell>
-                      <TableCell className="text-end tabular-nums">{mod.totalValue.toLocaleString()}</TableCell>
-                      <TableCell className="text-end tabular-nums text-chart-5">{mod.approvedValue.toLocaleString()}</TableCell>
-                      <TableCell className="text-end tabular-nums text-primary">{mod.invoicedValue.toLocaleString()}</TableCell>
+                      <TableCell className="text-end tabular-nums"><AnimatedCounter value={Math.round(mod.totalValue)} /></TableCell>
+                      <TableCell className="text-end tabular-nums text-chart-5"><AnimatedCounter value={Math.round(mod.approvedValue)} /></TableCell>
+                      <TableCell className="text-end tabular-nums text-primary"><AnimatedCounter value={Math.round(mod.invoicedValue)} /></TableCell>
                     </TableRow>
                   );
                 })}
@@ -218,7 +218,7 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
                       <div className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: STATUS_COLORS[i % STATUS_COLORS.length] }} />
                       <span className="flex-1 truncate">{s.label}</span>
                       <span className="font-bold tabular-nums">{s.count}</span>
-                      <span className="text-muted-foreground tabular-nums">{s.value.toLocaleString()}</span>
+                      <AnimatedCounter value={Math.round(s.value)} className="text-muted-foreground tabular-nums" />
                     </div>
                   ))}
                 </div>
