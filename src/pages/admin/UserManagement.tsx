@@ -629,7 +629,7 @@ export default function UserManagement() {
   const [showAnalytics, setShowAnalytics] = useState(false);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Quick User Search Command */}
       <UserSearchCommand
         open={userSearchOpen}
@@ -661,7 +661,7 @@ export default function UserManagement() {
         <Button
           variant={showAnalytics ? "secondary" : "outline"}
           size="sm"
-          className="gap-1.5 text-xs"
+          className="gap-1.5 text-xs rounded-xl"
           onClick={() => setShowAnalytics(!showAnalytics)}
         >
           <BarChart3 className="h-3.5 w-3.5" />
@@ -672,7 +672,7 @@ export default function UserManagement() {
 
       {/* Collapsible Analytics Section */}
       {showAnalytics && (
-        <div className="space-y-4 rounded-xl border border-border/50 bg-muted/20 p-4 animate-in slide-in-from-top-2 duration-300">
+        <div className="space-y-4 rounded-2xl border border-border/40 bg-muted/20 p-5 animate-in slide-in-from-top-2 duration-300">
           <UsersLiveStatsWidget />
           <UserActivityTimeline />
           <UserGrowthTrendWidget />
@@ -687,16 +687,16 @@ export default function UserManagement() {
       )}
 
       {/* Action Toolbar */}
-      <Card className="border-border/50">
-        <CardContent className="p-3 flex flex-wrap items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5">
+      <Card className="border-border/40 rounded-2xl">
+        <CardContent className="p-3.5 flex flex-wrap items-center gap-2.5">
+          <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5 rounded-xl">
             <Search className="h-3.5 w-3.5" />{isAr ? "بحث سريع" : "Quick Search"}
-            <kbd className="text-[9px] bg-muted px-1 py-0.5 rounded font-mono">⌘U</kbd>
+            <kbd className="text-[9px] bg-muted px-1.5 py-0.5 rounded-md font-mono">⌘U</kbd>
           </Button>
 
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="sm"><UserPlus className="me-1.5 h-3.5 w-3.5" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
+              <Button size="sm" className="rounded-xl"><UserPlus className="me-1.5 h-3.5 w-3.5" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
@@ -750,7 +750,7 @@ export default function UserManagement() {
 
           <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm"><Mail className="me-1.5 h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}</Button>
+              <Button variant="outline" size="sm" className="rounded-xl"><Mail className="me-1.5 h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}</Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
@@ -775,12 +775,12 @@ export default function UserManagement() {
 
           <Separator orientation="vertical" className="h-6 mx-1" />
 
-          <Button variant="outline" size="sm" onClick={() => setShowBulkImport(!showBulkImport)} className="gap-1.5">
+          <Button variant="outline" size="sm" onClick={() => setShowBulkImport(!showBulkImport)} className="gap-1.5 rounded-xl">
             <FileSpreadsheet className="h-3.5 w-3.5" />
             {isAr ? "استيراد" : "Import"}
           </Button>
 
-          <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers || [])} className="gap-1.5">
+          <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers || [])} className="gap-1.5 rounded-xl">
             <Download className="h-3.5 w-3.5" />
             {isAr ? "تصدير" : "Export"}
           </Button>
@@ -829,19 +829,19 @@ export default function UserManagement() {
       </Dialog>
 
       {/* Filters */}
-      <Card className="border-border/50">
-        <CardContent className="p-3 flex flex-wrap gap-3 items-center">
+      <Card className="border-border/40 rounded-2xl">
+        <CardContent className="p-3.5 flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="ps-9 h-9 text-sm"
+              className="ps-9 h-9 text-sm rounded-xl"
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
+            <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               {ALL_ROLES.map((role) => (
@@ -850,7 +850,7 @@ export default function UserManagement() {
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+            <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allUsers")}</SelectItem>
               <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
@@ -860,7 +860,7 @@ export default function UserManagement() {
             </SelectContent>
           </Select>
           <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
+            <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
               <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
@@ -872,7 +872,7 @@ export default function UserManagement() {
 
       {/* ── Inline Edit Panel ─────────────────────────── */}
       {editingUser && (
-        <Card className="border-primary/30 shadow-lg shadow-primary/5">
+        <Card className="border-primary/30 shadow-lg shadow-primary/5 rounded-2xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -1234,26 +1234,26 @@ export default function UserManagement() {
       )}
 
       {/* ── Users Table ─────────────────────────── */}
-      <Card className="border-border/50">
-        <CardHeader className="flex flex-row items-center justify-between pb-3 pt-4 px-4">
+      <Card className="border-border/40 rounded-2xl">
+        <CardHeader className="flex flex-row items-center justify-between pb-3 pt-4 px-5">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             {t("allUsers")}
             {filteredUsers && (
-              <Badge variant="outline" className="text-[10px] font-normal">
+              <Badge variant="outline" className="text-[10px] font-normal rounded-lg">
                 {filteredUsers.length} {isAr ? "نتيجة" : "results"}
               </Badge>
             )}
           </CardTitle>
-          <div className="flex items-center gap-1 border rounded-lg p-0.5 bg-muted/30">
-            <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => setViewMode("table")}>
+          <div className="flex items-center gap-1 border rounded-xl p-0.5 bg-muted/30">
+            <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-7 w-7 rounded-lg" onClick={() => setViewMode("table")}>
               <List className="h-3.5 w-3.5" />
             </Button>
-            <Button variant={viewMode === "card" ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => setViewMode("card")}>
+            <Button variant={viewMode === "card" ? "secondary" : "ghost"} size="icon" className="h-7 w-7 rounded-lg" onClick={() => setViewMode("card")}>
               <LayoutGrid className="h-3.5 w-3.5" />
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-5">
           {isLoading ? (
             <SkeletonTable columns={9} rows={8} />
           ) : filteredUsers?.length === 0 ? (
@@ -1283,7 +1283,7 @@ export default function UserManagement() {
                 </TableHeader>
                 <TableBody>
                   {sortedUsers?.map((profile) => (
-                    <TableRow key={profile.id} className={editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : ""}>
+                    <TableRow key={profile.id} className={`transition-colors ${editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : "hover:bg-muted/40"}`}>
                       <TableCell>
                         <Checkbox checked={isSelected(profile.id)} onCheckedChange={() => toggleOne(profile.id)} />
                       </TableCell>
@@ -1343,17 +1343,17 @@ export default function UserManagement() {
               </Table>
 
               {totalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-5 flex items-center justify-between rounded-xl bg-muted/20 border border-border/30 px-4 py-3">
                   <p className="text-sm text-muted-foreground">
                     {isAr
                       ? `عرض ${page * pageSize + 1}-${Math.min((page + 1) * pageSize, usersData?.totalCount || 0)} من ${usersData?.totalCount || 0}`
                       : `Showing ${page * pageSize + 1}-${Math.min((page + 1) * pageSize, usersData?.totalCount || 0)} of ${usersData?.totalCount || 0}`}
                   </p>
                   <div className="flex items-center gap-1">
-                    <Button variant="outline" size="sm" onClick={() => setPage(0)} disabled={page === 0} className="h-8 w-8 p-0">
+                    <Button variant="outline" size="sm" onClick={() => setPage(0)} disabled={page === 0} className="h-8 w-8 p-0 rounded-lg">
                       <ChevronLeft className="h-3 w-3" /><ChevronLeft className="h-3 w-3 -ms-2" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="h-8 w-8 p-0">
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="h-8 w-8 p-0 rounded-lg">
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -1365,17 +1365,17 @@ export default function UserManagement() {
                           key={pageNum}
                           variant={pageNum === page ? "default" : "outline"}
                           size="sm"
-                          className="h-8 w-8 p-0 text-xs"
+                          className="h-8 w-8 p-0 text-xs rounded-lg"
                           onClick={() => setPage(pageNum)}
                         >
                           {pageNum + 1}
                         </Button>
                       );
                     })}
-                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="h-8 w-8 p-0">
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="h-8 w-8 p-0 rounded-lg">
                       <ChevronRight className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1} className="h-8 w-8 p-0">
+                    <Button variant="outline" size="sm" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1} className="h-8 w-8 p-0 rounded-lg">
                       <ChevronRight className="h-3 w-3" /><ChevronRight className="h-3 w-3 -ms-2" />
                     </Button>
                   </div>
