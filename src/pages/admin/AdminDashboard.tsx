@@ -104,20 +104,21 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
         return (
           <Link key={stat.title} to={stat.link} style={getStyle(index)}>
             <Card className={cn(
-              "group border-s-[3px] transition-all duration-300 hover:shadow-lg hover:-translate-y-1.5 hover:shadow-primary/5",
-              stat.accent,
+              "group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:shadow-primary/8 hover:border-primary/20",
               stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
             )}>
-              <CardContent className="p-4">
+              {/* Accent top bar */}
+              <div className={cn("absolute inset-x-0 top-0 h-1 rounded-t-xl", stat.bg.replace("/10", ""))} />
+              <CardContent className="p-4 pt-5">
                 <div className="flex items-center gap-3">
-                  <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-md", stat.bg)}>
+                  <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg", stat.bg)}>
                     <stat.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:rotate-6", stat.color)} />
                   </div>
                   <div className="min-w-0 flex-1">
                     {isLoading ? (
                       <>
-                        <Skeleton className="h-7 w-14 mb-1" />
-                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-7 w-14 mb-1 rounded-lg" />
+                        <Skeleton className="h-3 w-20 rounded-lg" />
                       </>
                     ) : (
                       <>
@@ -125,21 +126,21 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                           <AnimatedStatValue value={stat.value} />
                           {sparkPoints && trend !== 0 && (
                             <Badge variant="outline" className={cn(
-                              "text-[9px] px-1 py-0 gap-0.5",
-                              trend > 0 ? "text-chart-2 border-chart-2/30" : "text-destructive border-destructive/30"
+                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-lg",
+                              trend > 0 ? "text-chart-2 border-chart-2/30 bg-chart-2/5" : "text-destructive border-destructive/30 bg-destructive/5"
                             )}>
                               {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
                               {Math.abs(trend)}
                             </Badge>
                           )}
                         </div>
-                        <p className="mt-1 text-[11px] text-muted-foreground truncate">{stat.title}</p>
+                        <p className="mt-1 text-[11px] text-muted-foreground truncate font-medium">{stat.title}</p>
                       </>
                     )}
                   </div>
                 </div>
                 {sparkPoints && sparkPoints.length > 0 && (
-                  <div className="mt-2 -mx-1">
+                  <div className="mt-3 -mx-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
                     <ResponsiveContainer width="100%" height={32}>
                       <LineChart data={sparkPoints}>
                         <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
@@ -397,26 +398,28 @@ export default function AdminDashboard() {
       {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Today's Activity */}
-        <Card className="border-border/50 bg-gradient-to-br from-primary/5 to-transparent lg:col-span-1">
+        <Card className="border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
-                <Zap className="h-3.5 w-3.5 text-primary" />
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-sm shadow-primary/15">
+                <Zap className="h-4 w-4 text-primary-foreground" />
               </div>
               <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2.5">
               {[
-                { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary" },
-                { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2" },
-                { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3" },
-                { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground" },
+                { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary", bg: "bg-primary/10" },
+                { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2", bg: "bg-chart-2/10" },
+                { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3", bg: "bg-chart-3/10" },
+                { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground", bg: todayStats?.newReports ? "bg-destructive/10" : "bg-muted/50" },
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 rounded-lg border border-border/40 bg-card p-2.5">
-                  <item.icon className={`h-3.5 w-3.5 shrink-0 ${item.color}`} />
+                <div key={i} className="group flex items-center gap-2.5 rounded-2xl border border-border/30 bg-card/80 p-3 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
+                  <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110", item.bg)}>
+                    <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
+                  </div>
                   <div>
-                    <p className={`text-base font-black leading-none ${item.color}`}>{toEnglishDigits(item.value.toString())}</p>
-                    <p className="text-[9px] text-muted-foreground mt-0.5">{item.label}</p>
+                    <p className={`text-lg font-black leading-none ${item.color}`}>{toEnglishDigits(item.value.toString())}</p>
+                    <p className="text-[9px] text-muted-foreground mt-1 font-medium">{item.label}</p>
                   </div>
                 </div>
               ))}
@@ -471,22 +474,22 @@ export default function AdminDashboard() {
       </div>
 
       {/* Workflow Shortcuts */}
-      <Card className="border-border/50">
+      <Card className="border-border/40">
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-3/10">
-              <Zap className="h-3.5 w-3.5 text-chart-3" />
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/80 shadow-sm shadow-chart-3/15">
+              <Zap className="h-4 w-4 text-primary-foreground" />
             </div>
             <h3 className="text-sm font-bold">{isAr ? "اختصارات سريعة" : "Quick Workflows"}</h3>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
             {workflowShortcuts.map((shortcut) => (
               <Link key={shortcut.label} to={shortcut.link}>
-                <div className="flex flex-col items-center gap-1.5 rounded-xl border border-border/40 p-3 transition-all hover:bg-accent/50 hover:shadow-sm hover:-translate-y-0.5 text-center">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/50">
-                    <shortcut.icon className={cn("h-4 w-4", shortcut.color)} />
+                <div className="group flex flex-col items-center gap-2 rounded-2xl border border-border/30 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 text-center">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 transition-all duration-200 group-hover:scale-110 group-hover:bg-muted">
+                    <shortcut.icon className={cn("h-4.5 w-4.5", shortcut.color)} />
                   </div>
-                  <span className="text-[10px] font-medium text-muted-foreground leading-tight">{shortcut.label}</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground leading-tight group-hover:text-foreground transition-colors">{shortcut.label}</span>
                 </div>
               </Link>
             ))}
