@@ -17,6 +17,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Search, MapPin, Plus, Globe, Trophy, Flame, Sparkles, Users, TrendingUp, ArrowUpDown } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   CompetitionCard,
   FeaturedCompetitionCard,
@@ -180,16 +181,16 @@ export default function Competitions() {
                 {/* Stats row */}
                 <div className="flex items-center gap-3 sm:gap-6">
                   {[
-                    { value: toEnglishDigits(counts.all), label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
-                    { value: toEnglishDigits(counts.active), label: isAr ? "نشطة الآن" : "Live Now", icon: <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5" />, live: counts.active > 0 },
-                    { value: toEnglishDigits(countryCodes.length), label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
+                    { numValue: counts.all, label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
+                    { numValue: counts.active, label: isAr ? "نشطة الآن" : "Live Now", icon: <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5" />, live: counts.active > 0 },
+                    { numValue: countryCodes.length, label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
                   ].map((stat, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <div className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/15" : "ring-primary/10"}`}>
                         {stat.icon}
                       </div>
                       <div>
-                        <p className="text-base sm:text-lg font-black leading-none tabular-nums">{stat.value}</p>
+                        <AnimatedCounter value={stat.numValue} className="text-base sm:text-lg font-black leading-none tabular-nums" />
                         <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                       </div>
                     </div>
@@ -336,7 +337,7 @@ export default function Competitions() {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/30">
                         <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
                       </div>
-                      <p className="text-2xl font-bold text-foreground sm:text-3xl tabular-nums">{toEnglishDigits(stat.value)}</p>
+                      <AnimatedCounter value={stat.value} className="text-2xl font-bold text-foreground sm:text-3xl tabular-nums" />
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
                     </CardContent>
                   </Card>
