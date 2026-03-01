@@ -83,7 +83,6 @@ export default function Competitions() {
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
   }, [allCountries, isAr]);
 
-  // Pre-compute counts & featured
   const { counts, featured, totalRegistrations } = useMemo(() => {
     if (!competitions) return { counts: { all: 0, upcoming: 0, active: 0, past: 0 }, featured: undefined, totalRegistrations: 0 };
     const c = { all: competitions.length, upcoming: 0, active: 0, past: 0 };
@@ -111,7 +110,6 @@ export default function Competitions() {
       return matchesSearch && matchesCountry && matchesTab;
     }) || [];
 
-    // Apply sort
     if (sortBy === "name") {
       result = [...result].sort((a, b) => {
         const aName = isAr && a.title_ar ? a.title_ar : a.title;
@@ -121,7 +119,6 @@ export default function Competitions() {
     } else if (sortBy === "popularity") {
       result = [...result].sort((a, b) => (b.competition_registrations?.length || 0) - (a.competition_registrations?.length || 0));
     }
-    // "date" is default from query order
 
     return result;
   }, [competitions, search, countryFilter, activeTab, isAr, sortBy]);
@@ -159,13 +156,13 @@ export default function Competitions() {
         </div>
 
         {/* Editorial Hero */}
-        <section className="relative overflow-hidden border-b border-border/40">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.10),transparent_50%)]" />
-          <div className="container relative py-5 md:py-14">
+        <section className="relative overflow-hidden border-b border-border/30">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
+          <div className="container relative py-6 md:py-14">
             <div className="flex items-end justify-between gap-4">
-              <div className="space-y-2 sm:space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+              <div className="space-y-2.5 sm:space-y-4 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/15">
                   <Sparkles className="h-3 w-3 text-primary animate-pulse" />
                   <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-primary">
                     {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
@@ -188,11 +185,11 @@ export default function Competitions() {
                     { value: toEnglishDigits(countryCodes.length), label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
                   ].map((stat, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <div className={`flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/20" : "ring-primary/10"}`}>
+                      <div className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/15" : "ring-primary/10"}`}>
                         {stat.icon}
                       </div>
                       <div>
-                        <p className="text-base sm:text-lg font-black leading-none">{stat.value}</p>
+                        <p className="text-base sm:text-lg font-black leading-none tabular-nums">{stat.value}</p>
                         <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                       </div>
                     </div>
@@ -220,7 +217,7 @@ export default function Competitions() {
           )}
 
           {/* Sticky Filters + Tab Pills + Sort */}
-          <div className="sticky top-12 z-30 -mx-4 mb-6 border-y border-border/40 bg-background/90 px-4 py-3 backdrop-blur-md md:rounded-2xl md:border md:mx-0 md:px-6 space-y-3">
+          <div className="sticky top-12 z-30 -mx-4 mb-6 border-y border-border/30 bg-background/90 px-4 py-3 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-5 md:bg-card/60 space-y-3">
             <div className="flex gap-2 items-center">
               <div className="relative flex-1">
                 <Search className="absolute start-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
@@ -228,16 +225,16 @@ export default function Competitions() {
                   placeholder={isAr ? "ابحث..." : "Search..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="h-9 border-border/40 bg-muted/20 ps-9 text-sm transition-all focus:bg-background rounded-xl"
+                  className="h-9 border-border/30 bg-muted/15 ps-9 text-sm transition-all focus:bg-background rounded-xl"
                 />
               </div>
               {countryCodes.length > 1 && (
                 <Select value={countryFilter} onValueChange={setCountryFilter}>
-                  <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[120px] border-border/40 bg-muted/20 rounded-xl text-xs px-2.5">
+                  <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[120px] border-border/30 bg-muted/15 rounded-xl text-xs px-2.5">
                     <MapPin className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
                     <SelectValue placeholder={isAr ? "دولة" : "Country"} />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl border-border/40">
+                  <SelectContent className="rounded-xl border-border/30">
                     <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
                     {countryCodes.map((code) => (
                       <SelectItem key={code} value={code} className="rounded-lg">
@@ -251,11 +248,11 @@ export default function Competitions() {
                 </Select>
               )}
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[130px] border-border/40 bg-muted/20 rounded-xl text-xs px-2.5">
+                <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[130px] border-border/30 bg-muted/15 rounded-xl text-xs px-2.5">
                   <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-border/40">
+                <SelectContent className="rounded-xl border-border/30">
                   <SelectItem value="date" className="rounded-lg text-xs">{isAr ? "التاريخ" : "Date"}</SelectItem>
                   <SelectItem value="name" className="rounded-lg text-xs">{isAr ? "الاسم" : "Name"}</SelectItem>
                   <SelectItem value="popularity" className="rounded-lg text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
@@ -268,7 +265,7 @@ export default function Competitions() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 touch-manipulation ${
+                  className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 touch-manipulation active:scale-95 ${
                     activeTab === tab
                       ? "text-primary-foreground"
                       : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
@@ -278,7 +275,7 @@ export default function Competitions() {
                     <div className="absolute inset-0 rounded-xl bg-primary shadow-lg shadow-primary/20 animate-in fade-in zoom-in-95 duration-300" />
                   )}
                   <span className="relative z-10">{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
-                  <span className={`relative z-10 ms-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-md px-1 text-[9px] font-black ${
+                  <span className={`relative z-10 ms-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-lg px-1 text-[9px] font-black tabular-nums ${
                     activeTab === tab
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"
@@ -294,7 +291,7 @@ export default function Competitions() {
           {isLoading ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
               {Array.from({ length: 6 }, (_, i) => (
-                <Card key={i} className="overflow-hidden">
+                <Card key={i} className="overflow-hidden rounded-2xl">
                   <Skeleton className="aspect-[16/10] w-full" />
                   <CardContent className="space-y-2 p-3">
                     <Skeleton className="h-4 w-3/4" />
@@ -326,7 +323,7 @@ export default function Competitions() {
 
           {/* Stats Footer */}
           {competitions && competitions.length > 0 && (
-            <section className="mt-14 border-t border-border/30 pt-8">
+            <section className="mt-14 border-t border-border/20 pt-8">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
                   { label: isAr ? "إجمالي المسابقات" : "Total Competitions", value: counts.all, icon: Trophy, color: "text-primary" },
@@ -334,10 +331,12 @@ export default function Competitions() {
                   { label: isAr ? "المسجلين" : "Registrations", value: totalRegistrations, icon: Users, color: "text-chart-1" },
                   { label: isAr ? "الدول" : "Countries", value: countryCodes.length, icon: Globe, color: "text-accent-foreground" },
                 ].map((stat) => (
-                  <Card key={stat.label} className="border-border/30 bg-muted/10 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                  <Card key={stat.label} className="border-border/20 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 rounded-2xl">
                     <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
-                      <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
-                      <p className="text-2xl font-bold text-foreground sm:text-3xl">{toEnglishDigits(stat.value)}</p>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/30">
+                        <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
+                      </div>
+                      <p className="text-2xl font-bold text-foreground sm:text-3xl tabular-nums">{toEnglishDigits(stat.value)}</p>
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
                     </CardContent>
                   </Card>

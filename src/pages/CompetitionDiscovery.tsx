@@ -80,7 +80,6 @@ export default function CompetitionDiscovery() {
     } else if (sortBy === "popularity") {
       result = [...result].sort((a, b) => (b.competition_registrations?.length || 0) - (a.competition_registrations?.length || 0));
     }
-    // default "date" is already sorted from query
 
     return result;
   }, [competitions, search, statusFilter, countryFilter, sortBy]);
@@ -91,7 +90,7 @@ export default function CompetitionDiscovery() {
         const d = getDerivedStatus(c);
         return ["registration_open", "registration_closing_soon", "registration_upcoming", "competition_starting_soon"].includes(d.status);
       })
-      .slice(0, 1)[0]; // Single featured card, reusing FeaturedCompetitionCard
+      .slice(0, 1)[0];
   }, [competitions]);
 
   const hasActiveFilters = search || statusFilter !== "all" || countryFilter !== "all";
@@ -99,10 +98,16 @@ export default function CompetitionDiscovery() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-transparent">
+      <div className="border-b border-border/30 bg-gradient-to-b from-primary/5 to-transparent">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12">
-          <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold sm:text-3xl">
+          <div className="text-center space-y-2.5">
+            <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/15 mx-auto">
+              <Trophy className="h-3 w-3 text-primary" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                {isAr ? "استكشاف" : "Discover"}
+              </span>
+            </div>
+            <h1 className="text-2xl font-bold sm:text-3xl font-serif tracking-tight">
               {isAr ? "اكتشف المسابقات" : "Discover Competitions"}
             </h1>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
@@ -112,9 +117,9 @@ export default function CompetitionDiscovery() {
 
           <div className="mt-6 mx-auto max-w-2xl">
             <div className="relative">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
               <Input
-                className="ps-10 h-11 rounded-xl border-border/40 bg-muted/20 focus:bg-background"
+                className="ps-10 h-11 rounded-xl border-border/30 bg-muted/15 focus:bg-background"
                 placeholder={isAr ? "ابحث عن مسابقة، مدينة، أو دولة..." : "Search competitions, cities, or countries..."}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -125,7 +130,7 @@ export default function CompetitionDiscovery() {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 py-6">
-        {/* Featured — reuses shared FeaturedCompetitionCard */}
+        {/* Featured */}
         {!search && statusFilter === "all" && featured && (
           <div className="mb-8">
             <h2 className="flex items-center gap-2 text-sm font-bold mb-3">
@@ -137,13 +142,13 @@ export default function CompetitionDiscovery() {
         )}
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-wrap gap-2.5 mb-6">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px] h-9 text-xs rounded-xl border-border/40">
+            <SelectTrigger className="w-[160px] h-9 text-xs rounded-xl border-border/30 bg-muted/15">
               <Filter className="me-1.5 h-3 w-3" />
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent className="rounded-xl border-border/30">
               <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
               <SelectItem value="registration_open">{isAr ? "التسجيل مفتوح" : "Registration Open"}</SelectItem>
               <SelectItem value="upcoming">{isAr ? "قادمة" : "Upcoming"}</SelectItem>
@@ -154,11 +159,11 @@ export default function CompetitionDiscovery() {
 
           {countries.length > 0 && (
             <Select value={countryFilter} onValueChange={setCountryFilter}>
-              <SelectTrigger className="w-[160px] h-9 text-xs rounded-xl border-border/40">
+              <SelectTrigger className="w-[160px] h-9 text-xs rounded-xl border-border/30 bg-muted/15">
                 <Globe className="me-1.5 h-3 w-3" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="rounded-xl">
+              <SelectContent className="rounded-xl border-border/30">
                 <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
                 {countries.map(code => (
                   <SelectItem key={code} value={code}>
@@ -170,26 +175,26 @@ export default function CompetitionDiscovery() {
           )}
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[140px] h-9 text-xs rounded-xl border-border/40">
+            <SelectTrigger className="w-[140px] h-9 text-xs rounded-xl border-border/30 bg-muted/15">
               <TrendingUp className="me-1.5 h-3 w-3" />
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent className="rounded-xl border-border/30">
               <SelectItem value="date">{isAr ? "حسب التاريخ" : "By Date"}</SelectItem>
               <SelectItem value="name">{isAr ? "حسب الاسم" : "By Name"}</SelectItem>
               <SelectItem value="popularity">{isAr ? "الأكثر تسجيلاً" : "Most Popular"}</SelectItem>
             </SelectContent>
           </Select>
 
-          <Badge variant="outline" className="h-9 px-3 flex items-center text-xs border-border/40">
+          <Badge variant="outline" className="h-9 px-3 flex items-center text-xs border-border/30 rounded-xl tabular-nums">
             {toEnglishDigits(filtered.length)} {isAr ? "مسابقة" : "competitions"}
           </Badge>
         </div>
 
-        {/* Results — reuses shared CompetitionCard */}
+        {/* Results */}
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-48 rounded-xl" />)}
+            {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-48 rounded-2xl" />)}
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState
