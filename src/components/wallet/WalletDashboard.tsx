@@ -275,11 +275,11 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                   placeholder={t("Search transactions...", "بحث في المعاملات...")}
                   value={txSearch}
                   onChange={(e) => setTxSearch(e.target.value)}
-                  className="ps-9 h-9 text-xs rounded-lg border-border/40"
+                  className="ps-9 h-9 text-xs rounded-xl border-border/40"
                 />
               </div>
               <Select value={txTypeFilter} onValueChange={setTxTypeFilter}>
-                <SelectTrigger className="h-9 w-full sm:w-40 text-xs rounded-lg border-border/40">
+                <SelectTrigger className="h-9 w-full sm:w-40 text-xs rounded-xl border-border/40">
                   <SelectValue placeholder={t("All Types", "كل الأنواع")} />
                 </SelectTrigger>
                 <SelectContent>

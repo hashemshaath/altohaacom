@@ -103,7 +103,7 @@ export function MessageSearchWidget() {
                     <button
                       key={msg.id}
                       onClick={() => navigate("/messages")}
-                      className="w-full flex items-start gap-2 rounded-lg p-2 hover:bg-muted/50 transition-colors text-start group"
+                      className="w-full flex items-start gap-2 rounded-xl p-2 hover:bg-muted/50 transition-colors text-start group"
                     >
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
                         <MessageSquare className="h-3.5 w-3.5 text-primary" />

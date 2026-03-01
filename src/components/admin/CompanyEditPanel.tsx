@@ -356,12 +356,12 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
           </div>
 
           {showMediaPicker && (
-            <div className="mt-4 border rounded-lg p-3">
+            <div className="mt-4 border rounded-xl p-3">
               <p className="text-sm font-medium mb-2">{isAr ? "اختر من مكتبة الوسائط" : "Select from Media Library"}</p>
               {mediaItems.length > 0 ? (
                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                   {mediaItems.filter((m: any) => m.file_type?.startsWith("image")).map((m: any) => (
-                    <button key={m.id} className="rounded-lg border-2 border-transparent hover:border-primary overflow-hidden aspect-square"
+                    <button key={m.id} className="rounded-xl border-2 border-transparent hover:border-primary overflow-hidden aspect-square"
                       onClick={() => { setForm(prev => ({ ...prev, logo_url: m.file_url })); setShowMediaPicker(false); }}>
                       <img src={m.file_url} alt={m.filename} className="h-full w-full object-cover" />
                     </button>

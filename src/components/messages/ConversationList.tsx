@@ -69,12 +69,12 @@ export function ConversationList({
             </div>
             {isAr ? "الرسائل" : "Messages"}
             {counts.unread > 0 && (
-              <Badge className="h-5 min-w-5 text-[9px] font-black px-1.5 rounded-lg animate-pulse">{counts.unread}</Badge>
+              <Badge className="h-5 min-w-5 text-[9px] font-black px-1.5 rounded-xl animate-pulse">{counts.unread}</Badge>
             )}
           </h2>
           <div className="flex items-center gap-1">
             {onlineCount > 0 && (
-              <Badge variant="outline" className="text-[9px] gap-1 h-6 border-primary/20 text-primary rounded-lg">
+              <Badge variant="outline" className="text-[9px] gap-1 h-6 border-primary/20 text-primary rounded-xl">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                 {onlineCount} {isAr ? "متصل" : "online"}
               </Badge>
@@ -106,8 +106,8 @@ export function ConversationList({
               <div key={i} className="flex items-center gap-3 p-3 rounded-xl">
                 <Skeleton className="h-11 w-11 rounded-xl shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <Skeleton className="h-3.5 w-3/4 rounded-lg" />
-                  <Skeleton className="h-3 w-1/2 rounded-lg" />
+                  <Skeleton className="h-3.5 w-3/4 rounded-xl" />
+                  <Skeleton className="h-3 w-1/2 rounded-xl" />
                 </div>
               </div>
             ))}

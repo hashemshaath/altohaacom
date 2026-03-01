@@ -152,7 +152,7 @@ export default function SmartNotificationCenter({ open, onClose }: Props) {
                     {(items as any[]).map((n: any) => (
                       <div
                         key={n.id}
-                        className={`group relative flex items-start gap-3 rounded-lg p-3 transition-colors cursor-pointer hover:bg-muted/50 ${!n.is_read ? "bg-primary/5 border-s-2 border-primary" : ""}`}
+                        className={`group relative flex items-start gap-3 rounded-xl p-3 transition-colors cursor-pointer hover:bg-muted/50 ${!n.is_read ? "bg-primary/5 border-s-2 border-primary" : ""}`}
                         onClick={() => !n.is_read && markRead(n.id)}
                       >
                         <span className="text-lg shrink-0 mt-0.5">{typeIcons[n.type || "system"] || "📌"}</span>

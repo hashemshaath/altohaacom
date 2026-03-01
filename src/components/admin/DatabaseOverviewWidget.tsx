@@ -59,7 +59,7 @@ export function DatabaseOverviewWidget() {
             const Icon = r.icon;
             const val = data?.[r.key] ?? 0;
             return (
-              <div key={r.key} className="flex items-center gap-2 rounded-lg bg-muted/40 p-2">
+              <div key={r.key} className="flex items-center gap-2 rounded-xl bg-muted/40 p-2">
                 <Icon className={`h-4 w-4 shrink-0 ${r.color}`} />
                 <div className="min-w-0">
                   <p className="text-sm font-bold leading-none">{isLoading ? "—" : formatNumber(val)}</p>

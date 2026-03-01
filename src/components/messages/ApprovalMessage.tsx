@@ -80,7 +80,7 @@ export function ApprovalMessage({ messageId, senderId, receiverId, metadata, isM
   const canRespond = !isMine && status === "pending";
 
   return (
-    <div className="rounded-lg border bg-background/80 p-3 space-y-2 min-w-[220px]">
+    <div className="rounded-xl border bg-background/80 p-3 space-y-2 min-w-[220px]">
       <div className="flex items-center gap-2">
         <StatusIcon className={`h-5 w-5 ${config.color}`} />
         <span className="text-sm font-semibold flex-1">{title}</span>

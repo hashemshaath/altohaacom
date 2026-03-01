@@ -243,17 +243,17 @@ export function ChatArea({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="rounded-xl w-48">
-            <DropdownMenuItem onClick={() => setChatSearchOpen(true)} className="rounded-lg gap-2 text-xs">
+            <DropdownMenuItem onClick={() => setChatSearchOpen(true)} className="rounded-xl gap-2 text-xs">
               <Search className="h-3.5 w-3.5" />
               {isAr ? "بحث في الرسائل" : "Search Messages"}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setIsApprovalOpen(true)} className="rounded-lg gap-2 text-xs">
+            <DropdownMenuItem onClick={() => setIsApprovalOpen(true)} className="rounded-xl gap-2 text-xs">
               <CheckSquare className="h-3.5 w-3.5" />
               {isAr ? "طلب موافقة" : "Request Approval"}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="rounded-lg gap-2 text-xs">
+            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="rounded-xl gap-2 text-xs">
               <Paperclip className="h-3.5 w-3.5" />
               {isAr ? "إرفاق ملف" : "Attach File"}
             </DropdownMenuItem>

@@ -151,7 +151,7 @@ export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroup
                   <button
                     key={u.user_id}
                     onClick={() => toggleUser(u)}
-                    className={`w-full flex items-center gap-3 rounded-lg p-2.5 transition-colors text-start ${
+                    className={`w-full flex items-center gap-3 rounded-xl p-2.5 transition-colors text-start ${
                       selected ? "bg-primary/10 ring-1 ring-primary/20" : "hover:bg-accent/50"
                     }`}
                   >

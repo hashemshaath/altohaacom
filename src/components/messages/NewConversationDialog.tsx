@@ -86,7 +86,7 @@ export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewC
                     onOpenChange(false);
                     setSearch("");
                   }}
-                  className="w-full flex items-center gap-3 rounded-lg p-3 hover:bg-accent transition-colors text-start"
+                  className="w-full flex items-center gap-3 rounded-xl p-3 hover:bg-accent transition-colors text-start"
                 >
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={u.avatar_url || undefined} />

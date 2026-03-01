@@ -57,9 +57,9 @@ export function MediaPreviewOverlay({ open, onOpenChange, urls, initialIndex = 0
           {/* Content */}
           <div className="flex items-center justify-center p-8 max-h-[80vh] w-full">
             {isVideo ? (
-              <video src={current} controls className="max-h-[70vh] max-w-full rounded-lg" />
+              <video src={current} controls className="max-h-[70vh] max-w-full rounded-xl" />
             ) : (
-              <img src={current} alt="" className="max-h-[70vh] max-w-full object-contain rounded-lg" />
+              <img src={current} alt="" className="max-h-[70vh] max-w-full object-contain rounded-xl" />
             )}
           </div>
 

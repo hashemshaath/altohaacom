@@ -40,7 +40,7 @@ export function PinnedMessagesBar({ pinnedMessages, isAr, onUnpin, onJumpTo }: P
             {pinnedMessages.map((msg) => (
               <div
                 key={msg.id}
-                className="flex items-start gap-2 rounded-lg bg-background/80 p-2 text-xs group cursor-pointer hover:bg-background transition-colors"
+                className="flex items-start gap-2 rounded-xl bg-background/80 p-2 text-xs group cursor-pointer hover:bg-background transition-colors"
                 onClick={() => onJumpTo(msg.id)}
               >
                 <Pin className="h-3 w-3 text-chart-4 mt-0.5 shrink-0" />
