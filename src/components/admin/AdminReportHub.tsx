@@ -112,7 +112,7 @@ export function AdminReportHub() {
             <button
               key={r.id}
               onClick={() => generateReport(r.id)}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-center group"
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors text-center group"
             >
               <r.icon className={`h-5 w-5 ${r.color} group-hover:scale-110 transition-transform`} />
               <span className="text-xs font-medium">{isAr ? r.labelAr : r.label}</span>

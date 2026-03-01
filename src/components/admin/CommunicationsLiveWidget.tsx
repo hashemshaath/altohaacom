@@ -93,7 +93,7 @@ export function CommunicationsLiveWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 text-center">
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
@@ -142,17 +142,17 @@ export function CommunicationsLiveWidget() {
 
         {/* Bottom Row */}
         <div className="grid grid-cols-3 gap-3 mt-4">
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Send className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold">{data.outbound}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "رسائل صادرة" : "Outbound"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <BarChart3 className="h-3 w-3 mx-auto mb-1 text-chart-3" />
             <div className="text-sm font-bold">{data.activeTemplates}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "قوالب نشطة" : "Active Templates"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-4" />
             <div className="text-sm font-bold">{data.notifReadRate}%</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "قراءة الإشعارات" : "Notif Read Rate"}</div>
