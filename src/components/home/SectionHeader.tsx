@@ -53,8 +53,8 @@ export const SectionHeader = memo(function SectionHeader({
         {/* Top row: badge + title + view all */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <Badge variant="secondary" className="gap-1">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <Badge variant="secondary" className="gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider">
                 <Icon className="h-3 w-3" />
                 {badge}
               </Badge>
@@ -69,22 +69,22 @@ export const SectionHeader = memo(function SectionHeader({
               )}
             </div>
             <h2 className={cn(
-              "text-xl font-bold sm:text-2xl text-foreground tracking-tight",
+              "text-xl font-bold sm:text-2xl text-foreground tracking-tight leading-tight",
               !isAr && "font-serif"
             )}>
               {title}
             </h2>
             {subtitle && (
-              <p className="mt-0.5 text-sm text-muted-foreground">{subtitle}</p>
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{subtitle}</p>
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {actions}
             {viewAllHref && (
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="outline" size="sm" className="rounded-xl gap-1.5 font-semibold" asChild>
                 <Link to={viewAllHref}>
                   {viewAllLabel || (isAr ? "عرض الكل" : "View All")}
-                  <ArrowRight className="ms-1 h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
                 </Link>
               </Button>
             )}

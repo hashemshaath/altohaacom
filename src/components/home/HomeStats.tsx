@@ -72,8 +72,10 @@ export function HomeStats() {
   ];
 
   return (
-    <section ref={ref} className="border-y border-border/30 bg-card/50 backdrop-blur-sm" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
-      <div className="container grid grid-cols-2 sm:grid-cols-4 gap-2 py-6 sm:py-8" dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="relative border-y border-border/30 bg-card/50 backdrop-blur-sm overflow-hidden" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.03),transparent_70%)]" />
+      <div className="container relative grid grid-cols-2 sm:grid-cols-4 gap-2 py-6 sm:py-8" dir={isAr ? "rtl" : "ltr"}>
         {items.map((stat, i) => (
           <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 100} />
         ))}
