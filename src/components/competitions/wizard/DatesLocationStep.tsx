@@ -86,7 +86,7 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border p-3">
+          <div className="flex items-center justify-between rounded-xl border p-3">
             <div>
               <p className="font-medium text-sm">{isAr ? "مسابقة افتراضية" : "Virtual Competition"}</p>
               <p className="text-xs text-muted-foreground">{isAr ? "تقام عبر الإنترنت" : "This competition takes place online"}</p>
@@ -164,7 +164,7 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
               return (
                 <label
                   key={type.value}
-                  className={`flex items-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-all text-sm ${isChecked ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
+                  className={`flex items-center gap-2 rounded-xl border p-2.5 cursor-pointer transition-all text-sm ${isChecked ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
                 >
                   <Checkbox checked={isChecked} onCheckedChange={() => toggleEntryType(type.value)} />
                   <type.icon className="h-3.5 w-3.5 text-muted-foreground" />
@@ -201,7 +201,7 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
             {(["free", "paid"] as const).map((type) => (
               <label
                 key={type}
-                className={`flex-1 flex items-center justify-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-all ${data.registrationFeeType === type ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
+                className={`flex-1 flex items-center justify-center gap-2 rounded-xl border p-2.5 cursor-pointer transition-all ${data.registrationFeeType === type ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}
               >
                 <input type="radio" name="feeType" value={type} checked={data.registrationFeeType === type} onChange={() => onChange({ registrationFeeType: type })} className="sr-only" />
                 <Badge variant={data.registrationFeeType === type ? "default" : "outline"} className="text-xs">
@@ -229,7 +229,7 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
               </div>
 
               {data.registrationFee > 0 && (
-                <div className="rounded-lg bg-muted/50 p-2.5 text-xs">
+                <div className="rounded-xl bg-muted/50 p-2.5 text-xs">
                   <div className="flex justify-between">
                     <span>{isAr ? "الرسوم" : "Fee"}</span>
                     <span>{data.registrationFee} {data.registrationCurrency}</span>

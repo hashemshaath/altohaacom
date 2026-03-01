@@ -140,7 +140,7 @@ export default function AchievementsBadges({ userId }: Props) {
         </CardHeader>
         <CardContent className="space-y-2">
           {leaderboard.map((u: any, i: number) => (
-            <div key={u.user_id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
+            <div key={u.user_id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50">
               <span className={cn("text-sm font-bold w-5 text-center", i === 0 ? "text-amber-500" : i === 1 ? "text-slate-400" : i === 2 ? "text-amber-700" : "text-muted-foreground")}>
                 {i + 1}
               </span>

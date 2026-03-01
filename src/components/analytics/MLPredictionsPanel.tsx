@@ -202,15 +202,15 @@ export function MLPredictionsPanel() {
                     </div>
                     <div className="text-2xl font-bold">{f.current_value.toLocaleString()}</div>
                     <div className="grid grid-cols-3 gap-2 text-xs">
-                      <div className="text-center p-2 rounded-lg bg-muted/50">
+                      <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "3 أشهر" : "3mo"}</div>
                         <div className="font-semibold mt-0.5">{f.forecast_3m.toLocaleString()}</div>
                       </div>
-                      <div className="text-center p-2 rounded-lg bg-muted/50">
+                      <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "6 أشهر" : "6mo"}</div>
                         <div className="font-semibold mt-0.5">{f.forecast_6m.toLocaleString()}</div>
                       </div>
-                      <div className="text-center p-2 rounded-lg bg-muted/50">
+                      <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "12 شهر" : "12mo"}</div>
                         <div className="font-semibold mt-0.5">{f.forecast_12m.toLocaleString()}</div>
                       </div>
@@ -261,7 +261,7 @@ export function MLPredictionsPanel() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {data.anomalies.map((a, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg border">
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl border">
                     <ShieldAlert className={`h-4 w-4 mt-0.5 shrink-0 ${a.severity === "critical" ? "text-destructive" : a.severity === "warning" ? "text-chart-3" : "text-muted-foreground"}`} />
                     <div>
                       <p className="text-sm font-medium">{a.metric}</p>
@@ -285,7 +285,7 @@ export function MLPredictionsPanel() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {data.recommendations.map((r, i) => (
-                  <div key={i} className="p-3 rounded-lg border space-y-1.5">
+                  <div key={i} className="p-3 rounded-xl border space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-sm font-medium">{r.title}</p>
                       <div className="flex gap-1 shrink-0">

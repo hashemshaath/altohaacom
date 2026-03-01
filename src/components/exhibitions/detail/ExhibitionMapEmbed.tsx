@@ -46,7 +46,7 @@ export function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr
     <Card className="overflow-hidden border-border/60 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2.5 border-b border-border/40 bg-gradient-to-r from-chart-1/8 via-transparent to-transparent px-4 py-3">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/10">
+        <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-1/10">
           <Compass className="h-3.5 w-3.5 text-chart-1" />
         </div>
         <h3 className="text-sm font-semibold">{isAr ? "الموقع على الخريطة" : "Location Map"}</h3>

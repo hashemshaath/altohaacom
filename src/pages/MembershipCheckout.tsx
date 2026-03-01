@@ -522,10 +522,10 @@ export default function MembershipCheckout() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Change direction indicator */}
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                   <div className="flex items-center gap-2">
                     {currentConfig && (
-                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${currentConfig.bg}`}>
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${currentConfig.bg}`}>
                         <currentConfig.icon className={`h-4 w-4 ${currentConfig.color}`} />
                       </div>
                     )}
@@ -534,7 +534,7 @@ export default function MembershipCheckout() {
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   <div className="flex items-center gap-2">
                     {selectedConfig && (
-                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${selectedConfig.bg}`}>
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${selectedConfig.bg}`}>
                         <selectedConfig.icon className={`h-4 w-4 ${selectedConfig.color}`} />
                       </div>
                     )}

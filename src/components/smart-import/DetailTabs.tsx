@@ -382,13 +382,13 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
           <Field label={isAr ? "تاريخ النهاية" : "End Date"} value={details.end_date} fieldKey="end_date" editing={editing} onFieldUpdate={onFieldUpdate} />
         </div>
         {details.edition_year && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
             <Calendar className="h-4 w-4 text-primary" />
             <span className="text-sm">{isAr ? "سنة الإصدار:" : "Edition Year:"} <strong>{details.edition_year}</strong></span>
           </div>
         )}
         {details.is_virtual !== undefined && details.is_virtual !== null && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
             <Globe className="h-4 w-4 text-primary" />
             <span className="text-sm">{details.is_virtual ? (isAr ? "حدث افتراضي" : "Virtual Event") : (isAr ? "حدث حضوري" : "In-Person Event")}</span>
           </div>
@@ -409,14 +409,14 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <Field label={isAr ? "رابط التسجيل" : "Registration URL"} value={details.registration_url} fieldKey="registration_url" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
         {details.registration_deadline && <Field label={isAr ? "آخر موعد للتسجيل" : "Registration Deadline"} value={details.registration_deadline} fieldKey="registration_deadline" editing={editing} onFieldUpdate={onFieldUpdate} />}
         {details.max_attendees && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
             <Users className="h-4 w-4 text-primary" />
             <span className="text-sm">{isAr ? "الحد الأقصى:" : "Max Attendees:"} <strong>{details.max_attendees}</strong></span>
           </div>
         )}
         {details.ticket_price && <Field label={isAr ? "سعر التذكرة" : "Ticket Price"} value={details.ticket_price} fieldKey="ticket_price" editing={editing} onFieldUpdate={onFieldUpdate} />}
         {details.is_free !== undefined && details.is_free !== null && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
             <span className="text-sm">{details.is_free ? (isAr ? "✅ مجاني" : "✅ Free Event") : (isAr ? "💰 مدفوع" : "💰 Paid Event")}</span>
           </div>
         )}
@@ -515,7 +515,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {details.reasons_to_attend.map((r, i) => (
-              <div key={i} className="p-2.5 rounded-lg border bg-accent/20 text-sm">
+              <div key={i} className="p-2.5 rounded-xl border bg-accent/20 text-sm">
                 <p>{r.reason}</p>
                 {r.reason_ar && <p className="text-muted-foreground text-xs mt-1" dir="rtl">{r.reason_ar}</p>}
               </div>
@@ -532,7 +532,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {details.unique_features.map((f, i) => (
-              <div key={i} className="p-2.5 rounded-lg border bg-accent/20 text-sm">
+              <div key={i} className="p-2.5 rounded-xl border bg-accent/20 text-sm">
                 <p>{f.feature}</p>
                 {f.feature_ar && <p className="text-muted-foreground text-xs mt-1" dir="rtl">{f.feature_ar}</p>}
               </div>
@@ -549,7 +549,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {details.sponsors.map((s, i) => (
-              <div key={i} className="p-3 rounded-lg border flex items-center gap-3">
+              <div key={i} className="p-3 rounded-xl border flex items-center gap-3">
                 {s.logo_url ? (
                   <img src={s.logo_url} alt={s.name} className="h-10 w-10 object-contain rounded" />
                 ) : (
@@ -581,7 +581,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {details.speakers.map((s, i) => (
-              <div key={i} className="p-3 rounded-lg border text-center">
+              <div key={i} className="p-3 rounded-xl border text-center">
                 {s.photo_url ? (
                   <img src={s.photo_url} alt={s.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
                 ) : (
@@ -603,7 +603,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <CardContent>
           <div className="space-y-2">
             {details.schedule_items.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg border">
+              <div key={i} className="flex items-start gap-3 p-2.5 rounded-xl border">
                 <span className="text-xs font-mono text-primary shrink-0 pt-0.5">{item.time}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{item.title}</p>
@@ -653,7 +653,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {details.highlights.map((h, i) => (
-              <div key={i} className="p-2.5 rounded-lg border text-center">
+              <div key={i} className="p-2.5 rounded-xl border text-center">
                 <p className="text-lg font-bold text-primary">{h.value}</p>
                 <p className="text-xs text-muted-foreground">{h.label}</p>
                 {h.label_ar && <p className="text-[10px] text-muted-foreground" dir="rtl">{h.label_ar}</p>}

@@ -280,7 +280,7 @@ export default function NotificationPreferences() {
             <div className="mt-6 rounded-2xl border border-border/20 bg-card/40 backdrop-blur-sm p-4">
               <div className="flex items-center justify-between mb-2.5">
                 <p className="text-xs font-bold">{t("Setup completion", "اكتمال الإعداد")}</p>
-                <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-[10px] rounded-lg">
+                <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-[10px] rounded-xl">
                   {completionScore}%
                 </Badge>
               </div>

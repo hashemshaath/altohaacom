@@ -168,7 +168,7 @@ export default function SupplierLeaderboard() {
                   }`}>
                     {getMedal(index)}
                   </div>
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted">
                     {s.logo_url ? (
                       <img src={s.logo_url} className="h-7 w-7 object-contain" alt={s.name} />
                     ) : (

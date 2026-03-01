@@ -321,16 +321,16 @@ export function ChatArea({
                   <div id={`msg-${msg.id}`} className={`group flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in ${highlightedMsgId === msg.id ? "ring-2 ring-primary/30 rounded-2xl bg-primary/5 p-1.5 -m-1.5 transition-all duration-500" : ""}`}>
                     <div className="relative max-w-[75%]">
                       <div className={`absolute top-0 ${isMine ? "start-0 -translate-x-full" : "end-0 translate-x-full"} opacity-0 group-hover:opacity-100 transition-all duration-200 flex gap-0.5 px-1`}>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-primary/10" title={isAr ? "رد" : "Reply"} onClick={() => handleReply(msg)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" title={isAr ? "رد" : "Reply"} onClick={() => handleReply(msg)}>
                           <Reply className="h-3 w-3 scale-x-[-1]" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-primary/10" title={isAr ? "إعادة توجيه" : "Forward"} onClick={() => setForwardMsg(msg)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" title={isAr ? "إعادة توجيه" : "Forward"} onClick={() => setForwardMsg(msg)}>
                           <Forward className="h-3 w-3" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-primary/10" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !(msg as any).is_pinned)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !(msg as any).is_pinned)}>
                           <Pin className={`h-3 w-3 ${(msg as any).is_pinned ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-primary/10" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
                       </div>
@@ -437,7 +437,7 @@ export function ChatArea({
                       <button
                         type="button"
                         onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))}
-                        className="h-5 w-5 shrink-0 flex items-center justify-center rounded-lg hover:bg-destructive/10 transition-colors"
+                        className="h-5 w-5 shrink-0 flex items-center justify-center rounded-xl hover:bg-destructive/10 transition-colors"
                       >
                         <X className="h-3 w-3 text-muted-foreground hover:text-destructive" />
                       </button>
@@ -458,7 +458,7 @@ export function ChatArea({
         <div className="flex gap-2 items-end">
           <div className="flex items-center gap-0.5 rounded-xl border border-border/20 bg-muted/10 p-1">
             <EmojiPicker onEmojiSelect={(emoji) => setNewMessage(newMessage + emoji)} />
-            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-lg hover:bg-primary/5 hover:text-primary transition-colors" type="button" onClick={() => fileInputRef.current?.click()}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-xl hover:bg-primary/5 hover:text-primary transition-colors" type="button" onClick={() => fileInputRef.current?.click()}>
               <Paperclip className="h-4 w-4" />
             </Button>
             <LocationShareButton isAr={isAr} onShare={handleShareLocation} disabled={sendMessage.isPending} />

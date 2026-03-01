@@ -171,7 +171,7 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
         <CardContent className="space-y-3">
           {/* Add form */}
           {showAddForm && (
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2.5">
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2.5">
               <div className="grid gap-2 sm:grid-cols-2">
                 <Input placeholder={isAr ? "الاسم (إنجليزي)" : "Name (English)"} value={newInvite.name} onChange={(e) => setNewInvite({ ...newInvite, name: e.target.value })} className="h-8 text-sm" />
                 <Input placeholder="الاسم (عربي)" value={newInvite.nameAr} onChange={(e) => setNewInvite({ ...newInvite, nameAr: e.target.value })} className="h-8 text-sm" dir="rtl" />
@@ -242,7 +242,7 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
           ) : (
             <div className="space-y-1.5 max-h-[400px] overflow-y-auto">
               {filtered?.map((inv) => (
-                <div key={inv.id} className="flex items-center gap-3 rounded-lg border p-2.5 hover:bg-muted/30 transition-colors">
+                <div key={inv.id} className="flex items-center gap-3 rounded-xl border p-2.5 hover:bg-muted/30 transition-colors">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
                       {isAr && inv.invitee_name_ar ? inv.invitee_name_ar : inv.invitee_name || inv.invitee_email || "—"}
