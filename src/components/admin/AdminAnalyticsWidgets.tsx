@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, Users, Trophy, FileText, DollarSign, Landmark, GraduationCap } from "lucide-react";
 import { CountryBreakdownChart } from "@/components/analytics/CountryBreakdownChart";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function AdminAnalyticsWidgets() {
@@ -214,15 +214,15 @@ export function AdminAnalyticsWidgets() {
           ) : (
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-xl border border-border/50 p-3 text-center">
-                <p className="text-lg font-bold">SAR {toEnglishDigits((revenue?.totalRevenue || 0).toLocaleString())}</p>
+                <p className="text-lg font-bold">SAR <AnimatedCounter value={Math.round(revenue?.totalRevenue || 0)} className="inline" /></p>
                 <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Revenue"}</p>
               </div>
               <div className="rounded-xl border border-border/50 p-3 text-center">
-                <p className="text-lg font-bold">{revenue?.completedCount || 0}</p>
+                <AnimatedCounter value={revenue?.completedCount || 0} className="text-lg font-bold" />
                 <p className="text-[10px] text-muted-foreground">{isAr ? "طلبات مكتملة" : "Completed Orders"}</p>
               </div>
               <div className="rounded-xl border border-border/50 p-3 text-center">
-                <p className="text-lg font-bold">{revenue?.pendingOrders || 0}</p>
+                <AnimatedCounter value={revenue?.pendingOrders || 0} className="text-lg font-bold" />
                 <p className="text-[10px] text-muted-foreground">{isAr ? "طلبات معلقة" : "Pending Orders"}</p>
               </div>
             </div>

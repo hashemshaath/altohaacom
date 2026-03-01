@@ -205,15 +205,15 @@ export function MLPredictionsPanel() {
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "3 أشهر" : "3mo"}</div>
-                        <div className="font-semibold mt-0.5">{f.forecast_3m.toLocaleString()}</div>
+                        <AnimatedCounter value={f.forecast_3m} className="font-semibold mt-0.5" />
                       </div>
                       <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "6 أشهر" : "6mo"}</div>
-                        <div className="font-semibold mt-0.5">{f.forecast_6m.toLocaleString()}</div>
+                        <AnimatedCounter value={f.forecast_6m} className="font-semibold mt-0.5" />
                       </div>
                       <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "12 شهر" : "12mo"}</div>
-                        <div className="font-semibold mt-0.5">{f.forecast_12m.toLocaleString()}</div>
+                        <AnimatedCounter value={f.forecast_12m} className="font-semibold mt-0.5" />
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
