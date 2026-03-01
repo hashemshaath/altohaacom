@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import {
   Dialog,
   DialogContent,
@@ -91,11 +92,11 @@ export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewC
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={u.avatar_url || undefined} />
                     <AvatarFallback className="text-sm">
-                      {(u.display_name || u.full_name || "U")[0].toUpperCase()}
+                      {getDisplayInitial(u, isAr)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium">{isAr ? (u.display_name_ar || u.full_name_ar || u.display_name || u.full_name) : (u.display_name || u.full_name) || "Unknown"}</p>
+                    <p className="text-sm font-medium">{getDisplayName(u, isAr, isAr ? "غير معروف" : "Unknown")}</p>
                     {u.username && (
                       <p className="text-xs text-muted-foreground">@{u.username}</p>
                     )}

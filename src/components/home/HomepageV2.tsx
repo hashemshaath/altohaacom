@@ -1,5 +1,6 @@
 import { lazy, Suspense, memo, useRef, useEffect, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { getDisplayName } from "@/lib/getDisplayName";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { ArrowRight, Calendar, MapPin, Trophy, Users, ChefHat, Globe, Play, Star
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useCountUp } from "@/hooks/useCountUp";
 import { SectionReveal } from "@/components/ui/section-reveal";
@@ -129,7 +131,7 @@ function CinematicHero() {
               {featured.competition_start && (
                 <span className="inline-flex items-center gap-2 text-background/85 text-xs sm:text-sm backdrop-blur-md bg-background/10 rounded-xl px-4 py-2 border border-background/10 shadow-sm">
                   <Calendar className="h-3.5 w-3.5" />
-                  {format(new Date(featured.competition_start), "MMMM d, yyyy")}
+                  {format(new Date(featured.competition_start), "MMMM d, yyyy", { locale: isAr ? ar : undefined })}
                 </span>
               )}
               {featured.city && (
@@ -364,7 +366,7 @@ function ChefShowcase() {
     queryFn: async () => {
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, full_name, full_name_ar, avatar_url, country_code, city, specialization, is_verified")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified")
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(6);
@@ -422,7 +424,8 @@ function ChefShowcase() {
 
 /* ─── Chef Card (shared) ─── */
 const ChefCard = memo(function ChefCard({ chef, i, isAr }: { chef: any; i: number; isAr: boolean }) {
-  const name = isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name;
+  const name = getDisplayName(chef, isAr);
+  const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
   return (
     <SectionReveal delay={i * 80}>
       <Link to={`/chef/${chef.id}`} className="group relative block">
@@ -437,7 +440,7 @@ const ChefCard = memo(function ChefCard({ chef, i, isAr }: { chef: any; i: numbe
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
           <div className="absolute bottom-0 inset-x-0 p-3 sm:p-4 lg:p-5">
             <p className={cn("text-sm sm:text-base lg:text-lg font-bold text-background leading-snug", !isAr && "font-serif")}>{name}</p>
-            {chef.specialization && <p className="text-[10px] sm:text-xs text-background/60 mt-0.5 line-clamp-1">{chef.specialization}</p>}
+            {spec && <p className="text-[10px] sm:text-xs text-background/60 mt-0.5 line-clamp-1">{spec}</p>}
             {(chef.city || chef.country_code) && (
               <p className="text-[10px] sm:text-xs text-background/50 mt-0.5 flex items-center gap-1">
                 <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
@@ -551,7 +554,7 @@ function CinematicArticles() {
                       {isAr && main.excerpt_ar ? main.excerpt_ar : main.excerpt}
                     </p>
                   )}
-                  {main.published_at && <p className="text-[10px] sm:text-xs text-background/50 mt-2 sm:mt-3">{format(new Date(main.published_at), "MMMM d, yyyy")}</p>}
+                  {main.published_at && <p className="text-[10px] sm:text-xs text-background/50 mt-2 sm:mt-3">{format(new Date(main.published_at), "MMMM d, yyyy", { locale: isAr ? ar : undefined })}</p>}
                 </div>
               </div>
             </Link>
@@ -577,7 +580,7 @@ function CinematicArticles() {
                     <h3 className="text-sm sm:text-base font-bold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                       {isAr && article.title_ar ? article.title_ar : article.title}
                     </h3>
-                    {article.published_at && <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{format(new Date(article.published_at), "MMM d, yyyy")}</p>}
+                    {article.published_at && <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">{format(new Date(article.published_at), "MMM d, yyyy", { locale: isAr ? ar : undefined })}</p>}
                   </div>
                 </Link>
               </SectionReveal>
