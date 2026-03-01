@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   BarChart3, Users, MessageCircle, Heart, TrendingUp,
@@ -125,7 +125,7 @@ export function CommunityAnalytics() {
                 <span className="text-[10px] text-muted-foreground font-medium">{c.label}</span>
               </div>
               <p className={cn("text-xl font-bold tabular-nums", c.urgent && "text-destructive")}>
-                {toEnglishDigits(`${c.value}`)}
+                <AnimatedCounter value={c.value} />
               </p>
               {c.urgent && (
                 <Badge variant="destructive" className="mt-1 text-[9px] h-4">

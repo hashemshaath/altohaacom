@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface PollOption {
   id: string;
@@ -146,7 +146,7 @@ export function PollDisplay({ postId }: PollDisplayProps) {
                 </span>
                 {showResults && (
                   <span className="text-xs font-semibold text-muted-foreground tabular-nums">
-                    {toEnglishDigits(`${pct}`)}%
+                    <AnimatedCounter value={pct} className="inline" />%
                   </span>
                 )}
               </div>
@@ -155,7 +155,7 @@ export function PollDisplay({ postId }: PollDisplayProps) {
         })}
       </div>
       <p className="text-[10px] text-muted-foreground">
-        {toEnglishDigits(`${totalVotes}`)} {isAr ? "صوت" : totalVotes === 1 ? "vote" : "votes"}
+        <AnimatedCounter value={totalVotes} className="inline" /> {isAr ? "صوت" : totalVotes === 1 ? "vote" : "votes"}
         {isExpired && (isAr ? " · انتهى" : " · Ended")}
       </p>
     </div>

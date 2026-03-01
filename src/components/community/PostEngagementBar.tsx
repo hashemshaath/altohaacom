@@ -1,7 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Eye, Clock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface PostEngagementBarProps {
   content: string;
@@ -48,7 +48,7 @@ export function PostEngagementBar({
       {totalEngagement >= 5 && (
         <span className="flex items-center gap-0.5">
           <TrendingUp className="h-2.5 w-2.5" />
-          {toEnglishDigits(`${totalEngagement}`)} {isAr ? "تفاعل" : "engagements"}
+          <AnimatedCounter value={totalEngagement} className="inline" /> {isAr ? "تفاعل" : "engagements"}
         </span>
       )}
     </div>
