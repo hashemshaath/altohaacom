@@ -94,7 +94,7 @@ export function MessageReactions({ reactions, currentUserId, onReact, isMine }: 
                 <button
                   key={emoji}
                   onClick={() => handleReact(emoji)}
-                  className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-accent text-base transition-all duration-150 hover:scale-125 active:scale-95"
+                  className="h-8 w-8 flex items-center justify-center rounded-xl hover:bg-accent text-base transition-all duration-150 hover:scale-125 active:scale-95"
                 >
                   {emoji}
                 </button>

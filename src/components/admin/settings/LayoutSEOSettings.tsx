@@ -56,7 +56,7 @@ export function LayoutSEOSettings({ settings, onSave, isPending }: Props) {
             { key: "showBreadcrumbs", en: "Show Breadcrumbs", ar: "عرض مسار التنقل", descEn: "Display breadcrumb navigation", descAr: "عرض مسار التنقل في الصفحات" },
             { key: "compactMode", en: "Compact Mode", ar: "الوضع المضغوط", descEn: "Reduce spacing for denser UI", descAr: "تقليل التباعد لواجهة أكثر كثافة" },
           ].map(item => (
-            <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+            <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3">
               <div>
                 <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
                 <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
@@ -106,7 +106,7 @@ export function LayoutSEOSettings({ settings, onSave, isPending }: Props) {
             <Label className="text-xs">{isAr ? "صورة المشاركة (OG Image)" : "OG Image URL"}</Label>
             <Input value={seo.ogImageUrl || ""} onChange={e => setSeo({ ...seo, ogImageUrl: e.target.value })} placeholder="https://..." />
           </div>
-          <div className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+          <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
             <div>
               <p className="text-sm font-medium">{isAr ? "خريطة الموقع" : "Sitemap Enabled"}</p>
               <p className="text-[11px] text-muted-foreground">{isAr ? "تمكين خريطة الموقع XML" : "Enable XML sitemap generation"}</p>

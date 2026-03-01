@@ -109,7 +109,7 @@ export function AddGroupMembersDialog({ open, onOpenChange, groupId, existingMem
                     <button
                       key={u.user_id}
                       onClick={() => toggle(u.user_id)}
-                      className={`w-full flex items-center gap-3 rounded-lg p-2 text-start transition-colors ${isSelected ? "bg-primary/10" : "hover:bg-muted"}`}
+                      className={`w-full flex items-center gap-3 rounded-xl p-2 text-start transition-colors ${isSelected ? "bg-primary/10" : "hover:bg-muted"}`}
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={u.avatar_url || undefined} />

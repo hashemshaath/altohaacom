@@ -71,7 +71,7 @@ export function CommunityEngagementWidget() {
             { icon: Flame, label: isAr ? "التفاعلات" : "Reactions", value: data.totalReactions, color: "text-chart-4" },
             { icon: UserPlus, label: isAr ? "المتابعات" : "Follows", value: data.totalFollows, sub: `+${data.weekFollows} ${isAr ? "جديد" : "new"}`, color: "text-chart-3" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>

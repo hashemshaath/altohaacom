@@ -102,7 +102,7 @@ export function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialo
         {step === "input" && (
           <div className="space-y-4 pt-2">
             {/* Recovery method toggle */}
-            <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+            <div className="flex rounded-xl border border-border/50 p-1 gap-1">
               <button
                 type="button"
                 onClick={() => setMethod("email")}

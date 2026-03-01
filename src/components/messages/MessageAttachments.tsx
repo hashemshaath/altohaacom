@@ -54,13 +54,13 @@ export const MessageAttachments = forwardRef<HTMLDivElement, MessageAttachmentsP
           const isVideo = isVideoUrl(name, messageType);
 
           return (
-            <div key={i} className="rounded-lg border border-border/40 bg-background/50 overflow-hidden">
+            <div key={i} className="rounded-xl border border-border/40 bg-background/50 overflow-hidden">
               {isImage && (
                 <a href={url} target="_blank" rel="noopener noreferrer" className="block">
                   <img
                     src={url}
                     alt={name}
-                    className="max-h-48 w-auto rounded-t-lg object-cover"
+                    className="max-h-48 w-auto rounded-t-xl object-cover"
                     loading="lazy"
                     onError={(e) => {
                       // Hide broken images gracefully
@@ -75,7 +75,7 @@ export const MessageAttachments = forwardRef<HTMLDivElement, MessageAttachmentsP
                 </audio>
               )}
               {isVideo && (
-                <video controls className="max-h-48 w-auto rounded-t-lg" preload="none">
+                <video controls className="max-h-48 w-auto rounded-t-xl" preload="none">
                   <source src={url} />
                 </video>
               )}
