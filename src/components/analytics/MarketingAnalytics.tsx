@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Megaphone, ShoppingCart, UserPlus, MousePointerClick, Eye,
@@ -157,7 +157,7 @@ export function MarketingAnalytics() {
           { icon: Megaphone, label: isAr ? "إجمالي التحويلات" : "Total Conversions", value: conversionData?.total ?? 0, color: "primary" },
           { icon: TrendingUp, label: isAr ? "إيرادات التحويلات" : "Conv. Revenue", value: conversionData?.totalRevenue ?? 0, suffix: " SAR", color: "chart-5" },
           { icon: UserPlus, label: isAr ? "تسجيلات جديدة" : "Sign Ups", value: conversionData?.signups ?? 0, color: "chart-4" },
-          { icon: ShoppingCart, label: isAr ? "سلال مهجورة" : "Abandoned Carts", value: cartData?.abandoned ?? 0, sub: `${(cartData?.lostRevenue ?? 0).toLocaleString()} SAR`, color: "chart-3" },
+          { icon: ShoppingCart, label: isAr ? "سلال مهجورة" : "Abandoned Carts", value: cartData?.abandoned ?? 0, subValue: cartData?.lostRevenue ?? 0, color: "chart-3" },
           { icon: CalendarClock, label: isAr ? "حملات نشطة" : "Active Campaigns", value: campaignData?.activeCampaigns ?? 0, color: "chart-2" },
         ].map(k => (
           <Card key={k.label} className={`border-s-4 border-s-${k.color}`}>
@@ -173,7 +173,7 @@ export function MarketingAnalytics() {
                     {'suffix' in k && k.suffix ? <span className="text-xl font-bold">{k.suffix}</span> : null}
                   </>
                 )}
-                {"sub" in k && k.sub && <p className="text-[10px] text-muted-foreground">{toEnglishDigits(k.sub)} {isAr ? "مفقود" : "lost"}</p>}
+                {"subValue" in k && (k as any).subValue > 0 && <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={Math.round((k as any).subValue)} className="inline" /> SAR {isAr ? "مفقود" : "lost"}</p>}
               </div>
             </CardContent>
           </Card>
@@ -233,7 +233,7 @@ export function MarketingAnalytics() {
                 <step.icon className="h-5 w-5 mx-auto text-primary" />
                 <AnimatedCounter value={typeof step.value === "number" ? step.value : 0} className="text-xl font-bold" />
                 <p className="text-xs text-muted-foreground">{step.label}</p>
-                <Badge variant="secondary" className="text-[10px]">{toEnglishDigits(`${step.pct}`)}%</Badge>
+                <Badge variant="secondary" className="text-[10px]"><AnimatedCounter value={typeof step.pct === "number" ? step.pct : 0} className="inline" />%</Badge>
               </div>
             ))}
           </div>
@@ -275,12 +275,12 @@ export function MarketingAnalytics() {
                             <Badge variant={c.status === "active" ? "default" : "secondary"} className="text-[10px]">{c.status}</Badge>
                           </div>
                           <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                            <span>{(c.total_clicks || 0).toLocaleString()} {isAr ? "نقرة" : "clicks"}</span>
+                            <span><AnimatedCounter value={c.total_clicks || 0} className="inline" /> {isAr ? "نقرة" : "clicks"}</span>
                             <span>•</span>
-                            <span>{(c.total_impressions || 0).toLocaleString()} {isAr ? "ظهور" : "impressions"}</span>
+                            <span><AnimatedCounter value={c.total_impressions || 0} className="inline" /> {isAr ? "ظهور" : "impressions"}</span>
                           </div>
                           <Progress value={spendPct} className="h-1" />
-                          <p className="text-[10px] text-muted-foreground">{toEnglishDigits(`${spendPct}`)}% {isAr ? "من الميزانية" : "of budget spent"}</p>
+                          <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={spendPct} className="inline" />% {isAr ? "من الميزانية" : "of budget spent"}</p>
                         </div>
                       );
                     })}
@@ -320,11 +320,11 @@ export function MarketingAnalytics() {
                 <div className="rounded-xl border p-4 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{isAr ? "إيرادات مفقودة" : "Lost Revenue"}</span>
-                    <span className="font-bold text-chart-5">{toEnglishDigits(cartData.lostRevenue.toLocaleString())} SAR</span>
+                    <span className="font-bold text-chart-5"><AnimatedCounter value={Math.round(cartData.lostRevenue)} className="inline" /> SAR</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{isAr ? "إيرادات مسترجعة" : "Recovered Revenue"}</span>
-                    <span className="font-bold text-chart-2">{toEnglishDigits(cartData.recoveredRevenue.toLocaleString())} SAR</span>
+                    <span className="font-bold text-chart-2"><AnimatedCounter value={Math.round(cartData.recoveredRevenue)} className="inline" /> SAR</span>
                   </div>
                 </div>
               </div>
@@ -353,7 +353,7 @@ export function MarketingAnalytics() {
                     <div key={i} className="space-y-1">
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-medium">{isAr ? label.ar : label.en}</span>
-                        <span className="text-muted-foreground">{toEnglishDigits(`${count}`)}</span>
+                        <AnimatedCounter value={count} className="text-muted-foreground inline" />
                       </div>
                       <Progress value={pct} className="h-1.5" />
                     </div>
