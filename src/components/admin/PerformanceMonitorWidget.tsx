@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Gauge, Database, Zap, Clock, Activity, Server, HardDrive, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function PerformanceMonitorWidget() {
   const { language } = useLanguage();
@@ -107,7 +108,7 @@ export function PerformanceMonitorWidget() {
                 <Database className="h-3 w-3 text-chart-3" />
                 {isAr ? "إجمالي السجلات" : "Total Records"}
               </div>
-              <span className="font-bold">{toEnglishDigits(perfData.totalRecords.toLocaleString())}</span>
+              <AnimatedCounter value={perfData.totalRecords} className="font-bold" />
             </div>
           </div>
         </CardContent>
@@ -129,7 +130,7 @@ export function PerformanceMonitorWidget() {
                 <div key={table.name} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground">{table.name}</span>
-                    <span className="font-medium">{toEnglishDigits(table.count.toLocaleString())}</span>
+                    <AnimatedCounter value={table.count} className="font-medium" />
                   </div>
                   <Progress value={pct} className="h-2" />
                 </div>

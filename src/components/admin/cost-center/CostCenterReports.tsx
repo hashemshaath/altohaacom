@@ -96,16 +96,16 @@ export function CostCenterReports({ isAr, estimates }: Props) {
       {/* Summary KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: isAr ? "إجمالي القيمة" : "Total Value", value: reportData.totalValue.toLocaleString(), suffix: "SAR", color: "text-primary" },
-          { label: isAr ? "القيمة المعتمدة" : "Approved Value", value: reportData.approvedValue.toLocaleString(), suffix: "SAR", color: "text-chart-5" },
-          { label: isAr ? "متوسط التقدير" : "Avg Estimate", value: reportData.avgEstimate.toLocaleString(), suffix: "SAR", color: "" },
+          { label: isAr ? "إجمالي القيمة" : "Total Value", value: Math.round(reportData.totalValue), suffix: "SAR", color: "text-primary" },
+          { label: isAr ? "القيمة المعتمدة" : "Approved Value", value: Math.round(reportData.approvedValue), suffix: "SAR", color: "text-chart-5" },
+          { label: isAr ? "متوسط التقدير" : "Avg Estimate", value: Math.round(reportData.avgEstimate), suffix: "SAR", color: "" },
           { label: isAr ? "معدل الموافقة" : "Approval Rate", value: `${reportData.approvalRate}`, suffix: "%", color: "text-chart-5" },
         ].map((kpi, i) => (
           <Card key={i} className="border-border/40">
             <CardContent className="p-4 text-center">
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
               <p className={`text-xl font-black tabular-nums mt-1 ${kpi.color}`}>
-                {typeof kpi.value === "string" && !isNaN(Number(kpi.value.replace(/,/g, ""))) ? <AnimatedCounter value={Number(kpi.value.replace(/,/g, ""))} /> : kpi.value} <span className="text-xs text-muted-foreground">{kpi.suffix}</span>
+                {typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value} <span className="text-xs text-muted-foreground">{kpi.suffix}</span>
               </p>
             </CardContent>
           </Card>
@@ -136,7 +136,7 @@ export function CostCenterReports({ isAr, estimates }: Props) {
                     <div key={s.name} className="flex items-center gap-2 text-xs">
                       <div className="h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
                       <span className="flex-1 truncate">{s.name}</span>
-                      <span className="font-bold tabular-nums">{s.value.toLocaleString()}</span>
+                      <AnimatedCounter value={Math.round(s.value)} className="font-bold tabular-nums" />
                     </div>
                   ))}
                 </div>
@@ -169,7 +169,7 @@ export function CostCenterReports({ isAr, estimates }: Props) {
                         </Badge>
                       </TableCell>
                       <TableCell className="py-2.5 text-end font-black tabular-nums text-primary">
-                        {est.total_amount.toLocaleString()}
+                        <AnimatedCounter value={Math.round(est.total_amount)} className="font-black tabular-nums text-primary" />
                       </TableCell>
                     </TableRow>
                   ))}
