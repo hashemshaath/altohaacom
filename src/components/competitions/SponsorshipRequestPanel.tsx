@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Send, Building2, Clock, CheckCircle, XCircle } from "lucide-react";
 
 const REQUEST_STATUS_COLORS: Record<string, string> = {
@@ -248,7 +248,7 @@ export function SponsorshipRequestPanel({ listId, competitionId }: Props) {
                       <p className="font-medium">{req.title}</p>
                       <p className="text-sm text-muted-foreground">
                         {language === "ar" && company?.name_ar ? company.name_ar : company?.name}
-                        {req.total_estimated_cost ? ` · $${toEnglishDigits(Number(req.total_estimated_cost).toLocaleString())}` : ""}
+                        {req.total_estimated_cost ? <> · $<AnimatedCounter value={Math.round(Number(req.total_estimated_cost))} className="inline" /></> : ""}
                       </p>
                     </div>
                   </div>

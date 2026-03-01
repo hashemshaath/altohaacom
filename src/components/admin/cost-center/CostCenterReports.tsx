@@ -220,9 +220,9 @@ export function CostCenterReports({ isAr, estimates }: Props) {
                       {isAr ? (ESTIMATE_STATUS_CONFIG as any)[est.status]?.ar : (ESTIMATE_STATUS_CONFIG as any)[est.status]?.en}
                     </Badge>
                   </TableCell>
-                  <TableCell className="py-2 text-end tabular-nums">{est.subtotal.toLocaleString()}</TableCell>
-                  <TableCell className="py-2 text-end tabular-nums">{est.tax_amount.toLocaleString()}</TableCell>
-                  <TableCell className="py-2 text-end tabular-nums font-bold">{est.total_amount.toLocaleString()}</TableCell>
+                  <TableCell className="py-2 text-end tabular-nums"><AnimatedCounter value={Math.round(est.subtotal)} /></TableCell>
+                  <TableCell className="py-2 text-end tabular-nums"><AnimatedCounter value={Math.round(est.tax_amount)} /></TableCell>
+                  <TableCell className="py-2 text-end tabular-nums font-bold"><AnimatedCounter value={Math.round(est.total_amount)} /></TableCell>
                   <TableCell className="py-2 tabular-nums">{format(new Date(est.created_at), "MMM d, yyyy")}</TableCell>
                 </TableRow>
               ))}
