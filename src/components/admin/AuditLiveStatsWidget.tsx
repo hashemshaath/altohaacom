@@ -140,14 +140,14 @@ export function AuditLiveStatsWidget() {
           {data.topActions.map(([action, count], i) => (
             <div key={i} className="bg-muted/50 rounded-xl p-2 text-center">
               <Eye className="h-3 w-3 mx-auto mb-1 text-chart-3" />
-              <div className="text-sm font-bold">{count}</div>
+              <div className="text-sm font-bold"><AnimatedCounter value={Number(count) || 0} /></div>
               <div className="text-[9px] text-muted-foreground truncate">{action}</div>
             </div>
           ))}
           {data.topActions.length === 0 && (
             <div className="col-span-3 bg-muted/50 rounded-xl p-2 text-center">
               <UserCheck className="h-3 w-3 mx-auto mb-1 text-chart-2" />
-              <div className="text-sm font-bold">{data.totalActions}</div>
+              <div className="text-sm font-bold"><AnimatedCounter value={data.totalActions} /></div>
               <div className="text-[9px] text-muted-foreground">{isAr ? "إجراءات إدارية" : "Admin Actions"}</div>
             </div>
           )}

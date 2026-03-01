@@ -1,6 +1,6 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Users, Trophy, BookOpen, Calendar, Eye, Globe, Briefcase } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface StatItem {
   icon: React.ElementType;
@@ -60,7 +60,7 @@ export function EntityStatsStrip({
           >
             <Icon className="h-3.5 w-3.5 text-primary/70" />
             <span className="text-xs font-bold">
-              {typeof stat.value === "number" ? toEnglishDigits(stat.value.toLocaleString()) : stat.value}
+              {typeof stat.value === "number" ? <AnimatedCounter value={stat.value} /> : stat.value}
             </span>
             <span className="text-[10px] text-muted-foreground">{isAr ? stat.labelAr : stat.label}</span>
           </div>

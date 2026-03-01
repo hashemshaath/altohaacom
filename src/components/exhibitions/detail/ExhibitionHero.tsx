@@ -13,6 +13,7 @@ import {
   Twitter, Facebook, Linkedin, Link2,
 } from "lucide-react";
 import { format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useCoverSettings } from "@/hooks/useCoverSettings";
 
 interface ExhibitionHeroProps {
@@ -196,11 +197,11 @@ export function ExhibitionHero({
             )}
             <div className="flex items-center gap-3 pt-2 ms-auto">
               <span>
-                <span className="font-bold text-foreground">{followerCount}</span>{" "}
+                <span className="font-bold text-foreground"><AnimatedCounter value={followerCount} /></span>{" "}
                 {isAr ? "متابع" : "followers"}
               </span>
               <span>
-                <span className="font-bold text-foreground">{linkedCompetitionsCount}</span>{" "}
+                <span className="font-bold text-foreground"><AnimatedCounter value={linkedCompetitionsCount} /></span>{" "}
                 {isAr ? "مسابقة" : "competitions"}
               </span>
             </div>

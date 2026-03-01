@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { ShoppingBag, ShoppingCart, Package } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { useCart } from "@/hooks/useCart";
 
 interface ShopHeroProps {
@@ -45,7 +46,7 @@ export function ShopHero({ productCount, cart, onCartOpen }: ShopHeroProps) {
           <div className="flex items-center gap-2 shrink-0">
             <Badge variant="outline" className="gap-1 border-primary/20 bg-primary/5 text-primary px-2 py-1 hidden sm:flex">
               <Package className="h-3 w-3" />
-              <span className="font-bold text-xs">{productCount}</span>
+              <span className="font-bold text-xs"><AnimatedCounter value={productCount} /></span>
             </Badge>
             {user && (
               <Button variant="outline" size="sm" asChild className="hidden sm:flex">
