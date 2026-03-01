@@ -185,8 +185,8 @@ export function AdAdvancedReporting() {
                     <TableCell className="font-medium text-xs">{r.name}</TableCell>
                     <TableCell className="text-xs">{r.company}</TableCell>
                     <TableCell><Badge variant="outline" className="text-[10px]">{r.status}</Badge></TableCell>
-                    <TableCell className="text-xs">{r.impressions.toLocaleString()}</TableCell>
-                    <TableCell className="text-xs">{r.clicks.toLocaleString()}</TableCell>
+                    <TableCell className="text-xs"><AnimatedCounter value={r.impressions} /></TableCell>
+                    <TableCell className="text-xs"><AnimatedCounter value={r.clicks} /></TableCell>
                     <TableCell className="text-xs font-medium">{r.ctr}%</TableCell>
                     <TableCell className="text-xs">{r.cpm}</TableCell>
                     <TableCell className="text-xs">{r.cpc}</TableCell>
