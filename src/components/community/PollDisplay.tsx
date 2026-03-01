@@ -123,7 +123,7 @@ export function PollDisplay({ postId }: PollDisplayProps) {
               onClick={() => !isExpired && handleVote(opt.id)}
               disabled={voting || !!isExpired}
               className={cn(
-                "relative w-full rounded-lg border px-3 py-2 text-start text-sm transition-all overflow-hidden",
+                "relative w-full rounded-xl border px-3 py-2 text-start text-sm transition-all overflow-hidden",
                 isMyVote
                   ? "border-primary/40 bg-primary/5"
                   : "border-border hover:border-primary/20 hover:bg-muted/50",
@@ -133,7 +133,7 @@ export function PollDisplay({ postId }: PollDisplayProps) {
               {showResults && (
                 <div
                   className={cn(
-                    "absolute inset-y-0 start-0 rounded-lg transition-all",
+                    "absolute inset-y-0 start-0 rounded-xl transition-all",
                     isMyVote ? "bg-primary/15" : "bg-muted/60"
                   )}
                   style={{ width: `${pct}%` }}

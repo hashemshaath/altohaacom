@@ -24,7 +24,7 @@ export function ProductQuickActions({ product, onAddToCart }: ProductQuickAction
 
   return (
     <div className="flex items-center gap-2 mt-2 sm:hidden">
-      <div className="flex items-center rounded-lg border border-border/60 bg-background">
+      <div className="flex items-center rounded-xl border border-border/60 bg-background">
         <button
           onClick={() => setQuantity(q => Math.max(1, q - 1))}
           className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
@@ -43,7 +43,7 @@ export function ProductQuickActions({ product, onAddToCart }: ProductQuickAction
       </div>
       <Button
         size="sm"
-        className="h-8 flex-1 text-xs font-bold gap-1.5 rounded-lg active:scale-95 transition-transform"
+        className="h-8 flex-1 text-xs font-bold gap-1.5 rounded-xl active:scale-95 transition-transform"
         onClick={() => { onAddToCart(product, quantity); setQuantity(1); }}
       >
         <ShoppingCart className="h-3.5 w-3.5" />

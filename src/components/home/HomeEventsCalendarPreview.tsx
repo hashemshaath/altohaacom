@@ -266,7 +266,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
   const content = (
     <div className={cn("flex gap-3 p-3 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
       {event.cover_image_url ? (
-        <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-muted">
+        <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-muted">
           <img src={event.cover_image_url} alt="" className="w-full h-full object-cover" />
         </div>
       ) : (

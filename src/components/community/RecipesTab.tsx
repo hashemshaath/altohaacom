@@ -138,7 +138,7 @@ export function RecipesTab() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <Card key={i}><CardContent className="space-y-2 p-4">
-              <Skeleton className="aspect-video w-full rounded-lg" />
+              <Skeleton className="aspect-video w-full rounded-xl" />
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-3 w-full" />
             </CardContent></Card>

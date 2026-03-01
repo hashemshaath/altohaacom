@@ -42,7 +42,7 @@ export const PageSkeleton = memo(function PageSkeleton({
   if (variant === "detail") {
     return (
       <div className={cn("space-y-6 animate-pulse", className)}>
-        <Skeleton className="h-8 w-2/3 rounded-lg" />
+        <Skeleton className="h-8 w-2/3 rounded-xl" />
         <Skeleton className="h-4 w-1/2 rounded-md" />
         <Skeleton className="aspect-video rounded-2xl" />
         <div className="space-y-3">
@@ -60,10 +60,10 @@ export const PageSkeleton = memo(function PageSkeleton({
         {Array.from({ length: count }).map((_, i) => (
           <div key={i} className="space-y-2">
             <Skeleton className="h-4 w-24 rounded-md" />
-            <Skeleton className="h-10 w-full rounded-lg" />
+            <Skeleton className="h-10 w-full rounded-xl" />
           </div>
         ))}
-        <Skeleton className="h-10 w-32 rounded-lg" />
+        <Skeleton className="h-10 w-32 rounded-xl" />
       </div>
     );
   }

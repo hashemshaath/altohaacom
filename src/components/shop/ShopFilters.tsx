@@ -49,9 +49,9 @@ export function ShopFilters({
                   <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/40">
-                  <SelectItem value="all" className="rounded-lg">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
+                  <SelectItem value="all" className="rounded-xl">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
                   {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                    <SelectItem key={cat} value={cat} className="rounded-xl">{cat}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -62,10 +62,10 @@ export function ShopFilters({
                 <SelectValue placeholder={isAr ? "النوع" : "Type"} />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-border/40">
-                <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
-                <SelectItem value="physical" className="rounded-lg">{isAr ? "منتج مادي" : "Physical"}</SelectItem>
-                <SelectItem value="digital" className="rounded-lg">{isAr ? "رقمي" : "Digital"}</SelectItem>
-                <SelectItem value="service" className="rounded-lg">{isAr ? "خدمة" : "Service"}</SelectItem>
+                <SelectItem value="all" className="rounded-xl">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+                <SelectItem value="physical" className="rounded-xl">{isAr ? "منتج مادي" : "Physical"}</SelectItem>
+                <SelectItem value="digital" className="rounded-xl">{isAr ? "رقمي" : "Digital"}</SelectItem>
+                <SelectItem value="service" className="rounded-xl">{isAr ? "خدمة" : "Service"}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -76,11 +76,11 @@ export function ShopFilters({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/40">
-                  <SelectItem value="newest" className="rounded-lg">{isAr ? "الأحدث" : "Newest"}</SelectItem>
-                  <SelectItem value="price_asc" className="rounded-lg">{isAr ? "السعر: الأقل" : "Price: Low → High"}</SelectItem>
-                  <SelectItem value="price_desc" className="rounded-lg">{isAr ? "السعر: الأعلى" : "Price: High → Low"}</SelectItem>
-                  <SelectItem value="popular" className="rounded-lg">{isAr ? "الأكثر شعبية" : "Most Popular"}</SelectItem>
-                  <SelectItem value="name" className="rounded-lg">{isAr ? "الاسم" : "Name"}</SelectItem>
+                  <SelectItem value="newest" className="rounded-xl">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+                  <SelectItem value="price_asc" className="rounded-xl">{isAr ? "السعر: الأقل" : "Price: Low → High"}</SelectItem>
+                  <SelectItem value="price_desc" className="rounded-xl">{isAr ? "السعر: الأعلى" : "Price: High → Low"}</SelectItem>
+                  <SelectItem value="popular" className="rounded-xl">{isAr ? "الأكثر شعبية" : "Most Popular"}</SelectItem>
+                  <SelectItem value="name" className="rounded-xl">{isAr ? "الاسم" : "Name"}</SelectItem>
                 </SelectContent>
               </Select>
             )}

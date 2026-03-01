@@ -53,7 +53,7 @@ export function TrendingTopics() {
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
             <Flame className="h-3.5 w-3.5 text-chart-4" />
           </div>
           {isAr ? "المواضيع الرائجة" : "Trending Topics"}
@@ -63,7 +63,7 @@ export function TrendingTopics() {
         {isLoading ? (
           <div className="space-y-2.5">
             {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="h-8 rounded-lg bg-muted/50 animate-pulse" />
+              <div key={i} className="h-8 rounded-xl bg-muted/50 animate-pulse" />
             ))}
           </div>
         ) : (
@@ -72,7 +72,7 @@ export function TrendingTopics() {
               <Link
                 key={topic.tag}
                 to={`/community?tag=${topic.tag.replace("#", "")}`}
-                className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/40 transition-colors group"
+                className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/40 transition-colors group"
               >
                 <span className="text-xs font-bold text-muted-foreground w-5 text-center">{idx + 1}</span>
                 <div className="flex-1 min-w-0">

@@ -151,7 +151,7 @@ export default function LiveChatWidget() {
                   <button
                     key={c.partnerId}
                     onClick={() => setActiveChat(c.partnerId)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors text-start"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors text-start"
                   >
                     <div className="relative">
                       <Avatar className="h-10 w-10">
