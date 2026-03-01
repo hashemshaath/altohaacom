@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -564,7 +564,7 @@ export function SupermarketCatalog() {
                           <span className="capitalize truncate">{(item.subcategory || item.category).replace(/_/g, " ")}</span>
                           <span>·</span>
                           <span className="shrink-0">{item.default_quantity || 1} {item.unit || "pc"}</span>
-                          {item.estimated_cost && <><span>·</span><span className="shrink-0 text-primary font-medium">SAR {toEnglishDigits(Number(item.estimated_cost).toLocaleString())}</span></>}
+                          {item.estimated_cost && <><span>·</span><span className="shrink-0 text-primary font-medium">SAR <AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></span></>}
                         </div>
                       </div>
                       <Button

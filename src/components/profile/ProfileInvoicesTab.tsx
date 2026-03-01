@@ -242,7 +242,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-end font-medium" dir="ltr">
-                          {Number(inv.amount).toLocaleString()} {inv.currency}
+                          <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" /> {inv.currency}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground" dir="ltr">
                           {format(new Date(inv.created_at), "yyyy-MM-dd")}
