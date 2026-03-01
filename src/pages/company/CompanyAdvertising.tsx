@@ -216,8 +216,8 @@ export default function CompanyAdvertising() {
                           <TableCell className="font-medium">{isAr ? c.name_ar || c.name : c.name}</TableCell>
                            <TableCell><Badge variant="outline">{c.billing_model}</Badge></TableCell>
                            <TableCell>{formatCurrency(Number(c.budget), language as "en" | "ar")} / {formatCurrency(Number(c.spent), language as "en" | "ar")}</TableCell>
-                           <TableCell>{toEnglishDigits((c.total_impressions || 0).toLocaleString())}</TableCell>
-                           <TableCell>{toEnglishDigits((c.total_clicks || 0).toLocaleString())}</TableCell>
+                           <TableCell><AnimatedCounter value={c.total_impressions || 0} className="inline" format /></TableCell>
+                           <TableCell><AnimatedCounter value={c.total_clicks || 0} className="inline" format /></TableCell>
                            <TableCell>{ctr}%</TableCell>
                            <TableCell><Badge className={statusColors[c.status] || ""}>{c.status}</Badge></TableCell>
                         </TableRow>
@@ -271,13 +271,13 @@ export default function CompanyAdvertising() {
                   <Badge className="mb-2" variant={pkg.tier === "platinum" ? "default" : "secondary"}>
                     {isAr ? pkg.name_ar || pkg.name : pkg.name}
                   </Badge>
-                  <p className="text-3xl font-bold my-2">{toEnglishDigits(pkg.price)}<span className="text-sm text-muted-foreground ms-1">{pkg.currency}</span></p>
-                   <p className="text-xs text-muted-foreground mb-3">{toEnglishDigits(pkg.duration_days)} {isAr ? "يوم" : "days"}</p>
+                  <p className="text-3xl font-bold my-2"><AnimatedCounter value={Number(pkg.price)} className="inline" format /><span className="text-sm text-muted-foreground ms-1">{pkg.currency}</span></p>
+                   <p className="text-xs text-muted-foreground mb-3"><AnimatedCounter value={pkg.duration_days} className="inline" /> {isAr ? "يوم" : "days"}</p>
                    <div className="text-xs text-muted-foreground space-y-1 text-start">
-                     <p>• {pkg.max_impressions ? `${toEnglishDigits(pkg.max_impressions.toLocaleString())} ${isAr ? "مشاهدة" : "impressions"}` : isAr ? "غير محدود" : "Unlimited"}</p>
-                     <p>• {pkg.max_clicks ? `${toEnglishDigits(pkg.max_clicks.toLocaleString())} ${isAr ? "نقرة" : "clicks"}` : isAr ? "غير محدود" : "Unlimited"}</p>
-                     <p>• {toEnglishDigits(pkg.max_campaigns)} {isAr ? "حملة" : "campaigns"}</p>
-                     <p>• {toEnglishDigits(pkg.included_placements?.length || 0)} {isAr ? "موقع" : "placements"}</p>
+                     <p>• {pkg.max_impressions ? <><AnimatedCounter value={pkg.max_impressions} className="inline" format /> {isAr ? "مشاهدة" : "impressions"}</> : isAr ? "غير محدود" : "Unlimited"}</p>
+                     <p>• {pkg.max_clicks ? <><AnimatedCounter value={pkg.max_clicks} className="inline" format /> {isAr ? "نقرة" : "clicks"}</> : isAr ? "غير محدود" : "Unlimited"}</p>
+                     <p>• <AnimatedCounter value={pkg.max_campaigns} className="inline" /> {isAr ? "حملة" : "campaigns"}</p>
+                     <p>• <AnimatedCounter value={pkg.included_placements?.length || 0} className="inline" /> {isAr ? "موقع" : "placements"}</p>
                    </div>
                    {pkg.price && <p className="text-sm font-bold mt-3 text-primary">{formatCurrency(Number(pkg.price), language as "en" | "ar")}</p>}
                   <p className="text-xs mt-3">{isAr ? pkg.description_ar || pkg.description : pkg.description}</p>
