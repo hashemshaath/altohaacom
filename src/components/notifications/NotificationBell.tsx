@@ -13,6 +13,7 @@ import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
@@ -223,7 +224,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
               >
                 {label.icon}
                 {isAr ? label.ar : label.en}
-                {count > 0 && <span className="opacity-70">({toEnglishDigits(count.toString())})</span>}
+                {count > 0 && <span className="opacity-70">(<AnimatedCounter value={count} className="inline" />)</span>}
               </Button>
             );
           })}
@@ -279,7 +280,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className={cn("text-sm leading-snug", anyUnread && "font-semibold")}>
-                        {toEnglishDigits(count.toString())} {typeLabel}
+                        <AnimatedCounter value={count} className="inline" /> {typeLabel}
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                         {getTitle(first)} {isAr ? "و أخرى" : "and more"}

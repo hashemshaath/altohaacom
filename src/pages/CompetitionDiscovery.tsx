@@ -12,6 +12,7 @@ import {
   Search, Trophy, Filter, Star, TrendingUp, Globe,
 } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   CompetitionCard,
@@ -187,7 +188,7 @@ export default function CompetitionDiscovery() {
           </Select>
 
           <Badge variant="outline" className="h-9 px-3 flex items-center text-xs border-border/30 rounded-xl tabular-nums">
-            {toEnglishDigits(filtered.length)} {isAr ? "مسابقة" : "competitions"}
+            <AnimatedCounter value={filtered.length} className="inline" /> {isAr ? "مسابقة" : "competitions"}
           </Badge>
         </div>
 
