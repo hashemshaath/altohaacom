@@ -9,7 +9,7 @@ import {
   CheckCircle2, Circle, AlertTriangle, ClipboardCheck,
   Package, Truck, DollarSign, Users, ListChecks, ShieldCheck,
 } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
@@ -153,8 +153,8 @@ export function ReadinessChecklist({ competitionId }: Props) {
         labelAr: "تغطية الميزانية",
         icon: DollarSign,
         status: totalCost === 0 ? "incomplete" : sponsoredValue >= totalCost ? "complete" : sponsoredValue > 0 ? "partial" : "incomplete",
-        detail: `SAR ${toEnglishDigits(sponsoredValue.toLocaleString())} / SAR ${toEnglishDigits(totalCost.toLocaleString())} covered`,
-        detailAr: `SAR ${toEnglishDigits(sponsoredValue.toLocaleString())} / SAR ${toEnglishDigits(totalCost.toLocaleString())} مغطى`,
+        detail: `SAR ${Math.round(sponsoredValue).toLocaleString()} / SAR ${Math.round(totalCost).toLocaleString()} covered`,
+        detailAr: `SAR ${Math.round(sponsoredValue).toLocaleString()} / SAR ${Math.round(totalCost).toLocaleString()} مغطى`,
       },
       {
         id: "checklist",
