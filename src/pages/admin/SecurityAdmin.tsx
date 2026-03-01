@@ -20,10 +20,16 @@ export default function SecurityAdmin() {
         title={isAr ? "مركز الأمان والحماية" : "Security Center"}
         description={isAr ? "مراقبة الأحداث الأمنية والجلسات والصلاحيات" : "Monitor security events, sessions, and permissions"}
       />
-      <RolePermissionsOverview />
-      <AuditLiveStatsWidget />
-      <SessionMonitorWidget />
-      <SecurityLiveWidget />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="space-y-4">
+          <RolePermissionsOverview />
+          <SessionMonitorWidget />
+        </div>
+        <div className="space-y-4">
+          <AuditLiveStatsWidget />
+          <SecurityLiveWidget />
+        </div>
+      </div>
       <SecurityAuditWidget />
       <SecurityOverviewWidget />
       <SecurityDashboard />

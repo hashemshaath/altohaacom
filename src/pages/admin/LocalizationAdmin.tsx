@@ -399,7 +399,7 @@ export default function LocalizationAdmin() {
           { icon: Check, label: isAr ? "موثق" : "Verified", value: stats.verified, color: "text-blue-500" },
           { icon: Sparkles, label: isAr ? "ترجمة آلية" : "Auto-translated", value: stats.autoTranslated, color: "text-purple-500" },
         ].map((s, i) => (
-          <Card key={i} className="p-3">
+          <Card key={i} className="rounded-2xl border-border/40 p-3 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <div className="flex items-center gap-2 mb-1">
               <s.icon className={`h-4 w-4 ${s.color}`} />
               <span className="text-xs text-muted-foreground truncate">{s.label}</span>
@@ -420,16 +420,16 @@ export default function LocalizationAdmin() {
 
       {/* ─── Main Tabs ─── */}
       <Tabs defaultValue="translations">
-        <TabsList>
-          <TabsTrigger value="translations" className="gap-1.5">
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="translations" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Languages className="h-4 w-4" />
             {isAr ? "مفاتيح الترجمة" : "Translation Keys"}
           </TabsTrigger>
-          <TabsTrigger value="languages" className="gap-1.5">
+          <TabsTrigger value="languages" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Globe className="h-4 w-4" />
             {isAr ? "اللغات" : "Languages"}
           </TabsTrigger>
-          <TabsTrigger value="stats" className="gap-1.5">
+          <TabsTrigger value="stats" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <BarChart3 className="h-4 w-4" />
             {isAr ? "إحصائيات" : "Statistics"}
           </TabsTrigger>

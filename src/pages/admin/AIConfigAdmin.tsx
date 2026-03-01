@@ -99,10 +99,10 @@ export default function AIConfigAdmin() {
       />
 
       {/* Status Card */}
-      <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
+      <Card className="rounded-2xl bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
         <CardContent className="flex items-center justify-between p-3 sm:p-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-primary/20">
+            <div className="flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-primary/20">
               <Sparkles className="h-4 w-4 sm:h-6 sm:w-6 text-primary" />
             </div>
             <div>
@@ -121,7 +121,7 @@ export default function AIConfigAdmin() {
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Model Selection */}
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
               <Brain className="h-4 w-4 text-primary" />
@@ -183,7 +183,7 @@ export default function AIConfigAdmin() {
         </Card>
 
         {/* Features Toggle */}
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
               <Settings className="h-4 w-4 text-primary" />
@@ -192,9 +192,9 @@ export default function AIConfigAdmin() {
           </CardHeader>
           <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0 space-y-2 sm:space-y-3">
             {features.map((feature) => (
-              <div key={feature.key} className="flex items-center justify-between rounded-lg border p-2 sm:p-3">
+              <div key={feature.key} className="flex items-center justify-between rounded-xl border border-border/40 p-2 sm:p-3 transition-all duration-200 hover:bg-muted/30">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="rounded-md bg-primary/10 p-1.5 sm:p-2">
+                  <div className="rounded-xl bg-primary/10 p-1.5 sm:p-2">
                     <feature.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                   </div>
                   <div>
@@ -212,7 +212,7 @@ export default function AIConfigAdmin() {
         </Card>
 
         {/* System Prompt */}
-        <Card className="lg:col-span-2">
+        <Card className="rounded-2xl border-border/40 lg:col-span-2">
           <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
               <MessageSquare className="h-4 w-4 text-primary" />
@@ -231,7 +231,7 @@ export default function AIConfigAdmin() {
         </Card>
 
         {/* Rate Limits */}
-        <Card className="lg:col-span-2">
+        <Card className="rounded-2xl border-border/40 lg:col-span-2">
           <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
               <Zap className="h-4 w-4 text-primary" />

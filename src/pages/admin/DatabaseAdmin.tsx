@@ -102,56 +102,34 @@ export default function DatabaseAdmin() {
 
       {/* Overview Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي السجلات" : "Total Records"}</p>
-                <p className="text-2xl font-bold">{totalRecords.toLocaleString()}</p>
+        {[
+          { label: language === "ar" ? "إجمالي السجلات" : "Total Records", value: totalRecords.toLocaleString(), icon: Database, bg: "bg-primary/10", color: "text-primary" },
+          { label: language === "ar" ? "الجداول" : "Tables", value: (tableStats?.length || 0).toString(), icon: Table2, bg: "bg-chart-1/10", color: "text-chart-1" },
+          { label: language === "ar" ? "التخزين" : "Storage", value: "44.8 MB", icon: HardDrive, bg: "bg-chart-5/10", color: "text-chart-5" },
+          { label: language === "ar" ? "الحالة" : "Status", value: language === "ar" ? "متصل" : "Connected", icon: Database, bg: "bg-chart-5/10", color: "text-chart-5", isStatus: true },
+        ].map((stat, i) => (
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  {stat.isStatus ? (
+                    <Badge variant="default" className="mt-1 bg-chart-5">{stat.value}</Badge>
+                  ) : (
+                    <p className="text-2xl font-bold">{stat.value}</p>
+                  )}
+                </div>
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${stat.bg} transition-all duration-300 group-hover:scale-110`}>
+                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                </div>
               </div>
-              <Database className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{language === "ar" ? "الجداول" : "Tables"}</p>
-                <p className="text-2xl font-bold">{tableStats?.length || 0}</p>
-              </div>
-              <Table2 className="h-8 w-8 text-chart-1" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{language === "ar" ? "التخزين" : "Storage"}</p>
-                <p className="text-2xl font-bold">44.8 MB</p>
-              </div>
-              <HardDrive className="h-8 w-8 text-chart-5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">{language === "ar" ? "الحالة" : "Status"}</p>
-                <Badge variant="default" className="mt-1 bg-chart-5">
-                  {language === "ar" ? "متصل" : "Connected"}
-                </Badge>
-              </div>
-              <div className="h-3 w-3 rounded-full bg-chart-5 animate-pulse" />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Tables */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Table2 className="h-5 w-5 text-primary" />
@@ -175,7 +153,7 @@ export default function DatabaseAdmin() {
                 <TableRow key={table.name}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
                         <table.icon className="h-4 w-4 text-primary" />
                       </div>
                       <div>
@@ -200,7 +178,7 @@ export default function DatabaseAdmin() {
       </Card>
 
       {/* Storage Buckets */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <HardDrive className="h-5 w-5 text-primary" />
@@ -213,7 +191,7 @@ export default function DatabaseAdmin() {
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {storageBuckets?.map((bucket) => (
-              <div key={bucket.name} className="rounded-lg border p-4">
+              <div key={bucket.name} className="rounded-2xl border border-border/40 p-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <HardDrive className="h-5 w-5 text-muted-foreground" />
@@ -248,7 +226,7 @@ export default function DatabaseAdmin() {
       </Card>
 
       {/* Quick Actions */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader>
           <CardTitle>{language === "ar" ? "إجراءات سريعة" : "Quick Actions"}</CardTitle>
         </CardHeader>
