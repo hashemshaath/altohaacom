@@ -192,7 +192,7 @@ export function CommunicationTemplatesWidget() {
         <ScrollArea className="max-h-[350px]">
           <div className="space-y-2">
             {templates.map(t => (
-              <div key={t.id} className="flex items-start justify-between p-3 rounded-lg border hover:bg-muted/30 transition-colors group">
+              <div key={t.id} className="flex items-start justify-between p-3 rounded-xl border hover:bg-muted/30 transition-colors group">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     {channelIcon(t.channel)}

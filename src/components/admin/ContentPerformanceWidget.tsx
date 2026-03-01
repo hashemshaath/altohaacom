@@ -77,7 +77,7 @@ export function ContentPerformanceWidget() {
             { icon: GraduationCap, label: isAr ? "الدورات" : "Courses", value: data.totalMasterclasses, sub: "", color: "text-chart-2" },
             { icon: BookOpen, label: isAr ? "قاعدة المعرفة" : "Knowledge", value: data.totalKnowledge, sub: "", color: "text-chart-1" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>

@@ -47,7 +47,7 @@ export function CampaignPerformanceTracker() {
           const isOverBudget = pct >= 90;
 
           return (
-            <div key={c.id} className="rounded-lg border p-3 space-y-2">
+            <div key={c.id} className="rounded-xl border p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0">
                   <Megaphone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
