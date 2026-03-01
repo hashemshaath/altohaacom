@@ -190,26 +190,44 @@ export function PostCard({
             />
 
             {/* Images */}
-            {(post.image_urls.length > 0 || post.image_url) && (
-              <div className={cn(
-                "mt-2 overflow-hidden rounded-2xl border border-border",
-                post.image_urls.length === 1 && "max-h-[512px]",
-                post.image_urls.length >= 2 && "grid grid-cols-2 gap-0.5",
-              )}>
-                {(post.image_urls.length > 0 ? post.image_urls : [post.image_url!]).slice(0, 4).map((url, idx) => (
-                  <img
-                    key={idx}
-                    src={url}
-                    alt=""
-                    className={cn(
-                      "w-full object-cover",
-                      post.image_urls.length === 1 ? "max-h-[512px]" : "aspect-square",
-                    )}
-                    loading="lazy"
-                  />
-                ))}
-              </div>
-            )}
+            {(post.image_urls.length > 0 || post.image_url) && (() => {
+              const urls = post.image_urls.length > 0 ? post.image_urls : [post.image_url!];
+              const count = Math.min(urls.length, 4);
+              return (
+                <div className={cn(
+                  "mt-2 overflow-hidden rounded-2xl border border-border/50",
+                  count === 1 && "max-h-[512px]",
+                  count === 2 && "grid grid-cols-2 gap-0.5",
+                  count === 3 && "grid grid-cols-2 gap-0.5",
+                  count >= 4 && "grid grid-cols-2 gap-0.5",
+                )}>
+                  {urls.slice(0, 4).map((url, idx) => (
+                    <div
+                      key={idx}
+                      className={cn(
+                        "relative overflow-hidden bg-muted",
+                        count === 1 && "max-h-[512px]",
+                        count === 3 && idx === 0 && "row-span-2",
+                        count > 1 && "aspect-square",
+                      )}
+                    >
+                      <img
+                        src={url}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      {idx === 3 && urls.length > 4 && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+                          <span className="text-lg font-bold text-foreground">+{urls.length - 4}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
 
             {/* Video */}
             {post.video_url && (

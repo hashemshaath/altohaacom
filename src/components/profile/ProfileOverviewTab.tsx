@@ -16,8 +16,10 @@ interface ProfileOverviewTabProps {
 
 function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <h3 className="flex items-center gap-2.5 text-base font-semibold mb-3">
-      <Icon className="h-4 w-4 text-primary" />
+    <h3 className="flex items-center gap-2.5 text-sm font-bold mb-3 uppercase tracking-wider text-muted-foreground">
+      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="h-3.5 w-3.5 text-primary" />
+      </div>
       {label}
     </h3>
   );
@@ -39,7 +41,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
   ].filter((l) => l.value);
 
   return (
-    <StaggeredList className="space-y-8" stagger={80}>
+    <StaggeredList className="space-y-6" stagger={60}>
       {/* Bio */}
       {(profile?.bio || profile?.bio_ar) && (
         <section>
