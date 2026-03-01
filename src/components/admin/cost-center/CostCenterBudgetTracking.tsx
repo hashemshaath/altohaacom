@@ -109,7 +109,7 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
                 {isAr ? "الميزانية المعتمدة" : "Approved Budget"}
               </span>
             </div>
-            <p className="text-xl font-black tabular-nums text-chart-5">{analytics.totalBudget.toLocaleString()}</p>
+            <AnimatedCounter value={analytics.totalBudget} className="text-xl font-black tabular-nums text-chart-5" format />
             <p className="text-[10px] text-muted-foreground">{analytics.approved.length} {isAr ? "تقدير" : "estimates"}</p>
           </CardContent>
         </Card>
@@ -121,7 +121,7 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
                 {isAr ? "المفوتر" : "Invoiced"}
               </span>
             </div>
-            <p className="text-xl font-black tabular-nums text-primary">{analytics.totalInvoiced.toLocaleString()}</p>
+            <AnimatedCounter value={analytics.totalInvoiced} className="text-xl font-black tabular-nums text-primary" format />
             <p className="text-[10px] text-muted-foreground">{analytics.invoiced.length} {isAr ? "فاتورة" : "invoices"}</p>
           </CardContent>
         </Card>
@@ -133,7 +133,7 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
                 {isAr ? "قيد الانتظار" : "Pending Value"}
               </span>
             </div>
-            <p className="text-xl font-black tabular-nums text-chart-4">{analytics.pendingValue.toLocaleString()}</p>
+            <AnimatedCounter value={analytics.pendingValue} className="text-xl font-black tabular-nums text-chart-4" format />
             <p className="text-[10px] text-muted-foreground">{analytics.pending.length} {isAr ? "تقدير" : "estimates"}</p>
           </CardContent>
         </Card>

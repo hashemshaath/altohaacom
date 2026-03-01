@@ -99,7 +99,7 @@ export function FinanceAnalyticsWidget() {
                 <kpi.icon className={cn("h-4 w-4", kpi.color)} />
               </div>
               <div>
-                <p className={cn("text-lg font-bold", kpi.color)}>{kpi.value}</p>
+                <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : Number(kpi.value) || 0} className={cn("text-lg font-bold", kpi.color)} />
                 <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
               </div>
             </CardContent>

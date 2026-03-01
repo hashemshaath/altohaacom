@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Landmark, Calendar, Ticket, Users, MapPin, TrendingUp, Building, Eye } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { format, subDays, differenceInDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -118,7 +119,7 @@ export function ExhibitionLiveStatsWidget() {
           {stats.map((s, i) => (
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
-              <div className="text-lg font-bold">{s.value}</div>
+              <div className="text-lg font-bold"><AnimatedCounter value={s.value} /></div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
@@ -168,17 +169,17 @@ export function ExhibitionLiveStatsWidget() {
         <div className="grid grid-cols-3 gap-3 mt-4">
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Building className="h-3 w-3 mx-auto mb-1 text-chart-2" />
-            <div className="text-sm font-bold">{data.boothUtilization}%</div>
+            <div className="text-sm font-bold"><AnimatedCounter value={data.boothUtilization} suffix="%" /></div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "إشغال الأجنحة" : "Booth Utilization"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Users className="h-3 w-3 mx-auto mb-1 text-chart-3" />
-            <div className="text-sm font-bold">{data.totalFollowers}</div>
+            <div className="text-sm font-bold"><AnimatedCounter value={data.totalFollowers} /></div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "المتابعون" : "Followers"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-4" />
-            <div className="text-sm font-bold">{data.totalSponsors}</div>
+            <div className="text-sm font-bold"><AnimatedCounter value={data.totalSponsors} /></div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "الرعاة" : "Sponsors"}</div>
           </div>
         </div>

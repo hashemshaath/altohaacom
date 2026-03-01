@@ -17,6 +17,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -561,7 +562,7 @@ export default function CompetitionsAdmin() {
             <CardContent className="flex items-center gap-3 p-4">
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} shrink-0 transition-transform duration-300 group-hover:scale-110`}>{stat.icon}</div>
               <div>
-                <p className="text-2xl font-bold tabular-nums">{stat.value}</p>
+                <AnimatedCounter value={stat.value} className="text-2xl font-bold" />
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
@@ -965,15 +966,15 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-muted/20">
-                  <p className="text-lg font-bold">{regs.length}</p>
+                  <AnimatedCounter value={regs.length} className="text-lg font-bold" />
                   <p className="text-[10px] text-muted-foreground">{isAr ? "مسجلين" : "Registered"}</p>
                 </div>
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-5/5">
-                  <p className="text-lg font-bold text-chart-5">{uniqueParticipants}</p>
+                  <AnimatedCounter value={uniqueParticipants} className="text-lg font-bold text-chart-5" />
                   <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدين" : "Approved"}</p>
                 </div>
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-4/5">
-                  <p className="text-lg font-bold text-chart-4">{regs.filter((r: any) => r.status === "pending").length}</p>
+                  <AnimatedCounter value={regs.filter((r: any) => r.status === "pending").length} className="text-lg font-bold text-chart-4" />
                   <p className="text-[10px] text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
                 </div>
               </div>

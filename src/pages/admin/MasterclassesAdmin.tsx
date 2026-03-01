@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
@@ -311,7 +312,7 @@ export default function MasterclassesAdmin() {
                 <stat.icon className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stat.value}</p>
+                <AnimatedCounter value={stat.value} className="text-2xl font-bold" />
                 <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
