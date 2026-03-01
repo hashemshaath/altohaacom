@@ -223,7 +223,7 @@ export default function MembershipReferralsTab() {
                           <TableCell className="text-center font-medium">{code.total_clicks}</TableCell>
                           <TableCell className="text-center font-medium">{code.total_invites_sent}</TableCell>
                           <TableCell className="text-center font-bold">{code.total_conversions}</TableCell>
-                          <TableCell className="text-center">{code.total_points_earned.toLocaleString()}</TableCell>
+                          <TableCell className="text-center"><AnimatedCounter value={code.total_points_earned} /></TableCell>
                           <TableCell>
                             <Badge variant={code.is_active ? "default" : "secondary"}>
                               {code.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Inactive")}

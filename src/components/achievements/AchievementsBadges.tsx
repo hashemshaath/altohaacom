@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, Medal, Star, Flame, Award, Crown, Target, Zap, Shield, Heart, BookOpen, ChefHat } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const BADGE_DEFINITIONS = [
   { id: "first_post", icon: BookOpen, name: "First Post", nameAr: "أول منشور", desc: "Share your first post", descAr: "شارك أول منشور", action: "post_created", target: 1, color: "text-blue-500 bg-blue-100" },
@@ -151,7 +152,7 @@ export default function AchievementsBadges({ userId }: Props) {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{isAr && u.full_name_ar ? u.full_name_ar : u.full_name || u.username || "—"}</p>
               </div>
-              <Badge variant="secondary" className="text-xs">{(u.loyalty_points || 0).toLocaleString()} pts</Badge>
+              <Badge variant="secondary" className="text-xs"><AnimatedCounter value={u.loyalty_points || 0} /> pts</Badge>
             </div>
           ))}
         </CardContent>
