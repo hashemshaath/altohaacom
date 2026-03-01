@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { PersonalInfoSection } from "./edit/PersonalInfoSection";
 import { ProfessionalInfoSection } from "./edit/ProfessionalInfoSection";
@@ -64,7 +64,6 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
 
   const handleSave = async () => {
     setSaving(true);
-    // Build update payload, converting empty strings to null for nullable DB fields
     const payload: Record<string, any> = {
       full_name: form.full_name || null,
       full_name_ar: form.full_name_ar || null,
@@ -109,17 +108,24 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <AccountTypeCard />
       <PersonalInfoSection form={form} update={update} isAr={isAr} />
       {!isFan && <ProfessionalInfoSection form={form} update={update} isAr={isAr} />}
       <LocationSection form={form} update={update} isAr={isAr} />
       <SocialMediaSection form={form} update={update} isAr={isAr} />
 
-      <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">
-        <Save className="me-1.5 h-4 w-4" />
-        {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ التغييرات" : "Save Changes")}
-      </Button>
+      <div className="sticky bottom-4 z-20 flex justify-end">
+        <Button 
+          onClick={handleSave} 
+          disabled={saving} 
+          size="lg"
+          className="rounded-xl shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95 min-w-[180px]"
+        >
+          {saving ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Save className="me-2 h-4 w-4" />}
+          {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ التغييرات" : "Save Changes")}
+        </Button>
+      </div>
     </div>
   );
 }

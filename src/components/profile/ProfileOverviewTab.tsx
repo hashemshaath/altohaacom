@@ -1,6 +1,5 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { FeatureGateForUser } from "@/components/membership/FeatureGate";
@@ -47,8 +46,8 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       {(profile?.bio || profile?.bio_ar) && (
         <section>
           <SectionTitle icon={FileText} label={isAr ? "النبذة" : "About"} />
-          <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="py-5 px-5">
+          <Card className="border-border/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl bg-card/80 backdrop-blur-sm">
+            <CardContent className="py-5 px-6">
               <p className="text-[15px] leading-[1.85] whitespace-pre-wrap text-foreground/85 font-[350]" dir={isAr && profile?.bio_ar ? "rtl" : "ltr"}>
                 {isAr ? (profile?.bio_ar || profile?.bio) : profile?.bio}
               </p>
@@ -78,8 +77,8 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       {socialLinks.length > 0 && (
         <section>
           <SectionTitle icon={Globe} label={isAr ? "التواصل" : "Links"} />
-          <Card className="border-border/40 shadow-sm">
-            <CardContent className="py-5 px-5">
+          <Card className="border-border/30 shadow-sm rounded-2xl bg-card/80 backdrop-blur-sm">
+            <CardContent className="py-5 px-6">
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((link) => {
                   const url = link.value?.startsWith("http") ? link.value : `https://${link.value}`;
@@ -89,7 +88,7 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/20 px-3.5 py-2 text-xs transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary hover:shadow-sm hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-border/30 bg-muted/15 px-3.5 py-2 text-xs transition-all duration-200 hover:bg-primary/10 hover:border-primary/25 hover:text-primary hover:shadow-sm hover:-translate-y-0.5 active:scale-95"
                     >
                       <span className="font-bold">{link.label}</span>
                       <span className="text-muted-foreground/70" dir="ltr">{link.value}</span>
@@ -101,7 +100,6 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
           </Card>
         </section>
       )}
-
     </StaggeredList>
   );
 }
