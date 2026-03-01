@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import regionalCover from "@/assets/regional-events-cover.jpg";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { localizeLocation } from "@/lib/localizeLocation";
 
 const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG", "TN", "MA", "DZ", "LY", "SY", "PS", "YE"];
 
@@ -151,7 +152,7 @@ function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
             {item.city && (
               <span className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
-                {item.city}
+                {localizeLocation({ city: item.city, countryCode: item.country_code }, isAr)}
               </span>
             )}
           </div>

@@ -15,6 +15,7 @@ import { CountdownBadge } from "@/components/ui/countdown-badge";
 import { ShareButton } from "@/components/ui/share-button";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { localizeLocation } from "@/lib/localizeLocation";
 
 export function EventsByCategory() {
   const { language } = useLanguage();
@@ -27,7 +28,7 @@ export function EventsByCategory() {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, is_virtual")
+        .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, country_code, is_virtual")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
         .limit(8);
@@ -239,7 +240,7 @@ function renderFeaturedCompetition(item: any, isAr: boolean, statusBadge: (s: st
               ) : item.city ? (
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3 w-3 text-primary/60" />
-                  {item.city}{item.country ? `, ${item.country}` : ""}
+                   {localizeLocation({ city: item.city, country: item.country, countryCode: item.country_code }, isAr)}
                 </span>
               ) : null}
             </div>
@@ -287,7 +288,7 @@ function renderCompetitionCard(item: any, isAr: boolean, statusBadge: (s: string
             ) : item.city ? (
               <div className="flex items-center gap-1.5">
                 <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-                <span className="truncate">{item.city}{item.country ? `, ${item.country}` : ""}</span>
+                <span className="truncate">{localizeLocation({ city: item.city, country: item.country, countryCode: item.country_code }, isAr)}</span>
               </div>
             ) : null}
           </div>
@@ -341,7 +342,7 @@ function renderExhibitionCard(item: any, isAr: boolean, statusBadge: (s: string)
             {(venue || item.city) && (
               <div className="flex items-center gap-1.5">
                 <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-                <span className="truncate">{venue || ""}{item.city ? (venue ? `, ${item.city}` : item.city) : ""}{item.country ? `, ${item.country}` : ""}</span>
+                <span className="truncate">{localizeLocation({ city: item.city, country: item.country, countryCode: item.country_code }, isAr)}</span>
               </div>
             )}
           </div>

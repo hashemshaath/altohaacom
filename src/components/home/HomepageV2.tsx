@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { localizeCity } from "@/lib/localizeLocation";
 import { useCountUp } from "@/hooks/useCountUp";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { FilterChip } from "./FilterChip";
@@ -342,7 +343,7 @@ const EventCard = memo(function EventCard({ comp, i, isAr }: { comp: any; i: num
                 <span className="flex items-center gap-1"><Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{format(new Date(comp.competition_start), "MMM d, yyyy", { locale: isAr ? ar : undefined })}</span>
               )}
               {comp.city && (
-                <span className="flex items-center gap-1"><MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{comp.city}</span>
+                <span className="flex items-center gap-1"><MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{localizeCity(comp.city, isAr)}</span>
               )}
             </div>
           </div>
