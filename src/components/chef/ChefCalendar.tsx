@@ -793,7 +793,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                               </Badge>
                             )}
                             {ev.fee_amount && ev.fee_amount > 0 && (
-                              <span className="flex items-center gap-1 text-primary font-bold"><DollarSign className="h-3 w-3" />{ev.fee_amount.toLocaleString()} {ev.fee_currency}</span>
+                              <span className="flex items-center gap-1 text-primary font-bold"><DollarSign className="h-3 w-3" /><AnimatedCounter value={Math.round(ev.fee_amount)} className="inline" /> {ev.fee_currency}</span>
                             )}
                           </div>
                           {ev.notes && <p className="text-xs text-muted-foreground mt-1">{ev.notes}</p>}

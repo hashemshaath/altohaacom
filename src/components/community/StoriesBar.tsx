@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, X, ChevronLeft, ChevronRight, Eye, Move, Trash2, Pause, Play } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 
 const STORY_DURATION = 5000; // 5 seconds per story
 
@@ -470,7 +470,7 @@ export function StoriesBar() {
                 {user?.id === viewing.user_id && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Eye className="h-3.5 w-3.5" />
-                    {toEnglishDigits(`${viewCount}`)} {isAr ? "مشاهدة" : "views"}
+                    {viewCount.toLocaleString()} {isAr ? "مشاهدة" : "views"}
                   </div>
                 )}
               </div>

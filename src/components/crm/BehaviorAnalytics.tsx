@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import {
   ShoppingCart, Eye, TrendingUp, Users, Activity, Clock,
   Zap, AlertTriangle, Target, BarChart3, ArrowUpRight,
@@ -172,7 +172,7 @@ export function BehaviorAnalytics() {
               <p className="text-xs text-muted-foreground">{isAr ? "معدل الاسترداد" : "Recovery Rate"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={cartStats?.recoveryRate ?? 0} suffix="%" /></p>
               <p className="text-[10px] text-muted-foreground">
-                {toEnglishDigits(`${cartStats?.recovered ?? 0}`)} {isAr ? "مسترد" : "recovered"}
+                <AnimatedCounter value={cartStats?.recovered ?? 0} className="inline" /> {isAr ? "مسترد" : "recovered"}
               </p>
             </div>
           </CardContent>
@@ -187,7 +187,7 @@ export function BehaviorAnalytics() {
               <p className="text-xs text-muted-foreground">{isAr ? "مشاهدات الصفحات" : "Page Views"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={behaviorStats?.totalPageViews ?? 0} /></p>
               <p className="text-[10px] text-muted-foreground">
-                {toEnglishDigits(`${behaviorStats?.avgDuration ?? 0}`)}s {isAr ? "متوسط" : "avg"}
+                <AnimatedCounter value={behaviorStats?.avgDuration ?? 0} className="inline" />s {isAr ? "متوسط" : "avg"}
               </p>
             </div>
           </CardContent>
@@ -235,7 +235,7 @@ export function BehaviorAnalytics() {
                         <div className="flex items-center justify-between text-xs">
                           <span className="font-medium capitalize">{interest.interest_category}</span>
                           <span className="text-muted-foreground">
-                            {toEnglishDigits(`${interest.interaction_count || 0}`)} {isAr ? "تفاعل" : "interactions"}
+                            <AnimatedCounter value={interest.interaction_count || 0} className="inline" /> {isAr ? "تفاعل" : "interactions"}
                           </span>
                         </div>
                         <Progress value={pct} className="h-1.5" />
@@ -273,7 +273,7 @@ export function BehaviorAnalytics() {
                         <div className="flex items-center justify-between text-xs">
                           <span className="font-medium">{isAr ? label.ar : label.en}</span>
                           <span className="text-muted-foreground">
-                            {toEnglishDigits(`${count}`)} {isAr ? "مشاهدة" : "views"}
+                            <AnimatedCounter value={count} className="inline" /> {isAr ? "مشاهدة" : "views"}
                           </span>
                         </div>
                         <Progress value={pct} className="h-1.5" />
@@ -310,7 +310,7 @@ export function BehaviorAnalytics() {
                     <span className="text-sm">{isAr ? label.ar : label.en}</span>
                     <div className="flex items-center gap-2">
                       <Progress value={pct} className="h-2 w-24" />
-                      <Badge variant="secondary" className="text-[10px]">{toEnglishDigits(`${pct}`)}%</Badge>
+                      <Badge variant="secondary" className="text-[10px]"><AnimatedCounter value={pct} className="inline" />%</Badge>
                     </div>
                   </div>
                 );
@@ -372,7 +372,7 @@ function LifecycleTriggersList() {
               <div>
                 <p className="text-xs font-medium">{isAr ? t.name_ar || t.name : t.name}</p>
                 <p className="text-[10px] text-muted-foreground">
-                  {t.channels?.join(", ")} · {toEnglishDigits(`${t.delay_minutes}`)} {isAr ? "دقيقة تأخير" : "min delay"}
+                  {t.channels?.join(", ")} · <AnimatedCounter value={t.delay_minutes || 0} className="inline" /> {isAr ? "دقيقة تأخير" : "min delay"}
                 </p>
               </div>
               <Badge variant={t.is_active ? "default" : "secondary"} className="text-[10px]">
