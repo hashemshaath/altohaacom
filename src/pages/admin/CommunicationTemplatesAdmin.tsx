@@ -284,17 +284,17 @@ export default function CommunicationTemplatesAdmin() {
       />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: FileText },
-          { label: isAr ? "نشط" : "Active", value: stats.active, icon: MessageSquare },
-          { label: isAr ? "بريد" : "Email", value: stats.email, icon: Mail },
-          { label: isAr ? "واتساب" : "WhatsApp", value: stats.whatsapp, icon: Phone },
+          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: FileText, color: "text-primary", bg: "bg-primary/10" },
+          { label: isAr ? "نشط" : "Active", value: stats.active, icon: MessageSquare, color: "text-chart-5", bg: "bg-chart-5/10" },
+          { label: isAr ? "بريد" : "Email", value: stats.email, icon: Mail, color: "text-chart-3", bg: "bg-chart-3/10" },
+          { label: isAr ? "واتساب" : "WhatsApp", value: stats.whatsapp, icon: Phone, color: "text-chart-4", bg: "bg-chart-4/10" },
         ].map((s) => (
-          <Card key={s.label}>
+          <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-3 p-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <s.icon className="h-5 w-5 text-primary" />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold">{s.value}</p>
@@ -322,27 +322,27 @@ export default function CommunicationTemplatesAdmin() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input className="ps-9" placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Input className="ps-9 rounded-xl" placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-[150px]"><Filter className="me-2 h-4 w-4" /><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-[150px] rounded-xl"><Filter className="me-2 h-4 w-4" /><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "كل الفئات" : "All Categories"}</SelectItem>
             {categories.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={channelFilter} onValueChange={setChannelFilter}>
-          <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "كل القنوات" : "All Channels"}</SelectItem>
             {channels.map((c) => <SelectItem key={c.value} value={c.value}>{isAr ? c.labelAr : c.label}</SelectItem>)}
           </SelectContent>
         </Select>
-        <div className="flex items-center border rounded-md">
-          <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-9 w-9" onClick={() => setViewMode("table")}>
+        <div className="flex items-center border border-border/40 rounded-xl overflow-hidden">
+          <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-9 w-9 rounded-none" onClick={() => setViewMode("table")}>
             <List className="h-4 w-4" />
           </Button>
-          <Button variant={viewMode === "grid" ? "secondary" : "ghost"} size="icon" className="h-9 w-9" onClick={() => setViewMode("grid")}>
+          <Button variant={viewMode === "grid" ? "secondary" : "ghost"} size="icon" className="h-9 w-9 rounded-none" onClick={() => setViewMode("grid")}>
             <LayoutGrid className="h-4 w-4" />
           </Button>
         </div>
@@ -355,11 +355,11 @@ export default function CommunicationTemplatesAdmin() {
             const ch = getChannelInfo(t.channel);
             const ChIcon = ch?.icon || Mail;
             return (
-              <Card key={t.id} className={`transition-all hover:shadow-md ${!t.is_active ? "opacity-60" : ""}`}>
+              <Card key={t.id} className={`rounded-2xl border-border/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${!t.is_active ? "opacity-60" : ""}`}>
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
                         <ChIcon className="h-4 w-4 text-primary" />
                       </div>
                       <div>

@@ -178,56 +178,38 @@ export default function MarketingAutomationAdmin() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Card className="border-s-4 border-s-primary">
-          <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-primary/10 p-2.5"><Activity className="h-5 w-5 text-primary" /></div>
-            <div>
-              <p className="text-xs text-muted-foreground">{isAr ? "إجمالي التشغيل" : "Total Runs"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${runs.length}`)}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-s-4 border-s-chart-5">
-          <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-chart-5/10 p-2.5"><CheckCircle2 className="h-5 w-5 text-chart-5" /></div>
-            <div>
-              <p className="text-xs text-muted-foreground">{isAr ? "ناجحة" : "Successful"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${completedRuns}`)}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-s-4 border-s-chart-4">
-          <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-chart-4/10 p-2.5"><TrendingUp className="h-5 w-5 text-chart-4" /></div>
-            <div>
-              <p className="text-xs text-muted-foreground">{isAr ? "تمت معالجتهم" : "Users Processed"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${totalProcessed}`)}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-s-4 border-s-destructive">
-          <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-full bg-destructive/10 p-2.5"><AlertCircle className="h-5 w-5 text-destructive" /></div>
-            <div>
-              <p className="text-xs text-muted-foreground">{isAr ? "فشل" : "Failed"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${failedRuns}`)}</p>
-            </div>
-          </CardContent>
-        </Card>
+        {[
+          { label: isAr ? "إجمالي التشغيل" : "Total Runs", value: runs.length, icon: Activity, color: "text-primary", bg: "bg-primary/10" },
+          { label: isAr ? "ناجحة" : "Successful", value: completedRuns, icon: CheckCircle2, color: "text-chart-5", bg: "bg-chart-5/10" },
+          { label: isAr ? "تمت معالجتهم" : "Users Processed", value: totalProcessed, icon: TrendingUp, color: "text-chart-4", bg: "bg-chart-4/10" },
+          { label: isAr ? "فشل" : "Failed", value: failedRuns, icon: AlertCircle, color: "text-destructive", bg: "bg-destructive/10" },
+        ].map(s => (
+          <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="flex items-center gap-3 py-4">
+              <div className={`rounded-xl p-2.5 transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-2xl font-bold">{toEnglishDigits(`${s.value}`)}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <Tabs defaultValue="campaigns" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="campaigns" className="gap-2 text-xs">
+        <TabsList className="grid w-full grid-cols-4 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="campaigns" className="gap-2 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Zap className="h-3.5 w-3.5" /> {isAr ? "الحملات" : "Campaigns"}
           </TabsTrigger>
-          <TabsTrigger value="workflows" className="gap-2 text-xs">
+          <TabsTrigger value="workflows" className="gap-2 text-xs rounded-xl data-[state=active]:shadow-sm">
             <GitBranch className="h-3.5 w-3.5" /> {isAr ? "سير العمل" : "Workflows"}
           </TabsTrigger>
-          <TabsTrigger value="triggers" className="gap-2 text-xs">
+          <TabsTrigger value="triggers" className="gap-2 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Settings2 className="h-3.5 w-3.5" /> {isAr ? "المحفزات" : "Triggers"}
           </TabsTrigger>
-          <TabsTrigger value="history" className="gap-2 text-xs">
+          <TabsTrigger value="history" className="gap-2 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Clock className="h-3.5 w-3.5" /> {isAr ? "السجل" : "History"}
           </TabsTrigger>
         </TabsList>
@@ -246,7 +228,7 @@ export default function MarketingAutomationAdmin() {
                 const lastRun = runs.find(r => r.action === campaign.action);
                 const isRunning = runCampaign.isPending && runCampaign.variables === campaign.action;
                 return (
-                  <Card key={campaign.action}>
+                  <Card key={campaign.action} className="rounded-2xl border-border/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-sm flex items-center gap-2">
@@ -287,7 +269,7 @@ export default function MarketingAutomationAdmin() {
             </div>
 
             {/* Schedule Info */}
-            <Card>
+            <Card className="rounded-2xl border-border/40">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Clock className="h-4 w-4 text-primary" />
@@ -296,14 +278,14 @@ export default function MarketingAutomationAdmin() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between rounded-lg border p-3">
+                    <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
                     <div>
                       <p className="text-xs font-medium">{isAr ? "جميع الحملات" : "All Campaigns"}</p>
                       <p className="text-[10px] text-muted-foreground">{isAr ? "يومياً الساعة 8 صباحاً UTC" : "Daily at 8:00 AM UTC"}</p>
                     </div>
                     <Badge variant="default" className="text-[10px]">{isAr ? "نشط" : "Active"}</Badge>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border p-3">
+                  <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
                     <div>
                       <p className="text-xs font-medium">{isAr ? "سلال مهجورة" : "Cart Abandonment"}</p>
                       <p className="text-[10px] text-muted-foreground">{isAr ? "كل ساعتين" : "Every 2 hours"}</p>
@@ -323,7 +305,7 @@ export default function MarketingAutomationAdmin() {
 
         {/* Triggers Tab */}
         <TabsContent value="triggers">
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
                 <Settings2 className="h-4 w-4 text-primary" />
@@ -339,7 +321,7 @@ export default function MarketingAutomationAdmin() {
                     </p>
                   ) : (
                     triggers.map((t: any) => (
-                      <div key={t.id} className="flex items-center justify-between rounded-lg border p-3">
+                      <div key={t.id} className="flex items-center justify-between rounded-xl border border-border/40 p-3 transition-colors hover:bg-accent/30">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <Bell className="h-3.5 w-3.5 text-primary" />
@@ -367,7 +349,7 @@ export default function MarketingAutomationAdmin() {
 
         {/* History Tab */}
         <TabsContent value="history">
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
                 <BarChart3 className="h-4 w-4 text-primary" />
