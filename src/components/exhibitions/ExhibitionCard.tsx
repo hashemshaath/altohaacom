@@ -159,7 +159,7 @@ export const ExhibitionCard = memo(
                 {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
                   <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-chart-4-foreground shadow-lg border-0 py-1 px-2.5">
                     <Clock className="h-2.5 w-2.5" />
-                    {isAr ? `باقي ${toEnglishDigits(daysLeft)} يوم` : `${daysLeft}d left`}
+                    {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
                   </Badge>
                 )}
               </div>

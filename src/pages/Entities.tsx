@@ -373,7 +373,7 @@ export default function Entities() {
                             )}
                           </div>
                           {entity.founded_year && (
-                            <span className="text-[10px] text-muted-foreground/70">{isAr ? "تأسست" : "Est."} {toEnglishDigits(entity.founded_year)}</span>
+                            <span className="text-[10px] text-muted-foreground/70">{isAr ? "تأسست" : "Est."} {entity.founded_year}</span>
                           )}
                         </div>
 
