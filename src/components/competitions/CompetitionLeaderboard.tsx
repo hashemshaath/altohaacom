@@ -27,11 +27,10 @@ interface LeaderboardEntry {
   rank: number;
 }
 
-const RANK_ICONS = [Trophy, Medal, Award];
-const RANK_COLORS = [
-  "text-chart-4",
-  "text-muted-foreground",
-  "text-chart-5",
+const RANK_CONFIG = [
+  { icon: Trophy, gradient: "from-chart-4/20 to-chart-4/5", border: "border-chart-4/30", text: "text-chart-4", shadow: "shadow-chart-4/10", label: "1st" },
+  { icon: Medal, gradient: "from-muted/40 to-muted/10", border: "border-border/50", text: "text-muted-foreground", shadow: "shadow-muted/10", label: "2nd" },
+  { icon: Award, gradient: "from-chart-5/15 to-chart-5/5", border: "border-chart-5/25", text: "text-chart-5", shadow: "shadow-chart-5/10", label: "3rd" },
 ];
 
 export function CompetitionLeaderboard({
@@ -39,59 +38,47 @@ export function CompetitionLeaderboard({
   showTopOnly = false,
 }: CompetitionLeaderboardProps) {
   const { language } = useLanguage();
+  const isAr = language === "ar";
 
   const { data: leaderboard, isLoading } = useQuery({
     queryKey: ["competition-leaderboard", competitionId],
     queryFn: async () => {
-      // Get all approved registrations
       const { data: registrations, error: regError } = await supabase
         .from("competition_registrations")
-        .select(`
-          id,
-          participant_id,
-          dish_name,
-          dish_image_url,
-          category_id
-        `)
+        .select(`id, participant_id, dish_name, dish_image_url, category_id`)
         .eq("competition_id", competitionId)
         .eq("status", "approved");
 
       if (regError) throw regError;
       if (!registrations?.length) return [];
 
-      // Get categories
       const { data: categories } = await supabase
         .from("competition_categories")
         .select("id, name, name_ar")
         .eq("competition_id", competitionId);
 
-      // Get judging criteria with weights
       const { data: criteria } = await supabase
         .from("judging_criteria")
         .select("id, weight, max_score")
         .eq("competition_id", competitionId);
 
-      // Get all scores for this competition's registrations
       const registrationIds = registrations.map((r) => r.id);
       const { data: scores } = await supabase
         .from("competition_scores")
         .select("registration_id, criteria_id, score")
         .in("registration_id", registrationIds);
 
-      // Get participant profiles
       const participantIds = registrations.map((r) => r.participant_id);
       const { data: profiles } = await supabase
         .from("profiles")
         .select("user_id, full_name, display_name, avatar_url, username")
         .in("user_id", participantIds);
 
-      // Calculate weighted scores for each registration
       const entries: LeaderboardEntry[] = registrations.map((reg) => {
         const regScores = scores?.filter((s) => s.registration_id === reg.id) || [];
         const profile = profiles?.find((p) => p.user_id === reg.participant_id);
         const category = categories?.find((c) => c.id === reg.category_id);
 
-        // Calculate weighted score
         let totalWeightedScore = 0;
         let totalWeight = 0;
 
@@ -99,11 +86,7 @@ export function CompetitionLeaderboard({
           criteria.forEach((crit) => {
             const criteriaScores = regScores.filter((s) => s.criteria_id === crit.id);
             if (criteriaScores.length > 0) {
-              // Average score from all judges for this criteria
-              const avgScore =
-                criteriaScores.reduce((sum, s) => sum + Number(s.score), 0) /
-                criteriaScores.length;
-              // Normalize to percentage and apply weight
+              const avgScore = criteriaScores.reduce((sum, s) => sum + Number(s.score), 0) / criteriaScores.length;
               const normalizedScore = (avgScore / crit.max_score) * 100;
               totalWeightedScore += normalizedScore * Number(crit.weight);
               totalWeight += Number(crit.weight);
@@ -111,7 +94,6 @@ export function CompetitionLeaderboard({
           });
         }
 
-        // Final weighted average
         const finalScore = totalWeight > 0 ? totalWeightedScore / totalWeight : 0;
 
         return {
@@ -130,11 +112,8 @@ export function CompetitionLeaderboard({
         };
       });
 
-      // Sort by score descending and assign ranks
       entries.sort((a, b) => b.total_weighted_score - a.total_weighted_score);
-      entries.forEach((entry, index) => {
-        entry.rank = index + 1;
-      });
+      entries.forEach((entry, index) => { entry.rank = index + 1; });
 
       return showTopOnly ? entries.slice(0, 3) : entries;
     },
@@ -142,14 +121,14 @@ export function CompetitionLeaderboard({
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="rounded-3xl border-border/30 shadow-sm">
         <CardHeader>
-          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-6 w-40" />
         </CardHeader>
-        <CardContent className="space-y-4">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
+        <CardContent className="space-y-3">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-20 w-full rounded-2xl" />
+          ))}
         </CardContent>
       </Card>
     );
@@ -157,19 +136,21 @@ export function CompetitionLeaderboard({
 
   if (!leaderboard || leaderboard.length === 0) {
     return (
-      <Card>
+      <Card className="rounded-3xl border-border/30 shadow-sm">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-primary" />
-            {language === "ar" ? "لوحة المتصدرين" : "Leaderboard"}
+          <CardTitle className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+              <Trophy className="h-4.5 w-4.5 text-primary" />
+            </div>
+            {isAr ? "لوحة المتصدرين" : "Leaderboard"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="py-8 text-center">
-          <ChefHat className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground">
-            {language === "ar"
-              ? "لا توجد نتائج حتى الآن"
-              : "No results yet"}
+        <CardContent className="py-10 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50">
+            <ChefHat className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {isAr ? "لا توجد نتائج حتى الآن" : "No results yet"}
           </p>
         </CardContent>
       </Card>
@@ -177,89 +158,98 @@ export function CompetitionLeaderboard({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="h-5 w-5 text-primary" />
-          {language === "ar" ? "لوحة المتصدرين" : "Leaderboard"}
+    <Card className="rounded-3xl border-border/30 shadow-sm overflow-hidden">
+      <CardHeader className="border-b border-border/20 bg-gradient-to-r from-primary/[0.04] to-transparent">
+        <CardTitle className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+            <Trophy className="h-4.5 w-4.5 text-primary" />
+          </div>
+          {isAr ? "لوحة المتصدرين" : "Leaderboard"}
+          <Badge variant="secondary" className="ms-auto text-[10px] font-bold tabular-nums">
+            {leaderboard.length} {isAr ? "متسابق" : "entries"}
+          </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="p-4 sm:p-5 space-y-2.5">
         {leaderboard.map((entry) => {
-          const RankIcon = RANK_ICONS[entry.rank - 1] || null;
-          const rankColor = RANK_COLORS[entry.rank - 1] || "text-muted-foreground";
+          const isTop3 = entry.rank <= 3;
+          const config = isTop3 ? RANK_CONFIG[entry.rank - 1] : null;
+          const RankIcon = config?.icon || null;
 
           return (
             <div
               key={entry.registration_id}
-              className={`flex items-center gap-4 rounded-xl border p-4 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5 ${
-                entry.rank <= 3 ? "bg-accent/5 border-primary/10" : ""
-              }`}
+              className={`
+                group relative flex items-center gap-3 sm:gap-4 rounded-2xl border p-3 sm:p-4
+                transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5
+                ${isTop3
+                  ? `bg-gradient-to-r ${config!.gradient} ${config!.border} ${config!.shadow} shadow-sm`
+                  : "border-border/20 hover:border-border/40 hover:bg-muted/20"
+                }
+              `}
             >
               {/* Rank */}
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-muted/50">
+              <div className={`
+                flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-bold transition-transform duration-300 group-hover:scale-110
+                ${isTop3
+                  ? `bg-gradient-to-br ${config!.gradient} ${config!.text}`
+                  : "bg-muted/50 text-muted-foreground"
+                }
+              `}>
                 {RankIcon ? (
-                  <RankIcon className={`h-6 w-6 ${rankColor}`} />
+                  <RankIcon className="h-5.5 w-5.5" />
                 ) : (
-                  <span className="text-lg font-bold text-muted-foreground">
-                    {entry.rank}
-                  </span>
+                  <span className="text-lg tabular-nums">{entry.rank}</span>
                 )}
               </div>
 
               {/* Dish Image */}
-              <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-muted ring-1 ring-border/30">
+              <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted ring-2 ring-border/20 transition-all duration-300 group-hover:ring-primary/20">
                 {entry.dish_image_url ? (
                   <img
                     src={entry.dish_image_url}
                     alt={entry.dish_name || "Dish"}
-                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">
-                    <ChefHat className="h-6 w-6 text-muted-foreground" />
+                    <ChefHat className="h-5 w-5 text-muted-foreground" />
                   </div>
                 )}
               </div>
 
               {/* Info */}
-              <div className="flex-1">
-                <h4 className="font-medium">
-                  {entry.dish_name || (language === "ar" ? "طبق بدون اسم" : "Unnamed Dish")}
+              <div className="flex-1 min-w-0">
+                <h4 className="font-semibold text-sm truncate">
+                  {entry.dish_name || (isAr ? "طبق بدون اسم" : "Unnamed Dish")}
                 </h4>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Avatar className="h-4 w-4">
+                <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
+                  <Avatar className="h-4 w-4 ring-1 ring-border/30">
                     <AvatarImage src={entry.participant_avatar || undefined} />
-                    <AvatarFallback>
-                      <User className="h-2 w-2" />
+                    <AvatarFallback className="text-[7px]">
+                      <User className="h-2.5 w-2.5" />
                     </AvatarFallback>
                   </Avatar>
-                  <span>
-                    {entry.participant_name ||
-                      entry.participant_username ||
-                      (language === "ar" ? "مشارك" : "Participant")}
+                  <span className="truncate">
+                    {entry.participant_name || entry.participant_username || (isAr ? "مشارك" : "Participant")}
                   </span>
                 </div>
                 {entry.category_name && (
-                  <Badge variant="outline" className="mt-1">
-                    {language === "ar" && entry.category_name_ar
-                      ? entry.category_name_ar
-                      : entry.category_name}
+                  <Badge variant="outline" className="mt-1.5 text-[9px] px-1.5 py-0 rounded-md">
+                    {isAr && entry.category_name_ar ? entry.category_name_ar : entry.category_name}
                   </Badge>
                 )}
               </div>
 
               {/* Score */}
-              <div className="text-end">
-                <p className="text-2xl font-bold text-primary">
+              <div className="text-end shrink-0">
+                <p className={`text-2xl font-black tabular-nums ${isTop3 ? config!.text : "text-primary"}`}>
                   {entry.total_weighted_score.toFixed(1)}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground font-medium">
                   {entry.scores_count > 0
-                    ? `${entry.scores_count} ${language === "ar" ? "تقييمات" : "scores"}`
-                    : language === "ar"
-                    ? "لا تقييمات"
-                    : "No scores"}
+                    ? `${entry.scores_count} ${isAr ? "تقييم" : "scores"}`
+                    : isAr ? "لا تقييمات" : "No scores"}
                 </p>
               </div>
             </div>
