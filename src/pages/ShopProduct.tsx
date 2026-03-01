@@ -17,6 +17,7 @@ import { CartSheet } from "@/components/shop/CartSheet";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
@@ -183,7 +184,7 @@ export default function ShopProduct() {
             </div>
 
             <p className="text-3xl font-bold text-primary">
-              SAR {toEnglishDigits(Number(product.price).toFixed(2))}
+              SAR <AnimatedCounter value={Math.round(Number(product.price))} className="inline" format />
             </p>
 
             {description && (
