@@ -281,7 +281,7 @@ export default function Competitions() {
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"
                   }`}>
-                    {toEnglishDigits(counts[tab])}
+                    <AnimatedCounter value={counts[tab]} className="inline" />
                   </span>
                 </button>
               ))}

@@ -192,12 +192,12 @@ export default function Rewards() {
                         <div>
                           <p className="text-sm font-medium">{isAr ? entry.description_ar : entry.description}</p>
                           <p className="text-[10px] text-muted-foreground">
-                            {toEnglishDigits(new Date(entry.created_at).toLocaleDateString(isAr ? "ar" : "en"))} • {isAr ? "الرصيد:" : "Balance:"} {toEnglishDigits(entry.balance_after)}
+                            {toEnglishDigits(new Date(entry.created_at).toLocaleDateString(isAr ? "ar" : "en"))} • {isAr ? "الرصيد:" : "Balance:"} <AnimatedCounter value={entry.balance_after} className="inline" />
                           </p>
                         </div>
                       </div>
                       <span className={`font-bold ${entry.points > 0 ? "text-chart-2" : "text-destructive"}`}>
-                        {entry.points > 0 ? "+" : ""}{toEnglishDigits(Math.abs(entry.points))}
+                        {entry.points > 0 ? "+" : ""}<AnimatedCounter value={Math.abs(entry.points)} className="inline" />
                       </span>
                     </div>
                   ))}

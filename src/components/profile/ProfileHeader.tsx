@@ -220,7 +220,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
           {profile?.loyalty_points > 0 && (
             <div className="flex items-center gap-1.5 rounded-xl bg-primary/5 px-3.5 py-2.5 text-xs border border-primary/10 transition-all hover:bg-primary/8">
               <Star className="h-3.5 w-3.5 text-primary" />
-              <span className="font-bold text-primary tabular-nums">{toEnglishDigits(profile.loyalty_points)}</span>
+              <AnimatedCounter value={profile.loyalty_points} className="font-bold text-primary tabular-nums" />
               <span className="text-muted-foreground/70">{isAr ? "نقطة" : "pts"}</span>
             </div>
           )}

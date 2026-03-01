@@ -21,6 +21,7 @@ import { ExhibitionListItem } from "@/components/exhibitions/ExhibitionListItem"
 import { NextEventHighlight } from "@/components/exhibitions/NextEventHighlight";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -398,7 +399,7 @@ export default function Exhibitions() {
                 {t.icon && <t.icon className="h-3.5 w-3.5" />}
                 {t.label}
                 {t.count != null && t.count > 0 && (
-                  <span className="ms-1 text-[9px] opacity-70">({toEnglishDigits(t.count)})</span>
+                  <span className="ms-1 text-[9px] opacity-70">(<AnimatedCounter value={t.count} className="inline" />)</span>
                 )}
               </TabsTrigger>
             ))}

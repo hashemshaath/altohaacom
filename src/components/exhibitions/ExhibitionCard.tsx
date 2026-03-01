@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building, Eye } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -259,7 +260,7 @@ export const ExhibitionCard = memo(
                 {(exhibition.view_count ?? 0) > 0 && (
                   <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                     <Eye className="h-3 w-3" />
-                    {toEnglishDigits(exhibition.view_count!)}
+                    <AnimatedCounter value={exhibition.view_count!} className="inline" />
                   </span>
                 )}
                 {exhibition.registration_url && (

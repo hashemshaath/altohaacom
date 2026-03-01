@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, Star, MapPin } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const levelColors: Record<string, string> = {
   beginner: "bg-chart-3/10 text-chart-3",
@@ -100,7 +101,7 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
             <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
               <BookOpen className="h-3 w-3 text-primary" />
             </div>
-            {toEnglishDigits(moduleCount)} {isAr ? "وحدة" : "modules"}
+            <AnimatedCounter value={moduleCount} className="inline" /> {isAr ? "وحدة" : "modules"}
           </span>
           {mc.duration_hours && (
             <span className="flex items-center gap-1.5">
@@ -114,7 +115,7 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
             <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-2/10">
               <Users className="h-3 w-3 text-chart-2" />
             </div>
-            {toEnglishDigits(enrollmentCount)}
+            <AnimatedCounter value={enrollmentCount} className="inline" />
           </span>
           {mc.country_code && (
             <span className="flex items-center gap-1.5 ms-auto">

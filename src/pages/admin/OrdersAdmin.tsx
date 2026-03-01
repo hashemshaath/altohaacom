@@ -29,6 +29,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Package,
   Search,
@@ -630,7 +631,7 @@ export default function OrdersAdmin() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "المبلغ" : "Amount"}</p>
-                    <p className="font-bold text-lg">{toEnglishDigits(Number(orderDetails.total_amount).toLocaleString())} {orderDetails.currency}</p>
+                    <p className="font-bold text-lg"><AnimatedCounter value={Math.round(Number(orderDetails.total_amount))} className="inline" format /> {orderDetails.currency}</p>
                   </div>
                 </div>
 
@@ -639,15 +640,15 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</p>
-                    <p className="font-medium">{toEnglishDigits(Number(orderDetails.subtotal || 0).toLocaleString())} {orderDetails.currency}</p>
+                    <p className="font-medium"><AnimatedCounter value={Math.round(Number(orderDetails.subtotal || 0))} className="inline" format /> {orderDetails.currency}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الضريبة" : "Tax"}</p>
-                    <p className="font-medium">{toEnglishDigits(Number(orderDetails.tax_amount || 0).toLocaleString())} {orderDetails.currency}</p>
+                    <p className="font-medium"><AnimatedCounter value={Math.round(Number(orderDetails.tax_amount || 0))} className="inline" format /> {orderDetails.currency}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الخصم" : "Discount"}</p>
-                    <p className="font-medium">{toEnglishDigits(Number(orderDetails.discount_amount || 0).toLocaleString())} {orderDetails.currency}</p>
+                    <p className="font-medium"><AnimatedCounter value={Math.round(Number(orderDetails.discount_amount || 0))} className="inline" format /> {orderDetails.currency}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "تاريخ الطلب" : "Order Date"}</p>
@@ -910,7 +911,7 @@ export default function OrdersAdmin() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "المبلغ" : "Total"}</p>
-                    <p className="font-bold text-lg">{shopOrderDetails.currency} {toEnglishDigits(Number(shopOrderDetails.total_amount).toFixed(2))}</p>
+                    <p className="font-bold text-lg">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.total_amount))} className="inline" format /></p>
                   </div>
                 </div>
 
@@ -919,15 +920,15 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</p>
-                    <p className="font-medium">{shopOrderDetails.currency} {toEnglishDigits(Number(shopOrderDetails.subtotal || 0).toFixed(2))}</p>
+                    <p className="font-medium">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.subtotal || 0))} className="inline" format /></p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الضريبة" : "Tax"}</p>
-                    <p className="font-medium">{shopOrderDetails.currency} {toEnglishDigits(Number(shopOrderDetails.tax_amount || 0).toFixed(2))}</p>
+                    <p className="font-medium">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.tax_amount || 0))} className="inline" format /></p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الخصم" : "Discount"}</p>
-                    <p className="font-medium">{shopOrderDetails.currency} {toEnglishDigits(Number(shopOrderDetails.discount_amount || 0).toFixed(2))}</p>
+                    <p className="font-medium">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.discount_amount || 0))} className="inline" format /></p>
                   </div>
                 </div>
 
