@@ -373,7 +373,7 @@ export default function ArticleDetail() {
                             alt={relTitle}
                             className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                           />
-                          <Badge className="absolute top-3 start-3 text-xs rounded-lg">{related.type}</Badge>
+                          <Badge className="absolute top-3 start-3 text-xs rounded-xl">{related.type}</Badge>
                         </div>
                       ) : (
                         <div className="aspect-video bg-gradient-to-br from-primary/10 to-muted flex items-center justify-center">

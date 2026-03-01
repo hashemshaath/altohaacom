@@ -390,7 +390,7 @@ export default function OrganizersAdmin() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-lg" />)}</div>
+        <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-xl" />)}</div>
       ) : (
         <Card className="rounded-2xl border-border/40 overflow-hidden">
           <Table>
@@ -423,9 +423,9 @@ export default function OrganizersAdmin() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-9 w-9 rounded-lg">
+                      <Avatar className="h-9 w-9 rounded-xl">
                         {org.logo_url && <AvatarImage src={org.logo_url} />}
-                        <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0">
                         <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate block">{org.name}</Link>

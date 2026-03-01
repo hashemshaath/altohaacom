@@ -158,7 +158,7 @@ export default function MyEvaluations() {
                 {inv.product_images?.length > 0 && (
                   <div className="flex gap-2">
                     {inv.product_images.slice(0, 4).map((url, i) => (
-                      <div key={i} className="h-16 w-16 rounded-lg overflow-hidden border border-border/40">
+                      <div key={i} className="h-16 w-16 rounded-xl overflow-hidden border border-border/40">
                         <img src={url} alt="" className="h-full w-full object-cover" />
                       </div>
                     ))}
@@ -167,26 +167,26 @@ export default function MyEvaluations() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {inv.evaluation_date && (
-                    <div className="rounded-lg border border-border/40 p-3">
+                    <div className="rounded-xl border border-border/40 p-3">
                       <Calendar className="h-3.5 w-3.5 text-muted-foreground mb-1" />
                       <p className="text-xs text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
                       <p className="text-sm font-bold">{format(new Date(inv.evaluation_date), "MMM d, yyyy")}</p>
                     </div>
                   )}
                   {inv.evaluation_location && (
-                    <div className="rounded-lg border border-border/40 p-3">
+                    <div className="rounded-xl border border-border/40 p-3">
                       <MapPin className="h-3.5 w-3.5 text-muted-foreground mb-1" />
                       <p className="text-xs text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
                       <p className="text-sm font-bold">{isAr && inv.evaluation_location_ar ? inv.evaluation_location_ar : inv.evaluation_location}</p>
                     </div>
                   )}
-                  <div className="rounded-lg border border-border/40 p-3">
+                  <div className="rounded-xl border border-border/40 p-3">
                     <Timer className="h-3.5 w-3.5 text-muted-foreground mb-1" />
                     <p className="text-xs text-muted-foreground">{isAr ? "المدة" : "Duration"}</p>
                     <p className="text-sm font-bold">{inv.expected_duration_minutes} {isAr ? "دقيقة" : "min"}</p>
                   </div>
                   {inv.offered_amount && (
-                    <div className="rounded-lg border border-border/40 p-3">
+                    <div className="rounded-xl border border-border/40 p-3">
                       <DollarSign className="h-3.5 w-3.5 text-muted-foreground mb-1" />
                       <p className="text-xs text-muted-foreground">{isAr ? "المبلغ" : "Amount"}</p>
                       <p className="text-sm font-bold">{inv.offered_amount} {inv.currency}</p>
@@ -195,7 +195,7 @@ export default function MyEvaluations() {
                 </div>
 
                 {inv.notes && (
-                  <div className="rounded-lg bg-muted/50 p-3">
+                  <div className="rounded-xl bg-muted/50 p-3">
                     <p className="text-xs text-muted-foreground mb-1">{isAr ? "ملاحظات" : "Notes"}</p>
                     <p className="text-sm">{isAr && inv.notes_ar ? inv.notes_ar : inv.notes}</p>
                   </div>

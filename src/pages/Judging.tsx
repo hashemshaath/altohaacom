@@ -326,7 +326,7 @@ export default function Judging() {
                   </p>
 
                   {criteria?.map((crit) => (
-                    <div key={crit.id} className="space-y-4 rounded-lg border p-4">
+                    <div key={crit.id} className="space-y-4 rounded-xl border p-4">
                       <div className="flex items-center justify-between">
                         <Label className="text-base font-medium">
                           {language === "ar" && crit.name_ar ? crit.name_ar : crit.name}
@@ -386,7 +386,7 @@ export default function Judging() {
                     </div>
                   ))}
 
-                  <div className="rounded-lg border-2 border-primary bg-primary/5 p-6">
+                  <div className="rounded-xl border-2 border-primary bg-primary/5 p-6">
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-medium">
                         {language === "ar" ? "المجموع الموزون" : "Weighted Total Score"}

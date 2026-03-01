@@ -680,7 +680,7 @@ export default function CommunicationTemplatesAdmin() {
               <Separator />
               <div>
                 <p className="text-xs text-muted-foreground mb-2">{isAr ? "المحتوى" : "Body"}</p>
-                <div className="rounded-lg border bg-muted/50 p-4 text-sm whitespace-pre-wrap">
+                <div className="rounded-xl border bg-muted/50 p-4 text-sm whitespace-pre-wrap">
                   {isAr && editingTemplate.body_ar ? editingTemplate.body_ar : editingTemplate.body}
                 </div>
               </div>
@@ -710,7 +710,7 @@ export default function CommunicationTemplatesAdmin() {
           </DialogHeader>
           {editingTemplate && (
             <div className="space-y-4">
-              <div className="rounded-lg border bg-muted/50 p-3">
+              <div className="rounded-xl border bg-muted/50 p-3">
                 <p className="font-medium text-sm">{isAr && editingTemplate.name_ar ? editingTemplate.name_ar : editingTemplate.name}</p>
                 <p className="text-xs text-muted-foreground font-mono">{editingTemplate.slug} • {editingTemplate.channel}</p>
               </div>

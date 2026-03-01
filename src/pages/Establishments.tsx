@@ -107,9 +107,9 @@ export default function Establishments() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-border/40">
-                <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+                <SelectItem value="all" className="rounded-xl">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
                 {establishmentTypes.map((t) => (
-                  <SelectItem key={t.value} value={t.value} className="rounded-lg">{isAr ? t.ar : t.en}</SelectItem>
+                  <SelectItem key={t.value} value={t.value} className="rounded-xl">{isAr ? t.ar : t.en}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

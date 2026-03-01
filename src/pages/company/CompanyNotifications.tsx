@@ -251,7 +251,7 @@ export default function CompanyNotifications() {
         {/* Notification List */}
         {isLoading ? (
           <div className="space-y-3">
-            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-lg" />)}
+            {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
           </div>
         ) : filtered.length === 0 ? (
           <Card>
@@ -284,7 +284,7 @@ export default function CompanyNotifications() {
                         className="mt-1"
                       />
                       <div
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg cursor-pointer ${!n.is_read ? "bg-primary/10" : "bg-muted"}`}
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl cursor-pointer ${!n.is_read ? "bg-primary/10" : "bg-muted"}`}
                         onClick={() => !n.is_read && markAsRead(n.id)}
                       >
                         <Icon className={`h-4 w-4 ${!n.is_read ? "text-primary" : "text-muted-foreground"}`} />
