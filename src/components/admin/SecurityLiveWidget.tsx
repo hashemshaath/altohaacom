@@ -90,7 +90,7 @@ export function SecurityLiveWidget() {
         <Card key={i} className="border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-lg bg-destructive/10 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-xl bg-destructive/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                 <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
               </div>
               <span className="text-xs text-muted-foreground">{kpi.label}</span>

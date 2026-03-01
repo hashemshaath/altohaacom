@@ -76,7 +76,7 @@ export function AdminSearchCommand() {
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "inline-flex items-center gap-2 rounded-lg border border-border/60 bg-muted/40 px-3 py-1.5",
+          "inline-flex items-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-1.5",
           "text-xs text-muted-foreground hover:bg-muted transition-colors"
         )}
       >

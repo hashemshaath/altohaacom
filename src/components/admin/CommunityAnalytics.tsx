@@ -116,11 +116,11 @@ export function CommunityAnalytics() {
         <div className="grid grid-cols-3 gap-3">
           {moderationCards.map((c, i) => (
             <div key={i} className={cn(
-              "rounded-lg border p-3 transition-all",
+              "rounded-xl border p-3 transition-all duration-300 hover:-translate-y-0.5 group",
               c.urgent ? "border-destructive/40 bg-destructive/5" : "border-border"
             )}>
               <div className="flex items-center gap-1.5 mb-1">
-                <c.statusIcon className={cn("h-3.5 w-3.5", c.color)} />
+                <c.statusIcon className={cn("h-3.5 w-3.5 transition-transform duration-300 group-hover:scale-110", c.color)} />
                 <span className="text-[10px] text-muted-foreground font-medium">{c.label}</span>
               </div>
               <p className={cn("text-xl font-bold tabular-nums", c.urgent && "text-destructive")}>

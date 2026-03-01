@@ -88,7 +88,7 @@ export const AdminCommandBar = memo(function AdminCommandBar() {
                 "hover:border-primary/30 hover:shadow-sm transition-all active:scale-[0.97]",
                 "relative group"
               )}>
-                <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg", a.color)}>
+                <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", a.color)}>
                   <a.icon className="h-4 w-4" />
                 </div>
                 <span className="text-[10px] font-semibold text-muted-foreground group-hover:text-foreground line-clamp-1">

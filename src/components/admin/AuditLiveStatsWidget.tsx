@@ -87,8 +87,8 @@ export function AuditLiveStatsWidget() {
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 text-center">
-              <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+              <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-lg font-bold">{s.value}</div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
             </div>
@@ -137,14 +137,14 @@ export function AuditLiveStatsWidget() {
         {/* Top Admin Actions */}
         <div className="grid grid-cols-3 gap-3 mt-4">
           {data.topActions.map(([action, count], i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-2 text-center">
+            <div key={i} className="bg-muted/50 rounded-xl p-2 text-center">
               <Eye className="h-3 w-3 mx-auto mb-1 text-chart-3" />
               <div className="text-sm font-bold">{count}</div>
               <div className="text-[9px] text-muted-foreground truncate">{action}</div>
             </div>
           ))}
           {data.topActions.length === 0 && (
-            <div className="col-span-3 bg-muted/50 rounded-lg p-2 text-center">
+            <div className="col-span-3 bg-muted/50 rounded-xl p-2 text-center">
               <UserCheck className="h-3 w-3 mx-auto mb-1 text-chart-2" />
               <div className="text-sm font-bold">{data.totalActions}</div>
               <div className="text-[9px] text-muted-foreground">{isAr ? "إجراءات إدارية" : "Admin Actions"}</div>

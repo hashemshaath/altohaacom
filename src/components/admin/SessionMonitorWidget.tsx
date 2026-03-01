@@ -78,8 +78,8 @@ export function SessionMonitorWidget() {
       <CardContent>
         <div className="grid grid-cols-3 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 text-center">
-              <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+              <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-lg font-bold">{s.value}</div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
             </div>
@@ -96,7 +96,7 @@ export function SessionMonitorWidget() {
               {Object.entries(data.deviceMap).filter(([,v]) => v > 0).map(([device, count]) => {
                 const DevIcon = deviceIcons[device] || Globe;
                 return (
-                  <div key={device} className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                  <div key={device} className="flex items-center gap-2 p-2 bg-muted/50 rounded-xl">
                     <DevIcon className="h-3.5 w-3.5 text-muted-foreground" />
                     <div>
                       <div className="text-sm font-bold">{count}</div>
