@@ -161,7 +161,7 @@ export function CertificateDesigner({
                   <Label className="text-sm font-medium block">{language === "ar" ? "القوالب الاحترافية" : "Professional Templates"}</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {professionalTemplates.map(t => (
-                      <button key={t.id} onClick={() => applyTemplate(t.id)} className="p-3 border rounded-lg hover:border-primary transition-colors text-start">
+                      <button key={t.id} onClick={() => applyTemplate(t.id)} className="p-3 border rounded-xl hover:border-primary transition-colors text-start">
                         <div className="h-10 rounded mb-2 border-2" style={{ borderColor: t.preview, background: "#fff" }} />
                         <p className="text-xs font-medium">{language === "ar" ? t.nameAr : t.name}</p>
                       </button>
@@ -318,7 +318,7 @@ export function CertificateDesigner({
 
                 {/* ─── Lines (per-line controls) ─── */}
                 <TabsContent value="lines" className="p-4 space-y-4 mt-0">
-                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-2 mb-2">
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-2 mb-2">
                     <p className="text-[10px] text-primary font-medium flex items-center gap-1">
                       <Globe className="h-3 w-3" />
                       {design.certificateLanguage === "ar"
@@ -425,7 +425,7 @@ export function CertificateDesigner({
             </p>
           </CardHeader>
           <CardContent>
-            <div className="overflow-auto bg-muted/30 rounded-lg p-6 flex items-center justify-center" style={{ minHeight: 500 }}>
+            <div className="overflow-auto bg-muted/30 rounded-xl p-6 flex items-center justify-center" style={{ minHeight: 500 }}>
               <CertificatePreview
                 design={design}
                 zoom={zoom}

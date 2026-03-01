@@ -270,7 +270,7 @@ export function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalytics
                 {/* Invoice total summary */}
                 <div className="flex flex-col justify-center gap-2">
                   {invoiceStats.map((inv, idx) => (
-                    <div key={inv.status} className="flex items-center justify-between rounded-lg border border-border/40 px-3 py-2">
+                    <div key={inv.status} className="flex items-center justify-between rounded-xl border border-border/40 px-3 py-2">
                       <div className="flex items-center gap-2">
                         <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }} />
                         <span className="text-xs font-medium">{inv.name}</span>

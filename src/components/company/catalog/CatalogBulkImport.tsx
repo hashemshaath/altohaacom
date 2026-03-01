@@ -224,7 +224,7 @@ export function CatalogBulkImport({ open, onOpenChange, companyId, language }: C
 
         {step === "upload" && (
           <div className="space-y-6 py-4">
-            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border p-10">
+            <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border p-10">
               <Upload className="mb-4 h-10 w-10 text-muted-foreground" />
               <p className="mb-2 font-medium">{isAr ? "ارفع ملف CSV" : "Upload a CSV file"}</p>
               <p className="mb-4 text-sm text-muted-foreground">
@@ -236,7 +236,7 @@ export function CatalogBulkImport({ open, onOpenChange, companyId, language }: C
               </label>
             </div>
 
-            <div className="flex items-center justify-between rounded-lg bg-muted/50 p-4">
+            <div className="flex items-center justify-between rounded-xl bg-muted/50 p-4">
               <div>
                 <p className="font-medium text-sm">{isAr ? "تحميل القالب" : "Download Template"}</p>
                 <p className="text-xs text-muted-foreground">{isAr ? "استخدم هذا القالب لتنسيق بياناتك" : "Use this template to format your data"}</p>

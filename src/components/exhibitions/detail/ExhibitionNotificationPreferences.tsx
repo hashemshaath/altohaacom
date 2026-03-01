@@ -92,7 +92,7 @@ export function ExhibitionNotificationPreferences({ exhibitionId, isAr }: Props)
         {items.map((item, i) => (
           <div key={item.key} className={`flex items-center justify-between px-4 py-2.5 ${i < items.length - 1 ? "border-b border-border/30" : ""}`}>
             <div className="flex items-center gap-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/60 shrink-0">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-muted/60 shrink-0">
                 <item.icon className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
               <div>

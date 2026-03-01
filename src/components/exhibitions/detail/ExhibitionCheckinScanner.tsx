@@ -189,7 +189,7 @@ export function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
           </CardHeader>
           <CardContent className="space-y-1.5">
             {stats.recent.map((r: any) => (
-              <div key={r.id} className="flex items-center justify-between text-xs p-2 rounded-lg bg-muted/30">
+              <div key={r.id} className="flex items-center justify-between text-xs p-2 rounded-xl bg-muted/30">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-3 w-3 text-chart-3" />
                   <span className="font-medium">{r.attendee_name || r.ticket_number}</span>

@@ -64,7 +64,7 @@ export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBa
 
       {/* Video Player */}
       {lesson.content_type === "video" && embedUrl && (
-        <div className="aspect-video rounded-lg overflow-hidden bg-black">
+        <div className="aspect-video rounded-xl overflow-hidden bg-black">
           <iframe
             src={embedUrl}
             className="w-full h-full"

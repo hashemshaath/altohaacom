@@ -260,7 +260,7 @@ export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Pr
               disabled={exporting}
               onClick={() => exportData(opt.value)}
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0">
                 <opt.icon className="h-4 w-4 text-primary" />
               </div>
               <div className="min-w-0">

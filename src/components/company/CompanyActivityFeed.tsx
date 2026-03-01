@@ -116,7 +116,7 @@ export function CompanyActivityFeed({ companyId }: { companyId: string | null })
             <div className="divide-y divide-border">
               {activities.map((activity) => (
                 <div key={`${activity.type}-${activity.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-muted/30 transition-colors">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${getIconColor(activity.type)}`}>
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${getIconColor(activity.type)}`}>
                     {getIcon(activity.type)}
                   </div>
                   <div className="flex-1 min-w-0">

@@ -97,21 +97,21 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
         </p>
         <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-muted-foreground border-t border-border/40 pt-4">
           <span className="flex items-center gap-1.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
               <BookOpen className="h-3 w-3 text-primary" />
             </div>
             {toEnglishDigits(moduleCount)} {isAr ? "وحدة" : "modules"}
           </span>
           {mc.duration_hours && (
             <span className="flex items-center gap-1.5">
-              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-4/10">
+              <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-4/10">
                 <Clock className="h-3 w-3 text-chart-4" />
               </div>
               {toEnglishDigits(mc.duration_hours)}h
             </span>
           )}
           <span className="flex items-center gap-1.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-2/10">
+            <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-2/10">
               <Users className="h-3 w-3 text-chart-2" />
             </div>
             {toEnglishDigits(enrollmentCount)}

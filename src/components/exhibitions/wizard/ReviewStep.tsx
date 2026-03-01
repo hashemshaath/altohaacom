@@ -72,7 +72,7 @@ export function ExhibitionReviewStep({ data }: { data: ExhibitionFormData }) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-1/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-1/10">
               <CheckCircle className="h-4 w-4 text-chart-1" />
             </div>
             {isAr ? "مراجعة قبل الإنشاء" : "Review Before Creating"}
@@ -93,7 +93,7 @@ export function ExhibitionReviewStep({ data }: { data: ExhibitionFormData }) {
 
           {data.description && (
             <>
-              <div className="rounded-lg bg-muted/40 p-3">
+              <div className="rounded-xl bg-muted/40 p-3">
                 <p className="text-sm leading-relaxed text-foreground/80">
                   {data.description.slice(0, 200)}
                   {data.description.length > 200 && "..."}

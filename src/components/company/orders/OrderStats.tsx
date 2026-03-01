@@ -25,7 +25,7 @@ export function OrderStats({ total, pending, completed, rejected, isLoading, lan
       {stats.map((s) => (
         <Card key={s.label} className={`border-s-[3px] ${s.accent}`}>
           <CardContent className="flex items-center gap-3 p-4">
-            <div className="rounded-lg bg-muted p-2">
+            <div className="rounded-xl bg-muted p-2">
               <s.icon className="h-4 w-4 text-muted-foreground" />
             </div>
             <div>

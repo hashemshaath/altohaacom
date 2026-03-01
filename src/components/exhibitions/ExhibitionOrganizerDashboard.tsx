@@ -104,7 +104,7 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
         {statCards.map((s) => (
           <Card key={s.label} className="border-border/40 transition-all hover:shadow-md hover:border-primary/20">
             <CardContent className="p-3 flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/60 shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 shrink-0">
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
               <div>
