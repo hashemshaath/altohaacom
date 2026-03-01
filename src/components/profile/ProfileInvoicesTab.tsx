@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
 import { EmptyState } from "@/components/ui/empty-state";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import {
   FileText, Search, Eye, Download, DollarSign, Clock,
@@ -155,7 +156,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  <p className="text-lg font-bold">{stat.value}</p>
+                  <p className="text-lg font-bold">{typeof stat.value === "number" ? <AnimatedCounter value={stat.value} /> : stat.value}</p>
                 </div>
               </div>
             </CardContent>

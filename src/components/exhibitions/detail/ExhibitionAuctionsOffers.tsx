@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Gavel, Clock, TrendingUp, DollarSign, Flame, Timer, Tag, Percent, ShoppingBag } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   exhibitionId: string;
@@ -133,7 +134,7 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
                       <div>
                         <p className="text-xs text-muted-foreground">{isAr ? "السعر الحالي" : "Current Bid"}</p>
                         <p className="text-xl font-bold text-primary">
-                          {Number(auction.current_price).toLocaleString()} {auction.currency}
+                          <AnimatedCounter value={Number(auction.current_price)} /> {auction.currency}
                         </p>
                       </div>
                       <div>

@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 import { TrendingUp, Users, Ticket, Star, Clock, Activity, Globe, Eye } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   exhibitionId: string;
@@ -282,7 +283,7 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
                 <kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} />
               </div>
               <div>
-                <p className={`text-sm font-bold ${kpi.color}`}>{kpi.value}</p>
+                <p className={`text-sm font-bold ${kpi.color}`}>{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
                 <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
               </div>
             </CardContent>
