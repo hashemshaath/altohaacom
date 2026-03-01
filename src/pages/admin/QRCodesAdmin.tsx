@@ -123,14 +123,14 @@ export default function QRCodesAdmin() {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {[
-          { icon: <Hash className="h-4 w-4" />, label: isAr ? "إجمالي" : "Total", value: stats?.total ?? "—" },
-          { icon: <QrCode className="h-4 w-4" />, label: isAr ? "النشطة" : "Active", value: stats?.active ?? "—" },
-          { icon: <ScanLine className="h-4 w-4" />, label: isAr ? "أعلى مسح" : "Top Scans", value: stats?.topScanned ?? "—" },
-          { icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "أكثر كود" : "Top Code", value: stats?.topCode ?? "—" },
+          { icon: <Hash className="h-4 w-4" />, label: isAr ? "إجمالي" : "Total", value: stats?.total ?? "—", color: "text-primary", bg: "bg-primary/10" },
+          { icon: <QrCode className="h-4 w-4" />, label: isAr ? "النشطة" : "Active", value: stats?.active ?? "—", color: "text-chart-5", bg: "bg-chart-5/10" },
+          { icon: <ScanLine className="h-4 w-4" />, label: isAr ? "أعلى مسح" : "Top Scans", value: stats?.topScanned ?? "—", color: "text-chart-3", bg: "bg-chart-3/10" },
+          { icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "أكثر كود" : "Top Code", value: stats?.topCode ?? "—", color: "text-chart-4", bg: "bg-chart-4/10" },
         ].map((s, i) => (
-          <Card key={i}>
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-2.5 p-3 sm:p-4">
-              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">{s.icon}</div>
+              <div className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl shrink-0 transition-transform duration-300 group-hover:scale-110 ${s.bg} ${s.color}`}>{s.icon}</div>
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs text-muted-foreground">{s.label}</p>
                 <p className="text-sm sm:text-lg font-bold truncate">{s.value}</p>
@@ -141,7 +141,7 @@ export default function QRCodesAdmin() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardContent className="flex flex-col gap-2.5 p-3 sm:flex-row sm:items-center sm:p-4">
           <div className="relative flex-1">
             <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -170,7 +170,7 @@ export default function QRCodesAdmin() {
       <BulkActionBar count={bulk.count} onClear={bulk.clearSelection} onExport={() => exportCSV(bulk.selectedItems)} />
 
       {/* Table / Cards */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader className="pb-3 px-3 sm:px-6">
           <CardTitle className="text-sm">{isAr ? "الرموز المُصدرة" : "Issued Codes"} ({filtered?.length || 0})</CardTitle>
         </CardHeader>

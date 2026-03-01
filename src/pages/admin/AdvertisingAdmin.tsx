@@ -318,9 +318,9 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label}>
+          <Card key={kpi.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-2.5 p-3 sm:p-4">
-              <div className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-muted shrink-0 ${kpi.color}`}>
+              <div className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-muted shrink-0 transition-transform duration-300 group-hover:scale-110 ${kpi.color}`}>
                 <kpi.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0">
@@ -335,47 +335,47 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       {/* Tabs */}
       <Tabs defaultValue="requests">
         <div className="relative">
-          <TabsList className="flex h-auto w-auto gap-1 overflow-x-auto scrollbar-none bg-transparent justify-start p-0 sm:flex-wrap">
-            <TabsTrigger value="requests" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+          <TabsList className="flex h-auto w-auto gap-1 overflow-x-auto scrollbar-none justify-start p-1.5 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur sm:flex-wrap">
+            <TabsTrigger value="requests" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <FileText className="h-3.5 w-3.5" />
               {isAr ? "الطلبات" : "Requests"}
               {pendingRequests.length > 0 && <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[9px]">{pendingRequests.length}</Badge>}
             </TabsTrigger>
-            <TabsTrigger value="campaigns" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="campaigns" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <Megaphone className="h-3.5 w-3.5" />
               {isAr ? "الحملات" : "Campaigns"}
               {pendingCampaigns.length > 0 && <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[9px]">{pendingCampaigns.length}</Badge>}
             </TabsTrigger>
-            <TabsTrigger value="creatives" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="creatives" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <LayoutGrid className="h-3.5 w-3.5" />
               {isAr ? "المواد" : "Creatives"}
               {pendingCreatives.length > 0 && <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[9px]">{pendingCreatives.length}</Badge>}
             </TabsTrigger>
-            <TabsTrigger value="placements" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="placements" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <Target className="h-3.5 w-3.5" />
               {isAr ? "المواقع" : "Placements"}
             </TabsTrigger>
-            <TabsTrigger value="packages" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="packages" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <Package className="h-3.5 w-3.5" />
               {isAr ? "الباقات" : "Packages"}
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="analytics" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <BarChart3 className="h-3.5 w-3.5" />
               {isAr ? "التحليلات" : "Analytics"}
             </TabsTrigger>
-            <TabsTrigger value="reports" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="reports" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <FileBarChart className="h-3.5 w-3.5" />
               {isAr ? "التقارير" : "Reports"}
             </TabsTrigger>
-            <TabsTrigger value="ai-insights" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="ai-insights" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <Sparkles className="h-3.5 w-3.5" />
               {isAr ? "AI" : "AI"}
             </TabsTrigger>
-            <TabsTrigger value="behavior" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="behavior" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <Brain className="h-3.5 w-3.5" />
               {isAr ? "السلوك" : "Behavior"}
             </TabsTrigger>
-            <TabsTrigger value="integrations" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm">
+            <TabsTrigger value="integrations" className="gap-1 shrink-0 whitespace-nowrap text-xs sm:text-sm rounded-xl data-[state=active]:shadow-sm">
               <Globe className="h-3.5 w-3.5" />
               {isAr ? "تكاملات" : "Integrations"}
             </TabsTrigger>
