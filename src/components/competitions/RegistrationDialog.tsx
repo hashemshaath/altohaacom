@@ -391,7 +391,7 @@ export function RegistrationForm({
                   />
                 </div>
                 {searchResults.length > 0 && (
-                  <div className="border rounded-lg divide-y max-h-32 overflow-y-auto">
+                  <div className="border rounded-xl divide-y max-h-32 overflow-y-auto">
                     {searchResults
                       .filter((r: any) => !teamMembers.some((m) => m.user_id === r.user_id))
                       .map((r: any) => (
@@ -521,7 +521,7 @@ export function RegistrationForm({
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" disabled={uploading} />
             {imagePreview ? (
               <div className="relative">
-                <img src={imagePreview} alt="Dish preview" className="h-48 w-full rounded-lg object-cover" />
+                <img src={imagePreview} alt="Dish preview" className="h-48 w-full rounded-xl object-cover" />
                 <Button type="button" variant="destructive" size="icon" className="absolute end-2 top-2" onClick={removeImage} disabled={uploading}>
                   <X className="h-4 w-4" />
                 </Button>
@@ -571,7 +571,7 @@ export function RegistrationForm({
                   <span className="text-primary tabular-nums">{(fee * (1 + taxRate / 100)).toFixed(2)} {currency}</span>
                 </div>
               </div>
-              <Badge variant="secondary" className="text-[10px] font-medium rounded-lg">
+              <Badge variant="secondary" className="text-[10px] font-medium rounded-xl">
                 {isAr ? "سيتم تحصيل الرسوم بعد الموافقة" : "Fee will be collected after approval"}
               </Badge>
             </div>

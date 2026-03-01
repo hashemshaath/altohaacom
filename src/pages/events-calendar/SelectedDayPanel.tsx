@@ -16,7 +16,7 @@ export function SelectedDayPanel({ day, events, onClose, isAr }: {
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <Calendar className="h-4 w-4 text-primary" />
             </div>
             {format(day, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy")}

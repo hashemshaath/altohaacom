@@ -246,7 +246,7 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
                     { label: isAr ? "قيد الانتظار" : "Pending", value: registrationStats?.pending || 0, color: "bg-chart-4/10 text-chart-4" },
                     { label: isAr ? "مرفوض" : "Rejected", value: registrationStats?.rejected || 0, color: "bg-destructive/10 text-destructive" },
                   ].map(s => (
-                    <div key={s.label} className="flex items-center gap-2 rounded-lg border p-3 flex-1 min-w-[120px] transition-all hover:shadow-sm">
+                    <div key={s.label} className="flex items-center gap-2 rounded-xl border p-3 flex-1 min-w-[120px] transition-all hover:shadow-sm">
                       <div className={`rounded-full px-2 py-0.5 text-xs font-medium ${s.color}`}>{s.value}</div>
                       <span className="text-sm text-muted-foreground">{s.label}</span>
                     </div>
@@ -300,7 +300,7 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
                   ].map(s => {
                     const Icon = s.icon;
                     return (
-                      <div key={s.label} className="rounded-lg border p-3 text-center transition-all hover:shadow-sm">
+                      <div key={s.label} className="rounded-xl border p-3 text-center transition-all hover:shadow-sm">
                         <Icon className={`mx-auto h-4 w-4 mb-1 ${s.color}`} />
                         <p className="text-xl font-bold">{s.value}</p>
                         <p className="text-[10px] text-muted-foreground">{s.label}</p>
@@ -353,7 +353,7 @@ function KPICard({ icon: Icon, label, value, loading, accent, trend, subtitle }:
     <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">
       <CardContent className="pt-4 pb-3">
         <div className="flex items-center gap-3">
-          <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${accent}`}>
+          <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${accent}`}>
             <Icon className="h-4 w-4" />
           </div>
           <div className="min-w-0">

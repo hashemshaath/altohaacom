@@ -205,7 +205,7 @@ export default function AIInsightsPanel() {
             <Card className="border-primary/10">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
                     <Brain className="h-3.5 w-3.5 text-primary" />
                   </div>
                   {isAr ? "نتائج التحليل" : "Analysis Results"}
@@ -290,7 +290,7 @@ export default function AIInsightsPanel() {
                 >
                   <CardContent className="flex items-center justify-between py-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
                         <FileText className="h-4 w-4 text-primary" />
                       </div>
                       <div>

@@ -86,10 +86,10 @@ export function EntryComparison({ competitionId }: EntryComparisonProps) {
   const rightEntry = registrations?.find(r => r.id === rightId);
 
   const renderEntry = (entry: typeof leftEntry) => {
-    if (!entry) return <div className="h-32 rounded-lg border-2 border-dashed flex items-center justify-center text-muted-foreground text-sm">{language === "ar" ? "اختر مشارك" : "Select entry"}</div>;
+    if (!entry) return <div className="h-32 rounded-xl border-2 border-dashed flex items-center justify-center text-muted-foreground text-sm">{language === "ar" ? "اختر مشارك" : "Select entry"}</div>;
     return (
-      <div className="flex items-center gap-3 p-3 rounded-lg border">
-        <div className="h-12 w-12 rounded-lg bg-muted overflow-hidden shrink-0">
+      <div className="flex items-center gap-3 p-3 rounded-xl border">
+        <div className="h-12 w-12 rounded-xl bg-muted overflow-hidden shrink-0">
           {entry.dish_image_url ? (
             <img src={entry.dish_image_url} alt="" className="h-full w-full object-cover" />
           ) : (

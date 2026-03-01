@@ -40,9 +40,9 @@ export const ImportHistory = React.memo(({ open, onOpenChange, loading, history,
             {history.map((log) => {
               const tableInfo = TARGET_TABLE_OPTIONS.find(t => t.value === log.target_table);
               return (
-                <div key={log.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div key={log.id} className="flex items-center justify-between rounded-xl border p-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       {log.action === 'create' ? <Plus className="h-4 w-4 text-primary" /> : <RefreshCw className="h-4 w-4 text-primary" />}
                     </div>
                     <div className="min-w-0">

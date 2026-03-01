@@ -64,7 +64,7 @@ export function ProfileCompletionCard() {
               <div
                 key={field.key}
                 className={cn(
-                  "flex h-7 w-7 items-center justify-center rounded-lg transition-all",
+                  "flex h-7 w-7 items-center justify-center rounded-xl transition-all",
                   done ? "bg-chart-3/10 text-chart-3" : "bg-muted text-muted-foreground"
                 )}
                 title={isAr ? field.labelAr : field.labelEn}

@@ -352,7 +352,7 @@ export default function CompanyLogin() {
             </div>
 
             {/* Company badge */}
-            <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+            <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <Building2 className="h-5 w-5 text-primary shrink-0" />
               <div className="min-w-0">
                 <p className="text-sm font-medium truncate">{isAr ? companyInfo?.name_ar || companyInfo?.name : companyInfo?.name}</p>
@@ -360,7 +360,7 @@ export default function CompanyLogin() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+            <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <CheckCircle className="h-5 w-5 text-primary shrink-0" />
               <div className="text-sm">
                 <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
@@ -449,7 +449,7 @@ export default function CompanyLogin() {
           ) : step === "credentials" ? (
             <>
               {/* Company badge */}
-              <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+              <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3">
                 <Building2 className="h-5 w-5 text-primary shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium truncate">{isAr ? companyInfo?.name_ar || companyInfo?.name : companyInfo?.name}</p>
@@ -465,7 +465,7 @@ export default function CompanyLogin() {
               </div>
 
               {/* Credential method toggle */}
-              <div className="flex rounded-lg border border-border/50 p-1 gap-1">
+              <div className="flex rounded-xl border border-border/50 p-1 gap-1">
                 <button
                   type="button"
                   onClick={() => { setCredentialMethod("phone"); setErrors({}); }}
@@ -526,7 +526,7 @@ export default function CompanyLogin() {
               ) : (
                 <>
                   {isLockedOut && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-center">
+                    <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-center">
                       <p className="text-sm font-medium text-destructive">
                         {isAr ? "تم قفل تسجيل الدخول مؤقتاً" : "Login temporarily locked"}
                       </p>

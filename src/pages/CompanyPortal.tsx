@@ -134,7 +134,7 @@ export default function CompanyPortalLayout() {
             <div className="flex items-center justify-between border-b p-3">
               {!collapsed && (
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
                     <Building2 className="h-4 w-4" />
                   </div>
                   <span className="font-semibold">{language === "ar" ? "بوابة الشركة" : "Company Portal"}</span>

@@ -251,7 +251,7 @@ export function CompetitionStatusManager({
         </div>
 
         {/* Status Flow Visualization */}
-        <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-muted/30 p-3 text-xs">
+        <div className="flex flex-wrap items-center gap-1 rounded-xl border bg-muted/30 p-3 text-xs">
           {(Object.keys(STATUS_CONFIG) as CompetitionStatus[])
             .filter((s) => s !== "cancelled")
             .map((flowStatus, index, arr) => {
@@ -286,7 +286,7 @@ export function CompetitionStatusManager({
 
         {/* Inline Confirmation Panel */}
         {pendingStatus && (
-          <div className="rounded-lg border-2 border-chart-4/30 bg-chart-4/5 p-4">
+          <div className="rounded-xl border-2 border-chart-4/30 bg-chart-4/5 p-4">
             <div className="flex items-start gap-3">
               <AlertTriangle className="h-5 w-5 text-chart-4 mt-0.5" />
               <div className="flex-1 space-y-3">

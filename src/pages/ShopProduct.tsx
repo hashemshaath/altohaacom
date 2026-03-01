@@ -157,7 +157,7 @@ export default function ShopProduct() {
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-200 ${
+                    className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200 ${
                       i === selectedImage ? "border-primary ring-2 ring-primary/20 scale-105" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
@@ -203,7 +203,7 @@ export default function ShopProduct() {
 
             {/* Quantity + Add to Cart */}
             <div className="flex items-center gap-3 pt-2">
-              <div className="flex items-center rounded-lg border">
+              <div className="flex items-center rounded-xl border">
                 <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1}>
                   <Minus className="h-4 w-4" />
                 </Button>

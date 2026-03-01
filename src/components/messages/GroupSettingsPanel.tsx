@@ -112,7 +112,7 @@ export function GroupSettingsPanel({ open, onOpenChange, group, members, onAddMe
                   const isCreator = m.user_id === group?.created_by;
                   const isMemberAdmin = m.role === "admin";
                   return (
-                    <div key={m.user_id} className="flex items-center gap-2 rounded-lg p-2 hover:bg-muted/50 transition-colors">
+                    <div key={m.user_id} className="flex items-center gap-2 rounded-xl p-2 hover:bg-muted/50 transition-colors">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={profile?.avatar_url || undefined} />
                         <AvatarFallback className="text-xs">{(profile?.display_name || profile?.full_name || "U")[0]}</AvatarFallback>

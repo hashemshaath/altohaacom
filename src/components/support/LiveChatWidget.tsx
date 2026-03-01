@@ -206,13 +206,13 @@ export function LiveChatWidget() {
                   return (
                     <div key={msg.id} className={cn("flex gap-2", isMine ? "justify-end" : "justify-start")}>
                       {isSystem ? (
-                        <Badge variant="outline" className="text-[10px] text-muted-foreground mx-auto rounded-lg px-3 py-1 border-border/20">{msg.message}</Badge>
+                        <Badge variant="outline" className="text-[10px] text-muted-foreground mx-auto rounded-xl px-3 py-1 border-border/20">{msg.message}</Badge>
                       ) : (
                         <>
                           {!isMine && (
                             <div className="w-7 shrink-0 self-end">
                               {showAvatar && (
-                                <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                                   <Bot className="h-3.5 w-3.5 text-primary" />
                                 </div>
                               )}

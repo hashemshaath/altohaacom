@@ -960,7 +960,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           </DialogHeader>
 
           {/* Retention offer */}
-          <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-2">
+          <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-4 space-y-2">
             <div className="flex items-center gap-2">
               <Gift className="h-5 w-5 text-primary" />
               <p className="text-sm font-bold">{isAr ? "قبل أن تذهب..." : "Before you go..."}</p>
