@@ -97,7 +97,7 @@ export function EvaluationCard({ evaluation, language, onRespond, isResponding }
 
         {/* Company response */}
         {hasResponse && (
-          <div className="mt-3 rounded-lg border bg-muted/50 p-3">
+          <div className="mt-3 rounded-xl border bg-muted/50 p-3">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="h-4 w-4 text-primary" />
               <span className="text-xs font-medium">{isAr ? "رد الشركة" : "Company Response"}</span>
@@ -122,7 +122,7 @@ export function EvaluationCard({ evaluation, language, onRespond, isResponding }
         )}
 
         {showReply && (
-          <div className="mt-3 space-y-3 rounded-lg border p-3">
+          <div className="mt-3 space-y-3 rounded-xl border p-3">
             <Textarea
               placeholder={isAr ? "اكتب ردك..." : "Write your response..."}
               value={isAr ? responseAr : response}

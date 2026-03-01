@@ -53,7 +53,7 @@ export function UserStatsBar() {
             </div>
             <div className="min-w-0">
               {isLoading ? (
-                <Skeleton className="h-6 w-10 rounded-lg" />
+                <Skeleton className="h-6 w-10 rounded-xl" />
               ) : (
                 <p className="text-lg font-black leading-none tracking-tight">{item.value?.toLocaleString()}</p>
               )}

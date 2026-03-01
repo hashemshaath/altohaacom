@@ -135,7 +135,7 @@ export function MoyasarPaymentForm({
         </div>
       </CardHeader>
       <CardContent className="p-4">
-        <div className="mb-4 rounded-lg bg-muted/40 p-3 flex items-center justify-between">
+        <div className="mb-4 rounded-xl bg-muted/40 p-3 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">{t("Total Amount", "المبلغ الإجمالي")}</span>
           <span className="text-lg font-bold text-primary">{amount.toFixed(2)} {currency}</span>
         </div>

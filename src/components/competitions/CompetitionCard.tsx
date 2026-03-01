@@ -74,7 +74,7 @@ export function getTabBucket(comp: Competition): "upcoming" | "active" | "past" 
 /* ─── Status Badge (reusable) ─── */
 function StatusBadge({ derived, isAr, className = "" }: { derived: ReturnType<typeof getDerivedStatus>; isAr: boolean; className?: string }) {
   return (
-    <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md rounded-lg ${derived.color} ring-1 ring-white/10 ${className}`}>
+    <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md rounded-xl ${derived.color} ring-1 ring-white/10 ${className}`}>
       {derived.color.includes("chart-3") ? (
         <span className="relative me-1.5 flex h-1.5 w-1.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -131,7 +131,7 @@ export const CompetitionCard = memo(
               <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3 sm:p-4">
                 <StatusBadge derived={derived} isAr={isAr} />
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
-                  <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-lg">
+                  <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-xl">
                     <Clock className="h-2.5 w-2.5 text-primary" />
                     {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft}D`}
                   </Badge>
@@ -142,13 +142,13 @@ export const CompetitionCard = memo(
               <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
                 <div className="flex items-end justify-between gap-2">
                   <span className="flex items-center gap-1.5 text-[10px] font-bold text-foreground">
-                    <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-lg bg-background/70 backdrop-blur-sm">
+                    <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-xl bg-background/70 backdrop-blur-sm">
                       <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary" />
                     </div>
                     <span className="drop-shadow-md">{toEnglishDigits(format(new Date(competition.competition_start), "MMM d, yyyy"))}</span>
                   </span>
                   {maxP && (
-                    <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-primary/10 backdrop-blur-md border-0 text-primary rounded-lg">
+                    <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-primary/10 backdrop-blur-md border-0 text-primary rounded-xl">
                       <Users className="h-2.5 w-2.5" />
                       {toEnglishDigits(regCount)}/{toEnglishDigits(maxP)}
                     </Badge>
@@ -252,7 +252,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
               <div className="flex items-center gap-2 flex-wrap">
                 <StatusBadge derived={derived} isAr={isAr} className="px-3 py-1 text-[10px]" />
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
-                  <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/30 rounded-lg">
+                  <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/30 rounded-xl">
                     <Clock className="h-3 w-3 text-primary" />
                     {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft} DAYS LEFT`}
                   </Badge>

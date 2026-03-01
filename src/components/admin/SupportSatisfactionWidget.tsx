@@ -133,7 +133,7 @@ export function SupportSatisfactionWidget() {
         <CardContent className="space-y-3">
           {kpis.map(k => (
             <div key={k.label} className="flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-lg ${k.bg} flex items-center justify-center shrink-0`}>
+              <div className={`w-8 h-8 rounded-xl ${k.bg} flex items-center justify-center shrink-0`}>
                 <k.icon className={`h-4 w-4 ${k.color}`} />
               </div>
               <div className="flex-1 min-w-0">

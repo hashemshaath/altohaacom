@@ -133,7 +133,7 @@ export function ExhibitionSurveyManager({ exhibitionId, isAr, isOrganizer }: Pro
 
                 <Label className="text-xs font-semibold">{t("Questions", "الأسئلة")}</Label>
                 {questions.map((q, i) => (
-                  <div key={i} className="p-3 rounded-lg bg-muted/40 space-y-2">
+                  <div key={i} className="p-3 rounded-xl bg-muted/40 space-y-2">
                     <div className="flex gap-2">
                       <Input
                         value={q.question}
@@ -284,7 +284,7 @@ function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhib
                       <button
                         key={r}
                         onClick={() => setAnswers({ ...answers, [q.id]: r })}
-                        className={`h-8 w-8 rounded-lg text-xs font-bold transition-all ${
+                        className={`h-8 w-8 rounded-xl text-xs font-bold transition-all ${
                           answers[q.id] === r ? "bg-chart-4 text-chart-4-foreground scale-110" : "bg-muted/60 text-muted-foreground hover:bg-muted"
                         }`}
                       >

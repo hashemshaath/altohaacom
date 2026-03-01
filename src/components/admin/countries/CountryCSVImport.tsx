@@ -146,7 +146,7 @@ export function CountryCSVImport() {
         {!parsed ? (
           <div className="space-y-3">
             <div
-              className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary/40 transition-colors"
+              className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer hover:border-primary/40 transition-colors"
               onClick={() => fileRef.current?.click()}
             >
               <FileText className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />

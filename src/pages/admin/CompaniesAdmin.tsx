@@ -747,9 +747,9 @@ export default function CompaniesAdmin() {
           <div className="flex-1">
             <div className="flex items-center gap-4">
               {companyDetails.logo_url ? (
-                <img src={companyDetails.logo_url} alt={companyDetails.name} className="h-12 w-12 rounded-lg object-cover" />
+                <img src={companyDetails.logo_url} alt={companyDetails.name} className="h-12 w-12 rounded-xl object-cover" />
               ) : (
-                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Building2 className="h-6 w-6 text-primary" />
                 </div>
               )}
@@ -1502,7 +1502,7 @@ export default function CompaniesAdmin() {
                     <CardContent>
                       <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
                         {catMedia.map((item: any) => (
-                          <div key={item.id} className="relative group rounded-lg border overflow-hidden">
+                          <div key={item.id} className="relative group rounded-xl border overflow-hidden">
                             {item.file_type?.startsWith("image") ? (
                               <img src={item.file_url} alt={item.title || item.filename} className="h-32 w-full object-cover" />
                             ) : (
@@ -1889,7 +1889,7 @@ export default function CompaniesAdmin() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-lg object-cover" /> : <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
+                          {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-xl object-cover" /> : <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
                           <div>
                             <p className="font-medium">{isAr && company.name_ar ? company.name_ar : company.name}</p>
                             {company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}

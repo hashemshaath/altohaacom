@@ -278,7 +278,7 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
         ].map(kpi => (
           <Card key={kpi.label} className="border-border/40">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 shrink-0">
                 <kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} />
               </div>
               <div>

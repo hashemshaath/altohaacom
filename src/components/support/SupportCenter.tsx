@@ -212,7 +212,7 @@ export function SupportCenter() {
                   <ScrollArea className="max-h-[300px]">
                     <div className="space-y-3">
                       {replies.map((r: any) => (
-                        <div key={r.id} className={cn("p-3 rounded-lg text-sm", r.is_staff ? "bg-primary/5 border-s-2 border-primary" : "bg-muted")}>
+                        <div key={r.id} className={cn("p-3 rounded-xl text-sm", r.is_staff ? "bg-primary/5 border-s-2 border-primary" : "bg-muted")}>
                           <div className="flex items-center justify-between mb-1">
                             <Badge variant="outline" className="text-[10px]">{r.is_staff ? (isAr ? "فريق الدعم" : "Support Team") : (isAr ? "أنت" : "You")}</Badge>
                             <span className="text-[10px] text-muted-foreground">{formatDistanceToNow(new Date(r.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}</span>

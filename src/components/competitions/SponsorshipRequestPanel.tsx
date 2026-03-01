@@ -237,7 +237,7 @@ export function SponsorshipRequestPanel({ listId, competitionId }: Props) {
               <Card key={req.id}>
                 <CardContent className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                       {company?.logo_url ? (
                         <img src={company.logo_url} alt="" className="h-8 w-8 rounded object-contain" />
                       ) : (

@@ -199,11 +199,11 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
               const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
               const Icon = config.icon;
               return (
-                <div key={sponsor.id} className="flex items-center gap-3 rounded-lg border border-chart-4/30 bg-chart-4/5 p-3">
+                <div key={sponsor.id} className="flex items-center gap-3 rounded-xl border border-chart-4/30 bg-chart-4/5 p-3">
                   {sponsor.companies?.logo_url ? (
-                    <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
+                    <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-xl object-contain" />
                   ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                       <Building className="h-5 w-5 text-muted-foreground" />
                     </div>
                   )}
@@ -237,7 +237,7 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
 
         {/* Add Sponsor Form (organizer only) */}
         {isOrganizer && (
-          <div className="flex flex-wrap gap-2 rounded-lg border p-3">
+          <div className="flex flex-wrap gap-2 rounded-xl border p-3">
             <Select value={selectedCompany} onValueChange={setSelectedCompany}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder={isAr ? "اختر شركة" : "Select company"} />
@@ -285,11 +285,11 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
                   ? sponsor.companies.name_ar
                   : sponsor.companies?.name;
                 return (
-                  <div key={sponsor.id} className={`flex items-center gap-3 rounded-lg border p-3 ${config.bg}`}>
+                  <div key={sponsor.id} className={`flex items-center gap-3 rounded-xl border p-3 ${config.bg}`}>
                     {sponsor.companies?.logo_url ? (
-                      <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-lg object-contain" />
+                      <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-xl object-contain" />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                         <Building className="h-5 w-5 text-muted-foreground" />
                       </div>
                     )}

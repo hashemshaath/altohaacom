@@ -52,7 +52,7 @@ export function ExhibitionDocuments({ documents, isAr }: Props) {
               rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl border border-border/40 bg-muted/20 px-3 py-2.5 text-sm font-medium transition-all hover:bg-muted/50 hover:shadow-sm group"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-2/10 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-2/10 shrink-0">
                 <Icon className="h-4 w-4 text-chart-2" />
               </div>
               <span className="flex-1 truncate">{name}</span>
