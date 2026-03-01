@@ -52,12 +52,20 @@ export const VerifiedBadge = forwardRef<HTMLSpanElement, VerifiedBadgeProps>(
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <span ref={ref} className={cn("inline-flex items-center gap-1", className)}>
-            <Icon className={cn(sizeMap[size], config.color)} />
+          <span ref={ref} className={cn("inline-flex items-center gap-1 group/badge", className)}>
+            <span className="relative">
+              <Icon className={cn(sizeMap[size], config.color, "transition-transform duration-300 group-hover/badge:scale-110")} />
+              {level === "professional" || level === "organization" ? (
+                <span className={cn("absolute -inset-1 rounded-full opacity-0 group-hover/badge:opacity-100 transition-opacity duration-300", level === "professional" ? "bg-accent/20" : "bg-chart-1/20")} />
+              ) : null}
+            </span>
             {showLabel && <span className={cn("text-xs font-medium", config.color)}>{label}</span>}
           </span>
         </TooltipTrigger>
-        <TooltipContent>{label}</TooltipContent>
+        <TooltipContent side="top" className="flex items-center gap-1.5">
+          <Icon className={cn("h-3.5 w-3.5", config.color)} />
+          {label}
+        </TooltipContent>
       </Tooltip>
     );
   }

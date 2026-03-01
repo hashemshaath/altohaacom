@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Activity, UserPlus, MessageSquare, AlertTriangle, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 /**
  * A compact real-time activity bar for the admin dashboard.
@@ -96,7 +97,7 @@ export function SystemHealthBar() {
               <span className="absolute -top-0.5 -end-0.5 h-1.5 w-1.5 rounded-full bg-chart-2 animate-ping" />
             )}
           </div>
-          <span className={item.color}>{item.value}</span>
+          <AnimatedCounter value={item.value} className={item.color} />
           <span className="text-muted-foreground hidden sm:inline">{item.label}</span>
         </Badge>
       ))}

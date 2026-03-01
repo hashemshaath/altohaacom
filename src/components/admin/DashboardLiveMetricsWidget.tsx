@@ -8,6 +8,9 @@ import { Progress } from "@/components/ui/progress";
 import { AreaChart, Area, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 import { Activity, UserPlus, FileText, MessageSquare, Trophy, Ticket, TrendingUp, Zap } from "lucide-react";
 import { format, subHours } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { ResultReveal } from "@/components/ui/result-reveal";
+import { DataFreshness } from "@/components/ui/data-freshness";
 
 export function DashboardLiveMetricsWidget() {
   const { language } = useLanguage();
@@ -98,23 +101,28 @@ export function DashboardLiveMetricsWidget() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-5 gap-3 mb-3">
-          {metrics.map((m) => (
-            <div key={m.label} className="text-center space-y-1">
-              <div className={`mx-auto w-8 h-8 rounded-xl ${m.bg} flex items-center justify-center`}>
-                <m.icon className={`h-4 w-4 ${m.color}`} />
+          {metrics.map((m, i) => (
+            <ResultReveal key={m.label} delay={i * 60} variant="scale">
+              <div className="text-center space-y-1">
+                <div className={`mx-auto w-8 h-8 rounded-xl ${m.bg} flex items-center justify-center`}>
+                  <m.icon className={`h-4 w-4 ${m.color}`} />
+                </div>
+                <AnimatedCounter value={m.value} className="text-lg" />
+                <p className="text-[9px] text-muted-foreground">{m.label}</p>
+                {m.delta !== 0 && (
+                  <Badge variant="outline" className={`text-[8px] px-1 ${m.delta > 0 ? "text-chart-2" : "text-destructive"}`}>
+                    {m.delta > 0 ? "+" : ""}{m.delta}%
+                  </Badge>
+                )}
               </div>
-              <p className="text-lg font-bold">{m.value}</p>
-              <p className="text-[9px] text-muted-foreground">{m.label}</p>
-              {m.delta !== 0 && (
-                <Badge variant="outline" className={`text-[8px] px-1 ${m.delta > 0 ? "text-chart-2" : "text-destructive"}`}>
-                  {m.delta > 0 ? "+" : ""}{m.delta}%
-                </Badge>
-              )}
-            </div>
+            </ResultReveal>
           ))}
         </div>
         <div>
-          <p className="text-[10px] text-muted-foreground mb-1">{isAr ? "التسجيلات (آخر 12 ساعة)" : "Registrations (last 12h)"}</p>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-[10px] text-muted-foreground">{isAr ? "التسجيلات (آخر 12 ساعة)" : "Registrations (last 12h)"}</p>
+            <DataFreshness lastUpdated={new Date()} />
+          </div>
           <ResponsiveContainer width="100%" height={60}>
             <AreaChart data={data.hourlyData}>
               <XAxis dataKey="hour" tick={{ fontSize: 8 }} interval={2} />
