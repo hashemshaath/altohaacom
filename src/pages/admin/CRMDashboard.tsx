@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Ticket,
   Headphones,
@@ -282,7 +283,7 @@ export default function CRMDashboard() {
             </div>
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{isAr ? "تذاكر مفتوحة" : "Open Tickets"}</p>
-              <p className="text-2xl font-bold">{ticketStats?.open ?? "—"}</p>
+              <AnimatedCounter value={ticketStats?.open ?? 0} className="text-2xl font-bold" />
               {ticketStats?.urgent ? (
                 <p className="text-[10px] text-destructive font-medium">
                   {ticketStats.urgent} {isAr ? "عاجلة" : "urgent"}
@@ -302,7 +303,7 @@ export default function CRMDashboard() {
             </div>
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{isAr ? "محادثات نشطة" : "Active Chats"}</p>
-              <p className="text-2xl font-bold">{(chatStats?.waiting ?? 0) + (chatStats?.active ?? 0)}</p>
+              <AnimatedCounter value={(chatStats?.waiting ?? 0) + (chatStats?.active ?? 0)} className="text-2xl font-bold" />
               {chatStats?.waiting ? (
                 <p className="text-[10px] text-chart-4 font-medium">
                   {chatStats.waiting} {isAr ? "في الانتظار" : "waiting"}
@@ -322,7 +323,7 @@ export default function CRMDashboard() {
             </div>
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{isAr ? "عملاء محتملين" : "Active Leads"}</p>
-              <p className="text-2xl font-bold">{leadStats?.total ?? "—"}</p>
+              <AnimatedCounter value={leadStats?.total ?? 0} className="text-2xl font-bold" />
               <p className="text-[10px] text-muted-foreground">
                 {leadStats?.new ?? 0} {isAr ? "جديد" : "new"}
               </p>
@@ -340,9 +341,9 @@ export default function CRMDashboard() {
             </div>
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{isAr ? "شرائح الجمهور" : "Segments"}</p>
-              <p className="text-2xl font-bold">{segmentStats?.total ?? "—"}</p>
+              <AnimatedCounter value={segmentStats?.total ?? 0} className="text-2xl font-bold" />
               <p className="text-[10px] text-muted-foreground">
-                {toEnglishDigits((segmentStats?.totalReach ?? 0).toLocaleString())} {isAr ? "مستخدم" : "reach"}
+                <AnimatedCounter value={segmentStats?.totalReach ?? 0} className="inline" format /> {isAr ? "مستخدم" : "reach"}
               </p>
             </div>
             <Button variant="ghost" size="icon" asChild className="shrink-0">
@@ -363,9 +364,9 @@ export default function CRMDashboard() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <p className="text-4xl font-bold text-primary">{resolutionRate}%</p>
+              <AnimatedCounter value={resolutionRate} className="text-4xl font-bold text-primary" suffix="%" />
               <p className="text-xs text-muted-foreground mt-1">
-                {totalResolved} / {ticketStats?.total ?? 0} {isAr ? "تذكرة" : "tickets"}
+                <AnimatedCounter value={totalResolved} className="inline" /> / <AnimatedCounter value={ticketStats?.total ?? 0} className="inline" /> {isAr ? "تذكرة" : "tickets"}
               </p>
             </div>
             <Progress value={resolutionRate} className="h-2" />
@@ -377,7 +378,7 @@ export default function CRMDashboard() {
                 </p>
               </div>
               <div className="rounded-xl border p-2">
-                <p className="text-lg font-bold">{ticketStats?.today ?? 0}</p>
+                <AnimatedCounter value={ticketStats?.today ?? 0} className="text-lg font-bold" />
                 <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
                   <Zap className="h-3 w-3" /> {isAr ? "تذاكر اليوم" : "Today"}
                 </p>
