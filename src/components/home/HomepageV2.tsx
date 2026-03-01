@@ -100,7 +100,7 @@ function CinematicHero() {
   });
 
   return (
-    <section ref={ref} className="relative h-[80vh] sm:h-[85vh] min-h-[480px] max-h-[900px] overflow-hidden">
+    <section ref={ref} className="relative h-[82vh] sm:h-[88vh] min-h-[500px] max-h-[950px] overflow-hidden">
       <div className="absolute inset-0 will-change-transform" style={{ transform: `translateY(${offset}px) scale(1.08)` }}>
         {featured?.cover_image_url ? (
           <img src={featured.cover_image_url} alt="" className={cn("h-full w-full object-cover transition-opacity duration-700", imgLoaded ? "opacity-100" : "opacity-0")} onLoad={() => setImgLoaded(true)} fetchPriority="high" decoding="async" />
@@ -108,32 +108,32 @@ function CinematicHero() {
         <div className={cn("absolute inset-0 bg-gradient-to-br from-foreground via-foreground/90 to-primary/30 transition-opacity duration-700", imgLoaded && featured?.cover_image_url ? "opacity-0" : "opacity-100")} />
       </div>
 
-      <div className="absolute inset-0 bg-foreground/45" />
-      <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-foreground/25" />
-      <div className="absolute inset-0 bg-gradient-to-r from-foreground/50 via-transparent to-transparent rtl:bg-gradient-to-l" />
+      <div className="absolute inset-0 bg-foreground/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-foreground/95 via-foreground/15 to-foreground/20" />
+      <div className="absolute inset-0 bg-gradient-to-r from-foreground/55 via-transparent to-transparent rtl:bg-gradient-to-l" />
       <div className="absolute start-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/60 to-transparent" />
 
-      <div className="relative h-full flex flex-col justify-end container pb-12 sm:pb-16 lg:pb-20">
-        <div className="max-w-2xl space-y-4 sm:space-y-5">
-          <Badge className="bg-primary/90 text-primary-foreground border-0 backdrop-blur-md px-3 py-1.5 shadow-lg shadow-primary/20">
-            <Flame className="h-3.5 w-3.5 me-1.5" />
+      <div className="relative h-full flex flex-col justify-end container pb-14 sm:pb-18 lg:pb-24">
+        <div className="max-w-2xl space-y-5 sm:space-y-6">
+          <Badge className="bg-primary/90 text-primary-foreground border-0 backdrop-blur-md px-4 py-2 shadow-xl shadow-primary/25 text-xs sm:text-sm">
+            <Flame className="h-3.5 w-3.5 me-2" />
             {isAr ? "مسابقة مميزة" : "Featured Competition"}
           </Badge>
 
-          <h1 className={cn("text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.08] text-background tracking-tight", !isAr && "font-serif")}>
+          <h1 className={cn("text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.06] text-background tracking-tight", !isAr && "font-serif")}>
             {featured ? (isAr && featured.title_ar ? featured.title_ar : featured.title) : (isAr ? "اكتشف عالم الطهي" : "Discover the Culinary World")}
           </h1>
 
           {featured && (
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               {featured.competition_start && (
-                <span className="inline-flex items-center gap-1.5 text-background/80 text-xs sm:text-sm backdrop-blur-sm bg-background/10 rounded-full px-3 py-1.5 border border-background/10">
+                <span className="inline-flex items-center gap-2 text-background/85 text-xs sm:text-sm backdrop-blur-md bg-background/10 rounded-xl px-4 py-2 border border-background/10 shadow-sm">
                   <Calendar className="h-3.5 w-3.5" />
                   {format(new Date(featured.competition_start), "MMMM d, yyyy")}
                 </span>
               )}
               {featured.city && (
-                <span className="inline-flex items-center gap-1.5 text-background/80 text-xs sm:text-sm backdrop-blur-sm bg-background/10 rounded-full px-3 py-1.5 border border-background/10">
+                <span className="inline-flex items-center gap-2 text-background/85 text-xs sm:text-sm backdrop-blur-md bg-background/10 rounded-xl px-4 py-2 border border-background/10 shadow-sm">
                   <MapPin className="h-3.5 w-3.5" />
                   {featured.city}{featured.country ? `, ${featured.country}` : ""}
                 </span>
@@ -141,14 +141,14 @@ function CinematicHero() {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-3 pt-1">
-            <Button size="lg" className="shadow-2xl shadow-primary/30 text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12" asChild>
+          <div className="flex flex-wrap gap-3.5 pt-2">
+            <Button size="lg" className="shadow-2xl shadow-primary/30 text-sm sm:text-base px-7 sm:px-9 h-12 sm:h-13 rounded-xl" asChild>
               <Link to={featured ? `/competitions/${featured.id}` : "/competitions"}>
                 {isAr ? "اكتشف المزيد" : "Explore Now"}
                 <ArrowRight className="ms-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-background/20 text-background bg-background/10 hover:bg-background/20 backdrop-blur-sm text-sm sm:text-base h-11 sm:h-12" asChild>
+            <Button size="lg" variant="outline" className="border-background/20 text-background bg-background/10 hover:bg-background/20 backdrop-blur-md text-sm sm:text-base h-12 sm:h-13 rounded-xl" asChild>
               <Link to="/competitions">
                 <Play className="me-2 h-4 w-4" />
                 {isAr ? "جميع المسابقات" : "All Competitions"}
@@ -158,7 +158,7 @@ function CinematicHero() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 inset-x-0 h-20 sm:h-24 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }
@@ -195,12 +195,9 @@ function ImmersiveStats() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20">
+    <section className="py-14 sm:py-20 lg:py-24">
       <div className="container">
-        <div className="flex justify-center gap-2 mb-6">
-          <SourceBadge source="profiles + competitions + entities + exhibitions" />
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12 divide-x divide-border/15 rtl:divide-x-reverse">
           {items.map((stat, i) => (
             <V2StatItem key={stat.label} stat={stat} index={i} />
           ))}
@@ -607,22 +604,22 @@ function ImmersiveCTA() {
   const isAr = language === "ar";
 
   return (
-    <section className="relative py-20 sm:py-24 lg:py-32 overflow-hidden">
+    <section className="relative py-24 sm:py-28 lg:py-36 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-accent" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--accent)/0.4),transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,hsl(var(--primary-foreground)/0.05),transparent_50%)]" />
 
       <div className="relative container text-center px-6">
         <SectionReveal>
-          <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
-            <h2 className={cn("text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-primary-foreground leading-tight", !isAr && "font-serif")}>
+          <div className="max-w-2xl mx-auto space-y-5 sm:space-y-7">
+            <h2 className={cn("text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary-foreground leading-tight", !isAr && "font-serif")}>
               {isAr ? "انضم إلى مجتمع الطهي العالمي" : "Join the Global Culinary Community"}
             </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-primary-foreground/70 max-w-lg mx-auto">
+            <p className="text-sm sm:text-base lg:text-lg text-primary-foreground/70 max-w-lg mx-auto leading-relaxed">
               {isAr ? "سجّل الآن وابدأ رحلتك في عالم الطهي الاحترافي مع أفضل الطهاة حول العالم" : "Sign up today and begin your professional culinary journey alongside the world's finest chefs"}
             </p>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 pt-1 sm:pt-2">
-              <Button size="lg" variant="secondary" className="shadow-2xl text-sm sm:text-base px-6 sm:px-8 h-11 sm:h-12" asChild>
+            <div className="flex flex-wrap justify-center gap-3.5 sm:gap-4 pt-2 sm:pt-3">
+              <Button size="lg" variant="secondary" className="shadow-2xl text-sm sm:text-base px-8 sm:px-10 h-12 sm:h-14 rounded-xl font-bold" asChild>
                 <Link to="/register">
                   {isAr ? "سجّل مجاناً" : "Get Started Free"}
                   <ArrowRight className="ms-2 h-4 w-4 sm:h-5 sm:w-5" />

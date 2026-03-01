@@ -1,39 +1,37 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Badge } from "@/components/ui/badge";
-import { Users, Trophy, Building2, Globe, Database } from "lucide-react";
+import { Users, Trophy, Building2, Globe } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
 
 const StatItem = forwardRef<HTMLDivElement, {
-  value: number; label: string; icon: any; color: string; bgColor: string; isVisible: boolean; delay: number; source: string;
-}>(function StatItem({ value, label, icon: Icon, color, bgColor, isVisible, delay, source }, ref) {
+  value: number; label: string; icon: any; color: string; bgColor: string; isVisible: boolean; delay: number;
+}>(function StatItem({ value, label, icon: Icon, color, bgColor, isVisible, delay }, ref) {
   const count = useCountUp(value, isVisible);
 
   return (
     <div
       ref={ref}
       className={cn(
-        "flex items-center gap-3 sm:flex-col sm:items-center sm:gap-2 px-3 py-2 sm:py-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        "group flex flex-col items-center gap-2.5 py-4 sm:py-6 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 ring-primary/10", bgColor)}>
-        <Icon className={cn("h-4.5 w-4.5 sm:h-5 sm:w-5", color)} />
+      <div className={cn(
+        "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg",
+        bgColor
+      )}>
+        <Icon className={cn("h-5 w-5", color)} />
       </div>
-      <div className="sm:text-center">
-        <p className="text-xl font-bold sm:text-2xl tracking-tight tabular-nums text-foreground">
+      <div className="text-center">
+        <p className="text-2xl sm:text-3xl font-black tracking-tight tabular-nums text-foreground">
           {count.toLocaleString()}+
         </p>
-        <p className="text-[10px] sm:text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
-        <Badge variant="outline" className="mt-1 hidden sm:inline-flex gap-0.5 text-[8px] font-normal text-muted-foreground/60 border-dashed px-1 py-0">
-          <Database className="h-2 w-2" />
-          {source}
-        </Badge>
+        <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-0.5">{label}</p>
       </div>
     </div>
   );
@@ -65,19 +63,18 @@ export function HomeStats() {
   });
 
   const items = [
-    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1", bgColor: "bg-chart-1/10", source: "profiles" },
-    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2", bgColor: "bg-chart-2/10", source: "competitions" },
-    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3", bgColor: "bg-chart-3/10", source: "culinary_entities" },
-    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4", bgColor: "bg-chart-4/10", source: "exhibitions" },
+    { value: stats?.members || 0, label: isAr ? "عضو مسجل" : "Members", icon: Users, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    { value: stats?.competitions || 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    { value: stats?.entities || 0, label: isAr ? "جهة معتمدة" : "Entities", icon: Building2, color: "text-chart-3", bgColor: "bg-chart-3/10" },
+    { value: stats?.exhibitions || 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe, color: "text-chart-4", bgColor: "bg-chart-4/10" },
   ];
 
   return (
-    <section ref={ref} className="relative border-y border-border/30 bg-card/50 backdrop-blur-sm overflow-hidden" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.03),transparent_70%)]" />
-      <div className="container relative grid grid-cols-2 sm:grid-cols-4 gap-2 py-6 sm:py-8" dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="relative border-y border-border/20 bg-card/40 backdrop-blur-sm overflow-hidden" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
+      <div className="container relative grid grid-cols-2 sm:grid-cols-4 divide-x divide-border/20 rtl:divide-x-reverse" dir={isAr ? "rtl" : "ltr"}>
         {items.map((stat, i) => (
-          <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 100} />
+          <StatItem key={stat.label} {...stat} isVisible={isVisible} delay={i * 120} />
         ))}
       </div>
     </section>
