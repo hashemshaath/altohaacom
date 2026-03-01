@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Shield, Users, Lock, Key, AlertTriangle, CheckCircle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function RolePermissionsOverview() {
   const { language } = useLanguage();
@@ -88,7 +89,7 @@ export function RolePermissionsOverview() {
             <div key={i} className="p-2 rounded-xl bg-muted/30 flex items-center gap-2">
               <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               <div>
-                <p className="text-sm font-bold">{s.value}</p>
+                <AnimatedCounter value={s.value} className="text-sm font-bold" />
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>
             </div>

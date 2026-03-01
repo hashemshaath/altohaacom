@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
@@ -483,7 +484,7 @@ export default function ArticlesAdmin() {
               <div className={cn("mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", stat.bg)}>
                 <stat.icon className={cn("h-4 w-4", stat.color)} />
               </div>
-              <p className="text-xl font-bold">{stat.value}</p>
+              <AnimatedCounter value={typeof stat.value === "number" ? stat.value : Number(stat.value) || 0} className="text-xl font-bold" />
               <p className="text-[10px] text-muted-foreground">{stat.label}</p>
             </CardContent>
           </Card>

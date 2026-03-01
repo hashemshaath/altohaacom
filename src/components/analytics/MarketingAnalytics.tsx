@@ -168,7 +168,7 @@ export function MarketingAnalytics() {
               <div>
                 <p className="text-xs text-muted-foreground">{k.label}</p>
                 {convLoading ? <Skeleton className="h-7 w-16 mt-1" /> : (
-                  <p className="text-xl font-bold">{toEnglishDigits(`${k.value}`)}</p>
+                  <AnimatedCounter value={typeof k.value === "number" ? k.value : Number(k.value) || 0} className="text-xl font-bold" />
                 )}
                 {"sub" in k && k.sub && <p className="text-[10px] text-muted-foreground">{toEnglishDigits(k.sub)} {isAr ? "مفقود" : "lost"}</p>}
               </div>
@@ -228,7 +228,7 @@ export function MarketingAnalytics() {
             ].map((step, i) => (
               <div key={i} className="text-center rounded-xl border p-4 space-y-2">
                 <step.icon className="h-5 w-5 mx-auto text-primary" />
-                <p className="text-xl font-bold">{toEnglishDigits(`${step.value}`)}</p>
+                <AnimatedCounter value={typeof step.value === "number" ? step.value : 0} className="text-xl font-bold" />
                 <p className="text-xs text-muted-foreground">{step.label}</p>
                 <Badge variant="secondary" className="text-[10px]">{toEnglishDigits(`${step.pct}`)}%</Badge>
               </div>

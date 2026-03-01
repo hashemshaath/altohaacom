@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Brain, RefreshCw, TrendingUp, TrendingDown, Users, Trophy,
   DollarSign, AlertTriangle, Target, Sparkles, Lightbulb, ShieldAlert, Activity,
@@ -162,7 +163,7 @@ export function MLPredictionsPanel() {
                         strokeDasharray={`${(data.health_score.overall / 100) * 264} 264`}
                         strokeLinecap="round" />
                     </svg>
-                    <span className="absolute text-2xl font-bold">{data.health_score.overall}</span>
+                    <span className="absolute text-2xl font-bold"><AnimatedCounter value={data.health_score.overall} /></span>
                   </div>
                   <p className="text-xs text-muted-foreground">{isAr ? "النقاط من 100" : "Score out of 100"}</p>
                 </div>
@@ -200,7 +201,7 @@ export function MLPredictionsPanel() {
                         {f.trend}
                       </Badge>
                     </div>
-                    <div className="text-2xl font-bold">{f.current_value.toLocaleString()}</div>
+                    <div className="text-2xl font-bold"><AnimatedCounter value={f.current_value} format /></div>
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <div className="text-center p-2 rounded-xl bg-muted/50">
                         <div className="text-muted-foreground">{isAr ? "3 أشهر" : "3mo"}</div>
