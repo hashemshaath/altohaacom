@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Megaphone, Target, DollarSign, TrendingUp, AlertTriangle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CampaignPerformanceTracker() {
   const { language } = useLanguage();
@@ -70,7 +71,7 @@ export function CampaignPerformanceTracker() {
                 <div className="flex items-center gap-1">
                   <DollarSign className="h-3 w-3 text-muted-foreground" />
                   <span className="text-muted-foreground">{isAr ? "مصروف" : "Spent"}:</span>
-                  <span className="font-mono font-medium">{spent.toLocaleString()}/{budget.toLocaleString()}</span>
+                  <span className="font-mono font-medium"><AnimatedCounter value={spent} className="inline" />/<AnimatedCounter value={budget} className="inline" /></span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Target className="h-3 w-3 text-muted-foreground" />
@@ -78,7 +79,7 @@ export function CampaignPerformanceTracker() {
                   <span className="font-mono font-medium">{ctr}%</span>
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
-                  {(c.total_impressions || 0).toLocaleString()} {isAr ? "مشاهدة" : "imp"} / {(c.total_clicks || 0).toLocaleString()} {isAr ? "نقرة" : "clicks"}
+                  <AnimatedCounter value={c.total_impressions || 0} className="inline" /> {isAr ? "مشاهدة" : "imp"} / <AnimatedCounter value={c.total_clicks || 0} className="inline" /> {isAr ? "نقرة" : "clicks"}
                 </div>
               </div>
             </div>

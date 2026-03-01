@@ -200,7 +200,7 @@ export function PredictiveChurnDashboard() {
                           {r.risk_level}
                         </Badge>
                         <Badge variant="secondary" className="text-[10px]">
-                          ~{r.affected_users_estimate.toLocaleString()} {isAr ? "مستخدم" : "users"}
+                          ~<AnimatedCounter value={r.affected_users_estimate} className="inline" /> {isAr ? "مستخدم" : "users"}
                         </Badge>
                       </div>
                     </div>

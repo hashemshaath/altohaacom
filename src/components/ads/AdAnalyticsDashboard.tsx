@@ -10,6 +10,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, AreaChart, Area,
 } from "recharts";
 import { TrendingUp, MousePointer, Eye, Globe, Smartphone, Monitor, Tablet } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))",
@@ -304,7 +305,7 @@ export function AdAnalyticsDashboard() {
                   </div>
                   <div className="text-end">
                     <p className="text-xs font-semibold">{c.ctr}% CTR</p>
-                    <p className="text-[10px] text-muted-foreground">{c.impressions.toLocaleString()} {isAr ? "مشاهدة" : "imp."} · {c.clicks.toLocaleString()} {isAr ? "نقرة" : "clicks"}</p>
+                    <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={c.impressions} className="inline" /> {isAr ? "مشاهدة" : "imp."} · <AnimatedCounter value={c.clicks} className="inline" /> {isAr ? "نقرة" : "clicks"}</p>
                   </div>
                 </div>
               ))}
