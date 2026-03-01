@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Gift, TrendingUp, Search, Link2, ArrowUpDown, Copy, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
@@ -124,7 +125,7 @@ export default function MembershipReferralsTab() {
               <Link2 className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">{isAr ? "أكواد نشطة" : "Active Codes"}</p>
             </div>
-            <p className="text-2xl font-bold mt-1">{activeCodes}<span className="text-sm text-muted-foreground font-normal">/{totalCodes}</span></p>
+            <p className="text-2xl font-bold mt-1"><AnimatedCounter value={activeCodes} /><span className="text-sm text-muted-foreground font-normal">/{totalCodes}</span></p>
           </CardContent>
         </Card>
         <Card>
@@ -133,7 +134,7 @@ export default function MembershipReferralsTab() {
               <Users className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي التحويلات" : "Total Conversions"}</p>
             </div>
-            <p className="text-2xl font-bold mt-1">{totalConversions}</p>
+            <AnimatedCounter value={totalConversions} className="text-2xl mt-1" />
           </CardContent>
         </Card>
         <Card>
@@ -151,7 +152,7 @@ export default function MembershipReferralsTab() {
               <Gift className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">{isAr ? "نقاط مكافآت" : "Points Rewarded"}</p>
             </div>
-            <p className="text-2xl font-bold mt-1">{totalPointsAwarded.toLocaleString()}</p>
+            <AnimatedCounter value={totalPointsAwarded} className="text-2xl mt-1" />
           </CardContent>
         </Card>
       </div>
