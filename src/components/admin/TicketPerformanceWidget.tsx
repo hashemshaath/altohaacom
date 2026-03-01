@@ -63,18 +63,18 @@ export function TicketPerformanceWidget() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-2">
-          <div className="text-center p-2 rounded-lg bg-muted/50">
-            <Clock className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1" />
+          <div className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+            <Clock className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-lg font-bold">{stats.avgHours}<span className="text-xs">h</span></p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "متوسط الحل" : "Avg Resolve"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
-            <CheckCircle2 className="h-3.5 w-3.5 mx-auto text-chart-2 mb-1" />
+          <div className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+            <CheckCircle2 className="h-3.5 w-3.5 mx-auto text-chart-2 mb-1 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-lg font-bold">{stats.resolutionRate}%</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "نسبة الحل" : "Resolve Rate"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
-            <Timer className="h-3.5 w-3.5 mx-auto text-destructive mb-1" />
+          <div className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+            <Timer className="h-3.5 w-3.5 mx-auto text-destructive mb-1 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-lg font-bold">{stats.slaBreach}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "تجاوز SLA" : "SLA Breach"}</p>
           </div>
