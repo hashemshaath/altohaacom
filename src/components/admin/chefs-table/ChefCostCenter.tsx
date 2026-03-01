@@ -675,7 +675,7 @@ export function ChefCostCenter() {
                       </p>
                     )}
 
-                    <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-3 text-center mb-3">
+                    <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-3 text-center mb-3">
                       <p className="text-[9px] text-primary font-bold uppercase">{isAr ? "الإجمالي المقدر" : "Est. Total"} ({cp.estimated_days}d)</p>
                       <p className="text-xl font-black tabular-nums text-primary">{cp.estimated_total_cost.toLocaleString()} SAR</p>
                     </div>

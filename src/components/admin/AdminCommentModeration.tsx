@@ -118,7 +118,7 @@ export function AdminCommentModeration() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-2">{[1, 2, 3].map(i => <div key={i} className="h-14 rounded-lg bg-muted/50 animate-pulse" />)}</div>
+        <div className="space-y-2">{[1, 2, 3].map(i => <div key={i} className="h-14 rounded-xl bg-muted/50 animate-pulse" />)}</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12">
           <Shield className="h-10 w-10 mx-auto text-muted-foreground/30 mb-2" />

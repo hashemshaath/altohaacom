@@ -31,7 +31,7 @@ export function AdminHeader() {
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
             </span>
           </Link>
-          <span className="hidden rounded-lg bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary sm:inline-block">
+          <span className="hidden rounded-xl bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary sm:inline-block">
             {language === "ar" ? "لوحة الإدارة" : "Admin"}
           </span>
           <div className="hidden sm:block ms-1">
