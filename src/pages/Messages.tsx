@@ -49,12 +49,12 @@ export default function Messages() {
                 </Badge>
               )}
               <div className="flex items-center gap-1 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm p-1">
-                <Badge variant="secondary" className="text-[10px] gap-1 cursor-default rounded-lg">
+                <Badge variant="secondary" className="text-[10px] gap-1 cursor-default rounded-xl">
                   <MessageSquare className="h-3 w-3" />
                   {data.counts.all}
                 </Badge>
                 {data.chatGroups.length > 0 && (
-                  <Badge variant="outline" className="text-[10px] gap-1 cursor-default rounded-lg">
+                  <Badge variant="outline" className="text-[10px] gap-1 cursor-default rounded-xl">
                     <Users className="h-3 w-3" />
                     {data.chatGroups.length}
                   </Badge>

@@ -342,7 +342,7 @@ export default function MediaAdmin() {
                 return (
                   <div 
                     key={file.id}
-                    className={`flex items-center gap-4 rounded-lg border p-3 hover:bg-accent/50 cursor-pointer ${bulk.isSelected(file.id) ? "ring-1 ring-primary bg-primary/5" : ""}`}
+                    className={`flex items-center gap-4 rounded-xl border p-3 hover:bg-accent/50 cursor-pointer ${bulk.isSelected(file.id) ? "ring-1 ring-primary bg-primary/5" : ""}`}
                     onClick={() => setSelectedMedia(file)}
                   >
                     <div onClick={e => e.stopPropagation()}>
@@ -405,7 +405,7 @@ export default function MediaAdmin() {
                 <img 
                   src={selectedMedia.file_url}
                   alt={selectedMedia.alt_text || ""}
-                  className="w-full rounded-lg"
+                  className="w-full rounded-xl"
                 />
               )}
               <div className="grid gap-2 text-sm">

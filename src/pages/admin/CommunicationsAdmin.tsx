@@ -701,7 +701,7 @@ export default function CommunicationsAdmin() {
                         </p>
                         {replies.filter((r) => !r.is_internal_note).map((reply) => (
                           <div key={reply.id}
-                            className={`rounded-lg border p-4 ${reply.direction === "incoming" ? "ms-4 border-s-[3px] border-s-primary" : "me-4"}`}>
+                            className={`rounded-xl border p-4 ${reply.direction === "incoming" ? "ms-4 border-s-[3px] border-s-primary" : "me-4"}`}>
                             <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
                               <Badge variant="outline">
                                 {reply.direction === "incoming" ? (isAr ? "الإدارة" : "Admin") : (isAr ? "الشركة" : "Company")}
@@ -724,7 +724,7 @@ export default function CommunicationsAdmin() {
                             {isAr ? "ملاحظات داخلية" : "Internal Notes"} ({internalNotes.length})
                           </p>
                           {internalNotes.map((note) => (
-                            <div key={note.id} className="rounded-lg border border-chart-3/30 bg-chart-3/5 p-3">
+                            <div key={note.id} className="rounded-xl border border-chart-3/30 bg-chart-3/5 p-3">
                               <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                                 <Badge variant="outline" className="text-chart-3 border-chart-3/30">
                                   <StickyNote className="me-1 h-3 w-3" />

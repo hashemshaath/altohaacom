@@ -696,7 +696,7 @@ export default function LeadManagement() {
               <TabsContent value="details" className="space-y-4">
                 {/* Contact Info */}
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="flex items-center gap-3 rounded-lg border p-3">
+                  <div className="flex items-center gap-3 rounded-xl border p-3">
                     <Mail className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-xs text-muted-foreground">{isAr ? "البريد الإلكتروني" : "Email"}</p>
@@ -704,7 +704,7 @@ export default function LeadManagement() {
                     </div>
                   </div>
                   {selectedLead.phone && (
-                    <div className="flex items-center gap-3 rounded-lg border p-3">
+                    <div className="flex items-center gap-3 rounded-xl border p-3">
                       <Phone className="h-5 w-5 text-muted-foreground" />
                       <div>
                         <p className="text-xs text-muted-foreground">{isAr ? "الهاتف" : "Phone"}</p>

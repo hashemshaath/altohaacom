@@ -730,7 +730,7 @@ export default function KnowledgeAdmin() {
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                   />
-                  <Badge className={cn("absolute top-3 end-3 rounded-lg", ratingColors[ref.rating || "good"])}>
+                  <Badge className={cn("absolute top-3 end-3 rounded-xl", ratingColors[ref.rating || "good"])}>
                     {ref.rating}
                   </Badge>
                 </div>

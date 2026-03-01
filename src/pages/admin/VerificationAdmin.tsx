@@ -269,7 +269,7 @@ export default function VerificationAdmin() {
 
                   {/* AI Analysis Summary */}
                   {aiAnalysis && (
-                    <div className="mt-3 rounded-lg border bg-muted/30 p-3">
+                    <div className="mt-3 rounded-xl border bg-muted/30 p-3">
                       <div className="flex items-center gap-2 mb-2">
                         <Bot className="h-4 w-4 text-accent" />
                         <span className="text-xs font-semibold">{isAr ? "تحليل الذكاء الاصطناعي" : "AI Analysis"}</span>
@@ -317,14 +317,14 @@ export default function VerificationAdmin() {
           </DialogHeader>
           {selectedRequest && (
             <div className="space-y-4">
-              <div className="rounded-lg border p-3 text-sm">
+              <div className="rounded-xl border p-3 text-sm">
                 <p><strong>{isAr ? "مقدّم الطلب:" : "Applicant:"}</strong> {selectedRequest.applicant_name}</p>
                 <p><strong>{isAr ? "النوع:" : "Type:"}</strong> {selectedRequest.entity_type}</p>
                 <p><strong>{isAr ? "المستوى:" : "Level:"}</strong> {selectedRequest.verification_level}</p>
               </div>
 
               {selectedRequest.ai_analysis && (
-                <div className="rounded-lg border border-accent/20 bg-accent/5 p-3 text-xs">
+                <div className="rounded-xl border border-accent/20 bg-accent/5 p-3 text-xs">
                   <p className="mb-1 font-semibold text-accent">{isAr ? "توصية AI" : "AI Recommendation"}: {(selectedRequest.ai_analysis as any).recommendation}</p>
                   <p className="text-muted-foreground">{isAr ? (selectedRequest.ai_analysis as any).summary_ar : (selectedRequest.ai_analysis as any).summary}</p>
                 </div>

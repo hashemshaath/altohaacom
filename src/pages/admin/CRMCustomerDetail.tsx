@@ -495,7 +495,7 @@ export default function CRMCustomerDetail() {
                       <ScrollArea className="h-48">
                         <div className="space-y-2">
                           {orders.slice(0, 10).map((order: any) => (
-                            <div key={order.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                            <div key={order.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                               <div>
                                 <p className="font-medium">{order.order_number}</p>
                                 <p className="text-xs text-muted-foreground">
@@ -532,7 +532,7 @@ export default function CRMCustomerDetail() {
                     <ScrollArea className="h-64">
                       <div className="space-y-2">
                         {walletTx.map((tx: any) => (
-                          <div key={tx.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                          <div key={tx.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                             <div>
                               <p className="font-medium">{tx.description}</p>
                               <p className="text-xs text-muted-foreground">{format(new Date(tx.created_at), "dd/MM/yyyy hh:mm a")}</p>
@@ -566,7 +566,7 @@ export default function CRMCustomerDetail() {
                     <ScrollArea className="h-64">
                       <div className="space-y-2">
                         {loyaltyTx.map((tx: any) => (
-                          <div key={tx.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                          <div key={tx.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                             <div>
                               <p className="font-medium">{tx.description}</p>
                               <p className="text-xs text-muted-foreground">{format(new Date(tx.created_at), "dd/MM/yyyy")}</p>
@@ -595,11 +595,11 @@ export default function CRMCustomerDetail() {
                   ) : (
                     <div className="grid gap-3 sm:grid-cols-2">
                       {wishlist.map((item: any) => (
-                        <div key={item.id} className="flex items-center gap-3 rounded-lg border p-3">
+                        <div key={item.id} className="flex items-center gap-3 rounded-xl border p-3">
                           {item.item_image_url ? (
-                            <img src={item.item_image_url} alt="" className="h-12 w-12 rounded-lg object-cover" />
+                            <img src={item.item_image_url} alt="" className="h-12 w-12 rounded-xl object-cover" />
                           ) : (
-                            <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
+                            <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
                               <Heart className="h-5 w-5 text-muted-foreground" />
                             </div>
                           )}
@@ -630,7 +630,7 @@ export default function CRMCustomerDetail() {
                   ) : (
                     <div className="space-y-2">
                       {registrations.map((reg: any) => (
-                        <div key={reg.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                        <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                           <div>
                             <p className="font-medium">
                               {isAr ? reg.competitions?.name_ar || reg.competitions?.name : reg.competitions?.name}

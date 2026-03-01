@@ -184,7 +184,7 @@ export default function MembershipReferral() {
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-3">
             {Object.entries(TIER_REWARDS).map(([tier, rewards]) => (
-              <div key={tier} className="rounded-lg border p-4 space-y-2">
+              <div key={tier} className="rounded-xl border p-4 space-y-2">
                 <Badge variant="outline" className="capitalize">{tier}</Badge>
                 <div className="text-sm space-y-1">
                   <p>
@@ -211,7 +211,7 @@ export default function MembershipReferral() {
           <CardContent>
             <div className="space-y-2">
               {referrals.map((ref: any) => (
-                <div key={ref.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div key={ref.id} className="flex items-center justify-between rounded-xl border p-3">
                   <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <Users className="h-4 w-4 text-primary" />

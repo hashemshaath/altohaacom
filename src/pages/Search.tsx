@@ -482,7 +482,7 @@ function CompetitionRow({
     >
       <div className="flex items-start gap-3">
         {/* Thumbnail */}
-        <div className="w-10 h-10 rounded-lg bg-primary/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.cover_image_url ? (
             <img src={data.cover_image_url} alt="" className="w-full h-full object-cover" />
           ) : (
@@ -544,7 +544,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
       className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+        <div className="w-10 h-10 rounded-xl bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.featured_image_url ? (
             <img src={data.featured_image_url} alt="" className="w-full h-full object-cover" />
           ) : (
@@ -668,7 +668,7 @@ function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
           </p>
         </div>
         {data.image_url && (
-          <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-muted">
+          <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-muted">
             <img src={data.image_url} alt="" className="w-full h-full object-cover" />
           </div>
         )}
@@ -689,7 +689,7 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
       className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
     >
       <div className="flex items-start gap-3">
-        <div className="w-14 h-14 rounded-lg bg-accent/30 shrink-0 overflow-hidden mt-0.5">
+        <div className="w-14 h-14 rounded-xl bg-accent/30 shrink-0 overflow-hidden mt-0.5">
           {data.image_url ? (
             <img src={data.image_url} alt="" className="w-full h-full object-cover" />
           ) : (
@@ -742,7 +742,7 @@ function EntityRow({ data, isAr }: { data: any; isAr: boolean }) {
       className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-lg bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+        <div className="w-10 h-10 rounded-xl bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.logo_url ? (
             <img src={data.logo_url} alt="" className="w-full h-full object-cover" />
           ) : (
@@ -789,7 +789,7 @@ function GoogleSkeleton() {
     <div className="space-y-6">
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div key={i} className="flex items-start gap-3 px-2">
-          <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+          <Skeleton className="w-10 h-10 rounded-xl shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-3 w-24" />
             <Skeleton className="h-4 w-3/4" />
@@ -859,7 +859,7 @@ function RecentSearchesPanel({
           <button
             key={term}
             onClick={() => onRecentClick(term)}
-            className="flex items-center gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-start hover:bg-accent/40 transition-colors group"
+            className="flex items-center gap-3 w-full rounded-xl px-3 py-2.5 text-sm text-start hover:bg-accent/40 transition-colors group"
           >
             <Clock className="h-4 w-4 text-muted-foreground/50 shrink-0" />
             <span className="flex-1 truncate">{term}</span>
