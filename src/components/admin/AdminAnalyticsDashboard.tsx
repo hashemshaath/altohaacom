@@ -139,7 +139,7 @@ export function AdminAnalyticsDashboard() {
           <Card key={i}>
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60`}>
+                <div className={`flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60`}>
                   <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
                 </div>
                 <p className="text-[10px] text-muted-foreground">{kpi.label}</p>

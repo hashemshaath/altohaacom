@@ -90,7 +90,7 @@ export function ExhibitionInsightsWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-5 gap-2">
           {kpis.map((kpi, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/40">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/40">
               <kpi.icon className={`h-4 w-4 mx-auto mb-1 ${kpi.color}`} />
               <p className="text-lg font-bold">{kpi.value}</p>
               <p className="text-[9px] text-muted-foreground">{kpi.label}</p>

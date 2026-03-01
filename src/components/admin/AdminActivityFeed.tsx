@@ -72,7 +72,7 @@ export function AdminActivityFeed() {
     <Card className="border-border/50">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-2/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-2/10">
             <Activity className="h-3.5 w-3.5 text-chart-2" />
           </div>
           {isAr ? "آخر الأنشطة (24 ساعة)" : "Activity Feed (24h)"}
@@ -92,8 +92,8 @@ export function AdminActivityFeed() {
           <ScrollArea className="h-[320px]">
             <div className="space-y-1.5 pe-3">
               {feed.map((item) => (
-                <div key={item.id} className="flex items-center gap-3 rounded-lg border border-border/30 p-2.5 transition-colors hover:bg-accent/30">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/60">
+                <div key={item.id} className="flex items-center gap-3 rounded-xl border border-border/30 p-2.5 transition-colors hover:bg-accent/30">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted/60">
                     <item.icon className={`h-3.5 w-3.5 ${item.color}`} />
                   </div>
                   <div className="min-w-0 flex-1">

@@ -37,7 +37,7 @@ export function AdminMobileNavGrid() {
         <Link key={action.link} to={action.link}>
           <Card className="border-border/40 hover:border-primary/30 transition-colors active:scale-95">
             <CardContent className="p-3 flex flex-col items-center gap-1.5">
-              <div className={cn("h-8 w-8 rounded-lg bg-muted/60 flex items-center justify-center")}>
+              <div className={cn("h-8 w-8 rounded-xl bg-muted/60 flex items-center justify-center")}>
                 <action.icon className={cn("h-4 w-4", action.color)} />
               </div>
               <span className="text-[9px] font-medium text-center leading-tight">

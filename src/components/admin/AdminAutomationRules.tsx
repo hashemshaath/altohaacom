@@ -148,7 +148,7 @@ export function AdminAutomationRules() {
                 <CardContent className="py-4">
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <div className="h-9 w-9 rounded-lg bg-chart-4/10 flex items-center justify-center shrink-0">
+                      <div className="h-9 w-9 rounded-xl bg-chart-4/10 flex items-center justify-center shrink-0">
                         <TriggerIcon className="h-4 w-4 text-chart-4" />
                       </div>
                       <div className="min-w-0">
@@ -235,7 +235,7 @@ export function AdminAutomationRules() {
               </Select>
             </div>
 
-            <div className="space-y-3 rounded-lg border p-3 bg-muted/20">
+            <div className="space-y-3 rounded-xl border p-3 bg-muted/20">
               <div className="space-y-1.5">
                 <Label className="text-xs">{isAr ? "عنوان الإشعار" : "Notification Title"}</Label>
                 <Input value={form.notification_title} onChange={(e) => setForm({ ...form, notification_title: e.target.value })} />
