@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -739,7 +740,7 @@ export default function LocalizationAdmin() {
                   <div key={i}>
                     <div className="flex justify-between text-sm mb-1">
                       <span>{item.label}</span>
-                      <span className={`font-bold tabular-nums ${item.color}`}>{item.value}%</span>
+                      <span className={`font-bold tabular-nums ${item.color}`}><AnimatedCounter value={item.value} suffix="%" /></span>
                     </div>
                     <Progress value={item.value} className="h-1.5" />
                   </div>

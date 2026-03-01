@@ -7,6 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function FinancialOverviewCards() {
   const { language } = useLanguage();
@@ -74,7 +75,7 @@ export function FinancialOverviewCards() {
               <DollarSign className="h-4 w-4 text-chart-3" />
               <span className="text-xs text-muted-foreground">{isAr ? "إجمالي الفواتير" : "Total Invoiced"}</span>
             </div>
-            <p className="text-lg font-bold">{fmt(data.totalInvoiced)}</p>
+            <p className="text-lg font-bold"><AnimatedCounter value={data.totalInvoiced} /> SAR</p>
             <p className="text-[10px] text-muted-foreground">{data.totalInvoiceCount} {isAr ? "فاتورة" : "invoices"}</p>
           </CardContent>
         </Card>
@@ -85,7 +86,7 @@ export function FinancialOverviewCards() {
               <CreditCard className="h-4 w-4 text-chart-5" />
               <span className="text-xs text-muted-foreground">{isAr ? "المدفوع" : "Collected"}</span>
             </div>
-            <p className="text-lg font-bold">{fmt(data.totalPaid)}</p>
+            <p className="text-lg font-bold"><AnimatedCounter value={data.totalPaid} /> SAR</p>
             <div className="flex items-center gap-2 mt-1">
               <Progress value={data.collectionRate} className="h-1.5 flex-1" />
               <span className="text-[10px] text-muted-foreground">{data.collectionRate}%</span>
@@ -99,7 +100,7 @@ export function FinancialOverviewCards() {
               <FileText className="h-4 w-4 text-chart-4" />
               <span className="text-xs text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</span>
             </div>
-            <p className="text-lg font-bold">{fmt(data.totalPending)}</p>
+            <p className="text-lg font-bold"><AnimatedCounter value={data.totalPending} /> SAR</p>
             <p className="text-[10px] text-muted-foreground">{data.pendingCount} {isAr ? "فاتورة" : "invoices"}</p>
           </CardContent>
         </Card>
@@ -111,7 +112,7 @@ export function FinancialOverviewCards() {
               <span className="text-xs text-muted-foreground">{isAr ? "صافي التدفق (30 يوم)" : "Net Flow (30d)"}</span>
             </div>
             <p className={`text-lg font-bold ${data.netFlow >= 0 ? "text-chart-5" : "text-destructive"}`}>
-              {data.netFlow >= 0 ? "+" : ""}{fmt(data.netFlow)}
+              {data.netFlow >= 0 ? "+" : ""}<AnimatedCounter value={data.netFlow} /> SAR
             </p>
             {data.overdueCount > 0 && (
               <Badge variant="destructive" className="text-[10px] mt-1">

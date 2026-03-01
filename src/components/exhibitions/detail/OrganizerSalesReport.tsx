@@ -10,6 +10,7 @@ import {
   Download, BarChart3, Clock, XCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   exhibitionId: string;
@@ -96,7 +97,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
               <div>
-                <p className={`text-base font-bold ${s.color}`}>{s.value}</p>
+                <p className={`text-base font-bold ${s.color}`}>{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
                 <p className="text-[9px] text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
