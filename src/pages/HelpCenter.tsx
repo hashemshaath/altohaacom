@@ -276,7 +276,7 @@ export default function HelpCenter() {
                         {language === "ar" ? "المراسلة المباشرة" : "Direct Messages"}
                       </Link>
                     </Button>
-                    <div className="rounded-lg bg-primary/5 p-3 text-center">
+                    <div className="rounded-xl bg-primary/5 p-3 text-center">
                       <Headphones className="h-5 w-5 text-primary mx-auto mb-1" />
                       <p className="text-xs text-muted-foreground">
                         {language === "ar" 

@@ -117,8 +117,8 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                   <div className="min-w-0 flex-1">
                     {isLoading ? (
                       <>
-                        <Skeleton className="h-7 w-14 mb-1 rounded-lg" />
-                        <Skeleton className="h-3 w-20 rounded-lg" />
+                        <Skeleton className="h-7 w-14 mb-1 rounded-xl" />
+                        <Skeleton className="h-3 w-20 rounded-xl" />
                       </>
                     ) : (
                       <>
@@ -126,7 +126,7 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                           <AnimatedStatValue value={stat.value} />
                           {sparkPoints && trend !== 0 && (
                             <Badge variant="outline" className={cn(
-                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-lg",
+                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-xl",
                               trend > 0 ? "text-chart-2 border-chart-2/30 bg-chart-2/5" : "text-destructive border-destructive/30 bg-destructive/5"
                             )}>
                               {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
         <Card className="rounded-2xl border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
                 <Users className="h-3.5 w-3.5 text-chart-4" />
               </div>
               <h3 className="text-sm font-bold">{isAr ? "أنواع الحسابات" : "Account Types"}</h3>

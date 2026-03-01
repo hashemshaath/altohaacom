@@ -570,7 +570,7 @@ export default function ExhibitionsAdmin() {
                 </div>
                 {selectedSeriesId && editionYear && (
                   <div className="flex items-end">
-                    <div className="rounded-lg border bg-primary/5 px-3 py-2 text-sm">
+                    <div className="rounded-xl border bg-primary/5 px-3 py-2 text-sm">
                       <span className="text-muted-foreground">{t("Display title:", "العنوان المعروض:")}</span>{" "}
                       <span className="font-bold text-primary">
                         {form.title || seriesList?.find(s => s.id === selectedSeriesId)?.name || "..."} +{editionYear}

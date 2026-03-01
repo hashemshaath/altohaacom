@@ -184,9 +184,9 @@ export default function KnowledgePortal() {
                       <SelectValue placeholder={language === "ar" ? "التصنيف" : "Category"} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border/40">
-                      <SelectItem value="all" className="rounded-lg">{language === "ar" ? "الكل" : "All"}</SelectItem>
+                      <SelectItem value="all" className="rounded-xl">{language === "ar" ? "الكل" : "All"}</SelectItem>
                       {categories?.map(c => (
-                        <SelectItem key={c.id} value={c.id} className="rounded-lg">
+                        <SelectItem key={c.id} value={c.id} className="rounded-xl">
                           {language === "ar" && c.name_ar ? c.name_ar : c.name}
                         </SelectItem>
                       ))}
@@ -197,12 +197,12 @@ export default function KnowledgePortal() {
                       <SelectValue placeholder={language === "ar" ? "النوع" : "Type"} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-border/40">
-                      <SelectItem value="all" className="rounded-lg">{language === "ar" ? "الكل" : "All"}</SelectItem>
-                      <SelectItem value="link" className="rounded-lg">{language === "ar" ? "رابط" : "Link"}</SelectItem>
-                      <SelectItem value="file" className="rounded-lg">{language === "ar" ? "ملف" : "File"}</SelectItem>
-                      <SelectItem value="document" className="rounded-lg">{language === "ar" ? "مستند" : "Document"}</SelectItem>
-                      <SelectItem value="image" className="rounded-lg">{language === "ar" ? "صورة" : "Image"}</SelectItem>
-                      <SelectItem value="law" className="rounded-lg">{language === "ar" ? "قانون" : "Law"}</SelectItem>
+                      <SelectItem value="all" className="rounded-xl">{language === "ar" ? "الكل" : "All"}</SelectItem>
+                      <SelectItem value="link" className="rounded-xl">{language === "ar" ? "رابط" : "Link"}</SelectItem>
+                      <SelectItem value="file" className="rounded-xl">{language === "ar" ? "ملف" : "File"}</SelectItem>
+                      <SelectItem value="document" className="rounded-xl">{language === "ar" ? "مستند" : "Document"}</SelectItem>
+                      <SelectItem value="image" className="rounded-xl">{language === "ar" ? "صورة" : "Image"}</SelectItem>
+                      <SelectItem value="law" className="rounded-xl">{language === "ar" ? "قانون" : "Law"}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -223,7 +223,7 @@ export default function KnowledgePortal() {
                                 {language === "ar" && resource.title_ar ? resource.title_ar : resource.title}
                               </h3>
                               {resource.url && (
-                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-lg bg-primary/10 p-1.5 text-primary hover:bg-primary/20 transition-colors">
+                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-xl bg-primary/10 p-1.5 text-primary hover:bg-primary/20 transition-colors">
                                   <ExternalLink className="h-3.5 w-3.5" />
                                 </a>
                               )}
@@ -234,15 +234,15 @@ export default function KnowledgePortal() {
                               </p>
                             )}
                             <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
-                              <Badge variant="outline" className="text-[10px] rounded-lg">{resource.resource_type}</Badge>
+                              <Badge variant="outline" className="text-[10px] rounded-xl">{resource.resource_type}</Badge>
                               {resource.is_judge_resource && (
-                                <Badge variant="secondary" className="text-[10px] rounded-lg">
+                                <Badge variant="secondary" className="text-[10px] rounded-xl">
                                   <Scale className="me-1 h-3 w-3" />
                                   {language === "ar" ? "للحكام" : "Judge Resource"}
                                 </Badge>
                               )}
                               {resource.tags?.map(tag => (
-                                <Badge key={tag} variant="outline" className="text-[10px] rounded-lg">{tag}</Badge>
+                                <Badge key={tag} variant="outline" className="text-[10px] rounded-xl">{tag}</Badge>
                               ))}
                             </div>
                           </div>

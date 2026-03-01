@@ -182,11 +182,11 @@ export default function EntityDetail() {
                   <Skeleton className="h-7 w-3/4" />
                 </div>
               </div>
-              <Skeleton className="h-32 w-full rounded-lg" />
+              <Skeleton className="h-32 w-full rounded-xl" />
             </div>
             <div className="hidden lg:block space-y-4">
-              <Skeleton className="h-40 w-full rounded-lg" />
-              <Skeleton className="h-48 w-full rounded-lg" />
+              <Skeleton className="h-40 w-full rounded-xl" />
+              <Skeleton className="h-48 w-full rounded-xl" />
             </div>
           </div>
         </main>
@@ -511,7 +511,7 @@ export default function EntityDetail() {
             <Card className="overflow-hidden">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
                     <Building2 className="h-3.5 w-3.5 text-primary" />
                   </div>
                   {isAr ? "إجراءات" : "Actions"}
@@ -591,7 +591,7 @@ export default function EntityDetail() {
             <Card className="overflow-hidden">
               <div className="border-b bg-muted/30 px-4 py-3">
                 <h3 className="flex items-center gap-2 text-sm font-semibold">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-1/10">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-1/10">
                     <Calendar className="h-3.5 w-3.5 text-chart-1" />
                   </div>
                   {isAr ? "معلومات سريعة" : "Quick Facts"}

@@ -689,7 +689,7 @@ export default function CompetitionsAdmin() {
                   {Array.from({ length: 6 }).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell><Skeleton className="h-5 w-36" /><Skeleton className="h-3 w-20 mt-1.5" /></TableCell>
-                      <TableCell><div className="flex items-center gap-2"><Skeleton className="h-6 w-6 rounded-lg" /><Skeleton className="h-4 w-24" /></div></TableCell>
+                      <TableCell><div className="flex items-center gap-2"><Skeleton className="h-6 w-6 rounded-xl" /><Skeleton className="h-4 w-24" /></div></TableCell>
                       <TableCell><Skeleton className="h-5 w-20 rounded-full" /></TableCell>
                       <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                       <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
@@ -768,9 +768,9 @@ export default function CompetitionsAdmin() {
                           {comp.derivedOrganizer ? (
                             <div className="flex items-center gap-2">
                               {comp.derivedOrganizer.logo_url ? (
-                                <img src={comp.derivedOrganizer.logo_url} alt="" className="h-6 w-6 rounded-lg object-contain" />
+                                <img src={comp.derivedOrganizer.logo_url} alt="" className="h-6 w-6 rounded-xl object-contain" />
                               ) : (
-                                <div className="h-6 w-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <div className="h-6 w-6 rounded-xl bg-primary/10 flex items-center justify-center">
                                   <Building2 className="h-3 w-3 text-primary/50" />
                                 </div>
                               )}
@@ -1041,7 +1041,7 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
                 <div className="space-y-2">
                   {compResults.slice(0, 5).map((result: any) => {
                     return (
-                      <div key={result.id} className="flex items-center gap-3 rounded-lg border p-2.5">
+                      <div key={result.id} className="flex items-center gap-3 rounded-xl border p-2.5">
                         <span className="text-lg w-8 text-center">{medalEmoji(result.final_rank)}</span>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-medium truncate">

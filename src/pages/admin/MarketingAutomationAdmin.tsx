@@ -365,7 +365,7 @@ export default function MarketingAutomationAdmin() {
                     </p>
                   ) : (
                     runs.map((run: any) => (
-                      <div key={run.id} className="flex items-center justify-between rounded-lg border p-3">
+                      <div key={run.id} className="flex items-center justify-between rounded-xl border p-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             {run.status === "completed" ? (
@@ -464,7 +464,7 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
               const Icon = stepType?.icon || Bell;
               return (
                 <div key={step.id}>
-                  <div className="flex items-center gap-3 rounded-lg border p-3 group hover:border-primary/30 transition-colors">
+                  <div className="flex items-center gap-3 rounded-xl border p-3 group hover:border-primary/30 transition-colors">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0">
                       <Icon className="h-4 w-4 text-primary" />
                     </div>
@@ -519,7 +519,7 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
               { variant: "A", subject: isAr ? "مرحباً بك في منصتنا!" : "Welcome to our platform!", rate: 24.5 },
               { variant: "B", subject: isAr ? "ابدأ رحلتك معنا اليوم" : "Start your journey today", rate: 31.2 },
             ].map(test => (
-              <div key={test.variant} className={`rounded-lg border p-3 ${test.rate > 28 ? "border-chart-5/50 bg-chart-5/5" : ""}`}>
+              <div key={test.variant} className={`rounded-xl border p-3 ${test.rate > 28 ? "border-chart-5/50 bg-chart-5/5" : ""}`}>
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant={test.rate > 28 ? "default" : "secondary"} className="text-[10px]">
                     {isAr ? "متغير" : "Variant"} {test.variant}

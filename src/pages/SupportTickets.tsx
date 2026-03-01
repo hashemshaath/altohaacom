@@ -378,7 +378,7 @@ export default function SupportTickets() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="rounded-lg bg-muted/50 p-4 mb-4">
+                  <div className="rounded-xl bg-muted/50 p-4 mb-4">
                     <p className="whitespace-pre-wrap text-sm">{selectedTicket.description}</p>
                   </div>
 
@@ -401,7 +401,7 @@ export default function SupportTickets() {
                           return (
                             <div
                               key={msg.id}
-                              className={`rounded-lg border p-3 ${isMine ? "" : "border-s-[3px] border-s-primary bg-primary/5"}`}
+                              className={`rounded-xl border p-3 ${isMine ? "" : "border-s-[3px] border-s-primary bg-primary/5"}`}
                             >
                               <div className="flex items-center justify-between mb-1">
                                 <Badge variant="outline" className="text-xs">
