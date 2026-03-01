@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Crown, Trophy, Calendar, MapPin, Building2, CheckCircle, XCircle, Clock,
   Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye
@@ -406,7 +407,7 @@ export default function CompanySponsorships() {
                     </CardTitle>
                     {pkg.price && (
                       <p className="text-2xl font-bold text-primary mt-1">
-                        {toEnglishDigits(Number(pkg.price).toLocaleString())} <span className="text-sm">{pkg.currency || "SAR"}</span>
+                        <AnimatedCounter value={Number(pkg.price)} className="inline" format /> <span className="text-sm">{pkg.currency || "SAR"}</span>
                       </p>
                     )}
                   </CardHeader>
