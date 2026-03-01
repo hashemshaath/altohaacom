@@ -165,7 +165,7 @@ export default function MembershipDigestPanel() {
             {periodLabel} — {isAr ? "مقارنة بالفترة السابقة" : "compared to previous period"}
           </p>
         </div>
-        <div className="flex gap-1 rounded-lg border p-1">
+        <div className="flex gap-1 rounded-xl border p-1">
           {(["7d", "14d", "30d"] as Period[]).map(p => (
             <Button
               key={p}

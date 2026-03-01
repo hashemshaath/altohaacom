@@ -501,7 +501,7 @@ export default function MembershipChurnRetention() {
               { label: isAr ? "تحذير (≤7 أيام)" : "Warning (≤7 days)", data: atRiskData?.warning || [], color: "default" as const },
               { label: isAr ? "قادم (≤30 يوم)" : "Upcoming (≤30 days)", data: atRiskData?.upcoming || [], color: "secondary" as const },
             ].map((group) => (
-              <div key={group.label} className="rounded-lg border p-3">
+              <div key={group.label} className="rounded-xl border p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-muted-foreground">{group.label}</span>
                   <Badge variant={group.color} className="text-[10px]">{group.data.length}</Badge>
@@ -575,7 +575,7 @@ export default function MembershipChurnRetention() {
               const total = Object.values(atRiskData?.statusCounts || {}).reduce((sum, v) => sum + v, 0) || 1;
               const pct = ((s.count / total) * 100).toFixed(0);
               return (
-                <div key={s.label} className="text-center rounded-lg border p-3">
+                <div key={s.label} className="text-center rounded-xl border p-3">
                   <p className="text-2xl font-bold" style={{ color: s.color }}>{s.count}</p>
                   <p className="text-[10px] text-muted-foreground">{s.label} ({pct}%)</p>
                 </div>

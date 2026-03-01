@@ -183,8 +183,8 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
         {searching && (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="flex gap-3 p-3 rounded-lg border">
-                <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+              <div key={i} className="flex gap-3 p-3 rounded-xl border">
+                <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-3 w-1/2" />
@@ -216,9 +216,9 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
                     <button
                       key={item.id}
                       onClick={() => handleSelectResult(item)}
-                      className="w-full flex items-start gap-3 p-3 rounded-lg border border-border/60 hover:border-primary/40 hover:bg-primary/[0.03] transition-all text-start group"
+                      className="w-full flex items-start gap-3 p-3 rounded-xl border border-border/60 hover:border-primary/40 hover:bg-primary/[0.03] transition-all text-start group"
                     >
-                      <div className="h-9 w-9 rounded-lg bg-muted/80 flex items-center justify-center shrink-0">
+                      <div className="h-9 w-9 rounded-xl bg-muted/80 flex items-center justify-center shrink-0">
                         {item.place_type?.toLowerCase().includes("restaurant") ? (
                           <Building2 className="h-4 w-4 text-muted-foreground" />
                         ) : (
@@ -264,7 +264,7 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="space-y-2 p-3 rounded-lg border">
+                <div key={i} className="space-y-2 p-3 rounded-xl border">
                   <Skeleton className="h-3 w-20" />
                   <Skeleton className="h-4 w-full" />
                 </div>
@@ -320,7 +320,7 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
 
                 {/* Address */}
                 {(detailData.city_en || detailData.full_address_en || detailData.country_en) && (
-                  <div className="rounded-lg border p-3 space-y-2">
+                  <div className="rounded-xl border p-3 space-y-2">
                     <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                       <MapPin className="h-3 w-3" /> {isAr ? "العنوان" : "Address"}
                     </h4>
@@ -338,7 +338,7 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
 
                 {/* Contact */}
                 {(detailData.phone || detailData.email || detailData.website) && (
-                  <div className="rounded-lg border p-3 space-y-2">
+                  <div className="rounded-xl border p-3 space-y-2">
                     <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                       <Phone className="h-3 w-3" /> {isAr ? "التواصل" : "Contact"}
                     </h4>
@@ -353,7 +353,7 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
 
                 {/* Business Hours */}
                 {detailData.business_hours?.length ? (
-                  <div className="rounded-lg border p-3 space-y-2">
+                  <div className="rounded-xl border p-3 space-y-2">
                     <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                       <Clock className="h-3 w-3" /> {isAr ? "ساعات العمل" : "Business Hours"}
                     </h4>
@@ -396,7 +396,7 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
 
                 {/* Social Media */}
                 {detailData.social_media && Object.values(detailData.social_media).some(Boolean) && (
-                  <div className="rounded-lg border p-3 space-y-2">
+                  <div className="rounded-xl border p-3 space-y-2">
                     <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                       <Globe className="h-3 w-3" /> {isAr ? "وسائل التواصل" : "Social Media"}
                     </h4>

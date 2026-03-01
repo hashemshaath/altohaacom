@@ -379,7 +379,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
             </TabsContent>
 
             <TabsContent value="pdf" className="space-y-3 mt-3">
-              <div className="border-2 border-dashed border-border/60 rounded-lg p-4 text-center space-y-3">
+              <div className="border-2 border-dashed border-border/60 rounded-xl p-4 text-center space-y-3">
                 <Upload className="h-8 w-8 mx-auto text-muted-foreground/40" />
                 <div>
                   <label htmlFor="comp-file-upload" className="cursor-pointer">
@@ -410,8 +410,8 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
         {phase === "searching" && (
           <div className="space-y-2">
             {[1, 2, 3].map(i => (
-              <div key={i} className="flex gap-3 p-3 rounded-lg border">
-                <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+              <div key={i} className="flex gap-3 p-3 rounded-xl border">
+                <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
                 <div className="flex-1 space-y-2"><Skeleton className="h-4 w-3/4" /><Skeleton className="h-3 w-1/2" /></div>
               </div>
             ))}
@@ -438,8 +438,8 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
               <ScrollArea className="max-h-[350px]">
                 <div className="space-y-1.5 pe-2">
                   {results.map((item) => (
-                    <button key={item.id} onClick={() => handleSelectResult(item)} className="w-full flex items-start gap-3 p-3 rounded-lg border border-border/60 hover:border-primary/40 hover:bg-primary/[0.03] transition-all text-start group">
-                      <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <button key={item.id} onClick={() => handleSelectResult(item)} className="w-full flex items-start gap-3 p-3 rounded-xl border border-border/60 hover:border-primary/40 hover:bg-primary/[0.03] transition-all text-start group">
+                      <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                         <Trophy className="h-4 w-4 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -485,7 +485,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
             </div>
 
             {/* Existing record info */}
-            <div className="rounded-lg border border-chart-4/30 bg-chart-4/5 p-3 space-y-2">
+            <div className="rounded-xl border border-chart-4/30 bg-chart-4/5 p-3 space-y-2">
               <div className="flex items-center gap-2">
                 <ArrowLeftRight className="h-4 w-4 text-chart-4 shrink-0" />
                 <div className="flex-1 min-w-0">
@@ -517,7 +517,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   </div>
                 ) : (
                   dataDiff.map((item, i) => (
-                    <div key={i} className="rounded-lg border p-2.5 text-xs space-y-1">
+                    <div key={i} className="rounded-xl border p-2.5 text-xs space-y-1">
                       <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wide">
                         {isAr ? item.fieldAr : item.field}
                       </span>
@@ -577,7 +577,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
             </div>
 
             {/* Title with version */}
-            <div className="rounded-lg border bg-muted/20 p-3 space-y-1">
+            <div className="rounded-xl border bg-muted/20 p-3 space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <Trophy className="h-4 w-4 text-primary shrink-0" />
                 <h3 className="text-sm font-bold">{displayTitle}</h3>
@@ -595,7 +595,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
 
             {/* Duplicate Warning Panel */}
             {showDuplicatePanel && duplicates.length > 0 && (
-              <div className="rounded-lg border border-chart-4/40 bg-chart-4/5 p-3 space-y-2">
+              <div className="rounded-xl border border-chart-4/40 bg-chart-4/5 p-3 space-y-2">
                 <div className="flex items-center gap-2 text-chart-4">
                   <AlertTriangle className="h-4 w-4 shrink-0" />
                   <span className="text-xs font-semibold">
@@ -604,7 +604,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                 </div>
                 <div className="space-y-1.5">
                   {duplicates.map((dup) => (
-                    <div key={dup.id} className="flex items-center justify-between gap-2 p-2 rounded-lg border bg-background text-xs">
+                    <div key={dup.id} className="flex items-center justify-between gap-2 p-2 rounded-xl border bg-background text-xs">
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{dup.title} {dup.edition_year && `(${dup.edition_year})`}</p>
                         {dup.title_ar && <p className="text-muted-foreground truncate">{dup.title_ar}</p>}
@@ -680,7 +680,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                   <DetailSection icon={Layers} title={isAr ? "فئات / نسخ المسابقة" : "Competition Versions / Categories"}>
                     <div className="space-y-1.5">
                       {detailData.competition_versions.map((v, i) => (
-                        <div key={i} className="p-2 rounded-lg border text-xs">
+                        <div key={i} className="p-2 rounded-xl border text-xs">
                           <p className="font-medium">{v.name} {v.name_ar && `/ ${v.name_ar}`}</p>
                           {v.description && <p className="text-muted-foreground mt-0.5">{v.description}</p>}
                           {v.max_participants && <Badge variant="outline" className="mt-1 text-[10px]">Max: {v.max_participants}</Badge>}
@@ -760,7 +760,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
                 {detailData.competition_rounds?.length ? (
                   <DetailSection icon={ListChecks} title={isAr ? "جولات المسابقة" : "Competition Rounds"}>
                     {detailData.competition_rounds.map((r, i) => (
-                      <div key={i} className="p-2 rounded-lg border text-xs">
+                      <div key={i} className="p-2 rounded-xl border text-xs">
                         <p className="font-medium">{r.name} {r.name_ar && `/ ${r.name_ar}`}</p>
                         {r.description && <p className="text-muted-foreground mt-0.5">{r.description}</p>}
                         {r.duration && <Badge variant="outline" className="mt-1 text-[10px]">{r.duration}</Badge>}
@@ -838,7 +838,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
 
 function DetailSection({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border p-3 space-y-2">
+    <div className="rounded-xl border p-3 space-y-2">
       <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
         <Icon className="h-3 w-3" /> {title}
       </h4>

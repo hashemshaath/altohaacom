@@ -175,7 +175,7 @@ export const ImagePreviewEditor = React.memo(({
       )}
 
       <div
-        className={`relative rounded-lg border-2 overflow-hidden bg-muted/30 ${containerClass} ${isDragging ? "border-primary border-solid ring-2 ring-primary/20" : "border-dashed"} ${!value && !readOnly ? "cursor-pointer hover:border-primary/40 transition-colors" : ""}`}
+        className={`relative rounded-xl border-2 overflow-hidden bg-muted/30 ${containerClass} ${isDragging ? "border-primary border-solid ring-2 ring-primary/20" : "border-dashed"} ${!value && !readOnly ? "cursor-pointer hover:border-primary/40 transition-colors" : ""}`}
         onClick={!value && !readOnly ? () => fileInputRef.current?.click() : undefined}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

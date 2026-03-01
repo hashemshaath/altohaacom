@@ -500,24 +500,24 @@ export default function MembershipAnalyticsDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-            <div className="rounded-lg border p-3 text-center">
+            <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold">{giftStats?.total || 0}</p>
               <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الهدايا" : "Total Gifts"}</p>
             </div>
-            <div className="rounded-lg border p-3 text-center">
+            <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold text-primary">{giftStats?.redeemed || 0}</p>
               <p className="text-[10px] text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
             </div>
-            <div className="rounded-lg border p-3 text-center">
+            <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold text-chart-3">{giftStats?.pending || 0}</p>
               <p className="text-[10px] text-muted-foreground">{isAr ? "في الانتظار" : "Pending"}</p>
             </div>
-            <div className="rounded-lg border p-3 text-center">
+            <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold text-chart-2">{giftStats?.totalRevenue?.toFixed(0) || 0} SAR</p>
               <p className="text-[10px] text-muted-foreground">{isAr ? "إيرادات الهدايا" : "Gift Revenue"}</p>
             </div>
           </div>
-          <div className="mt-3 flex items-center justify-between rounded-lg border p-3">
+          <div className="mt-3 flex items-center justify-between rounded-xl border p-3">
             <span className="text-sm text-muted-foreground">{isAr ? "معدل الاسترداد" : "Redemption Rate"}</span>
             <Badge variant="outline" className="font-bold">{giftStats?.redemptionRate || 0}%</Badge>
           </div>
@@ -548,7 +548,7 @@ function InsightRow({ icon: Icon, label, value, color }: {
   icon: React.ElementType; label: string; value: string | number; color: string;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-lg border p-3">
+    <div className="flex items-center justify-between rounded-xl border p-3">
       <div className="flex items-center gap-2">
         <Icon className={`h-4 w-4 ${color}`} />
         <span className="text-sm text-muted-foreground">{label}</span>
