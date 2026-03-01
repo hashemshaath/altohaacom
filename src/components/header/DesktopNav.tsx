@@ -97,11 +97,11 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
           </DropdownMenuLabel>
           <div className="grid grid-cols-2 gap-1">
             {moreLinks.map((link) => (
-              <DropdownMenuItem key={link.to} asChild className="rounded-lg p-0 focus:bg-primary/5">
+              <DropdownMenuItem key={link.to} asChild className="rounded-xl p-0 focus:bg-primary/5">
                 <Link 
                   to={link.to} 
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors",
                     isActive(link.to) && "bg-primary/10"
                   )}
                 >

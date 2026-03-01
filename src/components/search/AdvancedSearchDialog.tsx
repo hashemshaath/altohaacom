@@ -262,7 +262,7 @@ export function AdvancedSearchDialog({ open, onOpenChange, onNavigate }: Props) 
                     <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1"><Users className="h-3 w-3" /> {isAr ? "الطهاة" : "Chefs"}</p>
                     <div className="space-y-1">
                       {results.users.map((u: any) => (
-                        <div key={u.user_id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onNavigate?.(`/profile/${u.username || u.user_id}`); onOpenChange(false); }}>
+                        <div key={u.user_id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onNavigate?.(`/profile/${u.username || u.user_id}`); onOpenChange(false); }}>
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={u.avatar_url || ""} />
                             <AvatarFallback>{(u.full_name || "?")[0]}</AvatarFallback>
@@ -285,7 +285,7 @@ export function AdvancedSearchDialog({ open, onOpenChange, onNavigate }: Props) 
                     <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1"><ChefHat className="h-3 w-3" /> {isAr ? "الوصفات" : "Recipes"}</p>
                     <div className="space-y-1">
                       {results.recipes.map((r: any) => (
-                        <div key={r.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
+                        <div key={r.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
                           {r.image_url ? <img src={r.image_url} className="h-8 w-8 rounded object-cover" alt="" /> : <ChefHat className="h-8 w-8 p-1.5 bg-muted rounded" />}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{isAr ? r.title_ar || r.title : r.title}</p>
@@ -304,7 +304,7 @@ export function AdvancedSearchDialog({ open, onOpenChange, onNavigate }: Props) 
                     <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1"><Trophy className="h-3 w-3" /> {isAr ? "المسابقات" : "Competitions"}</p>
                     <div className="space-y-1">
                       {results.competitions.map((c: any) => (
-                        <div key={c.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
+                        <div key={c.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
                           <Trophy className="h-8 w-8 p-1.5 bg-muted rounded" />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{isAr ? c.name_ar || c.name : c.name}</p>
@@ -323,7 +323,7 @@ export function AdvancedSearchDialog({ open, onOpenChange, onNavigate }: Props) 
                     <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1"><Hash className="h-3 w-3" /> {isAr ? "المنشورات" : "Posts"}</p>
                     <div className="space-y-1">
                       {results.posts.map((p: any) => (
-                        <div key={p.id} className="p-2 rounded-lg hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
+                        <div key={p.id} className="p-2 rounded-xl hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
                           <p className="text-sm line-clamp-2">{p.content}</p>
                         </div>
                       ))}
@@ -338,7 +338,7 @@ export function AdvancedSearchDialog({ open, onOpenChange, onNavigate }: Props) 
                     <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1"><BookOpen className="h-3 w-3" /> {isAr ? "المقالات" : "Articles"}</p>
                     <div className="space-y-1">
                       {results.articles.map((a: any) => (
-                        <div key={a.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
+                        <div key={a.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 cursor-pointer" onClick={() => { addRecent(query); onOpenChange(false); }}>
                           <BookOpen className="h-8 w-8 p-1.5 bg-muted rounded shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{isAr ? a.title_ar || a.title : a.title}</p>

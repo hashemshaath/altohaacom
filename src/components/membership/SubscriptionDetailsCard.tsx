@@ -126,8 +126,8 @@ export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetails
       <CardContent className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
           {details.map((d) => (
-            <div key={d.label} className="flex items-center gap-3 rounded-lg border p-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <div key={d.label} className="flex items-center gap-3 rounded-xl border p-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                 <d.icon className="h-4 w-4 text-primary" />
               </div>
               <div className="min-w-0">
@@ -141,9 +141,9 @@ export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetails
         <Separator />
 
         {/* Auto-renewal toggle */}
-        <div className="flex items-center justify-between rounded-lg border p-3">
+        <div className="flex items-center justify-between rounded-xl border p-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <RefreshCw className="h-4 w-4 text-primary" />
             </div>
             <div>
@@ -163,7 +163,7 @@ export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetails
         </div>
 
         {!autoRenew && (
-          <div className="flex items-start gap-2 rounded-lg bg-destructive/5 border border-destructive/20 p-3">
+          <div className="flex items-start gap-2 rounded-xl bg-destructive/5 border border-destructive/20 p-3">
             <Bell className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
             <p className="text-xs text-destructive">
               {isAr

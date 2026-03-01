@@ -121,7 +121,7 @@ export function OnboardingChecklist() {
             <Link
               key={step.id}
               to={step.link}
-              className={`flex items-center gap-2 rounded-lg p-2 text-xs transition-colors ${
+              className={`flex items-center gap-2 rounded-xl p-2 text-xs transition-colors ${
                 done
                   ? "text-muted-foreground line-through opacity-60"
                   : "hover:bg-primary/10 font-medium"

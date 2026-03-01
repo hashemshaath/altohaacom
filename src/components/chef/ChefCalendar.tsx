@@ -455,7 +455,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
   return (
     <div className="space-y-4">
       {/* Calendar Scope Toggle */}
-      <div className="flex items-center gap-2 p-1.5 rounded-lg border border-border/40 bg-muted/20 w-fit">
+      <div className="flex items-center gap-2 p-1.5 rounded-xl border border-border/40 bg-muted/20 w-fit">
         <Button
           variant={calendarScope === "my" ? "default" : "ghost"}
           size="sm"
@@ -503,7 +503,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
               <Briefcase className="h-3 w-3" />{stats.contracted} {isAr ? "عقد" : "contracted"}
             </Badge>
           )}
-          <div className="hidden sm:flex border rounded-lg overflow-hidden">
+          <div className="hidden sm:flex border rounded-xl overflow-hidden">
             <Button variant={viewMode === "month" ? "default" : "ghost"} size="sm" className="h-7 text-[10px] rounded-none px-2" onClick={() => setViewMode("month")}>
               {isAr ? "شهر" : "Month"}
             </Button>
@@ -530,7 +530,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
           const count = events.filter(e => e.event_type === key).length;
           if (count === 0) return null;
           return (
-            <div key={key} className={`rounded-lg border px-2 py-1.5 text-center ${config.color}`}>
+            <div key={key} className={`rounded-xl border px-2 py-1.5 text-center ${config.color}`}>
               <Icon className="h-3.5 w-3.5 mx-auto mb-0.5" />
               <p className="text-sm font-black tabular-nums">{count}</p>
               <p className="text-[8px] font-bold uppercase tracking-wider">{isAr ? config.ar : config.en}</p>
@@ -628,7 +628,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                   const VisIcon = VISIBILITY_ICONS[ev.visibility] || Lock;
                   return (
                     <div key={ev.id} className="p-3 hover:bg-muted/20 transition-colors flex items-center gap-3">
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${config.color}`}>
                         <Icon className="h-3.5 w-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -766,7 +766,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                   return (
                     <div key={ev.id} className="p-4 hover:bg-muted/20 transition-colors">
                       <div className="flex items-start gap-3">
-                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
+                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${config.color}`}>
                           <Icon className="h-4 w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -817,7 +817,7 @@ export function ChefCalendar({ chefId, isAdmin = false }: Props) {
                   return (
                     <div key={`g-${ge.id}`} className="p-4 hover:bg-muted/20 transition-colors">
                       <div className="flex items-start gap-3">
-                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border", colors.bg, colors.border)}>
+                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border", colors.bg, colors.border)}>
                           <IconComp className={cn("h-4 w-4", colors.text)} />
                         </div>
                         <div className="flex-1 min-w-0">

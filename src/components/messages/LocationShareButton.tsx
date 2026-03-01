@@ -49,7 +49,7 @@ export function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: 
   const mapUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
   return (
     <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="block">
-      <div className={`rounded-lg overflow-hidden border ${isMine ? "border-primary-foreground/20" : "border-border/40"}`}>
+      <div className={`rounded-xl overflow-hidden border ${isMine ? "border-primary-foreground/20" : "border-border/40"}`}>
         <img
           src={`https://staticmap.openstreetmap.de/staticmap.php?center=${lat},${lng}&zoom=14&size=280x150&markers=${lat},${lng},lightblue`}
           alt="Location"

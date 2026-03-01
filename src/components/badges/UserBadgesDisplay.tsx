@@ -48,7 +48,7 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
         </div>
         <h2 className="text-base font-bold">{isAr ? "الشارات" : "Badges"}</h2>
         {badges?.length ? (
-          <Badge variant="secondary" className="text-[10px] h-5 rounded-lg">{badges.length}</Badge>
+          <Badge variant="secondary" className="text-[10px] h-5 rounded-xl">{badges.length}</Badge>
         ) : null}
         <div className="flex-1 h-px bg-border/25" />
       </div>

@@ -195,7 +195,7 @@ export function VendorPerformance({ competitionId }: Props) {
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${ratingBg} shrink-0`}>
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${ratingBg} shrink-0`}>
                         {vendor.logoUrl ? (
                           <img src={vendor.logoUrl} alt="" className="h-8 w-8 rounded object-cover" />
                         ) : (

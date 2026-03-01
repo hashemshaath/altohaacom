@@ -86,7 +86,7 @@ export function CompetitionFeedbackPanel({ competitionId }: Props) {
                     {fb.score_breakdown && (
                       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                         {Object.entries(fb.score_breakdown as Record<string, number>).map(([key, val]) => (
-                          <div key={key} className="rounded-lg bg-muted/50 p-2 text-center">
+                          <div key={key} className="rounded-xl bg-muted/50 p-2 text-center">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{key}</p>
                             <p className="text-sm font-bold text-primary">{val}</p>
                           </div>

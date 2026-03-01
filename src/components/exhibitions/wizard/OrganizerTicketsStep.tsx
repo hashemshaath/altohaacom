@@ -58,7 +58,7 @@ export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Building className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "معلومات المنظم" : "Organizer Information"}
@@ -160,14 +160,14 @@ export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Ticket className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "التذاكر والتسجيل" : "Tickets & Registration"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-3 rounded-lg border p-3">
+          <div className="flex items-center gap-3 rounded-xl border p-3">
             <Switch
               checked={data.isFree}
               onCheckedChange={(v) => onChange({ isFree: v })}
@@ -225,7 +225,7 @@ export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Tag className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "الوسوم والجمهور" : "Tags & Audience"}
@@ -251,7 +251,7 @@ export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
             </Label>
             <Input value={data.targetAudience} onChange={(e) => onChange({ targetAudience: e.target.value })} placeholder="Chefs, Restaurant Owners, Students" className="h-11" />
           </div>
-          <div className="flex items-center gap-3 rounded-lg border p-3">
+          <div className="flex items-center gap-3 rounded-xl border p-3">
             <Switch checked={data.isFeatured} onCheckedChange={(v) => onChange({ isFeatured: v })} />
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4 text-primary" />

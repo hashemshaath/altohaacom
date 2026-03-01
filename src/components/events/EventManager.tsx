@@ -156,9 +156,9 @@ export function EventManager() {
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   {event.featured_image_url ? (
-                    <img src={event.featured_image_url} alt="" className="h-16 w-24 rounded-lg object-cover shrink-0" />
+                    <img src={event.featured_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" />
                   ) : (
-                    <div className="h-16 w-24 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                    <div className="h-16 w-24 rounded-xl bg-muted flex items-center justify-center shrink-0">
                       <Calendar className="h-6 w-6 text-muted-foreground/30" />
                     </div>
                   )}

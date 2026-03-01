@@ -177,7 +177,7 @@ export function AnomalyDetection() {
           ) : (
             <div className="space-y-2">
               {data?.anomalies?.map((a, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg border">
+                <div key={i} className="flex items-center gap-3 p-3 rounded-xl border">
                   {a.type === "spike" ? (
                     <TrendingUp className="h-5 w-5 text-destructive shrink-0" />
                   ) : (

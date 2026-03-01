@@ -63,7 +63,7 @@ export function MembershipExpiryBanner({ className }: { className?: string }) {
       )}
     >
       <div className={cn(
-        "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+        "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl",
         isExpired ? "bg-destructive/10" : isUrgent ? "bg-chart-5/10" : "bg-primary/10"
       )}>
         {isExpired ? (
@@ -92,7 +92,7 @@ export function MembershipExpiryBanner({ className }: { className?: string }) {
         size="sm"
         variant={isExpired ? "destructive" : "default"}
         onClick={() => navigate("/membership")}
-        className="shrink-0 gap-1.5 rounded-lg text-xs"
+        className="shrink-0 gap-1.5 rounded-xl text-xs"
       >
         <Crown className="h-3.5 w-3.5" />
         {isAr ? "تجديد" : "Renew"}

@@ -164,7 +164,7 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
             { icon: <FileText className="h-3.5 w-3.5 text-primary" />, value: totalRecords, label: isAr ? "سجلات" : "Records" },
             { icon: <User className="h-3.5 w-3.5 text-chart-4" />, value: uniqueChefs, label: isAr ? "طهاة" : "Chefs" },
           ].map((stat, i) => (
-            <div key={i} className="flex flex-col items-center p-2 rounded-lg bg-muted/30 border border-border/20">
+            <div key={i} className="flex flex-col items-center p-2 rounded-xl bg-muted/30 border border-border/20">
               {stat.icon}
               <span className="text-sm font-bold mt-0.5">{stat.value}</span>
               <span className="text-[9px] text-muted-foreground">{stat.label}</span>
@@ -205,7 +205,7 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
           <ScrollArea className={expanded ? "max-h-[400px]" : ""}>
             <div className="space-y-1.5">
               {displayed.map((imp) => (
-                <div key={imp.id} className="flex items-center gap-3 p-2 rounded-lg border border-border/20 bg-muted/20 text-xs">
+                <div key={imp.id} className="flex items-center gap-3 p-2 rounded-xl border border-border/20 bg-muted/20 text-xs">
                   <FileText className="h-4 w-4 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

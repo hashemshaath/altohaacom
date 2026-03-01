@@ -127,7 +127,7 @@ export function SupplierProfileCompletion() {
         <Progress value={pct} className="h-2" />
 
         {nextStep && (
-          <div className="rounded-lg bg-primary/5 border border-primary/10 p-3">
+          <div className="rounded-xl bg-primary/5 border border-primary/10 p-3">
             <p className="text-xs font-medium text-primary">
               {isAr ? "الخطوة التالية:" : "Next step:"}
             </p>

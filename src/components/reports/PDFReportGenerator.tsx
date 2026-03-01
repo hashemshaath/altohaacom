@@ -215,7 +215,7 @@ export default function PDFReportGenerator() {
                   <div
                     key={t.id}
                     onClick={() => setConfig(p => ({ ...p, template: t.id, title: isAr ? t.nameAr : t.nameEn }))}
-                    className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
                       config.template === t.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
                     }`}
                   >

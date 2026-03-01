@@ -175,7 +175,7 @@ export function AdvancedContentEditor({ initialData, onSave }: ContentEditorProp
           </Tabs>
 
           {/* Toolbar */}
-          <div className="flex items-center gap-1 flex-wrap border rounded-lg p-1.5 bg-muted/30">
+          <div className="flex items-center gap-1 flex-wrap border rounded-xl p-1.5 bg-muted/30">
             {TOOLBAR_ACTIONS.map(action => (
               <Button key={action.label} variant="ghost" size="icon" className="h-8 w-8" onClick={() => insertToolbar(action.syntax, action.wrap)} title={action.label}>
                 <action.icon className="h-4 w-4" />
