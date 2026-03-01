@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Trophy, Medal, Award, Star, TrendingUp, Crown } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   userId: string;
@@ -106,18 +106,18 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                 </div>
                 {topRanking.rank && (
                   <div className="text-center">
-                    <span className="text-2xl font-bold tabular-nums text-chart-4">#{toEnglishDigits(topRanking.rank)}</span>
+                    <span className="text-2xl font-bold tabular-nums text-chart-4">#<AnimatedCounter value={topRanking.rank} className="inline" /></span>
                     {topRanking.rank_change !== null && topRanking.rank_change !== 0 && (
                       <div className={`flex items-center justify-center gap-0.5 text-[10px] ${topRanking.rank_change > 0 ? "text-chart-2" : "text-destructive"}`}>
                         <TrendingUp className={`h-2.5 w-2.5 ${topRanking.rank_change < 0 ? "rotate-180" : ""}`} />
-                        {toEnglishDigits(Math.abs(topRanking.rank_change))}
+                        <AnimatedCounter value={Math.abs(topRanking.rank_change)} className="inline" />
                       </div>
                     )}
                   </div>
                 )}
               </div>
               <div className="flex items-center justify-center gap-1">
-                <span className="text-xs font-bold tabular-nums">{toEnglishDigits(topRanking.total_points)}</span>
+                <span className="text-xs font-bold tabular-nums"><AnimatedCounter value={topRanking.total_points} className="inline" /></span>
                 <span className="text-[10px] text-muted-foreground">{isAr ? "نقطة" : "pts"}</span>
               </div>
             </CardContent>
@@ -135,7 +135,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                 </div>
                 <div>
                   <p className="text-xs font-semibold">{isAr ? "الميداليات" : "Medals"}</p>
-                  <p className="text-[10px] text-muted-foreground">{toEnglishDigits(totalMedals)} {isAr ? "إجمالي" : "total"}</p>
+                  <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={totalMedals} className="inline" /> {isAr ? "إجمالي" : "total"}</p>
                 </div>
               </div>
               <div className="flex items-center justify-center gap-4">
@@ -144,7 +144,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                     <TooltipTrigger asChild>
                       <div className="flex flex-col items-center gap-0.5 cursor-default">
                         <div className="h-8 w-8 rounded-full bg-[#FFD700]/15 flex items-center justify-center border border-[#FFD700]/30">
-                          <span className="text-sm font-bold tabular-nums text-[#FFD700]">{toEnglishDigits(totalGold)}</span>
+                          <span className="text-sm font-bold tabular-nums text-[#FFD700]"><AnimatedCounter value={totalGold} /></span>
                         </div>
                         <span className="text-[9px] text-muted-foreground">{isAr ? "ذهب" : "Gold"}</span>
                       </div>
@@ -157,7 +157,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                     <TooltipTrigger asChild>
                       <div className="flex flex-col items-center gap-0.5 cursor-default">
                         <div className="h-8 w-8 rounded-full bg-[#C0C0C0]/15 flex items-center justify-center border border-[#C0C0C0]/30">
-                          <span className="text-sm font-bold tabular-nums text-[#C0C0C0]">{toEnglishDigits(totalSilver)}</span>
+                          <span className="text-sm font-bold tabular-nums text-[#C0C0C0]"><AnimatedCounter value={totalSilver} /></span>
                         </div>
                         <span className="text-[9px] text-muted-foreground">{isAr ? "فضة" : "Silver"}</span>
                       </div>
@@ -170,7 +170,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                     <TooltipTrigger asChild>
                       <div className="flex flex-col items-center gap-0.5 cursor-default">
                         <div className="h-8 w-8 rounded-full bg-[#CD7F32]/15 flex items-center justify-center border border-[#CD7F32]/30">
-                          <span className="text-sm font-bold tabular-nums text-[#CD7F32]">{toEnglishDigits(totalBronze)}</span>
+                          <span className="text-sm font-bold tabular-nums text-[#CD7F32]"><AnimatedCounter value={totalBronze} /></span>
                         </div>
                         <span className="text-[9px] text-muted-foreground">{isAr ? "برونز" : "Bronze"}</span>
                       </div>
@@ -194,7 +194,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                 </div>
                 <div>
                   <p className="text-xs font-semibold">{isAr ? "الجوائز والتقديرات" : "Awards & Recognition"}</p>
-                  <p className="text-[10px] text-muted-foreground">{toEnglishDigits(awards.length)} {isAr ? "جائزة" : "awards"}</p>
+                  <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={awards.length} className="inline" /> {isAr ? "جائزة" : "awards"}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -231,7 +231,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                     <div className="h-12 w-12 rounded-xl bg-chart-4/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Trophy className="h-5 w-5 text-chart-4" />
                     </div>
-                    <span className="text-lg font-bold tabular-nums">{toEnglishDigits(compStats.competitions)}</span>
+                    <span className="text-lg font-bold tabular-nums"><AnimatedCounter value={compStats.competitions} /></span>
                     <span className="text-[10px] text-muted-foreground">{isAr ? "مسابقة" : "Competitions"}</span>
                   </div>
                 )}
@@ -240,7 +240,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
                     <div className="h-12 w-12 rounded-xl bg-chart-2/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Award className="h-5 w-5 text-chart-2" />
                     </div>
-                    <span className="text-lg font-bold tabular-nums">{toEnglishDigits(compStats.certificates)}</span>
+                    <span className="text-lg font-bold tabular-nums"><AnimatedCounter value={compStats.certificates} /></span>
                     <span className="text-[10px] text-muted-foreground">{isAr ? "شهادة" : "Certificates"}</span>
                   </div>
                 )}
