@@ -195,30 +195,28 @@ export default function MediaAdmin() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Card><CardContent className="p-3 text-center">
-          <HardDrive className="mx-auto mb-1 h-4 w-4 text-primary" />
-          <p className="text-lg font-bold">{stats.total}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "إجمالي" : "Total"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <ImageIcon className="mx-auto mb-1 h-4 w-4 text-chart-2" />
-          <p className="text-lg font-bold">{stats.images}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "صور" : "Images"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <FileVideo className="mx-auto mb-1 h-4 w-4 text-chart-3" />
-          <p className="text-lg font-bold">{stats.videos}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "فيديو" : "Videos"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <FileText className="mx-auto mb-1 h-4 w-4 text-chart-4" />
-          <p className="text-lg font-bold">{getFileSize(stats.totalSize)}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "حجم التخزين" : "Storage"}</p>
-        </CardContent></Card>
+        {[
+          { icon: HardDrive, label: language === "ar" ? "إجمالي" : "Total", value: stats.total, color: "text-primary", bg: "bg-primary/10" },
+          { icon: ImageIcon, label: language === "ar" ? "صور" : "Images", value: stats.images, color: "text-chart-2", bg: "bg-chart-2/10" },
+          { icon: FileVideo, label: language === "ar" ? "فيديو" : "Videos", value: stats.videos, color: "text-chart-3", bg: "bg-chart-3/10" },
+          { icon: FileText, label: language === "ar" ? "حجم التخزين" : "Storage", value: getFileSize(stats.totalSize), color: "text-chart-4", bg: "bg-chart-4/10" },
+        ].map(s => (
+          <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="p-3 flex items-center gap-3">
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
+                <s.icon className={`h-4 w-4 ${s.color}`} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                <p className="text-lg font-bold">{s.value}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardContent className="pt-6">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex-1 min-w-[200px]">
@@ -254,7 +252,7 @@ export default function MediaAdmin() {
       </Card>
 
       {/* Media Grid/List */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>
@@ -280,7 +278,7 @@ export default function MediaAdmin() {
                 return (
                   <div 
                     key={file.id} 
-                    className={`group relative rounded-lg border overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary ${bulk.isSelected(file.id) ? "ring-2 ring-primary" : ""}`}
+                    className={`group relative rounded-xl border border-border/40 overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-all duration-200 hover:shadow-md ${bulk.isSelected(file.id) ? "ring-2 ring-primary" : ""}`}
                     onClick={() => setSelectedMedia(file)}
                   >
                     <div className="absolute top-2 start-2 z-10" onClick={e => e.stopPropagation()}>

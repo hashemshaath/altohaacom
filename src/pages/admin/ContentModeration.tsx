@@ -168,9 +168,9 @@ export default function ContentModeration() {
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="reports" className="gap-1.5"><Flag className="h-3.5 w-3.5" />{isAr ? "البلاغات" : "Reports"}</TabsTrigger>
-          <TabsTrigger value="comments" className="gap-1.5"><MessageCircle className="h-3.5 w-3.5" />{isAr ? "التعليقات" : "Comments"}</TabsTrigger>
+        <TabsList className="mb-4 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="reports" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Flag className="h-3.5 w-3.5" />{isAr ? "البلاغات" : "Reports"}</TabsTrigger>
+          <TabsTrigger value="comments" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><MessageCircle className="h-3.5 w-3.5" />{isAr ? "التعليقات" : "Comments"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="comments">
@@ -185,7 +185,7 @@ export default function ContentModeration() {
         onDelete={bulkDismiss}
       />
 
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader>
           <CardTitle>{t("reports")}</CardTitle>
           <CardDescription>
@@ -209,10 +209,10 @@ export default function ContentModeration() {
               {reports?.map((report) => (
                 <div 
                   key={report.id} 
-                  className={`rounded-lg border ${
+                  className={`rounded-xl border transition-all duration-200 ${
                     report.status === "pending" 
                       ? "border-chart-4/30 bg-chart-4/5" 
-                      : "border-border"
+                      : "border-border/40"
                   } ${bulk.isSelected(report.id) ? "ring-1 ring-primary/30" : ""}`}
                 >
                   {/* Report Row Header */}
