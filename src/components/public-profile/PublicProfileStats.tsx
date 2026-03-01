@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Eye, Globe, Instagram, Twitter, Facebook, Linkedin, Youtube, Users, UserCheck } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = {
   instagram: Instagram, twitter: Twitter, facebook: Facebook,
@@ -37,7 +38,9 @@ export function PublicProfileStats({ profile, followStats, socialLinks, isAr, is
                 onClick={(stat as any).onClick}
                 className={`flex flex-col items-center px-2.5 sm:px-4 py-1.5 rounded-xl transition-all duration-200 min-w-[60px] ${(stat as any).onClick ? "hover:bg-primary/5 hover:text-primary cursor-pointer active:scale-95" : "cursor-default"}`}
               >
-                <span className="text-sm sm:text-base md:text-lg font-bold tabular-nums leading-tight">{typeof stat.value === 'number' ? toEnglishDigits(stat.value) : stat.value}</span>
+                <span className="text-sm sm:text-base md:text-lg font-bold tabular-nums leading-tight">
+                  {typeof stat.value === 'number' ? <AnimatedCounter value={stat.value} /> : stat.value}
+                </span>
                 <span className="text-[9px] sm:text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5 whitespace-nowrap">
                   {stat.label}
                 </span>

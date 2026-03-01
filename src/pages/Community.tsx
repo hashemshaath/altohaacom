@@ -15,6 +15,7 @@ import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs"
 import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
 import { Users } from "lucide-react";
 import { FeatureGate } from "@/components/membership/FeatureGate";
+import { ActivityPulse } from "@/components/ui/activity-pulse";
 
 // Lazy load heavy tabs
 const ChefsTab = lazy(() => import("@/components/community/ChefsTab").then(m => ({ default: m.ChefsTab })));
@@ -70,6 +71,7 @@ export default function Community() {
                 <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-primary">
                   {isAr ? "مجتمع الطهاة" : "Culinary Community"}
                 </span>
+                <ActivityPulse status="live" size="sm" />
               </div>
               <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
                 {isAr ? "المجتمع" : "Community"}

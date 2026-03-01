@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, memo } from "react";
 import { MembershipExpiryBanner } from "@/components/membership/MembershipExpiryBanner";
+import { ActivityPulse } from "@/components/ui/activity-pulse";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -291,7 +293,10 @@ const WelcomeBanner = memo(function WelcomeBanner({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">{greeting} 👋</h1>
+              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                {greeting} 👋
+                <ActivityPulse status="live" label={isAr ? "متصل" : "Online"} />
+              </h1>
               <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground/80">{subtitle}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -394,7 +399,7 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
               <item.icon className={`h-4 w-4 ${item.color}`} />
             </div>
             <div>
-              <p className="text-xl font-bold tabular-nums">{item.value}</p>
+              <AnimatedCounter value={item.value} className="text-xl" />
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-tight">{item.label}</p>
             </div>
           </CardContent>
