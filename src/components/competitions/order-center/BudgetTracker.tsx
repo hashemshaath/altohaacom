@@ -167,21 +167,21 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <DollarSign className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-xl font-bold">${toEnglishDigits(totalEstimated.toLocaleString())}</p>
+            <p className="text-xl font-bold">$<AnimatedCounter value={Math.round(totalEstimated)} className="inline" /></p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "إجمالي التقدير" : "Total Estimated"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <TrendingUp className="mx-auto mb-1 h-5 w-5 text-chart-5" />
-            <p className="text-xl font-bold">${toEnglishDigits(sponsoredValue.toLocaleString())}</p>
+            <p className="text-xl font-bold">$<AnimatedCounter value={Math.round(sponsoredValue)} className="inline" /></p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "مغطى بالرعاية" : "Sponsored"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <TrendingDown className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <p className="text-xl font-bold">${selfFunded > 0 ? toEnglishDigits(selfFunded.toLocaleString()) : "0"}</p>
+            <p className="text-xl font-bold">$<AnimatedCounter value={Math.round(selfFunded)} className="inline" /></p>
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "تمويل ذاتي" : "Self-Funded"}</p>
           </CardContent>
         </Card>
@@ -203,8 +203,8 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
           </div>
           <Progress value={sponsorPercentage} className="h-2.5" />
           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-            <span>${toEnglishDigits(sponsoredValue.toLocaleString())} {isAr ? "رعاية" : "sponsored"}</span>
-            <span>${toEnglishDigits(totalEstimated.toLocaleString())} {isAr ? "إجمالي" : "total"}</span>
+            <span>$<AnimatedCounter value={Math.round(sponsoredValue)} className="inline" /> {isAr ? "رعاية" : "sponsored"}</span>
+            <span>$<AnimatedCounter value={Math.round(totalEstimated)} className="inline" /> {isAr ? "إجمالي" : "total"}</span>
           </div>
         </CardContent>
       </Card>
@@ -253,7 +253,7 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
                           <Badge variant="outline" className="text-[10px]">{cat.itemCount} {isAr ? "عنصر" : "items"}</Badge>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold">${toEnglishDigits(cat.estimatedCost.toLocaleString())}</span>
+                          <span className="text-sm font-semibold">$<AnimatedCounter value={Math.round(cat.estimatedCost)} className="inline" /></span>
                           <span className="text-[10px] text-muted-foreground">({toEnglishDigits(pct.toFixed(1))}%)</span>
                         </div>
                       </div>

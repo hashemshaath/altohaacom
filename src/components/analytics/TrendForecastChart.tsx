@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   Sparkles,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   ComposedChart,
   Area,
@@ -156,7 +157,7 @@ export function TrendForecastChart({
             {isAr ? "النمو الشهري" : "Monthly growth"}: <strong className={growthRate >= 0 ? "text-chart-2" : "text-destructive"}>{growthRate.toFixed(1)}%</strong>
           </span>
           <span>
-            {isAr ? "التنبؤ التالي" : "Next predicted"}: <strong className="text-foreground">{Math.round(trend.predictedNext).toLocaleString()}</strong>
+            {isAr ? "التنبؤ التالي" : "Next predicted"}: <strong className="text-foreground"><AnimatedCounter value={Math.round(trend.predictedNext)} className="inline" /></strong>
           </span>
           <span className="flex items-center gap-1">
             <Sparkles className="h-3 w-3 text-chart-4" />

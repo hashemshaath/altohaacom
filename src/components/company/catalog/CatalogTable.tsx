@@ -6,6 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Edit, Trash2, Package } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CatalogItem, categories } from "./catalogTypes";
 
 interface CatalogTableProps {
@@ -72,7 +73,7 @@ export function CatalogTable({ items, isLoading, language, onEdit, onDelete }: C
                     <TableCell><Badge variant="outline">{getCategoryLabel(item.category)}</Badge></TableCell>
                     <TableCell className="font-mono text-xs">{item.sku || "-"}</TableCell>
                     <TableCell>
-                      {item.unit_price != null ? `${item.unit_price.toLocaleString()} ${item.currency || "SAR"}` : "-"}
+                      {item.unit_price != null ? <><AnimatedCounter value={Math.round(item.unit_price)} className="inline" /> {item.currency || "SAR"}</> : "-"}
                       {item.unit && <span className="text-xs text-muted-foreground"> / {item.unit}</span>}
                     </TableCell>
                     <TableCell>{item.quantity_available ?? "-"}</TableCell>

@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from "recharts";
 import { Download, TrendingUp, Users, Ticket, DollarSign, BarChart3, Eye, Star, MapPin, Clock } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, differenceInDays } from "date-fns";
 
 interface Props { exhibitionId: string; exhibitionTitle: string; isAr: boolean; }
@@ -148,12 +149,12 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         {[
-          { icon: Ticket, label: t("Tickets", "تذاكر"), value: data.totalTickets, sub: `${data.checkInRate}% ${t("check-in", "دخول")}` },
-          { icon: DollarSign, label: t("Revenue", "الإيرادات"), value: `${data.totalRevenue.toLocaleString()} ${data.currency}`, sub: `+${data.boothRevenue.toLocaleString()} ${t("booths", "أجنحة")}` },
-          { icon: MapPin, label: t("Booths", "أجنحة"), value: `${data.occupiedBooths}/${data.totalBooths}`, sub: `${data.boothOccupancy}%` },
-          { icon: Star, label: t("Rating", "تقييم"), value: data.avgRating, sub: `${data.totalReviews} ${t("reviews", "تقييم")}` },
-          { icon: Users, label: t("Followers", "متابعون"), value: data.totalFollowers },
-          { icon: Eye, label: t("Views", "مشاهدات"), value: data.viewCount.toLocaleString(), sub: `${data.eventDuration} ${t("days", "أيام")}` },
+          { icon: Ticket, label: t("Tickets", "تذاكر"), numValue: data.totalTickets, sub: `${data.checkInRate}% ${t("check-in", "دخول")}` },
+          { icon: DollarSign, label: t("Revenue", "الإيرادات"), numValue: Math.round(data.totalRevenue), suffix: ` ${data.currency}`, sub: `+${data.boothRevenue.toLocaleString()} ${t("booths", "أجنحة")}` },
+          { icon: MapPin, label: t("Booths", "أجنحة"), strValue: `${data.occupiedBooths}/${data.totalBooths}`, sub: `${data.boothOccupancy}%` },
+          { icon: Star, label: t("Rating", "تقييم"), strValue: data.avgRating, sub: `${data.totalReviews} ${t("reviews", "تقييم")}` },
+          { icon: Users, label: t("Followers", "متابعون"), numValue: data.totalFollowers },
+          { icon: Eye, label: t("Views", "مشاهدات"), numValue: data.viewCount, sub: `${data.eventDuration} ${t("days", "أيام")}` },
         ].map(kpi => (
           <Card key={kpi.label}>
             <CardContent className="p-3">
@@ -161,7 +162,11 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
                 <kpi.icon className="h-3.5 w-3.5 text-primary" />
                 <span className="text-[9px] text-muted-foreground">{kpi.label}</span>
               </div>
-              <p className="text-base font-bold">{kpi.value}</p>
+              <p className="text-base font-bold">
+                {'numValue' in kpi && kpi.numValue !== undefined
+                  ? <><AnimatedCounter value={kpi.numValue} className="inline" />{kpi.suffix || ''}</>
+                  : kpi.strValue}
+              </p>
               {kpi.sub && <p className="text-[9px] text-muted-foreground">{kpi.sub}</p>}
             </CardContent>
           </Card>
