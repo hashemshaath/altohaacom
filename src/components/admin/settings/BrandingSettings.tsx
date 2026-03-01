@@ -97,7 +97,7 @@ export function BrandingSettings({ settings, onSave, isPending }: Props) {
             { key: "allowSocialLogin", en: "Social Login", ar: "تسجيل اجتماعي", descEn: "Allow Google/social login", descAr: "السماح بتسجيل الدخول عبر جوجل" },
             { key: "maintenanceMode", en: "Maintenance Mode", ar: "وضع الصيانة", descEn: "Temporarily disable user access", descAr: "تعطيل الوصول للمستخدمين مؤقتاً" },
           ].map(item => (
-            <div key={item.key} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+            <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3 transition-all duration-300 hover:bg-muted/30">
               <div>
                 <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
                 <p className="text-xs text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>

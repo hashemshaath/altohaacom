@@ -61,8 +61,8 @@ export function NotificationAnalyticsWidget() {
             { icon: Zap, value: stats.todayCount, label: isAr ? "اليوم" : "Today", color: "text-chart-3" },
             { icon: AlertCircle, value: stats.queueFailed, label: isAr ? "فاشلة" : "Failed", color: "text-destructive" },
           ].map((s) => (
-            <div key={s.label} className="text-center p-2 rounded-lg bg-muted/50">
-              <s.icon className={`h-3.5 w-3.5 mx-auto ${s.color} mb-1`} />
+            <div key={s.label} className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+              <s.icon className={`h-3.5 w-3.5 mx-auto ${s.color} mb-1 transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-lg font-bold">{s.value}</p>
               <p className="text-[10px] text-muted-foreground">{s.label}</p>
             </div>
@@ -92,7 +92,7 @@ export function NotificationAnalyticsWidget() {
         </div>
 
         {stats.queuePending > 0 && (
-          <div className="p-2 rounded-lg bg-chart-4/10 text-xs text-chart-4 flex items-center gap-1.5">
+          <div className="p-2 rounded-xl bg-chart-4/10 text-xs text-chart-4 flex items-center gap-1.5">
             <Zap className="h-3 w-3" />
             {isAr
               ? `${stats.queuePending} إشعار في الانتظار`
@@ -101,7 +101,7 @@ export function NotificationAnalyticsWidget() {
         )}
 
         {stats.queueFailed > 0 && (
-          <div className="p-2 rounded-lg bg-destructive/10 text-xs text-destructive flex items-center gap-1.5">
+          <div className="p-2 rounded-xl bg-destructive/10 text-xs text-destructive flex items-center gap-1.5">
             <AlertCircle className="h-3 w-3" />
             {isAr
               ? `${stats.queueFailed} إشعار فاشل - يحتاج إعادة محاولة`

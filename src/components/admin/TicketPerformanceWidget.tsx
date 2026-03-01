@@ -118,7 +118,7 @@ export function TicketPerformanceWidget() {
         </div>
 
         {stats.slaBreach > 0 && (
-          <div className="p-2 rounded-lg bg-destructive/10 text-xs text-destructive flex items-center gap-1.5">
+          <div className="p-2 rounded-xl bg-destructive/10 text-xs text-destructive flex items-center gap-1.5">
             <TrendingDown className="h-3 w-3" />
             {isAr
               ? `${stats.slaBreach} تذكرة تجاوزت وقت الاستجابة المحدد`

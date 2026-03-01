@@ -92,7 +92,7 @@ export function AdminPendingActionsWidget() {
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
           <div className={cn(
-            "flex h-7 w-7 items-center justify-center rounded-lg",
+             "flex h-7 w-7 items-center justify-center rounded-xl",
             totalPending > 0 ? "bg-chart-4/10" : "bg-chart-2/10"
           )}>
             {totalPending > 0 ? (
@@ -121,11 +121,11 @@ export function AdminPendingActionsWidget() {
             {items.filter(i => i.count > 0).map((item) => (
               <Link key={item.label} to={item.link}>
                 <div className={cn(
-                  "flex items-center justify-between rounded-lg border border-border/30 p-2.5 transition-all hover:bg-accent/30 hover:shadow-sm",
+                  "flex items-center justify-between rounded-xl border border-border/30 p-2.5 transition-all duration-300 hover:bg-accent/30 hover:shadow-sm hover:-translate-y-0.5",
                   item.urgent && "border-destructive/20 bg-destructive/5"
                 )}>
                   <div className="flex items-center gap-2.5">
-                    <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg", item.bg)}>
+                    <div className={cn("flex h-7 w-7 items-center justify-center rounded-xl", item.bg)}>
                       <item.icon className={cn("h-3.5 w-3.5", item.color)} />
                     </div>
                     <span className="text-xs font-medium">
