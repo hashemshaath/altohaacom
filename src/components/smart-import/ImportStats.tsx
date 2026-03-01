@@ -50,7 +50,7 @@ export const ImportStats = React.memo(({ stats, loading, isAr }: ImportStatsProp
           <Card key={item.label} className="hover:shadow-sm transition-shadow">
             <CardContent className="p-3">
               <div className="flex items-center gap-2 mb-1">
-                <div className={`w-7 h-7 rounded-lg ${item.bg} flex items-center justify-center`}>
+                <div className={`w-7 h-7 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <Icon className={`h-3.5 w-3.5 ${item.color}`} />
                 </div>
                 <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{item.label}</span>

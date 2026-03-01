@@ -30,8 +30,8 @@ export const DataQualityIndicator = React.memo(({ score, isAr, compact }: DataQu
   }
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg border bg-background">
-      <div className={`w-10 h-10 rounded-lg ${level.bg}/10 flex items-center justify-center shrink-0`}>
+    <div className="flex items-center gap-3 p-3 rounded-xl border bg-background">
+      <div className={`w-10 h-10 rounded-xl ${level.bg}/10 flex items-center justify-center shrink-0`}>
         <Icon className={`h-5 w-5 ${level.color}`} />
       </div>
       <div className="flex-1 min-w-0">

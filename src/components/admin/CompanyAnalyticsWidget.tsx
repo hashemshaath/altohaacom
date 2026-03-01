@@ -72,7 +72,7 @@ export function CompanyAnalyticsWidget() {
             { icon: Clock, value: stats.pending, label: isAr ? "معلق" : "Pending", color: "text-chart-4" },
             { icon: DollarSign, value: `${Math.round(stats.totalRevenue / 1000)}K`, label: isAr ? "الإيرادات" : "Revenue", color: "text-chart-3" },
           ].map((s) => (
-            <div key={s.label} className="text-center p-2 rounded-lg bg-muted/50">
+            <div key={s.label} className="text-center p-2 rounded-xl bg-muted/50">
               <s.icon className={`h-3.5 w-3.5 mx-auto ${s.color} mb-1`} />
               <p className="text-lg font-bold">{s.value}</p>
               <p className="text-[10px] text-muted-foreground">{s.label}</p>
@@ -106,7 +106,7 @@ export function CompanyAnalyticsWidget() {
         </div>
 
         {stats.pending > 0 && (
-          <div className="p-2 rounded-lg bg-chart-4/10 text-xs text-chart-4 flex items-center gap-1.5">
+          <div className="p-2 rounded-xl bg-chart-4/10 text-xs text-chart-4 flex items-center gap-1.5">
             <Clock className="h-3 w-3" />
             {isAr
               ? `${stats.pending} شركة في انتظار المراجعة`

@@ -204,34 +204,34 @@ export default function Recipes() {
                 <Select value={cuisine} onValueChange={setCuisine}>
                   <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20"><SelectValue placeholder={isAr ? "المطبخ" : "Cuisine"} /></SelectTrigger>
                   <SelectContent className="rounded-xl border-border/40">
-                    <SelectItem value="all" className="rounded-lg">{isAr ? "كل المطابخ" : "All Cuisines"}</SelectItem>
-                    {cuisines.map(c => <SelectItem key={c} value={c} className="rounded-lg">{c}</SelectItem>)}
+                    <SelectItem value="all" className="rounded-xl">{isAr ? "كل المطابخ" : "All Cuisines"}</SelectItem>
+                    {cuisines.map(c => <SelectItem key={c} value={c} className="rounded-xl">{c}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <Select value={difficulty} onValueChange={setDifficulty}>
                   <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-36 focus:ring-primary/20"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl border-border/40">
-                    <SelectItem value="all" className="rounded-lg">{isAr ? "كل المستويات" : "All Levels"}</SelectItem>
-                    <SelectItem value="easy" className="rounded-lg">{isAr ? "سهل" : "Easy"}</SelectItem>
-                    <SelectItem value="medium" className="rounded-lg">{isAr ? "متوسط" : "Medium"}</SelectItem>
-                    <SelectItem value="hard" className="rounded-lg">{isAr ? "صعب" : "Hard"}</SelectItem>
+                    <SelectItem value="all" className="rounded-xl">{isAr ? "كل المستويات" : "All Levels"}</SelectItem>
+                    <SelectItem value="easy" className="rounded-xl">{isAr ? "سهل" : "Easy"}</SelectItem>
+                    <SelectItem value="medium" className="rounded-xl">{isAr ? "متوسط" : "Medium"}</SelectItem>
+                    <SelectItem value="hard" className="rounded-xl">{isAr ? "صعب" : "Hard"}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl border-border/40">
-                    <SelectItem value="all" className="rounded-lg">{isAr ? "كل الأنواع" : "All Categories"}</SelectItem>
+                    <SelectItem value="all" className="rounded-xl">{isAr ? "كل الأنواع" : "All Categories"}</SelectItem>
                     {Object.entries(categoryLabels).map(([key, val]) => (
-                      <SelectItem key={key} value={key} className="rounded-lg">{isAr ? val.ar : val.en}</SelectItem>
+                      <SelectItem key={key} value={key} className="rounded-xl">{isAr ? val.ar : val.en}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-36 focus:ring-primary/20"><SelectValue /></SelectTrigger>
                   <SelectContent className="rounded-xl border-border/40">
-                    <SelectItem value="newest" className="rounded-lg">{isAr ? "الأحدث" : "Newest"}</SelectItem>
-                    <SelectItem value="top_rated" className="rounded-lg">{isAr ? "الأعلى تقييماً" : "Top Rated"}</SelectItem>
-                    <SelectItem value="quickest" className="rounded-lg">{isAr ? "الأسرع" : "Quickest"}</SelectItem>
+                    <SelectItem value="newest" className="rounded-xl">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+                    <SelectItem value="top_rated" className="rounded-xl">{isAr ? "الأعلى تقييماً" : "Top Rated"}</SelectItem>
+                    <SelectItem value="quickest" className="rounded-xl">{isAr ? "الأسرع" : "Quickest"}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

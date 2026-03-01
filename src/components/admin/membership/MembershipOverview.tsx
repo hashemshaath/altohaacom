@@ -178,11 +178,11 @@ export default function MembershipOverview() {
               <span>{isAr ? "مدفوع" : "Paid"}: {(stats?.professional || 0) + (stats?.enterprise || 0)}</span>
             </div>
             <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="rounded-lg border p-3 text-center">
+              <div className="rounded-xl border p-3 text-center">
                 <p className="text-lg font-bold text-primary">{stats?.recentUpgrades || 0}</p>
                 <p className="text-xs text-muted-foreground">{isAr ? "ترقيات" : "Upgrades"}</p>
               </div>
-              <div className="rounded-lg border p-3 text-center">
+              <div className="rounded-xl border p-3 text-center">
                 <p className="text-lg font-bold text-destructive">{stats?.recentDowngrades || 0}</p>
                 <p className="text-xs text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
               </div>

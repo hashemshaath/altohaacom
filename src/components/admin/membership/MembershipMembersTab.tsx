@@ -649,7 +649,7 @@ export default function MembershipMembersTab() {
           <div className="space-y-4 py-2">
             {/* Change Tier UI */}
             {dialogAction === "change_tier" && (
-              <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="flex items-center justify-between rounded-xl border p-4">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground mb-1">{isAr ? "الحالي" : "Current"}</p>
                   {getTierBadge(targetUser?.membership_tier || null)}
@@ -672,7 +672,7 @@ export default function MembershipMembersTab() {
             {/* Extend UI */}
             {dialogAction === "extend" && (
               <div className="space-y-3">
-                <div className="rounded-lg border p-3">
+                <div className="rounded-xl border p-3">
                   <p className="text-xs text-muted-foreground mb-1">{isAr ? "الانتهاء الحالي" : "Current expiry"}</p>
                   <p className="text-sm font-medium">
                     {targetUser?.membership_expires_at
@@ -711,7 +711,7 @@ export default function MembershipMembersTab() {
 
             {/* Suspend warning */}
             {dialogAction === "suspend" && (
-              <div className="flex items-start gap-3 rounded-lg bg-destructive/10 p-3">
+              <div className="flex items-start gap-3 rounded-xl bg-destructive/10 p-3">
                 <Ban className="h-5 w-5 text-destructive mt-0.5" />
                 <p className="text-sm text-destructive">
                   {isAr
@@ -723,7 +723,7 @@ export default function MembershipMembersTab() {
 
             {/* Revoke warning */}
             {dialogAction === "revoke" && (
-              <div className="flex items-start gap-3 rounded-lg bg-destructive/10 p-3">
+              <div className="flex items-start gap-3 rounded-xl bg-destructive/10 p-3">
                 <ShieldOff className="h-5 w-5 text-destructive mt-0.5" />
                 <p className="text-sm text-destructive">
                   {isAr
@@ -735,7 +735,7 @@ export default function MembershipMembersTab() {
 
             {/* Reactivate info */}
             {dialogAction === "reactivate" && (
-              <div className="flex items-start gap-3 rounded-lg bg-chart-2/10 p-3">
+              <div className="flex items-start gap-3 rounded-xl bg-chart-2/10 p-3">
                 <ShieldCheck className="h-5 w-5 text-chart-2 mt-0.5" />
                 <p className="text-sm">
                   {isAr
