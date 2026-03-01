@@ -11,6 +11,7 @@ import {
   AlertTriangle, CheckCircle2, Target,
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ChurnRisk {
   segment: string;
@@ -103,7 +104,7 @@ export function PredictiveChurnDashboard() {
                   <p className="text-xs text-muted-foreground">{isAr ? "معدل الاحتفاظ" : "Retention Score"}</p>
                   <Target className="h-4 w-4 text-primary" />
                 </div>
-                <p className="mt-1 text-2xl font-bold">{retentionScore}%</p>
+                <p className="mt-1 text-2xl font-bold"><AnimatedCounter value={retentionScore} suffix="%" /></p>
                 <Progress value={retentionScore} className="mt-2 h-1.5" />
               </CardContent>
             </Card>
@@ -113,7 +114,7 @@ export function PredictiveChurnDashboard() {
                   <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المعرضين" : "Total At Risk"}</p>
                   <Users className="h-4 w-4 text-chart-5" />
                 </div>
-                <p className="mt-1 text-2xl font-bold">{totalAtRisk.toLocaleString()}</p>
+                <p className="mt-1 text-2xl font-bold"><AnimatedCounter value={totalAtRisk} /></p>
                 <p className="text-xs text-muted-foreground mt-1">{risks.length} {isAr ? "شرائح" : "segments"}</p>
               </CardContent>
             </Card>
@@ -123,7 +124,7 @@ export function PredictiveChurnDashboard() {
                   <p className="text-xs text-muted-foreground">{isAr ? "تحذيرات حرجة" : "Critical Alerts"}</p>
                   <AlertTriangle className={`h-4 w-4 ${criticalCount > 0 ? "text-destructive" : "text-chart-2"}`} />
                 </div>
-                <p className="mt-1 text-2xl font-bold">{criticalCount}</p>
+                <p className="mt-1 text-2xl font-bold"><AnimatedCounter value={criticalCount} /></p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {criticalCount > 0 ? (isAr ? "تحتاج اهتمام فوري" : "Need immediate attention") : (isAr ? "لا تحذيرات" : "No alerts")}
                 </p>

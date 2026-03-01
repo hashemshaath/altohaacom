@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface HistoryEntry {
   id: string;
@@ -77,19 +78,19 @@ export default function MembershipHistoryTab() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="pt-6 text-center">
-            <p className="text-2xl font-bold">{totalChanges}</p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={totalChanges} /></p>
             <p className="text-sm text-muted-foreground">{isAr ? "إجمالي التغييرات" : "Total Changes"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <p className="text-2xl font-bold text-primary">{upgrades}</p>
+            <p className="text-2xl font-bold text-primary"><AnimatedCounter value={upgrades} /></p>
             <p className="text-sm text-muted-foreground">{isAr ? "ترقيات" : "Upgrades"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <p className="text-2xl font-bold text-destructive">{downgrades}</p>
+            <p className="text-2xl font-bold text-destructive"><AnimatedCounter value={downgrades} /></p>
             <p className="text-sm text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
           </CardContent>
         </Card>

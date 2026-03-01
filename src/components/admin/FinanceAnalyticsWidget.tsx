@@ -10,6 +10,7 @@ import { DollarSign, TrendingUp, FileText, AlertCircle, CheckCircle2, Clock } fr
 import { format, subDays, subMonths, startOfMonth, endOfMonth } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function FinanceAnalyticsWidget() {
   const { language } = useLanguage();
@@ -155,11 +156,11 @@ export function FinanceAnalyticsWidget() {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 border-t pt-3">
               <div className="text-center">
-                <p className="text-lg font-bold text-primary">{toEnglishDigits(financeData.totalOrders.toLocaleString())}</p>
+                <AnimatedCounter value={financeData.totalOrders} className="text-lg font-bold text-primary" />
                 <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الطلبات" : "Total Orders"}</p>
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold text-chart-4">{financeData.activeOrders}</p>
+                <AnimatedCounter value={financeData.activeOrders} className="text-lg font-bold text-chart-4" />
                 <p className="text-[10px] text-muted-foreground">{isAr ? "طلبات نشطة" : "Active Orders"}</p>
               </div>
             </div>

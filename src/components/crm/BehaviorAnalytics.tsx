@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function BehaviorAnalytics() {
   const { language } = useLanguage();
@@ -154,7 +155,7 @@ export function BehaviorAnalytics() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "سلال مهجورة" : "Abandoned Carts"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${cartStats?.abandoned ?? 0}`)}</p>
+              <p className="text-2xl font-bold"><AnimatedCounter value={cartStats?.abandoned ?? 0} /></p>
               <p className="text-[10px] text-muted-foreground">
                 {toEnglishDigits(`${cartStats?.totalValue?.toLocaleString() ?? 0}`)} SAR
               </p>
@@ -169,7 +170,7 @@ export function BehaviorAnalytics() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "معدل الاسترداد" : "Recovery Rate"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${cartStats?.recoveryRate ?? 0}`)}%</p>
+              <p className="text-2xl font-bold"><AnimatedCounter value={cartStats?.recoveryRate ?? 0} suffix="%" /></p>
               <p className="text-[10px] text-muted-foreground">
                 {toEnglishDigits(`${cartStats?.recovered ?? 0}`)} {isAr ? "مسترد" : "recovered"}
               </p>
@@ -184,7 +185,7 @@ export function BehaviorAnalytics() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "مشاهدات الصفحات" : "Page Views"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${behaviorStats?.totalPageViews ?? 0}`)}</p>
+              <p className="text-2xl font-bold"><AnimatedCounter value={behaviorStats?.totalPageViews ?? 0} /></p>
               <p className="text-[10px] text-muted-foreground">
                 {toEnglishDigits(`${behaviorStats?.avgDuration ?? 0}`)}s {isAr ? "متوسط" : "avg"}
               </p>
@@ -199,7 +200,7 @@ export function BehaviorAnalytics() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "تحويلات" : "Conversions"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(`${conversionStats?.total ?? 0}`)}</p>
+              <p className="text-2xl font-bold"><AnimatedCounter value={conversionStats?.total ?? 0} /></p>
               <p className="text-[10px] text-muted-foreground">
                 {toEnglishDigits(`${conversionStats?.totalRevenue?.toLocaleString() ?? 0}`)} SAR
               </p>
