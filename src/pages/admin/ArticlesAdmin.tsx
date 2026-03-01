@@ -478,9 +478,9 @@ export default function ArticlesAdmin() {
           { icon: BarChart3, value: stats.totalViews.toLocaleString(), label: language === "ar" ? "مشاهدات" : "Views", color: "text-chart-3", bg: "bg-chart-3/10" },
           { icon: Star, value: stats.featured, label: language === "ar" ? "مميز" : "Featured", color: "text-chart-1", bg: "bg-chart-1/10" },
         ].map((stat) => (
-          <Card key={stat.label} className="rounded-2xl border-border/40 hover:shadow-md transition-all hover:-translate-y-0.5">
+          <Card key={stat.label} className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="p-4 text-center">
-              <div className={cn("mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl", stat.bg)}>
+              <div className={cn("mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", stat.bg)}>
                 <stat.icon className={cn("h-4 w-4", stat.color)} />
               </div>
               <p className="text-xl font-bold">{stat.value}</p>
