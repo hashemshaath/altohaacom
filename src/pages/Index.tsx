@@ -143,7 +143,7 @@ const Index = () => {
     }), [sections]);
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden" role="document">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-background" role="document">
       <OfflineIndicator />
       <SEOHead
         title="Altoha — The Global Culinary Community"

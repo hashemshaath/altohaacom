@@ -136,7 +136,7 @@ export function FeaturedChefs() {
                   to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
                   className="group block snap-start min-w-[11rem] shrink-0 sm:min-w-0 sm:shrink"
                 >
-                  <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 overflow-hidden active:scale-[0.98]">
+                  <Card className="h-full border-border/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/20 overflow-hidden active:scale-[0.98] rounded-2xl">
                     <CardContent className="p-3 sm:p-4 text-center">
                       <div className="relative mx-auto mb-3 w-fit">
                         <Avatar className={cn(
