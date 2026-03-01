@@ -112,7 +112,7 @@ export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
             <CheckCircle2 className="h-8 w-8 text-chart-5 mx-auto mb-2" />
             <p className="font-bold text-sm">{isAr ? "الفاتورة جاهزة" : "Invoice Generated"}</p>
             <p className="text-xl font-black text-primary tabular-nums mt-1">
-              {session.total_cost?.toLocaleString()} SAR
+              <AnimatedCounter value={Math.round(session.total_cost || 0)} className="inline" /> SAR
             </p>
             <p className="text-[10px] text-muted-foreground mt-1">{chefCount} {isAr ? "طهاة" : "chefs"}</p>
           </div>

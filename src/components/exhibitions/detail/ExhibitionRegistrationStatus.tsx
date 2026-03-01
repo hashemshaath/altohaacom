@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Ticket, Clock, Users, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 import { isPast, isFuture, differenceInDays, format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   registrationDeadline?: string | null;
@@ -100,7 +101,7 @@ export function ExhibitionRegistrationStatus({
               <Users className="h-3.5 w-3.5 shrink-0" />
               <span>
                 {isAr ? "الحد الأقصى: " : "Max capacity: "}
-                <span className="font-medium text-foreground">{maxAttendees.toLocaleString()}</span>
+                <span className="font-medium text-foreground"><AnimatedCounter value={maxAttendees} className="inline" /></span>
               </span>
             </div>
           )}

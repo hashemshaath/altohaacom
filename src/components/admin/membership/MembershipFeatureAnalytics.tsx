@@ -253,10 +253,10 @@ export default function MembershipFeatureAnalytics() {
                         </div>
                       </div>
                     </td>
-                    <td className="text-center py-2.5 px-3 tabular-nums">{(f.byTier.basic || 0).toLocaleString()}</td>
-                    <td className="text-center py-2.5 px-3 tabular-nums">{(f.byTier.professional || 0).toLocaleString()}</td>
-                    <td className="text-center py-2.5 px-3 tabular-nums">{(f.byTier.enterprise || 0).toLocaleString()}</td>
-                    <td className="text-center py-2.5 px-3 tabular-nums font-semibold">{f.total.toLocaleString()}</td>
+                    <td className="text-center py-2.5 px-3 tabular-nums"><AnimatedCounter value={f.byTier.basic || 0} /></td>
+                    <td className="text-center py-2.5 px-3 tabular-nums"><AnimatedCounter value={f.byTier.professional || 0} /></td>
+                    <td className="text-center py-2.5 px-3 tabular-nums"><AnimatedCounter value={f.byTier.enterprise || 0} /></td>
+                    <td className="text-center py-2.5 px-3 tabular-nums font-semibold"><AnimatedCounter value={f.total} /></td>
                     <td className="text-center py-2.5 px-3">
                       {f.blocked > 0 ? (
                         <Badge variant="destructive" className="text-[10px] px-1.5 py-0">{f.blocked}</Badge>
