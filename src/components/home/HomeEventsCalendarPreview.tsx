@@ -10,6 +10,7 @@ import {
   ChevronLeft, ChevronRight, List, Timer, Building2,
 } from "lucide-react";
 import { format, parseISO, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns";
+import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
@@ -116,7 +117,7 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setCalDate(d => subMonths(d, 1))}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-sm font-bold tracking-tight">{format(calDate, "MMMM yyyy")}</span>
+                <span className="text-sm font-bold tracking-tight">{format(calDate, "MMMM yyyy", { locale: isAr ? ar : undefined })}</span>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setCalDate(d => addMonths(d, 1))}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -194,7 +195,7 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-bold flex items-center gap-2">
                       <Calendar className="h-3.5 w-3.5 text-primary" />
-                      {format(selectedDay, isAr ? "EEEE, d MMMM" : "EEEE, MMMM d")}
+                      {format(selectedDay, isAr ? "EEEE, d MMMM" : "EEEE, MMMM d", { locale: isAr ? ar : undefined })}
                     </h3>
                     <Badge variant="outline" className="text-[9px] tabular-nums">{selectedDayEvents.length} {isAr ? "فعاليات" : "events"}</Badge>
                   </div>
@@ -248,9 +249,9 @@ function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
       <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <Calendar className="h-2.5 w-2.5" />
-          {format(parseISO(event.start_date), "MMM d, yyyy")}
+          {format(parseISO(event.start_date), "MMM d, yyyy", { locale: isAr ? ar : undefined })}
         </span>
-        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{event.city}{event.country_code ? `, ${event.country_code}` : ""}</span>}
+        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{event.city}</span>}
       </div>
     </div>
   );
@@ -286,9 +287,9 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
           )}
         </div>
         {event.link ? (
-          <Link to={event.link} className="text-xs font-bold hover:text-primary transition-colors line-clamp-1 block">{event.title}</Link>
+          <Link to={event.link} className="text-xs font-bold hover:text-primary transition-colors line-clamp-1 block">{isAr && event.title_ar ? event.title_ar : event.title}</Link>
         ) : (
-          <p className="text-xs font-bold line-clamp-1">{event.title}</p>
+          <p className="text-xs font-bold line-clamp-1">{isAr && event.title_ar ? event.title_ar : event.title}</p>
         )}
         <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
           {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{event.city}</span>}
@@ -348,7 +349,7 @@ const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
           <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-2">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3 text-primary/50" />
-              {format(parseISO(event.start_date), "d MMM yyyy")}
+              {format(parseISO(event.start_date), "d MMM yyyy", { locale: isAr ? ar : undefined })}
             </span>
             {event.city && (
               <span className="flex items-center gap-1 truncate">

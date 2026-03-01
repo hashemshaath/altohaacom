@@ -14,6 +14,14 @@ import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 
+const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
+  news: { en: "News", ar: "أخبار" },
+  article: { en: "Article", ar: "مقال" },
+  event: { en: "Event", ar: "فعالية" },
+  blog: { en: "Blog", ar: "مدونة" },
+  interview: { en: "Interview", ar: "مقابلة" },
+};
+
 export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrendingContent(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -64,15 +72,18 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
             filters={types.length > 1 ? (
               <>
                 <FilterChip label={isAr ? "الكل" : "All"} active={!typeFilter} count={articles.length} onClick={() => setTypeFilter(null)} />
-                {types.map(t => (
-                  <FilterChip
-                    key={t}
-                    label={t}
-                    active={typeFilter === t}
-                    count={articles.filter((a: any) => a.type === t).length}
-                    onClick={() => setTypeFilter(typeFilter === t ? null : t)}
-                  />
-                ))}
+                {types.map(t => {
+                  const label = TYPE_LABELS[t];
+                  return (
+                    <FilterChip
+                      key={t}
+                      label={label ? (isAr ? label.ar : label.en) : t}
+                      active={typeFilter === t}
+                      count={articles.filter((a: any) => a.type === t).length}
+                      onClick={() => setTypeFilter(typeFilter === t ? null : t)}
+                    />
+                  );
+                })}
               </>
             ) : undefined}
           />
@@ -97,7 +108,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                             <Flame className="h-2.5 w-2.5" />
                             {isAr ? "الأكثر رواجاً" : "Top Trending"}
                           </Badge>
-                          <Badge variant="outline" className="text-[10px] capitalize">{featured.type}</Badge>
+                          <Badge variant="outline" className="text-[10px] capitalize">{TYPE_LABELS[featured.type] ? (isAr ? TYPE_LABELS[featured.type].ar : TYPE_LABELS[featured.type].en) : featured.type}</Badge>
                         </div>
                         <h3 className="text-lg font-bold leading-tight line-clamp-2 text-foreground group-hover:text-primary transition-colors">
                           {isAr && featured.title_ar ? featured.title_ar : featured.title}
@@ -137,7 +148,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                         </div>
                         <div className="flex-1 p-3 flex flex-col justify-center min-w-0">
                           <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                            <Badge variant="outline" className="text-[9px] capitalize">{article.type}</Badge>
+                            <Badge variant="outline" className="text-[9px] capitalize">{TYPE_LABELS[article.type] ? (isAr ? TYPE_LABELS[article.type].ar : TYPE_LABELS[article.type].en) : article.type}</Badge>
                             <span className="text-[9px] text-muted-foreground/60">#{i + 2}</span>
                           </div>
                           <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">
