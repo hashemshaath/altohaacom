@@ -29,18 +29,23 @@ export function UserCard({ user, onView }: UserCardProps) {
   const isAr = language === "ar";
 
   const statusColor = user.account_status === "active"
-    ? "bg-chart-2/15 text-chart-2"
+    ? "bg-chart-2/15 text-chart-2 border-chart-2/20"
     : user.account_status === "suspended"
-    ? "bg-destructive/15 text-destructive"
-    : "bg-muted text-muted-foreground";
+    ? "bg-destructive/15 text-destructive border-destructive/20"
+    : "bg-muted text-muted-foreground border-border/30";
 
   return (
-    <Card className="group hover:shadow-md transition-shadow border-border/50">
-      <CardContent className="p-4">
+    <Card className="group relative overflow-hidden border-border/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:border-primary/20 rounded-2xl">
+      {/* Accent top bar */}
+      <div className={`absolute inset-x-0 top-0 h-1 rounded-t-2xl ${
+        user.account_status === "active" ? "bg-chart-2" : 
+        user.account_status === "suspended" ? "bg-destructive" : "bg-muted-foreground/30"
+      }`} />
+      <CardContent className="p-4 pt-5">
         <div className="flex items-start gap-3">
-          <Avatar className="h-12 w-12 border-2 border-border">
+          <Avatar className="h-12 w-12 border-2 border-border/50 rounded-xl transition-transform duration-300 group-hover:scale-105">
             <AvatarImage src={user.avatar_url || ""} />
-            <AvatarFallback className="text-sm font-semibold">
+            <AvatarFallback className="text-sm font-semibold rounded-xl">
               {(user.full_name || user.username || "U").slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -66,30 +71,30 @@ export function UserCard({ user, onView }: UserCardProps) {
         </div>
 
         <div className="flex flex-wrap gap-1.5 mt-3">
-          <Badge variant="secondary" className={statusColor + " text-[10px] px-1.5 py-0"}>
+          <Badge variant="outline" className={statusColor + " text-[10px] px-2 py-0.5 rounded-lg"}>
             {user.account_status || "active"}
           </Badge>
-          <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+          <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg">
             {user.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "متابع" : "Fan")}
           </Badge>
           {user.membership_tier && user.membership_tier !== "basic" && (
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-chart-4/50 text-chart-4">
+            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg border-chart-4/50 text-chart-4">
               <Crown className="h-2.5 w-2.5 me-0.5" /> {user.membership_tier}
             </Badge>
           )}
           {user.roles?.slice(0, 2).map(r => (
-            <Badge key={r.role} variant="outline" className="text-[10px] px-1.5 py-0">{r.role}</Badge>
+            <Badge key={r.role} variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg">{r.role}</Badge>
           ))}
           {(user.roles?.length || 0) > 2 && (
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0">+{(user.roles?.length || 0) - 2}</Badge>
+            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg">+{(user.roles?.length || 0) - 2}</Badge>
           )}
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-2 border-t border-border/50">
+        <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-border/40">
           <span className="text-[10px] text-muted-foreground">
             {new Date(user.created_at).toLocaleDateString()}
           </span>
-          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => onView(user.user_id)}>
+          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 rounded-lg hover:bg-primary/10 hover:text-primary" onClick={() => onView(user.user_id)}>
             <Eye className="h-3 w-3" /> {isAr ? "عرض" : "View"}
           </Button>
         </div>

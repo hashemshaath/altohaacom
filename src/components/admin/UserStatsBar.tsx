@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, UserCheck, UserX, Shield, Crown, Building2, TrendingUp } from "lucide-react";
+import { Users, UserCheck, UserX, Shield, Crown, Building2 } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -34,29 +34,30 @@ export function UserStatsBar() {
   });
 
   const items = [
-    { icon: Users, label: isAr ? "الإجمالي" : "Total", value: data?.total, color: "text-primary", bg: "bg-primary/10" },
-    { icon: UserCheck, label: isAr ? "نشط" : "Active", value: data?.active, color: "text-chart-2", bg: "bg-chart-2/10" },
-    { icon: UserX, label: isAr ? "موقوف" : "Suspended", value: data?.suspended, color: "text-destructive", bg: "bg-destructive/10" },
-    { icon: Shield, label: isAr ? "موثق" : "Verified", value: data?.verified, color: "text-chart-3", bg: "bg-chart-3/10" },
-    { icon: Crown, label: isAr ? "محترف" : "Professional", value: data?.pro, color: "text-chart-4", bg: "bg-chart-4/10" },
-    { icon: Building2, label: isAr ? "مشرف" : "Admins", value: data?.supervisors, color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: Users, label: isAr ? "الإجمالي" : "Total", value: data?.total, color: "text-primary", bg: "bg-primary/10", accent: "bg-primary" },
+    { icon: UserCheck, label: isAr ? "نشط" : "Active", value: data?.active, color: "text-chart-2", bg: "bg-chart-2/10", accent: "bg-chart-2" },
+    { icon: UserX, label: isAr ? "موقوف" : "Suspended", value: data?.suspended, color: "text-destructive", bg: "bg-destructive/10", accent: "bg-destructive" },
+    { icon: Shield, label: isAr ? "موثق" : "Verified", value: data?.verified, color: "text-chart-3", bg: "bg-chart-3/10", accent: "bg-chart-3" },
+    { icon: Crown, label: isAr ? "محترف" : "Professional", value: data?.pro, color: "text-chart-4", bg: "bg-chart-4/10", accent: "bg-chart-4" },
+    { icon: Building2, label: isAr ? "مشرف" : "Admins", value: data?.supervisors, color: "text-chart-5", bg: "bg-chart-5/10", accent: "bg-chart-5" },
   ];
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
       {items.map((item) => (
-        <Card key={item.label} className="border-border/50">
-          <CardContent className="p-3 flex items-center gap-2.5">
-            <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg", item.bg)}>
-              <item.icon className={cn("h-4 w-4", item.color)} />
+        <Card key={item.label} className="group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-border/60 rounded-2xl">
+          <div className={cn("absolute inset-x-0 top-0 h-1 rounded-t-2xl transition-all duration-300 group-hover:h-1.5", item.accent)} />
+          <CardContent className="p-3.5 pt-4 flex items-center gap-3">
+            <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", item.bg)}>
+              <item.icon className={cn("h-4.5 w-4.5", item.color)} />
             </div>
             <div className="min-w-0">
               {isLoading ? (
-                <Skeleton className="h-5 w-8" />
+                <Skeleton className="h-6 w-10 rounded-lg" />
               ) : (
-                <p className="text-sm font-bold leading-none">{item.value?.toLocaleString()}</p>
+                <p className="text-lg font-black leading-none tracking-tight">{item.value?.toLocaleString()}</p>
               )}
-              <p className="text-[10px] text-muted-foreground truncate">{item.label}</p>
+              <p className="text-[10px] text-muted-foreground truncate mt-0.5">{item.label}</p>
             </div>
           </CardContent>
         </Card>
