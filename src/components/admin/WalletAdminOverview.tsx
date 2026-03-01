@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Coins, Users } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function WalletAdminOverview() {
   const { language } = useLanguage();
@@ -48,37 +49,37 @@ export function WalletAdminOverview() {
   const cards = [
     {
       icon: Wallet, label: isAr ? "إجمالي الرصيد" : "Total Balance",
-      value: `${(walletStats?.totalBalance || 0).toLocaleString()} SAR`,
+      value: Math.round(walletStats?.totalBalance || 0), suffix: " SAR",
       sub: `${walletStats?.totalWallets || 0} ${isAr ? "محفظة" : "wallets"}`,
       color: "text-primary",
     },
     {
       icon: Coins, label: isAr ? "إجمالي النقاط" : "Total Points",
-      value: (walletStats?.totalPoints || 0).toLocaleString(),
+      value: walletStats?.totalPoints || 0, suffix: "",
       sub: `${walletStats?.weeklyPointsActivity || 0} ${isAr ? "نشاط هذا الأسبوع" : "this week"}`,
       color: "text-chart-1",
     },
     {
       icon: ArrowUpRight, label: isAr ? "إيداعات الأسبوع" : "Weekly Credits",
-      value: `${(walletStats?.weeklyCredits || 0).toLocaleString()} SAR`,
+      value: Math.round(walletStats?.weeklyCredits || 0), suffix: " SAR",
       sub: isAr ? "آخر 7 أيام" : "Last 7 days",
       color: "text-chart-2",
     },
     {
       icon: ArrowDownRight, label: isAr ? "سحوبات الأسبوع" : "Weekly Debits",
-      value: `${(walletStats?.weeklyDebits || 0).toLocaleString()} SAR`,
+      value: Math.round(walletStats?.weeklyDebits || 0), suffix: " SAR",
       sub: isAr ? "آخر 7 أيام" : "Last 7 days",
       color: "text-chart-4",
     },
     {
       icon: Users, label: isAr ? "محافظ نشطة" : "Active Wallets",
-      value: walletStats?.activeWallets || 0,
+      value: walletStats?.activeWallets || 0, suffix: "",
       sub: `${isAr ? "من" : "of"} ${walletStats?.totalWallets || 0}`,
       color: "text-chart-3",
     },
     {
       icon: TrendingUp, label: isAr ? "إجمالي التحويلات" : "Total Transactions",
-      value: (walletStats?.totalTransactions || 0).toLocaleString(),
+      value: walletStats?.totalTransactions || 0, suffix: "",
       sub: isAr ? "كل الأوقات" : "All time",
       color: "text-chart-5",
     },
@@ -93,7 +94,7 @@ export function WalletAdminOverview() {
               <c.icon className={`h-4 w-4 ${c.color}`} />
               <span className="text-[10px] text-muted-foreground truncate">{c.label}</span>
             </div>
-            <p className="text-base font-bold truncate">{c.value}</p>
+            <p className="text-base font-bold truncate"><AnimatedCounter value={c.value} />{c.suffix}</p>
             <p className="text-[10px] text-muted-foreground">{c.sub}</p>
           </CardContent>
         </Card>

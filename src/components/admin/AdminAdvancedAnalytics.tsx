@@ -116,7 +116,7 @@ export function AdminAdvancedAnalytics() {
           { label: isAr ? "مستخدمين جدد (30 يوم)" : "New Users (30d)", value: data.totalNewUsers, icon: Users, color: "text-primary" },
           { label: isAr ? "المسابقات (30 يوم)" : "Competitions (30d)", value: data.totalCompetitions, icon: Trophy, color: "text-chart-2" },
           { label: isAr ? "المقالات (30 يوم)" : "Articles (30d)", value: data.totalArticles, icon: FileText, color: "text-chart-5" },
-          { label: isAr ? "الإيرادات (30 يوم)" : "Revenue (30d)", value: `${data.totalRevenue.toLocaleString()} SAR`, icon: TrendingUp, color: "text-chart-3" },
+          { label: isAr ? "الإيرادات (30 يوم)" : "Revenue (30d)", value: data.totalRevenue, icon: TrendingUp, color: "text-chart-3" },
         ].map((kpi) => (
           <Card key={kpi.label}>
             <CardContent className="pt-4">
@@ -124,7 +124,7 @@ export function AdminAdvancedAnalytics() {
                 <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
                 <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
-              <p className="text-xl font-bold mt-1">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
+              <p className="text-xl font-bold mt-1">{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} />{kpi.label.includes("Revenue") ? " SAR" : ""}</> : kpi.value}</p>
             </CardContent>
           </Card>
         ))}
