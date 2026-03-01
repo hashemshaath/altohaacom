@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCheck, UserX, Shield, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
@@ -91,7 +92,7 @@ export default function UserGrowthAnalytics() {
               <card.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : (card.value || 0).toLocaleString()}</div>
+              <AnimatedCounter value={isLoading ? 0 : (card.value || 0)} className="text-2xl" />
             </CardContent>
           </Card>
         ))}

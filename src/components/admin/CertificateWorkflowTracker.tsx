@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Award, FileText, PenTool, Send, CheckCircle, XCircle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CertificateWorkflowTracker() {
   const { language } = useLanguage();
@@ -60,7 +61,7 @@ export function CertificateWorkflowTracker() {
             return (
               <div key={step.key} className="text-center space-y-1">
                 <step.icon className={`h-5 w-5 mx-auto ${step.color}`} />
-                <p className="text-lg font-bold">{count}</p>
+                <AnimatedCounter value={count} className="text-lg" />
                 <p className="text-[10px] text-muted-foreground">{step.label}</p>
                 <Progress value={pct} className="h-1" />
                 <p className="text-[9px] text-muted-foreground">{pct}%</p>
