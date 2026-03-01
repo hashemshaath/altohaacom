@@ -305,9 +305,9 @@ export default function MasterclassesAdmin() {
             icon: Users,
           },
         ].map((stat, i) => (
-          <Card key={i}>
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-4 p-4">
-              <div className="rounded-lg bg-primary/10 p-2">
+              <div className="rounded-xl bg-primary/10 p-2 transition-transform duration-300 group-hover:scale-110">
                 <stat.icon className="h-5 w-5 text-primary" />
               </div>
               <div>
