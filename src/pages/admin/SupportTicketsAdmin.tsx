@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -336,7 +337,7 @@ export default function SupportTicketsAdmin() {
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs text-muted-foreground truncate font-medium">{s.label}</p>
-                <p className="text-base sm:text-xl font-bold tabular-nums">{s.value}</p>
+                <p className="text-base sm:text-xl font-bold tabular-nums"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></p>
               </div>
             </CardContent>
           </Card>

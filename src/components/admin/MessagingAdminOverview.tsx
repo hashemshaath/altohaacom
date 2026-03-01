@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Ticket, Bell, TrendingUp, Users, Clock } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function MessagingAdminOverview() {
   const { language } = useLanguage();
@@ -87,7 +88,7 @@ export function MessagingAdminOverview() {
               <c.icon className={`h-4 w-4 ${c.color}`} />
             </div>
             <div className="min-w-0">
-              <p className="text-lg font-bold leading-none">{c.value}</p>
+              <p className="text-lg font-bold leading-none"><AnimatedCounter value={typeof c.value === "number" ? c.value : 0} /></p>
               <p className="text-[10px] text-muted-foreground truncate mt-0.5">{c.label}</p>
               {"total" in c && c.total ? (
                 <p className="text-[9px] text-muted-foreground">/ {c.total} {isAr ? "إجمالي" : "total"}</p>

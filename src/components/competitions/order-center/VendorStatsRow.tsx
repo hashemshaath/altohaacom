@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Package, UserPlus, AlertTriangle, Building2 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   totalItems: number;
@@ -28,7 +29,7 @@ export function VendorStatsRow({ totalItems, assignedItems, unassignedItems, ven
             <Card key={s.label} className="border-border/60 transition-all hover:shadow-md hover:-translate-y-0.5">
               <CardContent className="p-3 text-center">
                 <Icon className={`mx-auto mb-1 h-5 w-5 ${s.color}`} />
-                <p className="text-xl font-bold">{s.value}</p>
+                <p className="text-xl font-bold"><AnimatedCounter value={s.value} /></p>
                 <p className="text-[10px] text-muted-foreground uppercase">{s.label}</p>
               </CardContent>
             </Card>
