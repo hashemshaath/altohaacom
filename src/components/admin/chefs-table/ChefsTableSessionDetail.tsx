@@ -50,7 +50,7 @@ export function ChefsTableSessionDetail({ session, onNavigate }: Props) {
           { label: isAr ? "تاريخ البدء" : "Start", value: session.session_date ? format(new Date(session.session_date), "MMM d, yyyy HH:mm") : "—", icon: Calendar },
           { label: isAr ? "تاريخ الانتهاء" : "End", value: session.session_end ? format(new Date(session.session_end), "MMM d, yyyy HH:mm") : "—", icon: Calendar },
         ].map((item, i) => (
-          <div key={i} className="rounded-lg border border-border/30 bg-background p-3">
+          <div key={i} className="rounded-xl border border-border/30 bg-background p-3">
             <div className="flex items-center gap-1.5 mb-1">
               <item.icon className="h-3 w-3 text-muted-foreground" />
               <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
@@ -61,7 +61,7 @@ export function ChefsTableSessionDetail({ session, onNavigate }: Props) {
       </div>
 
       {session.description && (
-        <div className="rounded-lg border border-border/30 bg-background p-4">
+        <div className="rounded-xl border border-border/30 bg-background p-4">
           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
             {isAr ? "الوصف" : "Description"}
           </p>
@@ -72,7 +72,7 @@ export function ChefsTableSessionDetail({ session, onNavigate }: Props) {
       )}
 
       {session.notes && (
-        <div className="rounded-lg border border-chart-4/20 bg-chart-4/5 p-4">
+        <div className="rounded-xl border border-chart-4/20 bg-chart-4/5 p-4">
           <p className="text-[10px] font-bold text-chart-4 uppercase tracking-wider mb-2">
             {isAr ? "ملاحظات" : "Notes"}
           </p>
@@ -86,7 +86,7 @@ export function ChefsTableSessionDetail({ session, onNavigate }: Props) {
 
       {/* Public Report Link */}
       {(session as any).report_token && (
-        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
           <div className="flex items-center gap-2 mb-2">
             <Globe className="h-4 w-4 text-primary" />
             <p className="text-[10px] font-bold text-primary uppercase tracking-wider">

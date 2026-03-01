@@ -354,7 +354,7 @@ export function HeroSlideAdmin() {
               key={tpl.id}
               onClick={() => create.mutate(tpl.id)}
               disabled={create.isPending}
-              className="flex items-center gap-1.5 rounded-lg border border-border/50 bg-card px-3 py-1.5 text-xs font-medium hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all"
+              className="flex items-center gap-1.5 rounded-xl border border-border/50 bg-card px-3 py-1.5 text-xs font-medium hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all"
             >
               <Plus className="h-3 w-3" />{tpl.label}
             </button>
@@ -400,7 +400,7 @@ export function HeroSlideAdmin() {
 
                 {/* Thumbnail */}
                 <div
-                  className="h-14 w-24 rounded-lg overflow-hidden shrink-0 bg-muted cursor-pointer relative group"
+                  className="h-14 w-24 rounded-xl overflow-hidden shrink-0 bg-muted cursor-pointer relative group"
                   onClick={() => { setPreviewSlide(getSlide(rawSlide)); }}
                 >
                   {slide.image_url && (
@@ -539,7 +539,7 @@ export function HeroSlideAdmin() {
 
                           <Separator className="my-1" />
 
-                          <div className="flex items-center justify-between rounded-lg border border-border/50 p-3">
+                          <div className="flex items-center justify-between rounded-xl border border-border/50 p-3">
                             <div>
                               <p className="text-xs font-medium">{isAr ? "تفعيل الشريحة" : "Active"}</p>
                               <p className="text-[10px] text-muted-foreground">{isAr ? "إخفاء الشريحة من الموقع" : "Show this slide publicly"}</p>
@@ -565,7 +565,7 @@ export function HeroSlideAdmin() {
                                 )}
                               >
                                 {/* Preview image */}
-                                <div className="mb-2 h-20 rounded-lg overflow-hidden bg-muted relative">
+                                <div className="mb-2 h-20 rounded-xl overflow-hidden bg-muted relative">
                                   <img
                                     src={slide.image_url || "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=60"}
                                     alt={tpl.label}
@@ -611,7 +611,7 @@ export function HeroSlideAdmin() {
                                     update(slide.id, "overlay_color", p.color);
                                     update(slide.id, "overlay_opacity", p.opacity);
                                   }}
-                                  className="flex items-center gap-1.5 rounded-lg border border-border/50 px-2.5 py-1 text-[10px] font-medium hover:border-primary/50 transition-all"
+                                  className="flex items-center gap-1.5 rounded-xl border border-border/50 px-2.5 py-1 text-[10px] font-medium hover:border-primary/50 transition-all"
                                 >
                                   <span
                                     className="h-3 w-3 rounded-full border border-border/50"
@@ -990,7 +990,7 @@ export function HeroSlideAdmin() {
               </Badge>
             </div>
             <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-1 border border-border/50 rounded-lg p-0.5">
+              <div className="hidden sm:flex items-center gap-1 border border-border/50 rounded-xl p-0.5">
                 {(["desktop", "tablet", "mobile"] as const).map(d => (
                   <Button
                     key={d} size="icon"
