@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { FileText, Download, Printer, Users, Trophy, ShoppingCart, DollarSign, TrendingUp, TrendingDown, BarChart3, Activity } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 
 export function ExecutiveSummary() {
@@ -195,7 +196,7 @@ export function ExecutiveSummary() {
                     <p className="text-xs text-muted-foreground">{kpi.label}</p>
                     <Icon className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <p className="text-3xl font-bold">{kpi.value.toLocaleString()}</p>
+                  <AnimatedCounter value={kpi.value} className="text-3xl" />
                   {kpi.change !== null && kpi.change !== undefined && (
                     <div className={`flex items-center gap-1 mt-1 text-xs ${kpi.change >= 0 ? "text-chart-5" : "text-destructive"}`}>
                       {kpi.change >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}

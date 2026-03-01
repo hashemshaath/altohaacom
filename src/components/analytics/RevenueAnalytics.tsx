@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, Clock, AlertTriangle, TrendingUp, TrendingDown, Receipt, CalendarClock, Target, Banknote } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, ComposedChart, Area, Line,
@@ -177,7 +178,7 @@ export function RevenueAnalytics() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{k.label}</p>
-                <p className="text-xl font-bold">{k.value}</p>
+                <p className="text-xl font-bold">{typeof k.value === "number" ? <AnimatedCounter value={k.value} /> : k.value}</p>
               </div>
             </CardContent>
           </Card>

@@ -11,6 +11,7 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ProfileAnalyticsDashboardProps {
   userId: string;
@@ -153,7 +154,7 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
                   <stat.icon className={`h-5 w-5 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{stat.value}</p>
+                  <AnimatedCounter value={typeof stat.value === "number" ? stat.value : parseInt(String(stat.value)) || 0} className="text-2xl" />
                   <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
                 </div>
               </div>
@@ -206,7 +207,7 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
                       <stat.icon className={`h-5 w-5 ${stat.color}`} />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <AnimatedCounter value={typeof stat.value === "number" ? stat.value : parseInt(String(stat.value)) || 0} className="text-2xl" />
                       <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
                       {"trend" in stat && stat.trend !== undefined && stat.trend !== 0 && (
                         <p className={`text-[10px] font-medium ${(stat.trend as number) > 0 ? "text-chart-5" : "text-destructive"}`}>

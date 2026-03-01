@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { ShieldAlert, Users, Monitor, Ban, AlertTriangle, Activity, Clock } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function SecurityLiveWidget() {
   const { language } = useLanguage();
@@ -95,7 +96,7 @@ export function SecurityLiveWidget() {
               </div>
               <span className="text-xs text-muted-foreground">{kpi.label}</span>
             </div>
-            <p className="text-2xl font-bold">{kpi.value} <span className="text-xs font-normal text-muted-foreground">{kpi.sub}</span></p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : parseInt(kpi.value) || 0} /> <span className="text-xs font-normal text-muted-foreground">{kpi.sub}</span></p>
           </CardContent>
         </Card>
       ))}

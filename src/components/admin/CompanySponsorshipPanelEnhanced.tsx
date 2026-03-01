@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { Crown, Star, Medal, Award, Package, Sparkles, Calendar, Loader2 } from "lucide-react";
 import { format } from "date-fns";
@@ -122,19 +123,19 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-4 text-center">
-            <p className="text-2xl font-bold">{sponsorships.length}</p>
+            <AnimatedCounter value={sponsorships.length} className="text-2xl" />
             <p className="text-sm text-muted-foreground">{isAr ? "إجمالي الرعايات" : "Total Sponsorships"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 text-center">
-            <p className="text-2xl font-bold text-chart-5">{sponsorships.filter((s: any) => s.status === "active").length}</p>
+            <AnimatedCounter value={sponsorships.filter((s: any) => s.status === "active").length} className="text-2xl text-chart-5" />
             <p className="text-sm text-muted-foreground">{isAr ? "نشطة" : "Active"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 text-center">
-            <p className="text-2xl font-bold text-chart-4">{invitations.filter((i: any) => i.status === "pending").length}</p>
+            <AnimatedCounter value={invitations.filter((i: any) => i.status === "pending").length} className="text-2xl text-chart-4" />
             <p className="text-sm text-muted-foreground">{isAr ? "دعوات معلقة" : "Pending Invitations"}</p>
           </CardContent>
         </Card>

@@ -10,6 +10,7 @@ import {
   Send, Lightbulb, Printer, TrendingUp, FileInput, Download,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, isPast, differenceInDays } from "date-fns";
 import { calcOrderStats, getItemDisplayName } from "./orderCenterUtils";
 import { OrderExportActions } from "./OrderExportActions";
@@ -407,7 +408,7 @@ function StatusCard({ icon: Icon, iconColor, label, value, badge }: {
           </div>
           <span className="text-xs font-medium truncate">{label}</span>
         </div>
-        <p className="text-2xl font-bold">{value}</p>
+        <p className="text-2xl font-bold">{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
         {badge && <Badge variant="secondary" className="text-[10px] mt-1 animate-in fade-in">{badge}</Badge>}
       </CardContent>
     </Card>

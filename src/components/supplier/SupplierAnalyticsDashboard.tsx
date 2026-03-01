@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart, Download } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function SupplierAnalyticsDashboard() {
   const { language } = useLanguage();
@@ -156,7 +157,7 @@ export function SupplierAnalyticsDashboard() {
                 <s.icon className={`h-5 w-5 ${s.color}`} />
                 <Badge variant="outline" className="text-[9px]">{s.label}</Badge>
               </div>
-              <p className="mt-3 text-3xl font-bold">{s.value}</p>
+              <p className="mt-3 text-3xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
               <p className="text-xs text-muted-foreground mt-1">{s.sub}</p>
             </CardContent>
           </Card>

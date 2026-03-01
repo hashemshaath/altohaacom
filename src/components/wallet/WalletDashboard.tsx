@@ -15,6 +15,7 @@ import {
   CreditCard, Search, Download, Shield, Clock, Hash, Banknote,
   ChevronRight, Sparkles, Eye, EyeOff, Copy, CheckCircle2,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { formatCurrency } from "@/lib/currencyFormatter";
@@ -197,7 +198,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                   <Coins className="h-3.5 w-3.5 text-chart-5" />
                   <span className="text-[10px] text-muted-foreground font-medium">{t("Points", "النقاط")}</span>
                 </div>
-                <p className="text-xl font-bold">{toEnglishDigits(wallet.points_balance?.toLocaleString() || 0)}</p>
+                <AnimatedCounter value={wallet.points_balance || 0} className="text-xl" />
               </div>
               <div className="rounded-xl border border-border/40 bg-background/60 backdrop-blur-sm p-3">
                 <div className="flex items-center gap-1.5 mb-1">
@@ -218,7 +219,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
                   <Hash className="h-3.5 w-3.5 text-primary" />
                   <span className="text-[10px] text-muted-foreground font-medium">{t("Transactions", "المعاملات")}</span>
                 </div>
-                <p className="text-xl font-bold">{toEnglishDigits(stats.txCount)}</p>
+                <AnimatedCounter value={stats.txCount} className="text-xl" />
               </div>
             </div>
           </div>

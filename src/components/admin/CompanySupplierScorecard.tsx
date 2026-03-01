@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Building2, Search, Star, TrendingUp, Clock, Package, Filter, ArrowUpDown } from "lucide-react";
 
 export function CompanySupplierScorecard() {
@@ -76,22 +77,22 @@ export function CompanySupplierScorecard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card><CardContent className="p-3 text-center">
           <Star className="h-4 w-4 mx-auto text-primary mb-1" />
-          <p className="text-xl font-bold">{avgScore}%</p>
+          <AnimatedCounter value={avgScore} className="text-xl" suffix="%" />
           <p className="text-xs text-muted-foreground">{isAr ? "متوسط التقييم" : "Avg Score"}</p>
         </CardContent></Card>
         <Card><CardContent className="p-3 text-center">
           <Package className="h-4 w-4 mx-auto text-chart-2 mb-1" />
-          <p className="text-xl font-bold">{totalOrders}</p>
+          <AnimatedCounter value={totalOrders} className="text-xl" />
           <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الطلبات" : "Total Orders"}</p>
         </CardContent></Card>
         <Card><CardContent className="p-3 text-center">
           <TrendingUp className="h-4 w-4 mx-auto text-chart-3 mb-1" />
-          <p className="text-xl font-bold">{avgDelivery}%</p>
+          <AnimatedCounter value={avgDelivery} className="text-xl" suffix="%" />
           <p className="text-xs text-muted-foreground">{isAr ? "التسليم بالوقت" : "On-time Delivery"}</p>
         </CardContent></Card>
         <Card><CardContent className="p-3 text-center">
           <Building2 className="h-4 w-4 mx-auto text-chart-4 mb-1" />
-          <p className="text-xl font-bold">{companies.length}</p>
+          <AnimatedCounter value={companies.length} className="text-xl" />
           <p className="text-xs text-muted-foreground">{isAr ? "الشركات" : "Companies"}</p>
         </CardContent></Card>
       </div>

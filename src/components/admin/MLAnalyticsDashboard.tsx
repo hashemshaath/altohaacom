@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, RadarChart,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
@@ -244,7 +245,7 @@ export function MLAnalyticsDashboard() {
                       <span className="text-sm font-medium capitalize">{f.metric}</span>
                       <TrendIcon trend={f.trend} />
                     </div>
-                    <p className="text-2xl font-bold">{f.current_value.toLocaleString()}</p>
+                    <AnimatedCounter value={f.current_value} className="text-2xl" />
                     <div className="grid grid-cols-3 gap-1 text-[10px]">
                       <div className="text-center rounded-xl bg-muted/50 p-1.5">
                         <p className="text-muted-foreground">3m</p>

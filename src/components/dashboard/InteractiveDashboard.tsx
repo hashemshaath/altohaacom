@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Users, Trophy, Building2, FileText, TrendingUp, TrendingDown,
   Eye, Activity, DollarSign, BarChart3, PieChart, ArrowUpRight,
@@ -188,7 +189,7 @@ export default function InteractiveDashboard() {
                   <kpi.icon className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div className="flex items-end justify-between">
-                  <span className="text-2xl font-bold">{kpi.value.toLocaleString()}</span>
+                  <AnimatedCounter value={kpi.value} className="text-2xl" />
                   {renderChangeIndicator(kpi.change)}
                 </div>
               </CardContent>
