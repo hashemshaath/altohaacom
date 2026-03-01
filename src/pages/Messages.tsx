@@ -24,11 +24,11 @@ export default function Messages() {
   return (
     <PageShell title="Messages" footer={false} padding="none" container={false}>
       {/* Professional Header */}
-      <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 via-primary/2 to-background">
+      <section className="border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/2 to-background">
         <div className="container py-5 md:py-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shadow-inner">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm shadow-primary/10 ring-1 ring-primary/10">
                 <MessageSquare className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -43,24 +43,24 @@ export default function Messages() {
 
             <div className="flex items-center gap-2">
               {data.counts.unread > 0 && (
-                <Badge className="gap-1 text-xs px-3 py-1 animate-pulse">
+                <Badge className="gap-1.5 text-xs px-3 py-1.5 rounded-xl animate-pulse shadow-sm shadow-primary/15">
                   <Bell className="h-3 w-3" />
                   {data.counts.unread} {t("unread", "غير مقروءة")}
                 </Badge>
               )}
-              <div className="flex items-center gap-1 rounded-lg border bg-card p-1">
-                <Badge variant="secondary" className="text-[10px] gap-1 cursor-default">
+              <div className="flex items-center gap-1 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm p-1">
+                <Badge variant="secondary" className="text-[10px] gap-1 cursor-default rounded-lg">
                   <MessageSquare className="h-3 w-3" />
                   {data.counts.all}
                 </Badge>
                 {data.chatGroups.length > 0 && (
-                  <Badge variant="outline" className="text-[10px] gap-1 cursor-default">
+                  <Badge variant="outline" className="text-[10px] gap-1 cursor-default rounded-lg">
                     <Users className="h-3 w-3" />
                     {data.chatGroups.length}
                   </Badge>
                 )}
               </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted" asChild>
                 <Link to="/notification-preferences">
                   <Settings className="h-4 w-4 text-muted-foreground" />
                 </Link>
@@ -72,7 +72,7 @@ export default function Messages() {
 
       {/* Chat Interface */}
       <div className="container py-4 md:py-6">
-        <Card className="mx-auto overflow-hidden rounded-2xl border-border/40 bg-card/80 backdrop-blur-sm shadow-xl shadow-primary/5" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
+        <Card className="mx-auto overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm shadow-2xl shadow-primary/5" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
           <div className="flex h-full">
             <ConversationList
               isAr={data.isAr}
