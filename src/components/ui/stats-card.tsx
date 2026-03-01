@@ -1,11 +1,15 @@
 import { cn } from "@/lib/utils";
 import { memo, ReactNode } from "react";
+import { TrendIndicator } from "./trend-indicator";
+import { ActivityPulse } from "./activity-pulse";
 
 interface StatsCardProps {
   icon: ReactNode;
   label: string;
   value: string | number;
   trend?: { value: number; label?: string };
+  /** Show a live activity pulse */
+  isLive?: boolean;
   className?: string;
 }
 
@@ -18,6 +22,7 @@ export const StatsCard = memo(function StatsCard({
   label,
   value,
   trend,
+  isLive,
   className,
 }: StatsCardProps) {
   return (
@@ -29,21 +34,13 @@ export const StatsCard = memo(function StatsCard({
     >
       <div className="flex items-center justify-between">
         <span className="text-sm text-muted-foreground font-medium">{label}</span>
-        <div className="rounded-xl bg-primary/10 p-2 text-primary">{icon}</div>
+        <div className="flex items-center gap-2">
+          {isLive && <ActivityPulse status="live" />}
+          <div className="rounded-xl bg-primary/10 p-2 text-primary">{icon}</div>
+        </div>
       </div>
       <p className="text-2xl font-bold tracking-tight">{value}</p>
-      {trend && (
-        <p
-          className={cn(
-            "text-xs font-medium",
-            trend.value > 0 ? "text-chart-2" : 
-            trend.value < 0 ? "text-destructive" : "text-muted-foreground"
-          )}
-        >
-          {trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→"}{" "}
-          {Math.abs(trend.value)}%{trend.label ? ` ${trend.label}` : ""}
-        </p>
-      )}
+      {trend && <TrendIndicator value={trend.value} suffix={trend.label} />}
     </div>
   );
 });

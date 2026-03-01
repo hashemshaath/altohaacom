@@ -16,6 +16,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ActivityPulse } from "@/components/ui/activity-pulse";
+import { DataFreshness } from "@/components/ui/data-freshness";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
@@ -351,6 +353,7 @@ export default function AdminDashboard() {
         description={isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
         actions={
           <div className="flex items-center gap-3 flex-wrap">
+            <ActivityPulse status="live" label={isAr ? "مباشر" : "Live"} size="md" />
             <AdminRealtimeNotificationBell />
             <SystemHealthBar />
             <Badge variant="secondary" className="gap-1.5">
@@ -389,7 +392,15 @@ export default function AdminDashboard() {
       </LazySection>
 
       {/* Stats Grid with sparklines */}
-      <StaggeredStatsGrid statCards={statCards} isLoading={isLoading} sparklineKeys={sparklineKeys} sparkData={sparkData} isAr={isAr} />
+      <div className="space-y-2">
+        <StaggeredStatsGrid statCards={statCards} isLoading={isLoading} sparklineKeys={sparklineKeys} sparkData={sparkData} isAr={isAr} />
+        <div className="flex justify-end px-1">
+          <DataFreshness
+            lastUpdated={stats ? new Date() : null}
+            isRefetching={isLoading}
+          />
+        </div>
+      </div>
 
 
       {/* Command Bar */}
@@ -400,11 +411,12 @@ export default function AdminDashboard() {
         {/* Today's Activity */}
         <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2.5 mb-4">
+             <div className="flex items-center gap-2.5 mb-4">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-sm shadow-primary/15">
                 <Zap className="h-4 w-4 text-primary-foreground" />
               </div>
               <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
+              <ActivityPulse status="live" className="ms-auto" />
             </div>
             <div className="grid grid-cols-2 gap-2.5">
               {[

@@ -8,6 +8,8 @@ import { SessionMonitorWidget } from "@/components/admin/SessionMonitorWidget";
 import { RolePermissionsOverview } from "@/components/admin/RolePermissionsOverview";
 import { ShieldAlert } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { ActivityPulse } from "@/components/ui/activity-pulse";
+import { ConfidenceBadge } from "@/components/ui/confidence-badge";
 
 export default function SecurityAdmin() {
   const { language } = useLanguage();
@@ -19,6 +21,12 @@ export default function SecurityAdmin() {
         icon={ShieldAlert}
         title={isAr ? "مركز الأمان والحماية" : "Security Center"}
         description={isAr ? "مراقبة الأحداث الأمنية والجلسات والصلاحيات" : "Monitor security events, sessions, and permissions"}
+        actions={
+          <div className="flex items-center gap-3">
+            <ActivityPulse status="live" label={isAr ? "مراقبة مباشرة" : "Live monitoring"} size="md" />
+            <ConfidenceBadge level="verified" label={isAr ? "محمي" : "Protected"} />
+          </div>
+        }
       />
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4">
