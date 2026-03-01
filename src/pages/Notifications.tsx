@@ -26,6 +26,7 @@ import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 type NotificationSection =
   | "all"
@@ -212,7 +213,7 @@ export default function Notifications() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
                     </span>
-                    {isAr ? `${toEnglishDigits(unreadCount)} إشعار غير مقروء` : `${unreadCount} unread`}
+                    {isAr ? <><AnimatedCounter value={unreadCount} className="inline" /> إشعار غير مقروء</> : <><AnimatedCounter value={unreadCount} className="inline" /> unread</>}
                   </p>
                 )}
               </div>
@@ -251,7 +252,7 @@ export default function Notifications() {
                   </div>
                   <div>
                     <p className="text-[11px] text-muted-foreground font-medium">{s.label}</p>
-                    <p className="text-xl font-bold tabular-nums">{toEnglishDigits(s.value)}</p>
+                    <AnimatedCounter value={typeof s.value === 'number' ? s.value : 0} className="text-xl font-bold" />
                   </div>
                 </CardContent>
               </Card>
@@ -296,7 +297,7 @@ export default function Notifications() {
                         isActive && "border-primary-foreground/30 text-primary-foreground"
                       )}
                     >
-                      {toEnglishDigits(count)}
+                      <AnimatedCounter value={count} className="inline" />
                     </Badge>
                   )}
                 </Button>

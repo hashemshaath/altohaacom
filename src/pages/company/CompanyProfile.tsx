@@ -22,6 +22,7 @@ import {
   Earth,
 } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function CompanyProfile() {
   const { language } = useLanguage();
@@ -187,7 +188,7 @@ export default function CompanyProfile() {
                 {language === "ar" ? "حد الائتمان" : "Credit Limit"}
               </p>
               <p className="mt-1 text-xl font-bold text-primary">
-                SAR {toEnglishDigits(company.credit_limit?.toLocaleString() || "0")}
+                SAR <AnimatedCounter value={company.credit_limit || 0} className="inline" format />
               </p>
             </div>
             <Separator />
