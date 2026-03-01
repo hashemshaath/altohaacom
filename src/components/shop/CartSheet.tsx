@@ -187,7 +187,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
                 const hasDiscount = item.compare_at_price && item.compare_at_price > item.price;
                 return (
                   <div key={item.product_id} className="flex gap-3 rounded-xl border border-border/50 p-3 transition-all duration-200 hover:border-primary/20 hover:shadow-sm">
-                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border/30">
+                    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-muted ring-1 ring-border/30">
                       {item.image_url ? (
                         <img src={item.image_url} alt={title} className="h-full w-full object-cover" />
                       ) : (
@@ -256,7 +256,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
               </div>
 
               {cart.appliedDiscount && (
-                <div className="flex items-center gap-1.5 rounded-lg bg-chart-2/10 px-3 py-1.5 text-xs text-chart-2">
+                <div className="flex items-center gap-1.5 rounded-xl bg-chart-2/10 px-3 py-1.5 text-xs text-chart-2">
                   <Percent className="h-3 w-3" />
                   <span>
                     {cart.appliedDiscount.code} – {cart.appliedDiscount.type === "percentage" ? `${cart.appliedDiscount.value}%` : formatCurrency(cart.appliedDiscount.value, language as "en" | "ar")} {isAr ? "خصم" : "off"}

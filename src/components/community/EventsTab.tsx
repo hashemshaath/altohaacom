@@ -411,7 +411,7 @@ export function EventsTab() {
                       return (
                         <button
                           key={i}
-                          className={`w-full rounded-lg border p-3 text-start transition-colors ${
+                          className={`w-full rounded-xl border p-3 text-start transition-colors ${
                             poll.user_vote === i
                               ? "border-primary bg-primary/5"
                               : hasVoted

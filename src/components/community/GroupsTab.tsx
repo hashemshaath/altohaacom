@@ -200,7 +200,7 @@ export function GroupsTab() {
                 <Textarea value={form.description_ar} onChange={(e) => setForm({ ...form, description_ar: e.target.value })} rows={2} />
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-lg border p-3">
+            <div className="flex items-center justify-between rounded-xl border p-3">
               <div>
                 <Label className="text-sm">{t("privateGroup")}</Label>
                 <p className="text-[10px] text-muted-foreground">
@@ -227,7 +227,7 @@ export function GroupsTab() {
             <CardContent className="p-4">
               <div className="mb-2 flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${group.is_private ? "bg-chart-5/10" : "bg-primary/10"}`}>
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${group.is_private ? "bg-chart-5/10" : "bg-primary/10"}`}>
                     {group.is_private ? <Lock className="h-3.5 w-3.5 text-chart-5" /> : <Globe className="h-3.5 w-3.5 text-primary" />}
                   </div>
                   <h3 className="font-semibold leading-tight">{getDisplayName(group)}</h3>

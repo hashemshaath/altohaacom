@@ -137,23 +137,23 @@ export function PostCard({
                   <DropdownMenuContent align="end" className="w-48 rounded-xl">
                     {user?.id === post.author_id ? (
                       <>
-                        <DropdownMenuItem onClick={() => onEdit(post)} className="rounded-lg gap-2 text-xs">
+                        <DropdownMenuItem onClick={() => onEdit(post)} className="rounded-xl gap-2 text-xs">
                           <Pencil className="h-3.5 w-3.5" />
                           {isAr ? "تعديل" : "Edit"}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDelete(post.id)} className="text-destructive rounded-lg gap-2 text-xs">
+                        <DropdownMenuItem onClick={() => onDelete(post.id)} className="text-destructive rounded-xl gap-2 text-xs">
                           <Trash2 className="h-3.5 w-3.5" />
                           {isAr ? "حذف" : "Delete"}
                         </DropdownMenuItem>
                       </>
                     ) : (
                       <>
-                        <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)} className="rounded-lg gap-2 text-xs">
+                        <DropdownMenuItem onClick={() => navigate(`/messages?user=${post.author_id}`)} className="rounded-xl gap-2 text-xs">
                           <Mail className="h-3.5 w-3.5" />
                           {isAr ? "إرسال رسالة" : "Message"}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onReport(post.id)} className="rounded-lg gap-2 text-xs">
+                        <DropdownMenuItem onClick={() => onReport(post.id)} className="rounded-xl gap-2 text-xs">
                           <Flag className="h-3.5 w-3.5" />
                           {isAr ? "إبلاغ" : "Report"}
                         </DropdownMenuItem>
@@ -162,7 +162,7 @@ export function PostCard({
                     {post.edited_at && (
                       <>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onViewHistory(post.id)} className="rounded-lg gap-2 text-xs">
+                        <DropdownMenuItem onClick={() => onViewHistory(post.id)} className="rounded-xl gap-2 text-xs">
                           <History className="h-3.5 w-3.5" />
                           {isAr ? "سجل التعديلات" : "Edit History"}
                         </DropdownMenuItem>

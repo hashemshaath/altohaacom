@@ -149,7 +149,7 @@ export function HomeArticles() {
                     <Link key={article.id} to={`/news/${article.slug}`} className="group block snap-start" style={{ width: "72vw", flexShrink: 0 }}>
                       <Card interactive className="h-full overflow-hidden border-border/40">
                         <div className="flex gap-3 p-2.5">
-                          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
                             {article.featured_image_url ? (
                               <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                             ) : (
@@ -183,7 +183,7 @@ export function HomeArticles() {
                   <Link key={article.id} to={`/news/${article.slug}`} className="group block">
                     <Card interactive className="h-full overflow-hidden border-border/40">
                       <div className="flex gap-3 p-2.5 lg:p-3">
-                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
                           {article.featured_image_url ? (
                             <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" decoding="async" />
                           ) : (

@@ -45,7 +45,7 @@ export function ShimmerCard({ variant = "default", lines = 3, className, ...prop
   if (variant === "horizontal") {
     return (
       <div className={cn("rounded-xl border border-border/40 p-3 flex items-center gap-3", className)} {...props}>
-        <Skeleton className="h-16 w-16 rounded-lg shrink-0" />
+        <Skeleton className="h-16 w-16 rounded-xl shrink-0" />
         <div className="space-y-1.5 flex-1">
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-3 w-1/2" />
@@ -57,7 +57,7 @@ export function ShimmerCard({ variant = "default", lines = 3, className, ...prop
 
   return (
     <div className={cn("rounded-xl border border-border/40 p-4 space-y-3", className)} {...props}>
-      <Skeleton className="h-32 w-full rounded-lg" />
+      <Skeleton className="h-32 w-full rounded-xl" />
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
           key={i}
