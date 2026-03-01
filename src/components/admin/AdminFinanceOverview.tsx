@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Wallet, ArrowRight, TrendingUp, CreditCard, Receipt } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function AdminFinanceOverview() {
   const { language } = useLanguage();
@@ -68,7 +69,7 @@ export function AdminFinanceOverview() {
             <div key={i} className="rounded-xl border border-border/40 p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto ${s.color}`} />
               <p className={`text-sm font-black mt-1.5 ${s.color}`}>
-                {toEnglishDigits(s.value.toLocaleString())}{s.suffix}
+                <AnimatedCounter value={s.value} />{s.suffix}
               </p>
               <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
             </div>

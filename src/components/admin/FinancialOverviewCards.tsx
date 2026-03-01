@@ -64,7 +64,7 @@ export function FinancialOverviewCards() {
 
   if (!data) return null;
 
-  const fmt = (n: number) => n.toLocaleString() + " SAR";
+  // fmt removed - using AnimatedCounter instead
 
   return (
     <div className="space-y-4">

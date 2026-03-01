@@ -5,6 +5,7 @@ import { Users, UserCheck, UserX, Shield, Crown, Building2 } from "lucide-react"
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function UserStatsBar() {
   const { language } = useLanguage();
@@ -55,7 +56,7 @@ export function UserStatsBar() {
               {isLoading ? (
                 <Skeleton className="h-6 w-10 rounded-xl" />
               ) : (
-                <p className="text-lg font-black leading-none tracking-tight">{item.value?.toLocaleString()}</p>
+                <AnimatedCounter value={item.value || 0} className="text-lg font-black leading-none tracking-tight" />
               )}
               <p className="text-[10px] text-muted-foreground truncate mt-0.5">{item.label}</p>
             </div>

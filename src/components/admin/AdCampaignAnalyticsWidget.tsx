@@ -134,8 +134,8 @@ export function AdCampaignAnalyticsWidget() {
               <p className="text-[10px] font-semibold text-muted-foreground">{isAr ? "استهلاك الميزانية" : "Budget Usage"}</p>
               <Progress value={budgetUsage} className="h-2" />
               <div className="flex justify-between text-[10px] text-muted-foreground">
-                <span>{isAr ? "مصروف" : "Spent"}: {data.totalSpent.toLocaleString()}</span>
-                <span>{isAr ? "ميزانية" : "Budget"}: {data.totalBudget.toLocaleString()}</span>
+                <span>{isAr ? "مصروف" : "Spent"}: <AnimatedCounter value={Math.round(data.totalSpent)} className="inline" /></span>
+                <span>{isAr ? "ميزانية" : "Budget"}: <AnimatedCounter value={Math.round(data.totalBudget)} className="inline" /></span>
               </div>
             </CardContent>
           </Card>
