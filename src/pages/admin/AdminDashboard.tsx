@@ -398,7 +398,7 @@ export default function AdminDashboard() {
       {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Today's Activity */}
-        <Card className="border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
+        <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
           <CardContent className="p-4">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-sm shadow-primary/15">
@@ -431,7 +431,7 @@ export default function AdminDashboard() {
         <AdminPendingActionsWidget />
 
         {/* Account Type Breakdown */}
-        <Card className="border-border/50">
+        <Card className="rounded-2xl border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
@@ -474,7 +474,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Workflow Shortcuts */}
-      <Card className="border-border/40">
+      <Card className="rounded-2xl border-border/40">
         <CardContent className="p-4">
           <div className="flex items-center gap-2.5 mb-4">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/80 shadow-sm shadow-chart-3/15">
@@ -523,10 +523,10 @@ export default function AdminDashboard() {
       {/* ── Row: Quick Actions + Recent Actions ── */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Quick Actions */}
-        <Card className="border-border/50">
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
                 <Activity className="h-3.5 w-3.5 text-primary" />
               </div>
               {isAr ? "إجراءات سريعة" : "Quick Actions"}
@@ -535,9 +535,9 @@ export default function AdminDashboard() {
           <CardContent className="space-y-2">
             {quickActions.map((action) => (
               <Link key={action.title} to={action.link}>
-                <div className="flex items-center justify-between rounded-xl border border-border/50 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 group/action">
+                <div className="flex items-center justify-between rounded-2xl border border-border/40 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 group/action">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 transition-all duration-300 group-hover/action:bg-primary/20 group-hover/action:scale-110">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover/action:bg-primary/20 group-hover/action:scale-110">
                       <action.icon className="h-4 w-4 text-primary transition-transform duration-300 group-hover/action:rotate-3" />
                     </div>
                     <div>
@@ -558,10 +558,10 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Recent Admin Actions */}
-        <Card className="border-border/50">
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
                 <TrendingUp className="h-3.5 w-3.5 text-primary" />
               </div>
               {isAr ? "آخر الإجراءات" : "Recent Actions"}
@@ -586,7 +586,7 @@ export default function AdminDashboard() {
             ) : (
               <div className="space-y-2.5">
                 {stats?.recentActions?.map((action: any) => (
-                  <div key={action.id} className="flex items-center justify-between rounded-lg border border-border/40 p-3">
+                  <div key={action.id} className="flex items-center justify-between rounded-xl border border-border/40 p-3 transition-all duration-200 hover:bg-muted/30">
                     {getActionBadge(action.action_type)}
                     <span className="text-xs text-muted-foreground">
                       {format(new Date(action.created_at), "MMM d, HH:mm")}
@@ -600,7 +600,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Users */}
-      <Card className="border-border/50">
+      <Card className="rounded-2xl border-border/40">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <div>
             <CardTitle className="text-base">{isAr ? "أحدث المستخدمين" : "Recent Users"}</CardTitle>
@@ -621,9 +621,9 @@ export default function AdminDashboard() {
               <Link
                 key={user.id}
                 to={`/${user.username || user.id}`}
-                className="flex items-center gap-3 rounded-xl border border-border/50 p-3 transition-all hover:shadow-md hover:bg-accent/30 hover:-translate-y-0.5"
+                className="group flex items-center gap-3 rounded-2xl border border-border/40 p-3 transition-all duration-300 hover:shadow-md hover:bg-accent/30 hover:-translate-y-0.5"
               >
-                <div className="relative h-10 w-10 shrink-0 rounded-full overflow-hidden ring-2 ring-primary/20">
+                <div className="relative h-10 w-10 shrink-0 rounded-full overflow-hidden ring-2 ring-primary/20 transition-transform duration-300 group-hover:scale-110">
                   {user.avatar_url ? (
                     <img src={user.avatar_url} alt={user.display_name || user.full_name || "User"} className="h-full w-full object-cover" />
                   ) : (

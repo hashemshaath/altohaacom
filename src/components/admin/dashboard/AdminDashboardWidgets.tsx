@@ -103,10 +103,10 @@ export default function AdminDashboardWidgets() {
       {/* KPI Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {kpis.map((kpi, i) => (
-          <Card key={i} className="border-border/50">
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <kpi.icon className={cn("h-5 w-5", kpi.color)} />
+                <kpi.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:scale-110", kpi.color)} />
                 {kpi.trend && (
                   <Badge variant="outline" className="text-[10px] text-green-600 border-green-200 bg-green-50">
                     <TrendingUp className="h-3 w-3 me-0.5" />{kpi.trend}
@@ -122,10 +122,10 @@ export default function AdminDashboardWidgets() {
 
       {/* Charts Row */}
       <div className="grid md:grid-cols-2 gap-4">
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
+              <BarChart3 className="h-4 w-4 text-primary" />
               {isAr ? "المستخدمون الجدد (7 أيام)" : "New Users (7 Days)"}
             </CardTitle>
           </CardHeader>
@@ -146,10 +146,10 @@ export default function AdminDashboardWidgets() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Trophy className="h-4 w-4" />
+              <Trophy className="h-4 w-4 text-amber-500" />
               {isAr ? "توزيع حالات المسابقات" : "Competition Status"}
             </CardTitle>
           </CardHeader>
