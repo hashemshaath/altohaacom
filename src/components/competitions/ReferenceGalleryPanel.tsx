@@ -128,7 +128,7 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
       <Card className="overflow-hidden">
         <div className="border-b bg-muted/30 px-4 py-3 flex items-center justify-between">
           <h3 className="flex items-center gap-2 font-semibold text-sm">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
               <ImageIcon className="h-4 w-4 text-chart-4" />
             </div>
             {isAr ? "معرض الصور" : "Gallery"}

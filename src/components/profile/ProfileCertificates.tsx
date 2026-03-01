@@ -136,7 +136,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
           <Award className="h-4 w-4 text-primary" />
         </div>
         <h2 className={`text-base font-bold ${language !== "ar" ? "font-serif" : ""}`}>{isAr ? "الشهادات" : "Certificates"}</h2>
-        <Badge variant="secondary" className="text-[10px] h-5 rounded-lg">{certificates.length}</Badge>
+        <Badge variant="secondary" className="text-[10px] h-5 rounded-xl">{certificates.length}</Badge>
         <div className="flex-1 h-px bg-border/25" />
       </div>
 
@@ -167,7 +167,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <Badge variant="outline" className="text-[10px] h-5 rounded-lg">{getTypeLabel(cert.type)}</Badge>
+                        <Badge variant="outline" className="text-[10px] h-5 rounded-xl">{getTypeLabel(cert.type)}</Badge>
                         <span className="text-[10px] font-mono text-muted-foreground/60">{cert.verification_code}</span>
                       </div>
                       {achievement && (
@@ -194,7 +194,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
                       {isOwner && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg text-muted-foreground hover:text-primary">
+                            <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl text-muted-foreground hover:text-primary">
                               <Share2 className="h-3.5 w-3.5" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -216,7 +216,7 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
                           value={cert.visibility || "public"}
                           onValueChange={(v) => visibilityMutation.mutate({ certId: cert.id, visibility: v })}
                         >
-                          <SelectTrigger className="w-auto h-7 text-[10px] gap-1 border-none bg-muted/30 rounded-lg">
+                          <SelectTrigger className="w-auto h-7 text-[10px] gap-1 border-none bg-muted/30 rounded-xl">
                             {visibilityIcon(cert.visibility || "public")}
                           </SelectTrigger>
                           <SelectContent>

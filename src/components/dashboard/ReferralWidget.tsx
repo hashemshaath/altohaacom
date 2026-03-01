@@ -87,7 +87,7 @@ export function ReferralWidget() {
 
         {/* Tier Progress */}
         {nextTier && (
-          <div className="mb-4 rounded-lg bg-muted/30 p-3">
+          <div className="mb-4 rounded-xl bg-muted/30 p-3">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
                 <Target className="h-3.5 w-3.5 text-primary" />

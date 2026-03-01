@@ -52,7 +52,7 @@ export function UpcomingCompetitionsWidget() {
           </div>
           {t("upcomingCompetitions")}
         </h3>
-        <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 font-semibold hover:bg-primary/5 hover:text-primary transition-all rounded-lg" asChild>
+        <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 font-semibold hover:bg-primary/5 hover:text-primary transition-all rounded-xl" asChild>
           <Link to="/competitions">
             {isAr ? "عرض الكل" : "View All"}
             <ArrowRight className="h-3.5 w-3.5" />

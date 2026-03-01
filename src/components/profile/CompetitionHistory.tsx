@@ -206,7 +206,7 @@ export function CompetitionHistory({ userId }: CompetitionHistoryProps) {
 
                   {/* Score badge */}
                   {reg.hasScores && (
-                    <div className="absolute bottom-2 end-2 flex items-center gap-1 bg-background/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-sm border border-border/30">
+                    <div className="absolute bottom-2 end-2 flex items-center gap-1 bg-background/90 backdrop-blur-sm rounded-xl px-2 py-1 shadow-sm border border-border/30">
                       <Award className="h-3 w-3 text-chart-4" />
                       <span className="text-xs font-bold tabular-nums">{reg.totalScore?.toFixed(1)}</span>
                     </div>

@@ -127,7 +127,7 @@ export function ProfileActivityTimeline({ userId }: ProfileActivityTimelineProps
     <Card className="overflow-hidden rounded-2xl border-border/40">
       <div className="border-b border-border/30 bg-muted/20 px-4 py-3">
         <h3 className="flex items-center gap-2.5 text-sm font-semibold">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
             <Clock className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "النشاط الأخير" : "Recent Activity"}

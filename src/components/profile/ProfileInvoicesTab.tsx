@@ -208,7 +208,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
               description={isAr ? "ستظهر فواتيرك هنا عند إصدارها من قبل الإدارة" : "Your invoices will appear here when issued by the administration"}
             />
           ) : (
-            <div className="rounded-lg border overflow-hidden">
+            <div className="rounded-xl border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>

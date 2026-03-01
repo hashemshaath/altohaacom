@@ -83,7 +83,7 @@ export function UpcomingExhibitionsWidget() {
                   to={`/exhibitions/${exhibition.slug}`}
                   className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted">
                     {exhibition.cover_image_url ? (
                       <img src={exhibition.cover_image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
                     ) : (

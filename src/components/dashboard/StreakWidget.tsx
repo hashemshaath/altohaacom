@@ -89,7 +89,7 @@ export function StreakWidget() {
               </span>
               <div
                 className={cn(
-                  "h-6 w-6 rounded-lg flex items-center justify-center transition-all text-[10px] font-bold",
+                  "h-6 w-6 rounded-xl flex items-center justify-center transition-all text-[10px] font-bold",
                   day.isToday && !day.active && "ring-1 ring-primary/30 bg-primary/5 text-primary",
                   day.active && "bg-primary text-primary-foreground shadow-sm",
                   !day.active && !day.isToday && "bg-muted/50 text-muted-foreground/40"

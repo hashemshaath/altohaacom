@@ -90,7 +90,7 @@ export function NotificationsSummaryWidget() {
                     await markAsRead(notification.id);
                     if (notification.link) navigate(notification.link);
                   }}
-                  className="group flex w-full items-start gap-2.5 py-3 text-start first:pt-0 last:pb-0 transition-all hover:bg-muted/30 -mx-1 px-1 rounded-lg hover:shadow-sm"
+                  className="group flex w-full items-start gap-2.5 py-3 text-start first:pt-0 last:pb-0 transition-all hover:bg-muted/30 -mx-1 px-1 rounded-xl hover:shadow-sm"
                 >
                   <div className="mt-0.5 shrink-0 transition-transform duration-200 group-hover:scale-110">
                     <Icon className={cn("h-3.5 w-3.5", color)} />

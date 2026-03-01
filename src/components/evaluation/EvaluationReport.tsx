@@ -367,7 +367,7 @@ export function EvaluationReport({ session, evaluations, media, invitationCount,
             <CardContent>
               <div className="space-y-2">
                 {allSuggestions.map((s, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-chart-4/10 text-[10px] font-black text-chart-4 mt-0.5">
                       {i + 1}
                     </span>
