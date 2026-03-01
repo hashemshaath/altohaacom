@@ -47,13 +47,13 @@ export function CompanyActivityFeed({ companyId }: { companyId: string | null })
       invoicesRes.data?.forEach(i => items.push({
         id: i.id, type: "invoice",
         title: isAr ? `فاتورة ${i.invoice_number}` : `Invoice ${i.invoice_number}`,
-        subtitle: `SAR ${(i.amount || 0).toLocaleString()}`, time: i.created_at, status: i.status,
+        subtitle: `SAR ${Math.round(i.amount || 0).toLocaleString()}`, time: i.created_at, status: i.status,
       }));
 
       transactionsRes.data?.forEach(t => items.push({
         id: t.id, type: "transaction",
         title: isAr ? `معاملة ${t.transaction_number}` : `Txn ${t.transaction_number}`,
-        subtitle: `SAR ${(t.amount || 0).toLocaleString()}`, time: t.created_at, status: t.type,
+        subtitle: `SAR ${Math.round(t.amount || 0).toLocaleString()}`, time: t.created_at, status: t.type,
       }));
 
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);

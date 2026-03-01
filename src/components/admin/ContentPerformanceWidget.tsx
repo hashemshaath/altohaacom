@@ -93,7 +93,7 @@ export function ContentPerformanceWidget() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <Eye className="h-3 w-3 text-chart-4" />
-            <span className="text-xs font-semibold">{data.totalViews.toLocaleString()}</span>
+            <AnimatedCounter value={data.totalViews} className="text-xs font-semibold inline" />
             <span className="text-[9px] text-muted-foreground">{isAr ? "مشاهدة" : "views"}</span>
           </div>
           <div className="flex items-center gap-1.5">
