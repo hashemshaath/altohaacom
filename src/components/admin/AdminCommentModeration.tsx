@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { MessageCircle, Flag, EyeOff, Trash2, Search, Eye, Shield } from "lucide-react";
@@ -104,15 +105,15 @@ export function AdminCommentModeration() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3 text-center">
-          <p className="text-xl font-bold">{comments.length}</p>
+          <AnimatedCounter value={comments.length} className="text-xl" />
           <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
         </Card>
         <Card className="p-3 text-center">
-          <p className="text-xl font-bold text-amber-500">{flaggedCount}</p>
+          <AnimatedCounter value={flaggedCount} className="text-xl text-amber-500" />
           <p className="text-[10px] text-muted-foreground">{isAr ? "مبلّغ عنها" : "Flagged"}</p>
         </Card>
         <Card className="p-3 text-center">
-          <p className="text-xl font-bold text-muted-foreground">{hiddenCount}</p>
+          <AnimatedCounter value={hiddenCount} className="text-xl text-muted-foreground" />
           <p className="text-[10px] text-muted-foreground">{isAr ? "مخفية" : "Hidden"}</p>
         </Card>
       </div>

@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Globe, MapPin, Users, TrendingUp } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
@@ -107,7 +108,7 @@ export function GeographicDistribution() {
                     <p className="text-xs text-muted-foreground">{kpi.label}</p>
                     <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
                   </div>
-                  <p className="mt-1 text-2xl font-bold">{kpi.value.toLocaleString()}</p>
+                  <AnimatedCounter value={kpi.value} className="mt-1 text-2xl" />
                 </>
               )}
             </CardContent>

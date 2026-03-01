@@ -7,6 +7,7 @@ import { useReferralCode, useReferralStats, useReferralMilestones, useUserMilest
 import { usePointsBalance } from "@/hooks/usePoints";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Gift, Star, Users, Send, TrendingUp, Trophy, CheckCircle2 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
@@ -52,7 +53,7 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
               <div>
-                <p className="text-xl font-bold">{s.value}</p>
+                <AnimatedCounter value={typeof s.value === "number" ? s.value : parseInt(String(s.value)) || 0} className="text-xl" />
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>

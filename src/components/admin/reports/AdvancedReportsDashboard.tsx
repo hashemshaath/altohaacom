@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BarChart, Bar, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 import { Users, Trophy, FileText, TrendingUp, Download, Calendar, DollarSign, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -214,7 +215,7 @@ function KPICard({ icon: Icon, label, value }: { icon: any; label: string; value
     <Card className="border-border/50">
       <CardContent className="p-4">
         <Icon className="h-4 w-4 text-muted-foreground mb-2" />
-        <p className="text-2xl font-bold">{value.toLocaleString()}</p>
+        <AnimatedCounter value={value} className="text-2xl" />
         <p className="text-xs text-muted-foreground">{label}</p>
       </CardContent>
     </Card>

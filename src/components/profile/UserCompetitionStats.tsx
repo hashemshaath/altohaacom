@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Target, TrendingUp, Calendar, Award } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
 import { EmptyState } from "@/components/ui/empty-state";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
 interface UserCompetitionStatsProps {
@@ -110,7 +111,7 @@ export function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
                 <s.icon className={`h-5 w-5 ${s.color}`} />
               </div>
               <div>
-                <p className="text-2xl font-bold">{s.value}</p>
+                <AnimatedCounter value={typeof s.value === "number" ? s.value : parseInt(String(s.value)) || 0} className="text-2xl" />
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
               </div>
             </CardContent>

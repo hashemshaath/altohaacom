@@ -8,6 +8,7 @@ import {
   Building2, TrendingUp, CheckCircle, Clock, AlertTriangle,
   Star, Package, BarChart3,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   competitionId: string;
@@ -147,21 +148,21 @@ export function VendorPerformance({ competitionId }: Props) {
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <Building2 className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-xl font-bold">{vendors.length}</p>
+            <AnimatedCounter value={vendors.length} className="text-xl" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "الموردين" : "Vendors"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <Package className="mx-auto mb-1 h-5 w-5 text-chart-1" />
-            <p className="text-xl font-bold">{totalAssigned}</p>
+            <AnimatedCounter value={totalAssigned} className="text-xl" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "عناصر معينة" : "Assigned"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <CheckCircle className="mx-auto mb-1 h-5 w-5 text-chart-5" />
-            <p className="text-xl font-bold">{avgRate}%</p>
+            <AnimatedCounter value={avgRate} className="text-xl" suffix="%" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "معدل التسليم" : "Delivery Rate"}</p>
           </CardContent>
         </Card>

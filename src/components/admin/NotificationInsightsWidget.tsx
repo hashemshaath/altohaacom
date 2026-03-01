@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Bell, Send, Eye, AlertTriangle, Zap, Mail, Smartphone, MessageSquare } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function NotificationInsightsWidget() {
   const { language } = useLanguage();
@@ -95,7 +96,7 @@ export function NotificationInsightsWidget() {
               <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
               <span className="text-xs text-muted-foreground">{kpi.label}</span>
             </div>
-            <p className="text-2xl font-bold">{kpi.value}</p>
+            <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : parseInt(String(kpi.value)) || 0} className="text-2xl" />
           </CardContent>
         </Card>
       ))}

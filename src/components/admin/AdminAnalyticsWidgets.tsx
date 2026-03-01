@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { TrendingUp, Users, Trophy, FileText, DollarSign, Landmark, GraduationCap } from "lucide-react";
 import { CountryBreakdownChart } from "@/components/analytics/CountryBreakdownChart";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function AdminAnalyticsWidgets() {
   const { language } = useLanguage();
@@ -246,7 +247,7 @@ export function AdminAnalyticsWidgets() {
                 <Users className="h-3.5 w-3.5 text-primary" />
                 <span className="text-xs text-muted-foreground">{isAr ? "مستخدمون جدد هذا الشهر" : "New Users This Month"}</span>
               </div>
-              <p className="text-2xl font-bold">{newUsersMonth ?? "…"}</p>
+              <AnimatedCounter value={newUsersMonth ?? 0} className="text-2xl" />
             </div>
             <div className="rounded-xl border border-border/50 p-3">
               <div className="flex items-center gap-2 mb-1">
@@ -304,7 +305,7 @@ function CertificateCount() {
     staleTime: 1000 * 60 * 5,
   });
 
-  return <p className="text-2xl font-bold">{count ?? "…"}</p>;
+  return <AnimatedCounter value={count ?? 0} className="text-2xl" />;
 }
 
 function QuickCountCard({ icon: Icon, label, table }: { icon: React.ElementType; label: string; table: string }) {
@@ -326,7 +327,7 @@ function QuickCountCard({ icon: Icon, label, table }: { icon: React.ElementType;
           <Icon className="h-4 w-4 text-primary" />
         </div>
         <div>
-          <p className="text-xl font-bold">{count ?? "…"}</p>
+          <AnimatedCounter value={count ?? 0} className="text-xl" />
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
         </div>
       </CardContent>

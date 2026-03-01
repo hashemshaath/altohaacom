@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, Area, AreaChart,
@@ -184,7 +185,7 @@ export function ExhibitionAdvancedAnalytics() {
                 <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
                 <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
-              <p className="text-2xl font-bold">{kpi.value}</p>
+              <p className="text-2xl font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
               <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>
             </CardContent>
           </Card>
