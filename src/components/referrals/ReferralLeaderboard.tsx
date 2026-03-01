@@ -1,4 +1,5 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -50,7 +51,8 @@ export function ReferralLeaderboard() {
           <div className="divide-y divide-border/50">
             {leaderboard.map((entry) => {
               const isCurrentUser = entry.userId === user?.id;
-              const initials = entry.profile?.full_name?.slice(0, 2) || entry.profile?.username?.slice(0, 2) || "??";
+              const name = getDisplayName(entry.profile, isAr);
+              const initials = getDisplayInitial(entry.profile, isAr);
 
               return (
                 <div
@@ -69,13 +71,13 @@ export function ReferralLeaderboard() {
                   {/* Avatar */}
                   <Avatar className="h-9 w-9 shrink-0">
                     <AvatarImage src={entry.profile?.avatar_url || undefined} />
-                    <AvatarFallback className="text-xs">{initials.toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="text-xs">{initials}</AvatarFallback>
                   </Avatar>
 
                   {/* Name */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
-                      {isAr ? entry.profile?.full_name_ar || entry.profile?.full_name : entry.profile?.full_name || entry.profile?.username}
+                      {name}
                       {isCurrentUser && (
                         <Badge variant="outline" className="ms-2 text-[9px] py-0">
                           {isAr ? "أنت" : "You"}
