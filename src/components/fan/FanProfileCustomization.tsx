@@ -105,7 +105,7 @@ export function FanProfileCustomization() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-accent/10">
             <Sparkles className="h-3.5 w-3.5 text-accent-foreground" />
           </div>
           {isAr ? "تخصيص ملفك" : "Customize Your Profile"}

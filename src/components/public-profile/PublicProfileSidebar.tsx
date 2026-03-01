@@ -52,7 +52,7 @@ export function PublicProfileSidebar({ profile, qrCode, isAr, isVisible, getCoun
           </div>
 
           {profile.nationality && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 rounded-lg px-3 py-2 border border-border/15">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 rounded-xl px-3 py-2 border border-border/15">
               <Earth className="h-3.5 w-3.5 text-primary/60 shrink-0" />
               <span>{countryFlag(profile.nationality)} {getCountryName(profile.nationality)}</span>
               <Badge variant="outline" className="text-[8px] h-4 ms-auto border-border/30">{isAr ? "الجنسية" : "Nationality"}</Badge>
@@ -87,7 +87,7 @@ export function PublicProfileSidebar({ profile, qrCode, isAr, isVisible, getCoun
               <p className="text-xs font-bold">{isAr ? "عضوية مميزة" : "Premium Member"}</p>
               <p className="text-[10px] text-muted-foreground">{isAr ? "استمتع بمزايا حصرية" : "Enjoy exclusive benefits"}</p>
             </div>
-            <Badge className="bg-primary text-primary-foreground text-[10px] rounded-lg">
+            <Badge className="bg-primary text-primary-foreground text-[10px] rounded-xl">
               {profile.membership_tier === "professional" ? "Pro" : profile.membership_tier}
             </Badge>
           </CardContent>

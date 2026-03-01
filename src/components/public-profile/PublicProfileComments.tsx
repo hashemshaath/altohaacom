@@ -61,7 +61,7 @@ export function PublicProfileComments({ userId, isAr }: Props) {
           const isComp = c.event_type === "competition";
           const href = isComp ? `/competitions/${c.event.slug}` : `/exhibitions/${c.event.slug}`;
           return (
-            <Link key={c.id} to={href} className="block rounded-lg p-2.5 hover:bg-muted/40 transition-colors border border-border/20">
+            <Link key={c.id} to={href} className="block rounded-xl p-2.5 hover:bg-muted/40 transition-colors border border-border/20">
               <div className="flex items-center gap-1.5 mb-1">
                 {isComp ? <Trophy className="h-3 w-3 text-primary" /> : <Landmark className="h-3 w-3 text-chart-5" />}
                 <span className="text-[10px] font-medium truncate">{isAr ? c.event.title_ar || c.event.title : c.event.title}</span>

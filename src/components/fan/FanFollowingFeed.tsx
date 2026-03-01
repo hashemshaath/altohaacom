@@ -64,7 +64,7 @@ export function FanFollowingFeed() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-1/10">
             <Rss className="h-3.5 w-3.5 text-chart-1" />
           </div>
           {isAr ? "آخر أخبار من تتابعهم" : "From People You Follow"}
@@ -75,7 +75,7 @@ export function FanFollowingFeed() {
           <Link
             key={post.id}
             to="/community"
-            className="block rounded-lg p-2.5 hover:bg-muted/40 transition-colors border border-border/20"
+            className="block rounded-xl p-2.5 hover:bg-muted/40 transition-colors border border-border/20"
           >
             <div className="flex items-start gap-2.5">
               <Avatar className="h-8 w-8 shrink-0">

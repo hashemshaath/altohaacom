@@ -121,7 +121,7 @@ export function PublicProfileHero({
                   </div>
                 </div>
                 {profile.is_verified && (
-                  <div className="absolute -bottom-1 -end-1 bg-primary text-primary-foreground p-1.5 rounded-lg shadow-lg ring-2 ring-background z-20">
+                  <div className="absolute -bottom-1 -end-1 bg-primary text-primary-foreground p-1.5 rounded-xl shadow-lg ring-2 ring-background z-20">
                     <BadgeCheck className="h-3.5 w-3.5" />
                   </div>
                 )}
@@ -197,7 +197,7 @@ export function PublicProfileHero({
                   <div className="flex flex-wrap gap-1.5 justify-center md:justify-start pt-1">
                     {hashtags.map((tag, i) => (
                       <Link key={i} to={`/community?search=${encodeURIComponent(tag)}`}>
-                        <Badge variant="outline" className="text-[10px] sm:text-[11px] h-5 sm:h-6 rounded-lg border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2 cursor-pointer">
+                        <Badge variant="outline" className="text-[10px] sm:text-[11px] h-5 sm:h-6 rounded-xl border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2 cursor-pointer">
                           <Hash className="h-2.5 w-2.5" />
                           {tag}
                         </Badge>

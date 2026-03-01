@@ -62,7 +62,7 @@ export function FanNotificationsCenter() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <Bell className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "مركز الإشعارات" : "Notifications"}
@@ -84,7 +84,7 @@ export function FanNotificationsCenter() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-12 rounded-lg bg-muted/50 animate-pulse" />
+              <div key={i} className="h-12 rounded-xl bg-muted/50 animate-pulse" />
             ))}
           </div>
         ) : notifications.length === 0 ? (
@@ -104,11 +104,11 @@ export function FanNotificationsCenter() {
                 return (
                   <div
                     key={n.id}
-                    className={`flex items-start gap-2.5 rounded-lg p-2.5 transition-colors ${
+                    className={`flex items-start gap-2.5 rounded-xl p-2.5 transition-colors ${
                       n.is_read ? "opacity-60" : "bg-primary/5"
                     }`}
                   >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted">
                       <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                     </div>
                     <div className="flex-1 min-w-0">

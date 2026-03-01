@@ -91,7 +91,7 @@ export function FanSmartRecommendations() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-3/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-3/10">
             <Lightbulb className="h-3.5 w-3.5 text-chart-3" />
           </div>
           {isAr ? "مقترحات لك" : "Recommended for You"}
@@ -138,9 +138,9 @@ export function FanSmartRecommendations() {
                 <Link
                   key={comp.id}
                   to={`/competitions/${comp.slug}`}
-                  className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-muted/40 transition-colors"
+                  className="flex items-center gap-2.5 rounded-xl p-2 hover:bg-muted/40 transition-colors"
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                     <Trophy className="h-3.5 w-3.5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">

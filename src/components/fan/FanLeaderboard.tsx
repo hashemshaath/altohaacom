@@ -31,7 +31,7 @@ export function FanLeaderboard() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
             <Flame className="h-3.5 w-3.5 text-chart-4" />
           </div>
           {isAr ? "لوحة المتصدرين" : "Fan Leaderboard"}
@@ -41,7 +41,7 @@ export function FanLeaderboard() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="h-10 rounded-lg bg-muted/50 animate-pulse" />
+              <div key={i} className="h-10 rounded-xl bg-muted/50 animate-pulse" />
             ))}
           </div>
         ) : leaders.length === 0 ? (
@@ -58,7 +58,7 @@ export function FanLeaderboard() {
               return (
                 <div
                   key={fan.user_id}
-                  className={`flex items-center gap-3 rounded-lg p-2 transition-colors ${
+                  className={`flex items-center gap-3 rounded-xl p-2 transition-colors ${
                     isMe ? "bg-primary/5 ring-1 ring-primary/20" : "hover:bg-muted/40"
                   }`}
                 >

@@ -75,7 +75,7 @@ export function FanRecipeCollections() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
               <BookOpen className="h-3.5 w-3.5 text-chart-4" />
             </div>
             {isAr ? "مجموعاتي" : "My Collections"}
@@ -105,7 +105,7 @@ export function FanRecipeCollections() {
                     <button
                       key={e}
                       onClick={() => setNewEmoji(e)}
-                      className={`h-8 w-8 rounded-lg text-sm flex items-center justify-center transition-colors ${newEmoji === e ? "bg-primary/20 ring-1 ring-primary/40" : "bg-muted/50 hover:bg-muted"}`}
+                      className={`h-8 w-8 rounded-xl text-sm flex items-center justify-center transition-colors ${newEmoji === e ? "bg-primary/20 ring-1 ring-primary/40" : "bg-muted/50 hover:bg-muted"}`}
                     >
                       {e}
                     </button>
@@ -121,7 +121,7 @@ export function FanRecipeCollections() {
       </CardHeader>
       <CardContent className="pt-0">
         {isLoading ? (
-          <div className="space-y-2">{[1, 2].map(i => <div key={i} className="h-12 rounded-lg bg-muted/50 animate-pulse" />)}</div>
+          <div className="space-y-2">{[1, 2].map(i => <div key={i} className="h-12 rounded-xl bg-muted/50 animate-pulse" />)}</div>
         ) : collections.length === 0 ? (
           <div className="text-center py-6">
             <FolderOpen className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
@@ -130,7 +130,7 @@ export function FanRecipeCollections() {
         ) : (
           <div className="space-y-1.5">
             {collections.map((col: any) => (
-              <div key={col.id} className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-muted/40 transition-colors group">
+              <div key={col.id} className="flex items-center gap-2.5 rounded-xl p-2 hover:bg-muted/40 transition-colors group">
                 <span className="text-lg shrink-0">{col.emoji}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1">

@@ -67,7 +67,7 @@ export function FanEventWatchlist() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-5/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-5/10">
             <Eye className="h-3.5 w-3.5 text-chart-5" />
           </div>
           {isAr ? "قائمة المتابعة" : "Event Watchlist"}
@@ -86,7 +86,7 @@ export function FanEventWatchlist() {
 
           <div className="mt-3">
             {isLoading ? (
-              <div className="space-y-2">{[1, 2, 3].map(i => <div key={i} className="h-14 rounded-lg bg-muted/50 animate-pulse" />)}</div>
+              <div className="space-y-2">{[1, 2, 3].map(i => <div key={i} className="h-14 rounded-xl bg-muted/50 animate-pulse" />)}</div>
             ) : filtered.length === 0 ? (
               <div className="text-center py-8">
                 <Bookmark className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
@@ -103,8 +103,8 @@ export function FanEventWatchlist() {
                   const isComp = item.event_type === "competition";
                   const href = isComp ? `/competitions/${e.slug}` : `/exhibitions/${e.slug}`;
                   return (
-                    <div key={item.id} className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-muted/40 transition-colors">
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${isComp ? "bg-primary/10" : "bg-chart-5/10"}`}>
+                    <div key={item.id} className="flex items-center gap-2.5 rounded-xl p-2 hover:bg-muted/40 transition-colors">
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${isComp ? "bg-primary/10" : "bg-chart-5/10"}`}>
                         {isComp ? <Trophy className="h-3.5 w-3.5 text-primary" /> : <Landmark className="h-3.5 w-3.5 text-chart-5" />}
                       </div>
                       <Link to={href} className="flex-1 min-w-0">
