@@ -727,7 +727,7 @@ export default function OrdersAdmin() {
                               <TableCell>{item.name}</TableCell>
                               <TableCell>{item.quantity}</TableCell>
                               <TableCell>{item.price}</TableCell>
-                              <TableCell>{toEnglishDigits((item.quantity * item.price).toLocaleString())}</TableCell>
+                              <TableCell><AnimatedCounter value={Math.round(item.quantity * item.price)} className="inline" format /></TableCell>
                             </TableRow>
                           ))}
                         </TableBody>

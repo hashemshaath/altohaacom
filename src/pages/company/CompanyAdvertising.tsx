@@ -210,7 +210,7 @@ export default function CompanyAdvertising() {
                   </TableHeader>
                   <TableBody>
                     {campaigns.map((c: any) => {
-                      const ctr = c.total_impressions > 0 ? toEnglishDigits(((c.total_clicks / c.total_impressions) * 100).toFixed(2)) : "0.00";
+                      const ctr = c.total_impressions > 0 ? ((c.total_clicks / c.total_impressions) * 100).toFixed(2) : "0.00";
                       return (
                         <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/company/advertising/${c.id}`)}>
                           <TableCell className="font-medium">{isAr ? c.name_ar || c.name : c.name}</TableCell>

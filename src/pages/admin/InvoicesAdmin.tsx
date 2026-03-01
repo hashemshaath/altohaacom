@@ -428,12 +428,12 @@ export default function InvoicesAdmin() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({toEnglishDigits(invoiceDetails.tax_rate)}%)</span>
-                          <span>{toEnglishDigits(Number(invoiceDetails.tax_amount).toLocaleString())}</span>
+                          <span><AnimatedCounter value={Math.round(Number(invoiceDetails.tax_amount))} className="inline" format /></span>
                         </div>
                         <Separator />
                         <div className="flex justify-between font-bold text-base">
                           <span>{language === "ar" ? "الإجمالي" : "Total"}</span>
-                          <span>{toEnglishDigits(Number(invoiceDetails.amount).toLocaleString())} {invoiceDetails.currency}</span>
+                          <span><AnimatedCounter value={Math.round(Number(invoiceDetails.amount))} className="inline" format /> {invoiceDetails.currency}</span>
                         </div>
                       </div>
                     </div>
@@ -738,7 +738,7 @@ export default function InvoicesAdmin() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {toEnglishDigits(Number(inv.amount).toLocaleString())} {inv.currency}
+                        <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" format /> {inv.currency}
                       </TableCell>
                       <TableCell>
                         {inv.due_date ? format(new Date(inv.due_date), "MMM dd") : "—"}

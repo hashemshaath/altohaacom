@@ -83,7 +83,7 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
           <div className="absolute end-4 bottom-4">
             <Badge variant="secondary" className="gap-1.5 bg-background/80 backdrop-blur-md shadow-lg font-bold text-xs border-chart-4/30">
               <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
-              {toEnglishDigits(avgRating.toFixed(1))}
+              {avgRating.toFixed(1)}
             </Badge>
           </div>
         )}
@@ -108,7 +108,7 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
               <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-4/10">
                 <Clock className="h-3 w-3 text-chart-4" />
               </div>
-              {toEnglishDigits(mc.duration_hours)}h
+              <AnimatedCounter value={mc.duration_hours} className="inline" format={false} />h
             </span>
           )}
           <span className="flex items-center gap-1.5">

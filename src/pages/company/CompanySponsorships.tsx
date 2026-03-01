@@ -326,7 +326,7 @@ export default function CompanySponsorships() {
                         </Badge>
                         <span className="text-xs text-muted-foreground">
                           {isAr ? tier.labelAr : tier.label}
-                          {pkg?.price ? ` · ${toEnglishDigits(Number(pkg.price).toLocaleString())} SAR` : ""}
+                          {pkg?.price ? <> · <AnimatedCounter value={Math.round(Number(pkg.price))} className="inline" format /> SAR</> : ""}
                         </span>
                       </div>
                     </div>
@@ -464,7 +464,7 @@ export default function CompanySponsorships() {
                     {packages.map((pkg: any) => (
                       <SelectItem key={pkg.id} value={pkg.id}>
                         {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
-                        {pkg.price ? ` - ${toEnglishDigits(Number(pkg.price).toLocaleString())} SAR` : ""}
+                        {pkg.price ? ` - ${Number(pkg.price).toLocaleString()} SAR` : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
