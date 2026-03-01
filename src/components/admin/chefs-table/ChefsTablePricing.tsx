@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { DollarSign, Plus, Save, Edit2, Trash2, Calculator } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface PricingPlan {
   id: string;
@@ -179,11 +180,11 @@ export function ChefsTablePricing() {
 
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="rounded-xl bg-muted/50 p-3 text-center">
-                  <p className="text-xl font-black tabular-nums">{plan.base_fee.toLocaleString()}</p>
+                  <AnimatedCounter value={plan.base_fee} className="text-xl font-black tabular-nums" />
                   <p className="text-[9px] text-muted-foreground">{isAr ? "رسوم أساسية" : "Base Fee"} (SAR)</p>
                 </div>
                 <div className="rounded-xl bg-muted/50 p-3 text-center">
-                  <p className="text-xl font-black tabular-nums">+{plan.per_chef_fee.toLocaleString()}</p>
+                  <AnimatedCounter value={plan.per_chef_fee} className="text-xl font-black tabular-nums" prefix="+" />
                   <p className="text-[9px] text-muted-foreground">{isAr ? "لكل شيف" : "Per Chef"} (SAR)</p>
                 </div>
               </div>
