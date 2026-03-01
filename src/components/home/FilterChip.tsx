@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,9 +10,10 @@ interface FilterChipProps {
   icon?: React.ReactNode;
 }
 
-export const FilterChip = memo(function FilterChip({ label, active, count, onClick, icon }: FilterChipProps) {
+export const FilterChip = memo(forwardRef<HTMLButtonElement, FilterChipProps>(function FilterChip({ label, active, count, onClick, icon }, ref) {
   return (
     <Button
+      ref={ref}
       variant={active ? "default" : "outline"}
       size="sm"
       className={cn(
@@ -33,4 +34,4 @@ export const FilterChip = memo(function FilterChip({ label, active, count, onCli
       )}
     </Button>
   );
-});
+}));

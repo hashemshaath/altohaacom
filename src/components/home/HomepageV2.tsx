@@ -444,7 +444,7 @@ const ChefCard = memo(function ChefCard({ chef, i, isAr }: { chef: any; i: numbe
             {(chef.city || chef.country_code) && (
               <p className="text-[10px] sm:text-xs text-background/50 mt-0.5 flex items-center gap-1">
                 <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                {chef.city || chef.country_code}
+                {[chef.city, chef.country_code ? new Intl.DisplayNames([isAr ? "ar" : "en"], { type: "region" }).of(chef.country_code) : null].filter(Boolean).join(", ")}
               </p>
             )}
           </div>
@@ -516,15 +516,25 @@ function CinematicArticles() {
               <div className="flex items-center justify-center gap-1.5 mt-4 flex-wrap">
                 <Filter className="h-3 w-3 text-muted-foreground/50 shrink-0" />
                 <FilterChip label={isAr ? "الكل" : "All"} active={!typeFilter} count={allArticles.length} onClick={() => setTypeFilter(null)} />
-                {types.map(t => (
-                  <FilterChip
-                    key={t}
-                    label={t}
-                    active={typeFilter === t}
-                    count={allArticles.filter((a: any) => a.type === t).length}
-                    onClick={() => setTypeFilter(typeFilter === t ? null : t)}
-                  />
-                ))}
+                {types.map(t => {
+                  const typeLabels: Record<string, { en: string; ar: string }> = {
+                    news: { en: "News", ar: "أخبار" },
+                    article: { en: "Article", ar: "مقال" },
+                    event: { en: "Event", ar: "فعالية" },
+                    blog: { en: "Blog", ar: "مدونة" },
+                    interview: { en: "Interview", ar: "مقابلة" },
+                  };
+                  const tl = typeLabels[t];
+                  return (
+                    <FilterChip
+                      key={t}
+                      label={tl ? (isAr ? tl.ar : tl.en) : t}
+                      active={typeFilter === t}
+                      count={allArticles.filter((a: any) => a.type === t).length}
+                      onClick={() => setTypeFilter(typeFilter === t ? null : t)}
+                    />
+                  );
+                })}
               </div>
             )}
           </div>
@@ -544,7 +554,7 @@ function CinematicArticles() {
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
                 <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 lg:p-8">
                   <Badge className="mb-2 sm:mb-3 bg-primary/80 text-primary-foreground border-0 backdrop-blur-sm text-[9px] sm:text-[10px]">
-                    {main.type === "news" ? (isAr ? "أخبار" : "News") : (isAr ? "مقال" : "Article")}
+                    {(() => { const tl: Record<string,{en:string;ar:string}> = { news:{en:"News",ar:"أخبار"}, article:{en:"Article",ar:"مقال"}, blog:{en:"Blog",ar:"مدونة"}, event:{en:"Event",ar:"فعالية"}, interview:{en:"Interview",ar:"مقابلة"} }; const l = tl[main.type]; return l ? (isAr ? l.ar : l.en) : main.type; })()}
                   </Badge>
                   <h3 className={cn("text-xl sm:text-2xl lg:text-3xl font-bold text-background leading-snug line-clamp-2", !isAr && "font-serif")}>
                     {isAr && main.title_ar ? main.title_ar : main.title}
@@ -575,7 +585,7 @@ function CinematicArticles() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <Badge variant="outline" className="mb-1 text-[8px] sm:text-[9px]">
-                      {article.type === "news" ? (isAr ? "أخبار" : "News") : (isAr ? "مقال" : "Article")}
+                      {(() => { const tl: Record<string,{en:string;ar:string}> = { news:{en:"News",ar:"أخبار"}, article:{en:"Article",ar:"مقال"}, blog:{en:"Blog",ar:"مدونة"}, event:{en:"Event",ar:"فعالية"}, interview:{en:"Interview",ar:"مقابلة"} }; const l = tl[article.type]; return l ? (isAr ? l.ar : l.en) : article.type; })()}
                     </Badge>
                     <h3 className="text-sm sm:text-base font-bold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                       {isAr && article.title_ar ? article.title_ar : article.title}

@@ -86,15 +86,28 @@ export function HomeMasterclasses() {
                 />
               );
             })}
-            {categories.length > 1 && categories.map(c => (
-              <FilterChip
-                key={c}
-                label={c}
-                active={catFilter === c}
-                count={classes.filter((mc: any) => mc.category === c).length}
-                onClick={() => setCatFilter(catFilter === c ? null : c)}
-              />
-            ))}
+            {categories.length > 1 && categories.map(c => {
+              const catLabels: Record<string, { en: string; ar: string }> = {
+                pastry: { en: "Pastry", ar: "حلويات" },
+                cuisine: { en: "Cuisine", ar: "طبخ" },
+                baking: { en: "Baking", ar: "خبز" },
+                sushi: { en: "Sushi", ar: "سوشي" },
+                chocolate: { en: "Chocolate", ar: "شوكولاتة" },
+                plating: { en: "Plating", ar: "تقديم" },
+                butchery: { en: "Butchery", ar: "جزارة" },
+                beverages: { en: "Beverages", ar: "مشروبات" },
+              };
+              const cl = catLabels[c];
+              return (
+                <FilterChip
+                  key={c}
+                  label={cl ? (isAr ? cl.ar : cl.en) : c}
+                  active={catFilter === c}
+                  count={classes.filter((mc: any) => mc.category === c).length}
+                  onClick={() => setCatFilter(catFilter === c ? null : c)}
+                />
+              );
+            })}
           </>
         ) : undefined}
       />
@@ -148,7 +161,20 @@ export function HomeMasterclasses() {
                     </div>
                     <CardContent className="p-3">
                       <div className="mb-1.5">
-                        {mc.category && <Badge variant="outline" className="text-[10px] mb-1">{mc.category}</Badge>}
+                        {mc.category && <Badge variant="outline" className="text-[10px] mb-1">{(() => {
+                          const catLabels: Record<string, { en: string; ar: string }> = {
+                            pastry: { en: "Pastry", ar: "حلويات" },
+                            cuisine: { en: "Cuisine", ar: "طبخ" },
+                            baking: { en: "Baking", ar: "خبز" },
+                            sushi: { en: "Sushi", ar: "سوشي" },
+                            chocolate: { en: "Chocolate", ar: "شوكولاتة" },
+                            plating: { en: "Plating", ar: "تقديم" },
+                            butchery: { en: "Butchery", ar: "جزارة" },
+                            beverages: { en: "Beverages", ar: "مشروبات" },
+                          };
+                          const cl = catLabels[mc.category];
+                          return cl ? (isAr ? cl.ar : cl.en) : mc.category;
+                        })()}</Badge>}
                         <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
                       </div>
                       <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
