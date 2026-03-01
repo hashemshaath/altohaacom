@@ -59,7 +59,7 @@ export function CommunicationsDashboardWidget() {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-3">
           {kpis.map((kpi) => (
-            <div key={kpi.label} className="text-center p-2.5 rounded-lg bg-muted/50">
+            <div key={kpi.label} className="text-center p-2.5 rounded-xl bg-muted/50">
               <kpi.icon className={`h-4 w-4 mx-auto mb-1 ${kpi.color}`} />
               <p className="text-lg font-bold">{kpi.value}</p>
               <p className="text-[10px] text-muted-foreground leading-tight">{kpi.label}</p>
@@ -77,7 +77,7 @@ export function CommunicationsDashboardWidget() {
               <p className="text-xs text-muted-foreground py-2">No templates yet</p>
             ) : (
               stats.recentTemplates.map((t) => (
-                <div key={t.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                <div key={t.id} className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
                   <div className="flex items-center gap-2">
                     <Mail className="h-3.5 w-3.5 text-muted-foreground" />
                     <span className="text-xs truncate max-w-[180px]">{t.name}</span>
@@ -88,7 +88,7 @@ export function CommunicationsDashboardWidget() {
             )}
           </TabsContent>
           <TabsContent value="insights" className="mt-2">
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/30">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-muted/30">
               <TrendingUp className="h-4 w-4 text-primary" />
               <div>
                 <p className="text-xs font-medium">Response Performance</p>

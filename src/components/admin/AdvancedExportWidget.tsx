@@ -120,7 +120,7 @@ export function AdvancedExportWidget() {
         </div>
 
         {/* Quick Export */}
-        <div className="bg-muted/50 rounded-lg p-4">
+        <div className="bg-muted/50 rounded-xl p-4">
           <p className="text-xs font-medium mb-3">{isAr ? "تصدير سريع" : "Quick Export"}</p>
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
             <div className="flex-1 w-full">
@@ -160,7 +160,7 @@ export function AdvancedExportWidget() {
         {/* Module Stats Grid */}
         <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4">
           {EXPORT_MODULES.map(m => (
-            <div key={m.key} className="bg-muted/30 rounded-lg p-2 text-center cursor-pointer hover:bg-muted/60 transition-colors" onClick={() => setSelectedModule(m.key)}>
+            <div key={m.key} className="bg-muted/30 rounded-xl p-2 text-center cursor-pointer hover:bg-muted/60 transition-colors" onClick={() => setSelectedModule(m.key)}>
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${selectedModule === m.key ? "text-primary" : "text-muted-foreground"}`} />
               <div className="text-xs font-bold">{counts?.[m.key] || 0}</div>
               <div className="text-[8px] text-muted-foreground">{isAr ? m.labelAr : m.label}</div>

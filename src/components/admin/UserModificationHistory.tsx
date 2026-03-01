@@ -109,7 +109,7 @@ export function UserModificationHistory({ userId, isAr }: Props) {
           const meta = ACTION_META[action.action_type] || ACTION_META.update_profile;
           const Icon = meta.icon;
           return (
-            <div key={action.id} className="flex gap-3 rounded-lg border p-3">
+            <div key={action.id} className="flex gap-3 rounded-xl border p-3">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted">
                 <Icon className="h-4 w-4 text-muted-foreground" />
               </div>
