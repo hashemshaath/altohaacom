@@ -11,6 +11,7 @@ import {
   TrendingUp, TrendingDown, DollarSign, Target, AlertTriangle,
   Trophy, ChefHat, Landmark, Calendar, FileText, BarChart3, Wallet,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   isAr: boolean;
@@ -144,7 +145,7 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
                 {isAr ? "معدل الاستخدام" : "Utilization Rate"}
               </span>
             </div>
-            <p className="text-xl font-black tabular-nums">{analytics.utilizationRate}%</p>
+            <AnimatedCounter value={analytics.utilizationRate} className="text-xl font-black tabular-nums" suffix="%" />
             <Progress value={analytics.utilizationRate} className="mt-2 h-1.5" />
           </CardContent>
         </Card>

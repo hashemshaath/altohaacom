@@ -577,7 +577,7 @@ export default function MembershipChurnRetention() {
               const pct = ((s.count / total) * 100).toFixed(0);
               return (
                 <div key={s.label} className="text-center rounded-xl border p-3">
-                  <p className="text-2xl font-bold" style={{ color: s.color }}>{s.count}</p>
+                  <p className="text-2xl font-bold" style={{ color: s.color }}><AnimatedCounter value={s.count} /></p>
                   <p className="text-[10px] text-muted-foreground">{s.label} ({pct}%)</p>
                 </div>
               );

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Star, ThumbsUp, Truck, Phone, TrendingUp } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   overallAvg: number;
@@ -43,7 +44,7 @@ export function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communica
           <div>
             <p className="text-sm text-muted-foreground">{isAr ? "التقييم العام" : "Overall Rating"}</p>
             <div className="flex items-center gap-3 mt-1">
-              <p className="text-3xl font-bold">{overallAvg.toFixed(1)}</p>
+              <AnimatedCounter value={Math.round(overallAvg * 10) / 10} className="text-3xl font-bold" />
               <span className="text-muted-foreground">/5</span>
               {renderStars(overallAvg)}
             </div>
@@ -63,7 +64,7 @@ export function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communica
                 <p className="text-sm font-medium">{cat.label}</p>
               </div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl font-bold">{cat.value.toFixed(1)}</span>
+                <AnimatedCounter value={Math.round(cat.value * 10) / 10} className="text-2xl font-bold" />
                 {renderStars(cat.value)}
               </div>
               <Progress value={(cat.value / 5) * 100} className="h-1.5" />

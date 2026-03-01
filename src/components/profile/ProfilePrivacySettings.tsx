@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Shield, Eye, EyeOff, Save, Lock, Globe, Users, AlertTriangle, CheckCircle2, Phone, Mail, Cake, Briefcase, MapPin, Share2, Award, Trophy, Star, Activity, FileText, Loader2 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { UserDataExport } from "./UserDataExport";
 import { AccountDeletion } from "./AccountDeletion";
 import { cn } from "@/lib/utils";
@@ -113,7 +114,7 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
               <Eye className="h-4 w-4 text-chart-2" />
             </div>
             <div>
-              <p className="text-xl font-black tabular-nums">{visibleCount}</p>
+              <AnimatedCounter value={visibleCount} className="text-xl font-black tabular-nums" />
               <p className="text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "ظاهر" : "Visible"}</p>
             </div>
           </CardContent>
@@ -124,7 +125,7 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
               <EyeOff className="h-4 w-4 text-chart-4" />
             </div>
             <div>
-              <p className="text-xl font-black tabular-nums">{hiddenCount}</p>
+              <AnimatedCounter value={hiddenCount} className="text-xl font-black tabular-nums" />
               <p className="text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "مخفي" : "Hidden"}</p>
             </div>
           </CardContent>
