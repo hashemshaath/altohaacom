@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/hooks/use-toast";
 import { Download, Calendar, TrendingUp, DollarSign, BarChart3, Target } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function AdAdvancedReporting() {
   const { language } = useLanguage();
@@ -139,17 +140,17 @@ export function AdAdvancedReporting() {
       {/* Summary KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {[
-          { icon: BarChart3, label: isAr ? "المشاهدات" : "Impressions", value: totals.totalImpressions.toLocaleString() },
-          { icon: Target, label: isAr ? "النقرات" : "Clicks", value: totals.totalClicks.toLocaleString() },
-          { icon: TrendingUp, label: "CTR", value: `${totals.avgCTR}%` },
-          { icon: DollarSign, label: isAr ? "الإنفاق" : "Spent", value: `SAR ${totals.totalSpent.toLocaleString()}` },
-          { icon: DollarSign, label: "eCPM", value: `SAR ${totals.avgCPM}` },
-          { icon: DollarSign, label: "eCPC", value: `SAR ${totals.avgCPC}` },
-          { icon: DollarSign, label: isAr ? "الميزانية" : "Budget", value: `SAR ${totals.totalBudget.toLocaleString()}` },
+          { icon: BarChart3, label: isAr ? "المشاهدات" : "Impressions", numValue: totals.totalImpressions },
+          { icon: Target, label: isAr ? "النقرات" : "Clicks", numValue: totals.totalClicks },
+          { icon: TrendingUp, label: "CTR", strValue: `${totals.avgCTR}%` },
+          { icon: DollarSign, label: isAr ? "الإنفاق" : "Spent", numValue: Math.round(totals.totalSpent), prefix: "SAR " },
+          { icon: DollarSign, label: "eCPM", strValue: `SAR ${totals.avgCPM}` },
+          { icon: DollarSign, label: "eCPC", strValue: `SAR ${totals.avgCPC}` },
+          { icon: DollarSign, label: isAr ? "الميزانية" : "Budget", numValue: Math.round(totals.totalBudget), prefix: "SAR " },
         ].map(k => (
           <div key={k.label} className="p-3 rounded-xl bg-muted/50 text-center">
             <p className="text-[10px] text-muted-foreground">{k.label}</p>
-            <p className="text-sm font-bold">{k.value}</p>
+            <p className="text-sm font-bold">{'numValue' in k ? <>{k.prefix}<AnimatedCounter value={k.numValue!} className="inline" /></> : k.strValue}</p>
           </div>
         ))}
       </div>

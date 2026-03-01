@@ -274,7 +274,7 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
         {[
           { label: t("Total Tickets", "إجمالي التذاكر"), value: ticketsOverTime.length, icon: Ticket, color: "text-primary" },
           { label: t("Checked In", "تم الحضور"), value: ticketsOverTime.filter((t: any) => t.checked_in_at).length, icon: Users, color: "text-chart-3" },
-          { label: t("Revenue", "الإيرادات"), value: revenue > 0 ? `${revenue.toLocaleString()} SAR` : "—", icon: TrendingUp, color: "text-chart-2" },
+          { label: t("Revenue", "الإيرادات"), value: revenue > 0 ? revenue : "—", icon: TrendingUp, color: "text-chart-2", suffix: revenue > 0 ? " SAR" : "" },
           { label: t("Avg Rating", "متوسط التقييم"), value: reviewsData.length > 0 ? (reviewsData.reduce((s: number, r: any) => s + r.rating, 0) / reviewsData.length).toFixed(1) : "—", icon: Star, color: "text-chart-4" },
         ].map(kpi => (
           <Card key={kpi.label} className="border-border/40">
@@ -283,7 +283,7 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
                 <kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} />
               </div>
               <div>
-                <p className={`text-sm font-bold ${kpi.color}`}>{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
+                <p className={`text-sm font-bold ${kpi.color}`}>{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} className="inline" />{(kpi as any).suffix || ""}</> : kpi.value}</p>
                 <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
               </div>
             </CardContent>

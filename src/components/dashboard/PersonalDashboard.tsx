@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Users, Trophy, ChefHat, Target, Calendar, Activity, Flame } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function PersonalDashboard() {
   const { language } = useLanguage();
@@ -112,7 +113,7 @@ export function PersonalDashboard() {
             <Card key={i}>
               <CardContent className="p-3 text-center">
                 <Icon className={`h-5 w-5 mx-auto mb-1 ${s.color}`} />
-                <p className="text-lg font-bold">{s.value.toLocaleString()}</p>
+                <AnimatedCounter value={s.value} className="text-lg font-bold" />
                 <p className="text-[10px] text-muted-foreground">{s.label}</p>
               </CardContent>
             </Card>
