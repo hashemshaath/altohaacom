@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Megaphone, Eye, MousePointerClick, DollarSign, TrendingUp, Pause, Play, AlertCircle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function AdCampaignOverviewWidget() {
   const { language } = useLanguage();
@@ -41,8 +42,6 @@ export function AdCampaignOverviewWidget() {
 
   if (!data) return null;
 
-  const fmt = (n: number) => n.toLocaleString("en");
-
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -59,17 +58,17 @@ export function AdCampaignOverviewWidget() {
       <CardContent className="p-3 space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {[
-            { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", value: fmt(data.totalImpressions), color: "text-chart-1" },
-            { icon: MousePointerClick, label: isAr ? "النقرات" : "Clicks", value: fmt(data.totalClicks), sub: `CTR: ${data.ctr}%`, color: "text-chart-2" },
-            { icon: DollarSign, label: isAr ? "الإنفاق" : "Spent", value: fmt(data.totalSpent), sub: `/ ${fmt(data.totalBudget)}`, color: "text-chart-3" },
-            { icon: TrendingUp, label: isAr ? "الحملات" : "Campaigns", value: String(data.total), sub: `${data.active} ${isAr ? "نشطة" : "active"}`, color: "text-primary" },
+            { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", numValue: data.totalImpressions, color: "text-chart-1" },
+            { icon: MousePointerClick, label: isAr ? "النقرات" : "Clicks", numValue: data.totalClicks, sub: `CTR: ${data.ctr}%`, color: "text-chart-2" },
+            { icon: DollarSign, label: isAr ? "الإنفاق" : "Spent", numValue: data.totalSpent, sub: `/ ${data.totalBudget.toLocaleString("en")}`, color: "text-chart-3" },
+            { icon: TrendingUp, label: isAr ? "الحملات" : "Campaigns", numValue: data.total, sub: `${data.active} ${isAr ? "نشطة" : "active"}`, color: "text-primary" },
           ].map((m, i) => (
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
-              <p className="text-sm font-bold">{m.value}</p>
+              <AnimatedCounter value={m.numValue} className="text-sm font-bold" />
               {m.sub && <p className="text-[8px] text-muted-foreground">{m.sub}</p>}
             </div>
           ))}

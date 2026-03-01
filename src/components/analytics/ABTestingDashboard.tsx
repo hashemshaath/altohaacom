@@ -243,8 +243,8 @@ export function ABTestingDashboard() {
                 <div key={i} className="flex items-center justify-between p-2 rounded-xl border">
                   <span className="text-sm font-medium">{v.name}</span>
                   <div className="flex items-center gap-4 text-sm">
-                    <span className="text-muted-foreground">{v.visitors.toLocaleString()} {isAr ? "زائر" : "visitors"}</span>
-                    <span className="text-muted-foreground">{v.conversions.toLocaleString()} {isAr ? "تحويل" : "conversions"}</span>
+                    <span className="text-muted-foreground"><AnimatedCounter value={v.visitors} className="inline" /> {isAr ? "زائر" : "visitors"}</span>
+                    <span className="text-muted-foreground"><AnimatedCounter value={v.conversions} className="inline" /> {isAr ? "تحويل" : "conversions"}</span>
                     <span className="font-bold">{conversionRate(v.conversions, v.visitors)}%</span>
                   </div>
                 </div>

@@ -8,7 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, PieChart, Pi
 import { FileText, Eye, TrendingUp, Star, Calendar } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function ContentAnalyticsWidget() {
   const { language } = useLanguage();
@@ -101,7 +101,7 @@ export function ContentAnalyticsWidget() {
               { label: isAr ? "متوسط المشاهدات" : "Avg Views", value: analytics.avgViews, color: "text-chart-2" },
             ].map((s, i) => (
               <div key={i} className="text-center">
-                <p className={cn("text-lg font-bold", s.color)}>{toEnglishDigits(s.value.toLocaleString())}</p>
+                <AnimatedCounter value={s.value} className={cn("text-lg font-bold", s.color)} />
                 <p className="text-[10px] text-muted-foreground">{s.label}</p>
               </div>
             ))}

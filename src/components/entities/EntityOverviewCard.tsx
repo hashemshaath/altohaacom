@@ -2,7 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Users, Globe, Briefcase, Trophy, BookOpen, Calendar, GraduationCap,
   Award, Shield, MapPin, Hash, Clock
@@ -103,7 +103,7 @@ export function EntityOverviewCard({ entity, followerCount, counts }: Props) {
                 <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${m.bgColor}`}>
                   <Icon className={`h-4 w-4 ${m.color}`} />
                 </div>
-                <p className="text-lg font-bold leading-none">{toEnglishDigits(String(m.value))}</p>
+                <AnimatedCounter value={m.value} className="text-lg font-bold leading-none" />
                 <p className="text-[9px] leading-tight text-muted-foreground">{m.label}</p>
               </div>
             );
@@ -128,7 +128,7 @@ export function EntityOverviewCard({ entity, followerCount, counts }: Props) {
           {entity.founded_year && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />
-              <span>{isAr ? "تأسست عام" : "Est."} {toEnglishDigits(String(entity.founded_year))}</span>
+              <span>{isAr ? "تأسست عام" : "Est."} {entity.founded_year}</span>
               <span className="text-muted-foreground/50">
                 ({new Date().getFullYear() - entity.founded_year} {isAr ? "سنة" : "years"})
               </span>
