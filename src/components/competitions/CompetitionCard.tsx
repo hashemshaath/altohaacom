@@ -107,10 +107,16 @@ export const CompetitionCard = memo(
         <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.98] transition-transform duration-150">
           <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-1.5 hover:border-primary/20">
             {/* Image Section */}
-            <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted">
+            <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted" role="img" aria-label={title}>
               {competition.cover_image_url ? (
                 <>
-                  {!imgLoaded && <div className="absolute inset-0 bg-muted animate-pulse" />}
+                  {!imgLoaded && (
+                    <div className="absolute inset-0 bg-muted animate-pulse">
+                      <div className="flex h-full items-center justify-center">
+                        <Trophy className="h-8 w-8 text-muted-foreground/20" />
+                      </div>
+                    </div>
+                  )}
                   <img src={competition.cover_image_url} alt={title} className={`h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`} loading="lazy" decoding="async" onLoad={onImgLoad} />
                 </>
               ) : (

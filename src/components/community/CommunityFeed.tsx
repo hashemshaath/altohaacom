@@ -456,15 +456,22 @@ export function CommunityFeed() {
       {/* Feed */}
       <div className="divide-y divide-border">
         {posts.length === 0 ? (
-          <div className="flex flex-col items-center py-16 text-center">
-            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted/60">
-              <MessageCircle className="h-7 w-7 text-muted-foreground/40" />
+          <div className="flex flex-col items-center py-20 text-center px-6">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-border/30">
+              <MessageCircle className="h-8 w-8 text-muted-foreground/30" />
             </div>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="text-sm font-semibold text-foreground/80 mb-1">
               {feedFilter === "bookmarks"
                 ? (isAr ? "لا توجد منشورات محفوظة" : "No saved posts yet")
                 : feedFilter === "following"
-                  ? (isAr ? "لا توجد منشورات من المتابَعين" : "No posts from people you follow")
+                  ? (isAr ? "لا توجد منشورات بعد" : "No posts yet")
+                  : (isAr ? "لا توجد منشورات" : "No posts yet")}
+            </h3>
+            <p className="text-xs text-muted-foreground max-w-[240px]">
+              {feedFilter === "bookmarks"
+                ? (isAr ? "احفظ منشوراتك المفضلة لتجدها هنا" : "Save your favorite posts to find them here")
+                : feedFilter === "following"
+                  ? (isAr ? "تابع طهاة لرؤية منشوراتهم" : "Follow chefs to see their posts here")
                   : tagFilter
                     ? (isAr ? `لا توجد منشورات بهاشتاق #${tagFilter}` : `No posts with #${tagFilter}`)
                     : (isAr ? "لا توجد منشورات. كن أول من ينشر!" : "No posts yet. Be the first to share!")}

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Award, GraduationCap, FileCheck, Clock, MessageCircle, Heart, Users } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface ProfileActivityTimelineProps {
   userId: string;
@@ -123,28 +124,32 @@ export function ProfileActivityTimeline({ userId }: ProfileActivityTimelineProps
   }
 
   return (
-    <Card className="overflow-hidden">
-      <div className="border-b bg-muted/30 px-4 py-3">
-        <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+    <Card className="overflow-hidden rounded-2xl border-border/40">
+      <div className="border-b border-border/30 bg-muted/20 px-4 py-3">
+        <h3 className="flex items-center gap-2.5 text-sm font-semibold">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <Clock className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "النشاط الأخير" : "Recent Activity"}
+          <Badge variant="secondary" className="ms-auto text-[9px] h-5 px-2">{events.length}</Badge>
         </h3>
       </div>
       <CardContent className="p-4">
         <div className="relative space-y-0">
           {/* Timeline line */}
-          <div className="absolute start-[15px] top-2 bottom-2 w-px bg-border" />
+          <div className="absolute start-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-primary/30 via-border to-transparent" />
 
           {events.map((event, i) => (
-            <div key={event.id} className="relative flex gap-3 pb-4 last:pb-0 group">
-              <div className="relative z-10 flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border bg-card transition-all duration-200 group-hover:shadow-sm group-hover:scale-110">
-                <event.icon className={`h-3.5 w-3.5 ${event.color}`} />
+            <div key={event.id} className="relative flex gap-3 pb-4 last:pb-0 group animate-in fade-in-50 slide-in-from-start-2" style={{ animationDelay: `${i * 50}ms` }}>
+              <div className={cn(
+                "relative z-10 flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border border-border/50 bg-card transition-all duration-300",
+                "group-hover:shadow-md group-hover:scale-110 group-hover:border-primary/30"
+              )}>
+                <event.icon className={`h-3.5 w-3.5 ${event.color} transition-colors`} />
               </div>
               <div className="flex-1 pt-0.5">
-                <p className="text-sm leading-snug group-hover:text-foreground transition-colors">{event.title}</p>
-                <p className="mt-0.5 text-[10px] text-muted-foreground" dir="ltr">
+                <p className="text-[13px] leading-snug text-foreground/90 group-hover:text-foreground transition-colors">{event.title}</p>
+                <p className="mt-1 text-[10px] text-muted-foreground font-medium" dir="ltr">
                   {format(new Date(event.date), "MMM d, yyyy")}
                 </p>
               </div>

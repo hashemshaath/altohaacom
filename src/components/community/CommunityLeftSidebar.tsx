@@ -48,16 +48,16 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
     queryKey: ["community-stats"],
     queryFn: async () => {
       const [membersRes, groupsRes, recipesRes, postsRes] = await Promise.all([
-        supabase.from("profiles").select("id"),
-        supabase.from("groups").select("id"),
-        supabase.from("recipes").select("id").eq("is_published", true),
-        supabase.from("posts").select("id").is("reply_to_post_id", null),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("groups").select("id", { count: "exact", head: true }),
+        supabase.from("recipes").select("id", { count: "exact", head: true }).eq("is_published", true),
+        supabase.from("posts").select("id", { count: "exact", head: true }).is("reply_to_post_id", null),
       ]);
       return {
-        members: membersRes.data?.length || 0,
-        groups: groupsRes.data?.length || 0,
-        recipes: recipesRes.data?.length || 0,
-        posts: postsRes.data?.length || 0,
+        members: membersRes.count || 0,
+        groups: groupsRes.count || 0,
+        recipes: recipesRes.count || 0,
+        posts: postsRes.count || 0,
       };
     },
     staleTime: 1000 * 60 * 5,
