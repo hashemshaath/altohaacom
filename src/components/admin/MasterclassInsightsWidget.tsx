@@ -64,8 +64,8 @@ export function MasterclassInsightsWidget() {
             { icon: BookOpen, label: isAr ? "الدورات" : "Courses", value: `${data?.published}/${data?.totalCourses}`, color: "text-primary" },
             { icon: Users, label: isAr ? "المسجلين" : "Enrollments", value: data?.totalEnrollments, color: "text-chart-2" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/30">
-              <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/30 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+              <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-sm font-bold">{m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
             </div>

@@ -176,7 +176,7 @@ export default function MentorshipMatch() {
 
             {/* Mentor & Mentee Profiles */}
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={match.mentor_profile?.avatar_url || ""} />
                   <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
@@ -190,7 +190,7 @@ export default function MentorshipMatch() {
                 </div>
                 {isMentor && <Badge variant="outline" className="ms-auto text-[10px]">{isAr ? "أنت" : "You"}</Badge>}
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={match.mentee_profile?.avatar_url || ""} />
                   <AvatarFallback><User className="h-5 w-5" /></AvatarFallback>
