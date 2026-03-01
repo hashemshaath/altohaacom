@@ -2,6 +2,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Building2, CheckCircle, Clock, Eye, EyeOff, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface EntityStats {
   total: number;
@@ -44,7 +45,7 @@ export default function EntityStatsCards({ stats, activeFilter, onFilterChange }
         >
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <p className={`text-2xl font-bold ${c.color} transition-transform group-hover:scale-105`}>{c.value}</p>
+              <p className={`text-2xl font-bold ${c.color} transition-transform group-hover:scale-105`}><AnimatedCounter value={c.value} /></p>
               <p className="text-xs font-medium">{c.label}</p>
               <p className="text-[10px] text-muted-foreground leading-tight">{c.subtitle}</p>
             </div>

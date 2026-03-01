@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Landmark, Ticket, MapPin, Calendar, Users, TrendingUp } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { format, subDays, isFuture } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function ExhibitionInsightsWidget() {
   const { language } = useLanguage();
@@ -92,7 +93,7 @@ export function ExhibitionInsightsWidget() {
           {kpis.map((kpi, i) => (
             <div key={i} className="text-center p-2 rounded-xl bg-muted/40">
               <kpi.icon className={`h-4 w-4 mx-auto mb-1 ${kpi.color}`} />
-              <p className="text-lg font-bold">{kpi.value}</p>
+              <p className="text-lg font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
               <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
             </div>
           ))}

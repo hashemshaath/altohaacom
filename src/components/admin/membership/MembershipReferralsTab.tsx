@@ -143,7 +143,7 @@ export default function MembershipReferralsTab() {
               <TrendingUp className="h-4 w-4 text-primary" />
               <p className="text-xs text-muted-foreground">{isAr ? "معدل التحويل" : "Conversion Rate"}</p>
             </div>
-            <p className="text-2xl font-bold mt-1">{conversionRate}%</p>
+            <p className="text-2xl font-bold mt-1"><AnimatedCounter value={parseFloat(conversionRate) || 0} suffix="%" /></p>
           </CardContent>
         </Card>
         <Card>

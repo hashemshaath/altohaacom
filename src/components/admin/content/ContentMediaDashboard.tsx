@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Image, FileText, Search, Eye, Calendar, Globe, Plus, BarChart3 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function ContentMediaDashboard() {
   const { language } = useLanguage();
@@ -225,7 +226,7 @@ function MiniStat({ icon: Icon, label, value }: { icon: any; label: string; valu
       <CardContent className="p-3 flex items-center gap-3">
         <Icon className="h-4 w-4 text-muted-foreground" />
         <div>
-          <p className="text-lg font-bold">{value.toLocaleString()}</p>
+          <AnimatedCounter value={value} className="text-lg font-bold" />
           <p className="text-[10px] text-muted-foreground">{label}</p>
         </div>
       </CardContent>

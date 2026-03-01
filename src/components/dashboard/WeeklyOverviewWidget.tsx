@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, Eye, Heart, Trophy, BookOpen } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface StatItem {
   labelEn: string;
@@ -66,7 +67,7 @@ export function WeeklyOverviewWidget() {
           return (
             <div key={s.labelEn} className="flex flex-col items-center gap-1 rounded-xl bg-muted/40 p-3 text-center">
               <Icon className="h-4 w-4 text-primary" />
-              <span className="text-lg font-bold">{s.value}</span>
+              <AnimatedCounter value={s.value} className="text-lg font-bold" />
               <span className="text-[10px] text-muted-foreground">{isAr ? s.labelAr : s.labelEn}</span>
               <div className={`flex items-center gap-0.5 text-[9px] font-bold ${trendColor}`}>
                 <TrendIcon className="h-2.5 w-2.5" />

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Send, Search, Users, UserCheck, UserX, Clock, BarChart3, Mail, Phone, Loader2, Trash2 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface InvitationManagerProps {
   competitionId: string;
@@ -148,7 +149,7 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
         ].map((stat) => (
           <Card key={stat.label} className="p-2.5 text-center">
             <stat.icon className="mx-auto h-4 w-4 text-muted-foreground mb-1" />
-            <p className="text-lg font-bold">{stat.value}</p>
+            <AnimatedCounter value={stat.value} className="text-lg font-bold" />
             <p className="text-[10px] text-muted-foreground">{stat.label}</p>
           </Card>
         ))}

@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { ShieldAlert, ShieldCheck, Monitor, Ban, Activity, AlertTriangle } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function SecurityAuditWidget() {
   const { language } = useLanguage();
@@ -82,7 +83,7 @@ export function SecurityAuditWidget() {
               <div className={`rounded-full p-2 ${kpi.bg}`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
               <div>
                 <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
-                <p className="text-lg font-bold">{kpi.value}</p>
+                <p className="text-lg font-bold"><AnimatedCounter value={kpi.value} /></p>
               </div>
             </CardContent>
           </Card>
