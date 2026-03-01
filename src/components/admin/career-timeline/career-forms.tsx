@@ -44,7 +44,7 @@ export function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave,
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${iconClass}`}>
+          <div className={`flex h-7 w-7 items-center justify-center rounded-xl ${iconClass}`}>
             <FormIcon className="h-3.5 w-3.5" />
           </div>
           <h4 className="text-xs font-bold">{formTitle}</h4>
@@ -172,7 +172,7 @@ export function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave,
       {/* Date section */}
       <div className="space-y-2">
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
+          <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-muted/40">
             <Switch checked={!form.is_current && !!form.end_date || form.is_current} onCheckedChange={(v) => {
               if (!v) { onUpdate("end_date", ""); onUpdate("is_current", false); }
             }} className="scale-90" id="date-range-toggle" />
@@ -181,7 +181,7 @@ export function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave,
             </Label>
           </div>
           {(!!form.end_date || form.is_current) && (
-            <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-muted/40">
+            <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-muted/40">
               <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} className="scale-90" id="is-current-toggle" />
               <Label htmlFor="is-current-toggle" className="text-[11px] font-medium cursor-pointer">
                 {isAr ? "لا يزال مستمراً" : "Still ongoing"}
@@ -224,7 +224,7 @@ export function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onS
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Users className="h-3.5 w-3.5" />
           </div>
           <h4 className="text-xs font-bold">{editingId ? (isAr ? "تعديل العضوية" : "Edit Membership") : (isAr ? "إضافة عضوية" : "Add Membership")}</h4>
@@ -301,7 +301,7 @@ export function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, i
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/15 text-chart-4">
+           <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/15 text-chart-4">
             <Trophy className="h-3.5 w-3.5" />
           </div>
           <h4 className="text-xs font-bold">{isAr ? "إضافة مسابقة / فعالية" : "Add Competition / Event"}</h4>
@@ -310,7 +310,7 @@ export function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, i
       </div>
 
       {/* Mode tabs */}
-      <div className="flex gap-1 p-0.5 rounded-lg bg-muted/40">
+      <div className="flex gap-1 p-0.5 rounded-xl bg-muted/40">
         <button type="button" onClick={() => setMode("link")}
           className={`flex-1 text-[11px] font-medium py-1.5 px-3 rounded-md transition-all ${mode === "link" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           {isAr ? "🔗 ربط بمسابقة موجودة" : "🔗 Link Existing"}
@@ -325,11 +325,11 @@ export function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, i
         <>
           <Input placeholder={isAr ? "🔍 بحث في المسابقات..." : "🔍 Search competitions..."}
             value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
-          <div className="max-h-44 overflow-y-auto space-y-0.5 rounded-lg border border-border/30 bg-muted/10 p-1.5">
+          <div className="max-h-44 overflow-y-auto space-y-0.5 rounded-xl border border-border/30 bg-muted/10 p-1.5">
             {filtered.length === 0 && <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد نتائج — جرّب الإضافة اليدوية" : "No results — try adding manually"}</p>}
             {filtered.map(c => (
               <button key={c.id} onClick={() => onSelect(c.id)}
-                className={`w-full flex items-center gap-2 rounded-lg px-2.5 py-2 text-start transition-all text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
+                className={`w-full flex items-center gap-2 rounded-xl px-2.5 py-2 text-start transition-all text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
                 <Trophy className="h-3.5 w-3.5 shrink-0 text-chart-4" />
                 <p className="flex-1 min-w-0 truncate font-medium">{isAr ? (c.title_ar || c.title) : c.title}</p>
                 {c.competition_start && <span className="text-[10px] text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
@@ -359,7 +359,7 @@ export function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdat
       {editingId && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/15 text-chart-4">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/15 text-chart-4">
               <Trophy className="h-3.5 w-3.5" />
             </div>
             <h4 className="text-xs font-bold">{isAr ? "تعديل" : "Edit"}</h4>
@@ -435,7 +435,7 @@ export function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSav
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/15 text-chart-1">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-1/15 text-chart-1">
             <Medal className="h-3.5 w-3.5" />
           </div>
           <h4 className="text-xs font-bold">{editingId ? (isAr ? "تعديل الجائزة" : "Edit Award") : (isAr ? "إضافة جائزة" : "Add Award")}</h4>

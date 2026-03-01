@@ -132,7 +132,7 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border/40 bg-gradient-to-r from-chart-3/8 via-transparent to-transparent px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-3/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-3/10">
             <Map className="h-3.5 w-3.5 text-chart-3" />
           </div>
           <h3 className="text-sm font-semibold">{isAr ? "خريطة الأجنحة" : "Floor Map"}</h3>

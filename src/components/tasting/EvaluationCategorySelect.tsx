@@ -32,7 +32,7 @@ export function EvaluationCategorySelect({ value, onChange }: Props) {
         return (
           <div
             key={cat.value}
-            className={`flex items-start gap-3 rounded-lg border p-3 transition-colors cursor-pointer ${active ? "border-primary bg-primary/5" : "hover:bg-muted/50"}`}
+            className={`flex items-start gap-3 rounded-xl border p-3 transition-colors cursor-pointer ${active ? "border-primary bg-primary/5" : "hover:bg-muted/50"}`}
             onClick={() => onChange(cat.value)}
           >
             <RadioGroupItem value={cat.value} id={`cat-${cat.value}`} className="mt-0.5" />

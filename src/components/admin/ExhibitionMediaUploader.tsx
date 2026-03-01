@@ -141,7 +141,7 @@ export function ExhibitionMediaUploader({ exhibitionId, coverImageUrl, onCoverCh
       {coverImageUrl && (
         <div className="space-y-1">
           <Label className="text-xs">{t("Current Cover", "الغلاف الحالي")}</Label>
-          <img src={coverImageUrl} alt="Cover" className="h-24 w-40 rounded-lg object-cover border" />
+          <img src={coverImageUrl} alt="Cover" className="h-24 w-40 rounded-xl object-cover border" />
         </div>
       )}
 
@@ -151,7 +151,7 @@ export function ExhibitionMediaUploader({ exhibitionId, coverImageUrl, onCoverCh
       ) : media.length > 0 ? (
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2">
           {media.map(item => (
-            <div key={item.id} className="group relative rounded-lg border overflow-hidden bg-muted/20">
+            <div key={item.id} className="group relative rounded-xl border overflow-hidden bg-muted/20">
               <img src={item.file_url} alt={item.title || ""} className="h-20 w-full object-cover" />
               <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Button

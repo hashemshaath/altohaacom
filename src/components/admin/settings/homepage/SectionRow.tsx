@@ -130,7 +130,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
     <Collapsible ref={ref} open={isOpen} onOpenChange={onToggle}>
       <div
         className={cn(
-          "rounded-lg border transition-all",
+          "rounded-xl border transition-all",
           isOpen ? "border-primary/30 bg-card shadow-sm" : "border-border/50 hover:border-border",
           !merged.is_visible && "opacity-50",
           isSelected && "ring-2 ring-primary/30 border-primary/40",
@@ -306,7 +306,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
               {/* Layout Tab */}
               <TabsContent value="layout" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
                 {/* Visual grid preview */}
-                <div className="rounded-lg border border-border/50 bg-muted/20 p-4 flex flex-col items-center gap-3">
+                <div className="rounded-xl border border-border/50 bg-muted/20 p-4 flex flex-col items-center gap-3">
                   <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "معاينة الشبكة" : "Grid Preview"}</p>
                   <div
                     className="grid gap-1.5"
@@ -429,7 +429,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   {merged.cover_type !== "none" && (
                     <>
                       {merged.cover_image_url && (
-                        <div className="rounded-lg overflow-hidden relative" style={{ height: `${Math.min(merged.cover_height, 200)}px` }}>
+                        <div className="rounded-xl overflow-hidden relative" style={{ height: `${Math.min(merged.cover_height, 200)}px` }}>
                           <img src={merged.cover_image_url} alt="Cover preview" className="w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-black" style={{ opacity: merged.cover_overlay_opacity / 100 }} />
                           <div className="absolute inset-0 flex items-center justify-center">
@@ -471,7 +471,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                         key={opt.value}
                         onClick={() => set("animation", opt.value as HomepageSection["animation"])}
                         className={cn(
-                          "rounded-lg border px-2 py-2 text-center transition-all",
+                          "rounded-xl border px-2 py-2 text-center transition-all",
                           merged.animation === opt.value
                             ? "border-primary bg-primary/10 shadow-sm"
                             : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
@@ -588,7 +588,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
 
                 <Separator />
 
-                <div className="rounded-lg bg-muted/50 p-3 space-y-1.5">
+                <div className="rounded-xl bg-muted/50 p-3 space-y-1.5">
                   <p className="text-[10px] font-semibold text-muted-foreground">{isAr ? "معلومات القسم" : "Section Info"}</p>
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-muted-foreground">
                     <span>ID:</span><span className="font-mono truncate">{section.id}</span>
