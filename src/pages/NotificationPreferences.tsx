@@ -231,20 +231,20 @@ export default function NotificationPreferences() {
       padding="none"
     >
       {/* Hero */}
-      <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 via-primary/2 to-background">
-        <div className="container py-8 md:py-10">
+      <section className="border-b border-border/20 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background">
+        <div className="container py-8 md:py-12">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+              <div className="inline-flex items-center gap-2 rounded-2xl bg-primary/8 px-3.5 py-1.5 ring-1 ring-primary/15">
                 <Settings2 className="h-3.5 w-3.5 text-primary" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                   {t("Settings", "إعدادات")}
                 </span>
               </div>
-              <h1 className="text-2xl font-bold md:text-3xl">
+              <h1 className="text-2xl font-black md:text-3xl tracking-tight">
                 {t("Notification Preferences", "تفضيلات الإشعارات")}
               </h1>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-lg">
+              <p className="text-muted-foreground/70 text-sm leading-relaxed max-w-lg">
                 {t(
                   "Choose the channels and categories that matter to you — stay informed without the noise.",
                   "اختر القنوات والفئات التي تناسبك لتلقي الإشعارات المهمة فقط."
@@ -254,22 +254,22 @@ export default function NotificationPreferences() {
 
             {/* Stats Cards */}
             <div className="flex flex-wrap gap-3 shrink-0">
-              <div className="flex items-center gap-2.5 rounded-xl border bg-card px-4 py-3 shadow-sm">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex items-center gap-3 rounded-2xl border border-border/20 bg-card/60 backdrop-blur-sm px-4 py-3.5 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                   <BellRing className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold leading-none">{loading ? "—" : enabledCount}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{t("Active channels", "قنوات مفعّلة")}</p>
+                  <p className="text-xl font-black leading-none tabular-nums">{loading ? "—" : enabledCount}</p>
+                  <p className="text-[9px] text-muted-foreground/60 mt-0.5 font-bold uppercase tracking-widest">{t("Active channels", "قنوات مفعّلة")}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5 rounded-xl border bg-card px-4 py-3 shadow-sm">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-2/10">
+              <div className="flex items-center gap-3 rounded-2xl border border-border/20 bg-card/60 backdrop-blur-sm px-4 py-3.5 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-2/10">
                   <ToggleLeft className="h-4 w-4 text-chart-2" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold leading-none">{activeCategories}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{t("Active categories", "فئات نشطة")}</p>
+                  <p className="text-xl font-black leading-none tabular-nums">{activeCategories}</p>
+                  <p className="text-[9px] text-muted-foreground/60 mt-0.5 font-bold uppercase tracking-widest">{t("Active categories", "فئات نشطة")}</p>
                 </div>
               </div>
             </div>
@@ -277,14 +277,14 @@ export default function NotificationPreferences() {
 
           {/* Setup Progress */}
           {!loading && (
-            <div className="mt-6 rounded-xl border bg-card/50 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-medium">{t("Setup completion", "اكتمال الإعداد")}</p>
-                <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-[10px]">
+            <div className="mt-6 rounded-2xl border border-border/20 bg-card/40 backdrop-blur-sm p-4">
+              <div className="flex items-center justify-between mb-2.5">
+                <p className="text-xs font-bold">{t("Setup completion", "اكتمال الإعداد")}</p>
+                <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-[10px] rounded-lg">
                   {completionScore}%
                 </Badge>
               </div>
-              <Progress value={completionScore} className="h-2" />
+              <Progress value={completionScore} className="h-1.5" />
             </div>
           )}
         </div>
@@ -293,20 +293,20 @@ export default function NotificationPreferences() {
       <main className="container flex-1 py-6 md:py-8">
         <div className="mx-auto max-w-3xl">
           <Tabs defaultValue="channels" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 h-11">
-              <TabsTrigger value="channels" className="text-xs gap-1.5">
+            <TabsList className="grid w-full grid-cols-4 h-12 rounded-2xl bg-muted/30 p-1">
+              <TabsTrigger value="channels" className="text-xs gap-1.5 rounded-xl data-[state=active]:shadow-sm">
                 <Bell className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t("Channels", "القنوات")}</span>
               </TabsTrigger>
-              <TabsTrigger value="categories" className="text-xs gap-1.5">
+              <TabsTrigger value="categories" className="text-xs gap-1.5 rounded-xl data-[state=active]:shadow-sm">
                 <Palette className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t("Categories", "الفئات")}</span>
               </TabsTrigger>
-              <TabsTrigger value="schedule" className="text-xs gap-1.5">
+              <TabsTrigger value="schedule" className="text-xs gap-1.5 rounded-xl data-[state=active]:shadow-sm">
                 <Clock className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t("Schedule", "الجدولة")}</span>
               </TabsTrigger>
-              <TabsTrigger value="general" className="text-xs gap-1.5">
+              <TabsTrigger value="general" className="text-xs gap-1.5 rounded-xl data-[state=active]:shadow-sm">
                 <Settings2 className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t("General", "عام")}</span>
               </TabsTrigger>
@@ -316,17 +316,17 @@ export default function NotificationPreferences() {
             <TabsContent value="channels" className="space-y-4">
               {/* DND Banner */}
               {dndMode && (
-                <div className="flex items-center gap-3 rounded-xl border border-chart-4/30 bg-chart-4/5 p-4">
+                <div className="flex items-center gap-3 rounded-2xl border border-chart-4/20 bg-chart-4/[0.03] p-4">
                   <BellOff className="h-5 w-5 text-chart-4 shrink-0" />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-chart-4">{t("Do Not Disturb is ON", "وضع عدم الإزعاج مفعّل")}</p>
-                    <p className="text-xs text-muted-foreground">{t("You won't receive any notifications until you turn this off", "لن تتلقى أي إشعارات حتى إيقاف هذا الوضع")}</p>
+                    <p className="text-sm font-bold text-chart-4">{t("Do Not Disturb is ON", "وضع عدم الإزعاج مفعّل")}</p>
+                    <p className="text-xs text-muted-foreground/60">{t("You won't receive any notifications until you turn this off", "لن تتلقى أي إشعارات حتى إيقاف هذا الوضع")}</p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => toggleDnd(false)}>{t("Turn Off", "إيقاف")}</Button>
+                  <Button variant="outline" size="sm" className="rounded-xl" onClick={() => toggleDnd(false)}>{t("Turn Off", "إيقاف")}</Button>
                 </div>
               )}
 
-              <Card>
+              <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -391,7 +391,7 @@ export default function NotificationPreferences() {
 
             {/* ─── CATEGORIES TAB ─── */}
             <TabsContent value="categories" className="space-y-4">
-              <Card>
+              <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -464,7 +464,7 @@ export default function NotificationPreferences() {
               </Card>
 
               {/* Security Note */}
-              <div className="flex items-start gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-4">
+              <div className="flex items-start gap-3 rounded-2xl border border-chart-4/15 bg-chart-4/[0.03] p-4">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-chart-4" />
                 <div>
                   <p className="text-sm font-medium">{t("Security Notice", "ملاحظة أمنية")}</p>
@@ -481,7 +481,7 @@ export default function NotificationPreferences() {
             {/* ─── SCHEDULE TAB ─── */}
             <TabsContent value="schedule" className="space-y-4">
               {/* Quiet Hours */}
-              <Card>
+              <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Moon className="h-4 w-4 text-primary" />
@@ -520,7 +520,7 @@ export default function NotificationPreferences() {
               </Card>
 
               {/* Digest Frequency */}
-              <Card>
+              <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Zap className="h-4 w-4 text-primary" />
@@ -537,10 +537,10 @@ export default function NotificationPreferences() {
                         key={opt.value}
                         onClick={() => handleDigestChange(opt.value)}
                         disabled={saving === "digest"}
-                        className={`rounded-xl border p-3 text-start transition-all duration-200 ${
+                        className={`rounded-2xl border p-4 text-start transition-all duration-200 ${
                           digestFrequency === opt.value
-                            ? "border-primary bg-primary/5 ring-1 ring-primary/20 shadow-sm"
-                            : "hover:border-border hover:bg-muted/30"
+                            ? "border-primary/30 bg-primary/5 ring-1 ring-primary/15 shadow-sm"
+                            : "border-border/20 hover:border-border/40 hover:bg-muted/20"
                         }`}
                       >
                         <p className={`text-sm font-medium ${digestFrequency === opt.value ? "text-primary" : ""}`}>
@@ -556,7 +556,7 @@ export default function NotificationPreferences() {
 
             {/* ─── GENERAL TAB ─── */}
             <TabsContent value="general" className="space-y-4">
-              <Card>
+              <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Settings2 className="h-4 w-4 text-primary" />
@@ -597,7 +597,7 @@ export default function NotificationPreferences() {
               </Card>
 
               {/* Info Note */}
-              <div className="flex items-start gap-3 rounded-xl border bg-muted/30 p-4">
+              <div className="flex items-start gap-3 rounded-2xl border border-border/20 bg-muted/15 p-4">
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">{t("Important Note", "ملاحظة مهمة")}</p>

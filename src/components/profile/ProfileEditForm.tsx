@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, CheckCircle2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { PersonalInfoSection } from "./edit/PersonalInfoSection";
 import { ProfessionalInfoSection } from "./edit/ProfessionalInfoSection";
@@ -26,6 +26,7 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
   const { isFan } = useAccountType();
   const isAr = language === "ar";
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const [form, setForm] = useState({
     full_name: profile?.full_name || "",
@@ -60,7 +61,10 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
     preferred_language: profile?.preferred_language || "ar",
   });
 
-  const update = (k: string, v: any) => setForm((p) => ({ ...p, [k]: v }));
+  const update = (k: string, v: any) => {
+    setForm((p) => ({ ...p, [k]: v }));
+    setSaved(false);
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -102,13 +106,15 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
     if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
     } else {
+      setSaved(true);
       toast({ title: isAr ? "تم حفظ الملف الشخصي" : "Profile saved" });
       onSaved();
+      setTimeout(() => setSaved(false), 3000);
     }
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 max-w-3xl">
       <AccountTypeCard />
       <PersonalInfoSection form={form} update={update} isAr={isAr} />
       {!isFan && <ProfessionalInfoSection form={form} update={update} isAr={isAr} />}
@@ -120,10 +126,16 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
           onClick={handleSave} 
           disabled={saving} 
           size="lg"
-          className="rounded-xl shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95 min-w-[180px]"
+          className="rounded-2xl shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-95 min-w-[200px] h-12 text-sm font-bold"
         >
-          {saving ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Save className="me-2 h-4 w-4" />}
-          {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ التغييرات" : "Save Changes")}
+          {saving ? (
+            <Loader2 className="me-2 h-4 w-4 animate-spin" />
+          ) : saved ? (
+            <CheckCircle2 className="me-2 h-4 w-4" />
+          ) : (
+            <Save className="me-2 h-4 w-4" />
+          )}
+          {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : saved ? (isAr ? "تم الحفظ ✓" : "Saved ✓") : (isAr ? "حفظ التغييرات" : "Save Changes")}
         </Button>
       </div>
     </div>

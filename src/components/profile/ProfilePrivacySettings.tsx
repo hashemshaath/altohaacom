@@ -7,9 +7,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Shield, Eye, EyeOff, Save, Lock, Globe, Users, AlertTriangle, CheckCircle2, Phone, Mail, Cake, Briefcase, MapPin, Share2, Award, Trophy, Star, Activity, FileText } from "lucide-react";
+import { Shield, Eye, EyeOff, Save, Lock, Globe, Users, AlertTriangle, CheckCircle2, Phone, Mail, Cake, Briefcase, MapPin, Share2, Award, Trophy, Star, Activity, FileText, Loader2 } from "lucide-react";
 import { UserDataExport } from "./UserDataExport";
 import { AccountDeletion } from "./AccountDeletion";
 import { cn } from "@/lib/utils";
@@ -108,77 +107,79 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
     <div className="space-y-6 max-w-2xl">
       {/* Privacy Summary */}
       <div className="grid grid-cols-3 gap-3">
-        <Card className="border-border/40">
-          <CardContent className="flex items-center gap-2 p-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
+        <Card className="border-border/20 rounded-2xl bg-card/60 backdrop-blur-sm">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-2/10">
               <Eye className="h-4 w-4 text-chart-2" />
             </div>
             <div>
-              <p className="text-lg font-bold">{visibleCount}</p>
-              <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{isAr ? "ظاهر" : "Visible"}</p>
+              <p className="text-xl font-black tabular-nums">{visibleCount}</p>
+              <p className="text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "ظاهر" : "Visible"}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-border/40">
-          <CardContent className="flex items-center gap-2 p-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
+        <Card className="border-border/20 rounded-2xl bg-card/60 backdrop-blur-sm">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
               <EyeOff className="h-4 w-4 text-chart-4" />
             </div>
             <div>
-              <p className="text-lg font-bold">{hiddenCount}</p>
-              <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{isAr ? "مخفي" : "Hidden"}</p>
+              <p className="text-xl font-black tabular-nums">{hiddenCount}</p>
+              <p className="text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "مخفي" : "Hidden"}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-border/40">
-          <CardContent className="flex items-center gap-2 p-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+        <Card className="border-border/20 rounded-2xl bg-card/60 backdrop-blur-sm">
+          <CardContent className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <Shield className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <p className="text-lg font-bold capitalize">{profileVisibility === "public" ? (isAr ? "عام" : "Public") : profileVisibility === "followers_only" ? (isAr ? "متابعون" : "Followers") : (isAr ? "خاص" : "Private")}</p>
-              <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{isAr ? "الملف" : "Profile"}</p>
+              <p className="text-sm font-black capitalize">{profileVisibility === "public" ? (isAr ? "عام" : "Public") : profileVisibility === "followers_only" ? (isAr ? "متابعون" : "Followers") : (isAr ? "خاص" : "Private")}</p>
+              <p className="text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "الملف" : "Profile"}</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Profile Visibility */}
-      <Card className="border-border/40">
+      <Card className="border-border/20 rounded-2xl bg-card/60 backdrop-blur-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Shield className="h-4 w-4 text-primary" />
+          <CardTitle className="flex items-center gap-2.5 text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+              <Shield className="h-4 w-4 text-primary" />
+            </div>
             {isAr ? "ظهور الملف الشخصي" : "Profile Visibility"}
           </CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs ms-10">
             {isAr ? "تحكم بمن يمكنه مشاهدة ملفك الشخصي" : "Control who can see your profile"}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2.5">
             {visibilityOptions.map((opt) => (
               <button
                 key={opt.value}
                 onClick={() => { setProfileVisibility(opt.value); setHasChanges(true); }}
                 className={cn(
-                  "flex flex-col items-center gap-2 rounded-xl border p-3 transition-all",
+                  "flex flex-col items-center gap-2.5 rounded-2xl border p-4 transition-all duration-200",
                   profileVisibility === opt.value
-                    ? "border-primary bg-primary/5 shadow-sm"
-                    : "border-border/40 hover:border-border/80 hover:bg-muted/30"
+                    ? "border-primary/30 bg-primary/5 shadow-sm shadow-primary/10"
+                    : "border-border/20 hover:border-border/40 hover:bg-muted/20"
                 )}
               >
                 <div className={cn(
-                  "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
-                  profileVisibility === opt.value ? "bg-primary/15" : "bg-muted/50"
+                  "flex h-11 w-11 items-center justify-center rounded-xl transition-colors",
+                  profileVisibility === opt.value ? "bg-primary/15" : "bg-muted/30"
                 )}>
-                  <opt.icon className={cn("h-4 w-4", profileVisibility === opt.value ? "text-primary" : "text-muted-foreground")} />
+                  <opt.icon className={cn("h-5 w-5", profileVisibility === opt.value ? "text-primary" : "text-muted-foreground")} />
                 </div>
                 <div className="text-center">
-                  <p className="text-xs font-semibold">{opt.label}</p>
-                  <p className="text-[9px] text-muted-foreground">{opt.desc}</p>
+                  <p className="text-xs font-bold">{opt.label}</p>
+                  <p className="text-[9px] text-muted-foreground/60">{opt.desc}</p>
                 </div>
                 {profileVisibility === opt.value && (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
                 )}
               </button>
             ))}
@@ -187,36 +188,38 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
       </Card>
 
       {/* Sensitive Information */}
-      <Card className="border-chart-4/20">
+      <Card className="border-chart-4/15 rounded-2xl bg-card/60 backdrop-blur-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <AlertTriangle className="h-4 w-4 text-chart-4" />
+          <CardTitle className="flex items-center gap-2.5 text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10">
+              <AlertTriangle className="h-4 w-4 text-chart-4" />
+            </div>
             {isAr ? "معلومات حساسة" : "Sensitive Information"}
           </CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs ms-10">
             {isAr ? "هذه المعلومات مخفية افتراضياً لحمايتك" : "These are hidden by default for your protection"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-1.5">
+        <CardContent className="space-y-2">
           {sensitiveItems.map((s) => (
             <div key={s.key} className={cn(
-              "flex items-center justify-between rounded-xl border p-3 transition-colors",
-              visibility[s.key] ? "border-chart-4/30 bg-chart-4/5" : "border-border/30"
+              "flex items-center justify-between rounded-xl border p-3.5 transition-all duration-200",
+              visibility[s.key] ? "border-chart-4/20 bg-chart-4/[0.03]" : "border-border/15"
             )}>
               <div className="flex items-center gap-3">
-                <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg", visibility[s.key] ? "bg-chart-4/10" : "bg-muted/50")}>
-                  <s.icon className={cn("h-3.5 w-3.5", visibility[s.key] ? "text-chart-4" : "text-muted-foreground")} />
+                <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-colors", visibility[s.key] ? "bg-chart-4/10" : "bg-muted/30")}>
+                  <s.icon className={cn("h-4 w-4", visibility[s.key] ? "text-chart-4" : "text-muted-foreground/60")} />
                 </div>
                 <div>
-                  <Label className="text-xs font-semibold cursor-pointer">{isAr ? s.labelAr : s.label}</Label>
+                  <Label className="text-xs font-bold cursor-pointer">{isAr ? s.labelAr : s.label}</Label>
                   {(isAr ? s.descriptionAr : s.description) && (
-                    <p className="text-[10px] text-muted-foreground">{isAr ? s.descriptionAr : s.description}</p>
+                    <p className="text-[10px] text-muted-foreground/60">{isAr ? s.descriptionAr : s.description}</p>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 {visibility[s.key] && (
-                  <Badge variant="outline" className="text-[8px] px-1.5 py-0 text-chart-4 border-chart-4/30">
+                  <Badge variant="outline" className="text-[8px] px-2 py-0.5 text-chart-4 border-chart-4/20 rounded-lg">
                     {isAr ? "ظاهر" : "Visible"}
                   </Badge>
                 )}
@@ -228,31 +231,33 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
       </Card>
 
       {/* Public Sections */}
-      <Card className="border-border/40">
+      <Card className="border-border/20 rounded-2xl bg-card/60 backdrop-blur-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-sm">
-            <Eye className="h-4 w-4 text-chart-2" />
+          <CardTitle className="flex items-center gap-2.5 text-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-2/10">
+              <Eye className="h-4 w-4 text-chart-2" />
+            </div>
             {isAr ? "أقسام الملف العام" : "Public Profile Sections"}
           </CardTitle>
-          <CardDescription className="text-xs">
+          <CardDescription className="text-xs ms-10">
             {isAr ? "تحكم بما يظهر في ملفك العام" : "Control what appears on your public profile"}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-1.5">
+        <CardContent className="space-y-2">
           {publicItems.map((s) => (
             <div key={s.key} className={cn(
-              "flex items-center justify-between rounded-xl border p-3 transition-colors hover:bg-muted/20",
-              visibility[s.key] ? "border-border/30" : "border-border/20 opacity-60"
+              "flex items-center justify-between rounded-xl border p-3.5 transition-all duration-200 hover:bg-muted/10",
+              visibility[s.key] ? "border-border/15" : "border-border/10 opacity-50"
             )}>
               <div className="flex items-center gap-3">
-                <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg", visibility[s.key] ? "bg-primary/10" : "bg-muted/50")}>
+                <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-colors", visibility[s.key] ? "bg-primary/10" : "bg-muted/30")}>
                   {visibility[s.key] ? (
-                    <s.icon className="h-3.5 w-3.5 text-primary" />
+                    <s.icon className="h-4 w-4 text-primary" />
                   ) : (
-                    <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+                    <EyeOff className="h-4 w-4 text-muted-foreground/40" />
                   )}
                 </div>
-                <Label className="text-xs font-semibold cursor-pointer">{isAr ? s.labelAr : s.label}</Label>
+                <Label className="text-xs font-bold cursor-pointer">{isAr ? s.labelAr : s.label}</Label>
               </div>
               <Switch checked={visibility[s.key]} onCheckedChange={() => toggle(s.key)} />
             </div>
@@ -262,11 +267,11 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
 
       {/* Save Button */}
       <div className={cn(
-        "sticky bottom-4 z-10 flex justify-end transition-all",
+        "sticky bottom-4 z-10 flex justify-end transition-all duration-300",
         hasChanges ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
       )}>
-        <Button onClick={handleSave} disabled={saving} className="gap-2 shadow-lg rounded-xl px-6">
-          <Save className="h-4 w-4" />
+        <Button onClick={handleSave} disabled={saving} className="gap-2 shadow-lg shadow-primary/15 rounded-2xl px-8 h-12 font-bold">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : (isAr ? "حفظ التغييرات" : "Save Changes")}
         </Button>
       </div>
@@ -275,8 +280,10 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
 
       {/* Data Management */}
       <div className="space-y-4">
-        <h3 className="text-sm font-bold flex items-center gap-2">
-          <Lock className="h-4 w-4 text-muted-foreground" />
+        <h3 className="text-sm font-bold flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/30">
+            <Lock className="h-4 w-4 text-muted-foreground" />
+          </div>
           {isAr ? "إدارة البيانات" : "Data Management"}
         </h3>
         <UserDataExport />
