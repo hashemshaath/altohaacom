@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, MessageSquare, Heart, BookmarkPlus, TrendingUp, Flame, UserPlus, Eye } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CommunityEngagementWidget() {
   const { language } = useLanguage();
@@ -76,7 +77,7 @@ export function CommunityEngagementWidget() {
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
-              <p className="text-base font-bold">{m.value.toLocaleString()}</p>
+              <AnimatedCounter value={m.value} className="text-base font-bold" />
               {m.sub && <p className="text-[8px] text-muted-foreground">{m.sub}</p>}
             </div>
           ))}

@@ -91,7 +91,7 @@ export function LoyaltyLiveStatsWidget() {
   if (!data) return null;
 
   const stats = [
-    { label: isAr ? "النقاط المتداولة" : "Points in Circulation", value: data.totalPoints.toLocaleString(), icon: Crown, color: "text-chart-4" },
+    { label: isAr ? "النقاط المتداولة" : "Points in Circulation", value: data.totalPoints, icon: Crown, color: "text-chart-4" },
     { label: isAr ? "مستخدمون نشطون" : "Users with Points", value: data.usersWithPoints, icon: Users, color: "text-primary" },
     { label: isAr ? "التحديات النشطة" : "Active Challenges", value: `${data.activeChallenges}/${data.totalChallenges}`, icon: Target, color: "text-chart-3" },
     { label: isAr ? "الحملات النشطة" : "Active Campaigns", value: data.activeCampaigns, icon: Gift, color: "text-chart-4" },

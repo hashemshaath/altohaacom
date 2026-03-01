@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Crown, TrendingUp, Users, Gift, Zap, Star } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function LoyaltyOverviewWidget() {
   const { language } = useLanguage();
@@ -108,12 +109,12 @@ export function LoyaltyOverviewWidget() {
         <div className="grid grid-cols-2 gap-2">
           <div className="text-center p-2 rounded-xl bg-chart-2/5 border border-chart-2/10">
             <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-chart-2" />
-            <p className="text-sm font-bold text-chart-2">{data?.totalAwarded?.toLocaleString()}</p>
+            <AnimatedCounter value={data?.totalAwarded || 0} className="text-sm font-bold text-chart-2" />
             <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط ممنوحة" : "Points Awarded"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-chart-4/5 border border-chart-4/10">
             <Gift className="h-3 w-3 mx-auto mb-0.5 text-chart-4" />
-            <p className="text-sm font-bold text-chart-4">{data?.totalRedeemed?.toLocaleString()}</p>
+            <AnimatedCounter value={data?.totalRedeemed || 0} className="text-sm font-bold text-chart-4" />
             <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط مستبدلة" : "Points Redeemed"}</p>
           </div>
         </div>

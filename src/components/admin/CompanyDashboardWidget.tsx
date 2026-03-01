@@ -13,6 +13,7 @@ import {
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CompanyDashboardWidget() {
   const { language } = useLanguage();
@@ -92,11 +93,11 @@ export function CompanyDashboardWidget() {
             { icon: Building2, label: isAr ? "الشركات" : "Companies", value: data.totalCompanies, color: "text-chart-3" },
             { icon: Users, label: isAr ? "نشطة" : "Active", value: data.activeCompanies, color: "text-chart-2" },
             { icon: Package, label: isAr ? "طلبات الأسبوع" : "Weekly Orders", value: data.ordersThisWeek, color: "text-chart-4", delta: orderDelta },
-            { icon: CreditCard, label: isAr ? "إيرادات الأسبوع" : "Weekly Revenue", value: `${data.thisWeekRevenue.toLocaleString()} SAR`, color: "text-primary" },
+            { icon: CreditCard, label: isAr ? "إيرادات الأسبوع" : "Weekly Revenue", value: data.thisWeekRevenue, color: "text-primary", isCurrency: true },
           ].map((kpi, i) => (
             <div key={i} className="text-center p-2 rounded-xl bg-muted/40">
               <kpi.icon className={cn("h-4 w-4 mx-auto mb-1", kpi.color)} />
-              <p className="text-sm font-bold">{kpi.value}</p>
+              <p className="text-sm font-bold">{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} />{(kpi as any).isCurrency ? " SAR" : ""}</> : kpi.value}</p>
               <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
               {kpi.delta !== undefined && (
                 <Badge variant="outline" className={cn("text-[8px] mt-0.5", kpi.delta > 0 ? "text-chart-2" : kpi.delta < 0 ? "text-destructive" : "text-muted-foreground")}>
