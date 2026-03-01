@@ -102,7 +102,7 @@ export function ExhibitionLiveStatsWidget() {
       <CardContent>
         {/* Next Event Banner */}
         {data.nextEvent && (
-          <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 mb-4 flex items-center justify-between">
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-3 mb-4 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "الفعالية القادمة" : "Next Event"}</p>
               <p className="font-semibold text-sm">{data.nextEvent.title}</p>
@@ -116,7 +116,7 @@ export function ExhibitionLiveStatsWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 text-center">
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
@@ -166,17 +166,17 @@ export function ExhibitionLiveStatsWidget() {
 
         {/* Bottom Row */}
         <div className="grid grid-cols-3 gap-3 mt-4">
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Building className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold">{data.boothUtilization}%</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "إشغال الأجنحة" : "Booth Utilization"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Users className="h-3 w-3 mx-auto mb-1 text-chart-3" />
             <div className="text-sm font-bold">{data.totalFollowers}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "المتابعون" : "Followers"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-4" />
             <div className="text-sm font-bold">{data.totalSponsors}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "الرعاة" : "Sponsors"}</div>

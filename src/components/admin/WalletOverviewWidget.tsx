@@ -75,7 +75,7 @@ export function WalletOverviewWidget() {
             { icon: TrendingUp, label: isAr ? "إيداعات 7 أيام" : "Credits 7d", value: `${data?.totalCredits?.toFixed(0)} SAR`, color: "text-chart-2" },
             { icon: TrendingDown, label: isAr ? "سحوبات 7 أيام" : "Debits 7d", value: `${data?.totalDebits?.toFixed(0)} SAR`, color: "text-destructive" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/30">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-xs font-bold">{m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>

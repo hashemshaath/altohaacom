@@ -82,7 +82,7 @@ export function ArticlePreviewPanel({ article, onClose }: ArticlePreviewPanelPro
             <img
               src={article.featured_image_url}
               alt={title}
-              className="w-full h-48 object-cover rounded-lg mb-4"
+              className="w-full h-48 object-cover rounded-xl mb-4"
             />
           )}
 
