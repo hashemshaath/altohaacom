@@ -422,9 +422,9 @@ export default function NotificationsAdmin() {
           { label: isAr ? "تم الإرسال" : "Sent", value: queueStats?.sent || 0, icon: Check, border: "border-s-chart-2", bg: "bg-chart-2/10", iconColor: "text-chart-2" },
           { label: isAr ? "فشل" : "Failed", value: queueStats?.failed || 0, icon: AlertCircle, border: "border-s-destructive", bg: "bg-destructive/10", iconColor: "text-destructive" },
         ].map((s) => (
-          <Card key={s.label} className={`rounded-2xl border-s-[3px] ${s.border} border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
+          <Card key={s.label} className={`rounded-2xl border-s-[3px] ${s.border} border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5`}>
             <CardContent className="flex items-center gap-3 p-4">
-              <div className={`rounded-xl p-2.5 ${s.bg}`}><s.icon className={`h-5 w-5 ${s.iconColor}`} /></div>
+              <div className={`rounded-xl p-2.5 transition-transform duration-300 group-hover:scale-110 ${s.bg}`}><s.icon className={`h-5 w-5 ${s.iconColor}`} /></div>
               <div>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
                 <p className="text-2xl font-bold">{s.value}</p>
