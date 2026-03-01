@@ -281,7 +281,7 @@ export function CriteriaManager() {
                     <AccordionItem key={cat.id} value={cat.id} className="border rounded-xl px-4">
                       <AccordionTrigger className="hover:no-underline py-3">
                         <div className="flex items-center gap-3 flex-1">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                             <Scale className="h-4 w-4 text-primary" />
                           </div>
                           <div className="text-start">
@@ -301,7 +301,7 @@ export function CriteriaManager() {
                             <div key={criterion.id}>
                               {editCriterion?.id === criterion.id ? (
                                 /* Inline Edit Form */
-                                <div className="rounded-lg border-2 border-primary/20 p-4 space-y-3 bg-muted/20">
+                                <div className="rounded-xl border-2 border-primary/20 p-4 space-y-3 bg-muted/20">
                                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     <div>
                                       <Label className="text-xs">{isAr ? "الاسم (EN)" : "Name (EN)"}</Label>
@@ -334,7 +334,7 @@ export function CriteriaManager() {
                                 </div>
                               ) : (
                                 /* Display Row */
-                                <div className="flex items-center gap-3 rounded-lg border border-border/50 p-3 hover:bg-muted/30 transition-colors">
+                                <div className="flex items-center gap-3 rounded-xl border border-border/50 p-3 hover:bg-muted/30 transition-colors">
                                   <GripVertical className="h-4 w-4 text-muted-foreground/40 shrink-0 print:hidden" />
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">

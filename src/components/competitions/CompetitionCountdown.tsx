@@ -27,7 +27,7 @@ export function CompetitionCountdown({ targetDate, label, labelAr }: Competition
     <div className="overflow-hidden rounded-2xl border border-border/40 bg-card shadow-sm">
       <div className="border-b border-border/30 bg-gradient-to-r from-primary/[0.06] via-primary/[0.02] to-transparent px-5 py-3.5">
         <h3 className="flex items-center gap-2.5 font-bold text-sm">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
             <Timer className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? labelAr : label}

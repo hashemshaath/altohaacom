@@ -190,11 +190,11 @@ export function EventsCalendarWidget() {
                   <Link
                     key={event.id}
                     to={event.link}
-                    className="flex items-start gap-2.5 rounded-lg border p-2.5 transition-all hover:bg-muted/50 hover:shadow-sm group"
+                    className="flex items-start gap-2.5 rounded-xl border p-2.5 transition-all hover:bg-muted/50 hover:shadow-sm group"
                   >
                     <div
                       className={cn(
-                        "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
+                        "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl",
                         event.type === "registration_deadline"
                           ? "bg-chart-4/10"
                           : "bg-primary/10"
@@ -237,7 +237,7 @@ export function EventsCalendarWidget() {
 
         {/* Upcoming deadlines summary */}
         {events.filter((e) => e.urgent).length > 0 && (
-          <div className="mt-3 rounded-lg border border-chart-4/20 bg-chart-4/5 p-2.5">
+          <div className="mt-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-2.5">
             <p className="text-[10px] font-semibold text-chart-4 uppercase tracking-wider mb-1.5">
               {isAr ? "مواعيد نهائية قريبة" : "Upcoming Deadlines"}
             </p>

@@ -297,7 +297,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
               <Card key={registration.id}>
                 <CardContent className="flex items-center gap-4 p-4">
                   {/* Dish Image */}
-                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
                     {registration.dish_image_url ? (
                       <img
                         src={registration.dish_image_url}
@@ -423,7 +423,7 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
                 <img
                   src={selectedRegistration.dish_image_url}
                   alt={selectedRegistration.dish_name || "Dish"}
-                  className="h-48 w-full rounded-lg object-cover"
+                  className="h-48 w-full rounded-xl object-cover"
                 />
               )}
 

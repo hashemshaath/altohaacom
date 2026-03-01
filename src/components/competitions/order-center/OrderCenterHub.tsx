@@ -137,7 +137,7 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
                         key={tab.id}
                         onClick={() => handleTabChange(tab.id)}
                         className={`
-                          flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all active:scale-95
+                          flex items-center gap-1 rounded-xl px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all active:scale-95
                           ${isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"

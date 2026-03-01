@@ -77,9 +77,9 @@ export function MasterclassProgressWidget() {
                 <Link
                   key={enrollment.id}
                   to={`/masterclasses/${mc.id}`}
-                  className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/20"
+                  className="flex items-center gap-3 rounded-xl border p-3 transition-colors hover:bg-accent/20"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted">
                     {mc.cover_image_url ? (
                       <img src={mc.cover_image_url} alt="" className="h-full w-full object-cover" />
                     ) : (

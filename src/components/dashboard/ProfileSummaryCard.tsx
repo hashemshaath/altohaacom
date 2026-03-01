@@ -109,7 +109,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
 
         {/* Points */}
         {(profile.loyalty_points || 0) > 0 && (
-          <div className="flex items-center gap-2 bg-chart-4/10 rounded-lg px-3 py-2 mb-3">
+          <div className="flex items-center gap-2 bg-chart-4/10 rounded-xl px-3 py-2 mb-3">
             <Star className="h-3.5 w-3.5 text-chart-4" />
             <span className="text-xs font-bold">{profile.loyalty_points}</span>
             <span className="text-[10px] text-muted-foreground">{isAr ? "نقاط" : "Points"}</span>

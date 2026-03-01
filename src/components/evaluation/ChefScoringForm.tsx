@@ -409,7 +409,7 @@ export function ChefScoringForm({
             />
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30">
             <Switch checked={allowPublish} onCheckedChange={setAllowPublish} />
             <div>
               <p className="text-sm font-bold">{isAr ? "السماح بالنشر" : "Allow Publication"}</p>
@@ -518,7 +518,7 @@ function CriterionScoreInput({
           <button
             key={v}
             onClick={() => onScoreChange(v)}
-            className={`h-7 min-w-[28px] rounded-lg text-xs font-bold transition-all ${
+            className={`h-7 min-w-[28px] rounded-xl text-xs font-bold transition-all ${
               score === v
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "bg-muted/50 hover:bg-muted text-muted-foreground"

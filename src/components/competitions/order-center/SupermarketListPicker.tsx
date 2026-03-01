@@ -232,7 +232,7 @@ export function SupermarketListPicker({ listId, existingItemIds = [], onItemAdde
               return (
                 <div
                   key={item.id}
-                  className={`flex items-center gap-2 px-2.5 py-2 rounded-lg border transition-all
+                  className={`flex items-center gap-2 px-2.5 py-2 rounded-xl border transition-all
                     ${added ? "bg-primary/5 border-primary/20 opacity-60" : "border-border/60 hover:bg-muted/50 hover:border-primary/30"}`}
                 >
                   <div className="flex-1 min-w-0">
@@ -280,7 +280,7 @@ export function SupermarketListPicker({ listId, existingItemIds = [], onItemAdde
                     key={dish.id}
                     onClick={() => addDishMutation.mutate(dish.id)}
                     disabled={addDishMutation.isPending}
-                    className="w-full flex items-center gap-3 p-2.5 rounded-lg text-start transition-all hover:bg-muted/50 border border-border hover:border-primary/30"
+                    className="w-full flex items-center gap-3 p-2.5 rounded-xl text-start transition-all hover:bg-muted/50 border border-border hover:border-primary/30"
                   >
                     <DishIcon className="h-5 w-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">

@@ -118,7 +118,7 @@ export function GlobalSearchWidget() {
                       onClick={() => { setFocused(false); setQuery(""); }}
                       className="flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/60 group"
                     >
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${config.bg}`}>
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${config.bg}`}>
                         <config.icon className={`h-4 w-4 ${config.color}`} />
                       </div>
                       <div className="flex-1 min-w-0">

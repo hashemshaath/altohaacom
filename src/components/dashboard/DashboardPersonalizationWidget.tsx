@@ -109,7 +109,7 @@ export function DashboardPersonalizationWidget() {
               <button
                 key={preset.id}
                 onClick={() => handleTheme(preset.id)}
-                className={`relative flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-[10px] font-medium transition-all ${
+                className={`relative flex items-center gap-1.5 rounded-xl border px-2 py-1.5 text-[10px] font-medium transition-all ${
                   selectedTheme === preset.id
                     ? "border-primary bg-primary/10 text-foreground"
                     : "border-border/40 hover:border-border text-muted-foreground hover:text-foreground"

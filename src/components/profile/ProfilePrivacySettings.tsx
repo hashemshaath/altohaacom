@@ -219,7 +219,7 @@ export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePriv
               </div>
               <div className="flex items-center gap-2.5">
                 {visibility[s.key] && (
-                  <Badge variant="outline" className="text-[8px] px-2 py-0.5 text-chart-4 border-chart-4/20 rounded-lg">
+                  <Badge variant="outline" className="text-[8px] px-2 py-0.5 text-chart-4 border-chart-4/20 rounded-xl">
                     {isAr ? "ظاهر" : "Visible"}
                   </Badge>
                 )}

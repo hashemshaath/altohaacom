@@ -79,7 +79,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
 
           return (
             <Link key={chat.id} to="/messages" className="block">
-              <div className={`flex items-center gap-2.5 rounded-lg p-2 transition-colors hover:bg-muted/50 ${chat.isUnread ? "bg-primary/5" : ""}`}>
+              <div className={`flex items-center gap-2.5 rounded-xl p-2 transition-colors hover:bg-muted/50 ${chat.isUnread ? "bg-primary/5" : ""}`}>
                 <div className="relative">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={chat.partner?.avatar_url || undefined} />

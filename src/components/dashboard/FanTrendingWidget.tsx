@@ -46,7 +46,7 @@ export function FanTrendingWidget() {
       <CardContent className="space-y-3">
         {trendingPosts.map((post) => (
           <Link key={post.id} to="/community" className="block group">
-            <div className="flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50">
+            <div className="flex items-start gap-3 rounded-xl p-2 transition-colors hover:bg-muted/50">
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarImage src={post.author?.avatar_url || undefined} />
                 <AvatarFallback className="text-xs">

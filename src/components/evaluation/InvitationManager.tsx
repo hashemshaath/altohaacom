@@ -269,7 +269,7 @@ export function InvitationManager() {
                 <Input placeholder={isAr ? "بحث..." : "Search..."} value={chefSearch} onChange={e => setChefSearch(e.target.value)} className="ps-9 h-8 text-xs" />
               </div>
             </div>
-            <div className="max-h-64 overflow-y-auto border rounded-lg">
+            <div className="max-h-64 overflow-y-auto border rounded-xl">
               <Table>
                 <TableHeader>
                   <TableRow>

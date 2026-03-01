@@ -78,7 +78,7 @@ export function ChefScheduleWidget() {
             const time = getTimeLabel(ev.start_date);
             return (
               <div key={ev.id} className={`px-4 py-2.5 flex items-center gap-3 hover:bg-muted/20 transition-colors ${time.urgent ? "bg-chart-4/5" : ""}`}>
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${config.color}`}>
                   <Icon className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">

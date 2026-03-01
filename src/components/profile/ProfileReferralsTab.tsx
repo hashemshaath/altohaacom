@@ -106,7 +106,7 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
               {isAr ? "أو شارك الرابط المباشر:" : "Or share the direct link:"}
             </p>
             <div className="flex gap-2">
-              <code className="flex-1 rounded-lg border bg-muted/50 px-3 py-2 text-sm font-mono truncate" dir="ltr">
+              <code className="flex-1 rounded-xl border bg-muted/50 px-3 py-2 text-sm font-mono truncate" dir="ltr">
                 {referralLink || "..."}
               </code>
               <Button onClick={copyLink} variant="outline" size="sm" className="gap-1.5 shrink-0">

@@ -262,7 +262,7 @@ export function EvaluationReportPreview({ template, onClose }: TemplatePreviewPr
                 { icon: Users, label: isAr ? "المقيّمون" : "Evaluators", value: `${SAMPLE_EVALUATORS.length} ${isAr ? "طهاة" : "Chefs"}` },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted">
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -388,7 +388,7 @@ export function EvaluationReportPreview({ template, onClose }: TemplatePreviewPr
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {SAMPLE_EVALUATORS.map((ev, i) => (
-                <div key={i} className="rounded-lg border border-border/30 p-4 flex items-center gap-3">
+                <div key={i} className="rounded-xl border border-border/30 p-4 flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                     <ChefHat className="h-5 w-5 text-primary" />
                   </div>
@@ -412,7 +412,7 @@ export function EvaluationReportPreview({ template, onClose }: TemplatePreviewPr
               {recommendations.map((rec, i) => (
                 <div
                   key={i}
-                  className={`rounded-lg border p-4 ${
+                  className={`rounded-xl border p-4 ${
                     rec.type === "strength" ? "border-chart-5/30 bg-chart-5/5" :
                     rec.type === "warning" ? "border-chart-4/30 bg-chart-4/5" :
                     "border-primary/30 bg-primary/5"

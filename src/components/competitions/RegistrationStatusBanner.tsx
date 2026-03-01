@@ -97,7 +97,7 @@ export function RegistrationStatusBanner({ registration, competitionStatus }: Re
               <h4 className={cn("text-sm font-bold", style.text)}>
                 {isAr ? label.ar : label.en}
               </h4>
-              <Badge variant="outline" className={cn("text-[10px] rounded-lg px-2 py-0.5", style.text, style.border)}>
+              <Badge variant="outline" className={cn("text-[10px] rounded-xl px-2 py-0.5", style.text, style.border)}>
                 <div className={cn("h-1.5 w-1.5 rounded-full me-1.5 animate-pulse", style.dot)} />
                 {status}
               </Badge>
@@ -105,19 +105,19 @@ export function RegistrationStatusBanner({ registration, competitionStatus }: Re
 
             <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-2.5 text-xs text-muted-foreground">
               {registration.registration_number && (
-                <span className="flex items-center gap-1.5 bg-background/60 rounded-lg px-2 py-0.5">
+                <span className="flex items-center gap-1.5 bg-background/60 rounded-xl px-2 py-0.5">
                   <Hash className="h-3 w-3" />
                   {toEnglishDigits(registration.registration_number)}
                 </span>
               )}
               {registration.registered_at && (
-                <span className="flex items-center gap-1.5 bg-background/60 rounded-lg px-2 py-0.5">
+                <span className="flex items-center gap-1.5 bg-background/60 rounded-xl px-2 py-0.5">
                   <Calendar className="h-3 w-3" />
                   {toEnglishDigits(format(new Date(registration.registered_at), "MMM d, yyyy", { locale: isAr ? ar : enUS }))}
                 </span>
               )}
               {(registration.category_name || registration.category_name_ar) && (
-                <span className="flex items-center gap-1.5 bg-background/60 rounded-lg px-2 py-0.5">
+                <span className="flex items-center gap-1.5 bg-background/60 rounded-xl px-2 py-0.5">
                   <Trophy className="h-3 w-3" />
                   {isAr && registration.category_name_ar ? registration.category_name_ar : registration.category_name}
                 </span>

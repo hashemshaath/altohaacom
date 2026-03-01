@@ -73,7 +73,7 @@ export function ProfileCompletionCard() {
                 {isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}
               </p>
             </div>
-            <Badge variant="secondary" className="text-[10px] font-bold tabular-nums rounded-lg px-2 py-0.5">
+            <Badge variant="secondary" className="text-[10px] font-bold tabular-nums rounded-xl px-2 py-0.5">
               {data.filled}/{data.total}
             </Badge>
           </div>
@@ -85,13 +85,13 @@ export function ProfileCompletionCard() {
 
           <div className="flex flex-wrap gap-1.5 mb-3">
             {data.missing.slice(0, 3).map(({ key, icon: Icon }) => (
-              <span key={key} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/40 rounded-lg px-2 py-1 border border-border/20">
+              <span key={key} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/40 rounded-xl px-2 py-1 border border-border/20">
                 <Icon className="h-2.5 w-2.5" />
                 {isAr ? missingLabels[key]?.ar : missingLabels[key]?.en}
               </span>
             ))}
             {data.missing.length > 3 && (
-              <span className="text-[10px] text-muted-foreground bg-muted/40 rounded-lg px-2 py-1 border border-border/20">
+              <span className="text-[10px] text-muted-foreground bg-muted/40 rounded-xl px-2 py-1 border border-border/20">
                 +{data.missing.length - 3}
               </span>
             )}

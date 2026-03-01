@@ -128,7 +128,7 @@ export function QuickActionsWidget() {
             asChild
           >
             <Link to={action.href}>
-              <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${action.bg} shrink-0 transition-transform group-hover:scale-110`}>
+              <div className={`flex h-7 w-7 items-center justify-center rounded-xl ${action.bg} shrink-0 transition-transform group-hover:scale-110`}>
                 <action.icon className={`h-3.5 w-3.5 ${action.color}`} />
               </div>
               <span className="flex-1 text-start truncate">

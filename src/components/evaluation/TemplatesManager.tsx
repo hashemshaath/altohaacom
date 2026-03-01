@@ -372,15 +372,15 @@ export function TemplatesManager() {
 
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="rounded-lg bg-muted/50 p-2 text-center">
+                    <div className="rounded-xl bg-muted/50 p-2 text-center">
                       <p className="text-lg font-black tabular-nums">{categories}</p>
                       <p className="text-[9px] text-muted-foreground">{isAr ? "فئات" : "Categories"}</p>
                     </div>
-                    <div className="rounded-lg bg-muted/50 p-2 text-center">
+                    <div className="rounded-xl bg-muted/50 p-2 text-center">
                       <p className="text-lg font-black tabular-nums">{totalCriteria}</p>
                       <p className="text-[9px] text-muted-foreground">{isAr ? "معايير" : "Criteria"}</p>
                     </div>
-                    <div className="rounded-lg bg-muted/50 p-2 text-center">
+                    <div className="rounded-xl bg-muted/50 p-2 text-center">
                       <p className="text-lg font-black tabular-nums">{totalWeight}%</p>
                       <p className="text-[9px] text-muted-foreground">{isAr ? "الأوزان" : "Weight"}</p>
                     </div>

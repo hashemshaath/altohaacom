@@ -201,7 +201,7 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h3 className="font-semibold text-base flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
             <UserCheck className="h-4 w-4 text-primary" />
           </div>
           {isAr ? "فريق العمل" : "Support Team"}

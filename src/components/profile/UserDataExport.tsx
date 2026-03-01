@@ -81,7 +81,7 @@ export function UserDataExport() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
             <Shield className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "تصدير بياناتك" : "Export Your Data"}
