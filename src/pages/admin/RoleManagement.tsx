@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Shield, ChefHat, Award, Users, Hand, Heart, Headphones, Eye, Save, Loader2, Lock,
   Search, UserPlus, UserMinus, CheckCircle2, XCircle, BarChart3, Grid3X3, UserCog,
@@ -315,7 +316,7 @@ export default function RoleManagement() {
                   <Icon className="h-4 w-4" />
                 </div>
                 <p className="text-xs font-medium truncate">{isAr ? meta.labelAr : meta.labelEn}</p>
-                <p className="text-lg font-bold">{count}</p>
+                <AnimatedCounter value={count} className="text-lg font-bold" />
                 <p className="text-[10px] text-muted-foreground">{permCount}/{totalPerms} {isAr ? "صلاحية" : "perms"}</p>
               </CardContent>
             </Card>

@@ -18,6 +18,7 @@ import {
   Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, isAfter } from "date-fns";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -210,28 +211,28 @@ export default function AuditLog() {
         <Card>
           <CardContent className="p-4 text-center">
             <Activity className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-2xl font-bold">{stats.todayActions}</p>
+            <AnimatedCounter value={stats.todayActions} className="text-2xl font-bold" />
             <p className="text-xs text-muted-foreground">{isAr ? "إجراءات اليوم" : "Today's Actions"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <ShieldAlert className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <p className="text-2xl font-bold">{stats.todayContent}</p>
+            <AnimatedCounter value={stats.todayContent} className="text-2xl font-bold" />
             <p className="text-xs text-muted-foreground">{isAr ? "إجراءات المحتوى" : "Content Actions"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <BarChart3 className="mx-auto mb-1 h-5 w-5 text-chart-2" />
-            <p className="text-2xl font-bold">{stats.uniqueActionTypes}</p>
+            <AnimatedCounter value={stats.uniqueActionTypes} className="text-2xl font-bold" />
             <p className="text-xs text-muted-foreground">{isAr ? "أنواع الإجراءات" : "Action Types"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <Trash2 className="mx-auto mb-1 h-5 w-5 text-destructive" />
-            <p className="text-2xl font-bold">{stats.deletions}</p>
+            <AnimatedCounter value={stats.deletions} className="text-2xl font-bold" />
             <p className="text-xs text-muted-foreground">{isAr ? "عمليات الحذف" : "Total Deletions"}</p>
           </CardContent>
         </Card>

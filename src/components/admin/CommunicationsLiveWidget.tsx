@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Send, Inbox, Mail, Clock, CheckCheck, TrendingUp, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { format, subDays, differenceInMinutes } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CommunicationsLiveWidget() {
   const { language } = useLanguage();
@@ -95,7 +96,7 @@ export function CommunicationsLiveWidget() {
           {stats.map((s, i) => (
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
-              <div className="text-lg font-bold">{s.value}</div>
+              <div className="text-lg font-bold"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
@@ -144,17 +145,17 @@ export function CommunicationsLiveWidget() {
         <div className="grid grid-cols-3 gap-3 mt-4">
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Send className="h-3 w-3 mx-auto mb-1 text-chart-2" />
-            <div className="text-sm font-bold">{data.outbound}</div>
+            <div className="text-sm font-bold"><AnimatedCounter value={data.outbound} /></div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "رسائل صادرة" : "Outbound"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <BarChart3 className="h-3 w-3 mx-auto mb-1 text-chart-3" />
-            <div className="text-sm font-bold">{data.activeTemplates}</div>
+            <div className="text-sm font-bold"><AnimatedCounter value={data.activeTemplates} /></div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "قوالب نشطة" : "Active Templates"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-4" />
-            <div className="text-sm font-bold">{data.notifReadRate}%</div>
+            <div className="text-sm font-bold"><AnimatedCounter value={data.notifReadRate} suffix="%" /></div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "قراءة الإشعارات" : "Notif Read Rate"}</div>
           </div>
         </div>

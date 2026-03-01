@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { 
   Database, 
   HardDrive,
@@ -116,7 +117,7 @@ export default function DatabaseAdmin() {
                   {stat.isStatus ? (
                     <Badge variant="default" className="mt-1 bg-chart-5">{stat.value}</Badge>
                   ) : (
-                    <p className="text-2xl font-bold">{stat.value}</p>
+                    <AnimatedCounter value={typeof stat.value === "number" ? stat.value : Number(stat.value) || 0} className="text-2xl font-bold" />
                   )}
                 </div>
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${stat.bg} transition-all duration-300 group-hover:scale-110`}>

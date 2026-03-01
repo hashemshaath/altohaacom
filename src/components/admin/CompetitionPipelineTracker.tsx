@@ -7,6 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Users, Gavel, CheckCircle, Clock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CompetitionPipelineTracker() {
   const { language } = useLanguage();
@@ -99,17 +100,17 @@ export function CompetitionPipelineTracker() {
         <div className="grid grid-cols-3 gap-2">
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Users className="h-3.5 w-3.5 mx-auto mb-0.5 text-primary" />
-            <p className="text-sm font-bold">{data?.pipeline.totalRegistrations || 0}</p>
+            <AnimatedCounter value={data?.pipeline.totalRegistrations || 0} className="text-sm font-bold" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "تسجيلات" : "Registrations"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <CheckCircle className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-2" />
-            <p className="text-sm font-bold">{data?.pipeline.approvedRegistrations || 0}</p>
+            <AnimatedCounter value={data?.pipeline.approvedRegistrations || 0} className="text-sm font-bold" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدة" : "Approved"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Gavel className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-5" />
-            <p className="text-sm font-bold">{data?.pipeline.totalScores || 0}</p>
+            <AnimatedCounter value={data?.pipeline.totalScores || 0} className="text-sm font-bold" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "تقييمات" : "Scores"}</p>
           </div>
         </div>
