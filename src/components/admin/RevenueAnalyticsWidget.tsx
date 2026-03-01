@@ -104,17 +104,17 @@ export function RevenueAnalyticsWidget() {
       <CardContent className="space-y-4">
         {/* KPI Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <div className="p-2.5 rounded-lg bg-muted/50 text-center">
-            <TrendingUp className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2" />
+          <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+            <TrendingUp className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-sm font-bold">{data?.totalRevenue?.toLocaleString()} SAR</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "الإيرادات" : "Revenue"}</p>
           </div>
-          <div className="p-2.5 rounded-lg bg-muted/50 text-center">
-            <ArrowDownRight className="h-3.5 w-3.5 mx-auto mb-1 text-destructive" />
+          <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+            <ArrowDownRight className="h-3.5 w-3.5 mx-auto mb-1 text-destructive transition-transform duration-300 group-hover:scale-110" />
             <p className="text-sm font-bold">{data?.totalExpenses?.toLocaleString()} SAR</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "المصروفات" : "Expenses"}</p>
           </div>
-          <div className="p-2.5 rounded-lg bg-muted/50 text-center">
+          <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             {(data?.netFlow || 0) >= 0 ? (
               <ArrowUpRight className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2" />
             ) : (
@@ -125,8 +125,8 @@ export function RevenueAnalyticsWidget() {
             </p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "صافي التدفق" : "Net Flow"}</p>
           </div>
-          <div className="p-2.5 rounded-lg bg-muted/50 text-center">
-            <Receipt className="h-3.5 w-3.5 mx-auto mb-1 text-chart-4" />
+          <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+            <Receipt className="h-3.5 w-3.5 mx-auto mb-1 text-chart-4 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-sm font-bold">{data?.collectionRate}%</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "التحصيل" : "Collection"}</p>
           </div>
@@ -172,7 +172,7 @@ export function RevenueAnalyticsWidget() {
 
         {/* Alerts */}
         {(data?.overdueInvoices || 0) > 0 && (
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-xs">
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-destructive/10 text-destructive text-xs">
             <CreditCard className="h-3.5 w-3.5" />
             {data?.overdueInvoices} {isAr ? "فاتورة متأخرة تحتاج متابعة" : "overdue invoices need attention"}
           </div>

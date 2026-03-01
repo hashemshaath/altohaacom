@@ -562,7 +562,7 @@ export default function InvoicesAdmin() {
               <Label className="mb-3 block">{language === "ar" ? "البنود" : "Line Items"}</Label>
               <div className="space-y-3">
                 {formData.items.map((item, i) => (
-                  <div key={i} className="grid gap-2 rounded-lg border p-3 sm:grid-cols-[1fr_80px_100px_100px_40px]">
+                  <div key={i} className="grid gap-2 rounded-xl border p-3 sm:grid-cols-[1fr_80px_100px_100px_40px]">
                     <Input placeholder={language === "ar" ? "اسم الصنف" : "Item name"} value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} />
                     <Input type="number" placeholder={language === "ar" ? "كمية" : "Qty"} value={item.quantity} onChange={(e) => updateItem(i, "quantity", parseInt(e.target.value) || 0)} min={1} />
                     <Input type="number" placeholder={language === "ar" ? "السعر" : "Price"} value={item.unit_price} onChange={(e) => updateItem(i, "unit_price", parseFloat(e.target.value) || 0)} min={0} />
