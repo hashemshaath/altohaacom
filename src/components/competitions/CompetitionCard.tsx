@@ -74,7 +74,7 @@ export function getTabBucket(comp: Competition): "upcoming" | "active" | "past" 
 /* ─── Status Badge (reusable) ─── */
 function StatusBadge({ derived, isAr, className = "" }: { derived: ReturnType<typeof getDerivedStatus>; isAr: boolean; className?: string }) {
   return (
-    <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md ${derived.color} ring-1 ring-white/10 ${className}`}>
+    <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md rounded-lg ${derived.color} ring-1 ring-white/10 ${className}`}>
       {derived.color.includes("chart-3") ? (
         <span className="relative me-1.5 flex h-1.5 w-1.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -105,7 +105,7 @@ export const CompetitionCard = memo(
 
       return (
         <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.98] transition-transform duration-150">
-          <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-3xl border-border/30 bg-card transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 hover:border-primary/25">
+          <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-1.5 hover:border-primary/20">
             {/* Image Section */}
             <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted" role="img" aria-label={title}>
               {competition.cover_image_url ? (
@@ -131,7 +131,7 @@ export const CompetitionCard = memo(
               <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3 sm:p-4">
                 <StatusBadge derived={derived} isAr={isAr} />
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
-                  <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground">
+                  <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[9px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-lg">
                     <Clock className="h-2.5 w-2.5 text-primary" />
                     {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft}D`}
                   </Badge>
@@ -148,7 +148,7 @@ export const CompetitionCard = memo(
                     <span className="drop-shadow-md">{toEnglishDigits(format(new Date(competition.competition_start), "MMM d, yyyy"))}</span>
                   </span>
                   {maxP && (
-                    <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-primary/10 backdrop-blur-md border-0 text-primary">
+                    <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[9px] font-bold bg-primary/10 backdrop-blur-md border-0 text-primary rounded-lg">
                       <Users className="h-2.5 w-2.5" />
                       {toEnglishDigits(regCount)}/{toEnglishDigits(maxP)}
                     </Badge>
@@ -168,7 +168,7 @@ export const CompetitionCard = memo(
                 <div className="mb-3 space-y-1">
                   <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
                     <span>{isAr ? "السعة" : "Capacity"}</span>
-                    <span className={fillPct > 80 ? "text-destructive" : "text-primary"}>{toEnglishDigits(fillPct)}%</span>
+                    <span className={`tabular-nums ${fillPct > 80 ? "text-destructive" : "text-primary"}`}>{toEnglishDigits(fillPct)}%</span>
                   </div>
                   <div className="h-1 w-full overflow-hidden rounded-full bg-muted/40">
                     <div
@@ -191,7 +191,7 @@ export const CompetitionCard = memo(
                     </span>
                   ) : null}
                 </div>
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20">
                   <ArrowRight className="h-3 w-3 rtl:rotate-180 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                 </div>
               </div>
@@ -223,15 +223,15 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
 
   return (
     <Link to={`/competitions/${competition.id}`} className="group mb-10 block">
-      <Card className="relative overflow-hidden rounded-3xl border-primary/10 bg-card shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/25">
+      <Card className="relative overflow-hidden rounded-2xl border-primary/10 bg-card/80 backdrop-blur-sm shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20">
         {/* Ambient glow */}
-        <div className="pointer-events-none absolute -top-32 -end-32 h-72 w-72 rounded-full bg-primary/8 blur-[100px] transition-all duration-700 group-hover:bg-primary/12" />
+        <div className="pointer-events-none absolute -top-32 -end-32 h-72 w-72 rounded-full bg-primary/6 blur-[100px] transition-all duration-700 group-hover:bg-primary/10" />
 
         <div className="relative flex flex-col md:flex-row">
           {/* Image */}
           <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-auto md:w-2/5 lg:w-1/2">
             {competition.cover_image_url ? (
-              <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+              <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
             ) : (
               <div className="flex h-full min-h-[220px] items-center justify-center bg-gradient-to-br from-primary/8 via-muted/20 to-accent/8">
                 <Trophy className="h-20 w-20 text-primary/8" />
@@ -239,7 +239,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-60 md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-background/40" />
             <div className="absolute start-4 top-4 sm:start-5 sm:top-5">
-              <Badge className="gap-1.5 bg-primary px-3 py-1.5 text-[10px] font-bold shadow-xl ring-2 ring-primary/20">
+              <Badge className="gap-1.5 bg-primary px-3 py-1.5 text-[10px] font-bold shadow-xl ring-2 ring-primary/20 rounded-xl">
                 <Flame className="h-3 w-3" />
                 {isAr ? "مسابقة مميزة" : "Featured"}
               </Badge>
@@ -252,7 +252,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
               <div className="flex items-center gap-2 flex-wrap">
                 <StatusBadge derived={derived} isAr={isAr} className="px-3 py-1 text-[10px]" />
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
-                  <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/30">
+                  <Badge variant="outline" className="gap-1.5 text-[10px] font-bold bg-background/40 backdrop-blur-md border-border/30 rounded-lg">
                     <Clock className="h-3 w-3 text-primary" />
                     {isAr ? `${toEnglishDigits(derived.daysLeft)} يوم` : `${derived.daysLeft} DAYS LEFT`}
                   </Badge>
@@ -264,28 +264,28 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
 
             <div className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm font-semibold text-foreground/80">
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/60">
+                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/50">
                   <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
                 <span className="text-xs sm:text-sm">{toEnglishDigits(format(new Date(competition.competition_start), "MMM d, yyyy"))}</span>
               </div>
               {competition.is_virtual ? (
                 <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/60">
+                  <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/50">
                     <Globe className="h-3.5 w-3.5 text-muted-foreground" />
                   </div>
                   <span className="text-xs sm:text-sm">{isAr ? "افتراضية" : "Virtual"}</span>
                 </div>
               ) : competition.city && (
                 <div className="flex items-center gap-2">
-                  <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/60">
+                  <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/50">
                     <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                   </div>
                   <span className="text-xs sm:text-sm">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}</span>
                 </div>
               )}
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/60">
+                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/50">
                   <Users className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
                 <span className="text-xs sm:text-sm">{toEnglishDigits(regCount)} {isAr ? "مسجل" : "Registered"}</span>
