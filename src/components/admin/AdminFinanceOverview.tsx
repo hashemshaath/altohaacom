@@ -51,7 +51,7 @@ export function AdminFinanceOverview() {
     <Card className="border-border/50">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-2/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-2/10">
             <Wallet className="h-3.5 w-3.5 text-chart-2" />
           </div>
           {isAr ? "نظرة مالية" : "Finance Overview"}
@@ -74,7 +74,7 @@ export function AdminFinanceOverview() {
             </div>
           ))}
         </div>
-        <div className="mt-3 flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2">
+        <div className="mt-3 flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
           <span className="text-xs text-muted-foreground">{isAr ? "إجمالي الفواتير" : "Total Invoices"}</span>
           <Badge variant="secondary" className="text-xs">{toEnglishDigits((data?.totalInvoices || 0).toString())}</Badge>
         </div>

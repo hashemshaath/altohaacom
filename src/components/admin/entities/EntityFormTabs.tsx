@@ -438,7 +438,7 @@ export default function EntityFormTabs({ form, editingId, selectedManager, isSav
                 <EntityLeadershipPanel entityId={editingId} />
               </>
             ) : (
-              <div className="rounded-lg border border-dashed border-muted-foreground/30 p-6 text-center">
+              <div className="rounded-xl border border-dashed border-muted-foreground/30 p-6 text-center">
                 <p className="text-sm text-muted-foreground">{isAr ? "احفظ الجهة أولاً لإدارة المناصب" : "Save entity first to manage positions"}</p>
               </div>
             )}
