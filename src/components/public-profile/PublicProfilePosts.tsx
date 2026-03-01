@@ -94,7 +94,7 @@ export function PublicProfilePosts({ userId, isOwnProfile }: Props) {
               <MentionText content={post.content} />
             </p>
             {(post.image_urls?.length > 0 || post.image_url) && (
-              <div className="mt-2 flex gap-1 overflow-hidden rounded-lg">
+              <div className="mt-2 flex gap-1 overflow-hidden rounded-xl">
                 {(post.image_urls?.length > 0 ? post.image_urls : [post.image_url!]).slice(0, 3).map((url, i) => (
                   <img key={i} src={url} alt="" className="h-16 w-16 rounded object-cover" loading="lazy" />
                 ))}

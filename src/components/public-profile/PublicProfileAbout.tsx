@@ -31,7 +31,7 @@ export function PublicProfileAbout({ profile, bio, specialization, userSpecialti
               {userSpecialties.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {userSpecialties.map((us: any) => (
-                    <Badge key={us.id} variant="secondary" className="text-[10px] h-5 rounded-lg">
+                    <Badge key={us.id} variant="secondary" className="text-[10px] h-5 rounded-xl">
                       {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
                     </Badge>
                   ))}
@@ -45,7 +45,7 @@ export function PublicProfileAbout({ profile, bio, specialization, userSpecialti
           <>
             <Separator className="bg-border/20" />
             <div className="flex items-start gap-3 bg-primary/5 rounded-xl p-3.5 border border-primary/10">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0">
                 <Briefcase className="h-4 w-4 text-primary" />
               </div>
               <div>

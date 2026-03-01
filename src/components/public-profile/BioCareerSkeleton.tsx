@@ -13,7 +13,7 @@ export function BioCareerSkeleton() {
           </div>
           {[1, 2].map(j => (
             <div key={j} className="flex gap-3 px-3.5 py-3 rounded-xl border border-border/30">
-              <Skeleton className="h-8 w-8 rounded-lg shrink-0" />
+              <Skeleton className="h-8 w-8 rounded-xl shrink-0" />
               <div className="flex-1 space-y-1.5">
                 <Skeleton className="h-3 w-36" />
                 <Skeleton className="h-2.5 w-24" />

@@ -78,11 +78,11 @@ export function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryP
             <ImageIcon className="h-4 w-4 text-primary" />
           </div>
           <h2 className="font-serif text-base font-bold">{isAr ? "الألبوم" : "Gallery"}</h2>
-          <Badge variant="secondary" className="text-[10px] h-5 rounded-lg">{mediaFiles.length}</Badge>
+          <Badge variant="secondary" className="text-[10px] h-5 rounded-xl">{mediaFiles.length}</Badge>
           <div className="flex-1 h-px bg-border/25" />
         </div>
         {hasGroups && (
-          <div className="flex gap-0.5 bg-muted/40 rounded-lg p-0.5 border border-border/20">
+          <div className="flex gap-0.5 bg-muted/40 rounded-xl p-0.5 border border-border/20">
             <Button variant={viewMode === "grid" ? "secondary" : "ghost"} size="sm" className="h-7 w-7 p-0 rounded-md" onClick={() => setViewMode("grid")}>
               <Grid3X3 className="h-3.5 w-3.5" />
             </Button>
@@ -165,7 +165,7 @@ export function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryP
                   <p className="text-sm text-foreground/80 truncate max-w-[70%]">
                     {allFiles[lightboxIdx].name.replace(/[-_]/g, " ").replace(/\.[^.]+$/, "")}
                   </p>
-                  <Badge variant="secondary" className="text-[10px] rounded-lg">
+                  <Badge variant="secondary" className="text-[10px] rounded-xl">
                     {lightboxIdx + 1} / {allFiles.length}
                   </Badge>
                 </div>

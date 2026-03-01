@@ -165,7 +165,7 @@ export function EnhancedChatPanel() {
               <h3 className="font-bold text-sm">{isAr ? "المحادثات" : "Messages"}</h3>
             </div>
             {totalUnread > 0 && (
-              <Badge className="h-6 min-w-6 rounded-lg text-[10px] font-bold">{totalUnread}</Badge>
+              <Badge className="h-6 min-w-6 rounded-xl text-[10px] font-bold">{totalUnread}</Badge>
             )}
           </div>
           <div className="relative">
@@ -241,7 +241,7 @@ export function EnhancedChatPanel() {
           <>
             {/* Chat Header */}
             <div className="px-4 py-3 border-b border-border/20 flex items-center gap-3 bg-card/80 backdrop-blur-sm">
-              <Button variant="ghost" size="icon" className="md:hidden h-8 w-8 rounded-lg" onClick={() => setActiveChat(null)}>
+              <Button variant="ghost" size="icon" className="md:hidden h-8 w-8 rounded-xl" onClick={() => setActiveChat(null)}>
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div className="relative">
@@ -285,7 +285,7 @@ export function EnhancedChatPanel() {
                         {/* Reply context */}
                         {reply && (
                           <div className={cn(
-                            "text-[10px] mb-1 px-2.5 py-1 rounded-lg border-s-2",
+                            "text-[10px] mb-1 px-2.5 py-1 rounded-xl border-s-2",
                             isMine
                               ? "bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground/70"
                               : "bg-muted/50 border-primary/30 text-muted-foreground"
@@ -318,7 +318,7 @@ export function EnhancedChatPanel() {
                         <button
                           onClick={() => setReplyTo(m)}
                           className={cn(
-                            "absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 rounded-lg bg-muted/80 backdrop-blur-sm flex items-center justify-center hover:bg-muted border border-border/30 shadow-sm",
+                            "absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7 rounded-xl bg-muted/80 backdrop-blur-sm flex items-center justify-center hover:bg-muted border border-border/30 shadow-sm",
                             isMine ? "-start-9" : "-end-9"
                           )}
                         >
@@ -338,7 +338,7 @@ export function EnhancedChatPanel() {
                 <div className="h-full w-0.5 bg-primary rounded-full self-stretch" />
                 <Reply className="h-3 w-3 text-primary shrink-0" />
                 <p className="text-xs text-muted-foreground truncate flex-1">{replyTo.content}</p>
-                <Button variant="ghost" size="icon" className="h-6 w-6 rounded-lg shrink-0" onClick={() => setReplyTo(null)}>
+                <Button variant="ghost" size="icon" className="h-6 w-6 rounded-xl shrink-0" onClick={() => setReplyTo(null)}>
                   <X className="h-3 w-3" />
                 </Button>
               </div>

@@ -67,7 +67,7 @@ export function FanWeeklyDigest() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "ملخصك الأسبوعي" : "Your Weekly Digest"}
@@ -77,15 +77,15 @@ export function FanWeeklyDigest() {
       <CardContent className="pt-0 space-y-4">
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-2">
-          <div className="rounded-lg bg-muted/50 p-2.5 text-center">
+          <div className="rounded-xl bg-muted/50 p-2.5 text-center">
             <p className="text-lg font-bold">{digest.followingCount}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "متابَع" : "Following"}</p>
           </div>
-          <div className="rounded-lg bg-muted/50 p-2.5 text-center">
+          <div className="rounded-xl bg-muted/50 p-2.5 text-center">
             <p className="text-lg font-bold">{digest.posts.length}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "منشورات جديدة" : "New Posts"}</p>
           </div>
-          <div className="rounded-lg bg-muted/50 p-2.5 text-center">
+          <div className="rounded-xl bg-muted/50 p-2.5 text-center">
             <p className="text-lg font-bold text-primary">+{digest.newFollowers}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "متابعون جدد" : "New Followers"}</p>
           </div>
@@ -99,7 +99,7 @@ export function FanWeeklyDigest() {
             </p>
             <div className="space-y-1.5">
               {digest.posts.slice(0, 3).map((post: any) => (
-                <Link key={post.id} to="/community" className="flex items-center gap-2 rounded-lg p-2 hover:bg-muted/40 transition-colors">
+                <Link key={post.id} to="/community" className="flex items-center gap-2 rounded-xl p-2 hover:bg-muted/40 transition-colors">
                   <Avatar className="h-6 w-6">
                     <AvatarImage src={post.author?.avatar_url} />
                     <AvatarFallback className="text-[9px]">{(post.author?.full_name || "?")[0]}</AvatarFallback>
@@ -122,7 +122,7 @@ export function FanWeeklyDigest() {
             </p>
             <div className="space-y-1">
               {digest.upcomingComps.map((c: any) => (
-                <Link key={c.id} to={`/competitions/${c.slug}`} className="flex items-center gap-2 rounded-lg p-2 hover:bg-muted/40 transition-colors">
+                <Link key={c.id} to={`/competitions/${c.slug}`} className="flex items-center gap-2 rounded-xl p-2 hover:bg-muted/40 transition-colors">
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-primary/10">
                     <Trophy className="h-3 w-3 text-primary" />
                   </div>
@@ -133,7 +133,7 @@ export function FanWeeklyDigest() {
                 </Link>
               ))}
               {digest.upcomingExhs.map((e: any) => (
-                <Link key={e.id} to={`/exhibitions/${e.slug}`} className="flex items-center gap-2 rounded-lg p-2 hover:bg-muted/40 transition-colors">
+                <Link key={e.id} to={`/exhibitions/${e.slug}`} className="flex items-center gap-2 rounded-xl p-2 hover:bg-muted/40 transition-colors">
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-chart-5/10">
                     <Landmark className="h-3 w-3 text-chart-5" />
                   </div>

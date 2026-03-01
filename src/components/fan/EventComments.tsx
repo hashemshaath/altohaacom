@@ -234,7 +234,7 @@ export function EventComments({ eventType, eventId }: EventCommentsProps) {
 
       {/* Comments list */}
       {isLoading ? (
-        <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-16 rounded-lg bg-muted/50 animate-pulse" />)}</div>
+        <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-16 rounded-xl bg-muted/50 animate-pulse" />)}</div>
       ) : comments.length === 0 ? (
         <div className="text-center py-8">
           <MessageCircle className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />

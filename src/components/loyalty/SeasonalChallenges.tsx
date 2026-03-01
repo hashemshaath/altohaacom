@@ -78,7 +78,7 @@ export function SeasonalChallenges() {
     <Card className="border-border/50">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-1/10">
             <Flame className="h-3.5 w-3.5 text-chart-1" />
           </div>
           {isAr ? "التحديات النشطة" : "Active Challenges"}
@@ -99,7 +99,7 @@ export function SeasonalChallenges() {
                 className={`rounded-xl border p-3 transition-all ${completed ? "border-chart-2/40 bg-chart-2/5" : "border-border/40 hover:border-border/60"}`}
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/60 text-lg">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-lg">
                     {c.icon_emoji || <Icon className="h-4 w-4 text-chart-1" />}
                   </div>
                   <div className="min-w-0 flex-1">

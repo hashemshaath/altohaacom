@@ -87,7 +87,7 @@ export function FanSocialNetwork() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-2/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-2/10">
             <Users className="h-3.5 w-3.5 text-chart-2" />
           </div>
           {isAr ? "محبو طعام مثلك" : "Foodies Like You"}
@@ -130,7 +130,7 @@ function FanSuggestionRow({ fan, isAr }: { fan: any; isAr: boolean }) {
   };
 
   return (
-    <div className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-muted/40 transition-colors">
+    <div className="flex items-center gap-2.5 rounded-xl p-2 hover:bg-muted/40 transition-colors">
       <Link to={`/u/${fan.username}`} className="shrink-0">
         <Avatar className="h-9 w-9">
           <AvatarImage src={fan.avatar_url} />

@@ -62,7 +62,7 @@ export function FanActivityFeed() {
     return (
       <Card>
         <CardHeader><CardTitle className="text-sm">{isAr ? "آخر أخبار المتابَعين" : "Following Feed"}</CardTitle></CardHeader>
-        <CardContent><div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-20 rounded-lg bg-muted animate-pulse" />)}</div></CardContent>
+        <CardContent><div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-20 rounded-xl bg-muted animate-pulse" />)}</div></CardContent>
       </Card>
     );
   }

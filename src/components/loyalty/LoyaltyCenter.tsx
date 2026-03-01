@@ -97,7 +97,7 @@ export function LoyaltyCenter() {
 
           {/* Streak */}
           {loginStreak && (
-            <div className="mt-4 flex items-center gap-3 bg-muted/50 rounded-lg p-3">
+            <div className="mt-4 flex items-center gap-3 bg-muted/50 rounded-xl p-3">
               <Flame className="h-5 w-5 text-chart-1" />
               <div>
                 <span className="font-bold text-lg">{loginStreak.current_streak}</span>
