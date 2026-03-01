@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Search, Plus, Trash2, Edit, Package, Image as ImageIcon, Save, X, Check,
@@ -317,7 +318,7 @@ export function AdminCatalogManager() {
                       <TableCell className="text-[10px] text-muted-foreground">{item.subcategory || "—"}</TableCell>
                       <TableCell className="text-center text-xs">{item.default_quantity || "—"}</TableCell>
                       <TableCell className="text-xs">{item.unit || "—"}</TableCell>
-                      <TableCell className="text-xs">{item.estimated_cost ? `SAR ${Number(item.estimated_cost).toLocaleString()}` : "—"}</TableCell>
+                      <TableCell className="text-xs">{item.estimated_cost ? <>SAR <AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></> : "—"}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}>

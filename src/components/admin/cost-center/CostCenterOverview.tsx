@@ -6,6 +6,7 @@ import {
   Plus, Clock, CheckCircle2, ArrowRight, AlertCircle,
   Trophy, ChefHat, Landmark, Calendar, FileText, BarChart3,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   isAr: boolean;
@@ -41,7 +42,7 @@ export function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateN
                     <p className="text-[10px] text-muted-foreground font-mono">{est.estimate_number}</p>
                   </div>
                   <Badge className={`text-[9px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
-                  <span className="text-sm font-bold tabular-nums">{est.total_amount.toLocaleString()}</span>
+                  <AnimatedCounter value={Math.round(est.total_amount)} className="text-sm font-bold tabular-nums" />
                 </div>
               );
             })}
@@ -72,7 +73,7 @@ export function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateN
                     <p className="text-sm font-bold truncate">{est.title}</p>
                     <Badge variant="outline" className="text-[9px]">{isAr ? mt.ar : mt.en}</Badge>
                   </div>
-                  <span className="text-sm font-bold tabular-nums text-chart-4">{est.total_amount.toLocaleString()} SAR</span>
+                  <span className="text-sm font-bold tabular-nums text-chart-4"><AnimatedCounter value={Math.round(est.total_amount)} className="inline" /> SAR</span>
                   <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
               );
