@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useHomepageSections,
@@ -215,7 +216,7 @@ export function HomepageSectionsManager() {
             <LayoutGrid className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <p className="text-lg font-bold tabular-nums">{displaySections.length}</p>
+            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={displaySections.length} /></p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "إجمالي الأقسام" : "Total Sections"}</p>
           </div>
         </div>
@@ -224,7 +225,7 @@ export function HomepageSectionsManager() {
             <Eye className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <p className="text-lg font-bold tabular-nums">{visibleCount}</p>
+            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={visibleCount} /></p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "ظاهر" : "Visible"}</p>
           </div>
         </div>
@@ -233,7 +234,7 @@ export function HomepageSectionsManager() {
             <EyeOff className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
-            <p className="text-lg font-bold tabular-nums">{hiddenCount}</p>
+            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={hiddenCount} /></p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "مخفي" : "Hidden"}</p>
           </div>
         </div>

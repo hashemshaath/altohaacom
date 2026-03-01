@@ -1,7 +1,7 @@
 import { useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
@@ -80,10 +80,9 @@ function LazySection({ children, fallback }: { children: React.ReactNode; fallba
 }
 
 function AnimatedStatValue({ value }: { value: number }) {
-  const animated = useAnimatedCounter(value);
   return (
     <p className="text-2xl font-black leading-none tracking-tight">
-      {toEnglishDigits(animated.toLocaleString())}
+      <AnimatedCounter value={value} />
     </p>
   );
 }
@@ -459,7 +458,7 @@ export default function AdminDashboard() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">{isAr ? "محترف" : "Professional"}</p>
-                    <p className="text-sm font-black text-primary">{toEnglishDigits((stats?.proUsers || 0).toLocaleString())}</p>
+                    <p className="text-sm font-black text-primary"><AnimatedCounter value={stats?.proUsers || 0} /></p>
                   </div>
                   <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
                     <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${stats?.totalUsers ? ((stats.proUsers / stats.totalUsers) * 100) : 0}%` }} />
@@ -473,7 +472,7 @@ export default function AdminDashboard() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">{isAr ? "متابع" : "Follower"}</p>
-                    <p className="text-sm font-black text-chart-4">{toEnglishDigits((stats?.fanUsers || 0).toLocaleString())}</p>
+                    <p className="text-sm font-black text-chart-4"><AnimatedCounter value={stats?.fanUsers || 0} /></p>
                   </div>
                   <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
                     <div className="h-full rounded-full bg-chart-4 transition-all" style={{ width: `${stats?.totalUsers ? ((stats.fanUsers / stats.totalUsers) * 100) : 0}%` }} />

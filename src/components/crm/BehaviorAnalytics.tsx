@@ -157,7 +157,7 @@ export function BehaviorAnalytics() {
               <p className="text-xs text-muted-foreground">{isAr ? "سلال مهجورة" : "Abandoned Carts"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={cartStats?.abandoned ?? 0} /></p>
               <p className="text-[10px] text-muted-foreground">
-                {toEnglishDigits(`${cartStats?.totalValue?.toLocaleString() ?? 0}`)} SAR
+                <AnimatedCounter value={cartStats?.totalValue ?? 0} /> SAR
               </p>
             </div>
           </CardContent>
@@ -202,7 +202,7 @@ export function BehaviorAnalytics() {
               <p className="text-xs text-muted-foreground">{isAr ? "تحويلات" : "Conversions"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={conversionStats?.total ?? 0} /></p>
               <p className="text-[10px] text-muted-foreground">
-                {toEnglishDigits(`${conversionStats?.totalRevenue?.toLocaleString() ?? 0}`)} SAR
+                <AnimatedCounter value={conversionStats?.totalRevenue ?? 0} /> SAR
               </p>
             </div>
           </CardContent>

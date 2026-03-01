@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { FileText, DollarSign, Receipt, ChefHat, Send, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { executeEvaluationWorkflow } from "@/lib/evaluationWorkflows";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface PricingPlan {
   id: string; name: string; name_ar: string | null;
@@ -137,25 +138,25 @@ export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{isAr ? "رسوم أساسية" : "Base Fee"}</span>
-                    <span className="font-bold tabular-nums">{selectedPlan.base_fee.toLocaleString()} SAR</span>
+                    <span className="font-bold tabular-nums"><AnimatedCounter value={selectedPlan.base_fee} /> SAR</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{chefCount} {isAr ? "طهاة" : "chefs"} × {selectedPlan.per_chef_fee} SAR</span>
-                    <span className="font-bold tabular-nums">{(selectedPlan.per_chef_fee * chefCount).toLocaleString()} SAR</span>
+                    <span className="font-bold tabular-nums"><AnimatedCounter value={selectedPlan.per_chef_fee * chefCount} /> SAR</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</span>
-                    <span className="font-bold tabular-nums">{totalCost.toLocaleString()} SAR</span>
+                    <span className="font-bold tabular-nums"><AnimatedCounter value={totalCost} /> SAR</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{isAr ? "ضريبة القيمة المضافة" : "VAT"} (15%)</span>
-                    <span className="font-bold tabular-nums">{Math.round(totalCost * 0.15).toLocaleString()} SAR</span>
+                    <span className="font-bold tabular-nums"><AnimatedCounter value={Math.round(totalCost * 0.15)} /> SAR</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between">
                     <span className="font-bold">{isAr ? "الإجمالي" : "Total"}</span>
-                    <span className="text-xl font-black text-primary tabular-nums">{(totalCost + Math.round(totalCost * 0.15)).toLocaleString()} SAR</span>
+                    <span className="text-xl font-black text-primary tabular-nums"><AnimatedCounter value={totalCost + Math.round(totalCost * 0.15)} /> SAR</span>
                   </div>
                 </div>
 
