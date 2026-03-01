@@ -28,7 +28,7 @@ function DomainStats() {
       {domains?.map(d => {
         const Icon = domainIcons[d.slug] || UtensilsCrossed;
         return (
-          <Card key={d.id} className="border-border/40">
+          <Card key={d.id} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4 flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                 <Icon className="h-5 w-5 text-primary" />
@@ -92,12 +92,12 @@ export default function EvaluationCenter() {
       <DomainStats />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="print:hidden">
-          <TabsTrigger value="criteria" className="gap-1.5">
+        <TabsList className="print:hidden rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="criteria" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Settings2 className="h-3.5 w-3.5" />
             {isAr ? "معايير التقييم" : "Criteria"}
           </TabsTrigger>
-          <TabsTrigger value="templates" className="gap-1.5">
+          <TabsTrigger value="templates" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <FileText className="h-3.5 w-3.5" />
             {isAr ? "القوالب" : "Templates"}
           </TabsTrigger>

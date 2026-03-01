@@ -366,20 +366,22 @@ export default function CertificatesAdmin() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
-          { label: language === "ar" ? "الإجمالي" : "Total", value: stats.total, icon: FileText, color: "text-muted-foreground" },
-          { label: language === "ar" ? "مسودة" : "Draft", value: stats.draft, icon: Clock, color: "text-chart-4" },
-          { label: language === "ar" ? "معتمدة" : "Approved", value: stats.signed, icon: PenTool, color: "text-primary" },
-          { label: language === "ar" ? "صادرة" : "Issued", value: stats.issued, icon: CheckCircle, color: "text-chart-5" },
-          { label: language === "ar" ? "ملغاة" : "Revoked", value: stats.revoked, icon: XCircle, color: "text-destructive" },
+          { label: language === "ar" ? "الإجمالي" : "Total", value: stats.total, icon: FileText, color: "text-muted-foreground", bg: "bg-muted" },
+          { label: language === "ar" ? "مسودة" : "Draft", value: stats.draft, icon: Clock, color: "text-chart-4", bg: "bg-chart-4/10" },
+          { label: language === "ar" ? "معتمدة" : "Approved", value: stats.signed, icon: PenTool, color: "text-primary", bg: "bg-primary/10" },
+          { label: language === "ar" ? "صادرة" : "Issued", value: stats.issued, icon: CheckCircle, color: "text-chart-5", bg: "bg-chart-5/10" },
+          { label: language === "ar" ? "ملغاة" : "Revoked", value: stats.revoked, icon: XCircle, color: "text-destructive", bg: "bg-destructive/10" },
         ].map((s, i) => (
-          <Card key={i}>
+          <Card key={i} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="pt-5 pb-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">{s.label}</p>
                   <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
                 </div>
-                <s.icon className={`h-7 w-7 ${s.color}`} />
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg}`}>
+                  <s.icon className={`h-5 w-5 ${s.color}`} />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -388,11 +390,11 @@ export default function CertificatesAdmin() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="certificates"><Award className="h-4 w-4 me-1.5" />{language === "ar" ? "الشهادات" : "Certificates"}</TabsTrigger>
-          <TabsTrigger value="auto-issue"><Sparkles className="h-4 w-4 me-1.5" />{language === "ar" ? "إصدار تلقائي" : "Auto-Issue"}</TabsTrigger>
-          <TabsTrigger value="issue"><Plus className="h-4 w-4 me-1.5" />{language === "ar" ? "إصدار يدوي" : "Manual Issue"}</TabsTrigger>
-          <TabsTrigger value="templates"><LayoutTemplate className="h-4 w-4 me-1.5" />{language === "ar" ? "القوالب" : "Templates"}</TabsTrigger>
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="certificates" className="rounded-xl data-[state=active]:shadow-sm"><Award className="h-4 w-4 me-1.5" />{language === "ar" ? "الشهادات" : "Certificates"}</TabsTrigger>
+          <TabsTrigger value="auto-issue" className="rounded-xl data-[state=active]:shadow-sm"><Sparkles className="h-4 w-4 me-1.5" />{language === "ar" ? "إصدار تلقائي" : "Auto-Issue"}</TabsTrigger>
+          <TabsTrigger value="issue" className="rounded-xl data-[state=active]:shadow-sm"><Plus className="h-4 w-4 me-1.5" />{language === "ar" ? "إصدار يدوي" : "Manual Issue"}</TabsTrigger>
+          <TabsTrigger value="templates" className="rounded-xl data-[state=active]:shadow-sm"><LayoutTemplate className="h-4 w-4 me-1.5" />{language === "ar" ? "القوالب" : "Templates"}</TabsTrigger>
         </TabsList>
 
         {/* ═══ Certificates List ═══ */}
@@ -405,7 +407,7 @@ export default function CertificatesAdmin() {
             />
           )}
 
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
               <CardTitle>{language === "ar" ? "جميع الشهادات" : "All Certificates"}</CardTitle>
             </CardHeader>
@@ -679,8 +681,8 @@ export default function CertificatesAdmin() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {templates.length > 0 ? templates.map(t => (
-                  <Card key={t.id} className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setShowDesigner(true)}>
-                    <div className="h-28 flex items-center justify-center bg-muted/30"><Award className="h-10 w-10 text-primary" /></div>
+                  <Card key={t.id} className="rounded-2xl border-border/40 overflow-hidden cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200" onClick={() => setShowDesigner(true)}>
+                    <div className="h-28 flex items-center justify-center bg-primary/5"><Award className="h-10 w-10 text-primary/60" /></div>
                     <CardContent className="pt-3 pb-3">
                       <div className="flex items-center justify-between">
                         <div>
