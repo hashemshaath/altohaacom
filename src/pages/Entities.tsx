@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { Search, Building2, Globe, MapPin, Users, ShieldCheck, Bell, BellOff, ExternalLink, Mail, Phone, Sparkles, Landmark, GraduationCap, Briefcase } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -366,9 +367,9 @@ export default function Entities() {
                         <div className="flex items-center justify-between pt-3 border-t">
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Users className="h-3 w-3" />
-                            <span>{toEnglishDigits(followerCount)} {isAr ? "متابع" : "followers"}</span>
+                            <span><AnimatedCounter value={followerCount} className="inline" /> {isAr ? "متابع" : "followers"}</span>
                             {entity.member_count && (
-                              <span className="ms-2">• {toEnglishDigits(entity.member_count.toLocaleString())} {isAr ? "عضو" : "members"}</span>
+                              <span className="ms-2">• <AnimatedCounter value={entity.member_count} className="inline" format /> {isAr ? "عضو" : "members"}</span>
                             )}
                           </div>
                           {entity.founded_year && (
