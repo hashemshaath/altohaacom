@@ -204,9 +204,9 @@ export default function ChefScheduleAdmin() {
           { label: isAr ? "عام" : "Public", value: stats.publicCount, icon: Globe, color: "text-chart-3 bg-chart-3/10" },
           { label: isAr ? "إجمالي الرسوم" : "Total Fees", value: stats.totalFees.toLocaleString(), icon: DollarSign, color: "text-primary bg-primary/10" },
         ].map(kpi => (
-          <Card key={kpi.label} className="border-border/40">
+          <Card key={kpi.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${kpi.color}`}>
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${kpi.color}`}>
                 <kpi.icon className="h-4 w-4" />
               </div>
               <div>
@@ -219,10 +219,10 @@ export default function ChefScheduleAdmin() {
       </div>
 
       <Tabs defaultValue="events">
-        <TabsList>
-          <TabsTrigger value="events" className="gap-1.5"><Calendar className="h-3.5 w-3.5" />{isAr ? "الأحداث" : "Events"}</TabsTrigger>
-          <TabsTrigger value="calendar" className="gap-1.5"><CalendarDays className="h-3.5 w-3.5" />{isAr ? "التقويم" : "Calendar"}</TabsTrigger>
-          <TabsTrigger value="overview" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="events" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><Calendar className="h-3.5 w-3.5" />{isAr ? "الأحداث" : "Events"}</TabsTrigger>
+          <TabsTrigger value="calendar" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><CalendarDays className="h-3.5 w-3.5" />{isAr ? "التقويم" : "Calendar"}</TabsTrigger>
+          <TabsTrigger value="overview" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="events" className="space-y-4 mt-4">
@@ -274,7 +274,7 @@ export default function ChefScheduleAdmin() {
           </BulkActionBar>
 
           {/* Events Table */}
-          <Card className="border-border/40 overflow-hidden">
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow>

@@ -176,35 +176,35 @@ export default function ChefsTableAdmin() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto scrollbar-none -mx-1 px-1 print:hidden">
-          <TabsList className="h-8 sm:h-9 gap-0.5 w-max">
-            <TabsTrigger value="overview" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+          <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto gap-0.5 w-max">
+            <TabsTrigger value="overview" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "عامة" : "Overview"}
             </TabsTrigger>
-            <TabsTrigger value="requests" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="requests" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "طلبات" : "Requests"}
               {pendingRequests.length > 0 && (
                 <Badge variant="destructive" className="ms-0.5 h-4 min-w-4 px-1 text-[9px]">{pendingRequests.length}</Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="sessions" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="sessions" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <ChefHat className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "جلسات" : "Sessions"}
             </TabsTrigger>
-            <TabsTrigger value="invitations" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="invitations" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <Send className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "دعوات" : "Invite"}
             </TabsTrigger>
-            <TabsTrigger value="judges" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="judges" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <Gavel className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "محكمين" : "Judges"}
             </TabsTrigger>
-            <TabsTrigger value="pricing" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="pricing" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <Receipt className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "تسعير" : "Pricing"}
             </TabsTrigger>
-            <TabsTrigger value="registrations" className="gap-1 text-xs h-7 sm:h-8 px-2 sm:px-3">
+            <TabsTrigger value="registrations" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
               <UserPlus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "تسجيل" : "Register"}
             </TabsTrigger>
@@ -258,7 +258,7 @@ export default function ChefsTableAdmin() {
                 const StatusIcon = sc.icon;
 
                 return (
-                  <Card key={req.id} className={`border-border/40 transition-all ${isExpanded ? "ring-1 ring-primary/20" : ""}`}>
+                  <Card key={req.id} className={`rounded-2xl border-border/40 transition-all ${isExpanded ? "ring-1 ring-primary/20" : ""}`}>
                     <CardContent className="p-0">
                       {/* Summary Row */}
                       <div
