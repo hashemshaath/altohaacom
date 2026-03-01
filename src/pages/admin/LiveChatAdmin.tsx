@@ -378,7 +378,7 @@ export default function LiveChatAdmin() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="lg:hidden h-7 w-7 shrink-0 rounded-lg"
+                    className="lg:hidden h-7 w-7 shrink-0 rounded-xl"
                     onClick={() => setSelectedSessionId(null)}
                   >
                     <ArrowLeft className="h-4 w-4" />

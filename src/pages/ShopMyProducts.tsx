@@ -131,7 +131,7 @@ export default function ShopMyProducts() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <div className="mb-1 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
                 <Package className="h-4 w-4 text-primary" />
               </div>
               <h1 className="font-serif text-2xl font-bold md:text-3xl">{isAr ? "منتجاتي" : "My Products"}</h1>
@@ -202,7 +202,7 @@ export default function ShopMyProducts() {
               return (
                 <Card key={p.id}>
                   <CardContent className="flex items-center gap-4 p-4">
-                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted">
                       {p.image_url ? (
                         <img src={p.image_url} alt={title} className="h-full w-full object-cover" />
                       ) : (

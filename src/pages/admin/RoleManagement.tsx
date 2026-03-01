@@ -480,7 +480,7 @@ export default function RoleManagement() {
                   const allSelected = catSelected === perms.length;
                   const isExpanded = expandedCategories.has(category) || catSelected > 0;
                   return (
-                    <div key={category} className="rounded-lg border">
+                    <div key={category} className="rounded-xl border">
                       <button onClick={() => toggleCategory(category)}
                         className="flex w-full items-center justify-between p-3 hover:bg-muted/30 transition-colors">
                         <div className="flex items-center gap-2">
@@ -505,7 +505,7 @@ export default function RoleManagement() {
                           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
                             {perms.map((perm) => (
                               <label key={perm.id}
-                                className={`flex cursor-pointer items-center gap-2.5 rounded-lg border p-2.5 transition-colors hover:bg-muted/50 ${
+                                className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-2.5 transition-colors hover:bg-muted/50 ${
                                   selectedPerms.has(perm.id) ? "border-primary/40 bg-primary/5" : ""
                                 }`}>
                                 <Checkbox checked={selectedPerms.has(perm.id)} onCheckedChange={() => togglePerm(perm.id)} />
@@ -556,7 +556,7 @@ export default function RoleManagement() {
                 <ScrollArea className="max-h-[500px]">
                   <div className="space-y-2">
                     {usersForAssignment.map((user) => (
-                      <div key={user.user_id} className="flex items-center gap-3 rounded-lg border p-3">
+                      <div key={user.user_id} className="flex items-center gap-3 rounded-xl border p-3">
                         <Avatar className="h-9 w-9">
                           <AvatarImage src={user.avatar_url || undefined} />
                           <AvatarFallback className="text-xs">
@@ -625,7 +625,7 @@ export default function RoleManagement() {
               ) : (
                 <div className="space-y-2">
                   {overrides.map((o: any) => (
-                    <div key={o.id} className="flex items-center gap-3 rounded-lg border p-3">
+                    <div key={o.id} className="flex items-center gap-3 rounded-xl border p-3">
                       <div className={`rounded-full p-1.5 ${o.granted ? "bg-chart-2/10" : "bg-destructive/10"}`}>
                         {o.granted ? <ShieldCheck className="h-4 w-4 text-chart-2" /> : <ShieldOff className="h-4 w-4 text-destructive" />}
                       </div>
@@ -679,7 +679,7 @@ export default function RoleManagement() {
                 <ScrollArea className="max-h-[500px]">
                   <div className="space-y-2">
                     {recentChanges.map((change: any) => (
-                      <div key={change.id} className="flex items-center gap-3 rounded-lg border p-3">
+                      <div key={change.id} className="flex items-center gap-3 rounded-xl border p-3">
                         <div className="rounded-full p-1.5 bg-primary/10">
                           <Activity className="h-3.5 w-3.5 text-primary" />
                         </div>

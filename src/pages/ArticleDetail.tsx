@@ -137,9 +137,9 @@ export default function ArticleDetail() {
           <Skeleton className="mb-6 h-12 w-3/4 rounded-xl" />
           <Skeleton className="h-80 w-full rounded-2xl" />
           <div className="mt-6 space-y-3">
-            <Skeleton className="h-4 w-full rounded-lg" />
-            <Skeleton className="h-4 w-5/6 rounded-lg" />
-            <Skeleton className="h-4 w-4/6 rounded-lg" />
+            <Skeleton className="h-4 w-full rounded-xl" />
+            <Skeleton className="h-4 w-5/6 rounded-xl" />
+            <Skeleton className="h-4 w-4/6 rounded-xl" />
           </div>
         </main>
         <Footer />
@@ -223,7 +223,7 @@ export default function ArticleDetail() {
                       {isAr ? "العودة للأخبار" : "Back to News"}
                     </Link>
                   </Button>
-                  <Badge variant="secondary" className="capitalize rounded-lg text-xs px-3">
+                  <Badge variant="secondary" className="capitalize rounded-xl text-xs px-3">
                     {article.type}
                   </Badge>
                 </div>
@@ -260,26 +260,26 @@ export default function ArticleDetail() {
                       <DropdownMenuContent align="end" className="w-48 rounded-xl">
                         <DropdownMenuItem 
                           onClick={() => window.open(shareLinks.twitter, "_blank")} 
-                          className="cursor-pointer gap-2 rounded-lg"
+                          className="cursor-pointer gap-2 rounded-xl"
                         >
                           <Twitter className="h-4 w-4" />
                           Twitter / X
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => window.open(shareLinks.facebook, "_blank")} 
-                          className="cursor-pointer gap-2 rounded-lg"
+                          className="cursor-pointer gap-2 rounded-xl"
                         >
                           <Facebook className="h-4 w-4" />
                           Facebook
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => window.open(shareLinks.linkedin, "_blank")} 
-                          className="cursor-pointer gap-2 rounded-lg"
+                          className="cursor-pointer gap-2 rounded-xl"
                         >
                           <Linkedin className="h-4 w-4" />
                           LinkedIn
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handleCopyLink} className="cursor-pointer gap-2 rounded-lg">
+                        <DropdownMenuItem onClick={handleCopyLink} className="cursor-pointer gap-2 rounded-xl">
                           {copied ? <Check className="h-4 w-4 text-primary" /> : <Link2 className="h-4 w-4" />}
                           {isAr ? "نسخ الرابط" : "Copy Link"}
                         </DropdownMenuItem>

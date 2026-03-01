@@ -276,8 +276,8 @@ export default function ArticlesAdmin() {
             <div className="space-y-6">
               <Tabs defaultValue="en">
                 <TabsList className="rounded-xl">
-                  <TabsTrigger value="en" className="rounded-lg">English</TabsTrigger>
-                  <TabsTrigger value="ar" className="rounded-lg">العربية</TabsTrigger>
+                  <TabsTrigger value="en" className="rounded-xl">English</TabsTrigger>
+                  <TabsTrigger value="ar" className="rounded-xl">العربية</TabsTrigger>
                 </TabsList>
                 <TabsContent value="en" className="space-y-4 pt-4">
                   <div className="space-y-2">

@@ -182,7 +182,7 @@ export default function OrganizerPortal() {
                     <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group block">
                       <Card className="border-border/40 transition-all hover:shadow-md hover:border-primary/20">
                         <CardContent className="p-4 flex items-center gap-4">
-                          <div className="hidden sm:block shrink-0 w-20 h-14 rounded-lg overflow-hidden bg-muted">
+                          <div className="hidden sm:block shrink-0 w-20 h-14 rounded-xl overflow-hidden bg-muted">
                             {ex.cover_image_url ? (
                               <img src={ex.cover_image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
                             ) : (

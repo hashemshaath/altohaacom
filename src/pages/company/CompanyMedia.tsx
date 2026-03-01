@@ -351,7 +351,7 @@ export default function CompanyMedia() {
               <img
                 src={imageItems[lightboxIndex].file_url}
                 alt={imageItems[lightboxIndex].title || ""}
-                className="max-h-[70vh] max-w-full rounded-lg object-contain"
+                className="max-h-[70vh] max-w-full rounded-xl object-contain"
               />
               {imageItems.length > 1 && (
                 <Button
