@@ -339,7 +339,7 @@ const EventCard = memo(function EventCard({ comp, i, isAr }: { comp: any; i: num
             <h3 className={cn("text-lg sm:text-xl lg:text-2xl font-bold text-background leading-snug line-clamp-2 mb-1.5", !isAr && "font-serif")}>{title}</h3>
             <div className="flex items-center gap-3 text-background/60 text-xs sm:text-sm">
               {comp.competition_start && (
-                <span className="flex items-center gap-1"><Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{format(new Date(comp.competition_start), "MMM d, yyyy")}</span>
+                <span className="flex items-center gap-1"><Calendar className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{format(new Date(comp.competition_start), "MMM d, yyyy", { locale: isAr ? ar : undefined })}</span>
               )}
               {comp.city && (
                 <span className="flex items-center gap-1"><MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />{comp.city}</span>
