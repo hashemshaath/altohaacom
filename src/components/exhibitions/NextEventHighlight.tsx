@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import { format, differenceInDays, differenceInHours } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
 import type { Exhibition } from "./ExhibitionCard";
 
@@ -49,11 +50,11 @@ export function NextEventHighlight({ exhibition, isAr }: Props) {
       {/* Countdown */}
       <div className="flex items-center gap-3 mb-3">
         <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-black text-primary tabular-nums">{toEnglishDigits(daysLeft)}</span>
+          <span className="text-2xl font-black text-primary tabular-nums"><AnimatedCounter value={daysLeft} /></span>
           <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{isAr ? "يوم" : "days"}</span>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-black text-primary tabular-nums">{toEnglishDigits(hoursLeft)}</span>
+          <span className="text-2xl font-black text-primary tabular-nums"><AnimatedCounter value={hoursLeft} /></span>
           <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{isAr ? "ساعة" : "hrs"}</span>
         </div>
       </div>

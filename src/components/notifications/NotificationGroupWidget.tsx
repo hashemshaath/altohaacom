@@ -8,7 +8,7 @@ import { Bell, CheckCheck, Trophy, Building2, CreditCard, Users, ShoppingCart, G
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface GroupedNotification {
   key: string;
@@ -109,7 +109,7 @@ export function NotificationGroupWidget() {
         </h3>
         {unreadCount > 0 && (
           <Badge variant="secondary" className="text-[10px]">
-            {toEnglishDigits(unreadCount)} {isAr ? "جديد" : "new"}
+            <AnimatedCounter value={unreadCount} className="inline" /> {isAr ? "جديد" : "new"}
           </Badge>
         )}
       </div>
@@ -129,11 +129,11 @@ export function NotificationGroupWidget() {
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-semibold">{group.category}</span>
                   <Badge variant="secondary" className="text-[9px] px-1.5 h-4">
-                    {toEnglishDigits(group.count)}
+                    <AnimatedCounter value={group.count} className="inline" />
                   </Badge>
                   {group.unreadCount > 0 && (
                     <Badge className="text-[9px] px-1.5 h-4 ms-auto">
-                      {toEnglishDigits(group.unreadCount)}
+                      <AnimatedCounter value={group.unreadCount} className="inline" />
                     </Badge>
                   )}
                 </div>
