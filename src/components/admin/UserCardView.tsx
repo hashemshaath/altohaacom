@@ -71,22 +71,22 @@ export function UserCard({ user, onView }: UserCardProps) {
         </div>
 
         <div className="flex flex-wrap gap-1.5 mt-3">
-          <Badge variant="outline" className={statusColor + " text-[10px] px-2 py-0.5 rounded-lg"}>
+          <Badge variant="outline" className={statusColor + " text-[10px] px-2 py-0.5 rounded-xl"}>
             {user.account_status || "active"}
           </Badge>
-          <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg">
+          <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-xl">
             {user.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "متابع" : "Fan")}
           </Badge>
           {user.membership_tier && user.membership_tier !== "basic" && (
-            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg border-chart-4/50 text-chart-4">
+            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-xl border-chart-4/50 text-chart-4">
               <Crown className="h-2.5 w-2.5 me-0.5" /> {user.membership_tier}
             </Badge>
           )}
           {user.roles?.slice(0, 2).map(r => (
-            <Badge key={r.role} variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg">{r.role}</Badge>
+            <Badge key={r.role} variant="outline" className="text-[10px] px-2 py-0.5 rounded-xl">{r.role}</Badge>
           ))}
           {(user.roles?.length || 0) > 2 && (
-            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-lg">+{(user.roles?.length || 0) - 2}</Badge>
+            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-xl">+{(user.roles?.length || 0) - 2}</Badge>
           )}
         </div>
 
@@ -94,7 +94,7 @@ export function UserCard({ user, onView }: UserCardProps) {
           <span className="text-[10px] text-muted-foreground">
             {new Date(user.created_at).toLocaleDateString()}
           </span>
-          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 rounded-lg hover:bg-primary/10 hover:text-primary" onClick={() => onView(user.user_id)}>
+          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 rounded-xl hover:bg-primary/10 hover:text-primary" onClick={() => onView(user.user_id)}>
             <Eye className="h-3 w-3" /> {isAr ? "عرض" : "View"}
           </Button>
         </div>

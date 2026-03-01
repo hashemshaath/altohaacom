@@ -102,7 +102,7 @@ export function CRMLiveStatsWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 text-center">
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
@@ -151,17 +151,17 @@ export function CRMLiveStatsWidget() {
 
         {/* Bottom Row */}
         <div className="grid grid-cols-3 gap-3 mt-4">
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Clock className="h-3 w-3 mx-auto mb-1 text-chart-4" />
             <div className="text-sm font-bold">{data.avgResolutionHrs}h</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "متوسط الحل" : "Avg Resolution"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Users className="h-3 w-3 mx-auto mb-1 text-primary" />
             <div className="text-sm font-bold">{data.activeSegments}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "شرائح نشطة" : "Active Segments"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <CheckCircle2 className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold">{data.resolvedTickets}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "تم حلها" : "Resolved"}</div>

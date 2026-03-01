@@ -411,7 +411,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
               {criteria.map(c => (
-                <div key={c.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div key={c.id} className="flex items-center justify-between rounded-xl border p-3">
                   <div>
                     <p className="font-medium text-sm">
                       {language === "ar" && c.name_ar ? c.name_ar : c.name}
@@ -460,7 +460,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
         <CardContent className="space-y-4">
           {/* Scrape URL Form */}
           {showScrape && (
-            <div className="rounded-lg border p-4 space-y-3">
+            <div className="rounded-xl border p-4 space-y-3">
               <Label>{language === "ar" ? "رابط لاستخراج المحتوى" : "URL to scrape"}</Label>
               <Input
                 value={scrapeUrl}
@@ -482,7 +482,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
 
           {/* Add Resource Form */}
           {showAddResource && (
-            <div className="rounded-lg border p-4 space-y-3">
+            <div className="rounded-xl border p-4 space-y-3">
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="space-y-1">
                   <Label className="text-xs">Title</Label>
@@ -539,7 +539,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
           ) : resources && resources.length > 0 ? (
             <div className="space-y-2">
               {resources.map(r => (
-                <div key={r.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div key={r.id} className="flex items-center justify-between rounded-xl border p-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-primary/10">
                       {resourceTypeIcon(r.resource_type)}

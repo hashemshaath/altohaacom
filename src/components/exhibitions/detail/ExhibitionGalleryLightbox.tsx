@@ -80,7 +80,7 @@ export function ExhibitionGalleryLightbox({ images, initialIndex, title, isOpen,
         <img
           src={images[index]}
           alt={`${title} ${index + 1}`}
-          className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+          className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
         />
       </div>
 

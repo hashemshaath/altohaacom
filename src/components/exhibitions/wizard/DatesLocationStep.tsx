@@ -20,7 +20,7 @@ export function ExhibitionDatesLocationStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Calendar className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "التواريخ" : "Event Dates"}
@@ -56,7 +56,7 @@ export function ExhibitionDatesLocationStep({ data, onChange }: Props) {
           </div>
 
           {data.startDate && data.endDate && (
-            <div className="flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-2">
+            <div className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
                 {isAr ? "المدة:" : "Duration:"}{" "}

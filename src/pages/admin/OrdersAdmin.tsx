@@ -688,7 +688,7 @@ export default function OrdersAdmin() {
                 {orderDetails.rejection_reason && (
                   <>
                     <Separator />
-                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20">
                       <p className="text-sm font-medium text-destructive mb-1">{isAr ? "سبب الرفض" : "Rejection Reason"}</p>
                       <p className="text-sm">{orderDetails.rejection_reason}</p>
                     </div>
@@ -757,7 +757,7 @@ export default function OrdersAdmin() {
                   <div className="space-y-4">
                     {communications.map((msg: any) => (
                       <div key={msg.id} className={`flex ${msg.sender_type === "admin" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[80%] rounded-lg p-3 ${
+                        <div className={`max-w-[80%] rounded-xl p-3 ${
                           msg.sender_type === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"
                         }`}>
                           <p>{msg.message}</p>
@@ -799,9 +799,9 @@ export default function OrdersAdmin() {
                 {orderDetails.companies && (
                   <div className="flex items-center gap-3">
                     {orderDetails.companies.logo_url ? (
-                      <img src={orderDetails.companies.logo_url} alt="" className="h-12 w-12 rounded-lg object-cover" />
+                      <img src={orderDetails.companies.logo_url} alt="" className="h-12 w-12 rounded-xl object-cover" />
                     ) : (
-                      <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
+                      <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
                         <Building2 className="h-6 w-6 text-muted-foreground" />
                       </div>
                     )}

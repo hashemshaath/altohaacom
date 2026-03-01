@@ -64,7 +64,7 @@ export function AdCampaignOverviewWidget() {
             { icon: DollarSign, label: isAr ? "الإنفاق" : "Spent", value: fmt(data.totalSpent), sub: `/ ${fmt(data.totalBudget)}`, color: "text-chart-3" },
             { icon: TrendingUp, label: isAr ? "الحملات" : "Campaigns", value: String(data.total), sub: `${data.active} ${isAr ? "نشطة" : "active"}`, color: "text-primary" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>

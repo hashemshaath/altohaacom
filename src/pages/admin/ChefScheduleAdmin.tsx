@@ -379,7 +379,7 @@ export default function ChefScheduleAdmin() {
               return (
                 <Card key={key} className="border-border/40">
                   <CardContent className="p-4 flex items-center gap-3">
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${config.color}`}>
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -447,7 +447,7 @@ export default function ChefScheduleAdmin() {
                     const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                     const chef = profileMap[ev.chef_id];
                     return (
-                      <div key={ev.id} className="flex items-center gap-3 p-3 rounded-lg border border-border/30 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => handleEdit(ev)}>
+                      <div key={ev.id} className="flex items-center gap-3 p-3 rounded-xl border border-border/30 hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => handleEdit(ev)}>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{ev.title}</p>
                           <p className="text-xs text-muted-foreground">{chef?.full_name || "—"} · {format(parseISO(ev.start_date), "MMM d, yyyy")}</p>

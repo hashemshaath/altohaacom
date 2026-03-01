@@ -269,7 +269,7 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
                           <div className="grid grid-cols-3 gap-1">
                             {AVAILABLE_ICONS.map(ic => (
                               <button key={ic.key} onClick={() => changeSectionIcon(section.key, ic.key)}
-                                className={`flex items-center justify-center h-9 w-9 rounded-lg transition-all ${section.icon === ic.key ? "bg-primary/15 text-primary ring-1 ring-primary/30" : "hover:bg-muted/60 text-muted-foreground"}`} title={ic.label}>
+                                className={`flex items-center justify-center h-9 w-9 rounded-xl transition-all ${section.icon === ic.key ? "bg-primary/15 text-primary ring-1 ring-primary/30" : "hover:bg-muted/60 text-muted-foreground"}`} title={ic.label}>
                                 <ic.icon className="h-4 w-4" />
                               </button>
                             ))}

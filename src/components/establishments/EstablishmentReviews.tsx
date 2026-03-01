@@ -198,7 +198,7 @@ export default function EstablishmentReviews({ establishmentId }: Props) {
                     </span>
                   </div>
                   {r.reply_text && (
-                    <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                    <div className="mt-3 p-3 bg-muted/50 rounded-xl">
                       <p className="text-xs font-medium mb-1 flex items-center gap-1"><MessageSquare className="h-3 w-3" /> {isAr ? "رد الإدارة" : "Management Reply"}</p>
                       <p className="text-sm">{isAr && r.reply_text_ar ? r.reply_text_ar : r.reply_text}</p>
                     </div>

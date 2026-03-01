@@ -191,19 +191,19 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
               </DialogHeader>
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="rounded-lg bg-muted p-2">
+                  <div className="rounded-xl bg-muted p-2">
                     <p className="text-muted-foreground">{t("Category", "الفئة")}</p>
                     <p className="font-medium capitalize">{selectedBooth.category || "general"}</p>
                   </div>
-                  <div className="rounded-lg bg-muted p-2">
+                  <div className="rounded-xl bg-muted p-2">
                     <p className="text-muted-foreground">{t("Size", "المساحة")}</p>
                     <p className="font-medium">{selectedBooth.size_sqm > 0 ? `${selectedBooth.size_sqm} m²` : selectedBooth.size || "—"}</p>
                   </div>
-                  <div className="rounded-lg bg-muted p-2">
+                  <div className="rounded-xl bg-muted p-2">
                     <p className="text-muted-foreground">{t("Hall", "القاعة")}</p>
                     <p className="font-medium">{(isAr && selectedBooth.hall_ar ? selectedBooth.hall_ar : selectedBooth.hall) || "—"}</p>
                   </div>
-                  <div className="rounded-lg bg-muted p-2">
+                  <div className="rounded-xl bg-muted p-2">
                     <p className="text-muted-foreground">{t("Price", "السعر")}</p>
                     <p className="font-bold text-primary">{selectedBooth.price > 0 ? `${selectedBooth.price} ${selectedBooth.currency}` : t("Free", "مجاني")}</p>
                   </div>
@@ -214,7 +214,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
                 )}
 
                 {selectedBooth.contact_name && (
-                  <div className="rounded-lg border p-2 text-xs">
+                  <div className="rounded-xl border p-2 text-xs">
                     <p className="font-medium">{selectedBooth.contact_name}</p>
                     {selectedBooth.contact_email && <p className="text-muted-foreground">{selectedBooth.contact_email}</p>}
                     {selectedBooth.contact_phone && <p className="text-muted-foreground">{selectedBooth.contact_phone}</p>}

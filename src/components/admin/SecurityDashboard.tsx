@@ -202,7 +202,7 @@ export default function SecurityDashboard() {
                   <Card key={event.id} className="border-border/50">
                     <CardContent className="p-3">
                       <div className="flex items-start gap-3">
-                        <div className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${
+                        <div className={`flex h-8 w-8 items-center justify-center rounded-xl shrink-0 ${
                           event.severity === "critical" ? "bg-destructive/10" :
                           event.severity === "warning" ? "bg-chart-4/10" :
                           "bg-muted/60"

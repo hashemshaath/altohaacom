@@ -82,12 +82,12 @@ export default function Tastings() {
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="h-11 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40 focus:ring-primary/20"><SelectValue /></SelectTrigger>
                 <SelectContent className="rounded-xl border-border/40">
-                  <SelectItem value="all" className="rounded-lg">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
-                  <SelectItem value="draft" className="rounded-lg">{isAr ? "مسودة" : "Draft"}</SelectItem>
-                  <SelectItem value="open" className="rounded-lg">{isAr ? "مفتوح" : "Open"}</SelectItem>
-                  <SelectItem value="in_progress" className="rounded-lg">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
-                  <SelectItem value="completed" className="rounded-lg">{isAr ? "مكتمل" : "Completed"}</SelectItem>
-                  <SelectItem value="cancelled" className="rounded-lg">{isAr ? "ملغي" : "Cancelled"}</SelectItem>
+                  <SelectItem value="all" className="rounded-xl">{isAr ? "كل الحالات" : "All Statuses"}</SelectItem>
+                  <SelectItem value="draft" className="rounded-xl">{isAr ? "مسودة" : "Draft"}</SelectItem>
+                  <SelectItem value="open" className="rounded-xl">{isAr ? "مفتوح" : "Open"}</SelectItem>
+                  <SelectItem value="in_progress" className="rounded-xl">{isAr ? "قيد التنفيذ" : "In Progress"}</SelectItem>
+                  <SelectItem value="completed" className="rounded-xl">{isAr ? "مكتمل" : "Completed"}</SelectItem>
+                  <SelectItem value="cancelled" className="rounded-xl">{isAr ? "ملغي" : "Cancelled"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -146,7 +146,7 @@ export default function Tastings() {
                     <div className="mt-4 flex flex-wrap gap-4 text-xs font-bold text-muted-foreground">
                       {session.session_date && (
                         <span className="flex items-center gap-2">
-                          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
                             <Calendar className="h-3 w-3 text-primary" />
                           </div>
                           {format(new Date(session.session_date), "MMM d, yyyy")}
@@ -154,7 +154,7 @@ export default function Tastings() {
                       )}
                       {session.venue && (
                         <span className="flex items-center gap-2">
-                          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-chart-4/10">
+                          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-chart-4/10">
                             <MapPin className="h-3 w-3 text-chart-4" />
                           </div>
                           {isAr && session.venue_ar ? session.venue_ar : session.venue}
