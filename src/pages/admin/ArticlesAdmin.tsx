@@ -271,13 +271,13 @@ export default function ArticlesAdmin() {
           </h1>
         </div>
 
-        <Card>
+        <Card className="rounded-2xl border-border/40 shadow-sm">
           <CardContent className="pt-6">
             <div className="space-y-6">
               <Tabs defaultValue="en">
-                <TabsList>
-                  <TabsTrigger value="en">English</TabsTrigger>
-                  <TabsTrigger value="ar">العربية</TabsTrigger>
+                <TabsList className="rounded-xl">
+                  <TabsTrigger value="en" className="rounded-lg">English</TabsTrigger>
+                  <TabsTrigger value="ar" className="rounded-lg">العربية</TabsTrigger>
                 </TabsList>
                 <TabsContent value="en" className="space-y-4 pt-4">
                   <div className="space-y-2">
@@ -471,35 +471,27 @@ export default function ArticlesAdmin() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-        <Card><CardContent className="p-3 text-center">
-          <FileText className="mx-auto mb-1 h-4 w-4 text-primary" />
-          <p className="text-lg font-bold">{stats.total}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "إجمالي" : "Total"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <TrendingUp className="mx-auto mb-1 h-4 w-4 text-chart-2" />
-          <p className="text-lg font-bold">{stats.published}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "منشور" : "Published"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <Clock className="mx-auto mb-1 h-4 w-4 text-chart-4" />
-          <p className="text-lg font-bold">{stats.drafts}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مسودات" : "Drafts"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <BarChart3 className="mx-auto mb-1 h-4 w-4 text-chart-3" />
-          <p className="text-lg font-bold">{stats.totalViews.toLocaleString()}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مشاهدات" : "Views"}</p>
-        </CardContent></Card>
-        <Card><CardContent className="p-3 text-center">
-          <Star className="mx-auto mb-1 h-4 w-4 text-chart-1" />
-          <p className="text-lg font-bold">{stats.featured}</p>
-          <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مميز" : "Featured"}</p>
-        </CardContent></Card>
+        {[
+          { icon: FileText, value: stats.total, label: language === "ar" ? "إجمالي" : "Total", color: "text-primary", bg: "bg-primary/10" },
+          { icon: TrendingUp, value: stats.published, label: language === "ar" ? "منشور" : "Published", color: "text-chart-2", bg: "bg-chart-2/10" },
+          { icon: Clock, value: stats.drafts, label: language === "ar" ? "مسودات" : "Drafts", color: "text-chart-4", bg: "bg-chart-4/10" },
+          { icon: BarChart3, value: stats.totalViews.toLocaleString(), label: language === "ar" ? "مشاهدات" : "Views", color: "text-chart-3", bg: "bg-chart-3/10" },
+          { icon: Star, value: stats.featured, label: language === "ar" ? "مميز" : "Featured", color: "text-chart-1", bg: "bg-chart-1/10" },
+        ].map((stat) => (
+          <Card key={stat.label} className="rounded-2xl border-border/40 hover:shadow-md transition-all hover:-translate-y-0.5">
+            <CardContent className="p-4 text-center">
+              <div className={cn("mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl", stat.bg)}>
+                <stat.icon className={cn("h-4 w-4", stat.color)} />
+              </div>
+              <p className="text-xl font-bold">{stat.value}</p>
+              <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
@@ -509,15 +501,15 @@ export default function ArticlesAdmin() {
                   placeholder={language === "ar" ? "بحث..." : "Search..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="ps-9"
+                  className="ps-9 rounded-xl"
                 />
               </div>
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-[150px] rounded-xl">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl">
                 <SelectItem value="all">{language === "ar" ? "الكل" : "All Status"}</SelectItem>
                 <SelectItem value="draft">{language === "ar" ? "مسودة" : "Draft"}</SelectItem>
                 <SelectItem value="published">{language === "ar" ? "منشور" : "Published"}</SelectItem>
@@ -525,10 +517,10 @@ export default function ArticlesAdmin() {
               </SelectContent>
             </Select>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="w-[150px] rounded-xl">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl">
                 <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
                 <SelectItem value="news">{language === "ar" ? "أخبار" : "News"}</SelectItem>
                 <SelectItem value="article">{language === "ar" ? "مقال" : "Article"}</SelectItem>
@@ -553,7 +545,7 @@ export default function ArticlesAdmin() {
       />
 
       {/* Articles Table */}
-      <Card>
+      <Card className="rounded-2xl border-border/40 overflow-hidden">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -589,7 +581,7 @@ export default function ArticlesAdmin() {
                 </TableRow>
               ) : (
                 articles?.map((article) => (
-                  <TableRow key={article.id} className={cn("hover:bg-accent/30 transition-colors", bulk.isSelected(article.id) && "bg-primary/5")}>
+                  <TableRow key={article.id} className={cn("hover:bg-accent/30 transition-colors group", bulk.isSelected(article.id) && "bg-primary/5")}>
                     <TableCell>
                       <Checkbox
                         checked={bulk.isSelected(article.id)}
@@ -602,10 +594,10 @@ export default function ArticlesAdmin() {
                           <img 
                             src={article.featured_image_url} 
                             alt="" 
-                            className="h-10 w-14 rounded-lg object-cover ring-1 ring-border/50"
+                            className="h-10 w-14 rounded-xl object-cover ring-1 ring-border/40 group-hover:ring-primary/30 transition-all"
                           />
                         ) : (
-                          <div className="flex h-10 w-14 items-center justify-center rounded-lg bg-primary/5">
+                          <div className="flex h-10 w-14 items-center justify-center rounded-xl bg-primary/5">
                             <FileText className="h-4 w-4 text-primary/40" />
                           </div>
                         )}
