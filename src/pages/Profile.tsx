@@ -75,8 +75,8 @@ export default function Profile() {
   // Helper to check if a tab is allowed by membership
   const isTabAllowed = (tabId: string): boolean => {
     const featureCode = TAB_FEATURE_MAP[tabId];
-    if (!featureCode) return true; // overview, edit, privacy always available
-    if (featuresLoading || !enabledFeatures) return true; // show while loading
+    if (!featureCode) return true;
+    if (featuresLoading || !enabledFeatures) return true;
     return enabledFeatures.has(featureCode);
   };
 
@@ -103,7 +103,6 @@ export default function Profile() {
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 
-  // Show all tabs but mark locked ones
   const tabs = allTabs;
 
   return (
@@ -134,11 +133,10 @@ export default function Profile() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         {/* Tab Navigation */}
-        <div className="sticky top-12 z-30 -mx-4 border-y border-border/20 bg-background/95 px-3 py-2 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-3 shadow-sm">
+        <div className="sticky top-12 z-30 -mx-4 border-y border-border/20 bg-background/90 px-3 py-2 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-3 md:bg-card/60 shadow-sm">
           <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none snap-x snap-mandatory" dir={isAr ? "rtl" : "ltr"}>
             {tabs.map((tab) => {
               const locked = !isTabAllowed(tab.id);
-              const isActive = activeTab === tab.id;
               if ((tab as any).href) {
                 return (
                   <Link
@@ -156,7 +154,7 @@ export default function Profile() {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className={`group relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 ${locked ? "opacity-50" : ""}`}
+                  className={`group relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 active:scale-95 ${locked ? "opacity-50" : ""}`}
                 >
                   <tab.icon className="h-3.5 w-3.5 shrink-0" />
                   <span>{tab.label}</span>
