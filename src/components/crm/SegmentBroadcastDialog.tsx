@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Users, Bell, Mail, MessageSquare } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface SegmentBroadcastDialogProps {
   open: boolean;
@@ -157,7 +158,7 @@ export function SegmentBroadcastDialog({
             <div>
               <p className="text-sm font-medium">{segmentName}</p>
               <p className="text-xs text-muted-foreground">
-                ~{estimatedReach.toLocaleString()} {isAr ? "مستخدم" : "users"}
+                ~<AnimatedCounter value={estimatedReach} className="inline" /> {isAr ? "مستخدم" : "users"}
               </p>
             </div>
             <div className="ms-auto flex flex-wrap gap-1">
