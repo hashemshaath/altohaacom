@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings, Search } from "lucide-react";
+import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings, Search, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -197,35 +197,39 @@ export default function Notifications() {
     <PageShell title={isAr ? "الإشعارات" : "Notifications"} description={isAr ? "مركز الإشعارات" : "Your notification center"} seoProps={{ noIndex: true }} className="max-w-3xl mx-auto">
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
-                <Bell className="h-5 w-5 text-primary" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-sm">
+                <Bell className="h-5.5 w-5.5 text-primary" />
               </div>
               <div>
-                <h1 className="font-serif text-2xl font-bold">
+                <h1 className="font-serif text-2xl font-bold tracking-tight">
                   {isAr ? "مركز الإشعارات" : "Notification Center"}
                 </h1>
                 {unreadCount > 0 && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                    </span>
                     {isAr ? `${toEnglishDigits(unreadCount)} إشعار غير مقروء` : `${unreadCount} unread`}
                   </p>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate("/notification-preferences")}>
+              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => navigate("/notification-preferences")}>
                 <Settings className="me-2 h-4 w-4" />
                 {isAr ? "الإعدادات" : "Settings"}
               </Button>
               {unreadCount > 0 && (
-                <Button variant="outline" size="sm" onClick={markAllAsRead}>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={markAllAsRead}>
                   <CheckCheck className="me-2 h-4 w-4" />
                   {isAr ? "قراءة الكل" : "Mark All Read"}
                 </Button>
               )}
               {notifications.length - unreadCount > 0 && (
-                <Button variant="outline" size="sm" onClick={clearAllRead}>
+                <Button variant="outline" size="sm" className="rounded-xl" onClick={clearAllRead}>
                   <Trash2 className="me-2 h-4 w-4" />
                   {isAr ? "مسح المقروءة" : "Clear Read"}
                 </Button>
@@ -235,34 +239,33 @@ export default function Notifications() {
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3">
-            <Card className="border-s-[3px] border-s-primary">
-              <CardContent className="p-3 text-center">
-                <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-                <p className="text-xl font-bold">{toEnglishDigits(notifications.length)}</p>
-              </CardContent>
-            </Card>
-            <Card className="border-s-[3px] border-s-chart-4">
-              <CardContent className="p-3 text-center">
-                <p className="text-xs text-muted-foreground">{isAr ? "غير مقروء" : "Unread"}</p>
-                <p className="text-xl font-bold">{toEnglishDigits(unreadCount)}</p>
-              </CardContent>
-            </Card>
-            <Card className="border-s-[3px] border-s-chart-5">
-              <CardContent className="p-3 text-center">
-                <p className="text-xs text-muted-foreground">{isAr ? "مقروء" : "Read"}</p>
-                <p className="text-xl font-bold">{toEnglishDigits(notifications.length - unreadCount)}</p>
-              </CardContent>
-            </Card>
+            {[
+              { label: isAr ? "الإجمالي" : "Total", value: notifications.length, color: "primary", icon: Bell },
+              { label: isAr ? "غير مقروء" : "Unread", value: unreadCount, color: "chart-4", icon: Sparkles },
+              { label: isAr ? "مقروء" : "Read", value: notifications.length - unreadCount, color: "chart-5", icon: Check },
+            ].map(s => (
+              <Card key={s.label} className="rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-${s.color}/10 group-hover:scale-110 transition-transform duration-300`}>
+                    <s.icon className={`h-4.5 w-4.5 text-${s.color}`} />
+                  </div>
+                  <div>
+                    <p className="text-[11px] text-muted-foreground font-medium">{s.label}</p>
+                    <p className="text-xl font-bold tabular-nums">{toEnglishDigits(s.value)}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={isAr ? "بحث في الإشعارات..." : "Search notifications..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="ps-10"
+              className="ps-10 rounded-xl h-10 bg-muted/30 border-border/50 focus:bg-card"
             />
           </div>
 
@@ -271,18 +274,28 @@ export default function Notifications() {
             {activeSections.map((section) => {
               const Icon = section.icon;
               const count = sectionCounts[section.key] || 0;
+              const isActive = sectionFilter === section.key;
               return (
                 <Button
                   key={section.key}
-                  variant={sectionFilter === section.key ? "default" : "outline"}
+                  variant={isActive ? "default" : "outline"}
                   size="sm"
-                  className="gap-1.5"
+                  className={cn(
+                    "gap-1.5 rounded-xl transition-all duration-200 active:scale-95",
+                    isActive && "shadow-sm shadow-primary/20"
+                  )}
                   onClick={() => setSectionFilter(section.key)}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {isAr ? section.ar : section.en}
                   {count > 0 && (
-                    <Badge variant="secondary" className="text-[10px] h-4 px-1.5 ms-1">
+                    <Badge 
+                      variant={isActive ? "outline" : "secondary"} 
+                      className={cn(
+                        "text-[10px] h-4 px-1.5 ms-0.5",
+                        isActive && "border-primary-foreground/30 text-primary-foreground"
+                      )}
+                    >
                       {toEnglishDigits(count)}
                     </Badge>
                   )}
@@ -292,20 +305,20 @@ export default function Notifications() {
           </div>
 
           {/* Read/Type Filters */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 sticky top-0 z-20 bg-background/80 backdrop-blur-xl py-2 -mx-1 px-1 rounded-xl">
             <Tabs value={filter} onValueChange={setFilter}>
-              <TabsList>
-                <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
-                <TabsTrigger value="unread">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
-                <TabsTrigger value="read">{isAr ? "مقروء" : "Read"}</TabsTrigger>
+              <TabsList className="rounded-xl">
+                <TabsTrigger value="all" className="rounded-lg">{isAr ? "الكل" : "All"}</TabsTrigger>
+                <TabsTrigger value="unread" className="rounded-lg">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
+                <TabsTrigger value="read" className="rounded-lg">{isAr ? "مقروء" : "Read"}</TabsTrigger>
               </TabsList>
             </Tabs>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[130px]">
+              <SelectTrigger className="w-[130px] rounded-xl">
                 <Filter className="me-2 h-3.5 w-3.5" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl">
                 <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
                 <SelectItem value="info">{isAr ? "معلومات" : "Info"}</SelectItem>
                 <SelectItem value="success">{isAr ? "نجاح" : "Success"}</SelectItem>
@@ -314,7 +327,7 @@ export default function Notifications() {
               </SelectContent>
             </Select>
             {filter === "unread" && filteredNotifications.some((n) => !n.is_read) && (
-              <Button variant="ghost" size="sm" onClick={markFilteredAsRead} className="text-xs text-primary">
+              <Button variant="ghost" size="sm" onClick={markFilteredAsRead} className="text-xs text-primary rounded-xl">
                 <CheckCheck className="me-1 h-3 w-3" />
                 {isAr ? "قراءة المعروضة" : "Mark visible read"}
               </Button>
@@ -333,13 +346,13 @@ export default function Notifications() {
           {loading ? (
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i}>
+                <Card key={i} className="rounded-2xl">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                      <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
                       <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4" />
-                        <Skeleton className="h-3 w-1/2" />
+                        <Skeleton className="h-4 w-3/4 rounded-lg" />
+                        <Skeleton className="h-3 w-1/2 rounded-lg" />
                         <div className="flex gap-2 pt-1">
                           <Skeleton className="h-4 w-16 rounded-full" />
                           <Skeleton className="h-4 w-16 rounded-full" />
@@ -351,19 +364,22 @@ export default function Notifications() {
               ))}
             </div>
           ) : Object.keys(grouped).length === 0 ? (
-            <Card>
+            <Card className="rounded-2xl border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-16">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
-                  <Bell className="h-6 w-6 text-muted-foreground" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50 mb-4">
+                  <Bell className="h-7 w-7 text-muted-foreground/40" />
                 </div>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground font-medium">
                   {searchQuery
                     ? (isAr ? "لا توجد نتائج" : "No results found")
                     : filter === "unread"
                     ? (isAr ? "لا توجد إشعارات غير مقروءة" : "No unread notifications")
                     : (isAr ? "لا توجد إشعارات" : "No notifications")}
                 </p>
-                <Button variant="outline" size="sm" className="mt-3" onClick={() => navigate("/notification-preferences")}>
+                <p className="text-xs text-muted-foreground/70 mt-1">
+                  {isAr ? "ستظهر الإشعارات الجديدة هنا" : "New notifications will appear here"}
+                </p>
+                <Button variant="outline" size="sm" className="mt-4 rounded-xl" onClick={() => navigate("/notification-preferences")}>
                   {isAr ? "إعدادات الإشعارات" : "Notification Settings"}
                 </Button>
               </CardContent>
@@ -372,7 +388,13 @@ export default function Notifications() {
             <div className="space-y-6">
               {Object.entries(grouped).map(([dateLabel, items]) => (
                 <div key={dateLabel}>
-                  <p className="mb-3 text-sm font-medium text-muted-foreground">{dateLabel}</p>
+                  <div className="flex items-center gap-3 mb-3">
+                    <p className="text-sm font-semibold text-muted-foreground">{dateLabel}</p>
+                    <div className="flex-1 h-px bg-border/50" />
+                    <Badge variant="secondary" className="text-[10px] rounded-lg">
+                      {toEnglishDigits(items.length)}
+                    </Badge>
+                  </div>
                   <div className="space-y-2">
                     {items.map((notification) => {
                       const profile = getProfile(notification.metadata as any);
@@ -386,8 +408,8 @@ export default function Notifications() {
                         >
                           <Card
                             className={cn(
-                              "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group",
-                              !notification.is_read && "border-s-[3px] border-s-primary bg-primary/5",
+                              "cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group rounded-2xl border-border/50",
+                              !notification.is_read && "border-s-[3px] border-s-primary bg-primary/[0.03]",
                               isSelected && "ring-2 ring-primary bg-primary/10"
                             )}
                             onClick={() => {
@@ -404,9 +426,9 @@ export default function Notifications() {
                                 {/* Avatar or icon */}
                                 {profile ? (
                                   <div className="relative shrink-0 mt-0.5">
-                                    <Avatar className="h-10 w-10">
+                                    <Avatar className="h-10 w-10 rounded-xl">
                                       <AvatarImage src={profile.avatar_url || undefined} />
-                                      <AvatarFallback className="text-sm">{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+                                      <AvatarFallback className="text-sm rounded-xl">{(profile.full_name || "U")[0].toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     <span className={cn(
                                       "absolute -bottom-0.5 -end-0.5 flex h-5 w-5 items-center justify-center rounded-full ring-2 ring-card",
@@ -416,7 +438,7 @@ export default function Notifications() {
                                     </span>
                                   </div>
                                 ) : (
-                                  <div className={cn("mt-0.5 rounded-lg p-2 shrink-0", getTypeColor(notification.type || "info"))}>
+                                  <div className={cn("mt-0.5 rounded-xl p-2.5 shrink-0", getTypeColor(notification.type || "info"))}>
                                     {getTypeIcon(notification.type || "info")}
                                   </div>
                                 )}
@@ -424,11 +446,11 @@ export default function Notifications() {
                                   <div className="flex items-start justify-between gap-3">
                                     <div>
                                       {profile && (
-                                        <p className="text-xs text-muted-foreground mb-0.5">
+                                        <p className="text-xs text-muted-foreground mb-0.5 font-medium">
                                           {profile.full_name || profile.username}
                                         </p>
                                       )}
-                                      <h3 className={cn("text-sm", !notification.is_read ? "font-semibold" : "font-medium")}>
+                                      <h3 className={cn("text-sm leading-snug", !notification.is_read ? "font-semibold" : "font-medium")}>
                                         {isAr && notification.title_ar ? notification.title_ar : notification.title}
                                       </h3>
                                       <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
@@ -440,7 +462,7 @@ export default function Notifications() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-7 w-7"
+                                          className="h-7 w-7 rounded-lg"
                                           onClick={(e) => { e.stopPropagation(); markAsRead(notification.id); }}
                                           title={isAr ? "قراءة" : "Mark as read"}
                                         >
@@ -450,28 +472,28 @@ export default function Notifications() {
                                       <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-7 w-7"
+                                        className="h-7 w-7 rounded-lg"
                                         onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
                                       >
                                         <X className="h-3.5 w-3.5 text-muted-foreground" />
                                       </Button>
                                     </div>
                                   </div>
-                                  <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground flex-wrap">
-                                    <span>
+                                  <div className="flex items-center gap-2.5 mt-2 text-xs text-muted-foreground flex-wrap">
+                                    <span className="tabular-nums">
                                       {toEnglishDigits(formatDistanceToNow(new Date(notification.created_at), {
                                         addSuffix: true,
                                         locale: isAr ? ar : enUS,
                                       }))}
                                     </span>
-                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 rounded-md">
                                       {getTypeLabel(notification.type || "info")}
                                     </Badge>
-                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 rounded-md">
                                       {getSectionLabel(notification)}
                                     </Badge>
                                     {notification.is_read && notification.read_at && (
-                                      <span className="flex items-center gap-1">
+                                      <span className="flex items-center gap-1 text-chart-5">
                                         <Check className="h-3 w-3" />
                                         {isAr ? "تمت القراءة" : "Read"}
                                       </span>
