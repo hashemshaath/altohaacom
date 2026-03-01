@@ -189,7 +189,7 @@ export default function MembershipGift() {
                     {DURATION_OPTIONS.map((opt) => (
                       <Label key={opt.months} htmlFor={`dur-${opt.months}`}
                         className={cn(
-                          "flex items-center justify-between rounded-lg border px-3 py-2.5 cursor-pointer transition-all text-sm",
+                          "flex items-center justify-between rounded-xl border px-3 py-2.5 cursor-pointer transition-all text-sm",
                           duration === opt.months ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
                         )}>
                         <RadioGroupItem value={String(opt.months)} id={`dur-${opt.months}`} className="sr-only" />
@@ -276,7 +276,7 @@ export default function MembershipGift() {
                   </div>
                 )}
                 {message && (
-                  <div className="bg-muted/50 rounded-lg p-3 text-sm italic text-muted-foreground border border-border/50">
+                  <div className="bg-muted/50 rounded-xl p-3 text-sm italic text-muted-foreground border border-border/50">
                     <Heart className="h-3 w-3 inline me-1 text-primary" />
                     "{message}"
                   </div>
@@ -343,7 +343,7 @@ export default function MembershipGift() {
                 <div className="bg-muted rounded-xl p-4 space-y-3">
                   <Label className="text-xs text-muted-foreground">{isAr ? "كود الهدية" : "Gift Code"}</Label>
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 text-lg font-mono font-bold tracking-widest text-primary bg-background rounded-lg p-3 border">
+                    <code className="flex-1 text-lg font-mono font-bold tracking-widest text-primary bg-background rounded-xl p-3 border">
                       {giftCode}
                     </code>
                     <Button variant="outline" size="icon" onClick={copyCode}>

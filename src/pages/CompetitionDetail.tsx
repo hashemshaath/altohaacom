@@ -481,24 +481,24 @@ export default function CompetitionDetail() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5">
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-lg py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
                       const text = encodeURIComponent(`${title}`);
                       const url = encodeURIComponent(window.location.href);
                       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
                     }}>
                       <Twitter className="h-3.5 w-3.5" /> Twitter / X
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-lg py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
                       <Facebook className="h-3.5 w-3.5" /> Facebook
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-lg py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
                       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
                       <Linkedin className="h-3.5 w-3.5" /> LinkedIn
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-lg py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
                       toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
                     }}>
@@ -782,7 +782,7 @@ export default function CompetitionDetail() {
                                 <p className="text-sm font-semibold">{isAr && crit.name_ar ? crit.name_ar : crit.name}</p>
                                 <p className="text-[12px] text-muted-foreground truncate mt-0.5">{isAr && crit.description_ar ? crit.description_ar : crit.description}</p>
                               </div>
-                              <Badge variant="outline" className="shrink-0 text-[10px] rounded-lg">{isAr ? "الأقصى" : "Max"}: {crit.max_score}</Badge>
+                              <Badge variant="outline" className="shrink-0 text-[10px] rounded-xl">{isAr ? "الأقصى" : "Max"}: {crit.max_score}</Badge>
                             </div>
                           ))}
                         </div>
@@ -998,7 +998,7 @@ export default function CompetitionDetail() {
                     <div key={i} className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">{item.label}</span>
                       {item.badge ? (
-                        <Badge variant="outline" className="text-[10px] rounded-lg">{item.value}</Badge>
+                        <Badge variant="outline" className="text-[10px] rounded-xl">{item.value}</Badge>
                       ) : (
                         <span className="font-semibold">{item.value}</span>
                       )}

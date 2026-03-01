@@ -228,7 +228,7 @@ export default function SystemSettings() {
                 <Card className="border-primary/20 bg-primary/5">
                   <CardContent className="flex items-center justify-between gap-3 p-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
                         <Layers className="h-4 w-4 text-primary" />
                       </div>
                       <div>
@@ -247,7 +247,7 @@ export default function SystemSettings() {
                 <Card className="border-border/50 bg-muted/20">
                   <CardContent className="flex items-center justify-between gap-3 p-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted">
                         <LayoutGrid className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <div>
@@ -323,7 +323,7 @@ export default function SystemSettings() {
                         { name: "Snapchat Pixel", status: true },
                         { name: "Microsoft Clarity", status: false },
                       ].map(p => (
-                        <div key={p.name} className="flex items-center gap-1.5 rounded-lg border border-border/40 p-2.5 transition-colors hover:bg-muted/50">
+                        <div key={p.name} className="flex items-center gap-1.5 rounded-xl border border-border/40 p-2.5 transition-colors hover:bg-muted/50">
                           <div className={`h-2 w-2 rounded-full shrink-0 ${p.status ? "bg-green-500" : "bg-muted-foreground/30"}`} />
                           <span className="text-[11px] font-medium">{p.name}</span>
                         </div>

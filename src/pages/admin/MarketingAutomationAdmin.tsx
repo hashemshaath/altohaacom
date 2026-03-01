@@ -553,7 +553,7 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
               const openRate = ((metrics.opened / metrics.sent) * 100).toFixed(1);
               const clickRate = ((metrics.clicked / metrics.sent) * 100).toFixed(1);
               return (
-                <div key={campaign.action} className="rounded-lg border p-3">
+                <div key={campaign.action} className="rounded-xl border p-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <campaign.icon className="h-3.5 w-3.5 text-primary" />

@@ -371,13 +371,13 @@ export default function ChefsTableAdmin() {
                             </div>
                           )}
                           {req.preferred_venue && (
-                            <div className="rounded-lg border border-border/30 bg-background p-4">
+                            <div className="rounded-xl border border-border/30 bg-background p-4">
                               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "المكان المفضل" : "Preferred Venue"}</p>
                               <p className="text-sm font-medium">{isAr && req.preferred_venue_ar ? req.preferred_venue_ar : req.preferred_venue}</p>
                             </div>
                           )}
                           {req.rejection_reason && (
-                            <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-4">
+                            <div className="rounded-xl bg-destructive/5 border border-destructive/20 p-4">
                               <p className="text-[10px] font-bold text-destructive uppercase tracking-wider mb-2">{isAr ? "سبب الرفض" : "Rejection Reason"}</p>
                               <p className="text-sm text-destructive/80">{req.rejection_reason}</p>
                             </div>

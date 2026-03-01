@@ -122,7 +122,7 @@ function EditorSkeleton() {
       <Skeleton className="h-12 rounded-xl" />
       <div className="grid lg:grid-cols-[1fr_340px] gap-6">
         <div className="space-y-4">
-          <Skeleton className="h-10 w-full rounded-lg" />
+          <Skeleton className="h-10 w-full rounded-xl" />
           <Skeleton className="h-[400px] rounded-xl" />
         </div>
         <Skeleton className="hidden lg:block h-[500px] rounded-xl" />
@@ -838,7 +838,7 @@ export default function SocialLinksEditor() {
                                   const customColor = form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color, border: "1px solid transparent" } : { background: pt.card, border: `1px solid ${pt.border}` };
                                   return (
                                     <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 ${btnRadius} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`} style={customColor}>
-                                      {item.thumbnail_url && <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-lg object-cover shrink-0" />}
+                                      {item.thumbnail_url && <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-xl object-cover shrink-0" />}
                                       {item.icon && !item.thumbnail_url && <span className="text-sm">{item.icon}</span>}
                                       <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
                                     </div>
@@ -886,7 +886,7 @@ export default function SocialLinksEditor() {
               <Card className="border-primary/15 bg-gradient-to-r from-primary/5 via-primary/3 to-transparent overflow-hidden">
                 <CardContent className="py-3 px-4 flex items-center justify-between gap-2 text-sm flex-wrap">
                   <div className="flex items-center gap-2.5">
-                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                       <Globe className="h-4 w-4 text-primary" />
                     </div>
                     <div>
@@ -949,7 +949,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Globe className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "حسابات التواصل الاجتماعي" : "Social Media Accounts"}
@@ -965,7 +965,7 @@ export default function SocialLinksEditor() {
                           const isActive = !!value;
                           return (
                             <div key={platform.key} className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 ${isActive ? "border-primary/25 bg-primary/[0.03] shadow-sm" : "border-border/40 hover:border-border"}`}>
-                              <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-sm" : "bg-muted"}`}>
+                              <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-sm" : "bg-muted"}`}>
                                 <Icon className={`h-3.5 w-3.5 ${isActive ? "" : "text-muted-foreground"}`} />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -998,7 +998,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Phone className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "معلومات الاتصال" : "Contact Info"}
@@ -1014,7 +1014,7 @@ export default function SocialLinksEditor() {
                           const isActive = !!value;
                           return (
                             <div key={field.key} className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 ${isActive ? "border-primary/25 bg-primary/[0.03] shadow-sm" : "border-border/40 hover:border-border"}`}>
-                              <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-sm" : "bg-muted"}`}>
+                              <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-sm" : "bg-muted"}`}>
                                 <Icon className={`h-3.5 w-3.5 ${isActive ? "" : "text-muted-foreground"}`} />
                               </div>
                               <div className="flex-1 min-w-0">
@@ -1049,7 +1049,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Settings2 className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "المعلومات الأساسية" : "Basic Info"}
@@ -1086,7 +1086,7 @@ export default function SocialLinksEditor() {
                             { key: "show_social_icons", label: isAr ? "إظهار أيقونات التواصل" : "Show Social Icons", icon: Globe },
                             { key: "is_published", label: isAr ? "نشر الصفحة" : "Published", icon: Sparkles },
                           ].map(setting => (
-                            <div key={setting.key} className="flex items-center justify-between rounded-lg p-2 hover:bg-muted/30 transition-colors">
+                            <div key={setting.key} className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
                               <div className="flex items-center gap-2">
                                 <setting.icon className="h-3.5 w-3.5 text-muted-foreground" />
                                 <Label className="text-xs cursor-pointer">{setting.label}</Label>
@@ -1102,7 +1102,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-chart-3/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-chart-3/10 flex items-center justify-center">
                             <LayoutGrid className="h-3.5 w-3.5 text-chart-3" />
                           </div>
                           {isAr ? "الصفحات الفرعية" : "Sub-Pages"}
@@ -1117,7 +1117,7 @@ export default function SocialLinksEditor() {
                           <div className="space-y-2">
                             {extra.pages.map((pg, idx) => (
                               <div key={pg.id} className="flex items-center gap-2 p-2.5 rounded-xl border border-border/50 bg-card">
-                                <div className="h-7 w-7 rounded-lg bg-chart-3/10 flex items-center justify-center text-xs font-bold text-chart-3 shrink-0">
+                                <div className="h-7 w-7 rounded-xl bg-chart-3/10 flex items-center justify-center text-xs font-bold text-chart-3 shrink-0">
                                   {idx + 1}
                                 </div>
                                 <div className="flex-1 min-w-0 grid grid-cols-2 gap-1.5">
@@ -1205,7 +1205,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Plus className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "إضافة رابط جديد" : "Add New Link"}
@@ -1268,7 +1268,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <LinkIcon className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "الروابط" : "Links"}
@@ -1319,7 +1319,7 @@ export default function SocialLinksEditor() {
                                   {item.icon ? (
                                     <span className="text-lg shrink-0">{item.icon}</span>
                                   ) : (
-                                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
                                       <TypeIcon className="h-3.5 w-3.5 text-muted-foreground" />
                                     </div>
                                   )}
@@ -1395,7 +1395,7 @@ export default function SocialLinksEditor() {
                                           />
                                         </div>
                                         {(item as any).ab_enabled && (
-                                          <div className="space-y-1.5 p-2 rounded-lg bg-muted/30 border border-border/30">
+                                          <div className="space-y-1.5 p-2 rounded-xl bg-muted/30 border border-border/30">
                                             <p className="text-[9px] text-muted-foreground">{isAr ? "النسخة البديلة (B)" : "Variant B"}</p>
                                             <div className="grid grid-cols-2 gap-1.5">
                                               <Input
@@ -1527,7 +1527,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Palette className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "الثيم" : "Theme"}
@@ -1541,7 +1541,7 @@ export default function SocialLinksEditor() {
                               onClick={() => updateForm({ theme: t.id })}
                               className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all duration-200 ${form.theme === t.id ? "border-primary ring-2 ring-primary/15 shadow-sm" : "border-transparent hover:border-border"}`}
                             >
-                              <div className={`w-full h-10 rounded-lg ${t.preview} shadow-inner`} />
+                              <div className={`w-full h-10 rounded-xl ${t.preview} shadow-inner`} />
                               <span className="text-[10px] font-medium">{isAr ? t.labelAr : t.label}</span>
                             </button>
                           ))}
@@ -1553,7 +1553,7 @@ export default function SocialLinksEditor() {
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Calendar className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "جدولة مظهر الصفحة" : "Scheduled Themes"}

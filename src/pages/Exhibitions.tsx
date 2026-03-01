@@ -339,7 +339,7 @@ export default function Exhibitions() {
               </div>
             </div>
             {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 border border-border/40 rounded-lg p-0.5 bg-muted/30 shrink-0">
+            <div className="flex items-center gap-1 border border-border/40 rounded-xl p-0.5 bg-muted/30 shrink-0">
               <button
                 onClick={() => setViewMode("grid")}
                 className={`flex items-center justify-center h-8 w-8 rounded-md transition-all ${viewMode === "grid" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
@@ -393,7 +393,7 @@ export default function Exhibitions() {
               <TabsTrigger
                 key={t.id}
                 value={t.id}
-                className="gap-1.5 rounded-lg px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
+                className="gap-1.5 rounded-xl px-4 py-2 text-[11px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
               >
                 {t.icon && <t.icon className="h-3.5 w-3.5" />}
                 {t.label}

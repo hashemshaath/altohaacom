@@ -282,7 +282,7 @@ export default function EstablishmentsAdmin() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="space-y-3">{[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full rounded-lg" />)}</div>
+        <div className="space-y-3">{[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full rounded-xl" />)}</div>
       ) : !filtered.length ? (
         <div className="py-16 text-center">
           <Building2 className="mx-auto mb-3 h-10 w-10 text-muted-foreground/30" />

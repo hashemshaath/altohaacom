@@ -508,7 +508,7 @@ export default function OrganizerDetail() {
                               <Card className="hover:shadow-md transition-all border-border/40 hover:border-primary/30">
                                 <CardContent className="p-3 flex items-center gap-4">
                                   {ex.cover_image_url && (
-                                    <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-lg object-cover shrink-0" />
+                                    <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" />
                                   )}
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
@@ -924,9 +924,9 @@ export default function OrganizerDetail() {
                     <Card key={i} className="border-border/40">
                       <CardContent className="p-4 flex items-center gap-3">
                         {sponsor.logo ? (
-                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-lg object-contain bg-muted p-1" />
+                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" />
                         ) : (
-                          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                          <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                             <Award className="h-5 w-5 text-primary" />
                           </div>
                         )}

@@ -124,14 +124,14 @@ export default function AcceptInvite() {
 
         <CardContent className="space-y-6 p-6">
           <div className="space-y-3">
-            <div className="flex items-center gap-3 rounded-lg border p-3">
+            <div className="flex items-center gap-3 rounded-xl border p-3">
               <Mail className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "البريد" : "Email"}</p>
                 <p className="text-sm font-medium">{invite.email}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded-lg border p-3">
+            <div className="flex items-center gap-3 rounded-xl border p-3">
               <Shield className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "الصلاحية" : "Role"}</p>
@@ -139,7 +139,7 @@ export default function AcceptInvite() {
               </div>
             </div>
             {invite.department && (
-              <div className="flex items-center gap-3 rounded-lg border p-3">
+              <div className="flex items-center gap-3 rounded-xl border p-3">
                 <Users className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">{isAr ? "القسم" : "Department"}</p>
@@ -148,7 +148,7 @@ export default function AcceptInvite() {
               </div>
             )}
             {invite.title && (
-              <div className="flex items-center gap-3 rounded-lg border p-3">
+              <div className="flex items-center gap-3 rounded-xl border p-3">
                 <Building2 className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">{isAr ? "المسمى" : "Title"}</p>
@@ -159,14 +159,14 @@ export default function AcceptInvite() {
           </div>
 
           {invite.message && (
-            <div className="rounded-lg bg-muted/50 p-4">
+            <div className="rounded-xl bg-muted/50 p-4">
               <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "رسالة شخصية" : "Personal Message"}</p>
               <p className="text-sm italic">{invite.message}</p>
             </div>
           )}
 
           {isExpired ? (
-            <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center">
+            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-center">
               <Clock className="mx-auto mb-2 h-6 w-6 text-destructive" />
               <p className="font-medium text-destructive">{isAr ? "انتهت صلاحية الدعوة" : "Invitation Expired"}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -174,7 +174,7 @@ export default function AcceptInvite() {
               </p>
             </div>
           ) : isAlreadyHandled ? (
-            <div className="rounded-lg border border-chart-5/30 bg-chart-5/5 p-4 text-center">
+            <div className="rounded-xl border border-chart-5/30 bg-chart-5/5 p-4 text-center">
               <CheckCircle className="mx-auto mb-2 h-6 w-6 text-chart-5" />
               <p className="font-medium">
                 {invite.status === "accepted"
