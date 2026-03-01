@@ -200,7 +200,7 @@ export default function Exhibitions() {
                 <div className="flex items-center gap-4 pt-1">
                   <div className="flex items-center gap-1.5 text-sm">
                     <Landmark className="h-4 w-4 text-primary/60" />
-                    <span className="font-bold text-foreground">{toEnglishDigits(exhibitions.length)}</span>
+                    <span className="font-bold text-foreground"><AnimatedCounter value={exhibitions.length} className="inline" /></span>
                     <span className="text-muted-foreground text-xs">{isAr ? "فعالية" : "Events"}</span>
                   </div>
                   {happeningNowCount > 0 && (
@@ -209,13 +209,13 @@ export default function Exhibitions() {
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-3 opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-chart-3" />
                       </div>
-                      <span className="font-bold text-chart-3">{toEnglishDigits(happeningNowCount)}</span>
+                      <span className="font-bold text-chart-3"><AnimatedCounter value={happeningNowCount} className="inline" /></span>
                       <span className="text-muted-foreground text-xs">{isAr ? "الآن" : "Live"}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-1.5 text-sm">
                     <Globe className="h-4 w-4 text-accent-foreground/40" />
-                    <span className="font-bold text-foreground">{toEnglishDigits(countriesCount)}</span>
+                    <span className="font-bold text-foreground"><AnimatedCounter value={countriesCount} className="inline" /></span>
                     <span className="text-muted-foreground text-xs">{isAr ? "دولة" : "Countries"}</span>
                   </div>
                 </div>
@@ -473,7 +473,7 @@ export default function Exhibitions() {
                 <Card key={stat.label} className="border-border/30 bg-muted/10 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                   <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
                     <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
-                    <p className="text-2xl font-bold text-foreground sm:text-3xl">{toEnglishDigits(stat.value)}</p>
+                    <p className="text-2xl font-bold text-foreground sm:text-3xl"><AnimatedCounter value={Number(stat.value) || 0} className="inline" /></p>
                     <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
                   </CardContent>
                 </Card>

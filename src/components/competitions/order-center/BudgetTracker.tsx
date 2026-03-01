@@ -199,7 +199,7 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm font-medium">{isAr ? "تغطية الرعاية" : "Sponsorship Coverage"}</p>
-            <p className="text-sm font-bold text-primary">{toEnglishDigits(sponsorPercentage)}%</p>
+            <p className="text-sm font-bold text-primary"><AnimatedCounter value={Math.round(sponsorPercentage)} className="inline" />%</p>
           </div>
           <Progress value={sponsorPercentage} className="h-2.5" />
           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">

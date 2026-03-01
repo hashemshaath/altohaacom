@@ -252,9 +252,9 @@ export default function CompanyCampaignDetail() {
         {[
           { icon: Eye, label: isAr ? "المشاهدات" : "Impressions", numValue: (campaign as any).total_impressions || 0, color: "text-chart-1" },
           { icon: MousePointer, label: isAr ? "النقرات" : "Clicks", numValue: (campaign as any).total_clicks || 0, color: "text-chart-2" },
-          { icon: TrendingUp, label: "CTR", strValue: `${toEnglishDigits(ctr)}%`, color: "text-chart-3" },
+          { icon: TrendingUp, label: "CTR", strValue: `${ctr}%`, color: "text-chart-3" },
           { icon: DollarSign, label: isAr ? "المصروف" : "Spent", strValue: formatCurrency(Number((campaign as any).spent || 0), language as "en" | "ar"), color: "text-chart-4" },
-          { icon: BarChart3, label: isAr ? "استهلاك الميزانية" : "Budget Used", strValue: `${toEnglishDigits(budgetUsed)}%`, color: "text-primary" },
+          { icon: BarChart3, label: isAr ? "استهلاك الميزانية" : "Budget Used", strValue: `${budgetUsed}%`, color: "text-primary" },
         ].map(k => (
           <Card key={k.label}>
             <CardContent className="flex items-center gap-3 p-4">

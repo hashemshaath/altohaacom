@@ -97,7 +97,7 @@ export const ExhibitionListItem = memo(({ exhibition, language, sponsors = [] }:
             {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
               <Badge className="gap-0.5 text-[8px] bg-chart-4/90 text-chart-4-foreground border-0 py-0.5 px-2">
                 <Clock className="h-2.5 w-2.5" />
-                {isAr ? `${toEnglishDigits(daysLeft)} يوم` : `${daysLeft}d`}
+                {isAr ? `${daysLeft} يوم` : `${daysLeft}d`}
               </Badge>
             )}
             {sponsors.slice(0, 2).map((s) => (

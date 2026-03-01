@@ -429,7 +429,7 @@ export default function AdminDashboard() {
                     <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
                   </div>
                   <div>
-                    <p className={`text-lg font-black leading-none ${item.color}`}>{toEnglishDigits(item.value.toString())}</p>
+                    <p className={`text-lg font-black leading-none ${item.color}`}><AnimatedCounter value={Number(item.value) || 0} className="inline" /></p>
                     <p className="text-[9px] text-muted-foreground mt-1 font-medium">{item.label}</p>
                   </div>
                 </div>

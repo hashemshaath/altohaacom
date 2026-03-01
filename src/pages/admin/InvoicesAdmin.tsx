@@ -412,9 +412,9 @@ export default function InvoicesAdmin() {
                               <p className="font-medium">{item.name}</p>
                               {item.description && <p className="text-xs text-muted-foreground">{item.description}</p>}
                             </TableCell>
-                            <TableCell className="text-center">{toEnglishDigits(item.quantity)}</TableCell>
-                            <TableCell className="text-right">{toEnglishDigits(Number(item.unit_price).toLocaleString())}</TableCell>
-                            <TableCell className="text-right font-medium">{toEnglishDigits((item.quantity * item.unit_price).toLocaleString())}</TableCell>
+                            <TableCell className="text-center"><AnimatedCounter value={item.quantity} className="inline" format={false} /></TableCell>
+                            <TableCell className="text-right"><AnimatedCounter value={Math.round(Number(item.unit_price))} className="inline" format /></TableCell>
+                            <TableCell className="text-right font-medium"><AnimatedCounter value={Math.round(item.quantity * item.unit_price)} className="inline" format /></TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -424,10 +424,10 @@ export default function InvoicesAdmin() {
                       <div className="w-64 space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span>
-                          <span>{toEnglishDigits(Number(invoiceDetails.subtotal).toLocaleString())}</span>
+                          <span><AnimatedCounter value={Math.round(Number(invoiceDetails.subtotal))} className="inline" format /></span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({toEnglishDigits(invoiceDetails.tax_rate)}%)</span>
+                          <span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({invoiceDetails.tax_rate}%)</span>
                           <span><AnimatedCounter value={Math.round(Number(invoiceDetails.tax_amount))} className="inline" format /></span>
                         </div>
                         <Separator />
@@ -567,7 +567,7 @@ export default function InvoicesAdmin() {
                     <Input placeholder={language === "ar" ? "اسم الصنف" : "Item name"} value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} />
                     <Input type="number" placeholder={language === "ar" ? "كمية" : "Qty"} value={item.quantity} onChange={(e) => updateItem(i, "quantity", parseInt(e.target.value) || 0)} min={1} />
                     <Input type="number" placeholder={language === "ar" ? "السعر" : "Price"} value={item.unit_price} onChange={(e) => updateItem(i, "unit_price", parseFloat(e.target.value) || 0)} min={0} />
-                    <div className="flex items-center justify-end font-medium">{toEnglishDigits((item.quantity * item.unit_price).toLocaleString())}</div>
+                    <div className="flex items-center justify-end font-medium"><AnimatedCounter value={Math.round(item.quantity * item.unit_price)} className="inline" format /></div>
                     <Button type="button" variant="ghost" size="icon" onClick={() => removeItem(i)} disabled={formData.items.length <= 1}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -583,10 +583,10 @@ export default function InvoicesAdmin() {
             {/* Totals */}
             <div className="flex justify-end">
               <div className="w-64 space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span><span>{toEnglishDigits(subtotal.toLocaleString())}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({toEnglishDigits(formData.tax_rate)}%)</span><span>{toEnglishDigits(taxAmount.toLocaleString())}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "المجموع الفرعي" : "Subtotal"}</span><span><AnimatedCounter value={Math.round(subtotal)} className="inline" format /></span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{language === "ar" ? "الضريبة" : "Tax"} ({formData.tax_rate}%)</span><span><AnimatedCounter value={Math.round(taxAmount)} className="inline" format /></span></div>
                 <Separator />
-                <div className="flex justify-between font-bold text-base"><span>{language === "ar" ? "الإجمالي" : "Total"}</span><span>{toEnglishDigits(total.toLocaleString())} {formData.currency}</span></div>
+                <div className="flex justify-between font-bold text-base"><span>{language === "ar" ? "الإجمالي" : "Total"}</span><span><AnimatedCounter value={Math.round(total)} className="inline" format /> {formData.currency}</span></div>
               </div>
             </div>
 

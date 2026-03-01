@@ -155,7 +155,7 @@ export default function Rewards() {
                         <p className="text-sm font-medium">{isAr ? rule.action_label_ar : rule.action_label}</p>
                         {rule.max_per_day && (
                           <p className="text-[10px] text-muted-foreground">
-                            {isAr ? `الحد الأقصى: ${toEnglishDigits(rule.max_per_day)}/يوم` : `Max: ${rule.max_per_day}/day`}
+                            {isAr ? <>{`الحد الأقصى: `}<AnimatedCounter value={rule.max_per_day} className="inline" />{`/يوم`}</> : `Max: ${rule.max_per_day}/day`}
                           </p>
                         )}
                       </div>
