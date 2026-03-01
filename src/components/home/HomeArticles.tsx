@@ -6,6 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Newspaper, Clock, Eye } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -124,7 +125,7 @@ export function HomeArticles() {
                       {featured.view_count > 0 && (
                         <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                           <Eye className="h-2.5 w-2.5" />
-                          {featured.view_count.toLocaleString()}
+                          <AnimatedCounter value={featured.view_count} className="inline" />
                         </span>
                       )}
                     </div>

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { Star, Award, Building, Crown, Gem, Medal, Send, CheckCircle, ExternalLink } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props { exhibitionId: string; isAr: boolean; }
 
@@ -167,7 +168,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
                         <Badge variant="secondary" className="text-xs capitalize">{pkg.tier}</Badge>
                       </div>
                       <p className="text-lg font-bold text-primary">
-                        {pkg.price > 0 ? `${pkg.price.toLocaleString()} ${pkg.currency}` : t("Contact us", "تواصل معنا")}
+                        {pkg.price > 0 ? <><AnimatedCounter value={Math.round(pkg.price)} className="inline" /> {pkg.currency}</> : t("Contact us", "تواصل معنا")}
                       </p>
                       {benefits.length > 0 && (
                         <ul className="space-y-1">

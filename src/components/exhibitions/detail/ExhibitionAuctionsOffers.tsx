@@ -187,7 +187,7 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
                   <h4 className="font-medium text-sm">{isAr ? auction.title_ar || auction.title : auction.title}</h4>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant="secondary" className="text-xs">
-                      {isAr ? "يبدأ من" : "Starts at"} {Number(auction.starting_price).toLocaleString()} {auction.currency}
+                      {isAr ? "يبدأ من" : "Starts at"} <AnimatedCounter value={Math.round(Number(auction.starting_price))} className="inline" /> {auction.currency}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
                       {isAr ? "يبدأ خلال" : "Starts in"} {formatTimeLeft(auction.starts_at)}
@@ -226,9 +226,9 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
                       <p className="text-xs text-muted-foreground">{isAr ? offer.description_ar || offer.description : offer.description}</p>
                       <div className="flex items-center gap-2">
                         {offer.original_price && (
-                          <span className="text-sm text-muted-foreground line-through">{Number(offer.original_price).toLocaleString()}</span>
+                          <span className="text-sm text-muted-foreground line-through"><AnimatedCounter value={Math.round(Number(offer.original_price))} className="inline" /></span>
                         )}
-                        <span className="text-lg font-bold text-primary">{Number(offer.offer_price).toLocaleString()} {offer.currency}</span>
+                        <span className="text-lg font-bold text-primary"><AnimatedCounter value={Math.round(Number(offer.offer_price))} className="inline" /> {offer.currency}</span>
                         {offer.discount_percent && (
                           <Badge className="bg-destructive text-destructive-foreground text-xs">-{offer.discount_percent}%</Badge>
                         )}
