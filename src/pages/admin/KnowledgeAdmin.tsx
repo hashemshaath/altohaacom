@@ -20,6 +20,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { cn } from "@/lib/utils";
 import {
   BookOpen, Plus, Trash2, Edit, Link, FileText, Image, Scale, Upload,
   Folder, Star, Eye, EyeOff, Save, X, GalleryHorizontalEnd, Globe, Loader2
@@ -344,20 +345,21 @@ export default function KnowledgeAdmin() {
       />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="resources" className="gap-2">
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 p-1.5 h-auto">
+          <TabsTrigger value="resources" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <BookOpen className="h-4 w-4" />
             {language === "ar" ? "الموارد" : "Resources"}
+            {resources && <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5 rounded-md">{resources.length}</Badge>}
           </TabsTrigger>
-          <TabsTrigger value="categories" className="gap-2">
+          <TabsTrigger value="categories" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <Folder className="h-4 w-4" />
             {language === "ar" ? "التصنيفات" : "Categories"}
           </TabsTrigger>
-          <TabsTrigger value="gallery" className="gap-2">
+          <TabsTrigger value="gallery" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <GalleryHorizontalEnd className="h-4 w-4" />
             {language === "ar" ? "معرض المراجع" : "Reference Gallery"}
           </TabsTrigger>
-          <TabsTrigger value="rubrics" className="gap-2">
+          <TabsTrigger value="rubrics" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <Scale className="h-4 w-4" />
             {language === "ar" ? "قوالب التقييم" : "Rubric Templates"}
           </TabsTrigger>
@@ -367,17 +369,17 @@ export default function KnowledgeAdmin() {
         <TabsContent value="resources" className="space-y-4">
           {!showAddResource && !showScrapeUrl ? (
             <div className="flex gap-2">
-              <Button onClick={() => setShowAddResource(true)}>
+              <Button onClick={() => setShowAddResource(true)} className="rounded-xl">
                 <Plus className="me-2 h-4 w-4" />
                 {language === "ar" ? "إضافة مورد" : "Add Resource"}
               </Button>
-              <Button variant="outline" onClick={() => setShowScrapeUrl(true)}>
+              <Button variant="outline" onClick={() => setShowScrapeUrl(true)} className="rounded-xl">
                 <Globe className="me-2 h-4 w-4" />
                 {language === "ar" ? "استخراج من رابط" : "Scrape URL"}
               </Button>
             </div>
           ) : showScrapeUrl ? (
-            <Card>
+            <Card className="rounded-2xl border-border/40">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Globe className="h-5 w-5" />
@@ -397,6 +399,7 @@ export default function KnowledgeAdmin() {
                     onChange={e => setScrapeUrl(e.target.value)}
                     placeholder="https://example.com/judging-rules"
                     disabled={isScraping}
+                    className="rounded-xl"
                   />
                 </div>
                 <div className="flex justify-end gap-2">
@@ -413,7 +416,7 @@ export default function KnowledgeAdmin() {
               </CardContent>
             </Card>
           ) : (
-            <Card>
+            <Card className="rounded-2xl border-border/40">
               <CardHeader>
                 <CardTitle className="text-lg">
                   {language === "ar" ? "إضافة مورد جديد" : "Add New Resource"}
@@ -522,33 +525,36 @@ export default function KnowledgeAdmin() {
           />
 
           {loadingResources ? (
-            <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-20" />)}</div>
+            <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-20 rounded-2xl" />)}</div>
           ) : resources && resources.length > 0 ? (
             <div className="space-y-3">
               {resources.map(resource => (
-                <Card key={resource.id} className={bulkResources.isSelected(resource.id) ? "ring-1 ring-primary/30" : ""}>
+                <Card key={resource.id} className={cn(
+                  "rounded-2xl border-border/40 transition-all hover:shadow-md hover:-translate-y-0.5",
+                  bulkResources.isSelected(resource.id) && "ring-1 ring-primary/30 bg-primary/[0.02]"
+                )}>
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <Checkbox
                         checked={bulkResources.isSelected(resource.id)}
                         onCheckedChange={() => bulkResources.toggleOne(resource.id)}
                       />
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                         {resourceTypeIcon(resource.resource_type)}
                       </div>
                       <div className="min-w-0">
                         <p className="font-medium truncate">
                           {language === "ar" && resource.title_ar ? resource.title_ar : resource.title}
                         </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-xs">{resource.resource_type}</Badge>
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                          <Badge variant="outline" className="text-[10px] rounded-md">{resource.resource_type}</Badge>
                           {resource.is_judge_resource && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="text-[10px] rounded-md">
                               {language === "ar" ? "للحكام" : "Judge"}
                             </Badge>
                           )}
                           {(resource as any).category && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-[10px] rounded-md bg-muted/50">
                               {language === "ar" && (resource as any).category.name_ar
                                 ? (resource as any).category.name_ar
                                 : (resource as any).category.name}
@@ -575,9 +581,11 @@ export default function KnowledgeAdmin() {
               ))}
             </div>
           ) : (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <BookOpen className="h-12 w-12 text-muted-foreground/50 mb-4" />
+            <Card className="rounded-2xl border-border/40">
+              <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+                  <BookOpen className="h-8 w-8 text-muted-foreground/40" />
+                </div>
                 <p className="text-muted-foreground">
                   {language === "ar" ? "لم تتم إضافة أي موارد بعد" : "No resources added yet"}
                 </p>
@@ -589,12 +597,12 @@ export default function KnowledgeAdmin() {
         {/* CATEGORIES TAB */}
         <TabsContent value="categories" className="space-y-4">
           {!showAddCategory ? (
-            <Button onClick={() => setShowAddCategory(true)}>
+             <Button onClick={() => setShowAddCategory(true)} className="rounded-xl">
               <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "إضافة تصنيف" : "Add Category"}
             </Button>
           ) : (
-            <Card>
+            <Card className="rounded-2xl border-border/40">
               <CardHeader>
                 <CardTitle className="text-lg">{language === "ar" ? "إضافة تصنيف" : "Add Category"}</CardTitle>
               </CardHeader>
@@ -622,14 +630,14 @@ export default function KnowledgeAdmin() {
           )}
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {categories?.map(cat => (
-              <Card key={cat.id}>
+              <Card key={cat.id} className="rounded-2xl border-border/40 hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <CardContent className="flex items-center gap-3 p-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                     <Folder className="h-5 w-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">{language === "ar" && cat.name_ar ? cat.name_ar : cat.name}</p>
-                    {cat.description && <p className="text-xs text-muted-foreground">{cat.description}</p>}
+                    {cat.description && <p className="text-xs text-muted-foreground mt-0.5">{cat.description}</p>}
                   </div>
                 </CardContent>
               </Card>
@@ -640,12 +648,12 @@ export default function KnowledgeAdmin() {
         {/* REFERENCE GALLERY TAB */}
         <TabsContent value="gallery" className="space-y-4">
           {!showAddReference ? (
-            <Button onClick={() => setShowAddReference(true)}>
+            <Button onClick={() => setShowAddReference(true)} className="rounded-xl">
               <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "إضافة مرجع" : "Add Reference"}
             </Button>
           ) : (
-            <Card>
+            <Card className="rounded-2xl border-border/40">
               <CardHeader>
                 <CardTitle className="text-lg">{language === "ar" ? "إضافة مرجع" : "Add Reference"}</CardTitle>
               </CardHeader>
@@ -714,25 +722,25 @@ export default function KnowledgeAdmin() {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {references?.map(ref => (
-              <Card key={ref.id} className="overflow-hidden">
-                <div className="aspect-video relative">
+              <Card key={ref.id} className="overflow-hidden rounded-2xl border-border/40 hover:shadow-lg hover:-translate-y-1 transition-all group">
+                <div className="aspect-video relative overflow-hidden">
                   <img
                     src={ref.image_url}
                     alt={ref.title}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                   />
-                  <Badge className={`absolute top-2 end-2 ${ratingColors[ref.rating || "good"]}`}>
+                  <Badge className={cn("absolute top-3 end-3 rounded-lg", ratingColors[ref.rating || "good"])}>
                     {ref.rating}
                   </Badge>
                 </div>
                 <CardContent className="p-4">
                   <p className="font-medium">{language === "ar" && ref.title_ar ? ref.title_ar : ref.title}</p>
                   {ref.competition_category && (
-                    <Badge variant="outline" className="mt-1 text-xs">{ref.competition_category}</Badge>
+                    <Badge variant="outline" className="mt-1.5 text-[10px] rounded-md">{ref.competition_category}</Badge>
                   )}
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Score range: {ref.score_range_min} - {ref.score_range_max}
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    {isAr ? "نطاق النقاط" : "Score range"}: {ref.score_range_min} - {ref.score_range_max}
                   </p>
                 </CardContent>
               </Card>
@@ -743,12 +751,12 @@ export default function KnowledgeAdmin() {
         {/* RUBRIC TEMPLATES TAB */}
         <TabsContent value="rubrics" className="space-y-4">
           {!showAddRubric ? (
-            <Button onClick={() => setShowAddRubric(true)}>
+            <Button onClick={() => setShowAddRubric(true)} className="rounded-xl">
               <Plus className="me-2 h-4 w-4" />
               {language === "ar" ? "إضافة قالب تقييم" : "Add Rubric Template"}
             </Button>
           ) : (
-            <Card>
+            <Card className="rounded-2xl border-border/40">
               <CardHeader>
                 <CardTitle className="text-lg">{language === "ar" ? "إضافة قالب تقييم" : "Add Rubric Template"}</CardTitle>
               </CardHeader>
@@ -797,16 +805,16 @@ export default function KnowledgeAdmin() {
 
           <div className="space-y-3">
             {rubrics?.map(rubric => (
-              <Card key={rubric.id}>
+              <Card key={rubric.id} className="rounded-2xl border-border/40 hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <CardContent className="flex items-center gap-3 p-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                     <Scale className="h-5 w-5 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-medium">{language === "ar" && rubric.name_ar ? rubric.name_ar : rubric.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      {rubric.competition_type && <Badge variant="outline" className="text-xs">{rubric.competition_type}</Badge>}
-                      {rubric.category_type && <Badge variant="secondary" className="text-xs">{rubric.category_type}</Badge>}
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      {rubric.competition_type && <Badge variant="outline" className="text-[10px] rounded-md">{rubric.competition_type}</Badge>}
+                      {rubric.category_type && <Badge variant="secondary" className="text-[10px] rounded-md">{rubric.category_type}</Badge>}
                     </div>
                   </div>
                 </CardContent>
