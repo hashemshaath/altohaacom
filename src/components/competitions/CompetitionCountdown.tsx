@@ -24,10 +24,12 @@ export function CompetitionCountdown({ targetDate, label, labelAr }: Competition
   if (timeLeft.total <= 0) return null;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
-      <div className="border-b border-border/30 bg-gradient-to-r from-primary/[0.04] to-transparent px-5 py-3.5">
+    <div className="overflow-hidden rounded-2xl border border-border/40 bg-card shadow-sm">
+      <div className="border-b border-border/30 bg-gradient-to-r from-primary/[0.06] via-primary/[0.02] to-transparent px-5 py-3.5">
         <h3 className="flex items-center gap-2.5 font-bold text-sm">
-          <Timer className="h-4 w-4 text-primary" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+            <Timer className="h-3.5 w-3.5 text-primary" />
+          </div>
           {isAr ? labelAr : label}
         </h3>
       </div>
@@ -47,13 +49,13 @@ function FlipUnit({ value, label }: { value: number; label: string }) {
   const display = String(value).padStart(2, "0");
   return (
     <div className="space-y-1.5 text-center">
-      <div className="relative rounded-xl bg-muted/40 border border-border/30 overflow-hidden">
+      <div className="relative rounded-xl bg-gradient-to-b from-muted/50 to-muted/20 border border-border/30 overflow-hidden shadow-sm">
         <div className="absolute inset-x-0 top-1/2 h-px bg-border/20 z-10" />
-        <p className="text-2xl font-bold tabular-nums py-3.5 relative z-0 tracking-wider text-foreground">
+        <p className="text-2xl sm:text-3xl font-black tabular-nums py-3 sm:py-3.5 relative z-0 tracking-wider text-foreground">
           {display}
         </p>
       </div>
-      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+      <p className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{label}</p>
     </div>
   );
 }

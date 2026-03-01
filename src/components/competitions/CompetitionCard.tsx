@@ -105,7 +105,7 @@ export const CompetitionCard = memo(
 
       return (
         <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.98] transition-transform duration-150">
-          <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-1.5 hover:border-primary/20">
+          <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-3xl border-border/30 bg-card transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 hover:border-primary/25">
             {/* Image Section */}
             <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted" role="img" aria-label={title}>
               {competition.cover_image_url ? (
@@ -158,8 +158,8 @@ export const CompetitionCard = memo(
             </div>
 
             {/* Content Section */}
-            <CardContent className="flex flex-1 flex-col p-3 sm:p-4">
-              <h3 className="mb-2 flex-1 line-clamp-2 text-[13px] sm:text-sm font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
+            <CardContent className="flex flex-1 flex-col p-3.5 sm:p-4">
+              <h3 className="mb-2 flex-1 line-clamp-2 text-[13px] sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
                 {title}
               </h3>
 
@@ -191,8 +191,8 @@ export const CompetitionCard = memo(
                     </span>
                   ) : null}
                 </div>
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/5 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110">
-                  <ArrowRight className="h-3 w-3 rtl:rotate-180" />
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/20">
+                  <ArrowRight className="h-3 w-3 rtl:rotate-180 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                 </div>
               </div>
             </CardContent>
@@ -223,7 +223,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
 
   return (
     <Link to={`/competitions/${competition.id}`} className="group mb-10 block">
-      <Card className="relative overflow-hidden rounded-2xl border-primary/10 bg-card shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:border-primary/20">
+      <Card className="relative overflow-hidden rounded-3xl border-primary/10 bg-card shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/25">
         {/* Ambient glow */}
         <div className="pointer-events-none absolute -top-32 -end-32 h-72 w-72 rounded-full bg-primary/8 blur-[100px] transition-all duration-700 group-hover:bg-primary/12" />
 
