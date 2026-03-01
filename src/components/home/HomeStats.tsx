@@ -6,6 +6,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const StatItem = forwardRef<HTMLDivElement, {
   value: number; label: string; icon: any; color: string; bgColor: string; isVisible: boolean; delay: number;
@@ -29,7 +30,7 @@ const StatItem = forwardRef<HTMLDivElement, {
       </div>
       <div className="text-center">
         <p className="text-2xl sm:text-3xl font-black tracking-tight tabular-nums text-foreground">
-          {count.toLocaleString()}+
+          <AnimatedCounter value={count} className="inline" />+
         </p>
         <p className="text-[10px] sm:text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-0.5">{label}</p>
       </div>
