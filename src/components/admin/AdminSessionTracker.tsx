@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Monitor, Smartphone, Globe, Shield, Clock, Activity } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { ActivityPulse } from "@/components/ui/activity-pulse";
 
 export function AdminSessionTracker() {
   const { language } = useLanguage();
@@ -64,6 +65,7 @@ export function AdminSessionTracker() {
           <CardTitle className="text-sm flex items-center gap-2">
             <Activity className="h-4 w-4 text-chart-2" />
             {isAr ? "الجلسات النشطة" : "Active Sessions"}
+            <ActivityPulse status={sessions.length > 0 ? "live" : "idle"} className="ms-1" />
             <Badge variant="secondary" className="ms-auto text-xs">{sessions.length}</Badge>
           </CardTitle>
         </CardHeader>
