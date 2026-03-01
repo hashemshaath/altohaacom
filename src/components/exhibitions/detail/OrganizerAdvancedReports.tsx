@@ -150,7 +150,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         {[
           { icon: Ticket, label: t("Tickets", "تذاكر"), numValue: data.totalTickets, sub: `${data.checkInRate}% ${t("check-in", "دخول")}` },
-          { icon: DollarSign, label: t("Revenue", "الإيرادات"), numValue: Math.round(data.totalRevenue), suffix: ` ${data.currency}`, sub: `+${data.boothRevenue.toLocaleString()} ${t("booths", "أجنحة")}` },
+          { icon: DollarSign, label: t("Revenue", "الإيرادات"), numValue: Math.round(data.totalRevenue), suffix: ` ${data.currency}`, subValue: data.boothRevenue },
           { icon: MapPin, label: t("Booths", "أجنحة"), strValue: `${data.occupiedBooths}/${data.totalBooths}`, sub: `${data.boothOccupancy}%` },
           { icon: Star, label: t("Rating", "تقييم"), strValue: data.avgRating, sub: `${data.totalReviews} ${t("reviews", "تقييم")}` },
           { icon: Users, label: t("Followers", "متابعون"), numValue: data.totalFollowers },
@@ -168,6 +168,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
                   : kpi.strValue}
               </p>
               {kpi.sub && <p className="text-[9px] text-muted-foreground">{kpi.sub}</p>}
+              {'subValue' in kpi && (kpi as any).subValue != null && <p className="text-[9px] text-muted-foreground">+<AnimatedCounter value={Math.round((kpi as any).subValue)} className="inline" /> {isAr ? "أجنحة" : "booths"}</p>}
             </CardContent>
           </Card>
         ))}

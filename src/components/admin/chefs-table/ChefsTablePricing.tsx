@@ -133,7 +133,7 @@ export function ChefsTablePricing() {
               <div key={count} className="rounded-xl border border-border/30 p-4 text-center">
                 <p className="text-xs text-muted-foreground">{count} {isAr ? "طهاة" : "Chefs"}</p>
                 <p className="text-2xl font-black tabular-nums text-primary mt-1">
-                  {((editing.base_fee || 0) + (editing.per_chef_fee || 0) * count).toLocaleString()}
+                  <AnimatedCounter value={Math.round((editing.base_fee || 0) + (editing.per_chef_fee || 0) * count)} className="text-2xl font-black tabular-nums text-primary mt-1" />
                 </p>
                 <p className="text-[10px] text-muted-foreground">SAR</p>
               </div>
@@ -190,7 +190,7 @@ export function ChefsTablePricing() {
               </div>
 
               <p className="text-xs text-muted-foreground mb-3">
-                {isAr ? "مثال: 3 طهاة =" : "Example: 3 chefs ="} <span className="font-bold text-foreground">{(plan.base_fee + plan.per_chef_fee * 3).toLocaleString()} SAR</span>
+                {isAr ? "مثال: 3 طهاة =" : "Example: 3 chefs ="} <span className="font-bold text-foreground"><AnimatedCounter value={plan.base_fee + plan.per_chef_fee * 3} className="inline" /> SAR</span>
               </p>
 
               <div className="flex gap-1.5 border-t border-border/30 pt-3">
