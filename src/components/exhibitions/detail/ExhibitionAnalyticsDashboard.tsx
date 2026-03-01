@@ -111,7 +111,7 @@ export function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
     { icon: Eye, label: isAr ? "مشاهدات" : "Page Views", value: stats.pageViews, color: "text-primary" },
     { icon: Users, label: isAr ? "زوار فريدين" : "Unique Visitors", value: stats.uniqueUsers, color: "text-chart-2" },
     { icon: Ticket, label: isAr ? "تذاكر مباعة" : "Tickets Sold", value: stats.ticketsSold, color: "text-chart-3" },
-    { icon: TrendingUp, label: isAr ? "الإيرادات" : "Revenue", value: `$${stats.revenue.toLocaleString()}`, color: "text-chart-4" },
+    { icon: TrendingUp, label: isAr ? "الإيرادات" : "Revenue", value: stats.revenue, prefix: "$", color: "text-chart-4" },
     { icon: Star, label: isAr ? "متوسط التقييم" : "Avg Rating", value: stats.avgRating, color: "text-chart-5" },
   ];
 
@@ -142,7 +142,7 @@ export function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
           <Card key={i}>
             <CardContent className="p-4 text-center">
               <s.icon className={`h-5 w-5 mx-auto mb-1 ${s.color}`} />
-              <p className="text-2xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
+              <p className="text-2xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} prefix={(s as any).prefix || ""} /> : s.value}</p>
               <p className="text-xs text-muted-foreground">{s.label}</p>
             </CardContent>
           </Card>

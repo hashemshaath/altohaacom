@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, Users, UserCheck, Trophy, ShoppingCart, TrendingDown } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface FunnelStep {
   label: string;
@@ -106,7 +107,7 @@ export function FunnelAnalysis() {
                         className={`${step.color} h-10 rounded-xl flex items-center justify-end px-3 transition-all duration-500`}
                         style={{ width: `${widthPct}%`, opacity: 0.85 }}
                       >
-                        <span className="text-sm font-bold text-primary-foreground">{step.count.toLocaleString()}</span>
+                        <AnimatedCounter value={step.count} className="text-sm font-bold text-primary-foreground" />
                       </div>
                     </div>
                   </div>
@@ -134,7 +135,7 @@ export function FunnelAnalysis() {
                   <span className="text-xs text-muted-foreground">{isAr ? "انسحاب" : "drop-off"}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {dropOff.toLocaleString()} {isAr ? "مستخدم" : "users lost"}
+                  <AnimatedCounter value={dropOff} className="inline" /> {isAr ? "مستخدم" : "users lost"}
                 </p>
               </CardContent>
             </Card>

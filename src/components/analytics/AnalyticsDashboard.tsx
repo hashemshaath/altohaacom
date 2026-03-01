@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BarChart3, TrendingUp, Eye, Heart, Users, Trophy, Download, Calendar, Activity, PieChart } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RPieChart, Pie, Cell, Legend } from "recharts";
 import { format, subDays, startOfDay, endOfDay } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -163,7 +164,7 @@ export function AnalyticsDashboard() {
                   <Icon className={`h-4 w-4 ${k.color}`} />
                   <span className="text-xs text-muted-foreground">{k.label}</span>
                 </div>
-                <p className="text-xl font-bold mt-1">{k.value.toLocaleString()}</p>
+                <AnimatedCounter value={k.value} className="text-xl font-bold mt-1" />
               </CardContent>
             </Card>
           );
