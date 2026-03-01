@@ -468,9 +468,9 @@ export default function CommunicationsAdmin() {
           { label: isAr ? "مميّزة" : "Starred", value: starredCount, icon: Star, color: "text-chart-3", bg: "bg-chart-3/10" },
           { label: isAr ? "شركات" : "Companies", value: companyIds.length, icon: Building2, color: "text-muted-foreground", bg: "bg-muted" },
         ].map((s) => (
-          <Card key={s.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-3 p-4">
-              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg}`}>
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
                 <s.icon className={`h-5 w-5 ${s.color}`} />
               </div>
               <div>
