@@ -78,7 +78,7 @@ export function NotificationPreferencesWidget() {
         </div>
 
         {/* Quiet Hours */}
-        <div className="rounded-lg bg-muted/30 p-3 space-y-2">
+        <div className="rounded-xl bg-muted/30 p-3 space-y-2">
           <div className="flex items-center gap-1.5 text-xs font-semibold">
             <Clock className="h-3.5 w-3.5 text-primary" />
             {isAr ? "ساعات الهدوء" : "Quiet Hours"}

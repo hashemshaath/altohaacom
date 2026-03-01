@@ -50,7 +50,7 @@ export function MyActivitySummary() {
             const Icon = s.icon;
             return (
               <div key={s.label} className="flex items-center gap-2.5 rounded-xl bg-muted/40 p-2.5">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-background ${s.color}`}>
+                <div className={`flex h-8 w-8 items-center justify-center rounded-xl bg-background ${s.color}`}>
                   <Icon className="h-4 w-4" />
                 </div>
                 <div>

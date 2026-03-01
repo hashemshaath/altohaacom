@@ -185,7 +185,7 @@ export function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
           <CardContent>
             <div className="space-y-2">
               {data.recentScores.map((score: any, i: number) => (
-                <div key={i} className="flex items-center justify-between rounded-lg border p-3">
+                <div key={i} className="flex items-center justify-between rounded-xl border p-3">
                   <span className="text-sm font-medium">
                     {isAr ? "النتيجة" : "Score"} #{i + 1}
                   </span>

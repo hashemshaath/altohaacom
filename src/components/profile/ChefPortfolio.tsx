@@ -148,7 +148,7 @@ export default function ChefPortfolio({ userId }: Props) {
           ) : career.map((c: any) => (
             <Card key={c.id}>
               <CardContent className="p-4 flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -197,7 +197,7 @@ export default function ChefPortfolio({ userId }: Props) {
           ) : competitions.map((c: any) => (
             <Card key={c.id}>
               <CardContent className="p-4 flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-amber-100">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100">
                   <Trophy className="h-6 w-6 text-amber-600" />
                 </div>
                 <div className="flex-1 min-w-0">

@@ -88,7 +88,7 @@ export function GoalsMilestonesWidget() {
     <Card className="border-border/40 shadow-sm hover:shadow-lg transition-shadow duration-300">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-primary/15 to-primary/5">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5">
             <Target className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "أهدافك" : "Your Goals"}

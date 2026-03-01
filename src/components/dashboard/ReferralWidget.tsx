@@ -68,15 +68,15 @@ export function ReferralWidget() {
 
         {/* Funnel Stats */}
         <div className="grid grid-cols-3 gap-1.5 mb-4">
-          <div className="rounded-lg bg-muted/50 p-2 text-center">
+          <div className="rounded-xl bg-muted/50 p-2 text-center">
             <p className="text-lg font-bold">{invites}</p>
             <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "دعوات" : "Invites"}</p>
           </div>
-          <div className="rounded-lg bg-muted/50 p-2 text-center">
+          <div className="rounded-xl bg-muted/50 p-2 text-center">
             <p className="text-lg font-bold">{converts}</p>
             <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "تحويلات" : "Converts"}</p>
           </div>
-          <div className="rounded-lg bg-muted/50 p-2 text-center">
+          <div className="rounded-xl bg-muted/50 p-2 text-center">
             <p className="text-lg font-bold flex items-center justify-center gap-0.5">
               {conversionRate}%
               <TrendingUp className="h-3 w-3 text-chart-5" />

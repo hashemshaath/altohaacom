@@ -182,7 +182,7 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
 
             {/* QR Code */}
             <div className="shrink-0 flex flex-col items-center gap-2">
-              <div className="rounded-lg border border-primary/15 bg-background p-2.5 shadow-sm">
+              <div className="rounded-xl border border-primary/15 bg-background p-2.5 shadow-sm">
                 <QRCodeSVG
                   id={`qr-${qrCode.code}`}
                   value={verificationUrl}

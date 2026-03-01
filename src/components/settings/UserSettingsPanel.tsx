@@ -111,7 +111,7 @@ export function UserSettingsPanel() {
           <Card className="rounded-2xl border-border/30 shadow-sm">
             <CardHeader className="pb-3 border-b border-border/20">
               <CardTitle className="text-sm flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8">
+                 <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/8">
                   <Monitor className="h-3.5 w-3.5 text-primary" />
                 </div>
                 {isAr ? "المظهر والسمة" : "Theme & Display"}
@@ -159,7 +159,7 @@ export function UserSettingsPanel() {
           <Card className="rounded-2xl border-border/30 shadow-sm">
             <CardHeader className="pb-3 border-b border-border/20">
               <CardTitle className="text-sm flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8">
+                <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/8">
                   <Type className="h-3.5 w-3.5 text-primary" />
                 </div>
                 {isAr ? "حجم الخط" : "Font Size"}
@@ -180,7 +180,7 @@ export function UserSettingsPanel() {
           <Card className="rounded-2xl border-border/30 shadow-sm">
             <CardHeader className="pb-3 border-b border-border/20">
               <CardTitle className="text-sm flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8">
+                <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/8">
                   <Globe className="h-3.5 w-3.5 text-primary" />
                 </div>
                 {isAr ? "اللغة" : "Language"}
@@ -208,7 +208,7 @@ export function UserSettingsPanel() {
           <Card className="rounded-2xl border-border/30 shadow-sm">
             <CardHeader className="pb-3 border-b border-border/20">
               <CardTitle className="text-sm flex items-center gap-2.5">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/8">
+                <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/8">
                   <Eye className="h-3.5 w-3.5 text-primary" />
                 </div>
                 {isAr ? "إمكانية الوصول" : "Accessibility"}
@@ -221,7 +221,7 @@ export function UserSettingsPanel() {
               ].map(({ key, icon: Icon, label, desc }) => (
                 <div key={key} className="flex items-center justify-between rounded-xl p-3 hover:bg-muted/10 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/30">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/30">
                       <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                     </div>
                     <div>
@@ -239,7 +239,7 @@ export function UserSettingsPanel() {
               ].map(({ key, icon: Icon, label, desc }) => (
                 <div key={key} className="flex items-center justify-between rounded-xl p-3 hover:bg-muted/10 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/30">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/30">
                       <Icon className="h-3.5 w-3.5 text-muted-foreground" />
                     </div>
                     <div>
