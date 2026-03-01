@@ -9,6 +9,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { localizeLocation, localizeCity } from "@/lib/localizeLocation";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
@@ -188,7 +189,7 @@ export const CompetitionCard = memo(
                   ) : (venue || competition.city) ? (
                     <span className="flex items-center gap-1 truncate">
                       <MapPin className="h-3 w-3 shrink-0 text-primary" />
-                      <span className="truncate">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
+                      <span className="truncate">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || localizeCity(competition.city || "", isAr)}</span>
                     </span>
                   ) : null}
                 </div>
@@ -282,7 +283,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
                   <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-muted/50">
                     <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
                   </div>
-                  <span className="text-xs sm:text-sm">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{competition.city}</span>
+                   <span className="text-xs sm:text-sm">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{localizeCity(competition.city || "", isAr)}</span>
                 </div>
               )}
               <div className="flex items-center gap-2">

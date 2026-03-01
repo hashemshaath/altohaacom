@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Crown, Trophy, Calendar, MapPin, ArrowRight, Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { localizeLocation } from "@/lib/localizeLocation";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
@@ -31,7 +32,7 @@ export function SponsorshipOpportunities() {
       const { data: competitions } = await supabase
         .from("competitions")
         .select(`
-          id, title, title_ar, cover_image_url, status, competition_start, city, country, is_virtual,
+          id, title, title_ar, cover_image_url, status, competition_start, city, country, country_code, is_virtual,
           competition_sponsors(id, company_id)
         `)
         .in("status", ["registration_open", "upcoming", "in_progress"])
@@ -143,7 +144,7 @@ export function SponsorshipOpportunities() {
                         ) : comp.city ? (
                           <div className="flex items-center gap-1.5">
                             <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-                            <span className="truncate">{comp.city}{comp.country ? `, ${comp.country}` : ""}</span>
+                            <span className="truncate">{localizeLocation({ city: comp.city, country: comp.country, countryCode: comp.country_code }, isAr)}</span>
                           </div>
                         ) : null}
                       </div>

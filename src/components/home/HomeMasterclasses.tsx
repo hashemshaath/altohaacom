@@ -18,6 +18,20 @@ const LEVEL_LABELS: Record<string, { en: string; ar: string; color: string }> = 
   all_levels: { en: "All Levels", ar: "جميع المستويات", color: "bg-primary/10 text-primary border-primary/20" },
 };
 
+const MC_CAT_LABELS: Record<string, { en: string; ar: string }> = {
+  pastry: { en: "Pastry", ar: "حلويات" },
+  cuisine: { en: "Cuisine", ar: "طبخ" },
+  baking: { en: "Baking", ar: "خبز" },
+  sushi: { en: "Sushi", ar: "سوشي" },
+  chocolate: { en: "Chocolate", ar: "شوكولاتة" },
+  plating: { en: "Plating", ar: "تقديم" },
+  butchery: { en: "Butchery", ar: "جزارة" },
+  beverages: { en: "Beverages", ar: "مشروبات" },
+  "culinary arts": { en: "Culinary Arts", ar: "فنون الطهي" },
+  "regional cuisine": { en: "Regional Cuisine", ar: "مطبخ إقليمي" },
+  "food media": { en: "Food Media", ar: "إعلام غذائي" },
+};
+
 export function HomeMasterclasses() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -87,17 +101,7 @@ export function HomeMasterclasses() {
               );
             })}
             {categories.length > 1 && categories.map(c => {
-              const catLabels: Record<string, { en: string; ar: string }> = {
-                pastry: { en: "Pastry", ar: "حلويات" },
-                cuisine: { en: "Cuisine", ar: "طبخ" },
-                baking: { en: "Baking", ar: "خبز" },
-                sushi: { en: "Sushi", ar: "سوشي" },
-                chocolate: { en: "Chocolate", ar: "شوكولاتة" },
-                plating: { en: "Plating", ar: "تقديم" },
-                butchery: { en: "Butchery", ar: "جزارة" },
-                beverages: { en: "Beverages", ar: "مشروبات" },
-              };
-              const cl = catLabels[c];
+              const cl = MC_CAT_LABELS[c.toLowerCase()];
               return (
                 <FilterChip
                   key={c}
@@ -162,17 +166,7 @@ export function HomeMasterclasses() {
                     <CardContent className="p-3">
                       <div className="mb-1.5">
                         {mc.category && <Badge variant="outline" className="text-[10px] mb-1">{(() => {
-                          const catLabels: Record<string, { en: string; ar: string }> = {
-                            pastry: { en: "Pastry", ar: "حلويات" },
-                            cuisine: { en: "Cuisine", ar: "طبخ" },
-                            baking: { en: "Baking", ar: "خبز" },
-                            sushi: { en: "Sushi", ar: "سوشي" },
-                            chocolate: { en: "Chocolate", ar: "شوكولاتة" },
-                            plating: { en: "Plating", ar: "تقديم" },
-                            butchery: { en: "Butchery", ar: "جزارة" },
-                            beverages: { en: "Beverages", ar: "مشروبات" },
-                          };
-                          const cl = catLabels[mc.category];
+                          const cl = MC_CAT_LABELS[mc.category.toLowerCase()];
                           return cl ? (isAr ? cl.ar : cl.en) : mc.category;
                         })()}</Badge>}
                         <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
