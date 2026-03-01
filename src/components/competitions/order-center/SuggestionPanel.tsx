@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Lightbulb, Plus, CheckCircle, XCircle, Clock } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { notifySuggestionReviewed } from "@/lib/notificationTriggers";
 import { SUGGESTION_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
@@ -214,7 +215,7 @@ export function SuggestionPanel({ competitionId, isOrganizer }: Props) {
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {isAr ? catInfo?.labelAr : catInfo?.label} · {s.quantity} {s.unit}
-                        {s.estimated_cost ? ` · SAR ${Number(s.estimated_cost).toLocaleString()}` : ""}
+                        {s.estimated_cost ? <> · SAR <AnimatedCounter value={Math.round(Number(s.estimated_cost))} className="inline" /></> : ""}
                       </p>
                     </div>
                   </div>

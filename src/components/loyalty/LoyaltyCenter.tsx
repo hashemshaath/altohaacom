@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Trophy, Gift, Flame, Star, Lock, Check, Sparkles } from "lucide-react";
 import { SeasonalChallenges } from "./SeasonalChallenges";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function LoyaltyCenter() {
   const { language } = useLanguage();
@@ -69,10 +70,10 @@ export function LoyaltyCenter() {
             {/* Progress */}
             <div className="flex-1 w-full space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium">{points.toLocaleString()} {isAr ? "نقطة" : "points"}</span>
+                <span className="text-sm font-medium"><AnimatedCounter value={points} className="inline" /> {isAr ? "نقطة" : "points"}</span>
                 {nextTier && (
                   <span className="text-sm text-muted-foreground">
-                    {nextTier.min_points.toLocaleString()} {isAr ? "للمستوى التالي" : "for next tier"}
+                    <AnimatedCounter value={nextTier.min_points} className="inline" /> {isAr ? "للمستوى التالي" : "for next tier"}
                   </span>
                 )}
               </div>
@@ -81,7 +82,7 @@ export function LoyaltyCenter() {
                 {tiers.map((t: any) => (
                   <div key={t.id} className="flex flex-col items-center">
                     <span className={`text-sm ${points >= t.min_points ? "" : "opacity-40"}`}>{t.icon_emoji}</span>
-                    <span className="text-[10px] text-muted-foreground">{t.min_points.toLocaleString()}</span>
+                    <span className="text-[10px] text-muted-foreground"><AnimatedCounter value={t.min_points} className="inline" /></span>
                   </div>
                 ))}
               </div>
@@ -187,7 +188,7 @@ export function LoyaltyCenter() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-primary" />
-                        <span className="font-bold text-primary">{r.points_cost.toLocaleString()}</span>
+                        <span className="font-bold text-primary"><AnimatedCounter value={r.points_cost} className="inline" /></span>
                       </div>
                       {tierLocked ? (
                         <Badge variant="outline" className="text-[10px]">
@@ -252,7 +253,7 @@ export function LoyaltyCenter() {
                       <h3 className="font-bold">{isAr ? t.name_ar : t.name}</h3>
                       {isCurrentTier && <Badge>{isAr ? "حالي" : "Current"}</Badge>}
                     </div>
-                    <p className="text-sm text-muted-foreground">{t.min_points.toLocaleString()} {isAr ? "نقطة" : "points"} • ×{t.multiplier} {isAr ? "مضاعف" : "multiplier"}</p>
+                    <p className="text-sm text-muted-foreground"><AnimatedCounter value={t.min_points} className="inline" /> {isAr ? "نقطة" : "points"} • ×{t.multiplier} {isAr ? "مضاعف" : "multiplier"}</p>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {(t.benefits as string[] || []).map((b: string, i: number) => (
                         <Badge key={i} variant="outline" className="text-[10px]">{b}</Badge>
