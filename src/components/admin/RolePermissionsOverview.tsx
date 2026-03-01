@@ -85,7 +85,7 @@ export function RolePermissionsOverview() {
             { icon: AlertTriangle, label: isAr ? "أحداث أمنية (24س)" : "Security Events (24h)", value: data.securityEvents24h, color: data.securityEvents24h > 10 ? "text-destructive" : "text-chart-3" },
             { icon: Key, label: isAr ? "استثناءات" : "Overrides", value: data.grantedOverrides + data.revokedOverrides, color: "text-chart-4" },
           ].map((s, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 flex items-center gap-2">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 flex items-center gap-2">
               <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               <div>
                 <p className="text-sm font-bold">{s.value}</p>

@@ -76,7 +76,7 @@ export function AdminAuditTrail() {
                 const details = action.details as Record<string, any> | null;
 
                 return (
-                  <div key={action.id} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors">
+                  <div key={action.id} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors">
                     <div className={cn("h-7 w-7 rounded-full bg-muted/60 flex items-center justify-center shrink-0 mt-0.5")}>
                       <Icon className={cn("h-3.5 w-3.5", color)} />
                     </div>

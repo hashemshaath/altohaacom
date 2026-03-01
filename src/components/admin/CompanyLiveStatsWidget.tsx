@@ -107,7 +107,7 @@ export function CompanyLiveStatsWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-lg p-3 text-center">
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
@@ -156,21 +156,21 @@ export function CompanyLiveStatsWidget() {
 
         {/* Bottom Row */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
-          <div className="bg-muted/50 rounded-lg p-2">
+          <div className="bg-muted/50 rounded-xl p-2">
             <div className="flex items-center gap-1 mb-1">
               <Star className="h-3 w-3 text-chart-4" />
               <span className="text-[10px] text-muted-foreground">{isAr ? "متوسط التقييم" : "Avg Rating"}</span>
             </div>
             <span className="font-bold text-sm">{data.avgRating} ⭐</span>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2">
+          <div className="bg-muted/50 rounded-xl p-2">
             <div className="flex items-center gap-1 mb-1">
               <Users className="h-3 w-3 text-primary" />
               <span className="text-[10px] text-muted-foreground">{isAr ? "الموظفون" : "Employees"}</span>
             </div>
             <span className="font-bold text-sm">{data.totalEmployees}</span>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 col-span-2 md:col-span-1">
+          <div className="bg-muted/50 rounded-xl p-2 col-span-2 md:col-span-1">
             <div className="flex items-center gap-1 mb-1">
               <MapPin className="h-3 w-3 text-chart-3" />
               <span className="text-[10px] text-muted-foreground">{isAr ? "أعلى الدول" : "Top Countries"}</span>

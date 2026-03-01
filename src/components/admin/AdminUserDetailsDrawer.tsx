@@ -146,7 +146,7 @@ export function AdminUserDetailsDrawer({ userId, open, onOpenChange }: Props) {
                   {allRoles.map((role) => {
                     const hasRole = user.roles.includes(role);
                     return (
-                      <div key={role} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+                      <div key={role} className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
                         <span className="text-xs font-medium capitalize">{role}</span>
                         <Button
                           variant={hasRole ? "destructive" : "default"}
@@ -176,7 +176,7 @@ export function AdminUserDetailsDrawer({ userId, open, onOpenChange }: Props) {
                 ) : (
                   <div className="space-y-1.5">
                     {user.actions.map((action: any, i: number) => (
-                      <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-muted/20 text-xs">
+                      <div key={i} className="flex items-start gap-2 p-2 rounded-xl bg-muted/20 text-xs">
                         <div className="h-5 w-5 rounded-full bg-muted/60 flex items-center justify-center shrink-0 mt-0.5">
                           <FileText className="h-2.5 w-2.5 text-muted-foreground" />
                         </div>

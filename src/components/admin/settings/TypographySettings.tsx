@@ -73,7 +73,7 @@ export function TypographySettings({ settings, onSave, isPending }: Props) {
             </SelectContent>
           </Select>
           {/* Preview */}
-          <div className="rounded-lg border border-border/40 p-3" style={{ fontFamily: currentBodyFont?.family }}>
+          <div className="rounded-xl border border-border/40 p-3" style={{ fontFamily: currentBodyFont?.family }}>
             <p className="text-sm">{isAr ? "هذا نص تجريبي لمعاينة الخط المحدد." : "This is a preview text for the selected font."}</p>
             <p className="text-xs text-muted-foreground mt-1">
               {isAr ? "نص مساعد بحجم أصغر للتوضيح" : "Helper text in smaller size for context"}
@@ -97,7 +97,7 @@ export function TypographySettings({ settings, onSave, isPending }: Props) {
             </SelectContent>
           </Select>
           {/* Preview */}
-          <div className="rounded-lg border border-border/40 p-3">
+          <div className="rounded-xl border border-border/40 p-3">
             <h3 className="text-lg font-bold" style={{ fontFamily: currentHeadingFont?.family }}>
               {isAr ? "عنوان تجريبي للمعاينة" : "Sample Heading Preview"}
             </h3>
