@@ -45,7 +45,7 @@ export function EntityProgramsTab({ entityId }: Props) {
   if (isLoading) {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
-        {[1, 2].map(i => <Skeleton key={i} className="h-48 w-full rounded-lg" />)}
+        {[1, 2].map(i => <Skeleton key={i} className="h-48 w-full rounded-xl" />)}
       </div>
     );
   }

@@ -209,9 +209,9 @@ export function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }
               {stations.map((station: any) => (
                 <div
                   key={station.id}
-                  className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                  className="flex items-center gap-3 rounded-xl border p-3 transition-colors hover:bg-muted/50"
                 >
-                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold ${
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-xl text-xs font-bold ${
                     station.status === "occupied" ? "bg-chart-4/10 text-chart-4" :
                     station.status === "maintenance" ? "bg-destructive/10 text-destructive" :
                     "bg-chart-3/10 text-chart-3"

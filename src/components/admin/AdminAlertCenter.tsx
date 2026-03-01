@@ -134,7 +134,7 @@ export function AdminAlertCenter() {
     <Card className="border-border/50">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
             <Bell className="h-3.5 w-3.5 text-chart-4" />
           </div>
           {isAr ? "تنبيهات ذكية" : "Smart Alerts"}
@@ -162,10 +162,10 @@ export function AdminAlertCenter() {
                 return (
                   <Link key={alert.id} to={alert.link || "#"}>
                     <div className={cn(
-                      "flex items-start gap-2.5 rounded-lg border p-2.5 transition-all hover:bg-accent/30 hover:shadow-sm",
+                      "flex items-start gap-2.5 rounded-xl border p-2.5 transition-all hover:bg-accent/30 hover:shadow-sm",
                       config.border
                     )}>
-                      <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg shrink-0", config.bg)}>
+                      <div className={cn("flex h-7 w-7 items-center justify-center rounded-xl shrink-0", config.bg)}>
                         <Icon className={cn("h-3.5 w-3.5", config.color)} />
                       </div>
                       <div className="flex-1 min-w-0">

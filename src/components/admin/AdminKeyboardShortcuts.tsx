@@ -66,7 +66,7 @@ export function AdminKeyboardShortcuts() {
     <>
       {/* Floating shortcut hint */}
       {pendingKey && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-card border border-border shadow-lg rounded-lg px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-card border border-border shadow-lg rounded-xl px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
           <Badge variant="secondary" className="text-xs">G</Badge>
           <span className="text-xs text-muted-foreground">then press next key...</span>
         </div>

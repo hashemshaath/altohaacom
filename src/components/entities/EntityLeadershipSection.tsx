@@ -110,7 +110,7 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
                 </div>
               )}
             </div>
-            <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4 text-chart-4-foreground shadow-md">
+            <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4 text-chart-4-foreground shadow-md">
               <Crown className="h-3.5 w-3.5" />
             </div>
           </div>
@@ -200,7 +200,7 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-muted">
+          <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-muted">
             {icon}
           </div>
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>

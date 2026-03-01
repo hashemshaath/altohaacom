@@ -144,7 +144,7 @@ export function AIRequirementsSuggest({ competitionId, listId, listCategory, exi
                 {suggestions.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-start gap-3 rounded-lg border p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                    className="flex items-start gap-3 rounded-xl border p-3 cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => toggleItem(i)}
                   >
                     <Checkbox checked={selected.has(i)} className="mt-1" />

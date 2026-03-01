@@ -176,7 +176,7 @@ OverviewTab.displayName = "OverviewTab";
 const StatCard = React.memo(({ icon: Icon, iconClass, bgClass, label, value, sub, small }: {
   icon: any; iconClass?: string; bgClass?: string; label: string; value: string | number; sub?: string; small?: boolean;
 }) => (
-  <div className={`text-center p-3 rounded-lg ${bgClass || 'bg-accent/30'}`}>
+  <div className={`text-center p-3 rounded-xl ${bgClass || 'bg-accent/30'}`}>
     <Icon className={`h-4 w-4 mx-auto mb-1 ${iconClass || 'text-primary'}`} />
     <p className="text-xs text-muted-foreground">{label}</p>
     <p className={`font-${small ? 'medium' : 'bold'} ${small ? 'text-sm truncate' : 'text-lg'}`}>{value}</p>
@@ -259,7 +259,7 @@ const OrganizationTab = React.memo(({ details, isAr, editing, onFieldUpdate }: T
         <Field label={isAr ? "السكرتير (EN)" : "Secretary (EN)"} value={details.secretary_name_en} fieldKey="secretary_name_en" editing={editing} onFieldUpdate={onFieldUpdate} />
         <Field label={isAr ? "السكرتير (AR)" : "Secretary (AR)"} value={details.secretary_name_ar} fieldKey="secretary_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
         {details.member_count && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
             <Users className="h-4 w-4 text-primary" />
             <span className="text-sm">{isAr ? "عدد الأعضاء:" : "Member Count:"} <strong>{details.member_count}</strong></span>
           </div>
@@ -274,7 +274,7 @@ const OrganizationTab = React.memo(({ details, isAr, editing, onFieldUpdate }: T
         <Field label={isAr ? "رقم التسجيل" : "Registration Number"} value={details.registration_number} fieldKey="registration_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
         <Field label={isAr ? "رقم الترخيص" : "License Number"} value={details.license_number} fieldKey="license_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
         {details.founded_year && (
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-accent/30">
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
             <Calendar className="h-4 w-4 text-primary" />
             <span className="text-sm">{isAr ? "سنة التأسيس:" : "Founded:"} <strong>{details.founded_year}</strong></span>
           </div>
@@ -332,7 +332,7 @@ const HoursTab = React.memo(({ details, isAr }: { details: ImportedData; isAr: b
         <CardContent>
           <div className="space-y-1.5">
             {details.business_hours.map((h, i) => (
-              <div key={i} className="flex justify-between text-xs rounded-lg border p-2.5">
+              <div key={i} className="flex justify-between text-xs rounded-xl border p-2.5">
                 <span className="font-medium">{isAr ? h.day_ar : h.day_en}</span>
                 <span className={h.is_closed ? "text-muted-foreground" : "text-primary font-medium"}>
                   {h.is_closed ? (isAr ? "مغلق" : "Closed") : `${h.open} - ${h.close}`}

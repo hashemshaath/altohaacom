@@ -341,7 +341,7 @@ export function SmartImportDialog({
                 </div>
 
                 {/* Address */}
-                <div className="rounded-lg border p-3 space-y-2">
+                <div className="rounded-xl border p-3 space-y-2">
                   <h4 className="text-sm font-semibold flex items-center gap-1.5">
                     <MapPin className="h-3.5 w-3.5" />
                     {isAr ? "العنوان" : "Address"}
@@ -357,7 +357,7 @@ export function SmartImportDialog({
                 </div>
 
                 {/* Contact */}
-                <div className="rounded-lg border p-3 space-y-2">
+                <div className="rounded-xl border p-3 space-y-2">
                   <h4 className="text-sm font-semibold flex items-center gap-1.5">
                     <Phone className="h-3.5 w-3.5" />
                     {isAr ? "التواصل" : "Contact"}
@@ -372,7 +372,7 @@ export function SmartImportDialog({
 
                 {/* Business Hours */}
                 {result.business_hours?.length ? (
-                  <div className="rounded-lg border p-3 space-y-2">
+                  <div className="rounded-xl border p-3 space-y-2">
                     <h4 className="text-sm font-semibold flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5" />
                       {isAr ? "ساعات العمل" : "Business Hours"}
@@ -404,7 +404,7 @@ export function SmartImportDialog({
 
                 {/* Social Media */}
                 {result.social_media && Object.values(result.social_media).some(Boolean) && (
-                  <div className="rounded-lg border p-3 space-y-2">
+                  <div className="rounded-xl border p-3 space-y-2">
                     <h4 className="text-sm font-semibold flex items-center gap-1.5">
                       <Building2 className="h-3.5 w-3.5" />
                       {isAr ? "وسائل التواصل" : "Social Media"}

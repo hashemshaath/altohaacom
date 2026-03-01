@@ -63,7 +63,7 @@ export function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadPr
 
       {preview ? (
         <div className="relative">
-          <img src={preview} alt="Cover" className="h-48 w-full rounded-lg object-cover" />
+          <img src={preview} alt="Cover" className="h-48 w-full rounded-xl object-cover" />
           <Button type="button" variant="destructive" size="icon" className="absolute end-2 top-2" onClick={remove} disabled={uploading}>
             <X className="h-4 w-4" />
           </Button>
@@ -71,7 +71,7 @@ export function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadPr
       ) : (
         <div
           onClick={() => !uploading && fileInputRef.current?.click()}
-          className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:border-primary/50 hover:bg-muted"
+          className="flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:border-primary/50 hover:bg-muted"
         >
           {uploading ? (
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

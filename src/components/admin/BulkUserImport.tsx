@@ -193,7 +193,7 @@ export function BulkUserImport() {
               </div>
               <input ref={fileRef} type="file" accept=".csv,.txt" className="hidden" onChange={handleFileSelect} />
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-muted/30 px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl bg-muted/30 px-4 py-3">
               <Button variant="outline" size="sm" className="gap-2" onClick={downloadTemplate}>
                 <Download className="h-4 w-4" />
                 {isAr ? "تحميل القالب" : "Download Template"}

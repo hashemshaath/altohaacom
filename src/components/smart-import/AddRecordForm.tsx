@@ -57,7 +57,7 @@ export const AddRecordForm = React.memo(({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Data Summary */}
-        <div className="rounded-lg border p-3 bg-background space-y-1.5">
+        <div className="rounded-xl border p-3 bg-background space-y-1.5">
           <p className="text-sm font-semibold">{details?.name_en || details?.name_ar}</p>
           {details?.name_ar && details?.name_en && <p className="text-xs text-muted-foreground">{details.name_ar}</p>}
           <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
@@ -82,7 +82,7 @@ export const AddRecordForm = React.memo(({
                 <button
                   key={opt.value}
                   type="button"
-                  className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-all text-center ${
+                  className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 transition-all text-center ${
                     isSelected ? 'border-primary bg-primary/5 shadow-sm' : 'hover:bg-accent/50'
                   }`}
                   onClick={() => onTargetTableChange(opt.value)}
@@ -150,13 +150,13 @@ export const AddRecordForm = React.memo(({
             </Select>
           )}
           {targetTable === "competitions" && (
-            <div className="text-xs text-muted-foreground p-2 border rounded-lg bg-muted/30">
+            <div className="text-xs text-muted-foreground p-2 border rounded-xl bg-muted/30">
               {isAr ? "سيتم إنشاء مسابقة بحالة مسودة — يمكنك تعديل التفاصيل لاحقاً" : "A draft competition will be created — you can edit details later"}
             </div>
           )}
         </div>
 
-        <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground flex items-center gap-2">
+        <div className="rounded-xl border border-dashed p-3 text-xs text-muted-foreground flex items-center gap-2">
           <Hash className="h-4 w-4 shrink-0" />
           {targetTable === "culinary_entities"
             ? (isAr ? "سيتم تعيين رقم تسلسلي جديد تلقائياً (ENT...)" : "A new serial number (ENT...) will be auto-assigned")

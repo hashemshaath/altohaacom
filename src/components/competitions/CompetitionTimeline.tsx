@@ -98,17 +98,17 @@ export function CompetitionTimeline({
                         {isAr ? event.labelAr : event.label}
                       </p>
                       {isCurrent && (
-                        <Badge className="bg-primary/10 text-primary text-[10px] px-2 py-0 font-bold rounded-lg">
+                        <Badge className="bg-primary/10 text-primary text-[10px] px-2 py-0 font-bold rounded-xl">
                           {isAr ? "الآن" : "Now"}
                         </Badge>
                       )}
                       {isUrgent && (
-                        <Badge className="bg-chart-4/10 text-chart-4 text-[10px] px-2 py-0 font-bold animate-pulse rounded-lg">
+                        <Badge className="bg-chart-4/10 text-chart-4 text-[10px] px-2 py-0 font-bold animate-pulse rounded-xl">
                           {isAr ? `${daysUntil} أيام` : `${daysUntil}d left`}
                         </Badge>
                       )}
                       {isPast && !isCurrent && (
-                        <Badge variant="outline" className="text-[10px] px-2 py-0 border-muted text-muted-foreground rounded-lg">
+                        <Badge variant="outline" className="text-[10px] px-2 py-0 border-muted text-muted-foreground rounded-xl">
                           {isAr ? "مكتمل" : "Done"}
                         </Badge>
                       )}

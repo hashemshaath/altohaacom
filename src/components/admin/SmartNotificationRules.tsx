@@ -285,10 +285,10 @@ export function SmartNotificationRules() {
                 const TriggerIcon = trigger?.icon || Zap;
                 const fireCount = getRuleFireCount(rule.id);
                 return (
-                  <div key={rule.id} className={`rounded-lg border p-4 transition-all ${rule.is_active ? "bg-card" : "bg-muted/30 opacity-75"}`}>
+                  <div key={rule.id} className={`rounded-xl border p-4 transition-all ${rule.is_active ? "bg-card" : "bg-muted/30 opacity-75"}`}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className={`rounded-lg p-2 ${rule.is_active ? "bg-primary/10" : "bg-muted"}`}>
+                        <div className={`rounded-xl p-2 ${rule.is_active ? "bg-primary/10" : "bg-muted"}`}>
                           <TriggerIcon className={`h-4 w-4 ${rule.is_active ? (trigger?.color || "text-primary") : "text-muted-foreground"}`} />
                         </div>
                         <div className="flex-1 min-w-0">

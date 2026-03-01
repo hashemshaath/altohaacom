@@ -93,7 +93,7 @@ export function UserDemographicsWidget() {
             { icon: TrendingUp, label: isAr ? "جدد هذا الأسبوع" : "New This Week", value: data.newThisWeek, color: "text-chart-3" },
             { icon: Clock, label: isAr ? "نشط الآن" : "Online Now", value: data.onlineRecent, color: "text-chart-4" },
           ].map((s, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 flex items-center gap-2">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 flex items-center gap-2">
               <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               <div>
                 <p className="text-sm font-bold">{s.value}</p>

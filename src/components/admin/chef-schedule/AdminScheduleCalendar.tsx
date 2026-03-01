@@ -182,7 +182,7 @@ export default function AdminScheduleCalendar({ events, profileMap, onEventClick
                 const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                 const chef = profileMap[ev.chef_id];
                 return (
-                  <div key={ev.id} className={cn("flex items-center gap-2 p-2 rounded-lg border cursor-pointer hover:bg-muted/30", config.color)} onClick={() => onEventClick(ev)}>
+                  <div key={ev.id} className={cn("flex items-center gap-2 p-2 rounded-xl border cursor-pointer hover:bg-muted/30", config.color)} onClick={() => onEventClick(ev)}>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{ev.title}</p>
                       <p className="text-[10px] text-muted-foreground">{chef?.full_name || "—"} · {ev.city || ev.location || ""}</p>
@@ -204,7 +204,7 @@ export default function AdminScheduleCalendar({ events, profileMap, onEventClick
                 const label = GLOBAL_EVENT_LABELS[gev.type];
                 const GIcon = GLOBAL_ICONS[gev.icon] || MoreHorizontal;
                 return (
-                  <div key={gev.id} className={cn("flex items-center gap-2 p-2 rounded-lg border", colors?.bg, colors?.border)}>
+                  <div key={gev.id} className={cn("flex items-center gap-2 p-2 rounded-xl border", colors?.bg, colors?.border)}>
                     <GIcon className={cn("h-4 w-4 shrink-0", colors?.text)} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{isAr && gev.title_ar ? gev.title_ar : gev.title}</p>
