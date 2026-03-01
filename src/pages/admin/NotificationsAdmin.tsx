@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -427,7 +428,7 @@ export default function NotificationsAdmin() {
               <div className={`rounded-xl p-2.5 transition-transform duration-300 group-hover:scale-110 ${s.bg}`}><s.icon className={`h-5 w-5 ${s.iconColor}`} /></div>
               <div>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
-                <p className="text-2xl font-bold">{s.value}</p>
+                <p className="text-2xl font-bold"><AnimatedCounter value={s.value} /></p>
               </div>
             </CardContent>
           </Card>
@@ -733,7 +734,7 @@ export default function NotificationsAdmin() {
                   <Card key={s.label}>
                     <CardContent className="p-4 text-center">
                       <s.icon className={`h-6 w-6 mx-auto mb-2 ${s.color}`} />
-                      <p className="text-2xl font-bold">{s.value}</p>
+                      <p className="text-2xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
                       <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
                     </CardContent>
                   </Card>

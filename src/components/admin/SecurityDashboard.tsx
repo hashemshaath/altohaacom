@@ -420,7 +420,7 @@ function PermissionsOverview() {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
-            {isAr ? "توزيع الأدوار" : "Role Distribution"} ({data?.totalRoleAssignments})
+            {isAr ? "توزيع الأدوار" : "Role Distribution"} (<AnimatedCounter value={data?.totalRoleAssignments || 0} />)
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">

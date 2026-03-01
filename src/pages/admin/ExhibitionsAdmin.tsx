@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
 import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";
@@ -474,7 +475,7 @@ export default function ExhibitionsAdmin() {
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                  <p className={`text-xl font-bold ${stat.color}`}><AnimatedCounter value={stat.value} /></p>
                   <p className="text-[10px] text-muted-foreground">{stat.label}</p>
                 </div>
               </CardContent>

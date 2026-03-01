@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import {
@@ -191,7 +192,7 @@ export default function MarketingAutomationAdmin() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
-                <p className="text-2xl font-bold">{toEnglishDigits(`${s.value}`)}</p>
+                <p className="text-2xl font-bold"><AnimatedCounter value={s.value} /></p>
               </div>
             </CardContent>
           </Card>

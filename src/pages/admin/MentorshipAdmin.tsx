@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import {
@@ -160,7 +161,7 @@ export default function MentorshipAdmin() {
               <s.icon className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
-                <p className="text-2xl font-bold">{s.value}</p>
+                <p className="text-2xl font-bold"><AnimatedCounter value={s.value} /></p>
               </div>
             </CardContent>
           </Card>

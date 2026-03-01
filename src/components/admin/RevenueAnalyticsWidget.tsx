@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function RevenueAnalyticsWidget() {
   const { language } = useLanguage();
@@ -106,12 +107,12 @@ export function RevenueAnalyticsWidget() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <TrendingUp className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2 transition-transform duration-300 group-hover:scale-110" />
-            <p className="text-sm font-bold">{data?.totalRevenue?.toLocaleString()} SAR</p>
+            <p className="text-sm font-bold"><AnimatedCounter value={data?.totalRevenue || 0} /> SAR</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "الإيرادات" : "Revenue"}</p>
           </div>
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <ArrowDownRight className="h-3.5 w-3.5 mx-auto mb-1 text-destructive transition-transform duration-300 group-hover:scale-110" />
-            <p className="text-sm font-bold">{data?.totalExpenses?.toLocaleString()} SAR</p>
+            <p className="text-sm font-bold"><AnimatedCounter value={data?.totalExpenses || 0} /> SAR</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "المصروفات" : "Expenses"}</p>
           </div>
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
@@ -121,13 +122,13 @@ export function RevenueAnalyticsWidget() {
               <ArrowDownRight className="h-3.5 w-3.5 mx-auto mb-1 text-destructive" />
             )}
             <p className={cn("text-sm font-bold", (data?.netFlow || 0) >= 0 ? "text-chart-2" : "text-destructive")}>
-              {data?.netFlow?.toLocaleString()} SAR
+              <AnimatedCounter value={data?.netFlow || 0} /> SAR
             </p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "صافي التدفق" : "Net Flow"}</p>
           </div>
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <Receipt className="h-3.5 w-3.5 mx-auto mb-1 text-chart-4 transition-transform duration-300 group-hover:scale-110" />
-            <p className="text-sm font-bold">{data?.collectionRate}%</p>
+            <p className="text-sm font-bold"><AnimatedCounter value={data?.collectionRate || 0} suffix="%" /></p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "التحصيل" : "Collection"}</p>
           </div>
         </div>
