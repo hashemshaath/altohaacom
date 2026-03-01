@@ -67,9 +67,9 @@ export function PostCard({
   return (
     <article
       className={cn(
-        "transition-colors duration-200 animate-in fade-in-50",
-        !isEditing && "px-4 py-3 hover:bg-muted/30 cursor-pointer",
-        post.is_pinned && "bg-primary/5"
+        "transition-all duration-200 animate-in fade-in-50",
+        !isEditing && "px-4 py-3.5 hover:bg-muted/40 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30",
+        post.is_pinned && "bg-primary/5 border-s-primary/40"
       )}
     >
       {isEditing && (
@@ -90,8 +90,8 @@ export function PostCard({
       {!isEditing && (
         <div className="flex gap-3">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
-            <Avatar className="h-10 w-10 transition-opacity hover:opacity-80">
-              <AvatarImage src={post.author_avatar || undefined} />
+            <Avatar className="h-10 w-10 ring-2 ring-border/30 transition-all hover:ring-primary/40 hover:scale-105">
+              <AvatarImage src={post.author_avatar || undefined} className="object-cover" />
               <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
               </AvatarFallback>
@@ -175,7 +175,7 @@ export function PostCard({
 
             {/* Content */}
             <div
-              className="mt-1 text-sm leading-relaxed whitespace-pre-wrap break-words"
+              className="mt-1.5 text-[14.5px] leading-[1.7] whitespace-pre-wrap break-words text-foreground/90"
               onClick={() => onOpenThread(post.id)}
             >
               <MentionText content={post.content} />
@@ -260,8 +260,8 @@ export function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-2 flex items-center justify-between -ms-2" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center">
+            <div className="mt-2.5 flex items-center justify-between -ms-2 pt-1 border-t border-border/30" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-0.5">
                 <Button
                   variant="ghost"
                   size="sm"

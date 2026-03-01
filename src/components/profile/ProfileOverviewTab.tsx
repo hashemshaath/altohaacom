@@ -16,11 +16,12 @@ interface ProfileOverviewTabProps {
 
 function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <h3 className="flex items-center gap-2.5 text-sm font-bold mb-3 uppercase tracking-wider text-muted-foreground">
-      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+    <h3 className="flex items-center gap-2.5 text-sm font-bold mb-3.5 uppercase tracking-wider text-muted-foreground">
+      <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm">
         <Icon className="h-3.5 w-3.5 text-primary" />
       </div>
       {label}
+      <div className="flex-1 h-px bg-border/40 ms-2" />
     </h3>
   );
 }
@@ -46,9 +47,9 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       {(profile?.bio || profile?.bio_ar) && (
         <section>
           <SectionTitle icon={FileText} label={isAr ? "النبذة" : "About"} />
-          <Card>
-            <CardContent className="py-5">
-              <p className="text-[15px] leading-7 whitespace-pre-wrap text-foreground/90" dir={isAr && profile?.bio_ar ? "rtl" : "ltr"}>
+          <Card className="border-border/40 shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="py-5 px-5">
+              <p className="text-[15px] leading-[1.85] whitespace-pre-wrap text-foreground/85 font-[350]" dir={isAr && profile?.bio_ar ? "rtl" : "ltr"}>
                 {isAr ? (profile?.bio_ar || profile?.bio) : profile?.bio}
               </p>
             </CardContent>
@@ -77,8 +78,8 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       {socialLinks.length > 0 && (
         <section>
           <SectionTitle icon={Globe} label={isAr ? "التواصل" : "Links"} />
-          <Card>
-            <CardContent className="py-5">
+          <Card className="border-border/40 shadow-sm">
+            <CardContent className="py-5 px-5">
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((link) => {
                   const url = link.value?.startsWith("http") ? link.value : `https://${link.value}`;
@@ -88,10 +89,10 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-muted/30 px-3 py-1.5 text-xs transition-colors hover:bg-primary/10 hover:border-primary/30 hover:text-primary"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/20 px-3.5 py-2 text-xs transition-all hover:bg-primary/10 hover:border-primary/30 hover:text-primary hover:shadow-sm hover:-translate-y-0.5"
                     >
-                      <span className="font-semibold">{link.label}</span>
-                      <span className="text-muted-foreground" dir="ltr">{link.value}</span>
+                      <span className="font-bold">{link.label}</span>
+                      <span className="text-muted-foreground/70" dir="ltr">{link.value}</span>
                     </a>
                   );
                 })}
