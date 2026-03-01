@@ -83,7 +83,7 @@ export function MessagingAdminOverview() {
       {cards.map((c, i) => (
         <Card key={i} className={c.alert ? "border-destructive/40" : ""}>
           <CardContent className="p-3 flex items-center gap-2.5">
-            <div className={`rounded-lg p-2 ${c.bg}`}>
+            <div className={`rounded-xl p-2 ${c.bg}`}>
               <c.icon className={`h-4 w-4 ${c.color}`} />
             </div>
             <div className="min-w-0">

@@ -76,7 +76,7 @@ export function TranslateInlineButton({ text, fromLang, toLang, onTranslated, is
 
 export function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-border/50 p-6 text-center bg-muted/20">
+    <div className="rounded-xl border border-dashed border-border/50 p-6 text-center bg-muted/20">
       <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/40 mb-2">
         <Icon className="h-5 w-5 text-muted-foreground" />
       </div>
@@ -148,11 +148,11 @@ export function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, 
   const [moveOpen, setMoveOpen] = useState(false);
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border/50 px-4 py-2.5 hover:bg-muted/50 transition-all hover:border-border/80 group">
+    <div className="flex items-center gap-3 rounded-xl border border-border/50 px-4 py-2.5 hover:bg-muted/50 transition-all hover:border-border/80 group">
       {logoUrl ? (
-        <img src={logoUrl} className="h-8 w-8 rounded-lg object-cover shrink-0" alt="" />
+        <img src={logoUrl} className="h-8 w-8 rounded-xl object-cover shrink-0" alt="" />
       ) : (
-        <div className={`flex h-8 w-8 items-center justify-center rounded-lg shrink-0 ${color}`}>
+        <div className={`flex h-8 w-8 items-center justify-center rounded-xl shrink-0 ${color}`}>
           <Icon className="h-4 w-4" />
         </div>
       )}

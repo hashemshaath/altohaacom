@@ -97,17 +97,17 @@ export function CompetitionPipelineTracker() {
 
         {/* KPIs */}
         <div className="grid grid-cols-3 gap-2">
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Users className="h-3.5 w-3.5 mx-auto mb-0.5 text-primary" />
             <p className="text-sm font-bold">{data?.pipeline.totalRegistrations || 0}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "تسجيلات" : "Registrations"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <CheckCircle className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-2" />
             <p className="text-sm font-bold">{data?.pipeline.approvedRegistrations || 0}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدة" : "Approved"}</p>
           </div>
-          <div className="text-center p-2 rounded-lg bg-muted/50">
+          <div className="text-center p-2 rounded-xl bg-muted/50">
             <Gavel className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-5" />
             <p className="text-sm font-bold">{data?.pipeline.totalScores || 0}</p>
             <p className="text-[10px] text-muted-foreground">{isAr ? "تقييمات" : "Scores"}</p>
@@ -121,7 +121,7 @@ export function CompetitionPipelineTracker() {
               {isAr ? "الأكثر تسجيلاً" : "Most Registered"}
             </p>
             {data.topComps.map((comp) => (
-              <div key={comp.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/30">
+              <div key={comp.id} className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
                 <span className="text-xs truncate max-w-[200px]">
                   {isAr && comp.title_ar ? comp.title_ar : comp.title}
                 </span>

@@ -16,8 +16,8 @@ export function CareerTimelineSkeleton() {
           {i <= 2 && (
             <div className="border-t px-5 py-4 space-y-2.5">
               {[1, 2].map(j => (
-                <div key={j} className="flex items-center gap-3 rounded-lg border border-border/30 px-4 py-3">
-                  <Skeleton className="h-8 w-8 rounded-lg" />
+                <div key={j} className="flex items-center gap-3 rounded-xl border border-border/30 px-4 py-3">
+                  <Skeleton className="h-8 w-8 rounded-xl" />
                   <div className="flex-1 space-y-1.5">
                     <Skeleton className="h-3.5 w-48" />
                     <Skeleton className="h-2.5 w-32" />

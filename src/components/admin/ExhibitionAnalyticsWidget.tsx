@@ -70,7 +70,7 @@ export function ExhibitionAnalyticsWidget() {
             { icon: Calendar, label: isAr ? "قادمة" : "Upcoming", value: data?.upcoming, color: "text-chart-2" },
             { icon: Ticket, label: isAr ? "التذاكر" : "Tickets", value: data?.totalTickets, color: "text-chart-3" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-lg bg-muted/30">
+            <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold">{m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
