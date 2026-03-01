@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { TrendingUp, Eye, ShieldX, Zap, Star, Crown } from "lucide-react";
 import { useState, useMemo, useCallback } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
@@ -131,7 +132,7 @@ export default function MembershipFeatureAnalytics() {
               <Eye className="h-4 w-4 text-primary" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "إجمالي الوصول" : "Total Access"}</span>
             </div>
-            <p className="text-2xl font-bold">{totalAccess.toLocaleString()}</p>
+            <AnimatedCounter value={totalAccess} className="text-2xl" />
           </CardContent>
         </Card>
         <Card>
@@ -140,7 +141,7 @@ export default function MembershipFeatureAnalytics() {
               <ShieldX className="h-4 w-4 text-destructive" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "محظور" : "Blocked"}</span>
             </div>
-            <p className="text-2xl font-bold">{totalBlocked.toLocaleString()}</p>
+            <AnimatedCounter value={totalBlocked} className="text-2xl" />
           </CardContent>
         </Card>
         <Card>
@@ -149,7 +150,7 @@ export default function MembershipFeatureAnalytics() {
               <TrendingUp className="h-4 w-4 text-chart-3" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "مميزات نشطة" : "Active Features"}</span>
             </div>
-            <p className="text-2xl font-bold">{featureAgg.length}</p>
+            <AnimatedCounter value={featureAgg.length} className="text-2xl" />
           </CardContent>
         </Card>
         <Card>

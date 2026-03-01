@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -277,12 +278,12 @@ export default function MembershipDigestPanel() {
         <CardContent>
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-xl border p-4 text-center space-y-1">
-              <p className="text-2xl font-bold text-primary">{data?.professional || 0}</p>
+              <AnimatedCounter value={data?.professional || 0} className="text-2xl text-primary" />
               <p className="text-xs text-muted-foreground">{isAr ? "احترافي" : "Professional"}</p>
               <p className="text-xs text-muted-foreground">{(data?.professional || 0) * 19} SAR/{isAr ? "شهر" : "mo"}</p>
             </div>
             <div className="rounded-xl border p-4 text-center space-y-1">
-              <p className="text-2xl font-bold text-chart-2">{data?.enterprise || 0}</p>
+              <AnimatedCounter value={data?.enterprise || 0} className="text-2xl text-chart-2" />
               <p className="text-xs text-muted-foreground">{isAr ? "مؤسسي" : "Enterprise"}</p>
               <p className="text-xs text-muted-foreground">{(data?.enterprise || 0) * 99} SAR/{isAr ? "شهر" : "mo"}</p>
             </div>
