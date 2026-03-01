@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, TrendingUp, TrendingDown, UserMinus, BarChart3, AlertTriangle, Target } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Legend, Cell, ComposedChart, Line,
@@ -180,7 +180,7 @@ export function CohortRetentionChart() {
               <p className="text-xs text-muted-foreground">{isAr ? "تسجيلات هذا الشهر" : "This Month"}</p>
               <AnimatedCounter value={data.thisMonthSignups} className="text-2xl font-bold" />
               <p className={`text-[10px] ${data.growthRate >= 0 ? "text-chart-2" : "text-destructive"}`}>
-                {data.growthRate >= 0 ? "+" : ""}{toEnglishDigits(data.growthRate.toFixed(1))}%
+                {data.growthRate >= 0 ? "+" : ""}<AnimatedCounter value={Math.round(data.growthRate * 10) / 10} className="inline" />%
               </p>
             </div>
           </CardContent>

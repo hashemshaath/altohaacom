@@ -11,7 +11,7 @@ import { UserSearch, TrendingUp, ArrowRight, Target, Mail, Phone, Star } from "l
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CRMPipelineWidget() {
