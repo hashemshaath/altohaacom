@@ -37,7 +37,7 @@ export default function EntityStatsCards({ stats, activeFilter, onFilterChange }
         <Card
           key={c.filter}
           className={cn(
-            "p-4 transition-all cursor-pointer hover:shadow-md group",
+            "p-4 rounded-2xl border-border/40 transition-all duration-300 cursor-pointer hover:shadow-md hover:-translate-y-0.5 group",
             activeFilter === c.filter && "ring-2 ring-primary shadow-md"
           )}
           onClick={() => onFilterChange?.(activeFilter === c.filter ? "all" : c.filter)}
@@ -48,7 +48,7 @@ export default function EntityStatsCards({ stats, activeFilter, onFilterChange }
               <p className="text-xs font-medium">{c.label}</p>
               <p className="text-[10px] text-muted-foreground leading-tight">{c.subtitle}</p>
             </div>
-            <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${c.bgColor} transition-transform group-hover:scale-110`}>
+            <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${c.bgColor} transition-transform duration-300 group-hover:scale-110`}>
               <c.icon className={`h-4.5 w-4.5 ${c.color}`} />
             </div>
           </div>
