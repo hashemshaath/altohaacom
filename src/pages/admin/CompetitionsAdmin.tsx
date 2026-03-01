@@ -557,9 +557,9 @@ export default function CompetitionsAdmin() {
           { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: <Calendar className="h-4 w-4 text-chart-5" />, bg: "bg-chart-5/10" },
           { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: <Edit className="h-4 w-4 text-muted-foreground" />, bg: "bg-muted" },
         ].map((stat, i) => (
-          <Card key={i} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-3 p-4">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} shrink-0`}>{stat.icon}</div>
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} shrink-0 transition-transform duration-300 group-hover:scale-110`}>{stat.icon}</div>
               <div>
                 <p className="text-2xl font-bold tabular-nums">{stat.value}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>

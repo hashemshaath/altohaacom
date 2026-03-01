@@ -28,9 +28,9 @@ function DomainStats() {
       {domains?.map(d => {
         const Icon = domainIcons[d.slug] || UtensilsCrossed;
         return (
-          <Card key={d.id} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={d.id} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
                 <Icon className="h-5 w-5 text-primary" />
               </div>
               <div>

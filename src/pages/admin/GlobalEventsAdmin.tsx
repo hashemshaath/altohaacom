@@ -351,9 +351,9 @@ export default function GlobalEventsAdmin() {
           { label: isAr ? "متكرر" : "Recurring", value: stats.recurring, icon: RefreshCw, color: "text-chart-3 bg-chart-3/10" },
           { label: isAr ? "دولي" : "International", value: stats.international, icon: Globe, color: "text-chart-1 bg-chart-1/10" },
         ].map(kpi => (
-          <Card key={kpi.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={kpi.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl", kpi.color)}>
+              <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", kpi.color)}>
                 <kpi.icon className="h-4 w-4" />
               </div>
               <div>

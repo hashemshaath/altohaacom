@@ -468,9 +468,9 @@ export default function ExhibitionsAdmin() {
             { label: t("Completed", "مكتملة"), value: exhibitions.filter(e => e.status === "completed").length, color: "text-chart-1", icon: CheckCircle },
             { label: t("Total Views", "المشاهدات"), value: exhibitions.reduce((sum, e) => sum + (e.view_count || 0), 0), color: "text-primary", icon: Eye },
           ].map((stat) => (
-            <Card key={stat.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <Card key={stat.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
               <CardContent className="p-3 flex items-center gap-3">
-                <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 shrink-0`}>
+                <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 shrink-0 transition-transform duration-300 group-hover:scale-110`}>
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
                 </div>
                 <div>

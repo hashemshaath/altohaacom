@@ -314,9 +314,9 @@ export default function OrganizersAdmin() {
           { label: isAr ? "موثق" : "Verified", value: stats.verified, icon: Shield },
           { label: isAr ? "مميز" : "Featured", value: stats.featured, icon: Star },
         ].map(s => (
-          <Card key={s.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
                 <s.icon className="h-4 w-4 text-primary" />
               </div>
               <div>
