@@ -49,7 +49,7 @@ const LazyFallback = memo(({ type = "grid" }: { type?: "grid" | "cards" | "banne
   return (
     <div className="container py-2">
       <div className="space-y-3">
-        <Skeleton className="h-5 w-36 rounded-lg" />
+        <Skeleton className="h-5 w-36 rounded-xl" />
         <Skeleton className="h-4 w-56 rounded-md" />
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (

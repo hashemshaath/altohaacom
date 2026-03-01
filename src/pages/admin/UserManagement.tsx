@@ -916,7 +916,7 @@ export default function UserManagement() {
               {/* ── Profile Tab ────── */}
               <TabsContent value="profile" className="space-y-5">
                 {/* Bilingual Name Section */}
-                <div className="rounded-lg border p-4 space-y-4">
+                <div className="rounded-xl border p-4 space-y-4">
                   <h3 className="text-sm font-semibold flex items-center gap-2">
                     <UserCircle className="h-4 w-4" />
                     {isAr ? "الاسم والهوية" : "Name & Identity"}
@@ -944,7 +944,7 @@ export default function UserManagement() {
                 </div>
 
                 {/* Username, Email, Phone */}
-                <div className="rounded-lg border p-4 space-y-4">
+                <div className="rounded-xl border p-4 space-y-4">
                   <h3 className="text-sm font-semibold">{isAr ? "بيانات الحساب" : "Account Details"}</h3>
                   <div className="grid gap-4 md:grid-cols-3">
                     <div className="space-y-2">
@@ -978,7 +978,7 @@ export default function UserManagement() {
                 </div>
 
                 {/* Country & City */}
-                <div className="rounded-lg border p-4 space-y-4">
+                <div className="rounded-xl border p-4 space-y-4">
                   <h3 className="text-sm font-semibold">{isAr ? "الموقع" : "Location"}</h3>
                   <div className="grid gap-4 md:grid-cols-2">
                     <CountrySelector
@@ -1007,7 +1007,7 @@ export default function UserManagement() {
                 />
 
                 {/* Bio (EN) with AI Optimizer */}
-                <div className="rounded-lg border p-4 space-y-3">
+                <div className="rounded-xl border p-4 space-y-3">
                   <h3 className="text-sm font-semibold">{isAr ? "النبذة التعريفية" : "Biography (SEO Optimized)"}</h3>
                   <UserBioOptimizer bio={editBio} onBioChange={setEditBio} lang="en" onTranslatedBioChange={setEditBioAr} />
                   <Separator />
@@ -1126,7 +1126,7 @@ export default function UserManagement() {
                 ) : (
                   <div className="space-y-2">
                     {userGroupMemberships.map((m: any) => (
-                      <div key={m.id} className="flex items-center justify-between rounded-lg border p-3">
+                      <div key={m.id} className="flex items-center justify-between rounded-xl border p-3">
                         <div className="flex items-center gap-2">
                           <div className="h-3 w-3 rounded-full" style={{ backgroundColor: m.customer_groups?.color || "#888" }} />
                           <span className="text-sm font-medium">{isAr ? m.customer_groups?.name_ar || m.customer_groups?.name : m.customer_groups?.name}</span>
@@ -1152,7 +1152,7 @@ export default function UserManagement() {
                     </div>
                   </div>
                 ) : groups.length === 0 ? (
-                  <div className="rounded-lg border border-dashed p-4 text-center">
+                  <div className="rounded-xl border border-dashed p-4 text-center">
                     <p className="text-sm text-muted-foreground mb-2">{isAr ? "لا توجد مجموعات حتى الآن" : "No groups exist yet"}</p>
                     <Button variant="outline" size="sm" onClick={() => setCreateGroupOpen(true)}>
                       <Plus className="me-1 h-3.5 w-3.5" />{isAr ? "إنشاء أول مجموعة" : "Create First Group"}
@@ -1239,16 +1239,16 @@ export default function UserManagement() {
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             {t("allUsers")}
             {filteredUsers && (
-              <Badge variant="outline" className="text-[10px] font-normal rounded-lg">
+              <Badge variant="outline" className="text-[10px] font-normal rounded-xl">
                 {filteredUsers.length} {isAr ? "نتيجة" : "results"}
               </Badge>
             )}
           </CardTitle>
           <div className="flex items-center gap-1 border rounded-xl p-0.5 bg-muted/30">
-            <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-7 w-7 rounded-lg" onClick={() => setViewMode("table")}>
+            <Button variant={viewMode === "table" ? "secondary" : "ghost"} size="icon" className="h-7 w-7 rounded-xl" onClick={() => setViewMode("table")}>
               <List className="h-3.5 w-3.5" />
             </Button>
-            <Button variant={viewMode === "card" ? "secondary" : "ghost"} size="icon" className="h-7 w-7 rounded-lg" onClick={() => setViewMode("card")}>
+            <Button variant={viewMode === "card" ? "secondary" : "ghost"} size="icon" className="h-7 w-7 rounded-xl" onClick={() => setViewMode("card")}>
               <LayoutGrid className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -1350,10 +1350,10 @@ export default function UserManagement() {
                       : `Showing ${page * pageSize + 1}-${Math.min((page + 1) * pageSize, usersData?.totalCount || 0)} of ${usersData?.totalCount || 0}`}
                   </p>
                   <div className="flex items-center gap-1">
-                    <Button variant="outline" size="sm" onClick={() => setPage(0)} disabled={page === 0} className="h-8 w-8 p-0 rounded-lg">
+                    <Button variant="outline" size="sm" onClick={() => setPage(0)} disabled={page === 0} className="h-8 w-8 p-0 rounded-xl">
                       <ChevronLeft className="h-3 w-3" /><ChevronLeft className="h-3 w-3 -ms-2" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="h-8 w-8 p-0 rounded-lg">
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} className="h-8 w-8 p-0 rounded-xl">
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -1365,17 +1365,17 @@ export default function UserManagement() {
                           key={pageNum}
                           variant={pageNum === page ? "default" : "outline"}
                           size="sm"
-                          className="h-8 w-8 p-0 text-xs rounded-lg"
+                          className="h-8 w-8 p-0 text-xs rounded-xl"
                           onClick={() => setPage(pageNum)}
                         >
                           {pageNum + 1}
                         </Button>
                       );
                     })}
-                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="h-8 w-8 p-0 rounded-lg">
+                    <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1} className="h-8 w-8 p-0 rounded-xl">
                       <ChevronRight className="h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1} className="h-8 w-8 p-0 rounded-lg">
+                    <Button variant="outline" size="sm" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1} className="h-8 w-8 p-0 rounded-xl">
                       <ChevronRight className="h-3 w-3" /><ChevronRight className="h-3 w-3 -ms-2" />
                     </Button>
                   </div>
@@ -1546,7 +1546,7 @@ function SpecializationSelector({
   return (
     <>
       {/* Primary Specialization - DB selector */}
-      <div className="rounded-lg border p-4 space-y-3">
+      <div className="rounded-xl border p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">{isAr ? "التخصص الرئيسي" : "Primary Specialization"}</h3>
           {pendingCount > 0 && (
@@ -1658,7 +1658,7 @@ function SpecializationSelector({
       </div>
 
       {/* Specialty Tags from DB with search */}
-      <div className="rounded-lg border p-4 space-y-3">
+      <div className="rounded-xl border p-4 space-y-3">
         <h3 className="text-sm font-semibold">{isAr ? "التخصصات الفرعية" : "Secondary Specialties"}</h3>
         {editUserSpecialties.length > 0 && (
           <div className="flex flex-wrap gap-1.5">

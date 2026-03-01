@@ -15,7 +15,7 @@ function EventTooltipContent({ event, isAr }: { event: GlobalEvent; isAr: boolea
   return (
     <div className="max-w-[300px] space-y-2">
       {event.cover_image_url && (
-        <img src={event.cover_image_url} alt="" className="w-full h-24 object-cover rounded-lg" loading="lazy" />
+        <img src={event.cover_image_url} alt="" className="w-full h-24 object-cover rounded-xl" loading="lazy" />
       )}
       <div className="flex items-center gap-1.5 flex-wrap">
         <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0 border", colors.bg, colors.text, colors.border)}>

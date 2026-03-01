@@ -272,7 +272,7 @@ export default function CompanyPublicProfile() {
                     <Card key={s.id} className="cursor-pointer rounded-xl border-border/40 transition-all hover:shadow-md hover:-translate-y-0.5"
                       onClick={() => navigate(`/competitions/${s.competitions?.id || ""}`)}>
                       <CardContent className="flex items-center gap-3 p-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-chart-4/10">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
                           <Crown className="h-5 w-5 text-chart-4" />
                         </div>
                         <div className="min-w-0">
@@ -298,7 +298,7 @@ export default function CompanyPublicProfile() {
               </h2>
               <div className="flex flex-wrap gap-2">
                 {company.operating_countries.map((cc) => (
-                  <Badge key={cc} variant="secondary" className="rounded-lg text-sm px-3 py-1.5">
+                  <Badge key={cc} variant="secondary" className="rounded-xl text-sm px-3 py-1.5">
                     {countryFlag(cc)} {getCountryName(cc)}
                   </Badge>
                 ))}

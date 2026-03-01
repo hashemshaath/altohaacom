@@ -370,13 +370,13 @@ export default function CRMDashboard() {
             </div>
             <Progress value={resolutionRate} className="h-2" />
             <div className="grid grid-cols-2 gap-3 text-center">
-              <div className="rounded-lg border p-2">
+              <div className="rounded-xl border p-2">
                 <p className="text-lg font-bold text-chart-5">{chatStats?.avgRating ?? "—"}</p>
                 <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
                   <Star className="h-3 w-3" /> {isAr ? "متوسط التقييم" : "Avg. Rating"}
                 </p>
               </div>
-              <div className="rounded-lg border p-2">
+              <div className="rounded-xl border p-2">
                 <p className="text-lg font-bold">{ticketStats?.today ?? 0}</p>
                 <p className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
                   <Zap className="h-3 w-3" /> {isAr ? "تذاكر اليوم" : "Today"}
@@ -706,7 +706,7 @@ export default function CRMDashboard() {
                 color: "text-chart-1",
               },
             ].map(item => (
-              <div key={item.label} className="text-center rounded-lg border p-3 hover:shadow-sm transition-shadow">
+              <div key={item.label} className="text-center rounded-xl border p-3 hover:shadow-sm transition-shadow">
                 <item.icon className={`mx-auto h-5 w-5 ${item.color} mb-1`} />
                 <p className="text-xl font-bold">{item.value}</p>
                 <p className="text-[10px] text-muted-foreground">{item.label}</p>

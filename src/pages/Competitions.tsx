@@ -235,9 +235,9 @@ export default function Competitions() {
                     <SelectValue placeholder={isAr ? "دولة" : "Country"} />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-border/30">
-                    <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                    <SelectItem value="all" className="rounded-xl">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
                     {countryCodes.map((code) => (
-                      <SelectItem key={code} value={code} className="rounded-lg">
+                      <SelectItem key={code} value={code} className="rounded-xl">
                         <span className="flex items-center gap-2">
                           <span>{countryFlag(code)}</span>
                           <span className="hidden sm:inline">{getCountryName(code)}</span>
@@ -253,9 +253,9 @@ export default function Competitions() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/30">
-                  <SelectItem value="date" className="rounded-lg text-xs">{isAr ? "التاريخ" : "Date"}</SelectItem>
-                  <SelectItem value="name" className="rounded-lg text-xs">{isAr ? "الاسم" : "Name"}</SelectItem>
-                  <SelectItem value="popularity" className="rounded-lg text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
+                  <SelectItem value="date" className="rounded-xl text-xs">{isAr ? "التاريخ" : "Date"}</SelectItem>
+                  <SelectItem value="name" className="rounded-xl text-xs">{isAr ? "الاسم" : "Name"}</SelectItem>
+                  <SelectItem value="popularity" className="rounded-xl text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -275,7 +275,7 @@ export default function Competitions() {
                     <div className="absolute inset-0 rounded-xl bg-primary shadow-lg shadow-primary/20 animate-in fade-in zoom-in-95 duration-300" />
                   )}
                   <span className="relative z-10">{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
-                  <span className={`relative z-10 ms-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-lg px-1 text-[9px] font-black tabular-nums ${
+                  <span className={`relative z-10 ms-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-xl px-1 text-[9px] font-black tabular-nums ${
                     activeTab === tab
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"

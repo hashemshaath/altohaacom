@@ -385,7 +385,7 @@ export default function CompanyCommunications() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="whitespace-pre-wrap rounded-lg bg-muted/50 p-4">
+                <div className="whitespace-pre-wrap rounded-xl bg-muted/50 p-4">
                   {selectedMessage.message}
                 </div>
 
@@ -399,7 +399,7 @@ export default function CompanyCommunications() {
                     {replies.map((reply) => (
                       <div
                         key={reply.id}
-                        className={`rounded-lg border p-4 ${
+                        className={`rounded-xl border p-4 ${
                           reply.direction === "outgoing" ? "ms-4 border-s-[3px] border-s-primary" : "me-4"
                         }`}
                       >

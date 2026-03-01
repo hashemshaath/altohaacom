@@ -376,7 +376,7 @@ export default function AdvertiseWithUs() {
                     { icon: Eye, en: "Multiple formats: banner, video, sponsored", ar: "صيغ متعددة: بانر، فيديو، محتوى مدعوم" },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                         <item.icon className="h-3.5 w-3.5 text-primary" />
                       </div>
                       <p className="text-sm">{isAr ? item.ar : item.en}</p>

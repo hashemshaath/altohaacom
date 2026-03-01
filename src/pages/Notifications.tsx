@@ -308,9 +308,9 @@ export default function Notifications() {
           <div className="flex items-center gap-3 sticky top-0 z-20 bg-background/80 backdrop-blur-xl py-2 -mx-1 px-1 rounded-xl">
             <Tabs value={filter} onValueChange={setFilter}>
               <TabsList className="rounded-xl">
-                <TabsTrigger value="all" className="rounded-lg">{isAr ? "الكل" : "All"}</TabsTrigger>
-                <TabsTrigger value="unread" className="rounded-lg">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
-                <TabsTrigger value="read" className="rounded-lg">{isAr ? "مقروء" : "Read"}</TabsTrigger>
+                <TabsTrigger value="all" className="rounded-xl">{isAr ? "الكل" : "All"}</TabsTrigger>
+                <TabsTrigger value="unread" className="rounded-xl">{isAr ? "غير مقروء" : "Unread"}</TabsTrigger>
+                <TabsTrigger value="read" className="rounded-xl">{isAr ? "مقروء" : "Read"}</TabsTrigger>
               </TabsList>
             </Tabs>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -351,8 +351,8 @@ export default function Notifications() {
                     <div className="flex items-start gap-3">
                       <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
                       <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-3/4 rounded-lg" />
-                        <Skeleton className="h-3 w-1/2 rounded-lg" />
+                        <Skeleton className="h-4 w-3/4 rounded-xl" />
+                        <Skeleton className="h-3 w-1/2 rounded-xl" />
                         <div className="flex gap-2 pt-1">
                           <Skeleton className="h-4 w-16 rounded-full" />
                           <Skeleton className="h-4 w-16 rounded-full" />
@@ -391,7 +391,7 @@ export default function Notifications() {
                   <div className="flex items-center gap-3 mb-3">
                     <p className="text-sm font-semibold text-muted-foreground">{dateLabel}</p>
                     <div className="flex-1 h-px bg-border/50" />
-                    <Badge variant="secondary" className="text-[10px] rounded-lg">
+                    <Badge variant="secondary" className="text-[10px] rounded-xl">
                       {toEnglishDigits(items.length)}
                     </Badge>
                   </div>
@@ -462,7 +462,7 @@ export default function Notifications() {
                                         <Button
                                           variant="ghost"
                                           size="icon"
-                                          className="h-7 w-7 rounded-lg"
+                                          className="h-7 w-7 rounded-xl"
                                           onClick={(e) => { e.stopPropagation(); markAsRead(notification.id); }}
                                           title={isAr ? "قراءة" : "Mark as read"}
                                         >
@@ -472,7 +472,7 @@ export default function Notifications() {
                                       <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-7 w-7 rounded-lg"
+                                        className="h-7 w-7 rounded-xl"
                                         onClick={(e) => { e.stopPropagation(); deleteNotification(notification.id); }}
                                       >
                                         <X className="h-3.5 w-3.5 text-muted-foreground" />
