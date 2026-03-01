@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Eye, Flame } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { format } from "date-fns";
@@ -110,7 +111,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                           {featured.published_at && <span>{format(new Date(featured.published_at), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>}
                           {featured.view_count > 0 && (
                             <span className="flex items-center gap-0.5">
-                              <Eye className="h-2.5 w-2.5" /> {featured.view_count.toLocaleString()}
+                              <Eye className="h-2.5 w-2.5" /> <AnimatedCounter value={featured.view_count} className="inline" />
                             </span>
                           )}
                         </div>
@@ -146,7 +147,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                             {article.published_at && <span>{format(new Date(article.published_at), "d MMM", { locale: isAr ? ar : undefined })}</span>}
                             {article.view_count > 0 && (
                               <span className="flex items-center gap-0.5">
-                                <Eye className="h-2.5 w-2.5" /> {article.view_count.toLocaleString()}
+                                <Eye className="h-2.5 w-2.5" /> <AnimatedCounter value={article.view_count} className="inline" />
                               </span>
                             )}
                           </div>

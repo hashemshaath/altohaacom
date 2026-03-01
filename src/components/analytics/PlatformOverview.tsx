@@ -144,7 +144,7 @@ export default function PlatformOverview({ dateRange }: Props) {
             key={card.label}
             icon={card.icon}
             label={card.label}
-            value={isLoading ? "..." : card.value.toLocaleString()}  
+            value={isLoading ? "..." : card.value}
             trend={card.rangeValue !== undefined && card.value > 0 ? Math.round((card.rangeValue / card.value) * 100) : undefined}
             sparkData={card.label.includes("User") || card.label.includes("المستخدم") ? stats?.userSparkline : undefined}
             color={card.color}
