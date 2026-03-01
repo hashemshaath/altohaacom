@@ -13,6 +13,7 @@ import {
   ArrowUpCircle, ArrowDownCircle, UserPlus, Crown, Gift
 } from "lucide-react";
 import { useMemo, useCallback } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, startOfMonth, endOfMonth, differenceInDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
@@ -537,7 +538,11 @@ function KPICard({ icon: Icon, label, value, sub, color = "text-foreground" }: {
           <Icon className={`h-4 w-4 ${color}`} />
           <span className="text-xs font-medium text-muted-foreground">{label}</span>
         </div>
-        <p className="text-xl font-bold">{value}</p>
+        {typeof value === "number" ? (
+          <AnimatedCounter value={value} className="text-xl" />
+        ) : (
+          <p className="text-xl font-bold">{value}</p>
+        )}
         <p className="text-[10px] text-muted-foreground mt-0.5">{sub}</p>
       </CardContent>
     </Card>
@@ -553,7 +558,11 @@ function InsightRow({ icon: Icon, label, value, color }: {
         <Icon className={`h-4 w-4 ${color}`} />
         <span className="text-sm text-muted-foreground">{label}</span>
       </div>
-      <span className="text-lg font-bold">{value}</span>
+      {typeof value === "number" ? (
+        <AnimatedCounter value={value} className="text-lg" />
+      ) : (
+        <span className="text-lg font-bold">{value}</span>
+      )}
     </div>
   );
 }
