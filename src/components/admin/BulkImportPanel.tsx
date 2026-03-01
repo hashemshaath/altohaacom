@@ -447,7 +447,7 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
             </div>
 
             {errors.length > 0 && (
-              <div className="rounded-lg bg-destructive/5 p-3">
+              <div className="rounded-xl bg-destructive/5 p-3">
                 <div className="flex items-center gap-2 text-sm font-medium text-destructive">
                   <AlertTriangle className="h-4 w-4" />
                   {t("Validation Errors", "أخطاء التحقق")}

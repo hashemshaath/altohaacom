@@ -70,7 +70,7 @@ export function ChefsTablePipeline({ requests, sessions }: Props) {
         <div className="flex items-stretch gap-1">
           {stages.map((stage, i) => (
             <div key={i} className="flex items-center flex-1 min-w-0">
-              <div className={`flex-1 rounded-lg border p-3 ${stage.color} transition-all hover:scale-[1.02]`}>
+              <div className={`flex-1 rounded-xl border p-3 ${stage.color} transition-all hover:scale-[1.02]`}>
                 <div className="flex items-center gap-2 mb-2">
                   <stage.icon className="h-4 w-4 shrink-0" />
                   <span className="text-[10px] font-bold truncate">{stage.label}</span>

@@ -138,7 +138,7 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
               {PRESET_COLORS.map(c => (
                 <button
                   key={c.hex}
-                  className={`h-8 w-8 rounded-lg border-2 transition-all hover:scale-110 ${cover.gradientColor === c.hex ? "border-primary ring-2 ring-primary/30 scale-110" : "border-border/40"}`}
+                  className={`h-8 w-8 rounded-xl border-2 transition-all hover:scale-110 ${cover.gradientColor === c.hex ? "border-primary ring-2 ring-primary/30 scale-110" : "border-border/40"}`}
                   style={{ backgroundColor: c.hex }}
                   title={c.label}
                   onClick={() => setCover({ ...cover, gradientColor: c.hex })}
@@ -184,7 +184,7 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
                   <button
                     key={opt.value}
                     onClick={() => setCover({ ...cover, gradientDirection: opt.value })}
-                    className={`flex flex-col items-center gap-1 rounded-lg border px-2 py-2.5 text-[10px] transition-all ${active ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground hover:bg-muted/30"}`}
+                    className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-[10px] transition-all ${active ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground hover:bg-muted/30"}`}
                   >
                     <Icon className="h-4 w-4" />
                     <span className="leading-tight text-center">{isAr ? opt.ar : opt.en}</span>
@@ -249,7 +249,7 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
               {isAr ? "معاينة حية" : "Live Preview"}
             </Label>
             <div
-              className="relative h-28 w-full rounded-lg overflow-hidden border border-border/40"
+              className="relative h-28 w-full rounded-xl overflow-hidden border border-border/40"
               style={{
                 background: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><rect fill="%23334155"/><text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14" fill="%2394a3b8">Cover Image</text></svg>') center/cover`,
               }}
@@ -298,7 +298,7 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
               <button
                 key={t.id}
                 onClick={() => setCover({ ...cover, defaultHeight: t.height > 800 ? 520 : Math.min(t.height, 800) })}
-                className="flex items-center justify-between rounded-lg border border-border/40 px-3 py-3 text-start transition-all hover:bg-muted/30 hover:border-primary/30 group"
+                className="flex items-center justify-between rounded-xl border border-border/40 px-3 py-3 text-start transition-all hover:bg-muted/30 hover:border-primary/30 group"
               >
                 <div>
                   <span className="text-sm font-medium group-hover:text-primary transition-colors">
@@ -342,7 +342,7 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
             {PAGE_OPTIONS.map(page => (
               <div
                 key={page.slug}
-                className="flex items-center justify-between rounded-lg border border-border/40 px-3 py-2.5 transition-colors hover:bg-muted/30"
+                className="flex items-center justify-between rounded-xl border border-border/40 px-3 py-2.5 transition-colors hover:bg-muted/30"
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{isAr ? page.ar : page.en}</span>

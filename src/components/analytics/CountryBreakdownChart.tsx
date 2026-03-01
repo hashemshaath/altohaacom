@@ -82,7 +82,7 @@ export function CountryBreakdownChart({ metric }: CountryBreakdownChartProps) {
     <Card className="border-border/50">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
             <Globe className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? title.ar : title.en}

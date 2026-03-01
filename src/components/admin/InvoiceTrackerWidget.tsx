@@ -145,21 +145,21 @@ export function InvoiceTrackerWidget() {
               {isAr ? "ملخص مالي" : "Financial Summary"}
             </p>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-xl">
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-3.5 w-3.5 text-chart-5" />
                   <span className="text-xs">{isAr ? "إجمالي الفواتير" : "Total Invoiced"}</span>
                 </div>
                 <span className="text-sm font-bold">{formatAmount(data.totalAmount)} {data.currency}</span>
               </div>
-              <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-xl">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-3.5 w-3.5 text-chart-5" />
                   <span className="text-xs">{isAr ? "المحصّل" : "Collected"}</span>
                 </div>
                 <span className="text-sm font-bold text-chart-5">{formatAmount(data.paidAmount)} {data.currency}</span>
               </div>
-              <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-xl">
                 <div className="flex items-center gap-2">
                   <Clock className="h-3.5 w-3.5 text-chart-4" />
                   <span className="text-xs">{isAr ? "المعلّق" : "Outstanding"}</span>

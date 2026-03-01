@@ -161,7 +161,7 @@ export function SupplierInquiryInbox() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="rounded-lg bg-muted/50 p-4 text-sm whitespace-pre-wrap leading-relaxed">
+                <div className="rounded-xl bg-muted/50 p-4 text-sm whitespace-pre-wrap leading-relaxed">
                   {selected.message}
                 </div>
 

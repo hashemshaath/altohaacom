@@ -51,7 +51,7 @@ export function ContentStatsWidget() {
             { icon: Clock, value: stats.drafts, label: isAr ? "مسودة" : "Drafts", color: "text-chart-4" },
             { icon: Star, value: stats.featured, label: isAr ? "مميز" : "Featured", color: "text-chart-3" },
           ].map((s) => (
-            <div key={s.label} className="text-center p-2 rounded-lg bg-muted/50">
+            <div key={s.label} className="text-center p-2 rounded-xl bg-muted/50">
               <s.icon className={`h-3.5 w-3.5 mx-auto ${s.color} mb-1`} />
               <p className="text-lg font-bold">{s.value}</p>
               <p className="text-[10px] text-muted-foreground">{s.label}</p>

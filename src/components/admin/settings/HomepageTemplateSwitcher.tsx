@@ -82,7 +82,7 @@ export function HomepageTemplateSwitcher() {
                   </div>
                 )}
                 <div className="flex items-center gap-2">
-                  <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", isActive ? "bg-primary/15" : "bg-muted")}>
+                  <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center", isActive ? "bg-primary/15" : "bg-muted")}>
                     <t.icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground")} />
                   </div>
                   <div>

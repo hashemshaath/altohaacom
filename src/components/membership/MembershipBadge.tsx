@@ -58,7 +58,7 @@ export function MembershipBadge({ tier, isAr = false, size = "md", showTooltip =
   const badge = (
     <Badge
       variant="outline"
-      className={`${config.className} ${SIZE_CLASSES[size]} rounded-lg font-semibold transition-colors cursor-default`}
+      className={`${config.className} ${SIZE_CLASSES[size]} rounded-xl font-semibold transition-colors cursor-default`}
     >
       <Icon className={ICON_SIZES[size]} />
       {label}

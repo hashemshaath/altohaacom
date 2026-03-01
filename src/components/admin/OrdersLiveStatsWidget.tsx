@@ -140,17 +140,17 @@ export function OrdersLiveStatsWidget() {
         </div>
 
         <div className="grid grid-cols-3 gap-3 mt-4">
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <CheckCircle className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold">{data.paidInvoices}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "فواتير مدفوعة" : "Paid Invoices"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <ArrowUpDown className="h-3 w-3 mx-auto mb-1 text-chart-3" />
             <div className="text-sm font-bold">{data.avgOrderValue}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "متوسط الطلب" : "Avg Order"}</div>
           </div>
-          <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-destructive" />
             <div className="text-sm font-bold">{data.unpaidInvoices}</div>
             <div className="text-[9px] text-muted-foreground">{isAr ? "غير مدفوعة" : "Unpaid"}</div>
