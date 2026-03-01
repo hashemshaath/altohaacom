@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   BarChart3, Users, MessageCircle, Heart, TrendingUp,
   Flag, Shield, Eye, Repeat2, AlertTriangle, CheckCircle2, XCircle,
@@ -93,7 +94,7 @@ export function CommunityAnalytics() {
                 <c.icon className={cn("h-4 w-4", c.color)} />
                 <span className="text-xs text-muted-foreground truncate">{c.label}</span>
               </div>
-              <p className="text-2xl font-bold tabular-nums">{typeof c.value === "number" ? toEnglishDigits(`${c.value}`) : c.value}</p>
+              <p className="text-2xl font-bold tabular-nums">{typeof c.value === "number" ? <AnimatedCounter value={c.value} /> : c.value}</p>
               {c.sub && <p className="text-[10px] text-muted-foreground mt-1">{c.sub}</p>}
             </CardContent>
           </Card>

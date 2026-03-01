@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useFadeIn, useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -83,7 +84,7 @@ function QuickStatsCards({ settings, completion, isAr }: { settings: Record<stri
               <item.icon className="h-5 w-5 text-primary transition-transform duration-300 group-hover:rotate-6" />
             </div>
             <div className="min-w-0">
-              <p className={item.isText ? "text-sm font-semibold" : "text-2xl font-bold tabular-nums"}>{item.value}</p>
+              <p className={item.isText ? "text-sm font-semibold" : "text-2xl font-bold tabular-nums"}>{item.isText ? item.value : <AnimatedCounter value={typeof item.value === "number" ? item.value : 0} />}</p>
               <p className="text-[10px] text-muted-foreground truncate">{item.label}</p>
             </div>
           </CardContent>

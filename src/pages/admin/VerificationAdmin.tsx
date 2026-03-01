@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllVerificationRequests, useReviewVerification, useRunAIVerification } from "@/hooks/useVerification";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,7 +142,7 @@ export default function VerificationAdmin() {
                 <s.icon className={`h-5 w-5 ${s.color}`} />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stats[s.key as keyof typeof stats]}</p>
+                <p className="text-2xl font-bold"><AnimatedCounter value={stats[s.key as keyof typeof stats]} /></p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>

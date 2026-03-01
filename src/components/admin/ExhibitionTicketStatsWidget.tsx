@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Ticket, CheckCircle2, Clock, TrendingUp, BarChart3 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { startOfDay, subDays } from "date-fns";
 
 export function ExhibitionTicketStatsWidget() {
@@ -63,7 +64,7 @@ export function ExhibitionTicketStatsWidget() {
           ].map((m, i) => (
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
-              <p className="text-sm font-bold">{m.value}</p>
+              <p className="text-sm font-bold"><AnimatedCounter value={m.value || 0} /></p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
             </div>
           ))}

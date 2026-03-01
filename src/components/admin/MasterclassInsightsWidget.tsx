@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Users, GraduationCap, Star, TrendingUp } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function MasterclassInsightsWidget() {
   const { language } = useLanguage();
@@ -66,7 +67,7 @@ export function MasterclassInsightsWidget() {
           ].map((m, i) => (
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
-              <p className="text-sm font-bold">{m.value}</p>
+              <p className="text-sm font-bold">{typeof m.value === "number" ? <AnimatedCounter value={m.value} /> : m.value}</p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
             </div>
           ))}
@@ -77,14 +78,14 @@ export function MasterclassInsightsWidget() {
           <div>
             <div className="flex justify-between text-xs mb-1">
               <span className="text-muted-foreground">{isAr ? "معدل الإكمال" : "Completion Rate"}</span>
-              <span className="font-medium text-chart-2">{data?.completionRate}%</span>
+              <span className="font-medium text-chart-2"><AnimatedCounter value={data?.completionRate || 0} suffix="%" /></span>
             </div>
             <Progress value={data?.completionRate || 0} className="h-1.5" />
           </div>
           <div>
             <div className="flex justify-between text-xs mb-1">
               <span className="text-muted-foreground">{isAr ? "متوسط التقدم" : "Avg Progress"}</span>
-              <span className="font-medium">{data?.avgProgress}%</span>
+              <span className="font-medium"><AnimatedCounter value={data?.avgProgress || 0} suffix="%" /></span>
             </div>
             <Progress value={data?.avgProgress || 0} className="h-1.5" />
           </div>

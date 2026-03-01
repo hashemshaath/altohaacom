@@ -23,6 +23,7 @@ import {
 import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useMemo, useState, useEffect } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ExhibitionRow {
   [key: string]: any;
@@ -394,7 +395,7 @@ export default function OrganizerDetail() {
                   <div className={`flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-muted/50 mb-2 ${s.color}`}>
                     <s.icon className="h-5 w-5" />
                   </div>
-                  <p className="text-xl font-bold">{s.value}</p>
+                  <p className="text-xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
                 </CardContent>
               </Card>
