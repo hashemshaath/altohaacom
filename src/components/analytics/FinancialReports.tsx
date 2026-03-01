@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Receipt, Handshake, TrendingUp } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 
@@ -84,7 +85,7 @@ export default function FinancialReports() {
               <card.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{isLoading ? "..." : card.value}</div>
+              <div className="text-2xl font-bold">{isLoading ? "..." : (typeof card.value === "number" ? <AnimatedCounter value={card.value} /> : card.value)}</div>
             </CardContent>
           </Card>
         ))}

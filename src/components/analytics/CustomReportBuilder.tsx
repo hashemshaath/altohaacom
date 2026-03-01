@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -322,7 +323,7 @@ export function CustomReportBuilder() {
                         <p className="text-xs text-muted-foreground">{isAr ? metric.labelAr : metric.label}</p>
                         <metric.icon className={`h-4 w-4 text-${metric.color}`} />
                       </div>
-                      <p className="mt-1 text-2xl font-bold">{(reportData[id]?.total || 0).toLocaleString()}</p>
+                      <AnimatedCounter value={reportData[id]?.total || 0} className="mt-1 text-2xl" />
                     </CardContent>
                   </Card>
                 );
