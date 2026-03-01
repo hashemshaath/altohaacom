@@ -48,11 +48,11 @@ export function WalletBalanceWidget() {
   if (!data) return null;
 
   return (
-    <Card className="border-border/40 overflow-hidden">
+    <Card className="border-border/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm">
               <Wallet className="h-4 w-4 text-primary" />
             </div>
             <span className="text-xs font-bold">{isAr ? "المحفظة" : "Wallet"}</span>
@@ -67,15 +67,15 @@ export function WalletBalanceWidget() {
 
         <div className="grid grid-cols-2 gap-3">
           {/* Balance */}
-          <div className="rounded-xl bg-muted/40 p-3 text-center">
-            <p className="text-lg font-bold tabular-nums">{data.balance.toFixed(2)}</p>
-            <p className="text-[10px] text-muted-foreground font-medium">{data.currency}</p>
+          <div className="rounded-xl bg-muted/40 p-3 text-center border border-border/30 hover:bg-muted/50 transition-colors">
+            <p className="text-xl font-bold tabular-nums">{data.balance.toFixed(2)}</p>
+            <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{data.currency}</p>
           </div>
 
           {/* Points */}
-          <div className="rounded-xl bg-chart-4/5 p-3 text-center">
-            <p className="text-lg font-bold tabular-nums text-chart-4">{data.points}</p>
-            <div className="flex items-center justify-center gap-1">
+          <div className="rounded-xl bg-chart-4/5 p-3 text-center border border-chart-4/15 hover:bg-chart-4/10 transition-colors">
+            <p className="text-xl font-bold tabular-nums text-chart-4">{data.points}</p>
+            <div className="flex items-center justify-center gap-1 mt-0.5">
               <Star className="h-2.5 w-2.5 text-chart-4" />
               <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "نقاط" : "Points"}</p>
             </div>

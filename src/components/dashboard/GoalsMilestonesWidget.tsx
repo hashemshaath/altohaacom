@@ -85,10 +85,12 @@ export function GoalsMilestonesWidget() {
   ];
 
   return (
-    <Card className="border-border/40">
+    <Card className="border-border/40 shadow-sm hover:shadow-lg transition-shadow duration-300">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Target className="h-4 w-4 text-primary" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-primary/15 to-primary/5">
+            <Target className="h-3.5 w-3.5 text-primary" />
+          </div>
           {isAr ? "أهدافك" : "Your Goals"}
         </CardTitle>
       </CardHeader>
@@ -99,19 +101,19 @@ export function GoalsMilestonesWidget() {
           const Icon = m.icon;
 
           return (
-            <div key={m.labelEn} className="space-y-1">
+            <div key={m.labelEn} className="space-y-1.5 group">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-1.5">
                   {done ? (
                     <CheckCircle2 className="h-3.5 w-3.5 text-chart-2" />
                   ) : (
-                    <Icon className={`h-3.5 w-3.5 ${m.color}`} />
+                    <Icon className={`h-3.5 w-3.5 ${m.color} transition-transform group-hover:scale-110`} />
                   )}
                   <span className="font-medium">{isAr ? m.labelAr : m.labelEn}</span>
                 </div>
-                <span className="text-muted-foreground tabular-nums text-[11px]">
+                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4 tabular-nums">
                   {m.current}/{m.target}
-                </span>
+                </Badge>
               </div>
               <Progress value={pct} className="h-1.5" />
             </div>
