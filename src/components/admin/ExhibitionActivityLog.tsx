@@ -73,7 +73,7 @@ export function ExhibitionActivityLog() {
           <div className="space-y-1.5">
             {/* Recent tickets */}
             {recentTickets.map((ticket: any) => (
-              <div key={ticket.id} className="flex items-center gap-2 rounded-lg bg-muted/30 px-3 py-2">
+              <div key={ticket.id} className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2">
                 <Ticket className="h-3 w-3 text-chart-2 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-medium truncate">
@@ -89,7 +89,7 @@ export function ExhibitionActivityLog() {
 
             {/* Admin actions */}
             {actions.map((action: any) => (
-              <div key={action.id} className="flex items-center gap-2 rounded-lg bg-muted/30 px-3 py-2">
+              <div key={action.id} className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2">
                 {getActionIcon(action.action_type)}
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-medium truncate">{getActionLabel(action.action_type)}</p>

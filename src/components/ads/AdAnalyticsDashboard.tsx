@@ -268,7 +268,7 @@ export function AdAnalyticsDashboard() {
           ) : (
             <div className="space-y-2">
               {topPages.map((p, i) => (
-                <div key={i} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50">
+                <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium truncate">{p.page}</p>
                     <p className="text-[10px] text-muted-foreground">{p.impressions} {isAr ? "مشاهدة" : "imp."}</p>
@@ -297,7 +297,7 @@ export function AdAnalyticsDashboard() {
           ) : (
             <div className="space-y-2">
               {campaignPerformance.slice(0, 6).map((c, i) => (
-                <div key={i} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50">
+                <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50">
                   <div>
                     <p className="text-xs font-medium">{c.name}</p>
                     <p className="text-[10px] text-muted-foreground">{c.company}</p>

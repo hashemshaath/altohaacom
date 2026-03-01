@@ -100,7 +100,7 @@ export function DashboardLiveMetricsWidget() {
         <div className="grid grid-cols-5 gap-3 mb-3">
           {metrics.map((m) => (
             <div key={m.label} className="text-center space-y-1">
-              <div className={`mx-auto w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center`}>
+              <div className={`mx-auto w-8 h-8 rounded-xl ${m.bg} flex items-center justify-center`}>
                 <m.icon className={`h-4 w-4 ${m.color}`} />
               </div>
               <p className="text-lg font-bold">{m.value}</p>

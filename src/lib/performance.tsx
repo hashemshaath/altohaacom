@@ -33,7 +33,7 @@ export function ViewportSection({ children, fallback, className }: { children: R
   const { setRef, isVisible } = useInViewport();
   return (
     <div ref={setRef} className={className}>
-      {isVisible ? children : (fallback || <div className="h-32 animate-pulse bg-muted rounded-lg" />)}
+      {isVisible ? children : (fallback || <div className="h-32 animate-pulse bg-muted rounded-xl" />)}
     </div>
   );
 }

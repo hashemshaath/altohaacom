@@ -116,7 +116,7 @@ export function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
       ) : officials.length > 0 ? (
         <div className="space-y-2">
           {officials.map(off => (
-            <div key={off.id} className="flex items-center gap-3 rounded-lg border p-2.5 bg-muted/20">
+            <div key={off.id} className="flex items-center gap-3 rounded-xl border p-2.5 bg-muted/20">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0">
                 <User className="h-4 w-4 text-primary" />
               </div>
@@ -146,7 +146,7 @@ export function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
 
       {/* Add form */}
       {showForm ? (
-        <div className="rounded-lg border p-3 space-y-3 bg-muted/10">
+        <div className="rounded-xl border p-3 space-y-3 bg-muted/10">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium">{t("Add Official", "إضافة مسؤول")}</p>
             <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setShowForm(false)}>

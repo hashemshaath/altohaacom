@@ -473,7 +473,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
             ) : (
               <div className="space-y-1">
                 {form.items.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 rounded-lg border border-border/60 p-2 bg-card hover:bg-muted/30 transition-colors">
+                  <div key={idx} className="flex items-center gap-2 rounded-xl border border-border/60 p-2 bg-card hover:bg-muted/30 transition-colors">
                     <GripVertical className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0 hidden sm:block" />
                     <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-[1fr_1fr_80px_70px] gap-1.5 items-center">
                       <Input
@@ -582,7 +582,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                     onClick={() => loadDishTemplate(dish)}
                     className="flex flex-col items-center gap-1 rounded-xl border border-border/60 bg-card px-3 py-2.5 min-w-[90px] hover:border-primary/40 hover:shadow-sm transition-all shrink-0"
                   >
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-${dish.color}/10`}>
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-xl bg-${dish.color}/10`}>
                       <Icon className={`h-4 w-4 text-${dish.color}`} />
                     </div>
                     <span className="text-[11px] font-medium whitespace-nowrap">

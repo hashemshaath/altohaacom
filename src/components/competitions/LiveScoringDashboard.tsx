@@ -251,7 +251,7 @@ export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
                 </div>
 
                 {entry.judgesScored >= entry.totalJudges && (
-                  <Badge variant="outline" className="text-[9px] h-5 border-chart-5/30 text-chart-5 shrink-0 rounded-lg hidden sm:flex">
+                  <Badge variant="outline" className="text-[9px] h-5 border-chart-5/30 text-chart-5 shrink-0 rounded-xl hidden sm:flex">
                     ✓ {isAr ? "مكتمل" : "Done"}
                   </Badge>
                 )}

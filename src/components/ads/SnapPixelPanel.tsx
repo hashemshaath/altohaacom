@@ -137,7 +137,7 @@ export function SnapPixelPanel() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
                       <integration.icon className="h-4.5 w-4.5 text-primary" />
                     </div>
                     <div>

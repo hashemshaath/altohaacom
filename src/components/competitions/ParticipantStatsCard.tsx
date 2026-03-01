@@ -45,7 +45,7 @@ export function ParticipantStatsCard({ competitionId, maxParticipants }: Partici
       <div className="border-b border-border/20 bg-gradient-to-r from-muted/30 to-transparent px-5 py-3.5">
         <div className="flex items-center justify-between">
           <h3 className="flex items-center gap-2.5 font-bold text-sm">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Users className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "إحصائيات المشاركين" : "Participant Stats"}
@@ -63,7 +63,7 @@ export function ParticipantStatsCard({ competitionId, maxParticipants }: Partici
               key={i}
               className={`group rounded-2xl ${bg} ring-1 ${ring} py-3.5 px-2 text-center transition-all duration-300 hover:scale-[1.03] hover:shadow-sm`}
             >
-              <div className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-background/60 transition-transform duration-300 group-hover:scale-110`}>
+              <div className={`mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-background/60 transition-transform duration-300 group-hover:scale-110`}>
                 <Icon className={`h-4 w-4 ${color}`} />
               </div>
               <p className="text-2xl font-black tabular-nums">{value}</p>

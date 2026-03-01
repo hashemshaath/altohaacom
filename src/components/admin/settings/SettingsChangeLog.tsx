@@ -60,7 +60,7 @@ export function SettingsChangeLog() {
                 return (
                   <div
                     key={`${log.key}-${i}`}
-                    className="flex items-center gap-3 rounded-lg border border-border/30 p-2.5 transition-colors hover:bg-muted/30"
+                    className="flex items-center gap-3 rounded-xl border border-border/30 p-2.5 transition-colors hover:bg-muted/30"
                   >
                     <div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted shrink-0">
                       <Icon className="h-3.5 w-3.5 text-muted-foreground" />

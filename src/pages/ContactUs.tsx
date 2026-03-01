@@ -72,10 +72,10 @@ export default function ContactUs() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-accent group"
+                    className="flex items-center justify-between rounded-xl p-2.5 transition-colors hover:bg-accent group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/15 transition-colors">
                         <Globe className="h-4 w-4 text-primary" />
                       </div>
                       <div>

@@ -168,7 +168,7 @@ export default function MembershipUserOverrides() {
                     setSearchUser("");
                   }}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-start transition-colors",
+                    "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-start transition-colors",
                     selectedUserId === u.user_id
                       ? "bg-primary/10 ring-1 ring-primary/20"
                       : "hover:bg-muted/50"
@@ -249,7 +249,7 @@ export default function MembershipUserOverrides() {
                       </Select>
                     </div>
 
-                    <div className="flex items-center justify-between rounded-lg border p-3">
+                    <div className="flex items-center justify-between rounded-xl border p-3">
                       <div>
                         <Label>{isAr ? "منح الوصول" : "Grant Access"}</Label>
                         <p className="text-xs text-muted-foreground">
@@ -319,7 +319,7 @@ export default function MembershipUserOverrides() {
                     <div
                       key={override.id}
                       className={cn(
-                        "flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors",
+                        "flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors",
                         isExpired && "opacity-50 bg-muted/30"
                       )}
                     >

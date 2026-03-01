@@ -159,7 +159,7 @@ export default function MembershipRedeem() {
             </div>
             <CardContent className="p-5 space-y-3">
               {giftData.message && (
-                <div className="bg-muted/50 rounded-lg p-3 text-sm italic text-muted-foreground border border-border/50">
+                <div className="bg-muted/50 rounded-xl p-3 text-sm italic text-muted-foreground border border-border/50">
                   <Heart className="h-3 w-3 inline me-1 text-primary" />
                   "{giftData.message}"
                 </div>

@@ -135,7 +135,7 @@ export function AdminScheduledExports() {
           </p>
         ) : (
           presets.map((preset) => (
-            <div key={preset.id} className="flex items-center justify-between p-2.5 rounded-lg bg-muted/50 group">
+            <div key={preset.id} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50 group">
               <div className="flex items-center gap-2 min-w-0">
                 {preset.format === "csv" ? (
                   <FileSpreadsheet className="h-4 w-4 text-primary shrink-0" />
