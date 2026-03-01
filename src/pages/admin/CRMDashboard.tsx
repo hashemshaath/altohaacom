@@ -678,38 +678,38 @@ export default function CRMDashboard() {
             {[
               {
                 label: isAr ? "إجمالي التذاكر" : "Total Tickets",
-                value: ticketStats?.total ?? "—",
+                numValue: ticketStats?.total ?? 0,
                 icon: Ticket,
                 color: "text-chart-4",
               },
               {
                 label: isAr ? "إجمالي المحادثات" : "Total Chats",
-                value: chatStats?.total ?? "—",
+                numValue: chatStats?.total ?? 0,
                 icon: MessageSquare,
                 color: "text-primary",
               },
               {
                 label: isAr ? "متوسط التقييم" : "Avg. Rating",
-                value: chatStats?.avgRating ?? "—",
+                strValue: chatStats?.avgRating ?? "—",
                 icon: Star,
                 color: "text-chart-5",
               },
               {
                 label: isAr ? "العملاء المحتملين" : "Total Leads",
-                value: leadStats?.total ?? "—",
+                numValue: leadStats?.total ?? 0,
                 icon: UserSearch,
                 color: "text-chart-3",
               },
               {
                 label: isAr ? "الوصول الكلي" : "Total Reach",
-                value: toEnglishDigits((segmentStats?.totalReach ?? 0).toLocaleString()),
+                numValue: segmentStats?.totalReach ?? 0,
                 icon: Users,
                 color: "text-chart-1",
               },
             ].map(item => (
               <div key={item.label} className="text-center rounded-xl border p-3 hover:shadow-sm transition-shadow">
                 <item.icon className={`mx-auto h-5 w-5 ${item.color} mb-1`} />
-                <p className="text-xl font-bold">{item.value}</p>
+                {'numValue' in item ? <AnimatedCounter value={item.numValue as number} className="text-xl font-bold" format /> : <p className="text-xl font-bold">{(item as any).strValue}</p>}
                 <p className="text-[10px] text-muted-foreground">{item.label}</p>
               </div>
             ))}

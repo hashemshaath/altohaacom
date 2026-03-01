@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Select,
   SelectContent,
@@ -150,7 +151,7 @@ export default function CompanyStatements() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Credits"}</p>
-                <p className="text-2xl font-bold">{currency} {toEnglishDigits(totalCredits.toLocaleString())}</p>
+                <p className="text-2xl font-bold">{currency} <AnimatedCounter value={totalCredits} className="inline" format /></p>
               </div>
             </CardContent>
           </Card>
@@ -161,7 +162,7 @@ export default function CompanyStatements() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المصروفات" : "Total Debits"}</p>
-                <p className="text-2xl font-bold">{currency} {toEnglishDigits(totalDebits.toLocaleString())}</p>
+                <p className="text-2xl font-bold">{currency} <AnimatedCounter value={totalDebits} className="inline" format /></p>
               </div>
             </CardContent>
           </Card>
@@ -173,7 +174,7 @@ export default function CompanyStatements() {
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "صافي الرصيد" : "Net Balance"}</p>
                 <p className={`text-2xl font-bold ${netBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>
-                  {currency} {toEnglishDigits(netBalance.toLocaleString())}
+                  {currency} <AnimatedCounter value={netBalance} className="inline" format />
                 </p>
               </div>
             </CardContent>
@@ -185,7 +186,7 @@ export default function CompanyStatements() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">{isAr ? "الرصيد الحالي" : "Current Balance"}</p>
-                <p className="text-2xl font-bold">{latestBalance !== null ? `${currency} ${toEnglishDigits(latestBalance.toLocaleString())}` : "—"}</p>
+                <p className="text-2xl font-bold">{latestBalance !== null ? <>{currency} <AnimatedCounter value={latestBalance} className="inline" format /></> : "—"}</p>
               </div>
             </CardContent>
           </Card>
