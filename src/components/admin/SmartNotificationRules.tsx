@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useToast } from "@/hooks/use-toast";
 import {
   Zap, Plus, Bell, Mail, Megaphone, Clock, Pencil, Trash2,
@@ -215,7 +216,7 @@ export function SmartNotificationRules() {
             <div className="rounded-xl p-2.5 bg-primary/10"><Zap className="h-5 w-5 text-primary" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي القواعد" : "Total Rules"}</p>
-              <p className="text-2xl font-bold">{rules.length}</p>
+              <AnimatedCounter value={rules.length} className="text-2xl" />
             </div>
           </CardContent>
         </Card>
@@ -224,7 +225,7 @@ export function SmartNotificationRules() {
             <div className="rounded-xl p-2.5 bg-chart-2/10"><Play className="h-5 w-5 text-chart-2" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "نشط" : "Active"}</p>
-              <p className="text-2xl font-bold">{activeCount}</p>
+              <AnimatedCounter value={activeCount} className="text-2xl" />
             </div>
           </CardContent>
         </Card>
@@ -233,7 +234,7 @@ export function SmartNotificationRules() {
             <div className="rounded-xl p-2.5 bg-chart-4/10"><Pause className="h-5 w-5 text-chart-4" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "متوقف" : "Paused"}</p>
-              <p className="text-2xl font-bold">{rules.length - activeCount}</p>
+              <AnimatedCounter value={rules.length - activeCount} className="text-2xl" />
             </div>
           </CardContent>
         </Card>
@@ -242,7 +243,7 @@ export function SmartNotificationRules() {
             <div className="rounded-xl p-2.5 bg-chart-3/10"><BarChart3 className="h-5 w-5 text-chart-3" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي التفعيلات" : "Total Fires"}</p>
-              <p className="text-2xl font-bold">{ruleLogs.length}</p>
+              <AnimatedCounter value={ruleLogs.length} className="text-2xl" />
             </div>
           </CardContent>
         </Card>

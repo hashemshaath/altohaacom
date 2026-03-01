@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -128,7 +129,7 @@ export default function SecurityDashboard() {
                 <s.icon className={`h-4 w-4 ${s.color}`} />
                 <span className="text-xs text-muted-foreground">{s.label}</span>
               </div>
-              <p className="text-2xl font-bold">{loading ? "—" : s.value}</p>
+              <AnimatedCounter value={loading ? 0 : (typeof s.value === "number" ? s.value : parseInt(String(s.value)) || 0)} className="text-2xl" />
             </CardContent>
           </Card>
         ))}

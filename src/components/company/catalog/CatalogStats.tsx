@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Package } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface CatalogStatsProps {
   total: number;
@@ -24,7 +25,7 @@ export function CatalogStats({ total, active, inStock, language }: CatalogStatsP
               <Package className={`h-8 w-8 ${s.color}`} />
               <div>
                 <p className="text-sm text-muted-foreground">{s.label}</p>
-                <p className="text-xl font-bold">{s.value}</p>
+                <AnimatedCounter value={s.value} className="text-xl" />
               </div>
             </div>
           </CardContent>

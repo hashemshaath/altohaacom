@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Package, Clock, AlertTriangle, Calendar } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, isPast } from "date-fns";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 import { logOrderActivity } from "./orderActivityLogger";
@@ -196,28 +197,28 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <Package className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-xl font-bold">{total}</p>
+            <AnimatedCounter value={total} className="text-xl" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "إجمالي" : "Total"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <CheckCircle className="mx-auto mb-1 h-5 w-5 text-chart-5" />
-            <p className="text-xl font-bold">{delivered}</p>
+            <AnimatedCounter value={delivered} className="text-xl" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "تسليم" : "Delivered"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <Clock className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <p className="text-xl font-bold">{total - delivered}</p>
+            <AnimatedCounter value={total - delivered} className="text-xl" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "انتظار" : "Pending"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <AlertTriangle className="mx-auto mb-1 h-5 w-5 text-destructive" />
-            <p className="text-xl font-bold">{overdue}</p>
+            <AnimatedCounter value={overdue} className="text-xl" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "متأخر" : "Overdue"}</p>
           </CardContent>
         </Card>
