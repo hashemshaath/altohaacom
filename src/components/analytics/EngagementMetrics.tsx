@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -187,7 +188,7 @@ export default function EngagementMetrics() {
                 className="transition-all duration-1000"
               />
             </svg>
-            <span className="absolute text-2xl font-bold">{isLoading ? "..." : data?.engagementScore || 0}</span>
+            <span className="absolute text-2xl font-bold">{isLoading ? "..." : <AnimatedCounter value={data?.engagementScore || 0} />}</span>
           </div>
           <div>
             <h3 className="text-lg font-bold">{isAr ? "مؤشر التفاعل" : "Engagement Score"}</h3>
@@ -213,7 +214,7 @@ export default function EngagementMetrics() {
                   {isLoading ? (
                     <Skeleton className="mt-1 h-7 w-12" />
                   ) : (
-                    <p className="mt-1 text-2xl font-bold">{card.value || 0}</p>
+                    <AnimatedCounter value={card.value || 0} className="text-2xl mt-1" />
                   )}
                 </div>
                 <card.icon className="h-4 w-4 text-muted-foreground" />
