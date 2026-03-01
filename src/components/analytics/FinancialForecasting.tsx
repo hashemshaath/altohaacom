@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   TrendingUp, TrendingDown, DollarSign, Target, Wallet,
   ArrowUpRight, ArrowDownRight, Scale, PiggyBank, BarChart3,
@@ -208,7 +209,7 @@ export function FinancialForecasting() {
                   <p className="text-xs text-muted-foreground">{kpi.label}</p>
                   <Icon className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-2xl font-bold">{kpi.value}</p>
+                <p className="text-2xl font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
                 <div className={`flex items-center gap-1 mt-1 text-xs ${kpi.trend === "up" ? "text-chart-5" : kpi.trend === "down" ? "text-destructive" : "text-muted-foreground"}`}>
                   {kpi.trend === "up" ? <ArrowUpRight className="h-3 w-3" /> : kpi.trend === "down" ? <ArrowDownRight className="h-3 w-3" /> : <Scale className="h-3 w-3" />}
                   {isAr ? "آخر 12 شهر" : "Last 12 months"}

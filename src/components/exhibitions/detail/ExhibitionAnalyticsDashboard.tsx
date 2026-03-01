@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Eye, Users, TrendingUp, MapPin, Smartphone, Monitor, Tablet, Calendar, Star, Ticket } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
 
 interface Props {
@@ -141,7 +142,7 @@ export function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
           <Card key={i}>
             <CardContent className="p-4 text-center">
               <s.icon className={`h-5 w-5 mx-auto mb-1 ${s.color}`} />
-              <p className="text-2xl font-bold">{s.value}</p>
+              <p className="text-2xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
               <p className="text-xs text-muted-foreground">{s.label}</p>
             </CardContent>
           </Card>

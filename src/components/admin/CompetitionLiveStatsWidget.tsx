@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Trophy, Users, Gavel, MapPin, TrendingUp, Calendar } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CompetitionLiveStatsWidget() {
   const { language } = useLanguage();
@@ -105,7 +106,7 @@ export function CompetitionLiveStatsWidget() {
               </div>
               <span className="text-xs text-muted-foreground">{kpi.label}</span>
             </div>
-            <p className="text-2xl font-bold">{kpi.value} <span className="text-xs font-normal text-muted-foreground">{kpi.sub}</span></p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : parseInt(String(kpi.value)) || 0} /> <span className="text-xs font-normal text-muted-foreground">{kpi.sub}</span></p>
           </CardContent>
         </Card>
       ))}

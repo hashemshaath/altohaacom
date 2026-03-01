@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -144,7 +145,7 @@ export function ABTestingDashboard() {
           <CardContent className="pt-4 pb-4 flex items-center gap-3">
             <div className="rounded-xl bg-chart-2/10 p-2.5"><FlaskConical className="h-5 w-5 text-chart-2" /></div>
             <div>
-              <p className="text-2xl font-bold">{experiments.filter(e => e.status === "running").length}</p>
+              <AnimatedCounter value={experiments.filter(e => e.status === "running").length} className="text-2xl" />
               <p className="text-xs text-muted-foreground">{isAr ? "تجارب جارية" : "Running"}</p>
             </div>
           </CardContent>
@@ -153,7 +154,7 @@ export function ABTestingDashboard() {
           <CardContent className="pt-4 pb-4 flex items-center gap-3">
             <div className="rounded-xl bg-chart-5/10 p-2.5"><CheckCircle2 className="h-5 w-5 text-chart-5" /></div>
             <div>
-              <p className="text-2xl font-bold">{experiments.filter(e => e.status === "concluded").length}</p>
+              <AnimatedCounter value={experiments.filter(e => e.status === "concluded").length} className="text-2xl" />
               <p className="text-xs text-muted-foreground">{isAr ? "منتهية" : "Concluded"}</p>
             </div>
           </CardContent>
@@ -162,7 +163,7 @@ export function ABTestingDashboard() {
           <CardContent className="pt-4 pb-4 flex items-center gap-3">
             <div className="rounded-xl bg-primary/10 p-2.5"><BarChart3 className="h-5 w-5 text-primary" /></div>
             <div>
-              <p className="text-2xl font-bold">{experiments.reduce((sum, e) => sum + e.variants.reduce((s, v) => s + v.visitors, 0), 0).toLocaleString()}</p>
+              <AnimatedCounter value={experiments.reduce((sum, e) => sum + e.variants.reduce((s, v) => s + v.visitors, 0), 0)} className="text-2xl" />
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</p>
             </div>
           </CardContent>

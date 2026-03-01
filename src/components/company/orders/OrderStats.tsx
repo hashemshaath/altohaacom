@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Package, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface OrderStatsProps {
   total: number;
@@ -30,7 +31,7 @@ export function OrderStats({ total, pending, completed, rejected, isLoading, lan
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{s.label}</p>
-              {isLoading ? <Skeleton className="h-6 w-8 mt-0.5" /> : <p className="text-xl font-bold">{s.value}</p>}
+              {isLoading ? <Skeleton className="h-6 w-8 mt-0.5" /> : <AnimatedCounter value={s.value} className="text-xl" />}
             </div>
           </CardContent>
         </Card>

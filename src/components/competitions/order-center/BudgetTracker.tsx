@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { OrderExportActions } from "./OrderExportActions";
 import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
 
@@ -187,7 +188,7 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <PieChart className="mx-auto mb-1 h-5 w-5 text-chart-1" />
-            <p className="text-xl font-bold">{toEnglishDigits(sponsorPercentage)}%</p>
+            <AnimatedCounter value={sponsorPercentage} className="text-xl" suffix="%" />
             <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "نسبة الرعاية" : "Sponsor Coverage"}</p>
           </CardContent>
         </Card>
