@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatNumber } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -161,7 +162,7 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
             ].map((stat, i) => (
               <div key={i} className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">{stat.label}</span>
-                <span className={cn("text-sm font-bold tabular-nums", stat.color)}>{formatNumber(stat.value)}</span>
+                <AnimatedCounter value={stat.value} className={cn("text-sm font-bold", stat.color)} />
               </div>
             ))}
           </div>
