@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -141,7 +142,7 @@ export function TaxComplianceAnalytics() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "درجة الامتثال" : "Compliance Score"}</p>
-              <p className="text-2xl font-bold">{data?.complianceScore || 0}%</p>
+              <span className="text-2xl font-bold"><AnimatedCounter value={data?.complianceScore || 0} suffix="%" /></span>
               <p className="text-[10px] text-muted-foreground">{data?.filedReports || 0}/{data?.totalExpectedReports || 4} {isAr ? "تقارير مقدمة" : "reports filed"}</p>
             </div>
           </CardContent>

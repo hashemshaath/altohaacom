@@ -293,7 +293,7 @@ export default function MembershipChurnRetention() {
               <TrendingDown className="h-4 w-4 text-destructive" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل التسرب" : "Avg Churn Rate"}</span>
             </div>
-            <p className="text-2xl font-bold">{churnData?.avgChurn || 0}%</p>
+            <span className="text-2xl font-bold"><AnimatedCounter value={parseFloat(churnData?.avgChurn || "0")} suffix="%" /></span>
             <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر" : "6-month avg"}</p>
           </CardContent>
         </Card>
@@ -303,7 +303,7 @@ export default function MembershipChurnRetention() {
               <RefreshCcw className="h-4 w-4 text-primary" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل الاحتفاظ" : "Retention Rate"}</span>
             </div>
-            <p className="text-2xl font-bold">{(100 - parseFloat(churnData?.avgChurn || "0")).toFixed(1)}%</p>
+            <span className="text-2xl font-bold"><AnimatedCounter value={Math.round((100 - parseFloat(churnData?.avgChurn || "0")) * 10) / 10} suffix="%" /></span>
             <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "أعضاء مدفوعين" : "paid members"}</p>
           </CardContent>
         </Card>

@@ -502,19 +502,19 @@ export default function MembershipAnalyticsDashboard() {
         <CardContent>
           <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
             <div className="rounded-xl border p-3 text-center">
-              <p className="text-2xl font-bold">{giftStats?.total || 0}</p>
+              <AnimatedCounter value={giftStats?.total || 0} className="text-2xl" />
               <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الهدايا" : "Total Gifts"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
-              <p className="text-2xl font-bold text-primary">{giftStats?.redeemed || 0}</p>
+              <AnimatedCounter value={giftStats?.redeemed || 0} className="text-2xl text-primary" />
               <p className="text-[10px] text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
-              <p className="text-2xl font-bold text-chart-3">{giftStats?.pending || 0}</p>
+              <AnimatedCounter value={giftStats?.pending || 0} className="text-2xl text-chart-3" />
               <p className="text-[10px] text-muted-foreground">{isAr ? "في الانتظار" : "Pending"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
-              <p className="text-2xl font-bold text-chart-2">{giftStats?.totalRevenue?.toFixed(0) || 0} SAR</p>
+              <AnimatedCounter value={Math.round(giftStats?.totalRevenue || 0)} className="text-2xl text-chart-2" suffix=" SAR" />
               <p className="text-[10px] text-muted-foreground">{isAr ? "إيرادات الهدايا" : "Gift Revenue"}</p>
             </div>
           </div>
