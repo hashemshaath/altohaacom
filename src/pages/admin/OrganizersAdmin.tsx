@@ -314,9 +314,9 @@ export default function OrganizersAdmin() {
           { label: isAr ? "موثق" : "Verified", value: stats.verified, icon: Shield },
           { label: isAr ? "مميز" : "Featured", value: stats.featured, icon: Star },
         ].map(s => (
-          <Card key={s.label} className="border-border/40">
+          <Card key={s.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <s.icon className="h-4 w-4 text-primary" />
               </div>
               <div>
@@ -351,7 +351,7 @@ export default function OrganizersAdmin() {
       )}
 
       {/* Toolbar */}
-      <Card className="border-border/40">
+      <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
         <CardContent className="p-3 flex flex-wrap gap-3 items-center justify-between">
           <div className="flex gap-2 items-center flex-1 min-w-0">
             <div className="relative flex-1 max-w-xs">
@@ -392,7 +392,7 @@ export default function OrganizersAdmin() {
       {isLoading ? (
         <div className="space-y-2">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-14 w-full rounded-lg" />)}</div>
       ) : (
-        <Card className="border-border/40 overflow-hidden">
+        <Card className="rounded-2xl border-border/40 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
