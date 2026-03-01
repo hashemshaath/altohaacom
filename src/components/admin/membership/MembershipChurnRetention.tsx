@@ -15,6 +15,7 @@ import {
   Clock, UserMinus, RefreshCcw, ArrowRight, Crown
 } from "lucide-react";
 import { useMemo, useCallback } from "react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
@@ -312,7 +313,7 @@ export default function MembershipChurnRetention() {
               <AlertTriangle className="h-4 w-4 text-chart-3" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معرضون للخطر" : "At Risk"}</span>
             </div>
-            <p className="text-2xl font-bold">{totalAtRisk}</p>
+            <AnimatedCounter value={totalAtRisk} className="text-2xl" />
             <p className="text-[10px] text-muted-foreground mt-0.5">
               {atRiskData?.critical.length || 0} {isAr ? "حرج" : "critical"}
             </p>
@@ -324,7 +325,7 @@ export default function MembershipChurnRetention() {
               <UserMinus className="h-4 w-4 text-muted-foreground" />
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معلقون" : "Suspended"}</span>
             </div>
-            <p className="text-2xl font-bold">{atRiskData?.statusCounts?.suspended || 0}</p>
+            <AnimatedCounter value={atRiskData?.statusCounts?.suspended || 0} className="text-2xl" />
             <p className="text-[10px] text-muted-foreground mt-0.5">
               {atRiskData?.statusCounts?.expired || 0} {isAr ? "منتهي" : "expired"}
             </p>
