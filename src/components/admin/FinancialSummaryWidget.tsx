@@ -84,9 +84,9 @@ export function FinancialSummaryWidget() {
             { icon: Wallet, label: isAr ? "المحافظ" : "Wallets", value: fmt(data.totalWalletBalance), sub: `${fmt(data.totalPoints)} ${isAr ? "نقطة" : "pts"}`, color: "text-primary" },
             { icon: TrendingUp, label: isAr ? "صافي التدفق (30ي)" : "Net Flow (30d)", value: fmt(data.netFlow), sub: `+${fmt(data.credits)} / -${fmt(data.debits)}`, color: data.netFlow >= 0 ? "text-chart-2" : "text-destructive" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <m.icon className={`h-3 w-3 ${m.color}`} />
+                <m.icon className={`h-3 w-3 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold">{m.value}</p>

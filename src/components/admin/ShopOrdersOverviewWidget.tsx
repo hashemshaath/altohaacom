@@ -70,9 +70,9 @@ export function ShopOrdersOverviewWidget() {
             { icon: Package, label: isAr ? "المنتجات" : "Products", value: fmt(data.totalProducts), sub: `${data.activeProducts} ${isAr ? "نشط" : "active"}`, color: "text-chart-3" },
             { icon: Truck, label: isAr ? "مكتمل" : "Fulfilled", value: fmt(data.completedOrders), color: "text-primary" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <m.icon className={`h-3 w-3 ${m.color}`} />
+                <m.icon className={`h-3 w-3 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold">{m.value}</p>

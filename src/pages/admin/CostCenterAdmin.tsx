@@ -389,7 +389,7 @@ export default function CostCenterAdmin() {
                     <Input className="h-8 text-xs" value={editingItem.person_role || ""} onChange={e => setEditingItem(p => ({ ...p!, person_role: e.target.value }))} />
                   </div>
                   <div className="md:col-span-2 flex items-end gap-2">
-                    <div className="rounded-lg bg-primary/10 px-3 py-1 text-center flex-1">
+                    <div className="rounded-xl bg-primary/10 px-3 py-1 text-center flex-1">
                       <span className="text-[9px] text-primary font-bold">{isAr ? "الإجمالي" : "Total"}: </span>
                       <span className="font-black text-primary tabular-nums">
                         {((editingItem.quantity || 1) * (editingItem.unit_price || 0)).toLocaleString()} SAR
@@ -540,9 +540,9 @@ export default function CostCenterAdmin() {
             <button
               key={key}
               onClick={() => { setModuleFilter(key); setActiveTab("estimates"); }}
-              className={`rounded-lg border p-3 text-center transition-all hover:border-primary/30 hover:bg-primary/5 ${moduleFilter === key ? "border-primary/40 bg-primary/10" : "border-border/40"}`}
+              className={`rounded-xl border p-3 text-center transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:-translate-y-0.5 ${moduleFilter === key ? "border-primary/40 bg-primary/10" : "border-border/40"}`}
             >
-              <Icon className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
+              <Icon className="h-4 w-4 mx-auto mb-1 text-muted-foreground transition-transform duration-300 group-hover:scale-110" />
               <p className="text-lg font-black tabular-nums">{count}</p>
               <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider">{isAr ? val.ar : val.en}</p>
             </button>
@@ -694,11 +694,11 @@ export default function CostCenterAdmin() {
                 };
                 const ModIcon = moduleIcons[est.module_type] || Calculator;
                 return (
-                  <Card key={est.id} className="border-border/40 hover:border-border/60 transition-all cursor-pointer"
+                  <Card key={est.id} className="rounded-2xl border-border/40 hover:border-border/60 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer group"
                     onClick={() => setSelectedEstimateId(est.id)}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
                           <ModIcon className="h-5 w-5 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">

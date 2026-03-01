@@ -83,9 +83,9 @@ export function WalletPointsAnalyticsWidget() {
             { icon: ArrowUpRight, label: isAr ? "إيداعات (7ي)" : "Credits (7d)", value: fmt(data.weeklyCredits), color: "text-chart-2" },
             { icon: ArrowDownRight, label: isAr ? "مسحوبات (7ي)" : "Debits (7d)", value: fmt(data.weeklyDebits), color: "text-destructive" },
           ].map((m, i) => (
-            <div key={i} className="p-2 rounded-lg bg-muted/30 border border-border/40">
+            <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <div className="flex items-center gap-1.5 mb-1">
-                <m.icon className={`h-3 w-3 ${m.color}`} />
+                <m.icon className={`h-3 w-3 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
                 <span className="text-[9px] text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold">{m.value}</p>
