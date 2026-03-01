@@ -95,7 +95,7 @@ export function EventCreationGate({ children, eventType }: EventCreationGateProp
           </div>
 
           {/* Membership Status */}
-          <div className="flex items-center justify-between rounded-lg border p-3">
+          <div className="flex items-center justify-between rounded-xl border p-3">
             <div className="flex items-center gap-2">
               <Crown className={`h-5 w-5 ${hasProTier ? "text-primary" : "text-muted-foreground"}`} />
               <div>

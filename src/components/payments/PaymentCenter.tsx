@@ -184,7 +184,7 @@ export function PaymentCenter() {
                 ) : (
                   <div className="space-y-2">
                     {transactions.slice(0, 10).map((txn: any) => (
-                      <div key={txn.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
+                      <div key={txn.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50">
                         {getTypeIcon(txn.type)}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm truncate">{isAr ? (txn.description_ar || txn.description) : txn.description}</p>
@@ -253,7 +253,7 @@ export function PaymentCenter() {
                 ) : (
                   <div className="space-y-1">
                     {transactions.map((txn: any) => (
-                      <div key={txn.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 border-b last:border-0">
+                      <div key={txn.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 border-b last:border-0">
                         {getTypeIcon(txn.type)}
                         <div className="flex-1">
                           <p className="text-sm">{isAr ? (txn.description_ar || txn.description) : txn.description}</p>

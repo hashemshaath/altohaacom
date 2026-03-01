@@ -103,7 +103,7 @@ export function VerificationRequestForm() {
               const sc = statusConfig[req.status] || statusConfig.pending;
               const Icon = sc.icon;
               return (
-                <div key={req.id} className="flex items-center justify-between rounded-lg border p-3">
+                <div key={req.id} className="flex items-center justify-between rounded-xl border p-3">
                   <div className="flex items-center gap-3">
                     <Icon className={`h-5 w-5 ${sc.color}`} />
                     <div>
@@ -147,7 +147,7 @@ export function VerificationRequestForm() {
                     key={vl.value}
                     type="button"
                     onClick={() => setLevel(vl.value)}
-                    className={`rounded-lg border p-3 text-start transition-all ${
+                    className={`rounded-xl border p-3 text-start transition-all ${
                       level === vl.value
                         ? "border-primary bg-primary/5 shadow-sm"
                         : "hover:border-primary/30"

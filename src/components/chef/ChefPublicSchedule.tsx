@@ -73,7 +73,7 @@ export function ChefPublicSchedule({ chefId }: Props) {
                           {ev.start_date ? format(parseISO(ev.start_date), "EEE") : ""}
                         </p>
                       </div>
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${config.color}`}>
+                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${config.color}`}>
                         <Icon className="h-3.5 w-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">

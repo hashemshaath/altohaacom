@@ -170,7 +170,7 @@ const CollapsibleSection = React.forwardRef<HTMLDivElement, {
           <div className="flex items-center justify-between">
             <CollapsibleTrigger asChild>
               <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${colorClass}`}>{icon}</div>
+                <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${colorClass}`}>{icon}</div>
                 <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
                 <Badge variant="secondary" className="text-[10px] h-5">{count}</Badge>
                 {open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
@@ -928,8 +928,8 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
                 const achievementsToShow = isAr ? (work.achievements_ar || []) : (work.achievements || []);
                 if (!(tasksToShow.length || achievementsToShow.length)) return null;
                 return (
-                  <details key={i} className={`rounded-lg ${rowBg(i)} border border-border/10`}>
-                    <summary className="cursor-pointer p-2.5 text-[11px] font-semibold text-foreground select-none hover:bg-accent/20 rounded-lg transition-colors">
+                  <details key={i} className={`rounded-xl ${rowBg(i)} border border-border/10`}>
+                    <summary className="cursor-pointer p-2.5 text-[11px] font-semibold text-foreground select-none hover:bg-accent/20 rounded-xl transition-colors">
                       {isAr ? (work.title_ar || work.title) : work.title} — {isAr ? (work.company_ar || work.company) : work.company}
                     </summary>
                     <div className="px-2.5 pb-2.5">

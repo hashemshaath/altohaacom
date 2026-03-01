@@ -136,7 +136,7 @@ export function WelcomeModal() {
                   to={field.link}
                   onClick={handleDismiss}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors",
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors",
                     done ? "opacity-60" : "hover:bg-muted/50"
                   )}
                 >

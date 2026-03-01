@@ -96,13 +96,13 @@ export function UserSettingsPanel() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid grid-cols-3 w-full rounded-xl h-11 bg-muted/40 p-1">
-          <TabsTrigger value="appearance" className="gap-1.5 rounded-lg text-xs font-semibold data-[state=active]:shadow-sm">
+          <TabsTrigger value="appearance" className="gap-1.5 rounded-xl text-xs font-semibold data-[state=active]:shadow-sm">
             <Palette className="h-3.5 w-3.5" />{isAr ? "المظهر" : "Appearance"}
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="gap-1.5 rounded-lg text-xs font-semibold data-[state=active]:shadow-sm">
+          <TabsTrigger value="notifications" className="gap-1.5 rounded-xl text-xs font-semibold data-[state=active]:shadow-sm">
             <Shield className="h-3.5 w-3.5" />{isAr ? "الإشعارات" : "Notifications"}
           </TabsTrigger>
-          <TabsTrigger value="accessibility" className="gap-1.5 rounded-lg text-xs font-semibold data-[state=active]:shadow-sm">
+          <TabsTrigger value="accessibility" className="gap-1.5 rounded-xl text-xs font-semibold data-[state=active]:shadow-sm">
             <Eye className="h-3.5 w-3.5" />{isAr ? "إمكانية الوصول" : "Accessibility"}
           </TabsTrigger>
         </TabsList>
@@ -172,7 +172,7 @@ export function UserSettingsPanel() {
                 <span className="text-lg font-black">A</span>
               </div>
               <div className="text-center">
-                <Badge variant="secondary" className="text-xs font-bold tabular-nums rounded-lg">{settings.font_size}%</Badge>
+                <Badge variant="secondary" className="text-xs font-bold tabular-nums rounded-xl">{settings.font_size}%</Badge>
               </div>
             </CardContent>
           </Card>

@@ -220,7 +220,7 @@ export function TypesCategoriesStep({
         </CardHeader>
         <CardContent className="space-y-3">
           {categories.map((cat, index) => (
-            <div key={index} className="rounded-lg border p-3 space-y-2">
+            <div key={index} className="rounded-xl border p-3 space-y-2">
               <div className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
                   {cat.name ? (

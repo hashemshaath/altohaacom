@@ -92,7 +92,7 @@ export function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMes
         </DialogHeader>
 
         {message && (
-          <div className="rounded-lg bg-muted/50 p-3 mb-3">
+          <div className="rounded-xl bg-muted/50 p-3 mb-3">
             <p className="text-xs text-muted-foreground truncate">{message.content}</p>
           </div>
         )}
@@ -117,7 +117,7 @@ export function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMes
               {filtered.map((c: any) => {
                 const isSent = sent.has(c.user_id);
                 return (
-                  <div key={c.user_id} className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50 transition-colors">
+                  <div key={c.user_id} className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/50 transition-colors">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={c.avatar_url || undefined} />
                       <AvatarFallback className="text-xs">{getDisplayInitial(c, isAr)}</AvatarFallback>

@@ -676,7 +676,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
 
                   <div className="shrink-0 flex flex-col items-center">
                     <div
-                      className="rounded-lg p-2 sm:p-2.5"
+                      className="rounded-xl p-2 sm:p-2.5"
                       style={cardTheme === "classic"
                         ? { background: "rgba(255,255,255,0.95)", boxShadow: "0 3px 14px rgba(0,0,0,0.35)" }
                         : { background: "hsl(var(--background))", border: "1.5px solid hsl(var(--border))", boxShadow: "0 3px 14px hsl(var(--primary) / 0.12)" }
@@ -748,19 +748,19 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-lg border bg-card p-3 text-center">
+              <div className="rounded-xl border bg-card p-3 text-center">
                 <Calendar className="mx-auto mb-1 h-4 w-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
                 <Badge variant={isExpired ? "destructive" : "default"} className="mt-1">
                   {isExpired ? (isAr ? "منتهية" : "Expired") : (isAr ? "نشطة" : "Active")}
                 </Badge>
               </div>
-              <div className="rounded-lg border bg-card p-3 text-center">
+              <div className="rounded-xl border bg-card p-3 text-center">
                 <Clock className="mx-auto mb-1 h-4 w-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{isAr ? "تنتهي في" : "Expires"}</p>
                 <p className="mt-1 text-sm font-semibold">{expiresAt ? format(new Date(expiresAt), "d MMM yyyy", { locale: isAr ? ar : undefined }) : (isAr ? "غير محدد" : "N/A")}</p>
               </div>
-              <div className="rounded-lg border bg-card p-3 text-center">
+              <div className="rounded-xl border bg-card p-3 text-center">
                 <AlertTriangle className="mx-auto mb-1 h-4 w-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{isAr ? "أيام متبقية" : "Days Left"}</p>
                 <p className={`mt-1 text-sm font-bold ${daysLeft !== null && daysLeft < 30 ? "text-destructive" : ""}`}>{daysLeft !== null ? daysLeft : "∞"}</p>
@@ -768,7 +768,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
             </div>
 
             {/* Profile Completion */}
-            <div className="rounded-lg border p-3">
+            <div className="rounded-xl border p-3">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-medium">{isAr ? "اكتمال الملف الشخصي" : "Profile Completion"}</p>
                 <span className="text-xs font-bold text-primary">{completionPercent}%</span>
@@ -777,7 +777,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
             </div>
 
             {/* Verification */}
-            <div className="rounded-lg border p-3 flex items-center justify-between">
+            <div className="rounded-xl border p-3 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium">{isAr ? "حالة التوثيق" : "Verification Status"}</p>
                 <p className="text-xs text-muted-foreground">
@@ -822,8 +822,8 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           <CardContent>
             <div className="grid gap-2 sm:grid-cols-2">
               {benefits.map((b) => (
-                <div key={b.label} className="flex items-center gap-2.5 rounded-lg border p-2.5 bg-card">
-                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tierBg}`}>
+                <div key={b.label} className="flex items-center gap-2.5 rounded-xl border p-2.5 bg-card">
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${tierBg}`}>
                     <b.icon className={`h-3.5 w-3.5 ${tierColor}`} />
                   </div>
                   <span className="text-xs font-medium">{b.label}</span>
@@ -900,7 +900,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
           <CardContent>
             <div className="space-y-2">
               {history.map((h: any) => (
-                <div key={h.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                <div key={h.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                   <div>
                     <span className="font-medium">{h.previous_tier || "—"}</span>
                     <span className="mx-2 text-muted-foreground">→</span>
@@ -925,7 +925,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
         <CardContent className="space-y-2">
           {faqs.map((faq, i) => (
             <Collapsible key={i}>
-              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg border p-3 text-start text-sm font-medium hover:bg-accent/30 transition-colors group">
+              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-xl border p-3 text-start text-sm font-medium hover:bg-accent/30 transition-colors group">
                 {faq.q}
                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
               </CollapsibleTrigger>

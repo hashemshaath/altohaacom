@@ -188,7 +188,7 @@ export function PredictiveChurnDashboard() {
                 </div>
               ) : (
                 risks.map((r, i) => (
-                  <div key={i} className="p-4 rounded-lg border space-y-2">
+                  <div key={i} className="p-4 rounded-xl border space-y-2">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         <TrendingDown className={`h-4 w-4 ${r.risk_level === "critical" || r.risk_level === "high" ? "text-destructive" : "text-chart-3"}`} />

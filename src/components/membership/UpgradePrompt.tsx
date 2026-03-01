@@ -60,7 +60,7 @@ export function UpgradePrompt({
           className
         )}
       >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
           <Lock className="h-4 w-4 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
@@ -78,7 +78,7 @@ export function UpgradePrompt({
         <Button
           size="sm"
           onClick={handleUpgrade}
-          className="shrink-0 gap-1.5 rounded-lg text-xs shadow-sm"
+          className="shrink-0 gap-1.5 rounded-xl text-xs shadow-sm"
         >
           <Crown className="h-3.5 w-3.5" />
           {isAr ? "ترقية" : "Upgrade"}

@@ -149,7 +149,7 @@ export function GuidedTour() {
         </button>
 
         <div className="flex items-center gap-2 mb-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
           </div>
           <h4 className="text-sm font-bold">{isAr ? current.titleAr : current.titleEn}</h4>

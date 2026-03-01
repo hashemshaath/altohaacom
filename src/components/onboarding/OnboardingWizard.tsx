@@ -208,7 +208,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           {/* Step 2: Professional Details */}
           {step === 2 && (
             <div className="space-y-4">
-              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm">
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-sm">
                 <p className="font-medium text-primary">
                   {isAr ? "💡 ترقية الدور" : "💡 Role Upgrade"}
                 </p>
