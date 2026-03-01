@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Users, Gavel, CheckCircle, Clock } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   stats: {
@@ -30,7 +31,7 @@ export function CompetitionStatsCards({ stats, isAr }: Props) {
               <c.icon className={`h-4 w-4 ${c.color}`} />
               <span className="text-xs text-muted-foreground">{c.label}</span>
             </div>
-            <p className="text-xl font-bold">{c.value}</p>
+            <AnimatedCounter value={c.value} className="text-xl font-bold" />
           </CardContent>
         </Card>
       ))}

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AnalyticsKPICards } from "./AnalyticsKPICards";
 import {
   RegistrationTrendChart,
@@ -112,7 +113,7 @@ export default function CompetitionAnalytics() {
               <TrendingUp className="h-7 w-7 text-primary" />
             </div>
             <div>
-              <p className="text-3xl font-black text-primary">{toEnglishDigits(avgScore)}<span className="text-lg font-bold text-primary/60">/100</span></p>
+              <p className="text-3xl font-black text-primary"><AnimatedCounter value={avgScore} className="text-3xl font-black text-primary" /><span className="text-lg font-bold text-primary/60">/100</span></p>
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{isAr ? "متوسط الدرجات" : "Average Score"}</p>
             </div>
           </CardContent>

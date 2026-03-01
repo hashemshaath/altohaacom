@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, type LucideIcon } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface SparklineCardProps {
   icon: LucideIcon;
@@ -22,7 +23,7 @@ export function SparklineCard({ icon: Icon, label, value, trend, sparkData, colo
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">{label}</p>
-            <p className="text-2xl font-bold tracking-tight">{value}</p>
+            <p className="text-2xl font-bold tracking-tight">{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
             {trend !== undefined && (
               <span className={`flex items-center gap-0.5 text-[11px] ${trendColor}`}>
                 <TrendIcon className="h-3 w-3" />

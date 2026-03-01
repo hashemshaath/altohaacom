@@ -6,6 +6,7 @@ import { useCountries } from "@/hooks/useCountries";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -411,7 +412,7 @@ export function ChefCostCenter() {
             <p className="text-xs font-bold uppercase tracking-wider text-primary mb-2">
               {isAr ? "التكلفة المقدرة الإجمالية" : "Estimated Total Cost"}
             </p>
-            <p className="text-4xl font-black tabular-nums text-primary">{est.toLocaleString()} <span className="text-base">SAR</span></p>
+            <p className="text-4xl font-black tabular-nums text-primary"><AnimatedCounter value={est} className="text-4xl font-black tabular-nums text-primary" /> <span className="text-base">SAR</span></p>
             <p className="text-[10px] text-muted-foreground mt-1">
               {isAr ? `لمدة ${editing.estimated_days || 1} أيام` : `For ${editing.estimated_days || 1} day(s)`}
             </p>
