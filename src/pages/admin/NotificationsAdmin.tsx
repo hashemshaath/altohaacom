@@ -543,7 +543,7 @@ export default function NotificationsAdmin() {
                           {expandedNotifId === notif.id && (
                             <TableRow key={`${notif.id}-detail`}>
                               <TableCell colSpan={6}>
-                                <div className="rounded-lg bg-muted/50 p-4 space-y-2">
+                                <div className="rounded-xl bg-muted/50 p-4 space-y-2">
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                       <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "العنوان (EN)" : "Title (EN)"}</p>
@@ -930,9 +930,9 @@ export default function NotificationsAdmin() {
                 { key: "whatsapp", icon: MessageSquare, label: "WhatsApp", desc: isAr ? "إرسال عبر واتساب" : "WhatsApp messaging" },
                 { key: "push", icon: Megaphone, label: isAr ? "إشعارات الدفع" : "Push", desc: isAr ? "إشعارات الدفع للأجهزة" : "Browser & device push notifications" },
               ].map(({ key, icon: Icon, label, desc }) => (
-                <div key={key} className="flex items-center justify-between rounded-lg border p-4">
+                <div key={key} className="flex items-center justify-between rounded-xl border p-4">
                   <div className="flex items-center gap-3">
-                    <div className={`rounded-lg p-2 ${channelSettings[key as keyof typeof channelSettings] ? "bg-primary/10" : "bg-muted"}`}>
+                    <div className={`rounded-xl p-2 ${channelSettings[key as keyof typeof channelSettings] ? "bg-primary/10" : "bg-muted"}`}>
                       <Icon className={`h-4 w-4 ${channelSettings[key as keyof typeof channelSettings] ? "text-primary" : "text-muted-foreground"}`} />
                     </div>
                     <div>
@@ -1034,7 +1034,7 @@ export default function NotificationsAdmin() {
             </div>
 
             {/* Targeting */}
-            <div className="rounded-lg border p-4 space-y-4">
+            <div className="rounded-xl border p-4 space-y-4">
               <Label className="flex items-center gap-2"><Target className="h-4 w-4 text-primary" />{isAr ? "الاستهداف" : "Targeting"}</Label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
@@ -1083,7 +1083,7 @@ export default function NotificationsAdmin() {
             </div>
           </div>
           {/* Schedule Option */}
-          <div className="rounded-lg border p-4 space-y-3">
+          <div className="rounded-xl border p-4 space-y-3">
             <Label className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
               {isAr ? "توقيت الإرسال" : "Send Timing"}

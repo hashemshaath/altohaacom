@@ -103,7 +103,7 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
 
         {type === "sent" && gift.status === "pending" && (
           <div className="mt-3 pt-3 border-t">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg p-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-xl p-2">
               <Gift className="h-3.5 w-3.5 shrink-0" />
               <span className="font-mono text-[11px] select-all">{gift.gift_code}</span>
             </div>

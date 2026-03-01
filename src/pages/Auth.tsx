@@ -665,7 +665,7 @@ export default function Auth() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+            <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <CheckCircle className="h-5 w-5 text-primary shrink-0" />
               <div className="text-sm">
                 {signUpMethod === "phone" ? (
@@ -843,7 +843,7 @@ export default function Auth() {
             )}
 
             {localStorage.getItem("altoha_ref_code") && (
-              <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+              <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
                 <Gift className="h-4 w-4 text-primary shrink-0" />
                 <p className="text-sm">
                   {isAr ? "كود الإحالة مُطبق:" : "Referral code applied:"}{" "}
@@ -907,7 +907,7 @@ export default function Auth() {
               <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "تسجيل الدخول" : "Sign In"}</h2>
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+            <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <CheckCircle className="h-5 w-5 text-primary shrink-0" />
               <div className="text-sm">
                 <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
@@ -984,7 +984,7 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => setSignUpMethod("phone")}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signUpMethod === "phone"
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                       : "text-muted-foreground hover:text-foreground hover:bg-background/60"
@@ -996,7 +996,7 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => setSignUpMethod("email")}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signUpMethod === "email"
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                       : "text-muted-foreground hover:text-foreground hover:bg-background/60"
@@ -1070,7 +1070,7 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => { setSignInMethod("phone"); setErrors({}); }}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signInMethod === "phone"
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                       : "text-muted-foreground hover:text-foreground hover:bg-background/60"
@@ -1082,7 +1082,7 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => { setSignInMethod("email"); setErrors({}); }}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
                     signInMethod === "email"
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                       : "text-muted-foreground hover:text-foreground hover:bg-background/60"
@@ -1128,7 +1128,7 @@ export default function Auth() {
               ) : (
                 <>
                   {isLockedOut && (
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-center">
+                    <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-center">
                       <p className="text-sm font-medium text-destructive">
                         {isAr ? "تم قفل تسجيل الدخول مؤقتاً بسبب محاولات كثيرة" : "Login temporarily locked due to too many attempts"}
                       </p>

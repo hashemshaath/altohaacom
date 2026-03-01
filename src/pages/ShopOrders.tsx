@@ -71,7 +71,7 @@ export default function ShopOrders() {
 
         <div className="mb-8">
           <div className="mb-1 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Package className="h-4 w-4 text-primary" />
             </div>
             <h1 className="font-serif text-2xl font-bold md:text-3xl">

@@ -258,7 +258,7 @@ export default function CompanyInvitations() {
               {viewInvitation.competitions && (
                 <>
                   <Separator />
-                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                  <div className="flex items-center gap-2 rounded-xl border p-3">
                     <Trophy className="h-5 w-5 text-primary" />
                     <div>
                       <p className="font-medium text-sm">

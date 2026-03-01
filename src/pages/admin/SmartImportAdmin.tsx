@@ -1038,7 +1038,7 @@ export default function SmartImportAdmin() {
 
           {/* Batch import bar */}
           {searchResults.length > 0 && (
-            <div className="flex items-center justify-between rounded-lg border bg-accent/30 p-3">
+            <div className="flex items-center justify-between rounded-xl border bg-accent/30 p-3">
               <div className="flex items-center gap-3">
                 <Button variant="outline" size="sm" onClick={toggleSelectAll} className="text-xs gap-1.5">
                   <input type="checkbox" checked={batchSelected.size === searchResults.length && searchResults.length > 0} readOnly className="rounded" />
@@ -1094,7 +1094,7 @@ export default function SmartImportAdmin() {
                     {searching ? (
                       <div className="p-3 space-y-2">
                         {[1, 2, 3, 4, 5].map(i => (
-                          <div key={i} className="p-3 rounded-lg border space-y-2">
+                          <div key={i} className="p-3 rounded-xl border space-y-2">
                             <Skeleton className="h-4 w-3/4" />
                             <Skeleton className="h-3 w-full" />
                             <Skeleton className="h-3 w-1/2" />
@@ -1115,12 +1115,12 @@ export default function SmartImportAdmin() {
                             <div key={item.id} className="flex items-start gap-1.5">
                               <input type="checkbox" className="mt-4 rounded shrink-0" checked={batchSelected.has(item.id)} onChange={() => toggleBatchSelect(item.id)} />
                               <button
-                                className={`flex-1 text-start p-3 rounded-lg transition-all ${isSelected ? 'bg-primary/10 border border-primary/30 shadow-sm' : 'hover:bg-accent/50 border border-transparent'}`}
+                                className={`flex-1 text-start p-3 rounded-xl transition-all ${isSelected ? 'bg-primary/10 border border-primary/30 shadow-sm' : 'hover:bg-accent/50 border border-transparent'}`}
                                 onClick={() => !loadingDetails && handleResultClick(item)}
                                 disabled={loadingDetails || batchImporting}
                               >
                                 <div className="flex items-start gap-2.5">
-                                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-primary/15' : 'bg-red-500/10'}`}>
+                                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-primary/15' : 'bg-red-500/10'}`}>
                                     {isLoading ? <Loader2 className="h-4 w-4 text-primary animate-spin" /> : <MapPin className="h-4 w-4 text-red-500" />}
                                   </div>
                                   <div className="flex-1 min-w-0">
@@ -1352,9 +1352,9 @@ export default function SmartImportAdmin() {
                           ? (isAr ? COMPANY_TYPE_LABELS[record.sub_type as CompanyType]?.ar : COMPANY_TYPE_LABELS[record.sub_type as CompanyType]?.en) || record.sub_type
                           : record.sub_type;
                       return (
-                        <div key={`${record.table}-${record.id}`} className="flex items-center justify-between rounded-lg border bg-background p-3">
+                        <div key={`${record.table}-${record.id}`} className="flex items-center justify-between rounded-xl border bg-background p-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
                               <TableIcon className="h-4 w-4 text-primary" />
                             </div>
                             <div>

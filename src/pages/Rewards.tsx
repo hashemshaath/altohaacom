@@ -145,9 +145,9 @@ export default function Rewards() {
             <CardContent>
               <div className="space-y-2">
                 {earningRules?.map((rule) => (
-                  <div key={rule.id} className="flex items-center justify-between rounded-lg border p-3.5 hover:bg-muted/30 transition-colors">
+                  <div key={rule.id} className="flex items-center justify-between rounded-xl border p-3.5 hover:bg-muted/30 transition-colors">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
                         <Zap className="h-4 w-4 text-primary" />
                       </div>
                       <div>
@@ -183,9 +183,9 @@ export default function Rewards() {
               ) : (
                 <div className="space-y-2 max-h-[400px] overflow-y-auto">
                   {ledger.map((entry) => (
-                    <div key={entry.id} className="flex items-center justify-between rounded-lg border p-3">
+                    <div key={entry.id} className="flex items-center justify-between rounded-xl border p-3">
                       <div className="flex items-center gap-3">
-                        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${entry.points > 0 ? "bg-chart-2/10" : "bg-destructive/10"}`}>
+                        <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${entry.points > 0 ? "bg-chart-2/10" : "bg-destructive/10"}`}>
                           {entry.points > 0 ? <ArrowUp className="h-4 w-4 text-chart-2" /> : <ArrowDown className="h-4 w-4 text-destructive" />}
                         </div>
                         <div>
@@ -220,9 +220,9 @@ export default function Rewards() {
               ) : (
                 <div className="space-y-2 max-h-[400px] overflow-y-auto">
                   {redemptions.map((r: any) => (
-                    <div key={r.id} className="flex items-center justify-between rounded-lg border p-3">
+                    <div key={r.id} className="flex items-center justify-between rounded-xl border p-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
                           <Gift className="h-4 w-4 text-primary" />
                         </div>
                         <div>

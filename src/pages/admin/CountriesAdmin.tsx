@@ -764,7 +764,7 @@ export default function CountriesAdmin() {
                   {regionCountries.map(c => (
                     <div
                       key={c.id}
-                      className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer hover:border-primary/40 transition-colors ${c.is_active ? "" : "opacity-50"}`}
+                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer hover:border-primary/40 transition-colors ${c.is_active ? "" : "opacity-50"}`}
                       onClick={() => openEdit(c)}
                     >
                       <span className="text-2xl">{c.flag_emoji || "🏳️"}</span>
@@ -913,11 +913,11 @@ export default function CountriesAdmin() {
                 </div>
                 <Separator />
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg border">
+                  <div className="flex items-center justify-between p-3 rounded-xl border">
                     <Label className="text-xs">{isAr ? "نشطة" : "Active"}</Label>
                     <Switch checked={form.is_active} onCheckedChange={v => setForm({ ...form, is_active: v })} />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg border">
+                  <div className="flex items-center justify-between p-3 rounded-xl border">
                     <Label className="text-xs">{isAr ? "مميزة" : "Featured"}</Label>
                     <Switch checked={form.is_featured} onCheckedChange={v => setForm({ ...form, is_featured: v })} />
                   </div>
@@ -1005,7 +1005,7 @@ export default function CountriesAdmin() {
                     <Label className="text-xs">{isAr ? "نسبة الضريبة %" : "Tax Rate %"}</Label>
                     <Input type="number" step="0.01" value={form.tax_rate} onChange={e => setForm({ ...form, tax_rate: parseFloat(e.target.value) || 0 })} />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg border">
+                  <div className="flex items-center justify-between p-3 rounded-xl border">
                     <Label className="text-xs">{isAr ? "يتطلب رقم ضريبي" : "Requires Tax Number"}</Label>
                     <Switch checked={form.requires_tax_number} onCheckedChange={v => setForm({ ...form, requires_tax_number: v })} />
                   </div>
@@ -1055,7 +1055,7 @@ export default function CountriesAdmin() {
                   {Object.entries(featureLabels).map(([key, labels]) => {
                     const FeatureIcon = labels.icon;
                     return (
-                      <div key={key} className="flex items-center justify-between p-3 rounded-lg border">
+                      <div key={key} className="flex items-center justify-between p-3 rounded-xl border">
                         <div className="flex items-center gap-2">
                           <FeatureIcon className="h-4 w-4 text-muted-foreground" />
                           <Label className="text-sm">{isAr ? labels.ar : labels.en}</Label>

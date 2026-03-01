@@ -163,7 +163,7 @@ export default function Checkout() {
             const title = isAr && item.title_ar ? item.title_ar : item.title;
             return (
               <div key={item.product_id} className="flex items-center gap-2.5">
-                <div className="h-10 w-10 rounded-lg overflow-hidden bg-muted shrink-0">
+                <div className="h-10 w-10 rounded-xl overflow-hidden bg-muted shrink-0">
                   {item.image_url
                     ? <img src={item.image_url} alt={title} className="h-full w-full object-cover" />
                     : <div className="h-full w-full flex items-center justify-center"><ShoppingBag className="h-4 w-4 text-muted-foreground/30" /></div>}

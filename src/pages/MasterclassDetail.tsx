@@ -323,7 +323,7 @@ export default function MasterclassDetail() {
               <Card className="h-fit">
                 <CardContent className="p-6 space-y-4">
                   {masterclass.cover_image_url && (
-                    <img src={masterclass.cover_image_url} alt="" className="rounded-lg w-full aspect-video object-cover" />
+                    <img src={masterclass.cover_image_url} alt="" className="rounded-xl w-full aspect-video object-cover" />
                   )}
                   {enrollment ? (
                     <>
@@ -338,7 +338,7 @@ export default function MasterclassDetail() {
                         </p>
                       </div>
                       {isCompleted && (
-                        <div className="flex items-center gap-2 text-chart-5 bg-chart-5/10 rounded-lg p-3">
+                        <div className="flex items-center gap-2 text-chart-5 bg-chart-5/10 rounded-xl p-3">
                           <GraduationCap className="h-5 w-5" />
                           <span className="font-medium">{language === "ar" ? "تم الإكمال!" : "Completed!"}</span>
                         </div>
@@ -424,7 +424,7 @@ export default function MasterclassDetail() {
                 const moduleCompletedCount = sortedLessons.filter((l: any) => completedLessonIds.has(l.id)).length;
 
                 return (
-                  <AccordionItem key={module.id} value={module.id} className="border rounded-lg px-4">
+                  <AccordionItem key={module.id} value={module.id} className="border rounded-xl px-4">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center gap-3 text-start">
                         <div>

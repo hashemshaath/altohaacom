@@ -353,7 +353,7 @@ function FeaturedHeroCard({
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-          <Badge className="absolute start-4 top-4 gap-1.5 text-[10px] rounded-lg" variant="secondary">
+          <Badge className="absolute start-4 top-4 gap-1.5 text-[10px] rounded-xl" variant="secondary">
             <TypeIcon className="h-3 w-3" />
             {typeBadgeLabel(article.type)}
           </Badge>
@@ -461,7 +461,7 @@ function ArticleCard({
                 <TypeIcon className="h-10 w-10 text-primary/20" />
               </div>
             )}
-            <Badge className="absolute start-3 top-3 gap-1 text-[10px] rounded-lg" variant="secondary">
+            <Badge className="absolute start-3 top-3 gap-1 text-[10px] rounded-xl" variant="secondary">
               <TypeIcon className="h-2.5 w-2.5" />
               {typeBadgeLabel(article.type)}
             </Badge>

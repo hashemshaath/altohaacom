@@ -221,28 +221,28 @@ export default function ChefsTableDetail() {
           <Tabs defaultValue={canEvaluate ? "evaluate" : "evaluations"} className="space-y-4">
             <TabsList className="h-11 rounded-xl bg-muted/50 p-1 flex-wrap">
               {canEvaluate && (
-                <TabsTrigger value="evaluate" className="rounded-lg gap-1.5">
+                <TabsTrigger value="evaluate" className="rounded-xl gap-1.5">
                   <ClipboardCheck className="h-3.5 w-3.5" />
                   {isAr ? "قيّم المنتج" : "Evaluate"}
                 </TabsTrigger>
               )}
-              <TabsTrigger value="evaluations" className="rounded-lg gap-1.5">
+              <TabsTrigger value="evaluations" className="rounded-xl gap-1.5">
                 <Star className="h-3.5 w-3.5" />
                 {isAr ? "التقييمات" : "Evaluations"} ({submittedEvaluations.length})
               </TabsTrigger>
-              <TabsTrigger value="charts" className="rounded-lg gap-1.5">
+              <TabsTrigger value="charts" className="rounded-xl gap-1.5">
                 <BarChart3 className="h-3.5 w-3.5" />
                 {isAr ? "التحليل البياني" : "Analysis Charts"}
               </TabsTrigger>
-              <TabsTrigger value="gallery" className="rounded-lg gap-1.5">
+              <TabsTrigger value="gallery" className="rounded-xl gap-1.5">
                 <Image className="h-3.5 w-3.5" />
                 {isAr ? "المعرض" : "Gallery"} ({media.length})
               </TabsTrigger>
-              <TabsTrigger value="chefs" className="rounded-lg gap-1.5">
+              <TabsTrigger value="chefs" className="rounded-xl gap-1.5">
                 <Users className="h-3.5 w-3.5" />
                 {isAr ? "الطهاة" : "Chefs"} ({invitations.length})
               </TabsTrigger>
-              <TabsTrigger value="report" className="rounded-lg gap-1.5">
+              <TabsTrigger value="report" className="rounded-xl gap-1.5">
                 <ScrollText className="h-3.5 w-3.5" />
                 {isAr ? "التقرير" : "Report"}
               </TabsTrigger>
@@ -362,7 +362,7 @@ export default function ChefsTableDetail() {
                           const val = (ev as any)[s.key];
                           if (val == null) return null;
                           return (
-                            <div key={s.key} className="flex items-center justify-between rounded-lg border border-border/50 p-2.5">
+                            <div key={s.key} className="flex items-center justify-between rounded-xl border border-border/50 p-2.5">
                               <span className="text-xs text-muted-foreground">{isAr ? s.ar : s.en}</span>
                               <span className="text-sm font-black">{val}/10</span>
                             </div>
@@ -373,13 +373,13 @@ export default function ChefsTableDetail() {
                       {/* Pros & Cons */}
                       <div className="grid md:grid-cols-2 gap-3">
                         {ev.pros && (
-                          <div className="rounded-lg bg-chart-5/5 border border-chart-5/20 p-3">
+                          <div className="rounded-xl bg-chart-5/5 border border-chart-5/20 p-3">
                             <p className="text-xs font-bold text-chart-5 mb-1">{isAr ? "المميزات" : "Strengths"}</p>
                             <p className="text-sm">{isAr && ev.pros_ar ? ev.pros_ar : ev.pros}</p>
                           </div>
                         )}
                         {ev.cons && (
-                          <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-3">
+                          <div className="rounded-xl bg-destructive/5 border border-destructive/20 p-3">
                             <p className="text-xs font-bold text-destructive mb-1">{isAr ? "نقاط التحسين" : "Areas to Improve"}</p>
                             <p className="text-sm">{isAr && ev.cons_ar ? ev.cons_ar : ev.cons}</p>
                           </div>
