@@ -8,7 +8,7 @@ import {
   Bell, BellOff, Calendar, Clock, ExternalLink, Globe, MapPin,
   Tag, Ticket, Timer, Users, Bookmark, BookmarkCheck,
 } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { ExhibitionRegistrationStatus } from "./ExhibitionRegistrationStatus";

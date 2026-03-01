@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCheck, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface NotificationBatchActionsProps {
   selectedCount: number;
@@ -36,7 +36,7 @@ export function NotificationBatchActions({
     )}>
       <div className="flex items-center gap-2">
         <Badge variant="secondary" className="text-xs font-bold">
-          {toEnglishDigits(selectedCount)}
+          <AnimatedCounter value={selectedCount} className="inline" />
         </Badge>
         <span className="text-sm font-medium">
           {isAr ? "محدد" : "selected"}
