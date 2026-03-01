@@ -294,10 +294,14 @@ export function ChatArea({
       />
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 bg-gradient-to-b from-background to-muted/10">
         {loadingMessages ? (
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-2/3" />)}
+            {[1, 2, 3].map((i) => (
+              <div key={i} className={`flex ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+                <Skeleton className={`h-12 rounded-2xl ${i % 2 === 0 ? "w-1/2" : "w-2/3"}`} />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="space-y-3">
@@ -321,25 +325,25 @@ export function ChatArea({
                     </div>
                   )}
 
-                  <div id={`msg-${msg.id}`} className={`group flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in ${highlightedMsgId === msg.id ? "ring-2 ring-primary/40 rounded-2xl" : ""}`}>
+                  <div id={`msg-${msg.id}`} className={`group flex ${isMine ? "justify-end" : "justify-start"} animate-fade-in ${highlightedMsgId === msg.id ? "ring-2 ring-primary/40 rounded-2xl bg-primary/5 p-1 -m-1 transition-all duration-500" : ""}`}>
                     <div className="relative max-w-[75%]">
-                      <div className={`absolute top-0 ${isMine ? "start-0 -translate-x-full" : "end-0 translate-x-full"} opacity-0 group-hover:opacity-100 transition-opacity flex gap-0.5 px-1`}>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" title={isAr ? "رد" : "Reply"} onClick={() => handleReply(msg)}>
+                      <div className={`absolute top-0 ${isMine ? "start-0 -translate-x-full" : "end-0 translate-x-full"} opacity-0 group-hover:opacity-100 transition-all duration-200 flex gap-0.5 px-1`}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10" title={isAr ? "رد" : "Reply"} onClick={() => handleReply(msg)}>
                           <Reply className="h-3 w-3 scale-x-[-1]" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" title={isAr ? "إعادة توجيه" : "Forward"} onClick={() => setForwardMsg(msg)}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10" title={isAr ? "إعادة توجيه" : "Forward"} onClick={() => setForwardMsg(msg)}>
                           <Forward className="h-3 w-3" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !(msg as any).is_pinned)}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !(msg as any).is_pinned)}>
                           <Pin className={`h-3 w-3 ${(msg as any).is_pinned ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
                       </div>
 
-                      <div className={`rounded-2xl px-3.5 py-2 transition-all duration-200 hover:shadow-md ${
-                        isMine ? "bg-primary text-primary-foreground rounded-ee-md" : "bg-muted rounded-es-md"
+                      <div className={`rounded-2xl px-3.5 py-2.5 transition-all duration-200 hover:shadow-md ${
+                        isMine ? "bg-primary text-primary-foreground rounded-ee-sm shadow-sm shadow-primary/10" : "bg-card border border-border/40 rounded-es-sm shadow-sm"
                       }`}>
                         {(msg as any).is_pinned && (
                           <div className={`flex items-center gap-1 mb-1 text-[10px] ${isMine ? "text-primary-foreground/50" : "text-chart-4"}`}>

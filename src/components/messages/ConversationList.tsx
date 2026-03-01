@@ -57,9 +57,11 @@ export function ConversationList({
   selectedPartner, activeGroupId, isOnline,
   onSelectPartner, onSelectGroup, onNewConversation, onNewGroup, hidden,
 }: ConversationListProps) {
+  const onlineCount = filteredConversations?.filter(c => isOnline(c.user_id)).length || 0;
+
   return (
     <div className={`w-full border-e md:w-80 flex flex-col ${hidden ? "hidden md:flex" : ""}`}>
-      <div className="border-b border-border/40 p-4 space-y-3 bg-muted/10">
+      <div className="border-b border-border/40 p-4 space-y-3 bg-gradient-to-b from-primary/5 to-transparent">
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2.5 font-black text-sm tracking-tight">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shadow-inner">
@@ -71,6 +73,12 @@ export function ConversationList({
             )}
           </h2>
           <div className="flex items-center gap-1">
+            {onlineCount > 0 && (
+              <Badge variant="outline" className="text-[9px] gap-1 h-6 border-primary/20 text-primary">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                {onlineCount} {isAr ? "متصل" : "online"}
+              </Badge>
+            )}
             <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={onNewGroup} title={isAr ? "مجموعة جديدة" : "New Group"}>
               <Users className="h-4 w-4" />
             </Button>
@@ -94,14 +102,31 @@ export function ConversationList({
       <ScrollArea className="flex-1">
         {loadingConversations ? (
           <div className="p-3 space-y-2">
-            {[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 w-full rounded-lg" />)}
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center gap-3 p-3">
+                <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-3.5 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : !filteredConversations?.length ? (
-          <div className="flex flex-col items-center justify-center p-8 text-center">
-            <MessageSquare className="h-10 w-10 text-muted-foreground/30 mb-3" />
-            <p className="text-sm text-muted-foreground">
+          <div className="flex flex-col items-center justify-center p-10 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40 mb-4">
+              <MessageSquare className="h-8 w-8 text-muted-foreground/25" />
+            </div>
+            <p className="text-sm font-medium text-muted-foreground">
               {isAr ? "لا توجد محادثات" : "No conversations yet"}
             </p>
+            <p className="text-xs text-muted-foreground/60 mt-1">
+              {isAr ? "ابدأ محادثة جديدة للتواصل" : "Start a new conversation to connect"}
+            </p>
+            <Button variant="outline" size="sm" className="mt-4 gap-1.5 rounded-xl" onClick={onNewConversation}>
+              <Plus className="h-3.5 w-3.5" />
+              {isAr ? "محادثة جديدة" : "New Chat"}
+            </Button>
           </div>
         ) : (
           <div className="p-1.5 space-y-0.5">
