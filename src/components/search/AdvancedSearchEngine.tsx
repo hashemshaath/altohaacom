@@ -389,9 +389,9 @@ export default function AdvancedSearchEngine({ open, onOpenChange }: { open: boo
               {results.map(r => (
                 <div
                   key={`${r.type}-${r.id}`}
-                  className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted cursor-pointer transition-colors"
                 >
-                  <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center shrink-0 overflow-hidden">
                     {r.image ? (
                       <img src={r.image} alt="" className="h-full w-full object-cover" />
                     ) : (

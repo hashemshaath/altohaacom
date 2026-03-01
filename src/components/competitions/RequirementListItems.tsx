@@ -138,7 +138,7 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-lg border">
+        <div className="rounded-xl border">
           <Table>
             <TableHeader>
               <TableRow>

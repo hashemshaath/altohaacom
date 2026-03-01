@@ -224,7 +224,7 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
         {/* Tasks */}
         <TabsContent value="tasks" className="space-y-2 mt-4">
           {tasks.map(task => (
-            <div key={task.id} className="flex items-center gap-2 rounded-lg border border-border/60 p-2.5 group">
+            <div key={task.id} className="flex items-center gap-2 rounded-xl border border-border/60 p-2.5 group">
               <button onClick={() => toggleTask(task.id)} className="shrink-0">
                 {task.done ? <CheckSquare className="h-4 w-4 text-chart-5" /> : <Square className="h-4 w-4 text-muted-foreground" />}
               </button>
@@ -275,7 +275,7 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
         {/* Schedule */}
         <TabsContent value="schedule" className="space-y-2 mt-4">
           {schedule.map((item, idx) => (
-            <div key={item.id} className="grid grid-cols-3 gap-2 rounded-lg border border-border/60 p-2.5">
+            <div key={item.id} className="grid grid-cols-3 gap-2 rounded-xl border border-border/60 p-2.5">
               <Input
                 type="date"
                 value={item.date}

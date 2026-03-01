@@ -69,7 +69,7 @@ export function TrendingSearches({ onSelect }: { onSelect?: (term: string) => vo
               onClick={() => onSelect?.(isAr && c.title_ar ? c.title_ar : c.title)}
               className="flex items-center gap-3 rounded-md p-2 hover:bg-accent transition-colors"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
                 <Trophy className="h-3.5 w-3.5 text-primary" />
               </div>
               <span className="text-sm truncate flex-1">
@@ -92,7 +92,7 @@ export function TrendingSearches({ onSelect }: { onSelect?: (term: string) => vo
               onClick={() => onSelect?.(m.full_name || m.username || "")}
               className="flex items-center gap-3 rounded-md p-2 hover:bg-accent transition-colors"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
                 <Users className="h-3.5 w-3.5 text-chart-4" />
               </div>
               <span className="text-sm truncate flex-1">
@@ -113,7 +113,7 @@ export function TrendingSearches({ onSelect }: { onSelect?: (term: string) => vo
               onClick={() => onSelect?.(isAr && a.title_ar ? a.title_ar : a.title)}
               className="flex items-center gap-3 rounded-md p-2 hover:bg-accent transition-colors"
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-5/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-5/10">
                 <FileText className="h-3.5 w-3.5 text-chart-5" />
               </div>
               <span className="text-sm truncate flex-1">

@@ -239,7 +239,7 @@ export function ABTestingDashboard() {
             </div>
             <div className="space-y-2">
               {selectedExp.variants.map((v, i) => (
-                <div key={i} className="flex items-center justify-between p-2 rounded-lg border">
+                <div key={i} className="flex items-center justify-between p-2 rounded-xl border">
                   <span className="text-sm font-medium">{v.name}</span>
                   <div className="flex items-center gap-4 text-sm">
                     <span className="text-muted-foreground">{v.visitors.toLocaleString()} {isAr ? "زائر" : "visitors"}</span>
@@ -250,7 +250,7 @@ export function ABTestingDashboard() {
               ))}
             </div>
             {selectedExp.confidence >= 95 && (
-              <div className="mt-3 p-2 rounded-lg bg-chart-5/5 border border-chart-5/20 text-sm text-chart-5 flex items-center gap-2">
+              <div className="mt-3 p-2 rounded-xl bg-chart-5/5 border border-chart-5/20 text-sm text-chart-5 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" />
                 {isAr ? "أهمية إحصائية مؤكدة (≥95%)" : "Statistically significant result (≥95%)"}
               </div>

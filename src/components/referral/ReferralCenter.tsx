@@ -178,7 +178,7 @@ export function ReferralCenter() {
           ) : (
             <div className="space-y-2">
               {referrals.map((r: any) => (
-                <div key={r.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
+                <div key={r.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={r.profiles?.avatar_url || ""} />
                     <AvatarFallback>{(r.profiles?.full_name || "?")[0]}</AvatarFallback>

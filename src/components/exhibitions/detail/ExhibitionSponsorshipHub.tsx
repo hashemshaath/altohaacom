@@ -106,7 +106,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
         return (
           <section key={tier}>
             <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
-              <div className={`flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br ${color}`}>
+              <div className={`flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br ${color}`}>
                 <Icon className="h-4 w-4" />
               </div>
               {tierLabel}
@@ -117,9 +117,9 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
                 <Card key={sponsor.id} className={`overflow-hidden border-2 bg-gradient-to-br ${color} transition-all hover:shadow-lg hover:-translate-y-0.5`}>
                   <CardContent className={`flex items-center gap-3 ${tier === "patron" || tier === "platinum" ? "p-5" : "p-3"}`}>
                     {sponsor.logo_url ? (
-                      <img src={sponsor.logo_url} alt={sponsor.name} className={`${tier === "patron" || tier === "platinum" ? "h-16 w-16" : "h-10 w-10"} rounded-lg object-contain bg-background/50 p-1`} loading="lazy" />
+                      <img src={sponsor.logo_url} alt={sponsor.name} className={`${tier === "patron" || tier === "platinum" ? "h-16 w-16" : "h-10 w-10"} rounded-xl object-contain bg-background/50 p-1`} loading="lazy" />
                     ) : (
-                      <div className={`${tier === "patron" || tier === "platinum" ? "h-16 w-16" : "h-10 w-10"} flex items-center justify-center rounded-lg bg-background/50`}>
+                      <div className={`${tier === "patron" || tier === "platinum" ? "h-16 w-16" : "h-10 w-10"} flex items-center justify-center rounded-xl bg-background/50`}>
                         <Building className="h-5 w-5 text-muted-foreground" />
                       </div>
                     )}

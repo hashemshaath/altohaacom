@@ -159,7 +159,7 @@ export function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizar
         <CardContent className="space-y-4">
           {step === 0 && (
             <>
-              <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="flex items-center justify-between rounded-xl border p-4">
                 <div>
                   <p className="font-medium">{isAr ? "تفعيل ملف المورد المحترف" : "Activate Pro Supplier Profile"}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -254,7 +254,7 @@ export function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizar
                   ? "تأكد من أن معلومات الاتصال محدثة في إعدادات الشركة. يمكنك تحديث الهاتف والبريد والموقع من صفحة إعدادات الشركة."
                   : "Make sure your contact information is up to date in your company settings. You can update phone, email, and website from the company settings page."}
               </p>
-              <div className="rounded-lg border p-4 space-y-2 text-sm">
+              <div className="rounded-xl border p-4 space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
                   <span>{c?.phone || (isAr ? "لم يُضاف بعد" : "Not added yet")}</span>

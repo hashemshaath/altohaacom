@@ -46,7 +46,7 @@ export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="space-y-1.5 rounded-lg border p-2.5">
+        <div className="space-y-1.5 rounded-xl border p-2.5">
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted-foreground">{isAr ? "إجمالي الأوزان" : "Total Weight"}</span>
             <span className={`font-medium ${isBalanced ? "text-primary" : "text-destructive"}`}>{weightPct}%</span>
@@ -62,7 +62,7 @@ export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
         </div>
 
         {criteria.map((crit, index) => (
-          <div key={crit.id || index} className="space-y-2.5 rounded-lg border p-3">
+          <div key={crit.id || index} className="space-y-2.5 rounded-xl border p-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">
                 {isAr ? `المعيار ${index + 1}` : `Criterion ${index + 1}`}

@@ -95,7 +95,7 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
         ].map((stat, i) => (
           <Card key={i} className="border-border/50">
             <CardContent className="flex items-center gap-2 p-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/5 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/5 shrink-0">
                 <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </div>
               <div>
@@ -145,7 +145,7 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
                   </div>
                 </div>
                 {Math.abs(j.bias_indicator || 0) > 0.3 && (
-                  <div className="flex items-center gap-1.5 text-xs text-destructive bg-destructive/5 rounded-lg p-2">
+                  <div className="flex items-center gap-1.5 text-xs text-destructive bg-destructive/5 rounded-xl p-2">
                     <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                     {isAr ? "مؤشر تحيز عالٍ - يوصى بمراجعة التقييمات" : "High bias indicator - score review recommended"}
                   </div>

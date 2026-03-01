@@ -402,7 +402,7 @@ function StatusCard({ icon: Icon, iconColor, label, value, badge }: {
     <Card className="border-border/60 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
       <CardContent className="p-3">
         <div className="flex items-center gap-2 mb-1">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/50">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-muted/50">
             <Icon className={`h-3.5 w-3.5 ${iconColor}`} />
           </div>
           <span className="text-xs font-medium truncate">{label}</span>

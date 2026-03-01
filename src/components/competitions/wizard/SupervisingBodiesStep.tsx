@@ -137,14 +137,14 @@ export function SupervisingBodiesStep({
                   key={entity.id}
                   type="button"
                   onClick={() => toggleEntity(entity.id)}
-                  className={`flex items-center gap-3 rounded-lg border p-3 text-start transition-all ${
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-start transition-all ${
                     isSelected ? "border-primary bg-primary/5" : "border-border/60 hover:border-primary/30"
                   }`}
                 >
                   {entity.logo_url ? (
-                    <img src={entity.logo_url} alt="" className="h-9 w-9 rounded-lg object-cover shrink-0" />
+                    <img src={entity.logo_url} alt="" className="h-9 w-9 rounded-xl object-cover shrink-0" />
                   ) : (
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted shrink-0">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">
                       <Building2 className="h-4 w-4 text-muted-foreground" />
                     </div>
                   )}
@@ -213,7 +213,7 @@ export function SupervisingBodiesStep({
                   key={judge.user_id}
                   type="button"
                   onClick={() => toggleJudge(judge.user_id)}
-                  className={`flex items-center gap-3 rounded-lg border p-3 text-start transition-all ${
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-start transition-all ${
                     isSelected ? "border-primary bg-primary/5" : "border-border/60 hover:border-primary/30"
                   }`}
                 >

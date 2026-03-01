@@ -70,7 +70,7 @@ export function ImageLightbox({ images, currentIndex, onClose, onNavigate }: Ima
         <img
           src={current.url}
           alt={current.title || ""}
-          className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
+          className="max-h-[85vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"
         />
         {current.title && (
           <p className="text-sm font-medium text-foreground/80">{current.title}</p>

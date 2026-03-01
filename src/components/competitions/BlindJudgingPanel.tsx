@@ -164,7 +164,7 @@ export function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnab
                     const profile = reg?.profiles;
                     const name = isAr ? profile?.full_name_ar || profile?.full_name : profile?.full_name;
                     return (
-                      <div key={code.id} className="flex items-center justify-between rounded-lg border border-border/60 p-2.5 hover:bg-muted/30 transition-colors">
+                      <div key={code.id} className="flex items-center justify-between rounded-xl border border-border/60 p-2.5 hover:bg-muted/30 transition-colors">
                         <div className="flex items-center gap-2.5">
                           <Badge variant="outline" className="font-mono text-xs px-2.5 py-1 bg-primary/5 border-primary/20">
                             {code.blind_code}

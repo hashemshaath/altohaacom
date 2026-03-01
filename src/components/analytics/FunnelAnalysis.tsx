@@ -103,7 +103,7 @@ export function FunnelAnalysis() {
                     </div>
                     <div className="flex-1 relative">
                       <div
-                        className={`${step.color} h-10 rounded-lg flex items-center justify-end px-3 transition-all duration-500`}
+                        className={`${step.color} h-10 rounded-xl flex items-center justify-end px-3 transition-all duration-500`}
                         style={{ width: `${widthPct}%`, opacity: 0.85 }}
                       >
                         <span className="text-sm font-bold text-primary-foreground">{step.count.toLocaleString()}</span>
