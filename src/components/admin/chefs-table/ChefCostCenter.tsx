@@ -547,7 +547,7 @@ export function ChefCostCenter() {
             <p className="text-xs font-bold uppercase tracking-wider text-primary mb-2">
               {isAr ? "إجمالي التكلفة الفعلية" : "Actual Total Cost"}
             </p>
-            <p className="text-4xl font-black tabular-nums text-primary">{total.toLocaleString()} <span className="text-base">SAR</span></p>
+            <p className="text-4xl font-black tabular-nums text-primary"><AnimatedCounter value={Math.round(total)} /> <span className="text-base">SAR</span></p>
           </div>
 
           <div className="flex justify-end gap-2">
@@ -572,9 +572,9 @@ export function ChefCostCenter() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: isAr ? "ملفات التكلفة" : "Cost Profiles", value: costProfiles.length, icon: User, color: "text-primary" },
-          { label: isAr ? "متوسط التكلفة / شيف" : "Avg Cost / Chef", value: `${avgPerChef.toLocaleString(undefined, { maximumFractionDigits: 0 })} SAR`, icon: Calculator, color: "text-chart-4" },
-          { label: isAr ? "إجمالي مقدر" : "Total Estimated", value: `${totalEstimated.toLocaleString()} SAR`, icon: DollarSign, color: "text-chart-5" },
-          { label: isAr ? "إجمالي فعلي" : "Total Actual", value: `${totalActual.toLocaleString()} SAR`, icon: History, color: "text-primary" },
+          { label: isAr ? "متوسط التكلفة / شيف" : "Avg Cost / Chef", value: Math.round(avgPerChef), icon: Calculator, color: "text-chart-4", suffix: " SAR" },
+          { label: isAr ? "إجمالي مقدر" : "Total Estimated", value: Math.round(totalEstimated), icon: DollarSign, color: "text-chart-5", suffix: " SAR" },
+          { label: isAr ? "إجمالي فعلي" : "Total Actual", value: Math.round(totalActual), icon: History, color: "text-primary", suffix: " SAR" },
         ].map((s, i) => (
           <Card key={i} className="border-border/40">
             <CardContent className="p-4">
@@ -582,7 +582,7 @@ export function ChefCostCenter() {
                 <s.icon className={`h-4 w-4 ${s.color}`} />
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
               </div>
-              <p className="text-lg font-black tabular-nums">{s.value}</p>
+              <p className="text-lg font-black tabular-nums">{typeof s.value === "number" ? <><AnimatedCounter value={s.value} />{(s as any).suffix || ""}</> : s.value}</p>
             </CardContent>
           </Card>
         ))}
@@ -656,15 +656,15 @@ export function ChefCostCenter() {
 
                     <div className="grid grid-cols-3 gap-2 text-center mb-3">
                       <div className="rounded bg-muted/50 p-2">
-                        <p className="text-xs font-bold tabular-nums">{cp.flight_cost_estimate.toLocaleString()}</p>
+                        <AnimatedCounter value={Math.round(cp.flight_cost_estimate)} className="text-xs font-bold tabular-nums" />
                         <p className="text-[8px] text-muted-foreground">{isAr ? "طيران" : "Flight"}</p>
                       </div>
                       <div className="rounded bg-muted/50 p-2">
-                        <p className="text-xs font-bold tabular-nums">{cp.hotel_cost_per_night.toLocaleString()}/n</p>
+                        <p className="text-xs font-bold tabular-nums"><AnimatedCounter value={Math.round(cp.hotel_cost_per_night)} />/n</p>
                         <p className="text-[8px] text-muted-foreground">{isAr ? "فندق" : "Hotel"}</p>
                       </div>
                       <div className="rounded bg-muted/50 p-2">
-                        <p className="text-xs font-bold tabular-nums">{cp.evaluation_fee.toLocaleString()}</p>
+                        <AnimatedCounter value={Math.round(cp.evaluation_fee)} className="text-xs font-bold tabular-nums" />
                         <p className="text-[8px] text-muted-foreground">{isAr ? "أتعاب" : "Fee"}</p>
                       </div>
                     </div>
@@ -678,7 +678,7 @@ export function ChefCostCenter() {
 
                     <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-3 text-center mb-3">
                       <p className="text-[9px] text-primary font-bold uppercase">{isAr ? "الإجمالي المقدر" : "Est. Total"} ({cp.estimated_days}d)</p>
-                      <p className="text-xl font-black tabular-nums text-primary">{cp.estimated_total_cost.toLocaleString()} SAR</p>
+                      <p className="text-xl font-black tabular-nums text-primary"><AnimatedCounter value={Math.round(cp.estimated_total_cost)} /> SAR</p>
                     </div>
 
                     <div className="flex gap-1.5 border-t border-border/30 pt-3">
@@ -763,7 +763,7 @@ export function ChefCostCenter() {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="text-sm font-bold tabular-nums text-end">{rec.total_cost.toLocaleString()} SAR</TableCell>
+                      <TableCell className="text-sm font-bold tabular-nums text-end"><AnimatedCounter value={Math.round(rec.total_cost)} /> SAR</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => setEditingTravel(rec)}>

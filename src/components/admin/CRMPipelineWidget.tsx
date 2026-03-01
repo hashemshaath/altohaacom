@@ -12,6 +12,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function CRMPipelineWidget() {
   const { language } = useLanguage();
@@ -86,12 +87,12 @@ export function CRMPipelineWidget() {
         <CardContent>
           <div className="grid grid-cols-3 gap-3 mb-4">
             {[
-              { label: isAr ? "القيمة الإجمالية" : "Total Value", value: `${toEnglishDigits(data.totalValue.toLocaleString())} SAR`, color: "text-primary" },
-              { label: isAr ? "القيمة المحققة" : "Won Value", value: `${toEnglishDigits(data.wonValue.toLocaleString())} SAR`, color: "text-chart-2" },
-              { label: isAr ? "معدل التحويل" : "Conversion", value: `${data.conversionRate}%`, color: "text-chart-5" },
+              { label: isAr ? "القيمة الإجمالية" : "Total Value", value: Math.round(data.totalValue), suffix: " SAR", color: "text-primary" },
+              { label: isAr ? "القيمة المحققة" : "Won Value", value: Math.round(data.wonValue), suffix: " SAR", color: "text-chart-2" },
+              { label: isAr ? "معدل التحويل" : "Conversion", value: data.conversionRate, suffix: "%", color: "text-chart-5" },
             ].map((kpi, i) => (
               <div key={i} className="text-center rounded-xl border border-border/40 p-2">
-                <p className={cn("text-sm font-bold", kpi.color)}>{kpi.value}</p>
+                <p className={cn("text-sm font-bold", kpi.color)}><AnimatedCounter value={kpi.value} />{kpi.suffix}</p>
                 <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
               </div>
             ))}
