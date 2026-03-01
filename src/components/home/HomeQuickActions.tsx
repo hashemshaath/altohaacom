@@ -5,14 +5,14 @@ import { Trophy, BookOpen, Calendar, Search, Users, Utensils, ChefHat, Store } f
 import { cn } from "@/lib/utils";
 
 const actions = [
-  { icon: Trophy, label: "Competitions", labelAr: "المسابقات", href: "/competitions", color: "text-chart-1" },
-  { icon: BookOpen, label: "Masterclasses", labelAr: "ماستركلاس", href: "/masterclasses", color: "text-chart-2" },
-  { icon: Calendar, label: "Events", labelAr: "الفعاليات", href: "/exhibitions", color: "text-chart-3" },
-  { icon: Search, label: "Search", labelAr: "بحث", href: "/search", color: "text-chart-4" },
-  { icon: Users, label: "Rankings", labelAr: "التصنيفات", href: "/rankings", color: "text-chart-5" },
-  { icon: Utensils, label: "Recipes", labelAr: "الوصفات", href: "/recipes", color: "text-chart-1" },
-  { icon: ChefHat, label: "Community", labelAr: "المجتمع", href: "/community", color: "text-chart-2" },
-  { icon: Store, label: "Shop", labelAr: "المتجر", href: "/shop", color: "text-chart-3" },
+  { icon: Trophy, label: "Competitions", labelAr: "المسابقات", href: "/competitions", color: "text-chart-1", bg: "bg-chart-1/8" },
+  { icon: BookOpen, label: "Masterclasses", labelAr: "ماستركلاس", href: "/masterclasses", color: "text-chart-2", bg: "bg-chart-2/8" },
+  { icon: Calendar, label: "Events", labelAr: "الفعاليات", href: "/exhibitions", color: "text-chart-3", bg: "bg-chart-3/8" },
+  { icon: Search, label: "Search", labelAr: "بحث", href: "/search", color: "text-chart-4", bg: "bg-chart-4/8" },
+  { icon: Users, label: "Rankings", labelAr: "التصنيفات", href: "/rankings", color: "text-chart-5", bg: "bg-chart-5/8" },
+  { icon: Utensils, label: "Recipes", labelAr: "الوصفات", href: "/recipes", color: "text-chart-1", bg: "bg-chart-1/8" },
+  { icon: ChefHat, label: "Community", labelAr: "المجتمع", href: "/community", color: "text-chart-2", bg: "bg-chart-2/8" },
+  { icon: Store, label: "Shop", labelAr: "المتجر", href: "/shop", color: "text-chart-3", bg: "bg-chart-3/8" },
 ];
 
 export const HomeQuickActions = memo(function HomeQuickActions() {
@@ -20,9 +20,9 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
   const isAr = language === "ar";
 
   return (
-    <section className="container py-4" aria-label={isAr ? "إجراءات سريعة" : "Quick actions"}>
+    <section className="container py-5 sm:py-6" aria-label={isAr ? "إجراءات سريعة" : "Quick actions"}>
       <div
-        className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
+        className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
         dir={isAr ? "rtl" : "ltr"}
         style={{ WebkitOverflowScrolling: "touch" }}
       >
@@ -31,20 +31,19 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
             key={a.href}
             to={a.href}
             className={cn(
-              "flex flex-col items-center gap-1.5 rounded-2xl p-3 snap-start",
-              "min-w-[5rem] shrink-0 sm:min-w-0 sm:shrink",
-              "bg-card border border-border/30 hover:border-primary/25",
-              "transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.95]",
+              "flex flex-col items-center gap-2 rounded-2xl p-3.5 snap-start",
+              "min-w-[5.5rem] shrink-0 sm:min-w-0 sm:shrink",
+              "bg-card border border-border/20 hover:border-primary/20",
+              "transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.95]",
               "group touch-manipulation"
             )}
-            style={{ animationDelay: `${i * 40}ms` }}
           >
             <div className={cn(
-              "flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-xl transition-all duration-300",
-              "bg-primary/8 group-hover:bg-primary/15 group-hover:scale-110",
-              a.color
+              "flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-2xl transition-all duration-300",
+              "group-hover:scale-110 group-hover:shadow-md",
+              a.bg, a.color
             )}>
-              <a.icon className="h-4.5 w-4.5 sm:h-4 sm:w-4" />
+              <a.icon className="h-5 w-5 sm:h-4.5 sm:w-4.5" />
             </div>
             <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground group-hover:text-foreground transition-colors line-clamp-1 whitespace-nowrap">
               {isAr ? a.labelAr : a.label}
