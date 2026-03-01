@@ -372,14 +372,14 @@ export default function CertificatesAdmin() {
           { label: language === "ar" ? "صادرة" : "Issued", value: stats.issued, icon: CheckCircle, color: "text-chart-5", bg: "bg-chart-5/10" },
           { label: language === "ar" ? "ملغاة" : "Revoked", value: stats.revoked, icon: XCircle, color: "text-destructive", bg: "bg-destructive/10" },
         ].map((s, i) => (
-          <Card key={i} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="pt-5 pb-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">{s.label}</p>
                   <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
                 </div>
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${s.bg}`}>
                   <s.icon className={`h-5 w-5 ${s.color}`} />
                 </div>
               </div>

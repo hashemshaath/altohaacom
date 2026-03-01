@@ -204,9 +204,9 @@ export default function ChefScheduleAdmin() {
           { label: isAr ? "عام" : "Public", value: stats.publicCount, icon: Globe, color: "text-chart-3 bg-chart-3/10" },
           { label: isAr ? "إجمالي الرسوم" : "Total Fees", value: stats.totalFees.toLocaleString(), icon: DollarSign, color: "text-primary bg-primary/10" },
         ].map(kpi => (
-          <Card key={kpi.label} className="rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={kpi.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${kpi.color}`}>
+              <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${kpi.color}`}>
                 <kpi.icon className="h-4 w-4" />
               </div>
               <div>
