@@ -61,6 +61,7 @@ import {
 } from "lucide-react";
 import { format, formatDistanceToNow, differenceInHours, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 // ─── SLA Thresholds (hours) ─────────────────────────────────
 const SLA_THRESHOLDS: Record<string, { warning: number; breach: number }> = {
@@ -316,23 +317,26 @@ export default function SupportTicketsAdmin() {
       <SupportSatisfactionWidget />
 
       {/* Stats */}
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
         {[
-          { icon: Ticket, label: isAr ? "الكل" : "Total", value: stats.total, color: "text-primary", bg: "bg-primary/10" },
-          { icon: AlertCircle, label: isAr ? "مفتوحة" : "Open", value: stats.open, color: "text-chart-4", bg: "bg-chart-4/10" },
-          { icon: Clock, label: isAr ? "جارية" : "Active", value: stats.inProgress, color: "text-chart-3", bg: "bg-chart-3/10" },
-          { icon: CheckCircle2, label: isAr ? "محلولة" : "Done", value: stats.resolved, color: "text-chart-5", bg: "bg-chart-5/10" },
-          { icon: XCircle, label: isAr ? "عاجلة" : "Urgent", value: stats.urgent, color: "text-destructive", bg: "bg-destructive/10" },
-          { icon: Timer, label: "SLA", value: stats.slaBreach, color: "text-destructive", bg: "bg-destructive/10" },
+          { icon: Ticket, label: isAr ? "الكل" : "Total", value: stats.total, color: "primary" },
+          { icon: AlertCircle, label: isAr ? "مفتوحة" : "Open", value: stats.open, color: "chart-4" },
+          { icon: Clock, label: isAr ? "جارية" : "Active", value: stats.inProgress, color: "chart-3" },
+          { icon: CheckCircle2, label: isAr ? "محلولة" : "Done", value: stats.resolved, color: "chart-5" },
+          { icon: XCircle, label: isAr ? "عاجلة" : "Urgent", value: stats.urgent, color: "destructive" },
+          { icon: Timer, label: "SLA", value: stats.slaBreach, color: "destructive" },
         ].map(s => (
-          <Card key={s.label}>
-            <CardContent className="flex items-center gap-2 p-2 sm:py-4 sm:px-3">
-              <div className={`rounded-full p-1.5 sm:p-2 ${s.bg}`}>
-                <s.icon className={`h-3 w-3 sm:h-4 sm:w-4 ${s.color}`} />
+          <Card key={s.label} className="rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+            <CardContent className="flex items-center gap-2 p-2.5 sm:py-4 sm:px-3">
+              <div className={cn(
+                "flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110",
+                `bg-${s.color}/10`
+              )}>
+                <s.icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", `text-${s.color}`)} />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{s.label}</p>
-                <p className="text-base sm:text-xl font-bold">{s.value}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate font-medium">{s.label}</p>
+                <p className="text-base sm:text-xl font-bold tabular-nums">{s.value}</p>
               </div>
             </CardContent>
           </Card>
@@ -342,13 +346,13 @@ export default function SupportTicketsAdmin() {
       {selectedTicket ? (
         /* Detail View */
         <div className="space-y-3 sm:space-y-4">
-          <Button variant="ghost" size="sm" onClick={() => setSelectedTicketId(null)} className="gap-2 h-8">
+          <Button variant="ghost" size="sm" onClick={() => setSelectedTicketId(null)} className="gap-2 h-8 rounded-xl">
             <ArrowLeft className="h-3.5 w-3.5" />
             {isAr ? "العودة" : "Back"}
           </Button>
 
-          <Card>
-            <CardHeader className="p-3 sm:p-6">
+          <Card className="rounded-2xl border-border/50">
+            <CardHeader className="p-3 sm:p-6 border-b border-border/30">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="min-w-0">
                   <CardTitle className="text-sm sm:text-base">{selectedTicket.subject}</CardTitle>
@@ -368,7 +372,7 @@ export default function SupportTicketsAdmin() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-7 sm:h-8 text-xs px-2 sm:px-3"
+                      className="h-7 sm:h-8 text-xs px-2 sm:px-3 rounded-xl"
                       onClick={() => updateStatus.mutate({ id: selectedTicket.id, status: "resolved" })}
                     >
                       <CheckCircle2 className="me-1 h-3 w-3" />
@@ -379,7 +383,7 @@ export default function SupportTicketsAdmin() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 sm:h-8 text-xs px-2 sm:px-3"
+                      className="h-7 sm:h-8 text-xs px-2 sm:px-3 rounded-xl"
                       onClick={() => updateStatus.mutate({ id: selectedTicket.id, status: "closed" })}
                     >
                       <XCircle className="me-1 h-3 w-3" />
@@ -390,8 +394,8 @@ export default function SupportTicketsAdmin() {
               </div>
             </CardHeader>
             <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
-              <div className="rounded-lg bg-muted/50 p-3 sm:p-4 mb-3 sm:mb-4">
-                <p className="whitespace-pre-wrap text-xs sm:text-sm">{selectedTicket.description}</p>
+              <div className="rounded-xl bg-muted/40 border border-border/30 p-3 sm:p-4 mb-3 sm:mb-4">
+                <p className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed">{selectedTicket.description}</p>
                 <span className="text-[10px] text-muted-foreground block mt-2">
                   {format(new Date(selectedTicket.created_at), "yyyy-MM-dd HH:mm")}
                 </span>
@@ -412,14 +416,14 @@ export default function SupportTicketsAdmin() {
                     return (
                       <div
                         key={msg.id}
-                        className={`rounded-lg border p-2.5 sm:p-3 ${
+                         className={cn(
+                          "rounded-xl border p-3",
                           msg.is_internal_note
                             ? "bg-chart-4/5 border-chart-4/30 border-dashed"
                             : isUser
-                            ? ""
-                            : "border-s-[3px] border-s-primary bg-primary/5"
-                        }`}
-                      >
+                            ? "bg-muted/30 border-border/30"
+                            : "border-s-[3px] border-s-primary bg-primary/[0.03]"
+                        )}>
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-1.5">
                             <Badge variant="outline" className="text-[10px]">
@@ -459,13 +463,13 @@ export default function SupportTicketsAdmin() {
                     </label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-1 h-7 text-[11px]">
+                        <Button variant="outline" size="sm" className="gap-1 h-7 text-[11px] rounded-xl">
                           <Zap className="h-3 w-3" />
                           <span className="hidden sm:inline">{isAr ? "ردود سريعة" : "Quick Replies"}</span>
                           <span className="sm:hidden">{isAr ? "سريع" : "Quick"}</span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-72 sm:w-80">
+                      <DropdownMenuContent align="end" className="w-72 sm:w-80 rounded-xl">
                         {CANNED_RESPONSES.map(r => (
                           <DropdownMenuItem
                             key={r.key}
@@ -493,9 +497,9 @@ export default function SupportTicketsAdmin() {
                       onChange={e => setNewReply(e.target.value)}
                       placeholder={isAr ? "اكتب الرد..." : "Type your reply..."}
                       rows={2}
-                      className="flex-1 text-xs sm:text-sm"
+                      className="flex-1 text-xs sm:text-sm rounded-xl"
                     />
-                    <Button type="submit" size="sm" disabled={!newReply.trim() || sendReply.isPending} className="self-end h-8 w-8 sm:h-9 sm:w-9 p-0">
+                    <Button type="submit" size="sm" disabled={!newReply.trim() || sendReply.isPending} className="self-end h-9 w-9 p-0 rounded-xl">
                       <Send className="h-3.5 w-3.5" />
                     </Button>
                   </form>
@@ -514,11 +518,11 @@ export default function SupportTicketsAdmin() {
                 placeholder={isAr ? "بحث..." : "Search..."}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="ps-8 h-8 sm:h-9 text-xs sm:text-sm"
+                className="ps-8 h-8 sm:h-9 text-xs sm:text-sm rounded-xl bg-muted/30 border-border/40"
               />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 <SelectItem value="open">{isAr ? "مفتوحة" : "Open"}</SelectItem>
@@ -528,7 +532,7 @@ export default function SupportTicketsAdmin() {
               </SelectContent>
             </Select>
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 <SelectItem value="urgent">{isAr ? "عاجل" : "Urgent"}</SelectItem>
@@ -546,7 +550,7 @@ export default function SupportTicketsAdmin() {
             onExport={() => exportTicketsCSV(bulk.count > 0 ? bulk.selectedItems : filteredTickets)}
           />
 
-          <Card>
+          <Card className="rounded-2xl border-border/50 overflow-hidden">
             <CardContent className="p-0">
               {isLoading ? (
                 <div className="p-4 sm:p-6 space-y-3">
@@ -554,8 +558,10 @@ export default function SupportTicketsAdmin() {
                 </div>
               ) : filteredTickets.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 sm:py-16">
-                  <Ticket className="mb-3 h-10 w-10 text-muted-foreground/30" />
-                  <p className="text-sm text-muted-foreground">{isAr ? "لا توجد تذاكر" : "No tickets found"}</p>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-3">
+                    <Ticket className="h-5 w-5 text-muted-foreground/40" />
+                  </div>
+                  <p className="text-sm text-muted-foreground font-medium">{isAr ? "لا توجد تذاكر" : "No tickets found"}</p>
                 </div>
               ) : (
                 <>
@@ -564,12 +570,12 @@ export default function SupportTicketsAdmin() {
                     {filteredTickets.map(ticket => {
                       const profile = profileMap.get(ticket.user_id);
                       return (
-                        <div
+                         <div
                           key={ticket.id}
-                          className="flex items-start gap-2.5 px-3 py-2.5 active:bg-accent/50 cursor-pointer transition-colors"
+                          className="flex items-start gap-2.5 px-3 py-3 active:bg-accent/50 cursor-pointer transition-all duration-200 hover:bg-accent/30"
                           onClick={() => setSelectedTicketId(ticket.id)}
                         >
-                          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium mt-0.5">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-[10px] font-semibold mt-0.5">
                             {(profile?.full_name || "U")[0].toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -612,7 +618,10 @@ export default function SupportTicketsAdmin() {
                           return (
                             <TableRow
                               key={ticket.id}
-                              className={`cursor-pointer hover:bg-accent/50 transition-colors ${bulk.isSelected(ticket.id) ? "bg-primary/5" : ""}`}
+                              className={cn(
+                                "cursor-pointer hover:bg-accent/50 transition-all duration-200",
+                                bulk.isSelected(ticket.id) && "bg-primary/5"
+                              )}
                               onClick={() => setSelectedTicketId(ticket.id)}
                             >
                               <TableCell onClick={(e) => e.stopPropagation()}>
@@ -624,7 +633,7 @@ export default function SupportTicketsAdmin() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
-                                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-medium">
+                                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-muted text-[10px] font-semibold">
                                     {(profile?.full_name || "U")[0].toUpperCase()}
                                   </div>
                                   <span className="text-sm truncate">{profile?.full_name || "Unknown"}</span>
