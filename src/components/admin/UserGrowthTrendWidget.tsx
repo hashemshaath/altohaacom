@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Users, TrendingUp, UserCheck, UserX, Globe, Shield } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
@@ -109,9 +110,9 @@ export function UserGrowthTrendWidget() {
             </AreaChart>
           </ResponsiveContainer>
           <div className="flex gap-4 mt-2 text-[10px] text-muted-foreground">
-            <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {isAr ? "آخر 7 أيام:" : "Last 7d:"} <strong>{data.totalNew7d}</strong></span>
-            <span className="flex items-center gap-1"><UserCheck className="h-3 w-3 text-chart-5" /> {isAr ? "نشط:" : "Active:"} <strong>{data.activeCount}</strong></span>
-            <span className="flex items-center gap-1"><UserX className="h-3 w-3 text-destructive" /> {isAr ? "موقوف:" : "Suspended:"} <strong>{data.suspendedCount}</strong></span>
+            <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {isAr ? "آخر 7 أيام:" : "Last 7d:"} <strong><AnimatedCounter value={data.totalNew7d} className="inline" /></strong></span>
+            <span className="flex items-center gap-1"><UserCheck className="h-3 w-3 text-chart-5" /> {isAr ? "نشط:" : "Active:"} <strong><AnimatedCounter value={data.activeCount} className="inline" /></strong></span>
+            <span className="flex items-center gap-1"><UserX className="h-3 w-3 text-destructive" /> {isAr ? "موقوف:" : "Suspended:"} <strong><AnimatedCounter value={data.suspendedCount} className="inline" /></strong></span>
           </div>
         </CardContent>
       </Card>
@@ -130,8 +131,8 @@ export function UserGrowthTrendWidget() {
                 </Pie>
               </PieChart>
               <div className="text-[10px] space-y-1">
-                <div className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> {isAr ? "محترف" : "Pro"}: <strong>{data.proCount}</strong></div>
-                <div className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-chart-4" /> {isAr ? "معجب" : "Fan"}: <strong>{data.fanCount}</strong></div>
+                <div className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> {isAr ? "محترف" : "Pro"}: <strong><AnimatedCounter value={data.proCount} className="inline" /></strong></div>
+                <div className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-chart-4" /> {isAr ? "معجب" : "Fan"}: <strong><AnimatedCounter value={data.fanCount} className="inline" /></strong></div>
               </div>
             </div>
           </CardContent>

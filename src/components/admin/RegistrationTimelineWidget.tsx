@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarClock, TrendingUp, Users, Clock } from "lucide-react";
 import { format, subDays, differenceInDays } from "date-fns";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function RegistrationTimelineWidget() {
   const { language } = useLanguage();
@@ -66,17 +67,15 @@ export function RegistrationTimelineWidget() {
         {/* KPIs */}
         <div className="grid grid-cols-3 gap-3">
           <div className="text-center p-2 rounded-xl bg-primary/5">
-            <p className="text-lg font-bold text-primary">{data?.totalRegs || 0}</p>
+            <AnimatedCounter value={data?.totalRegs || 0} className="text-lg font-bold text-primary" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي التسجيلات" : "Total Registrations"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-chart-2/5">
-            <p className="text-lg font-bold text-chart-2">{data?.approvedRegs || 0}</p>
+            <AnimatedCounter value={data?.approvedRegs || 0} className="text-lg font-bold text-chart-2" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "موافق عليها" : "Approved"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-chart-4/5">
-            <p className="text-lg font-bold text-chart-4">
-              {data?.totalRegs ? Math.round((data.approvedRegs / data.totalRegs) * 100) : 0}%
-            </p>
+            <AnimatedCounter value={data?.totalRegs ? Math.round((data.approvedRegs / data.totalRegs) * 100) : 0} className="text-lg font-bold text-chart-4" suffix="%" />
             <p className="text-[10px] text-muted-foreground">{isAr ? "معدل القبول" : "Approval Rate"}</p>
           </div>
         </div>

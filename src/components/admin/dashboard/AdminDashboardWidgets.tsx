@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Users, Trophy, FileText, MessageSquare, DollarSign, ShieldCheck, Activity, BarChart3 } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const CHART_COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -113,7 +114,7 @@ export default function AdminDashboardWidgets() {
                   </Badge>
                 )}
               </div>
-              <p className="text-2xl font-bold mt-2">{kpi.value.toLocaleString()}</p>
+              <AnimatedCounter value={kpi.value} className="text-2xl font-bold mt-2" format />
               <p className="text-xs text-muted-foreground">{kpi.label}</p>
             </CardContent>
           </Card>

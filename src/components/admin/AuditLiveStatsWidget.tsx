@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShieldAlert, Activity, Ban, Eye, Clock, AlertTriangle, UserCheck, FileSearch } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { format, subDays } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--destructive))"];
 
@@ -89,7 +90,7 @@ export function AuditLiveStatsWidget() {
           {stats.map((s, i) => (
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
-              <div className="text-lg font-bold">{s.value}</div>
+              <div className="text-lg font-bold"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
             </div>
           ))}

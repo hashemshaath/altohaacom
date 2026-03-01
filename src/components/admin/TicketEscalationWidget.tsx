@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { AlertTriangle, Clock, CheckCircle2, TrendingDown, Zap } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInHours, differenceInMinutes, subDays, format } from "date-fns";
 
 export function TicketEscalationWidget() {
@@ -105,7 +106,7 @@ export function TicketEscalationWidget() {
             <div className={`rounded-xl p-2 ${kpi.bg} transition-transform duration-300 group-hover:scale-110`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
             <div>
               <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
-              <p className="text-lg font-bold">{kpi.value}</p>
+              <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} className="text-lg font-bold" />
             </div>
           </CardContent>
         </Card>

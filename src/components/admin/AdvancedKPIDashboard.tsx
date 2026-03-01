@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 import { Activity, Users, Trophy, FileText, MessageSquare, DollarSign, TrendingUp, Ticket } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function AdvancedKPIDashboard() {
   const { language } = useLanguage();
@@ -116,7 +117,7 @@ export function AdvancedKPIDashboard() {
               <div className="min-w-0">
                 <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
                 <div className="flex items-baseline gap-1.5">
-                  <p className="text-lg font-bold">{kpi.value}</p>
+                  <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} className="text-lg font-bold" />
                   {kpi.growth !== 0 && (
                     <Badge variant={kpi.growth > 0 ? "default" : "destructive"} className="text-[8px] h-4 px-1">
                       {kpi.growth > 0 ? "+" : ""}{kpi.growth}%

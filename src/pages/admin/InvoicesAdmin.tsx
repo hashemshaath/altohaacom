@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useToast } from "@/hooks/use-toast";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
 import { FinancialOverviewCards } from "@/components/admin/FinancialOverviewCards";
@@ -634,28 +635,28 @@ export default function InvoicesAdmin() {
         <Card>
           <CardContent className="pt-6 text-center">
             <FileText className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.total}</p>
+            <AnimatedCounter value={stats.total} className="text-2xl font-bold" />
             <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي الفواتير" : "Total Invoices"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <Clock className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{stats.pending}</p>
+            <AnimatedCounter value={stats.pending} className="text-2xl font-bold" />
             <p className="text-sm text-muted-foreground">{language === "ar" ? "قيد الانتظار" : "Pending"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <DollarSign className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{toEnglishDigits(stats.totalAmount.toLocaleString())}</p>
+            <AnimatedCounter value={Math.round(stats.totalAmount)} className="text-2xl font-bold" format />
             <p className="text-sm text-muted-foreground">{language === "ar" ? "إجمالي المبلغ" : "Total Amount"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
             <CheckCircle className="mx-auto mb-2 h-6 w-6 text-muted-foreground" />
-            <p className="text-2xl font-bold">{toEnglishDigits(stats.paidAmount.toLocaleString())}</p>
+            <AnimatedCounter value={Math.round(stats.paidAmount)} className="text-2xl font-bold" format />
             <p className="text-sm text-muted-foreground">{language === "ar" ? "المحصّل" : "Collected"}</p>
           </CardContent>
         </Card>
