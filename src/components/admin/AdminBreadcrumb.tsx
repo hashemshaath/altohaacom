@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
@@ -49,6 +49,7 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/audience-segments": { en: "Segments", ar: "الشرائح" },
   "/admin/live-chat": { en: "Live Chat", ar: "الدردشة المباشرة" },
   "/admin/chef-schedule": { en: "Chef Schedule", ar: "جدول الشيف" },
+  "/admin/organizers": { en: "Organizers", ar: "المنظمون" },
 };
 
 export function AdminBreadcrumb() {
@@ -57,19 +58,19 @@ export function AdminBreadcrumb() {
   const location = useLocation();
   const pathname = location.pathname;
 
-  // Don't show on root admin
   if (pathname === "/admin") return null;
 
   const currentLabel = ROUTE_LABELS[pathname];
   if (!currentLabel) return null;
 
   return (
-    <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
-      <Link to="/admin" className="hover:text-foreground transition-colors">
-        {isAr ? "لوحة التحكم" : "Dashboard"}
+    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-5">
+      <Link to="/admin" className="flex items-center gap-1.5 rounded-lg px-2 py-1 hover:bg-muted hover:text-foreground transition-all duration-200">
+        <LayoutDashboard className="h-3 w-3" />
+        <span>{isAr ? "لوحة التحكم" : "Dashboard"}</span>
       </Link>
-      <ChevronRight className={cn("h-3 w-3", isAr && "rotate-180")} />
-      <span className="text-foreground font-medium">
+      <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
+      <span className="rounded-lg bg-primary/8 px-2.5 py-1 text-primary font-semibold">
         {isAr ? currentLabel.ar : currentLabel.en}
       </span>
     </nav>
