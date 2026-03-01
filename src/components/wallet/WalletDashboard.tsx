@@ -235,14 +235,14 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
               <Badge variant="secondary" className="text-[10px]">{stats.monthlyTxCount} {t("transactions", "معاملة")}</Badge>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-3 rounded-lg border border-chart-2/20 bg-chart-2/5 p-3">
+              <div className="flex items-center gap-3 rounded-xl border border-chart-2/20 bg-chart-2/5 p-3 transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
                 <ArrowUpRight className="h-5 w-5 text-chart-2" />
                 <div>
                   <p className="text-[10px] text-muted-foreground">{t("Income", "الدخل")}</p>
                   <p className="text-lg font-bold text-chart-2">{formatCurrency(stats.monthlyCredits, language as "en" | "ar")}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+              <div className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-3 transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
                 <ArrowDownLeft className="h-5 w-5 text-destructive" />
                 <div>
                   <p className="text-[10px] text-muted-foreground">{t("Expenses", "المصروفات")}</p>
@@ -301,9 +301,9 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
           {txLoading ? (
             <div className="space-y-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-border/20">
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl border border-border/20">
                   <div className="flex items-center gap-3">
-                    <Skeleton className="h-9 w-9 rounded-lg" />
+                    <Skeleton className="h-9 w-9 rounded-xl" />
                     <div><Skeleton className="h-4 w-28" /><Skeleton className="h-3 w-20 mt-1" /></div>
                   </div>
                   <Skeleton className="h-5 w-20" />
@@ -319,7 +319,7 @@ export function WalletDashboard({ userId }: WalletDashboardProps) {
 
                 return (
                   <div key={tx.id} className="group flex items-center gap-3 rounded-xl border border-border/20 bg-muted/5 p-3 hover:bg-muted/20 transition-all">
-                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isCredit ? "bg-chart-2/10" : "bg-destructive/10"}`}>
+                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${isCredit ? "bg-chart-2/10" : "bg-destructive/10"}`}>
                       <Icon className={`h-4 w-4 ${info.color}`} />
                     </div>
                     <div className="flex-1 min-w-0">

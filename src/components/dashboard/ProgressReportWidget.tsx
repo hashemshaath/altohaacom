@@ -87,7 +87,7 @@ export function ProgressReportWidget() {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Points Sparkline */}
-        <div className="rounded-lg bg-muted/30 p-3">
+        <div className="rounded-xl bg-muted/30 p-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <Star className="h-3.5 w-3.5 text-chart-4" />
@@ -123,8 +123,8 @@ export function ProgressReportWidget() {
         {/* Metric Grid */}
         <div className="grid grid-cols-2 gap-2">
           {metrics.map((m) => (
-            <div key={m.label} className="rounded-lg bg-muted/20 p-2.5 text-center">
-              <m.icon className={`h-4 w-4 mx-auto mb-1 ${m.color}`} />
+            <div key={m.label} className="rounded-xl bg-muted/20 p-2.5 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
+              <m.icon className={`h-4 w-4 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-lg font-bold tabular-nums">{m.value}</p>
               <p className="text-[9px] text-muted-foreground uppercase">{m.label}</p>
             </div>

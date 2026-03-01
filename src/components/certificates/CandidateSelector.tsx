@@ -273,17 +273,17 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
             </div>
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 mt-3">
-              <div className="rounded-lg border p-2 text-center">
+              <div className="rounded-xl border p-2 text-center">
                 <Trophy className="mx-auto mb-1 h-4 w-4 text-chart-4" />
                 <p className="text-sm font-bold">{candidates.filter(r => r.rank <= 3).length}</p>
                 <p className="text-[10px] text-muted-foreground">{language === "ar" ? "فائزين" : "Winners"}</p>
               </div>
-              <div className="rounded-lg border p-2 text-center">
+              <div className="rounded-xl border p-2 text-center">
                 <Users className="mx-auto mb-1 h-4 w-4 text-primary" />
                 <p className="text-sm font-bold">{candidates.length}</p>
                 <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مشاركين" : "Participants"}</p>
               </div>
-              <div className="rounded-lg border p-2 text-center">
+              <div className="rounded-xl border p-2 text-center">
                 <CheckCircle className="mx-auto mb-1 h-4 w-4 text-chart-5" />
                 <p className="text-sm font-bold">{selectedIds.size}</p>
                 <p className="text-[10px] text-muted-foreground">{language === "ar" ? "محددين" : "Selected"}</p>

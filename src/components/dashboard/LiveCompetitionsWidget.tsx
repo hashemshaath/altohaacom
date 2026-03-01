@@ -114,7 +114,7 @@ export function LiveCompetitionsWidget() {
             : "";
 
           return (
-            <div key={comp.id} className="group rounded-lg border border-border/30 p-3 transition-colors hover:bg-muted/30">
+            <div key={comp.id} className="group rounded-xl border border-border/30 p-3 transition-colors hover:bg-muted/30">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold truncate">{title}</p>

@@ -38,7 +38,7 @@ export function SocialMediaSection({ form, update, isAr }: SocialMediaSectionPro
         <div className="grid gap-3 sm:grid-cols-2">
           {SOCIAL_FIELDS.map(({ key, placeholder, icon: Icon }) => (
             <div key={key} className="relative group">
-              <div className="absolute start-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-lg bg-muted/30 text-muted-foreground/60 transition-colors group-focus-within:bg-primary/10 group-focus-within:text-primary">
+              <div className="absolute start-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-xl bg-muted/30 text-muted-foreground/60 transition-colors group-focus-within:bg-primary/10 group-focus-within:text-primary">
                 <Icon className="h-3.5 w-3.5" />
               </div>
               <Input
