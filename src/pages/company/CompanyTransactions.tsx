@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -143,7 +144,7 @@ export default function CompanyTransactions() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "عدد المعاملات" : "Transactions"}</p>
-              <p className="text-2xl font-bold">{filtered.length}</p>
+              <AnimatedCounter value={filtered.length} className="text-2xl font-bold" />
             </div>
           </CardContent>
         </Card>
@@ -154,7 +155,7 @@ export default function CompanyTransactions() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الإيرادات" : "Total Credits"}</p>
-              <p className="text-2xl font-bold text-chart-5">{currency} {totalCredits.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-chart-5">{currency} <AnimatedCounter value={Math.round(totalCredits)} className="inline" /></p>
             </div>
           </CardContent>
         </Card>
@@ -165,7 +166,7 @@ export default function CompanyTransactions() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المصروفات" : "Total Debits"}</p>
-              <p className="text-2xl font-bold text-destructive">{currency} {totalDebits.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-destructive">{currency} <AnimatedCounter value={Math.round(totalDebits)} className="inline" /></p>
             </div>
           </CardContent>
         </Card>

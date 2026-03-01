@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileBarChart, Users, Trophy, Package, FileText, TrendingUp, Download, Landmark } from "lucide-react";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ModuleStat {
   icon: React.ElementType;
@@ -88,10 +89,10 @@ export function ReportsSummaryWidget() {
                 <m.icon className={`h-3.5 w-3.5 ${m.color}`} />
                 <span className="text-[10px] text-muted-foreground">{m.label}</span>
               </div>
-              <p className="text-lg font-bold">{m.total.toLocaleString()}</p>
+              <AnimatedCounter value={m.total} className="text-lg font-bold" />
               <div className="flex items-center gap-1 mt-0.5">
                 <TrendingUp className="h-2.5 w-2.5 text-chart-2" />
-                <span className="text-[9px] text-chart-2 font-medium">+{m.thisWeek} {isAr ? "هذا الأسبوع" : "this week"}</span>
+                <span className="text-[9px] text-chart-2 font-medium">+<AnimatedCounter value={m.thisWeek} className="inline" /> {isAr ? "هذا الأسبوع" : "this week"}</span>
               </div>
             </div>
           ))}

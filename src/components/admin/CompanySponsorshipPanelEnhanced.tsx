@@ -141,7 +141,7 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
         </Card>
         <Card>
           <CardContent className="pt-4 text-center">
-            <p className="text-2xl font-bold text-primary">{toEnglishDigits(totalSpent.toLocaleString())}</p>
+            <AnimatedCounter value={Math.round(totalSpent)} className="text-2xl font-bold text-primary" />
             <p className="text-sm text-muted-foreground">{isAr ? "إجمالي الإنفاق" : "Total Spent"}</p>
           </CardContent>
         </Card>

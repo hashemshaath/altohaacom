@@ -176,7 +176,7 @@ export function ExhibitionAdvancedAnalytics() {
         {[
           { icon: Ticket, label: t("Tickets Sold", "التذاكر المباعة"), value: data.totalTickets, sub: `${data.paidTickets} ${t("paid", "مدفوع")}`, color: "text-primary" },
           { icon: Users, label: t("Check-in Rate", "نسبة الدخول"), value: `${data.checkInRate}%`, sub: `${data.checkedIn} ${t("checked in", "دخلوا")}`, color: "text-chart-3" },
-          { icon: Eye, label: t("Total Views", "إجمالي المشاهدات"), value: data.totalViews.toLocaleString(), sub: `${data.totalFollowers} ${t("followers", "متابع")}`, color: "text-chart-4" },
+          { icon: Eye, label: t("Total Views", "إجمالي المشاهدات"), value: data.totalViews, sub: `${data.totalFollowers} ${t("followers", "متابع")}`, color: "text-chart-4" },
           { icon: Calendar, label: t("Avg Rating", "متوسط التقييم"), value: `${data.avgRating}⭐`, sub: `${data.totalReviews} ${t("reviews", "تقييم")}`, color: "text-chart-5" },
         ].map(kpi => (
           <Card key={kpi.label}>

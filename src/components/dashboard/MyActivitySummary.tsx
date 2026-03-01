@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, MessageSquare, Heart, BookOpen } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export function MyActivitySummary() {
   const { language } = useLanguage();
@@ -54,7 +55,7 @@ export function MyActivitySummary() {
                   <Icon className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold leading-none">{formatNumber(s.value)}</p>
+                  <AnimatedCounter value={s.value} className="text-lg font-bold leading-none" />
                   <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
                 </div>
               </div>
