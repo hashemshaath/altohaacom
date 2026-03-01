@@ -237,7 +237,7 @@ export default function EntityFormTabs({ form, editingId, selectedManager, isSav
         <Label>{type === "logo" ? (isAr ? "الشعار" : "Logo") : (isAr ? "صورة الغلاف" : "Cover Image")}</Label>
         {url && (
           <div className="relative inline-block">
-            <img src={url} alt="" className={`rounded-lg border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
+            <img src={url} alt="" className={`rounded-xl border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
             <Button size="icon" variant="destructive" className="absolute -top-2 -end-2 h-6 w-6" onClick={() => onUpdate(fieldKey, "")}>
               <X className="h-3 w-3" />
             </Button>
@@ -402,7 +402,7 @@ export default function EntityFormTabs({ form, editingId, selectedManager, isSav
               </div>
               {form.latitude && form.longitude && (
                 <div className="space-y-2">
-                  <iframe title="Google Maps" width="100%" height="250" className="rounded-lg border" loading="lazy"
+                  <iframe title="Google Maps" width="100%" height="250" className="rounded-xl border" loading="lazy"
                     src={`https://maps.google.com/maps?q=${form.latitude},${form.longitude}&z=14&output=embed`} />
                   <a href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
