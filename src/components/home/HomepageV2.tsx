@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { localizeCity } from "@/lib/localizeLocation";
+import { localizeCity, localizeLocation } from "@/lib/localizeLocation";
 import { useCountUp } from "@/hooks/useCountUp";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { FilterChip } from "./FilterChip";
@@ -93,7 +93,7 @@ function CinematicHero() {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, cover_image_url, city, country, competition_start, status")
+        .select("id, title, title_ar, cover_image_url, city, country, country_code, competition_start, status")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
         .limit(1);
@@ -138,7 +138,7 @@ function CinematicHero() {
               {featured.city && (
                 <span className="inline-flex items-center gap-2 text-background/85 text-xs sm:text-sm backdrop-blur-md bg-background/10 rounded-xl px-4 py-2 border border-background/10 shadow-sm">
                   <MapPin className="h-3.5 w-3.5" />
-                  {featured.city}{featured.country ? `, ${featured.country}` : ""}
+                  {localizeLocation({ city: featured.city, country: featured.country, countryCode: (featured as any).country_code }, isAr)}
                 </span>
               )}
             </div>
