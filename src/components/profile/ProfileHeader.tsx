@@ -72,35 +72,35 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   };
 
   const tierConfig: Record<string, { icon: any; label: string; labelAr: string; color: string }> = {
-    basic: { icon: Star, label: "Basic", labelAr: "أساسي", color: "bg-muted text-muted-foreground" },
-    professional: { icon: Crown, label: "Professional", labelAr: "احترافي", color: "bg-primary/20 text-primary" },
-    enterprise: { icon: Shield, label: "Enterprise", labelAr: "مؤسسي", color: "bg-chart-2/20 text-chart-2" },
+    basic: { icon: Star, label: "Basic", labelAr: "أساسي", color: "bg-muted/60 text-muted-foreground" },
+    professional: { icon: Crown, label: "Professional", labelAr: "احترافي", color: "bg-primary/15 text-primary border-primary/20" },
+    enterprise: { icon: Shield, label: "Enterprise", labelAr: "مؤسسي", color: "bg-chart-2/15 text-chart-2 border-chart-2/20" },
   };
   const tier = tierConfig[profile?.membership_tier || "basic"];
   const TierIcon = tier.icon;
   const profileViews = (profile as any)?.view_count || 0;
 
   return (
-    <div className="relative overflow-visible rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-sm shadow-xl transition-all duration-500 hover:shadow-2xl hover:border-primary/20 group">
-      {/* Cover Image - Premium Hero Style */}
-      <div className="relative h-44 sm:h-64 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden">
-        <div className="pointer-events-none absolute -top-12 -end-12 h-48 w-48 rounded-full bg-primary/10 blur-[60px] animate-pulse" />
-        <div className="pointer-events-none absolute -bottom-10 -start-10 h-32 w-32 rounded-full bg-accent/10 blur-[50px] animate-pulse [animation-delay:2s]" />
+    <div className="relative overflow-visible rounded-3xl border border-border/30 bg-card shadow-lg transition-all duration-500 hover:shadow-xl hover:border-primary/15 group">
+      {/* Cover Image */}
+      <div className="relative h-44 sm:h-60 bg-gradient-to-br from-primary/8 via-background to-accent/8 overflow-hidden rounded-t-3xl">
+        <div className="pointer-events-none absolute -top-16 -end-16 h-56 w-56 rounded-full bg-primary/8 blur-[80px] animate-pulse" />
+        <div className="pointer-events-none absolute -bottom-12 -start-12 h-40 w-40 rounded-full bg-accent/8 blur-[60px] animate-pulse [animation-delay:2s]" />
         
         {profile?.cover_image_url && (
           <img 
             src={profile.cover_image_url} 
             alt="" 
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" 
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
 
         <FeatureGate feature="feature_cover_image" showUpgrade upgradeVariant="minimal" featureName="Cover Image" featureNameAr="صورة الغلاف">
           <Button
             variant="secondary"
             size="sm"
-            className="absolute end-4 top-4 h-9 gap-2 bg-background/60 backdrop-blur-xl border-border/30 text-foreground text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/80 transition-all"
+            className="absolute end-4 top-4 h-9 gap-2 bg-background/50 backdrop-blur-xl border-border/20 text-foreground text-xs font-bold uppercase tracking-wider shadow-lg rounded-xl hover:bg-background/70 transition-all"
             onClick={() => coverInputRef.current?.click()}
             disabled={uploading}
           >
@@ -112,12 +112,12 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
       </div>
 
       {/* Profile Info */}
-      <div className="relative px-4 pb-5 sm:px-6">
+      <div className="relative px-5 pb-6 sm:px-7">
         {/* Avatar */}
         <div className="relative -mt-16 sm:-mt-20 mb-5">
           <div className="relative inline-block">
-            <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-3xl p-1 bg-gradient-to-br from-primary via-primary-glow to-accent shadow-2xl transition-transform duration-500 group-hover:scale-105 group-hover:rotate-2">
-              <Avatar className="h-full w-full rounded-[1.4rem] ring-4 ring-background shadow-inner overflow-hidden bg-card">
+            <div className="relative h-32 w-32 sm:h-36 sm:w-36 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary-glow to-accent shadow-2xl shadow-primary/15 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/25">
+              <Avatar className="h-full w-full rounded-[1.3rem] ring-4 ring-card shadow-inner overflow-hidden bg-card">
                 <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
                 <AvatarFallback className="text-4xl font-black bg-primary/10 text-primary">
                   {(profile?.full_name || "U")[0].toUpperCase()}
@@ -128,7 +128,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading}
-              className="absolute bottom-1 end-1 flex h-9 w-9 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 transition-all hover:scale-110 ring-4 ring-background"
+              className="absolute bottom-1.5 end-1.5 flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xl hover:bg-primary/90 transition-all hover:scale-110 ring-3 ring-card"
             >
               <Camera className="h-4 w-4" />
             </button>
@@ -136,10 +136,10 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className={`text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground drop-shadow-sm break-words ${language !== "ar" ? "font-serif" : ""}`}>
+              <h1 className={`text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground break-words ${language !== "ar" ? "font-serif" : ""}`}>
                 {isAr ? (profile?.display_name_ar || profile?.full_name_ar || profile?.full_name) : (profile?.display_name || profile?.full_name)}
               </h1>
               <FeatureGate feature="feature_verification_badge">
@@ -147,59 +147,63 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
               </FeatureGate>
             </div>
             {profile?.display_name && (
-              <p className="text-base font-bold text-primary/80 tracking-wide mt-1">{isAr ? profile.display_name_ar || profile.display_name : profile.display_name}</p>
+              <p className="text-base font-bold text-primary/70 tracking-wide">{isAr ? profile.display_name_ar || profile.display_name : profile.display_name}</p>
             )}
             {profile?.username && (
-              <p className="text-xs font-mono font-bold text-muted-foreground mt-1 bg-muted/30 w-fit px-2 py-0.5 rounded-lg border border-border/40" dir="ltr">@{profile.username}</p>
+              <p className="text-xs font-mono font-bold text-muted-foreground bg-muted/30 w-fit px-2.5 py-1 rounded-lg border border-border/30" dir="ltr">@{profile.username}</p>
             )}
             {(profile?.job_title || profile?.specialization) && (
-              <div className="mt-1.5 flex items-center gap-1.5 text-sm">
-                <ChefHat className="h-3.5 w-3.5 text-primary" />
+              <div className="flex items-center gap-2 text-sm">
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/8">
+                  <ChefHat className="h-3 w-3 text-primary" />
+                </div>
                 <span>{isAr ? (profile.job_title_ar || profile.specialization_ar || profile.job_title || profile.specialization) : (profile.job_title || profile.specialization)}</span>
               </div>
             )}
             {profile?.location && (
-              <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5" />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-muted/40">
+                  <MapPin className="h-3 w-3" />
+                </div>
                 <span>{profile.country_code ? `${countryFlag(profile.country_code)} ` : ""}{profile.location}</span>
               </div>
             )}
           </div>
+
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge className={`${tier.color} gap-1.5 px-3 py-1 shadow-sm border-none`}>
+            <Badge className={`${tier.color} gap-1.5 px-3 py-1.5 shadow-sm border rounded-xl text-xs font-bold`}>
               <TierIcon className="h-3.5 w-3.5" />
               {isAr ? tier.labelAr : tier.label}
             </Badge>
             {roles.map((r) => (
-              <Badge key={r} variant="secondary" className="capitalize text-[10px] bg-muted/50 border-border/40 px-2">
+              <Badge key={r} variant="secondary" className="capitalize text-[10px] bg-muted/40 border-border/30 px-2.5 py-1 rounded-lg">
                 {r === 'admin' ? <Shield className="h-3 w-3 me-1 text-primary" /> : null}
                 {r}
               </Badge>
             ))}
             {profile?.account_number && (
-              <Badge variant="outline" className="font-mono text-[10px] border-primary/20 bg-primary/5 text-primary">
+              <Badge variant="outline" className="font-mono text-[10px] border-primary/15 bg-primary/5 text-primary rounded-lg px-2.5 py-1">
                 <span dir="ltr">#{profile.account_number}</span>
               </Badge>
             )}
           </div>
-
         </div>
 
         {/* Quick stats bar */}
-        <div className="mt-4 flex items-center gap-1 flex-wrap">
-          <div className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30">
+        <div className="mt-5 flex items-center gap-1.5 flex-wrap rounded-2xl bg-muted/15 border border-border/20 p-1.5">
+          <div className="flex items-center gap-1.5 rounded-xl bg-background/60 px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-background/80">
             <Eye className="h-3 w-3 text-primary/70" />
-            <span className="font-semibold text-foreground">{toEnglishDigits(profileViews)}</span>
+            <span className="font-bold text-foreground tabular-nums">{toEnglishDigits(profileViews)}</span>
             <span>{isAr ? "زيارة" : "views"}</span>
           </div>
-          <div className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30">
+          <div className="flex items-center gap-1.5 rounded-xl bg-background/60 px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-background/80">
             <span>{isAr ? "عضو منذ" : "Joined"}</span>
-            <span className="font-semibold text-foreground">{toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
+            <span className="font-bold text-foreground">{toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
           </div>
           {profile?.loyalty_points > 0 && (
-            <div className="flex items-center gap-1.5 rounded-lg bg-primary/5 px-2.5 py-1.5 text-xs border border-primary/20">
+            <div className="flex items-center gap-1.5 rounded-xl bg-primary/5 px-3 py-2 text-xs border border-primary/15 transition-colors hover:bg-primary/10">
               <Star className="h-3 w-3 text-primary" />
-              <span className="font-semibold text-primary">{toEnglishDigits(profile.loyalty_points)}</span>
+              <span className="font-bold text-primary tabular-nums">{toEnglishDigits(profile.loyalty_points)}</span>
               <span className="text-muted-foreground">{isAr ? "نقطة" : "pts"}</span>
             </div>
           )}
@@ -210,7 +214,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
               <div className="ms-auto" />
               <Link
                 to={linksPath}
-                className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                className="flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-2 text-xs font-bold text-primary border border-primary/15 hover:bg-primary/15 transition-all hover:shadow-sm"
               >
                 <Link2 className="h-3 w-3" />
                 {isAr ? "صفحة روابطي" : "My Links"}
@@ -218,14 +222,14 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
               </Link>
               <button
                 onClick={copyLinksUrl}
-                className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30 hover:bg-muted/60 transition-colors"
+                className="flex items-center gap-1.5 rounded-xl bg-background/60 px-3 py-2 text-xs text-muted-foreground border border-border/20 hover:bg-background/80 transition-all"
               >
-                {linkCopied ? <Check className="h-3 w-3 text-chart-2" /> : <Copy className="h-3 w-3" />}
+                {linkCopied ? <Check className="h-3 w-3 text-chart-5" /> : <Copy className="h-3 w-3" />}
                 {isAr ? "نسخ" : "Copy"}
               </button>
               <button
                 onClick={shareLinksUrl}
-                className="flex items-center gap-1.5 rounded-lg bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground border border-border/30 hover:bg-muted/60 transition-colors"
+                className="flex items-center gap-1.5 rounded-xl bg-background/60 px-3 py-2 text-xs text-muted-foreground border border-border/20 hover:bg-background/80 transition-all"
               >
                 <Share2 className="h-3 w-3" />
                 {isAr ? "مشاركة" : "Share"}
