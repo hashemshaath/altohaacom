@@ -155,7 +155,7 @@ export function MarketingAnalytics() {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {[
           { icon: Megaphone, label: isAr ? "إجمالي التحويلات" : "Total Conversions", value: conversionData?.total ?? 0, color: "primary" },
-          { icon: TrendingUp, label: isAr ? "إيرادات التحويلات" : "Conv. Revenue", value: `${(conversionData?.totalRevenue ?? 0).toLocaleString()} SAR`, color: "chart-5" },
+          { icon: TrendingUp, label: isAr ? "إيرادات التحويلات" : "Conv. Revenue", value: conversionData?.totalRevenue ?? 0, suffix: " SAR", color: "chart-5" },
           { icon: UserPlus, label: isAr ? "تسجيلات جديدة" : "Sign Ups", value: conversionData?.signups ?? 0, color: "chart-4" },
           { icon: ShoppingCart, label: isAr ? "سلال مهجورة" : "Abandoned Carts", value: cartData?.abandoned ?? 0, sub: `${(cartData?.lostRevenue ?? 0).toLocaleString()} SAR`, color: "chart-3" },
           { icon: CalendarClock, label: isAr ? "حملات نشطة" : "Active Campaigns", value: campaignData?.activeCampaigns ?? 0, color: "chart-2" },
@@ -168,7 +168,10 @@ export function MarketingAnalytics() {
               <div>
                 <p className="text-xs text-muted-foreground">{k.label}</p>
                 {convLoading ? <Skeleton className="h-7 w-16 mt-1" /> : (
-                  <AnimatedCounter value={typeof k.value === "number" ? k.value : Number(k.value) || 0} className="text-xl font-bold" />
+                  <>
+                    <AnimatedCounter value={typeof k.value === "number" ? k.value : Math.round(Number(k.value) || 0)} className="text-xl font-bold" />
+                    {'suffix' in k && k.suffix ? <span className="text-xl font-bold">{k.suffix}</span> : null}
+                  </>
                 )}
                 {"sub" in k && k.sub && <p className="text-[10px] text-muted-foreground">{toEnglishDigits(k.sub)} {isAr ? "مفقود" : "lost"}</p>}
               </div>

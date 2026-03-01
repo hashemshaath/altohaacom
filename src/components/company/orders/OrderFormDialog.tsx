@@ -10,6 +10,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Plus, Trash2 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { OrderFormData, OrderItem, ORDER_CATEGORIES } from "./orderTypes";
 
 interface OrderFormDialogProps {
@@ -146,7 +147,7 @@ export function OrderFormDialog({ open, onOpenChange, form, setForm, onSave, isP
                   <Input type="number" min={0} step={0.01} value={item.unit_price} onChange={(e) => updateItem(idx, "unit_price", Number(e.target.value))} />
                 </div>
                 <div className="col-span-1 text-sm font-medium text-end pt-1">
-                  {(item.quantity * item.unit_price).toLocaleString()}
+                  <AnimatedCounter value={Math.round(item.quantity * item.unit_price)} />
                 </div>
                 <div className="col-span-1">
                   <Button variant="ghost" size="icon" onClick={() => removeItem(idx)} disabled={form.items.length <= 1}>
@@ -158,7 +159,7 @@ export function OrderFormDialog({ open, onOpenChange, form, setForm, onSave, isP
 
             <div className="flex justify-end pt-2">
               <p className="text-sm font-semibold">
-                {isAr ? "الإجمالي:" : "Subtotal:"} {subtotal.toLocaleString()} {form.currency}
+                {isAr ? "الإجمالي:" : "Subtotal:"} <AnimatedCounter value={Math.round(subtotal)} className="inline" /> {form.currency}
               </p>
             </div>
           </div>

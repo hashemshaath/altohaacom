@@ -8,6 +8,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Calendar, Truck, FileText, AlertTriangle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 import { CompanyOrder, OrderItem, ORDER_CATEGORIES } from "./orderTypes";
 import { OrderStatusBadge } from "./OrderStatusBadge";
@@ -108,8 +109,8 @@ export function OrderDetailDialog({ open, onOpenChange, order, language, onSubmi
                       <TableCell className="font-medium">{item.name}</TableCell>
                       <TableCell className="text-center">{item.quantity}</TableCell>
                       <TableCell className="text-center">{item.unit || "-"}</TableCell>
-                      <TableCell className="text-end">{item.unit_price?.toLocaleString()}</TableCell>
-                      <TableCell className="text-end font-medium">{(item.quantity * item.unit_price).toLocaleString()}</TableCell>
+                      <TableCell className="text-end"><AnimatedCounter value={Math.round(item.unit_price || 0)} /></TableCell>
+                      <TableCell className="text-end font-medium"><AnimatedCounter value={Math.round(item.quantity * item.unit_price)} /></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -120,16 +121,16 @@ export function OrderDetailDialog({ open, onOpenChange, order, language, onSubmi
           {/* Totals */}
           <div className="flex flex-col items-end gap-1 text-sm">
             {(order.subtotal ?? 0) > 0 && (
-              <p><span className="text-muted-foreground">{isAr ? "المجموع الفرعي:" : "Subtotal:"}</span> {order.subtotal?.toLocaleString()} {order.currency}</p>
+              <p><span className="text-muted-foreground">{isAr ? "المجموع الفرعي:" : "Subtotal:"}</span> <AnimatedCounter value={Math.round(order.subtotal || 0)} className="inline" /> {order.currency}</p>
             )}
             {(order.tax_amount ?? 0) > 0 && (
-              <p><span className="text-muted-foreground">{isAr ? "الضريبة:" : "Tax:"}</span> {order.tax_amount?.toLocaleString()} {order.currency}</p>
+              <p><span className="text-muted-foreground">{isAr ? "الضريبة:" : "Tax:"}</span> <AnimatedCounter value={Math.round(order.tax_amount || 0)} className="inline" /> {order.currency}</p>
             )}
             {(order.discount_amount ?? 0) > 0 && (
-              <p><span className="text-muted-foreground">{isAr ? "الخصم:" : "Discount:"}</span> -{order.discount_amount?.toLocaleString()} {order.currency}</p>
+              <p><span className="text-muted-foreground">{isAr ? "الخصم:" : "Discount:"}</span> -<AnimatedCounter value={Math.round(order.discount_amount || 0)} className="inline" /> {order.currency}</p>
             )}
             <p className="text-base font-bold">
-              {isAr ? "الإجمالي:" : "Total:"} {order.total_amount?.toLocaleString() || "0"} {order.currency || "SAR"}
+              {isAr ? "الإجمالي:" : "Total:"} <AnimatedCounter value={Math.round(order.total_amount || 0)} className="inline" /> {order.currency || "SAR"}
             </p>
           </div>
 

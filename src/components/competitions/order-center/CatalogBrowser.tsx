@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Search, Package, Image as ImageIcon, Filter, Plus, ListPlus } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   competitionId: string;
@@ -184,7 +185,7 @@ export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
                           <Badge variant="secondary" className="text-[10px]">{item.unit}</Badge>
                           {item.estimated_cost && (
-                            <span className="text-[10px] text-muted-foreground">${toEnglishDigits(Number(item.estimated_cost).toLocaleString())}</span>
+                            <span className="text-[10px] text-muted-foreground">$<AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></span>
                           )}
                           {item.brand && (
                             <span className="text-[10px] text-muted-foreground">{item.brand}</span>
