@@ -150,7 +150,7 @@ export function ExhibitionOrganizerQuickActions({
           <div className="flex items-center gap-2">
             <Dialog open={announcementOpen} onOpenChange={setAnnouncementOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="h-8 gap-1.5 rounded-lg text-xs">
+                <Button size="sm" className="h-8 gap-1.5 rounded-xl text-xs">
                   <Send className="h-3 w-3" />
                   {t("Send Announcement", "إرسال إعلان")}
                 </Button>
@@ -166,7 +166,7 @@ export function ExhibitionOrganizerQuickActions({
                   <div className="space-y-1.5">
                     <Label className="text-xs font-medium">{t("Audience", "الجمهور المستهدف")}</Label>
                     <Select value={audience} onValueChange={(v) => setAudience(v as Audience)}>
-                      <SelectTrigger className="h-9 rounded-lg text-xs">
+                      <SelectTrigger className="h-9 rounded-xl text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -177,7 +177,7 @@ export function ExhibitionOrganizerQuickActions({
                     </Select>
                   </div>
 
-                  <div className="rounded-lg bg-muted/40 p-3 flex items-center gap-2">
+                  <div className="rounded-xl bg-muted/40 p-3 flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">
                       {audience === "all"
@@ -193,17 +193,17 @@ export function ExhibitionOrganizerQuickActions({
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder={t("Announcement title", "عنوان الإعلان")}
-                    className="rounded-lg"
+                    className="rounded-xl"
                   />
                   <Textarea
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     placeholder={t("Write your message...", "اكتب رسالتك...")}
-                    className="rounded-lg min-h-[100px]"
+                    className="rounded-xl min-h-[100px]"
                   />
 
                   <Button
-                    className="w-full rounded-lg"
+                    className="w-full rounded-xl"
                     onClick={() => sendAnnouncement.mutate()}
                     disabled={sendAnnouncement.isPending || !title.trim() || !body.trim()}
                   >

@@ -63,7 +63,7 @@ export function ExhibitionDayIndicator({ startDate, endDate, isAr }: Props) {
             return (
               <div
                 key={i}
-                className={`relative flex h-8 w-8 items-center justify-center rounded-lg text-[10px] font-bold transition-all ${
+                className={`relative flex h-8 w-8 items-center justify-center rounded-xl text-[10px] font-bold transition-all ${
                   isCurrent
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 ring-2 ring-primary/30 scale-110"
                     : isPassed

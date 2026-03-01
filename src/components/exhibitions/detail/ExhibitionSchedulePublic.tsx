@@ -104,7 +104,7 @@ export function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isA
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2.5 mb-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+        <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
           <CalendarClock className="h-3.5 w-3.5 text-primary" />
         </div>
         <h3 className="text-sm font-semibold">{t("Event Schedule", "جدول الفعاليات")}</h3>

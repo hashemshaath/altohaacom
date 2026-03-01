@@ -117,7 +117,7 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                   {auction.image_url && (
-                    <img src={auction.image_url} alt={auction.title} className="w-full sm:w-32 h-32 object-cover rounded-lg" />
+                    <img src={auction.image_url} alt={auction.title} className="w-full sm:w-32 h-32 object-cover rounded-xl" />
                   )}
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between">

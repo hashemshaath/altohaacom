@@ -201,7 +201,7 @@ export function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
           <div className="divide-y divide-border/40">
             {items.map((item: any) => (
               <div key={item.id} className="flex items-start gap-3 px-4 py-3 hover:bg-muted/20 transition-colors">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0 mt-0.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0 mt-0.5">
                   <Clock className="h-3.5 w-3.5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">

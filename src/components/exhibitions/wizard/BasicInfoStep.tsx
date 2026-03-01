@@ -32,7 +32,7 @@ export function ExhibitionBasicInfoStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Type className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "العنوان والنوع" : "Title & Type"}
@@ -95,7 +95,7 @@ export function ExhibitionBasicInfoStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <FileText className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "الوصف" : "Description"}
@@ -145,7 +145,7 @@ export function ExhibitionBasicInfoStep({ data, onChange }: Props) {
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
               <Image className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "صورة الغلاف" : "Cover Image"}

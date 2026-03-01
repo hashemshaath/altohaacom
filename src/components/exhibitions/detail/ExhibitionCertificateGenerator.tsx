@@ -111,7 +111,7 @@ export function ExhibitionCertificateGenerator({ exhibitionId, exhibitionTitle, 
       <CardHeader className="py-3 px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-4/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10">
               <Award className="h-4 w-4 text-chart-4" />
             </div>
             <div>

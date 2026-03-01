@@ -112,7 +112,7 @@ export function ExhibitionExhibitorRegistration({ exhibitionId, isAr }: Props) {
             <p><span className="font-medium text-foreground">{t("Size:", "الحجم:")}</span> {existingRequest.preferred_size}</p>
           </div>
           {existingRequest.admin_notes && (
-            <div className="mt-3 rounded-lg bg-muted/50 p-3">
+            <div className="mt-3 rounded-xl bg-muted/50 p-3">
               <p className="text-[10px] font-medium text-muted-foreground mb-1">{t("Organizer notes:", "ملاحظات المنظم:")}</p>
               <p className="text-xs">{existingRequest.admin_notes}</p>
             </div>

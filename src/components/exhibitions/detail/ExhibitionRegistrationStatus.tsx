@@ -74,7 +74,7 @@ export function ExhibitionRegistrationStatus({
 
         {/* Closing soon warning */}
         {isClosingSoon && (
-          <div className="flex items-center gap-2 rounded-lg bg-chart-4/10 p-2.5 text-xs font-medium text-chart-4">
+          <div className="flex items-center gap-2 rounded-xl bg-chart-4/10 p-2.5 text-xs font-medium text-chart-4">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             {isAr
               ? `يغلق التسجيل خلال ${daysUntilDeadline} ${daysUntilDeadline === 1 ? "يوم" : "أيام"}`

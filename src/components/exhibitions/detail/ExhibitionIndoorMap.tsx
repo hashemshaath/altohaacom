@@ -103,7 +103,7 @@ export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
       {/* Visual Map */}
       <Card>
         <CardContent className="p-4">
-          <div className="relative bg-muted/30 rounded-lg border border-border/50 overflow-hidden" style={{ height: 400 }}>
+          <div className="relative bg-muted/30 rounded-xl border border-border/50 overflow-hidden" style={{ height: 400 }}>
             {/* Grid background */}
             <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -201,7 +201,7 @@ export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
               </Button>
             </div>
             {route && (
-              <div className="flex items-center gap-3 p-2 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center gap-3 p-2 rounded-xl bg-primary/5 border border-primary/20">
                 <ChevronRight className="h-4 w-4 text-primary" />
                 <span className="text-sm">
                   {isAr ? `المسافة: ~${route.distance} وحدة • الوقت: ~${route.time} دقيقة` : `Distance: ~${route.distance}u • Walk: ~${route.time} min`}
@@ -219,7 +219,7 @@ export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
           return (
             <button
               key={wp.id}
-              className={`p-2 rounded-lg border text-start transition-all text-xs ${
+              className={`p-2 rounded-xl border text-start transition-all text-xs ${
                 selectedWaypoint === wp.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
               }`}
               onClick={() => setSelectedWaypoint(wp.id === selectedWaypoint ? null : wp.id)}
