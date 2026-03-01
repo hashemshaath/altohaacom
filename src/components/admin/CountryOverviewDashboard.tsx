@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { countryFlag } from "@/lib/countryFlag";
 import { Users, Trophy, Building2, Award, Globe } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface CountryStats {
   code: string;
@@ -104,7 +105,7 @@ export function CountryOverviewDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">{s.label}</p>
-                  <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+                  <p className={`text-2xl font-bold ${s.color}`}><AnimatedCounter value={s.value} /></p>
                 </div>
                 <s.icon className={`h-7 w-7 ${s.color}`} />
               </div>
@@ -154,17 +155,17 @@ export function CountryOverviewDashboard() {
                   <div className="grid grid-cols-3 gap-2">
                     <div className="rounded-xl bg-primary/5 p-2.5 text-center">
                       <Users className="h-3.5 w-3.5 mx-auto text-primary mb-1" />
-                      <p className="text-lg font-bold text-primary">{country.users}</p>
+                      <AnimatedCounter value={country.users} className="text-lg font-bold text-primary" />
                       <p className="text-[10px] text-muted-foreground">{isAr ? "مستخدم" : "Users"}</p>
                     </div>
                     <div className="rounded-xl bg-chart-3/5 p-2.5 text-center">
                       <Trophy className="h-3.5 w-3.5 mx-auto text-chart-3 mb-1" />
-                      <p className="text-lg font-bold text-chart-3">{country.competitions}</p>
+                      <AnimatedCounter value={country.competitions} className="text-lg font-bold text-chart-3" />
                       <p className="text-[10px] text-muted-foreground">{isAr ? "مسابقة" : "Comps"}</p>
                     </div>
                     <div className="rounded-xl bg-chart-4/5 p-2.5 text-center">
                       <Building2 className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1" />
-                      <p className="text-lg font-bold text-chart-4">{country.companies}</p>
+                      <AnimatedCounter value={country.companies} className="text-lg font-bold text-chart-4" />
                       <p className="text-[10px] text-muted-foreground">{isAr ? "شركة" : "Co."}</p>
                     </div>
                   </div>

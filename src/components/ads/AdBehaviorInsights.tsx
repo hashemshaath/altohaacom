@@ -9,6 +9,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { Brain, Target, Users, Activity, Clock, Sparkles } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = [
   "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -92,7 +93,7 @@ export function AdBehaviorInsights() {
                 <s.icon className="h-5 w-5 text-primary" />
                 <div>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
-                  <p className="text-lg font-bold">{s.value}</p>
+                  <p className="text-lg font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
                 </div>
               </div>
             ))}

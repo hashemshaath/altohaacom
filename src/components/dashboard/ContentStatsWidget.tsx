@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, FileText, Trophy, Users, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 
 interface DailyCount {
@@ -110,7 +111,7 @@ export function ContentStatsWidget() {
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{stat.label}</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-lg font-bold tabular-nums">{stat.value}</p>
+                  <AnimatedCounter value={stat.value} className="text-lg font-bold tabular-nums" />
                   {change !== 0 && (
                     <div className={cn("flex items-center gap-0.5 text-[10px] font-medium", trendColor)}>
                       <TrendIcon className="h-3 w-3" />

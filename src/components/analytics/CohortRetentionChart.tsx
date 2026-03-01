@@ -12,6 +12,7 @@ import {
   ResponsiveContainer, Legend, Cell, ComposedChart, Line,
 } from "recharts";
 import { StaggeredList } from "@/components/ui/staggered-list";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
 
 export function CohortRetentionChart() {
@@ -168,7 +169,7 @@ export function CohortRetentionChart() {
             <div className="rounded-xl bg-primary/10 p-2.5"><Users className="h-5 w-5 text-primary" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي المستخدمين" : "Total Users"}</p>
-              <p className="text-2xl font-bold">{toEnglishDigits(data.totalUsers.toLocaleString())}</p>
+              <AnimatedCounter value={data.totalUsers} className="text-2xl font-bold" />
             </div>
           </CardContent>
         </Card>
@@ -177,7 +178,7 @@ export function CohortRetentionChart() {
             <div className="rounded-xl bg-chart-2/10 p-2.5"><TrendingUp className="h-5 w-5 text-chart-2" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "تسجيلات هذا الشهر" : "This Month"}</p>
-              <p className="text-2xl font-bold">{data.thisMonthSignups}</p>
+              <AnimatedCounter value={data.thisMonthSignups} className="text-2xl font-bold" />
               <p className={`text-[10px] ${data.growthRate >= 0 ? "text-chart-2" : "text-destructive"}`}>
                 {data.growthRate >= 0 ? "+" : ""}{toEnglishDigits(data.growthRate.toFixed(1))}%
               </p>
@@ -189,7 +190,7 @@ export function CohortRetentionChart() {
             <div className="rounded-xl bg-chart-5/10 p-2.5"><UserMinus className="h-5 w-5 text-chart-5" /></div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "معدل الانسحاب" : "Avg Churn Rate"}</p>
-              <p className="text-2xl font-bold">{data.avgChurn}%</p>
+              <AnimatedCounter value={data.avgChurn} className="text-2xl font-bold" suffix="%" />
             </div>
           </CardContent>
         </Card>
@@ -200,7 +201,7 @@ export function CohortRetentionChart() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "تنبؤ الانسحاب القادم" : "Predicted Churn"}</p>
-              <p className="text-2xl font-bold">{data.predictedChurn}%</p>
+              <AnimatedCounter value={data.predictedChurn} className="text-2xl font-bold" suffix="%" />
               <p className="text-[10px] text-muted-foreground">{isAr ? "الشهر القادم" : "Next month"}</p>
             </div>
           </CardContent>

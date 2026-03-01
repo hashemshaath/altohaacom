@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Bell, Send, CheckCircle2, Eye, TrendingUp, Zap } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -95,7 +96,7 @@ export function NotificationDeliveryWidget() {
               <div className={`rounded-full p-2 ${kpi.bg}`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
               <div>
                 <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
-                <p className="text-lg font-bold">{kpi.value}</p>
+                <p className="text-lg font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
               </div>
             </CardContent>
           </Card>

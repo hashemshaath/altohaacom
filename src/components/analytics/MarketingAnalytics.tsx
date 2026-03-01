@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Megaphone, ShoppingCart, UserPlus, MousePointerClick, Eye,
   TrendingUp, ArrowDownToLine, Zap, Target, BarChart3, CalendarClock,
@@ -302,15 +303,15 @@ export function MarketingAnalytics() {
                 <div className="grid grid-cols-3 gap-3">
                   <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "مهجورة" : "Abandoned"}</p>
-                    <p className="text-lg font-bold text-chart-5">{cartData.abandoned}</p>
+                    <p className="text-lg font-bold text-chart-5"><AnimatedCounter value={cartData.abandoned} /></p>
                   </div>
                   <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "مسترجعة" : "Recovered"}</p>
-                    <p className="text-lg font-bold text-chart-2">{cartData.recovered}</p>
+                    <p className="text-lg font-bold text-chart-2"><AnimatedCounter value={cartData.recovered} /></p>
                   </div>
                   <div className="rounded-xl border p-3 text-center">
                     <p className="text-xs text-muted-foreground">{isAr ? "معدل الاسترداد" : "Recovery Rate"}</p>
-                    <p className="text-lg font-bold">{cartData.recoveryRate}%</p>
+                    <p className="text-lg font-bold"><AnimatedCounter value={cartData.recoveryRate} suffix="%" /></p>
                   </div>
                 </div>
                 <div className="rounded-xl border p-4 space-y-2">
