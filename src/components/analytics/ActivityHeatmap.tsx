@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Flame, Clock, Calendar } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -112,7 +113,7 @@ export function ActivityHeatmap() {
           <Card>
             <CardContent className="pt-4 pb-3">
               <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الأحداث" : "Total Events"}</p>
-              <p className="text-2xl font-bold mt-1">{heatmapData.total.toLocaleString()}</p>
+              <AnimatedCounter value={heatmapData.total} className="text-2xl font-bold mt-1" />
             </CardContent>
           </Card>
           <Card>

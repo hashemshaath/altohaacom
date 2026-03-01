@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, CheckCircle2, Calendar, ChefHat, Star, ArrowRight } from "lucide-react";
 import type { ChefsTableRequest, ChefsTableSession } from "@/hooks/useChefsTable";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
   requests: ChefsTableRequest[];
@@ -75,7 +76,7 @@ export function ChefsTablePipeline({ requests, sessions }: Props) {
                   <stage.icon className="h-4 w-4 shrink-0" />
                   <span className="text-[10px] font-bold truncate">{stage.label}</span>
                 </div>
-                <p className="text-2xl font-black tabular-nums">{stage.count}</p>
+                <AnimatedCounter value={stage.count} className="text-2xl font-black tabular-nums" />
                 <div className="mt-2 h-1 rounded-full bg-background/50 overflow-hidden">
                   <div
                     className={`h-full rounded-full ${stage.barColor} transition-all duration-500`}

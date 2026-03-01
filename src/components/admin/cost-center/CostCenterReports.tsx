@@ -13,6 +13,7 @@ import {
   Printer, Download, FileSpreadsheet, Trophy, ChefHat, Landmark,
   Calendar, FileText, BarChart3, DollarSign,
 } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 
 interface Props {
@@ -104,7 +105,7 @@ export function CostCenterReports({ isAr, estimates }: Props) {
             <CardContent className="p-4 text-center">
               <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
               <p className={`text-xl font-black tabular-nums mt-1 ${kpi.color}`}>
-                {kpi.value} <span className="text-xs text-muted-foreground">{kpi.suffix}</span>
+                {typeof kpi.value === "string" && !isNaN(Number(kpi.value.replace(/,/g, ""))) ? <AnimatedCounter value={Number(kpi.value.replace(/,/g, ""))} /> : kpi.value} <span className="text-xs text-muted-foreground">{kpi.suffix}</span>
               </p>
             </CardContent>
           </Card>

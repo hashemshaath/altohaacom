@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { DollarSign, ShoppingBag, TrendingUp, Package, CreditCard, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 
 export function OrdersRevenueWidget() {
@@ -102,7 +103,7 @@ export function OrdersRevenueWidget() {
               <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
               <span className="text-xs text-muted-foreground">{kpi.label}</span>
             </div>
-            <p className="text-2xl font-bold">{kpi.value} <span className="text-[10px] font-normal text-muted-foreground">SAR</span></p>
+            <p className="text-2xl font-bold">{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} className="text-2xl font-bold" /> <span className="text-[10px] font-normal text-muted-foreground">SAR</span></> : <>{kpi.value} <span className="text-[10px] font-normal text-muted-foreground">SAR</span></>}</p>
           </CardContent>
         </Card>
       ))}

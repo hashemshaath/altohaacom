@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Pencil, Calendar, MapPin, Trophy } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 
 interface Props {
@@ -144,9 +145,9 @@ export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <Card className="p-3 text-center"><p className="text-xl font-bold text-primary">{stats.total}</p><p className="text-xs text-muted-foreground">{isAr ? "إجمالي" : "Total Events"}</p></Card>
-        <Card className="p-3 text-center"><p className="text-xl font-bold text-primary">{stats.competitions}</p><p className="text-xs text-muted-foreground">{isAr ? "مسابقات" : "Competitions"}</p></Card>
-        <Card className="p-3 text-center"><p className="text-xl font-bold text-primary">{stats.countries}</p><p className="text-xs text-muted-foreground">{isAr ? "دول" : "Countries"}</p></Card>
+        <Card className="p-3 text-center"><AnimatedCounter value={stats.total} className="text-xl font-bold text-primary" /><p className="text-xs text-muted-foreground">{isAr ? "إجمالي" : "Total Events"}</p></Card>
+        <Card className="p-3 text-center"><AnimatedCounter value={stats.competitions} className="text-xl font-bold text-primary" /><p className="text-xs text-muted-foreground">{isAr ? "مسابقات" : "Competitions"}</p></Card>
+        <Card className="p-3 text-center"><AnimatedCounter value={stats.countries} className="text-xl font-bold text-primary" /><p className="text-xs text-muted-foreground">{isAr ? "دول" : "Countries"}</p></Card>
       </div>
 
       {showForm && (
