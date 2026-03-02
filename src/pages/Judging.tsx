@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen, Flag, BarChart3, ArrowLeftRight, LayoutDashboard, Scale } from "lucide-react";
 import { format } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import type { Database } from "@/integrations/supabase/types";
 import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
 import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGalleryPanel";
@@ -531,10 +532,14 @@ export default function Judging() {
                         <Trophy className="h-5 w-5 text-primary" />
                         {language === "ar" && comp.title_ar ? comp.title_ar : comp.title}
                       </CardTitle>
-                      <Badge variant="outline">{comp.status.replace("_", " ")}</Badge>
+                      <Badge variant="outline">{(() => {
+                        const sl: Record<string, string> = { open: "مفتوحة", closed: "مغلقة", completed: "مكتملة", judging: "جاري التحكيم", upcoming: "قادمة", ongoing: "جارية", registration_open: "التسجيل مفتوح" };
+                        const raw = comp.status.replace("_", " ");
+                        return language === "ar" ? (sl[comp.status] || raw) : raw;
+                      })()}</Badge>
                     </div>
                     <CardDescription>
-                      {format(new Date(comp.competition_start), "MMMM d")} - {format(new Date(comp.competition_end), "MMMM d, yyyy")}
+                      {format(new Date(comp.competition_start), language === "ar" ? "d MMMM" : "MMMM d", language === "ar" ? { locale: arLocale } : undefined)} - {format(new Date(comp.competition_end), language === "ar" ? "d MMMM yyyy" : "MMMM d, yyyy", language === "ar" ? { locale: arLocale } : undefined)}
                     </CardDescription>
                   </CardHeader>
                 </Card>

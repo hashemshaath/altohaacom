@@ -3,7 +3,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { Calendar, MapPin, Landmark, Tv, Timer, Building2, MoreHorizontal } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { localizeCity, localizeCountry } from "@/lib/localizeLocation";
 import { Link } from "react-router-dom";
 import { ICONS } from "./constants";
 import { getCountdown } from "./utils";
@@ -12,6 +14,7 @@ function EventTooltipContent({ event, isAr }: { event: GlobalEvent; isAr: boolea
   const label = GLOBAL_EVENT_LABELS[event.type];
   const colors = GLOBAL_EVENT_COLORS[event.type];
   const countdown = getCountdown(event.start_date, isAr);
+  const loc = isAr ? { locale: arLocale } : undefined;
   return (
     <div className="max-w-[300px] space-y-2">
       {event.cover_image_url && (
@@ -34,10 +37,10 @@ function EventTooltipContent({ event, isAr }: { event: GlobalEvent; isAr: boolea
       <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <Calendar className="h-2.5 w-2.5" />
-          {format(parseISO(event.start_date), "MMM d, yyyy")}
-          {event.end_date && ` – ${format(parseISO(event.end_date), "MMM d")}`}
+          {format(parseISO(event.start_date), isAr ? "d MMM yyyy" : "MMM d, yyyy", loc)}
+          {event.end_date && ` – ${format(parseISO(event.end_date), isAr ? "d MMM" : "MMM d", loc)}`}
         </span>
-        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{event.city}{event.country_code ? `, ${event.country_code}` : ""}</span>}
+        {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}{event.country_code ? `, ${localizeCountry(event.country_code, isAr)}` : ""}</span>}
         {event.venue && <span className="flex items-center gap-1"><Landmark className="h-2.5 w-2.5" />{isAr && event.venue_ar ? event.venue_ar : event.venue}</span>}
         {event.organizer_name && <span className="flex items-center gap-1"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
         {event.channel_name && <span className="flex items-center gap-1"><Tv className="h-2.5 w-2.5" />{event.channel_name}</span>}

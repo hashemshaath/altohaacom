@@ -23,6 +23,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { format } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 
 export default function CertificateVerify() {
   const { language } = useLanguage();
@@ -229,7 +230,7 @@ export default function CertificateVerify() {
                                   {language === "ar" ? "التاريخ" : "Date"}
                                 </p>
                                 <p className="font-semibold">
-                                  {format(new Date(certificate.event_date), "MMMM d, yyyy")}
+                                  {format(new Date(certificate.event_date), language === "ar" ? "d MMMM yyyy" : "MMMM d, yyyy", language === "ar" ? { locale: arLocale } : undefined)}
                                 </p>
                               </div>
                             </div>
@@ -243,7 +244,7 @@ export default function CertificateVerify() {
                                   {language === "ar" ? "تاريخ الإصدار" : "Issue Date"}
                                 </p>
                                 <p className="font-semibold">
-                                  {format(new Date(certificate.issued_at), "MMMM d, yyyy")}
+                                  {format(new Date(certificate.issued_at), language === "ar" ? "d MMMM yyyy" : "MMMM d, yyyy", language === "ar" ? { locale: arLocale } : undefined)}
                                 </p>
                               </div>
                             </div>

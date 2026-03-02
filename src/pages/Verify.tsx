@@ -22,6 +22,7 @@ import {
   UserPlus, ExternalLink,
 } from "lucide-react";
 import { format } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 
 type CategoryFilter = "all" | "account" | "certificate" | "invoice" | "competition" | "company" | "participant" | "judge" | "team_member" | "exhibition";
 
@@ -535,7 +536,7 @@ function CertificateVerificationDetails({ details }: { details: any }) {
           <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
           <div>
             <p className="text-sm text-muted-foreground">{isAr ? "تاريخ الإصدار" : "Issue Date"}</p>
-            <p className="font-semibold">{format(new Date(details.issued_at), "MMMM d, yyyy")}</p>
+            <p className="font-semibold">{format(new Date(details.issued_at), isAr ? "d MMMM yyyy" : "MMMM d, yyyy", isAr ? { locale: arLocale } : undefined)}</p>
           </div>
         </div>
       )}
@@ -611,7 +612,7 @@ function CompetitionVerificationDetails({ details, entityId }: { details: any; e
             <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
             <div>
               <p className="text-sm text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
-              <p className="font-semibold">{format(new Date(details.competition_start), "MMMM d, yyyy")}</p>
+              <p className="font-semibold">{format(new Date(details.competition_start), isAr ? "d MMMM yyyy" : "MMMM d, yyyy", isAr ? { locale: arLocale } : undefined)}</p>
             </div>
           </div>
         )}
