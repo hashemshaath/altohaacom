@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { localizeCity } from "@/lib/localizeLocation";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 
@@ -127,7 +128,7 @@ export function FeaturedChefs() {
               const nationalityEmoji = chef.show_nationality !== false && chef.nationality ? countryFlag(chef.nationality) : "";
               const countryObj = allCountries.find((c: any) => c.code === chef.country_code);
               const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : chef.country_code;
-              const locationParts = [chef.city, countryName].filter(Boolean).join(", ");
+              const locationParts = [localizeCity(chef.city || "", isAr), countryName].filter(Boolean).join(", ");
               const isTop3 = idx < 3 && chef.rank;
 
               return (

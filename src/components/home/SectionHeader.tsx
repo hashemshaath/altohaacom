@@ -2,7 +2,7 @@ import { memo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Database, Filter } from "lucide-react";
+import { ArrowRight, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 
@@ -58,15 +58,7 @@ export const SectionHeader = memo(function SectionHeader({
                 <Icon className="h-3 w-3" />
                 {badge}
               </Badge>
-              {dataSource && (
-                <Badge variant="outline" className="gap-1 text-[9px] font-normal text-muted-foreground border-dashed">
-                  <Database className="h-2.5 w-2.5" />
-                  {dataSource}
-                  {typeof itemCount === "number" && (
-                    <span className="font-bold tabular-nums ms-0.5">{itemCount}</span>
-                  )}
-                </Badge>
-              )}
+              {/* dataSource badge hidden – internal/dev info */}
             </div>
             <h2 className={cn(
               "text-xl font-bold sm:text-2xl text-foreground tracking-tight leading-tight",
