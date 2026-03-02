@@ -45,7 +45,6 @@ const CITY_AR: Record<string, string> = {
   baghdad: "بغداد",
   damascus: "دمشق",
   bahrain: "البحرين",
-  muscat: "مسقط",
   salalah: "صلالة",
   ajman: "عجمان",
   "ras al khaimah": "رأس الخيمة",
