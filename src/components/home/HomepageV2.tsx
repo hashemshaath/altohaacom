@@ -26,15 +26,9 @@ const V2Fallback = memo(() => (
 ));
 V2Fallback.displayName = "V2Fallback";
 
-/* ─── Data Source Badge ─── */
-function SourceBadge({ source, count }: { source: string; count?: number }) {
-  return (
-    <Badge variant="outline" className="gap-1 text-[9px] font-normal text-muted-foreground/60 border-dashed">
-      <Database className="h-2.5 w-2.5" />
-      {source}
-      {typeof count === "number" && <span className="font-bold tabular-nums ms-0.5">{count}</span>}
-    </Badge>
-  );
+/* ─── Data Source Badge (hidden – internal dev info) ─── */
+function SourceBadge(_props: { source: string; count?: number }) {
+  return null;
 }
 
 /* ─── Single stat item (hook-safe) ─── */
@@ -445,7 +439,7 @@ const ChefCard = memo(function ChefCard({ chef, i, isAr }: { chef: any; i: numbe
             {(chef.city || chef.country_code) && (
               <p className="text-[10px] sm:text-xs text-background/50 mt-0.5 flex items-center gap-1">
                 <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                {[chef.city, chef.country_code ? new Intl.DisplayNames([isAr ? "ar" : "en"], { type: "region" }).of(chef.country_code) : null].filter(Boolean).join(", ")}
+                {localizeLocation({ city: chef.city, countryCode: chef.country_code }, isAr)}
               </p>
             )}
           </div>

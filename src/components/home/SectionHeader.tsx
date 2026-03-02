@@ -58,15 +58,7 @@ export const SectionHeader = memo(function SectionHeader({
                 <Icon className="h-3 w-3" />
                 {badge}
               </Badge>
-              {dataSource && (
-                <Badge variant="outline" className="gap-1 text-[9px] font-normal text-muted-foreground border-dashed">
-                  <Database className="h-2.5 w-2.5" />
-                  {dataSource}
-                  {typeof itemCount === "number" && (
-                    <span className="font-bold tabular-nums ms-0.5">{itemCount}</span>
-                  )}
-                </Badge>
-              )}
+              {/* dataSource badge hidden – internal/dev info */}
             </div>
             <h2 className={cn(
               "text-xl font-bold sm:text-2xl text-foreground tracking-tight leading-tight",
