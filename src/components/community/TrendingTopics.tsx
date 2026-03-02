@@ -18,6 +18,7 @@ export function TrendingTopics() {
       const { data: posts } = await supabase
         .from("posts")
         .select("content, likes_count, comments_count, created_at")
+        .eq("moderation_status", "approved")
         .gte("created_at", weekAgo)
         .order("created_at", { ascending: false })
         .limit(500);
