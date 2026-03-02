@@ -18,6 +18,7 @@ import {
 } from "recharts";
 import { useRef, useMemo } from "react";
 import { format } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -168,7 +169,7 @@ export default function EvaluationReport() {
               {[
                 { icon: Building2, label: isAr ? "الشركة" : "Company", value: company ? (isAr && company.name_ar ? company.name_ar : company.name) : "—" },
                 { icon: MapPin, label: isAr ? "الموقع" : "Location", value: session.city || "—" },
-                { icon: Calendar, label: isAr ? "التاريخ" : "Date", value: session.session_date ? format(new Date(session.session_date), "MMM d, yyyy") : "—" },
+                { icon: Calendar, label: isAr ? "التاريخ" : "Date", value: session.session_date ? format(new Date(session.session_date), isAr ? "d MMM yyyy" : "MMM d, yyyy", isAr ? { locale: arLocale } : undefined) : "—" },
                 { icon: Users, label: isAr ? "المقيّمون" : "Evaluators", value: `${evaluations.length} ${isAr ? "طهاة" : "Chefs"}` },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
@@ -283,7 +284,7 @@ export default function EvaluationReport() {
             <div className="pt-4 border-t border-border/30 flex items-center justify-between text-[10px] text-muted-foreground">
               <span>Altoha Chef's Table — {isAr ? "تقرير معتمد" : "Verified Report"}</span>
               <span>#{session.session_number || session.report_token}</span>
-              <span>{session.report_published_at ? format(new Date(session.report_published_at), "MMMM d, yyyy") : ""}</span>
+              <span>{session.report_published_at ? format(new Date(session.report_published_at), isAr ? "d MMMM yyyy" : "MMMM d, yyyy", isAr ? { locale: arLocale } : undefined) : ""}</span>
             </div>
           </CardContent>
         </Card>

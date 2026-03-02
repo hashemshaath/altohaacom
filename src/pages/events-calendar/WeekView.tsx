@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { GLOBAL_EVENT_COLORS } from "@/hooks/useGlobalEventsCalendar";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { isSameDay, startOfWeek, endOfWeek, eachDayOfInterval, format } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { EventChip } from "./EventChip";
 import { getEventsForDay } from "./utils";
@@ -26,7 +27,7 @@ export function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[];
                   "text-center py-3 border-b border-border/20 transition-colors",
                   isToday ? "bg-primary/8" : "bg-muted/20"
                 )}>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">{format(day, "EEE")}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">{format(day, "EEE", isAr ? { locale: arLocale } : undefined)}</p>
                   <p className={cn(
                     "text-xl font-bold tabular-nums mt-0.5",
                     isToday ? "text-primary" : "text-foreground"

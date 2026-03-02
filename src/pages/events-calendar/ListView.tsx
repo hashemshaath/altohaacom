@@ -4,10 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { Calendar, MapPin, Landmark, Tv, Timer, Building2, ArrowRight, MoreHorizontal } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { ICONS, COUNTRIES } from "./constants";
+import { ICONS } from "./constants";
 import { getCountdown } from "./utils";
+import { localizeCity, localizeCountry } from "@/lib/localizeLocation";
 
 export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
   const now = new Date();
@@ -41,7 +43,7 @@ export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolea
           <div className="flex items-center gap-3 mb-3">
             <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
             <h3 className="text-sm font-bold text-foreground">
-              {format(new Date(monthKey + "-01"), "MMMM yyyy")}
+              {format(new Date(monthKey + "-01"), "MMMM yyyy", isAr ? { locale: arLocale } : undefined)}
             </h3>
             <Badge variant="outline" className="text-[10px] tabular-nums">{monthEvents.length}</Badge>
             <div className="flex-1 h-px bg-border/30" />
@@ -75,7 +77,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
   const label = GLOBAL_EVENT_LABELS[event.type];
   const IconComp = ICONS[label?.icon] || MoreHorizontal;
   const countdown = getCountdown(event.start_date, isAr);
-  const country = COUNTRIES.find(c => c.code === event.country_code);
+  const countryLabel = event.country_code ? localizeCountry(event.country_code, isAr) : "";
 
   const card = (
     <Card className={cn(
@@ -119,7 +121,10 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
                 <Badge variant="outline" className="text-[9px] px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>
               )}
               {event.status && event.status !== "upcoming" && (
-                <Badge variant="secondary" className="text-[9px] px-1 py-0 capitalize">{event.status}</Badge>
+                <Badge variant="secondary" className="text-[9px] px-1 py-0 capitalize">{(() => {
+                  const sl: Record<string, string> = { completed: "مكتملة", ongoing: "جارية", cancelled: "ملغاة", postponed: "مؤجلة", past: "سابقة" };
+                  return isAr ? (sl[event.status] || event.status) : event.status;
+                })()}</Badge>
               )}
             </div>
             <h4 className="text-sm sm:text-base font-bold line-clamp-2 group-hover:text-primary transition-colors">
@@ -128,13 +133,13 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1 font-medium">
                 <Calendar className="h-3 w-3 text-primary" />
-                {format(parseISO(event.start_date), "MMM d, yyyy")}
-                {event.end_date && ` – ${format(parseISO(event.end_date), "MMM d")}`}
+                {format(parseISO(event.start_date), isAr ? "d MMM yyyy" : "MMM d, yyyy", isAr ? { locale: arLocale } : undefined)}
+                {event.end_date && ` – ${format(parseISO(event.end_date), isAr ? "d MMM" : "MMM d", isAr ? { locale: arLocale } : undefined)}`}
               </span>
-              {(event.city || country) && (
+              {(event.city || countryLabel) && (
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  {event.city}{event.city && country ? ", " : ""}{country ? (isAr ? country.ar : country.en) : event.country_code}
+                  {localizeCity(event.city || "", isAr)}{event.city && countryLabel ? ", " : ""}{countryLabel}
                 </span>
               )}
               {event.venue && (

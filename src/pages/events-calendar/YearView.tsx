@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { format, startOfMonth, endOfMonth, isSameMonth, isSameDay, isBefore, eachDayOfInterval, getDay } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
 export function YearView({ events, currentDate, onNavigate, isAr }: {
@@ -34,7 +35,7 @@ export function YearView({ events, currentDate, onNavigate, isAr }: {
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-2">
-                <h4 className={cn("text-xs font-bold", isCurrentMonth && "text-primary")}>{format(monthDate, "MMMM")}</h4>
+                <h4 className={cn("text-xs font-bold", isCurrentMonth && "text-primary")}>{format(monthDate, "MMMM", isAr ? { locale: arLocale } : undefined)}</h4>
                 {monthEvents.length > 0 && (
                   <Badge variant={isCurrentMonth ? "default" : "outline"} className="text-[9px] h-4 px-1.5 tabular-nums">{monthEvents.length}</Badge>
                 )}

@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, X } from "lucide-react";
 import { format, isSameDay } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { DayEventCard } from "./DayView";
 
@@ -19,7 +20,7 @@ export function SelectedDayPanel({ day, events, onClose, isAr }: {
             <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
               <Calendar className="h-4 w-4 text-primary" />
             </div>
-            {format(day, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy")}
+            {format(day, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy", isAr ? { locale: arLocale } : undefined)}
           </h3>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] tabular-nums">

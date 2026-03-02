@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { Calendar, Clock, MapPin, Timer, Building2, ArrowRight, MoreHorizontal } from "lucide-react";
 import { format, parseISO, isSameDay } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { localizeCity } from "@/lib/localizeLocation";
 import { Link } from "react-router-dom";
 import { ICONS } from "./constants";
 import { getCountdown, getEventsForDay } from "./utils";
@@ -20,11 +22,11 @@ export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; 
           "flex h-16 w-16 flex-col items-center justify-center rounded-2xl shadow-sm",
           isToday ? "bg-primary text-primary-foreground" : "bg-muted"
         )}>
-          <span className="text-[10px] font-bold uppercase leading-none tracking-wider">{format(currentDate, "EEE")}</span>
+          <span className="text-[10px] font-bold uppercase leading-none tracking-wider">{format(currentDate, "EEE", isAr ? { locale: arLocale } : undefined)}</span>
           <span className="text-3xl font-bold leading-none tabular-nums mt-1">{currentDate.getDate()}</span>
         </div>
         <div>
-          <h3 className="text-lg font-bold">{format(currentDate, isAr ? "d MMMM yyyy" : "MMMM d, yyyy")}</h3>
+          <h3 className="text-lg font-bold">{format(currentDate, isAr ? "d MMMM yyyy" : "MMMM d, yyyy", isAr ? { locale: arLocale } : undefined)}</h3>
           <p className="text-sm text-muted-foreground">
             {dayEvents.length} {isAr ? "فعاليات مجدولة" : "events scheduled"}
             {isToday && <span className="text-primary font-semibold ms-1.5">• {isAr ? "اليوم" : "Today"}</span>}
@@ -87,10 +89,10 @@ export function DayEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolea
         <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground flex-wrap">
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            {event.all_day ? (isAr ? "طوال اليوم" : "All Day") : format(parseISO(event.start_date), "h:mm a")}
-            {event.end_date && ` – ${format(parseISO(event.end_date), "MMM d")}`}
+            {event.all_day ? (isAr ? "طوال اليوم" : "All Day") : format(parseISO(event.start_date), "h:mm a", isAr ? { locale: arLocale } : undefined)}
+            {event.end_date && ` – ${format(parseISO(event.end_date), isAr ? "d MMM" : "MMM d", isAr ? { locale: arLocale } : undefined)}`}
           </span>
-          {event.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{event.city}</span>}
+          {event.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{localizeCity(event.city, isAr)}</span>}
           {event.organizer_name && <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
         </div>
       </div>

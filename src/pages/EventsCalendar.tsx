@@ -14,6 +14,7 @@ import {
   X, Search, CalendarDays, SlidersHorizontal, Sparkles, MoreHorizontal,
 } from "lucide-react";
 import { format, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, startOfWeek, endOfWeek, addDays } from "date-fns";
+import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
 import { EVENT_TYPES, COUNTRIES, ICONS, type ViewMode } from "./events-calendar/constants";
@@ -96,14 +97,15 @@ export default function EventsCalendar() {
     return () => window.removeEventListener("keydown", handler);
   }, [navigatePrev, navigateNext, goToday]);
 
+  const loc = isAr ? { locale: arLocale } : undefined;
   const headerLabel = useMemo(() => {
-    if (viewMode === "day") return format(currentDate, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy");
+    if (viewMode === "day") return format(currentDate, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy", loc);
     if (viewMode === "week") {
       const ws = startOfWeek(currentDate, { weekStartsOn: 0 });
       const we = endOfWeek(currentDate, { weekStartsOn: 0 });
-      return `${format(ws, "MMM d")} – ${format(we, "MMM d, yyyy")}`;
+      return `${format(ws, "MMM d", loc)} – ${format(we, "MMM d, yyyy", loc)}`;
     }
-    if (viewMode === "month") return format(currentDate, "MMMM yyyy");
+    if (viewMode === "month") return format(currentDate, "MMMM yyyy", loc);
     if (viewMode === "year") return format(currentDate, "yyyy");
     return isAr ? "جميع الفعاليات" : "All Events";
   }, [currentDate, viewMode, isAr]);
