@@ -131,7 +131,7 @@ export function AdvancedSearchDialog({ open, onOpenChange, onNavigate }: Props) 
       }
       if (shouldFetch("posts")) {
         fetches.push(
-          supabase.from("posts").select("id, content, author_id, created_at").ilike("content", `%${debouncedQuery}%`).limit(8).then(r => ({ key: "posts", data: r.data || [] })) as Promise<any>
+          supabase.from("posts").select("id, content, author_id, created_at").ilike("content", `%${debouncedQuery}%`).eq("moderation_status", "approved").limit(8).then(r => ({ key: "posts", data: r.data || [] })) as Promise<any>
         );
       }
       if (shouldFetch("articles")) {

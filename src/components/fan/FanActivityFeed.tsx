@@ -35,6 +35,7 @@ export function FanActivityFeed() {
         .select("id, content, image_urls, created_at, author_id, replies_count, reposts_count, visibility")
         .in("author_id", followedIds)
         .eq("visibility", "public")
+        .eq("moderation_status", "approved")
         .order("created_at", { ascending: false })
         .limit(20);
 

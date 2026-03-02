@@ -30,7 +30,7 @@ export function FanWeeklyDigest() {
       // Parallel fetch
       const [postsRes, compsRes, exhsRes, newFollowersRes] = await Promise.all([
         followedIds.length > 0
-          ? supabase.from("posts").select("id, content, author_id, created_at").in("author_id", followedIds).gte("created_at", weekAgo).order("created_at", { ascending: false }).limit(5)
+          ? supabase.from("posts").select("id, content, author_id, created_at").in("author_id", followedIds).eq("moderation_status", "approved").gte("created_at", weekAgo).order("created_at", { ascending: false }).limit(5)
           : { data: [] },
         supabase.from("competitions").select("id, title, title_ar, start_date, slug, country_code").gte("start_date", new Date().toISOString()).order("start_date").limit(3),
         supabase.from("exhibitions").select("id, title, title_ar, start_date, slug, city").gte("start_date", new Date().toISOString()).order("start_date").limit(3),
