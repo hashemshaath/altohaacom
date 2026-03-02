@@ -165,7 +165,12 @@ export function EventsTab() {
         const postContent = `${note.trim()}\n\n${isAr ? "📅 سجلت في فعالية:" : "📅 Registered for event:"} ${event?.title || ""}\n\n#${isAr ? "فعالية" : "event"} #${isAr ? "تسجيل" : "registration"}`;
         const { data: insertedPost } = await supabase.from("posts").insert({ author_id: user.id, content: postContent }).select("id").single();
         if (insertedPost) {
-          try { await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` }, body: JSON.stringify({ post_id: insertedPost.id, content: postContent, user_id: user.id }) }); } catch {}
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.access_token) {
+              await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY }, body: JSON.stringify({ post_id: insertedPost.id, content: postContent, user_id: user.id }) });
+            }
+          } catch {}
         }
       }
     }
