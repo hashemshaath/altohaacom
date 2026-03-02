@@ -221,23 +221,27 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       // Trigger AI content moderation (async — post is already published with default 'approved')
       // If content violates rules, moderation will change status to 'rejected' or 'pending'
       try {
-        fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-            body: JSON.stringify({
-              post_id: insertedPost.id,
-              content: finalContent,
-              image_urls: uploadedUrls,
-              user_id: user.id,
-              language,
-            }),
-          }
-        );
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+                apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+              },
+              body: JSON.stringify({
+                post_id: insertedPost.id,
+                content: finalContent,
+                image_urls: uploadedUrls,
+                user_id: user.id,
+                language,
+              }),
+            }
+          );
+        }
       } catch {
         // Moderation failure is non-blocking — post stays approved
       }
