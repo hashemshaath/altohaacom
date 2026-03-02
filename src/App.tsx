@@ -69,12 +69,14 @@ function AppContent() {
       <Suspense fallback={null}><PullToRefreshIndicator {...ptr} /></Suspense>
       <ScrollToTop />
       <SkipToContent />
-      <Suspense fallback={null}>
-        <GoogleTrackingProvider />
-        <TrackingScriptsInjector />
-        <PageTracker />
-      </Suspense>
-      <Suspense fallback={null}><FloatingHelpButton /></Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <GoogleTrackingProvider />
+          <TrackingScriptsInjector />
+          <PageTracker />
+        </Suspense>
+      </ErrorBoundary>
+      <ErrorBoundary><Suspense fallback={null}><FloatingHelpButton /></Suspense></ErrorBoundary>
       <MaintenanceGuard>
       <ErrorBoundary>
       <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
@@ -127,7 +129,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ResourceHints />
-              <Suspense fallback={null}><RoutePrefetcher /></Suspense>
+              <ErrorBoundary><Suspense fallback={null}><RoutePrefetcher /></Suspense></ErrorBoundary>
               <AppContent />
             </BrowserRouter>
           </TooltipProvider>
