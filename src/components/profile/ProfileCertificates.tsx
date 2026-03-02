@@ -94,15 +94,25 @@ export function ProfileCertificates({ userId, isOwner = false }: ProfileCertific
       ? `🏆 حصلت على شهادة ${typeLabel}${achievement ? ` - ${achievement}` : ""}${eventName ? `\nفي ${eventName}` : ""}\n\n🔗 رمز التحقق: ${cert.verification_code}\n\n#شهادة #إنجاز #طهاة`
       : `🏆 Earned a ${typeLabel} certificate${achievement ? ` - ${achievement}` : ""}${eventName ? `\nat ${eventName}` : ""}\n\n🔗 Verification: ${cert.verification_code}\n\n#certificate #achievement #culinary`;
 
-    const { error } = await supabase.from("posts").insert({
+    const { data: insertedPost, error } = await supabase.from("posts").insert({
       author_id: user.id,
       content,
       visibility: "public",
-    });
+    }).select("id").single();
 
-    if (!error) {
+    if (!error && insertedPost) {
       toast({ title: isAr ? "تمت مشاركة الشهادة ✓" : "Certificate shared ✓" });
-    } else {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+            body: JSON.stringify({ post_id: insertedPost.id, content, user_id: user.id }),
+          });
+        }
+      } catch {}
+    } else if (error) {
       toast({ variant: "destructive", title: "Error", description: error.message });
     }
   };
