@@ -11,6 +11,7 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { cn } from "@/lib/utils";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { localizeCity } from "@/lib/localizeLocation";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { SectionHeader } from "./SectionHeader";
@@ -96,7 +97,7 @@ export function NewlyJoinedUsers() {
             const nationalityEmoji = user.show_nationality !== false && user.nationality ? countryFlag(user.nationality) : "";
             const countryObj = allCountries.find((c) => c.code === user.country_code);
             const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : user.country_code;
-            const locationParts = [user.city, countryName].filter(Boolean).join(", ");
+            const locationParts = [localizeCity(user.city || "", isAr), countryName].filter(Boolean).join(", ");
 
             return (
               <Link key={user.id} to={user.username ? `/${user.username}` : `/profile/${user.user_id}`} className="group block">
