@@ -97,11 +97,15 @@ function AppContent() {
         <MobileBottomNav />
         <ScrollProgress />
         <BackToTop />
-        <SmartInstallBanner />
-        <IOSInstallGuide />
-        <OfflineBanner />
-        <UpdatePrompt />
       </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <SmartInstallBanner />
+          <IOSInstallGuide />
+          <OfflineBanner />
+          <UpdatePrompt />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }
