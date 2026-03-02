@@ -10,10 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { LiveChatWidget } from "@/components/support/LiveChatWidget";
 
-export function FloatingHelpButton() {
+export const FloatingHelpButton = forwardRef<HTMLDivElement>(function FloatingHelpButton(_props, _ref) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -50,4 +50,4 @@ export function FloatingHelpButton() {
       {user && <LiveChatWidget />}
     </>
   );
-}
+});

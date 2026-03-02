@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function LiveChatWidget() {
+export const LiveChatWidget = forwardRef<HTMLDivElement>(function LiveChatWidget(_props, _ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -281,4 +281,4 @@ export function LiveChatWidget() {
       )}
     </>
   );
-}
+});

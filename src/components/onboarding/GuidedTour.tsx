@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -79,7 +79,7 @@ const FAN_STEPS: TourStep[] = [
   },
 ];
 
-export function GuidedTour() {
+export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props, _ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
@@ -186,4 +186,4 @@ export function GuidedTour() {
       </Card>
     </>
   );
-}
+});
