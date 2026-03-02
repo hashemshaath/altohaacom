@@ -1,4 +1,4 @@
-import { lazy, Suspense, memo, useEffect, useMemo, useCallback } from "react";
+import { lazy, Suspense, memo, useEffect, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,7 +25,7 @@ const HomeEventsCalendarPreview = lazy(() => import("@/components/home/HomeEvent
 const RegionalEvents = lazy(() => import("@/components/home/RegionalEvents").then(m => ({ default: m.RegionalEvents })));
 const HomeArticles = lazy(() => import("@/components/home/HomeArticles").then(m => ({ default: m.HomeArticles })));
 const PlatformFeatures = lazy(() => import("@/components/home/PlatformFeatures").then(m => ({ default: m.PlatformFeatures })));
-const SponsorshipOpportunities = lazy(() => import("@/components/home/SponsorshipOpportunities").then(m => ({ default: memo(m.SponsorshipOpportunities) })));
+const SponsorshipOpportunities = lazy(() => import("@/components/home/SponsorshipOpportunities").then(m => ({ default: m.SponsorshipOpportunities })));
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const PartnersLogos = lazy(() => import("@/components/home/PartnersLogos").then(m => ({ default: m.PartnersLogos })));
 const SponsorCarousel = lazy(() => import("@/components/home/SponsorCarousel").then(m => ({ default: m.SponsorCarousel })));
