@@ -355,8 +355,20 @@ export function EventsTab() {
                           const content = isAr
                             ? `📅 فعالية: ${event.title}${event.description ? `\n${event.description}` : ""}${event.event_date ? `\n🗓 ${toEnglishDigits(format(new Date(event.event_date), "MMM d, yyyy HH:mm"))}` : ""}${event.location ? `\n📍 ${event.location}` : ""}\n\n#فعالية #مجتمع_الطهاة`
                             : `📅 Event: ${event.title}${event.description ? `\n${event.description}` : ""}${event.event_date ? `\n🗓 ${toEnglishDigits(format(new Date(event.event_date), "MMM d, yyyy HH:mm"))}` : ""}${event.location ? `\n📍 ${event.location}` : ""}\n\n#event #culinary_community`;
-                          const { error } = await supabase.from("posts").insert({ author_id: user.id, content, visibility: "public" });
-                          if (!error) toast({ title: isAr ? "تمت المشاركة ✓" : "Shared ✓" });
+                          const { data: insertedPost, error } = await supabase.from("posts").insert({ author_id: user.id, content, visibility: "public" }).select("id").single();
+                          if (!error && insertedPost) {
+                            toast({ title: isAr ? "تمت المشاركة ✓" : "Shared ✓" });
+                            try {
+                              const { data: { session } } = await supabase.auth.getSession();
+                              if (session?.access_token) {
+                                fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+                                  body: JSON.stringify({ post_id: insertedPost.id, content, user_id: user.id }),
+                                });
+                              }
+                            } catch {}
+                          }
                         }}
                       >
                         <Share2 className="h-3.5 w-3.5" />
