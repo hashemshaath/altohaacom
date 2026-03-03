@@ -27,7 +27,6 @@ export default function StatsPartnersSection() {
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
   });
 
   const { data: entities = [] } = useQuery({
@@ -44,7 +43,6 @@ export default function StatsPartnersSection() {
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
   });
 
   const allLogos = [

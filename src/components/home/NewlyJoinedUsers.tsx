@@ -46,7 +46,6 @@ export function NewlyJoinedUsers() {
       return data || [];
     },
     staleTime: 1000 * 60 * 3,
-    refetchOnWindowFocus: false,
   });
 
   const countries = useMemo(() => {

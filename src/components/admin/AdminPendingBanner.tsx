@@ -74,7 +74,6 @@ export default function AdminPendingBanner() {
     },
     staleTime: 1000 * 60 * 5,
     refetchInterval: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
   });
 
   if (!items || items.length === 0) return null;

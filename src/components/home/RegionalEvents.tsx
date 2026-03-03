@@ -40,7 +40,6 @@ export function RegionalEvents() {
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
   });
 
   const saudiCount = useMemo(() => allComps.filter((c: any) => c.country_code?.toUpperCase() === "SA").length, [allComps]);

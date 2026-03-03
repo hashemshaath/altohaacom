@@ -33,7 +33,6 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
       return (data as any[]) || [];
     },
     staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
   });
 
   const next = useCallback(() => setCurrent(c => (c + 1) % Math.max(testimonials.length, 1)), [testimonials.length]);

@@ -51,7 +51,6 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
   });
 
   const types = useMemo(() => {

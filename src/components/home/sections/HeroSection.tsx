@@ -39,7 +39,6 @@ export function HeroSection() {
       return (data || []) as HeroSlide[];
     },
     staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
   });
 
   // Preload the first slide image for faster LCP
