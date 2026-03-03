@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
 import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";
 import { deriveExhibitionStatus, EXHIBITION_STATUS_LEGEND } from "@/lib/exhibitionStatus";
@@ -135,7 +136,7 @@ export default function ExhibitionsAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibitions")
-        .select("*")
+        .select("id, title, title_ar, slug, type, status, start_date, end_date, city, country, venue, venue_ar, organizer_name, organizer_name_ar, organizer_email, organizer_phone, organizer_website, organizer_logo_url, organizer_type, organizer_entity_id, organizer_company_id, organizer_user_id, cover_image_url, logo_url, is_virtual, is_free, is_featured, view_count, max_attendees, ticket_price, ticket_price_ar, registration_url, website_url, map_url, virtual_link, description, description_ar, tags, target_audience, includes_competitions, includes_training, includes_seminars, series_id, edition_year, exhibition_number, created_at, created_by, currency, registration_deadline")
         .order("start_date", { ascending: false });
       if (error) throw error;
       return data;
@@ -412,25 +413,7 @@ export default function ExhibitionsAdmin() {
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {t("Bulk Import", "استيراد جماعي")}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => {
-              if (!filteredExhibitions?.length) return;
-              const headers = ["Number", "Title", "Type", "Status", "Start Date", "End Date", "City", "Country", "Organizer", "Is Virtual", "Is Free", "Views"];
-              const rows = filteredExhibitions.map(ex => [
-                (ex as any).exhibition_number || "", ex.title, ex.type, ex.status,
-                format(new Date(ex.start_date), "yyyy-MM-dd"),
-                format(new Date(ex.end_date), "yyyy-MM-dd"),
-                ex.city || "", ex.country || "", ex.organizer_name || "",
-                ex.is_virtual ? "Yes" : "No", ex.is_free ? "Yes" : "No",
-                ex.view_count || 0,
-              ]);
-              const csv = [headers.join(","), ...rows.map(r => r.map(v => `"${v}"`).join(","))].join("\n");
-              const blob = new Blob([csv], { type: "text/csv" });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url; a.download = `exhibitions-${format(new Date(), "yyyyMMdd")}.csv`; a.click();
-              URL.revokeObjectURL(url);
-              toast({ title: t("Exported " + filteredExhibitions.length + " events", "تم تصدير " + filteredExhibitions.length + " فعالية") });
-            }}>
+            <Button variant="outline" size="sm" onClick={() => exportExhibitions(filteredExhibitions || [])}>
               <Download className="me-2 h-4 w-4" />
               {t("Export CSV", "تصدير CSV")}
             </Button>
@@ -1070,9 +1053,17 @@ export default function ExhibitionsAdmin() {
                 ))
               ) : filteredExhibitions?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-12">
-                    <Landmark className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
-                    <p className="text-sm text-muted-foreground">{t("No events found", "لا توجد فعاليات")}</p>
+                  <TableCell colSpan={9} className="p-0">
+                    <AdminEmptyState
+                      icon={Landmark}
+                      title="No events found"
+                      titleAr="لا توجد فعاليات"
+                      description="Try adjusting your filters or create a new event"
+                      descriptionAr="جرب تعديل الفلاتر أو أنشئ فعالية جديدة"
+                      actionLabel="Add Event"
+                      actionLabelAr="إضافة فعالية"
+                      onAction={() => { resetForm(); setShowForm(true); }}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
