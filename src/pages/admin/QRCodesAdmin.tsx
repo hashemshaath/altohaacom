@@ -177,11 +177,16 @@ export default function QRCodesAdmin() {
         <CardContent className="p-0">
           {isLoading ? (
             <div className="space-y-2 p-3 sm:p-4">
-              {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
-            </div>
-          ) : filtered?.length === 0 ? (
-            <div className="py-8 text-center text-muted-foreground text-sm">
-              {isAr ? "لا توجد رموز" : "No QR codes found"}
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-9 w-9 rounded-xl shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <Skeleton className="h-3.5 w-24 rounded-xl" />
+                    <Skeleton className="h-2.5 w-16 rounded-xl" />
+                  </div>
+                  <Skeleton className="h-5 w-14 rounded-full" />
+                </div>
+              ))}
             </div>
           ) : (
             <>
