@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Section components
 import { HeroSection } from "@/components/home/sections/HeroSection";
 
+const StatsBar = lazy(() => import("@/components/home/sections/StatsBar"));
 const FeaturedChefsSection = lazy(() => import("@/components/home/sections/FeaturedChefsSection"));
 const CompetitionsSection = lazy(() => import("@/components/home/sections/CompetitionsSection"));
 const ArticlesSection = lazy(() => import("@/components/home/sections/ArticlesSection"));
@@ -34,6 +35,7 @@ const SectionFallback = () => (
 
 /* Map section_key → lazy component */
 const SECTION_MAP: Record<string, React.LazyExoticComponent<any>> = {
+  stats: StatsBar,
   featured_chefs: FeaturedChefsSection,
   events_by_category: CompetitionsSection,
   articles: ArticlesSection,
@@ -52,19 +54,34 @@ const Index = () => {
   useEffect(() => { prefetchCommonRoutes(); }, []);
   const { data: sections = [] } = useHomepageSections();
 
+  /* Build dynamic sections following DB sort_order */
   const dynamicSections = useMemo(() => {
-    const keys = ["featured_chefs", "events_by_category", "articles", "partners", "newsletter"];
-    return keys
-      .filter(key => isVisible(sections, key))
-      .map(key => {
-        const Comp = SECTION_MAP[key];
-        if (!Comp) return null;
-        return (
-          <Suspense key={key} fallback={<SectionFallback />}>
-            <Comp />
-          </Suspense>
-        );
-      });
+    const supportedKeys = Object.keys(SECTION_MAP);
+
+    if (sections.length > 0) {
+      return sections
+        .filter(s => s.is_visible && supportedKeys.includes(s.section_key))
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map(s => {
+          const Comp = SECTION_MAP[s.section_key];
+          if (!Comp) return null;
+          return (
+            <Suspense key={s.section_key} fallback={<SectionFallback />}>
+              <Comp />
+            </Suspense>
+          );
+        });
+    }
+
+    // Fallback order when no sections configured
+    return supportedKeys.map(key => {
+      const Comp = SECTION_MAP[key];
+      return (
+        <Suspense key={key} fallback={<SectionFallback />}>
+          <Comp />
+        </Suspense>
+      );
+    });
   }, [sections]);
 
   return (
@@ -94,33 +111,13 @@ const Index = () => {
         {/* Hero */}
         {isVisible(sections, "hero") && <HeroSection />}
 
-        {/* Stats Bar */}
-        {isVisible(sections, "stats") && (
-          <Suspense fallback={null}>
-            <StatsBar />
-          </Suspense>
-        )}
-
         {/* Dynamic Sections */}
         {dynamicSections}
-
-        {/* Fallback if no sections configured */}
-        {sections.length === 0 && (
-          <>
-            <Suspense fallback={<SectionFallback />}><FeaturedChefsSection /></Suspense>
-            <Suspense fallback={<SectionFallback />}><CompetitionsSection /></Suspense>
-            <Suspense fallback={<SectionFallback />}><ArticlesSection /></Suspense>
-            <Suspense fallback={<SectionFallback />}><StatsPartnersSection /></Suspense>
-          </>
-        )}
       </main>
 
       <Footer />
     </div>
   );
 };
-
-/* Minimal stats bar */
-const StatsBar = lazy(() => import("@/components/home/sections/StatsBar"));
 
 export default Index;
