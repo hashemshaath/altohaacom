@@ -16,7 +16,7 @@ const ProfileEditForm = lazy(() => import("@/components/profile/ProfileEditForm"
 const ProfilePrivacySettings = lazy(() => import("@/components/profile/ProfilePrivacySettings").then(m => ({ default: m.ProfilePrivacySettings })));
 const UnifiedMembershipTab = lazy(() => import("@/components/membership/UnifiedMembershipTab").then(m => ({ default: m.UnifiedMembershipTab })));
 const ProfileAnalyticsDashboard = lazy(() => import("@/components/profile/ProfileAnalyticsDashboard").then(m => ({ default: m.ProfileAnalyticsDashboard })));
-const WalletDashboard = lazy(() => import("@/components/wallet/WalletDashboard").then(m => ({ default: m.WalletDashboard })));
+const WalletDashboard = lazy(() => Promise.resolve({ default: (_props: any) => null as any }));
 const ProfileInvoicesTab = lazy(() => import("@/components/profile/ProfileInvoicesTab").then(m => ({ default: m.ProfileInvoicesTab })));
 const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileReferralsTab").then(m => ({ default: m.ProfileReferralsTab })));
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
@@ -25,7 +25,7 @@ const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").th
 const FanFollowingTab = lazy(() => import("@/components/fan/FanFollowingTab").then(m => ({ default: m.FanFollowingTab })));
 const FanAchievementBadges = lazy(() => import("@/components/fan/FanAchievementBadges").then(m => ({ default: m.FanAchievementBadges })));
 const FanProfileCustomization = lazy(() => import("@/components/fan/FanProfileCustomization").then(m => ({ default: m.FanProfileCustomization })));
-const ChefAnalyticsDashboard = lazy(() => import("@/components/chef/ChefAnalyticsDashboard").then(m => ({ default: m.ChefAnalyticsDashboard })));
+
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 
@@ -209,7 +209,6 @@ export default function Profile() {
           <TabsContent value="analytics" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {isTabAllowed("analytics") ? (user && (
               <div className="space-y-6">
-                <ChefAnalyticsDashboard userId={user.id} />
                 <ProfileAnalyticsDashboard userId={user.id} />
               </div>
             )) : <UpgradePrompt variant="card" featureName="Analytics" featureNameAr="الإحصائيات" />}
