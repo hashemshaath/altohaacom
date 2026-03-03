@@ -7,7 +7,8 @@ import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./notifications/NotificationBell";
-import { QuickSearch } from "./search/QuickSearch";
+import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { DesktopNav } from "./header/DesktopNav";
 import { UserDropdown } from "./header/UserDropdown";
 import { MobileMenu } from "./header/MobileMenu";
@@ -109,7 +110,9 @@ export function Header() {
         <div className="flex items-center gap-0.5 sm:gap-1 ms-auto">
           {headerCfg.showSearch !== false && (
             <div className="hidden md:block">
-              <QuickSearch />
+              <Button variant="ghost" size="icon" asChild className="rounded-full">
+                <Link to="/search"><Search className="h-4 w-4" /></Link>
+              </Button>
             </div>
           )}
           {user && headerCfg.showNotifications !== false && <NotificationBell />}
