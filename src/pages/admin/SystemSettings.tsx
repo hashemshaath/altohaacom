@@ -257,7 +257,7 @@ export default function SystemSettings() {
                       </div>
                     </div>
                     <Button size="sm" variant="outline" className="gap-1.5 shrink-0" asChild>
-                      <Link to="/admin/homepage-sections">
+                      <Link to="/admin/design/homepage">
                         {isAr ? "إدارة" : "Manage"}
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Link>

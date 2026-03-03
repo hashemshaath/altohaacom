@@ -52,7 +52,7 @@ const SecurityAdmin = lazy(() => import("@/pages/admin/SecurityAdmin"));
 const OrganizersAdmin = lazy(() => import("@/pages/admin/OrganizersAdmin"));
 const DesignIdentityAdmin = lazy(() => import("@/pages/admin/DesignIdentityAdmin"));
 const HeroSlidesAdmin = lazy(() => import("@/pages/admin/HeroSlidesAdmin"));
-const HomepageSectionsAdmin = lazy(() => import("@/pages/admin/HomepageSectionsAdmin"));
+
 const BrandIdentityPage = lazy(() => import("@/pages/admin/design/BrandIdentityPage"));
 const BrandingPage = lazy(() => import("@/pages/admin/design/BrandingPage"));
 const HeaderFooterPage = lazy(() => import("@/pages/admin/design/HeaderFooterPage"));
@@ -118,7 +118,7 @@ export const adminRoutes = (
     <Route path="design" element={<DesignIdentityAdmin />} />
     <Route path="design/brand-identity" element={<BrandIdentityPage />} />
     <Route path="hero-slides" element={<HeroSlidesAdmin />} />
-    <Route path="homepage-sections" element={<HomepageSectionsAdmin />} />
+    
     <Route path="design/branding" element={<BrandingPage />} />
     <Route path="design/header-footer" element={<HeaderFooterPage />} />
     <Route path="design/homepage" element={<HomepageDesignPage />} />
