@@ -55,6 +55,7 @@ export function HomeProSuppliers() {
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   const categories = useMemo(() => {
@@ -111,7 +112,7 @@ export function HomeProSuppliers() {
               <Card
                 key={s.id}
                 interactive
-                className="cursor-pointer overflow-hidden border-border/40"
+                className="cursor-pointer overflow-hidden border-border/40 rounded-2xl"
                 onClick={() => navigate(`/pro-suppliers/${s.id}`)}
               >
                 <CardContent className="p-3 sm:p-4 text-center space-y-2">

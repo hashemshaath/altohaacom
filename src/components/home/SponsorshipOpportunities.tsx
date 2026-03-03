@@ -64,6 +64,7 @@ export function SponsorshipOpportunities() {
       }));
     },
     staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   if (opportunities.length === 0) return null;
@@ -121,7 +122,7 @@ export function SponsorshipOpportunities() {
               const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
               return (
                 <Link key={comp.id} to={`/competitions/${comp.id}`} className="group block">
-                  <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+                  <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
                     <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                       {comp.cover_image_url ? (
                         <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
