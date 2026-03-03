@@ -55,50 +55,57 @@ export function BilingualField({
   const Field = multiline ? Textarea : Input;
   const inputCls = cn("text-xs border-border/40 bg-background/60 focus:bg-background", !multiline && "h-8");
 
+  if (multiline) {
+    return (
+      <div className="rounded-xl border border-border/50 bg-muted/10 overflow-hidden">
+        <div className="p-2.5 space-y-1">
+          <div className="flex items-center justify-between">
+            <Label className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+              <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[8px] font-bold text-primary">ع</span>
+              {labelAr}
+            </Label>
+            {valueAr?.trim() && <TranslateBtn loading={translatingToEn} onClick={() => translate("ar")} target="EN" />}
+          </div>
+          <Field value={valueAr} onChange={(e: any) => onChangeAr(e.target.value)} placeholder={placeholderAr || "...العربية"} className={inputCls} dir="rtl" rows={rows} />
+        </div>
+        <div className="border-t border-dashed border-border/30" />
+        <div className="p-2.5 space-y-1">
+          <div className="flex items-center justify-between">
+            <Label className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+              <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[8px] font-bold text-muted-foreground">EN</span>
+              {label}
+            </Label>
+            {valueEn?.trim() && <TranslateBtn loading={translatingToAr} onClick={() => translate("en")} target="عربي" />}
+          </div>
+          <Field value={valueEn} onChange={(e: any) => onChangeEn(e.target.value)} placeholder={placeholderEn || "English..."} className={inputCls} dir="ltr" rows={rows} />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-xl border border-border/50 bg-muted/10 overflow-hidden">
-      {/* Arabic — Primary */}
-      <div className="p-3 space-y-1.5">
+    <div className="grid grid-cols-2 gap-1.5">
+      {/* Arabic */}
+      <div className="space-y-1">
         <div className="flex items-center justify-between">
           <Label className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
             <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[8px] font-bold text-primary">ع</span>
             {labelAr}
           </Label>
-          {valueAr?.trim() && (
-            <TranslateBtn loading={translatingToEn} onClick={() => translate("ar")} target="EN" />
-          )}
+          {valueAr?.trim() && <TranslateBtn loading={translatingToEn} onClick={() => translate("ar")} target="EN" />}
         </div>
-        <Field
-          value={valueAr}
-          onChange={(e: any) => onChangeAr(e.target.value)}
-          placeholder={placeholderAr || "...العربية"}
-          className={inputCls}
-          dir="rtl"
-          {...(multiline ? { rows } : {})}
-        />
+        <Input value={valueAr} onChange={(e) => onChangeAr(e.target.value)} placeholder={placeholderAr || "...العربية"} className={inputCls} dir="rtl" />
       </div>
-
-      <div className="border-t border-dashed border-border/30" />
-
-      {/* English — Secondary */}
-      <div className="p-3 space-y-1.5">
+      {/* English */}
+      <div className="space-y-1">
         <div className="flex items-center justify-between">
           <Label className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
             <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[8px] font-bold text-muted-foreground">EN</span>
             {label}
           </Label>
-          {valueEn?.trim() && (
-            <TranslateBtn loading={translatingToAr} onClick={() => translate("en")} target="عربي" />
-          )}
+          {valueEn?.trim() && <TranslateBtn loading={translatingToAr} onClick={() => translate("en")} target="عربي" />}
         </div>
-        <Field
-          value={valueEn}
-          onChange={(e: any) => onChangeEn(e.target.value)}
-          placeholder={placeholderEn || "English..."}
-          className={inputCls}
-          dir="ltr"
-          {...(multiline ? { rows } : {})}
-        />
+        <Input value={valueEn} onChange={(e) => onChangeEn(e.target.value)} placeholder={placeholderEn || "English..."} className={inputCls} dir="ltr" />
       </div>
     </div>
   );
