@@ -217,7 +217,6 @@ export default function AdminDashboard() {
       };
     },
     staleTime: 1000 * 60 * 3,
-    refetchOnWindowFocus: false,
   });
 
   // ── Today's activity ──
@@ -241,7 +240,6 @@ export default function AdminDashboard() {
       };
     },
     staleTime: 1000 * 60 * 3,
-    refetchOnWindowFocus: false,
   });
 
   // ── Optimized 7-day sparkline: fetch date ranges for boundary counts only ──
@@ -290,7 +288,6 @@ export default function AdminDashboard() {
       });
     },
     staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
   });
 
   const sparklineKeys: Record<string, string> = {

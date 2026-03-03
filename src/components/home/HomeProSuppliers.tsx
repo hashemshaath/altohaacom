@@ -55,7 +55,6 @@ export function HomeProSuppliers() {
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
   });
 
   const categories = useMemo(() => {

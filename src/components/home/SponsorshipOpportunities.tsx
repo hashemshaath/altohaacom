@@ -64,7 +64,6 @@ export function SponsorshipOpportunities() {
       }));
     },
     staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
   });
 
   if (opportunities.length === 0) return null;
