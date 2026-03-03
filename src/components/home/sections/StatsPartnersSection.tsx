@@ -54,8 +54,8 @@ export default function StatsPartnersSection() {
   if (allLogos.length === 0) return null;
 
   return (
-    <section dir={isAr ? "rtl" : "ltr"} className="bg-muted/10">
-      <div className="container py-2">
+    <section dir={isAr ? "rtl" : "ltr"}>
+      <div className="container">
         {showTitle && (
           <div className="text-center mb-10">
             <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
