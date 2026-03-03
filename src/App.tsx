@@ -66,7 +66,7 @@ function AppContent() {
   useEnhancedSEO(language);
   return (
     <>
-      <Suspense fallback={null}><PullToRefreshIndicator {...ptr} /></Suspense>
+      <ErrorBoundary><Suspense fallback={null}><PullToRefreshIndicator {...ptr} /></Suspense></ErrorBoundary>
       <ScrollToTop />
       <SkipToContent />
       <ErrorBoundary>
