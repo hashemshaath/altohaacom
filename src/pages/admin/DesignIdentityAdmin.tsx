@@ -20,17 +20,10 @@ import { cn } from "@/lib/utils";
 const designSections = [
   {
     to: "/admin/design/brand-identity", icon: Sparkles,
-    enTitle: "Brand Identity", arTitle: "الهوية البصرية",
-    enDesc: "Logos, color palette, contrast checker, status colors & seasonal identities",
-    arDesc: "الشعارات، لوحة الألوان، فحص التباين، ألوان الحالات والهويات الموسمية",
+    enTitle: "Identity & Branding", arTitle: "الهوية والعلامة التجارية",
+    enDesc: "Logos, colors, site name, description, contact info & typography",
+    arDesc: "الشعارات، الألوان، اسم الموقع، الوصف، معلومات الاتصال والخطوط",
     settingsKey: "brand_identity", accent: "from-amber-500/20 to-orange-500/20",
-  },
-  {
-    to: "/admin/design/branding", icon: Globe,
-    enTitle: "Branding", arTitle: "العلامة التجارية",
-    enDesc: "Site name, description, contact info, favicon & registration settings",
-    arDesc: "اسم الموقع، الوصف، معلومات الاتصال، الأيقونة وإعدادات التسجيل",
-    settingsKey: "branding", accent: "from-blue-500/20 to-indigo-500/20",
   },
   {
     to: "/admin/design/header-footer", icon: PanelTop,
@@ -52,13 +45,6 @@ const designSections = [
     enDesc: "Cover gradients, per-page modes, theme presets & color schemes",
     arDesc: "تدرجات الأغلفة، أوضاع لكل صفحة، قوالب المظهر وأنظمة الألوان",
     settingsKey: "cover", accent: "from-rose-500/20 to-pink-500/20",
-  },
-  {
-    to: "/admin/design/typography", icon: Type,
-    enTitle: "Typography", arTitle: "الخطوط",
-    enDesc: "Body and heading fonts, live preview & global font configuration",
-    arDesc: "خطوط النص والعناوين، معاينة مباشرة وإعدادات الخطوط العامة",
-    settingsKey: "typography", accent: "from-cyan-500/20 to-sky-500/20",
   },
   {
     to: "/admin/design/layout", icon: Ruler,

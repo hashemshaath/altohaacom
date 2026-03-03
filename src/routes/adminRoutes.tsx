@@ -54,11 +54,11 @@ const DesignIdentityAdmin = lazy(() => import("@/pages/admin/DesignIdentityAdmin
 const HeroSlidesAdmin = lazy(() => import("@/pages/admin/HeroSlidesAdmin"));
 
 const BrandIdentityPage = lazy(() => import("@/pages/admin/design/BrandIdentityPage"));
-const BrandingPage = lazy(() => import("@/pages/admin/design/BrandingPage"));
+
 const HeaderFooterPage = lazy(() => import("@/pages/admin/design/HeaderFooterPage"));
 const HomepageDesignPage = lazy(() => import("@/pages/admin/design/HomepageDesignPage"));
 const CoversThemesPage = lazy(() => import("@/pages/admin/design/CoversThemesPage"));
-const TypographyPage = lazy(() => import("@/pages/admin/design/TypographyPage"));
+
 const LayoutSpacingPage = lazy(() => import("@/pages/admin/design/LayoutSpacingPage"));
 const CustomCSSPage = lazy(() => import("@/pages/admin/design/CustomCSSPage"));
 
@@ -119,11 +119,11 @@ export const adminRoutes = (
     <Route path="design/brand-identity" element={<BrandIdentityPage />} />
     <Route path="hero-slides" element={<HeroSlidesAdmin />} />
     
-    <Route path="design/branding" element={<BrandingPage />} />
+    
     <Route path="design/header-footer" element={<HeaderFooterPage />} />
     <Route path="design/homepage" element={<HomepageDesignPage />} />
     <Route path="design/covers" element={<CoversThemesPage />} />
-    <Route path="design/typography" element={<TypographyPage />} />
+    
     <Route path="design/layout" element={<LayoutSpacingPage />} />
     <Route path="design/custom-css" element={<CustomCSSPage />} />
 
