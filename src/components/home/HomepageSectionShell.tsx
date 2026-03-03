@@ -36,7 +36,7 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
 
   // If no config, render children with sensible default spacing
   if (!config) {
-    return <div className={cn(SPACING_MAP.normal, "border-b border-border/20")}>{children}</div>;
+    return <div className={SPACING_MAP.normal}>{children}</div>;
   }
 
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
@@ -46,7 +46,7 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
   // Shell only handles vertical spacing, background, animation, and css overrides.
   return (
     <div
-      className={cn(spacing, animation, "border-b border-border/20", config.css_class)}
+      className={cn(spacing, animation, config.css_class)}
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
       {children}

@@ -206,7 +206,7 @@ export function PlatformFeatures() {
 
       {/* Final CTA */}
       {!user && (
-        <section className="relative border-t overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
+        <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
           <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
           <div className="container relative py-16 text-center md:py-24">

@@ -54,7 +54,7 @@ export default function StatsPartnersSection() {
   if (allLogos.length === 0) return null;
 
   return (
-    <section className="border-t border-border/40" dir={isAr ? "rtl" : "ltr"}>
+    <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {showTitle && (
           <div className="text-center mb-10">
