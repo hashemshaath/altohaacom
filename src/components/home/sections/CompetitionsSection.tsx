@@ -70,7 +70,7 @@ export default function CompetitionsSection() {
   if (allEvents.length === 0) return null;
 
   return (
-    <section className="py-16 sm:py-24 bg-muted/30" dir={isAr ? "rtl" : "ltr"}>
+    <section className="bg-muted/30" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {showTitle && (
           <div className="text-center mb-12">

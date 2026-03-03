@@ -50,7 +50,7 @@ export function PlatformFeatures() {
   return (
     <>
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container py-8 md:py-12" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={servicesReveal.ref} className="container" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
           <div className="mb-8 text-center">
             <Badge variant="secondary" className="mb-2 gap-1">
@@ -87,7 +87,7 @@ export function PlatformFeatures() {
       </section>
 
       {/* Roles */}
-      <section ref={rolesReveal.ref} className="relative overflow-hidden py-8 md:py-12" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={rolesReveal.ref} className="relative overflow-hidden" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
         <div className="absolute inset-0 bg-muted/20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative">
@@ -135,7 +135,7 @@ export function PlatformFeatures() {
       </section>
 
       {/* Why Altoha */}
-      <section ref={whyReveal.ref} className="container py-8 md:py-12" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={whyReveal.ref} className="container" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
           <div className="mb-8 text-center">
             <h2 id="why-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
@@ -162,7 +162,7 @@ export function PlatformFeatures() {
       </section>
 
       {/* CTA Cards */}
-      <section className="container pb-8 md:pb-12" dir={isAr ? "rtl" : "ltr"}>
+      <section className="container" dir={isAr ? "rtl" : "ltr"}>
         <div className="grid gap-3 md:grid-cols-2">
           <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 to-transparent transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">

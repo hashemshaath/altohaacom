@@ -57,7 +57,7 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
   return (
     <div ref={ref}>
     <TooltipProvider delayDuration={200}>
-      <section className="container py-8">
+      <section className="container">
         <SectionHeader
           icon={Globe}
           badge={isAr ? "التقويم" : "Calendar"}

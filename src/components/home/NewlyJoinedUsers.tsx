@@ -67,7 +67,7 @@ export function NewlyJoinedUsers() {
   if (users.length === 0) return null;
 
   return (
-    <section className="py-8 md:py-12" aria-labelledby="new-users-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section aria-labelledby="new-users-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionHeader
           icon={UserPlus}

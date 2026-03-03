@@ -55,7 +55,7 @@ export default function ArticlesSection() {
   const rest = articles.slice(1, 5);
 
   return (
-    <section className="py-16 sm:py-24" dir={isAr ? "rtl" : "ltr"}>
+    <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {showTitle && (
           <div className="text-center mb-12">

@@ -63,7 +63,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
 
   return (
     <div ref={ref}>
-      <section className="py-10 md:py-14" aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
+      <section aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container max-w-3xl">
           <SectionHeader
             icon={Quote}

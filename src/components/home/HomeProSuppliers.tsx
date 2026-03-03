@@ -74,7 +74,7 @@ export function HomeProSuppliers() {
 
   return (
     <SectionReveal>
-      <section className="container py-8 md:py-12" dir={isAr ? "rtl" : "ltr"}>
+      <section className="container" dir={isAr ? "rtl" : "ltr"}>
         <SectionHeader
           icon={Factory}
           badge={isAr ? "الموردون المحترفون" : "Pro Suppliers"}

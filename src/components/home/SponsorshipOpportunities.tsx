@@ -69,7 +69,7 @@ export function SponsorshipOpportunities() {
   if (opportunities.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-8 md:py-12" dir={isAr ? "rtl" : "ltr"}>
+    <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
       <div className="container relative">
         <SectionHeader

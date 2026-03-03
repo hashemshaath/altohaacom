@@ -70,7 +70,7 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
   const gridCols = itemCount <= 4 ? "lg:grid-cols-4" : itemCount <= 6 ? "lg:grid-cols-6" : "lg:grid-cols-6";
 
   return (
-    <section ref={ref} className="py-16 sm:py-24" dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {showTitle && title && (
           <div className="text-center mb-12">
