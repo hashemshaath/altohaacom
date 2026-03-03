@@ -13,6 +13,7 @@ import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   news: { en: "News", ar: "أخبار" },
@@ -26,16 +27,27 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  const sectionConfig = useSectionConfig();
+
+  const itemCount = sectionConfig?.item_count || 6;
+  const showFilters = sectionConfig?.show_filters ?? true;
+  const showViewAll = sectionConfig?.show_view_all ?? true;
+  const sectionTitle = sectionConfig
+    ? (isAr ? sectionConfig.title_ar || "المحتوى الرائج" : sectionConfig.title_en || "Trending Now")
+    : (isAr ? "المحتوى الرائج" : "Trending Now");
+  const sectionSubtitle = sectionConfig
+    ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
+    : (isAr ? "الأكثر قراءة هذا الأسبوع" : "Most read this week");
 
   const { data: articles = [] } = useQuery({
-    queryKey: ["home-trending-articles"],
+    queryKey: ["home-trending-articles", itemCount],
     queryFn: async () => {
       const { data } = await supabase
         .from("articles")
         .select("id, title, title_ar, slug, excerpt, excerpt_ar, featured_image_url, published_at, view_count, type")
         .eq("status", "published")
         .order("view_count", { ascending: false })
-        .limit(6);
+        .limit(itemCount);
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
@@ -63,13 +75,13 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
           <SectionHeader
             icon={TrendingUp}
             badge={isAr ? "رائج" : "Trending"}
-            title={isAr ? "المحتوى الرائج" : "Trending Now"}
-            subtitle={isAr ? "الأكثر قراءة هذا الأسبوع" : "Most read this week"}
+            title={sectionTitle}
+            subtitle={sectionSubtitle}
             dataSource="articles (by view_count)"
             itemCount={filtered.length}
-            viewAllHref="/articles"
+            viewAllHref={showViewAll ? "/articles" : undefined}
             isAr={isAr}
-            filters={types.length > 1 ? (
+            filters={showFilters && types.length > 1 ? (
               <>
                 <FilterChip label={isAr ? "الكل" : "All"} active={!typeFilter} count={articles.length} onClick={() => setTypeFilter(null)} />
                 {types.map(t => {

@@ -12,6 +12,7 @@ import { Building2, Factory, CheckCircle, MapPin } from "lucide-react";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { localizeLocation } from "@/lib/localizeLocation";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const SUPPLIER_CAT_LABELS: Record<string, { en: string; ar: string }> = {
   food: { en: "Food", ar: "أغذية" },
@@ -29,9 +30,20 @@ export function HomeProSuppliers() {
   const navigate = useNavigate();
   const isAr = language === "ar";
   const [catFilter, setCatFilter] = useState<string | null>(null);
+  const sectionConfig = useSectionConfig();
+
+  const itemCount = sectionConfig?.item_count || 6;
+  const showFilters = sectionConfig?.show_filters ?? true;
+  const showViewAll = sectionConfig?.show_view_all ?? true;
+  const sectionTitle = sectionConfig
+    ? (isAr ? sectionConfig.title_ar || "شركاء التوريد المعتمدون" : sectionConfig.title_en || "Trusted Supply Partners")
+    : (isAr ? "شركاء التوريد المعتمدون" : "Trusted Supply Partners");
+  const sectionSubtitle = sectionConfig
+    ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
+    : (isAr ? "شركات متخصصة في منتجات الشيفات المحترفين" : "Companies specializing in professional chef products");
 
   const { data: suppliers = [] } = useQuery({
-    queryKey: ["homeProSuppliers"],
+    queryKey: ["homeProSuppliers", itemCount],
     queryFn: async () => {
       const { data } = await supabase
         .from("companies")
@@ -39,7 +51,7 @@ export function HomeProSuppliers() {
         .eq("status", "active")
         .eq("is_pro_supplier", true)
         .order("featured_order", { ascending: true, nullsFirst: false })
-        .limit(6);
+        .limit(itemCount);
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
@@ -58,19 +70,21 @@ export function HomeProSuppliers() {
 
   if (suppliers.length === 0) return null;
 
+  const gridCols = itemCount <= 4 ? "lg:grid-cols-4" : "lg:grid-cols-6";
+
   return (
     <SectionReveal>
       <section className="container py-8 md:py-12" dir={isAr ? "rtl" : "ltr"}>
         <SectionHeader
           icon={Factory}
           badge={isAr ? "الموردون المحترفون" : "Pro Suppliers"}
-          title={isAr ? "شركاء التوريد المعتمدون" : "Trusted Supply Partners"}
-          subtitle={isAr ? "شركات متخصصة في منتجات الشيفات المحترفين" : "Companies specializing in professional chef products"}
+          title={sectionTitle}
+          subtitle={sectionSubtitle}
           dataSource="companies (is_pro_supplier)"
           itemCount={filtered.length}
-          viewAllHref="/pro-suppliers"
+          viewAllHref={showViewAll ? "/pro-suppliers" : undefined}
           isAr={isAr}
-          filters={categories.length > 1 ? (
+          filters={showFilters && categories.length > 1 ? (
             <>
               <FilterChip label={isAr ? "الكل" : "All"} active={!catFilter} count={suppliers.length} onClick={() => setCatFilter(null)} />
               {categories.map(c => {
@@ -89,7 +103,7 @@ export function HomeProSuppliers() {
           ) : undefined}
         />
 
-        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+        <div className={cn("grid gap-3 grid-cols-2 sm:grid-cols-3", gridCols)}>
           {filtered.map((s: any) => {
             const name = isAr && s.name_ar ? s.name_ar : s.name;
             const tagline = isAr && s.tagline_ar ? s.tagline_ar : s.tagline;

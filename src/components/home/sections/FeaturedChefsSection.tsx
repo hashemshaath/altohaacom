@@ -11,21 +11,34 @@ import { getDisplayName } from "@/lib/getDisplayName";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
 import { forwardRef } from "react";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSection(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
+  const config = useSectionConfig();
+
+  const itemCount = config?.item_count || 6;
+  const title = config
+    ? (isAr ? config.title_ar || "أبرز الطهاة على المنصة" : config.title_en || "Meet Our Top Chefs")
+    : (isAr ? "أبرز الطهاة على المنصة" : "Meet Our Top Chefs");
+  const subtitle = config
+    ? (isAr ? config.subtitle_ar || "" : config.subtitle_en || "")
+    : (isAr ? "تعرّف على أمهر الطهاة في مجتمعنا العالمي" : "Discover the most talented chefs in our global community");
+  const showTitle = config?.show_title ?? true;
+  const showSubtitle = config?.show_subtitle ?? true;
+  const showViewAll = config?.show_view_all ?? true;
 
   const { data: chefs = [] } = useQuery({
-    queryKey: ["featured-chefs-home"],
+    queryKey: ["featured-chefs-home", itemCount],
     queryFn: async () => {
       const { data: ranked } = await supabase
         .from("chef_rankings")
         .select("user_id, total_points, gold_medals, silver_medals, bronze_medals, rank")
         .eq("ranking_period", "all_time")
         .order("total_points", { ascending: false })
-        .limit(6);
+        .limit(itemCount);
 
       if (ranked && ranked.length > 0) {
         const userIds = ranked.map((r: any) => r.user_id);
@@ -42,7 +55,7 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
         .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
-        .limit(6);
+        .limit(itemCount);
       return (profiles || []).map((p: any) => ({
         ...p, total_points: p.loyalty_points || 0,
         gold_medals: 0, silver_medals: 0, bronze_medals: 0,
@@ -53,24 +66,27 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
 
   if (chefs.length === 0) return null;
 
+  // Determine grid columns based on item count
+  const gridCols = itemCount <= 4 ? "lg:grid-cols-4" : itemCount <= 6 ? "lg:grid-cols-6" : "lg:grid-cols-6";
+
   return (
     <section ref={ref} className="py-16 sm:py-24" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-            {isAr ? "طهاة مميزون" : "Featured Chefs"}
-          </Badge>
-          <h2 className={cn("text-2xl font-bold sm:text-3xl lg:text-4xl text-foreground tracking-tight", !isAr && "font-serif")}>
-            {isAr ? "أبرز الطهاة على المنصة" : "Meet Our Top Chefs"}
-          </h2>
-          <p className="mt-2 text-muted-foreground max-w-lg mx-auto">
-            {isAr ? "تعرّف على أمهر الطهاة في مجتمعنا العالمي" : "Discover the most talented chefs in our global community"}
-          </p>
-        </div>
+        {showTitle && title && (
+          <div className="text-center mb-12">
+            <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
+              {isAr ? "طهاة مميزون" : "Featured Chefs"}
+            </Badge>
+            <h2 className={cn("text-2xl font-bold sm:text-3xl lg:text-4xl text-foreground tracking-tight", !isAr && "font-serif")}>
+              {title}
+            </h2>
+            {showSubtitle && subtitle && (
+              <p className="mt-2 text-muted-foreground max-w-lg mx-auto">{subtitle}</p>
+            )}
+          </div>
+        )}
 
-        {/* Grid */}
-        <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+        <div className={cn("grid gap-6 grid-cols-2 sm:grid-cols-3", gridCols)}>
           {chefs.map((chef: any, idx: number) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
@@ -130,15 +146,16 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
           })}
         </div>
 
-        {/* View All */}
-        <div className="mt-10 text-center">
-          <Button variant="outline" className="rounded-xl" asChild>
-            <Link to="/community">
-              {isAr ? "عرض جميع الطهاة" : "View All Chefs"}
-              <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
-            </Link>
-          </Button>
-        </div>
+        {showViewAll && (
+          <div className="mt-10 text-center">
+            <Button variant="outline" className="rounded-xl" asChild>
+              <Link to="/community">
+                {isAr ? "عرض جميع الطهاة" : "View All Chefs"}
+                <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

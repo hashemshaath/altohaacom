@@ -19,6 +19,7 @@ import { getCountdown } from "@/pages/events-calendar/utils";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { localizeCity } from "@/lib/localizeLocation";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
 
@@ -30,12 +31,14 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
   const [calDate, setCalDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const { data: events = [] } = useGlobalEventsCalendar();
+  const sectionConfig = useSectionConfig();
+  const itemCount = sectionConfig?.item_count || 6;
 
   const upcoming = useMemo(() => {
     let filtered = events.filter(e => new Date(e.start_date) >= new Date());
     if (selectedFilter) filtered = filtered.filter(e => e.type === selectedFilter);
-    return filtered.slice(0, 6);
-  }, [events, selectedFilter]);
+    return filtered.slice(0, itemCount);
+  }, [events, selectedFilter, itemCount]);
 
   const calDays = useMemo(() => getDaysInMonth(calDate.getFullYear(), calDate.getMonth()), [calDate]);
   const dayNames = isAr

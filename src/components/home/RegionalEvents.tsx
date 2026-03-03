@@ -14,6 +14,7 @@ import regionalCover from "@/assets/regional-events-cover.jpg";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { localizeLocation } from "@/lib/localizeLocation";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG", "TN", "MA", "DZ", "LY", "SY", "PS", "YE"];
 
@@ -24,6 +25,8 @@ export function RegionalEvents() {
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState<FilterTab>("middle-east");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionConfig = useSectionConfig();
+  const itemCount = sectionConfig?.item_count || 20;
 
   const { data: allComps = [] } = useQuery({
     queryKey: ["home-regional-comps"],

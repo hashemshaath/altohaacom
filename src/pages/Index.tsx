@@ -1,6 +1,7 @@
-import { lazy, Suspense, useMemo, useEffect, forwardRef } from "react";
+import { lazy, Suspense, useMemo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
+import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
@@ -32,7 +33,7 @@ const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup")
 const HomeQuickActions = lazy(() => import("@/components/home/HomeQuickActions").then(m => ({ default: m.HomeQuickActions })));
 const GenericHomepageSection = lazy(() => import("@/components/home/sections/GenericHomepageSection"));
 
-// ── Section key → component mapping (matches DB section_key values exactly) ──
+// ── Section key → component mapping ──
 const SECTION_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
   search: HomeSearch,
   stats: StatsBar,
@@ -53,7 +54,6 @@ const SECTION_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
   platform_features: PlatformFeatures,
   newsletter: NewsletterSignup,
   quick_actions: HomeQuickActions,
-  // Ad banners use GenericHomepageSection (placeholder for ad slots)
   ad_banner_top: GenericHomepageSection,
   ad_banner_mid: GenericHomepageSection,
 };
@@ -82,7 +82,6 @@ const DEFAULT_SECTION_KEYS = [
 
 const Index = () => {
   const { language } = useLanguage();
-  const isAr = language === "ar";
   useAdTracking();
   useEffect(() => { prefetchCommonRoutes(); }, []);
 
@@ -90,7 +89,6 @@ const Index = () => {
 
   // Build the ordered list of section elements
   const renderedSections = useMemo(() => {
-    // Use DB sections if available, otherwise fallback
     const sectionList = dbSections.length > 0
       ? dbSections
           .filter(s => s.is_visible && s.section_key !== "hero")
@@ -99,6 +97,16 @@ const Index = () => {
           section_key: key,
           is_visible: true,
           sort_order: i + 1,
+          // Provide defaults for the config props
+          item_count: 6,
+          items_per_row: 3,
+          max_items_mobile: 4,
+          item_size: "medium" as const,
+          display_style: "grid" as const,
+          show_filters: true,
+          show_view_all: true,
+          show_title: true,
+          show_subtitle: true,
         }));
 
     return sectionList.map((s) => {
@@ -106,7 +114,6 @@ const Index = () => {
       const Component = SECTION_COMPONENTS[key];
 
       if (!Component) {
-        // Unknown section key → render generic placeholder
         return (
           <Suspense key={key} fallback={<SectionSkeleton />}>
             <GenericHomepageSection sectionKey={key} />
@@ -114,7 +121,6 @@ const Index = () => {
         );
       }
 
-      // Ad banners pass sectionKey prop
       if (key.startsWith("ad_banner")) {
         return (
           <Suspense key={key} fallback={null}>
@@ -123,15 +129,17 @@ const Index = () => {
         );
       }
 
+      // Wrap each component in SectionKeyProvider so it can read its own DB config
       return (
         <Suspense key={key} fallback={<SectionSkeleton />}>
-          <Component />
+          <SectionKeyProvider sectionKey={key}>
+            <Component />
+          </SectionKeyProvider>
         </Suspense>
       );
     });
   }, [dbSections]);
 
-  // Check if hero is visible
   const showHero = dbSections.length === 0 ||
     dbSections.find(s => s.section_key === "hero")?.is_visible !== false;
 

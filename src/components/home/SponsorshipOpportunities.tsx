@@ -14,6 +14,7 @@ import { ar } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import { SectionHeader } from "./SectionHeader";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -25,6 +26,16 @@ const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
 export function SponsorshipOpportunities() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const sectionConfig = useSectionConfig();
+
+  const itemCount = sectionConfig?.item_count || 8;
+  const showViewAll = sectionConfig?.show_view_all ?? true;
+  const sectionTitle = sectionConfig
+    ? (isAr ? sectionConfig.title_ar || "كن شريكاً في صناعة النجاح" : sectionConfig.title_en || "Be a Partner in Shaping Success")
+    : (isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success");
+  const sectionSubtitle = sectionConfig
+    ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
+    : (isAr ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة" : "Support world-class culinary competitions & connect your brand with top chefs");
 
   const { data: opportunities = [] } = useQuery({
     queryKey: ["home-sponsorship-opportunities"],
@@ -37,7 +48,7 @@ export function SponsorshipOpportunities() {
         `)
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
-        .limit(8);
+        .limit(itemCount);
 
       const { data: packages } = await supabase
         .from("sponsorship_packages")
@@ -64,11 +75,11 @@ export function SponsorshipOpportunities() {
         <SectionHeader
           icon={Sparkles}
           badge={isAr ? "فرص رعاية حصرية" : "Sponsorship"}
-          title={isAr ? "كن شريكاً في صناعة النجاح" : "Be a Partner in Shaping Success"}
-          subtitle={isAr ? "ادعم مسابقات الطهي العالمية واربط علامتك بأمهر الطهاة" : "Support world-class culinary competitions & connect your brand with top chefs"}
+          title={sectionTitle}
+          subtitle={sectionSubtitle}
           dataSource="competitions • sponsorship_packages"
           itemCount={opportunities.length}
-          viewAllHref="/sponsors"
+          viewAllHref={showViewAll ? "/sponsors" : undefined}
           viewAllLabel={isAr ? "جميع الفرص" : "All Opportunities"}
           isAr={isAr}
         />
