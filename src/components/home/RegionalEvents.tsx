@@ -61,7 +61,7 @@ export function RegionalEvents() {
   if (allComps.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden" aria-labelledby="regional-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section className="relative overflow-hidden w-full" aria-labelledby="regional-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="relative h-[160px] sm:h-[200px] md:h-[220px] overflow-hidden">
         <img src={regionalCover} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />

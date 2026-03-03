@@ -36,16 +36,17 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
 
   // If no config, render children with sensible default spacing
   if (!config) {
-    return <div className={SPACING_MAP.normal}>{children}</div>;
+    return <div className={cn(SPACING_MAP.normal, "border-b border-border/20")}>{children}</div>;
   }
 
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
   const animation = ANIMATION_MAP[config.animation] || "";
-  const containerWidth = CONTAINER_MAP[config.container_width] || "";
 
+  // Don't apply container width here — sections manage their own containers.
+  // Shell only handles vertical spacing, background, animation, and css overrides.
   return (
     <div
-      className={cn(spacing, animation, containerWidth && "mx-auto px-4", containerWidth, config.css_class)}
+      className={cn(spacing, animation, "border-b border-border/20", config.css_class)}
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
       {children}
