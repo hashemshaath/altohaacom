@@ -15,12 +15,26 @@ import {
   Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Database,
   GripVertical, Loader2, Palette, Sparkles,
   Clock, Settings2, RotateCcw, Copy, ExternalLink, Rows3,
-  LayoutTemplate, SlidersHorizontal,
+  LayoutTemplate, SlidersHorizontal, Layers,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SectionIcon } from "./SectionIcon";
 import { BilingualField } from "./BilingualField";
+
+const CLASSIFICATION_META: Record<string, { en: string; ar: string; color: string }> = {
+  hero: { en: "Hero", ar: "رئيسي", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
+  events: { en: "Events", ar: "فعاليات", color: "bg-chart-1/10 text-chart-1 border-chart-1/20" },
+  community: { en: "Community", ar: "مجتمع", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
+  content: { en: "Content", ar: "محتوى", color: "bg-chart-3/10 text-chart-3 border-chart-3/20" },
+  business: { en: "Business", ar: "أعمال", color: "bg-primary/10 text-primary border-primary/20" },
+  partners: { en: "Partners", ar: "شراكات", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
+  education: { en: "Education", ar: "تعليم", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
+  utility: { en: "Utility", ar: "خدمات", color: "bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20" },
+  advertising: { en: "Ads", ar: "إعلانات", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
+  social: { en: "Social", ar: "اجتماعي", color: "bg-chart-1/10 text-chart-1 border-chart-1/20" },
+  stats: { en: "Stats", ar: "إحصائيات", color: "bg-chart-3/10 text-chart-3 border-chart-3/20" },
+};
 
 const SOURCE_TYPE_OPTIONS = [
   { value: "auto", en: "Automatic", ar: "تلقائي" },
@@ -154,12 +168,12 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
         draggable
         {...dragHandleProps}
       >
-        {/* Compact header */}
-        <div className="flex items-center gap-1 px-2 py-1.5">
+        {/* Compact header with serial & metadata */}
+        <div className="flex items-center gap-1.5 px-2 py-2">
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onSelect?.()}
-            className="h-3 w-3 shrink-0"
+            className="h-3.5 w-3.5 shrink-0"
             onClick={(e) => e.stopPropagation()}
           />
           <GripVertical className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0 cursor-grab" />
@@ -169,30 +183,60 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
             className="p-0.5 rounded hover:bg-muted/50 shrink-0"
           >
             {merged.is_visible
-              ? <Eye className="h-3 w-3 text-primary" />
-              : <EyeOff className="h-3 w-3 text-muted-foreground" />
+              ? <Eye className="h-3.5 w-3.5 text-primary" />
+              : <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
             }
           </button>
 
           <CollapsibleTrigger asChild>
             <button className="flex flex-1 items-center gap-1.5 text-start min-w-0 py-0.5">
+              {/* Serial number badge */}
+              <Badge variant="outline" className="text-[8px] font-mono px-1.5 py-0 h-4 shrink-0 bg-primary/5 border-primary/20 text-primary">
+                {section.section_number || `#${index + 1}`}
+              </Badge>
+
               <SectionIcon sectionKey={section.section_key} className="h-3.5 w-3.5 text-primary/60 shrink-0" />
-              <span className="text-xs font-medium truncate flex-1">
+
+              {/* Name */}
+              <span className="text-xs font-semibold truncate">
                 {isAr ? merged.title_ar : merged.title_en}
               </span>
-              <span className="text-[9px] text-muted-foreground font-mono hidden sm:inline">{section.section_key}</span>
 
-              {configSummary.length > 0 && (
-                <div className="hidden sm:flex items-center gap-0.5">
-                  {configSummary.slice(0, 3).map((c, i) => (
-                    <Badge key={i} variant="outline" className="text-[7px] px-1 py-0 h-3.5">{c}</Badge>
-                  ))}
-                </div>
-              )}
+              {/* Classification badge */}
+              {(() => {
+                const cls = CLASSIFICATION_META[section.classification || "content"];
+                return cls ? (
+                  <Badge variant="outline" className={cn("text-[7px] px-1 py-0 h-3.5 shrink-0 border", cls.color)}>
+                    {isAr ? cls.ar : cls.en}
+                  </Badge>
+                ) : null;
+              })()}
 
-              <Badge variant="outline" className="text-[8px] font-mono px-1 py-0 h-3.5 bg-muted/40">
-                #{index + 1}
-              </Badge>
+              {/* Source & items info */}
+              <div className="hidden md:flex items-center gap-1 ms-auto shrink-0">
+                {merged.source_type !== "auto" && (
+                  <Badge variant="outline" className="text-[7px] px-1 py-0 h-3.5">
+                    <Database className="h-2 w-2 me-0.5" />
+                    {merged.source_type}
+                  </Badge>
+                )}
+                {merged.source_table && (
+                  <Badge variant="outline" className="text-[7px] px-1 py-0 h-3.5 font-mono">
+                    {merged.source_table}
+                  </Badge>
+                )}
+                <Badge variant="outline" className="text-[7px] px-1 py-0 h-3.5 bg-muted/40">
+                  <Layers className="h-2 w-2 me-0.5" />
+                  {merged.item_count}
+                </Badge>
+                {merged.display_style !== "grid" && (
+                  <Badge variant="outline" className="text-[7px] px-1 py-0 h-3.5">
+                    {merged.display_style}
+                  </Badge>
+                )}
+              </div>
+
+              <span className="text-[9px] text-muted-foreground font-mono hidden lg:inline shrink-0">{section.section_key}</span>
               <ChevronDown className={cn("h-3 w-3 text-muted-foreground transition-transform shrink-0", isOpen && "rotate-180")} />
             </button>
           </CollapsibleTrigger>
@@ -551,10 +595,22 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   </Button>
                 </div>
 
-                <div className="rounded-lg bg-muted/30 p-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[9px] text-muted-foreground">
-                  <span>Key:</span><span className="font-mono">{section.section_key}</span>
-                  <span>Sort:</span><span>{section.sort_order}</span>
-                  <span>{isAr ? "تحديث" : "Updated"}:</span>
+                <div className="rounded-lg bg-muted/30 p-2.5 grid grid-cols-2 gap-x-4 gap-y-1 text-[9px] text-muted-foreground">
+                  <span className="font-medium">{isAr ? "الرقم التسلسلي" : "Serial"}:</span>
+                  <span className="font-mono text-foreground">{section.section_number || "—"}</span>
+                  <span className="font-medium">Key:</span>
+                  <span className="font-mono text-foreground">{section.section_key}</span>
+                  <span className="font-medium">{isAr ? "التصنيف" : "Classification"}:</span>
+                  <span>{(() => { const c = CLASSIFICATION_META[section.classification || "content"]; return c ? (isAr ? c.ar : c.en) : section.classification; })()}</span>
+                  <span className="font-medium">{isAr ? "المكوّن" : "Component"}:</span>
+                  <span className="font-mono text-foreground text-[8px]">{section.component_name || "Generic"}</span>
+                  <span className="font-medium">{isAr ? "المصدر" : "Source"}:</span>
+                  <span>{merged.source_type}{merged.source_table ? ` → ${merged.source_table}` : ""}</span>
+                  <span className="font-medium">{isAr ? "العناصر" : "Items"}:</span>
+                  <span>{merged.item_count} ({merged.display_style}, {merged.items_per_row}/row)</span>
+                  <span className="font-medium">{isAr ? "الترتيب" : "Sort"}:</span>
+                  <span>{section.sort_order}</span>
+                  <span className="font-medium">{isAr ? "تحديث" : "Updated"}:</span>
                   <span className="flex items-center gap-0.5">
                     <Clock className="h-2 w-2" />
                     {new Date(section.updated_at).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric" })}

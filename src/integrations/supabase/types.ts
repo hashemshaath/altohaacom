@@ -12110,6 +12110,8 @@ export type Database = {
           animation: string
           bg_color: string | null
           card_template: string
+          classification: string | null
+          component_name: string | null
           container_width: string
           cover_height: number | null
           cover_image_url: string | null
@@ -12127,6 +12129,7 @@ export type Database = {
           items_per_row: number | null
           max_items_mobile: number
           section_key: string
+          section_number: string | null
           show_description: boolean
           show_filters: boolean | null
           show_subtitle: boolean
@@ -12150,6 +12153,8 @@ export type Database = {
           animation?: string
           bg_color?: string | null
           card_template?: string
+          classification?: string | null
+          component_name?: string | null
           container_width?: string
           cover_height?: number | null
           cover_image_url?: string | null
@@ -12167,6 +12172,7 @@ export type Database = {
           items_per_row?: number | null
           max_items_mobile?: number
           section_key: string
+          section_number?: string | null
           show_description?: boolean
           show_filters?: boolean | null
           show_subtitle?: boolean
@@ -12190,6 +12196,8 @@ export type Database = {
           animation?: string
           bg_color?: string | null
           card_template?: string
+          classification?: string | null
+          component_name?: string | null
           container_width?: string
           cover_height?: number | null
           cover_image_url?: string | null
@@ -12207,6 +12215,7 @@ export type Database = {
           items_per_row?: number | null
           max_items_mobile?: number
           section_key?: string
+          section_number?: string | null
           show_description?: boolean
           show_filters?: boolean | null
           show_subtitle?: boolean

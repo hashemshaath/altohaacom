@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 export interface HomepageSection {
   id: string;
   section_key: string;
+  section_number: string | null;
+  classification: string | null;
+  component_name: string | null;
   title_en: string;
   title_ar: string;
   subtitle_en: string;
