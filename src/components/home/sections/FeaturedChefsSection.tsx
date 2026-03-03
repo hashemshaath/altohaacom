@@ -9,7 +9,6 @@ import { ArrowRight, ChefHat, MapPin, Star, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { countryFlag } from "@/lib/countryFlag";
-import { localizeCity } from "@/lib/localizeLocation";
 import { useAllCountries } from "@/hooks/useCountries";
 
 export default function FeaturedChefsSection() {
