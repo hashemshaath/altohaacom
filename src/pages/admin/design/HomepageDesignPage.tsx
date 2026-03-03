@@ -44,9 +44,11 @@ export default function HomepageDesignPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+      <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
         <BlockListManager />
-        <BlockLivePreview blocks={blocks} isAr={isAr} />
+        <div className="hidden xl:block sticky top-4">
+          <BlockLivePreview blocks={blocks} isAr={isAr} />
+        </div>
       </div>
     </div>
   );
