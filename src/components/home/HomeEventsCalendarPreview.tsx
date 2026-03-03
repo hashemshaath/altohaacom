@@ -115,7 +115,7 @@ export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function Hom
         {viewMode === "mini-cal" ? (
           /* ─── Modern Calendar Grid ─── */
           <div className="space-y-3">
-            <Card className="overflow-hidden border-border/40 shadow-sm">
+            <Card className="overflow-hidden border-border/40 shadow-sm rounded-2xl">
               {/* Month navigation */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setCalDate(d => subMonths(d, 1))}>
@@ -314,7 +314,7 @@ const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
   const countdown = getCountdown(event.start_date, isAr);
 
   const card = (
-    <Card className={cn("overflow-hidden transition-all hover:shadow-lg group border-border/40")}>
+    <Card className={cn("overflow-hidden transition-all hover:shadow-lg group border-border/40 rounded-2xl")}>
       <div className="flex">
         <div className={cn("w-24 sm:w-32 shrink-0 relative overflow-hidden", !event.cover_image_url && colors.bg)}>
           {event.cover_image_url ? (

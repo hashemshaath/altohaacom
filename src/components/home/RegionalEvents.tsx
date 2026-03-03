@@ -39,6 +39,8 @@ export function RegionalEvents() {
         .limit(20);
       return data || [];
     },
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   const saudiCount = useMemo(() => allComps.filter((c: any) => c.country_code?.toUpperCase() === "SA").length, [allComps]);
@@ -129,7 +131,7 @@ function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
 
   return (
     <Link to={`/competitions/${item.id}`} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
-      <Card interactive className="h-full overflow-hidden border-border/50">
+      <Card interactive className="h-full overflow-hidden border-border/50 rounded-2xl">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {item.cover_image_url ? (
             <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
