@@ -298,7 +298,12 @@ export default function OrganizerDetail() {
               <div className="flex-1 min-w-0 pt-2">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{orgName}</h1>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{orgName}</h1>
+                      {org.organizer_number && (
+                        <Badge variant="secondary" className="text-[10px] font-mono h-5">{org.organizer_number}</Badge>
+                      )}
+                    </div>
                     {org.organizer_name_ar && !isAr && (
                       <p className="text-sm text-muted-foreground mt-0.5" dir="rtl">{org.organizer_name_ar}</p>
                     )}

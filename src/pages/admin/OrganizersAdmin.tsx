@@ -280,9 +280,9 @@ export default function OrganizersAdmin() {
       const str = val == null ? "" : String(val);
       return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
     };
-    const headers = ["Name", "Name (AR)", "Email", "Phone", "Website", "City", "Country", "Status", "Verified", "Featured", "Events", "Views", "Rating", "Services", "Founded"];
+    const headers = ["Number", "Name", "Name (AR)", "Email", "Phone", "Website", "City", "Country", "Status", "Verified", "Featured", "Events", "Views", "Rating", "Services", "Founded"];
     const rows = data.map((o: any) => [
-      o.name, o.name_ar || "", o.email || "", o.phone || "", o.website || "",
+      o.organizer_number || "", o.name, o.name_ar || "", o.email || "", o.phone || "", o.website || "",
       o.city || "", o.country || "", o.status, o.is_verified ? "Yes" : "No",
       o.is_featured ? "Yes" : "No", o.total_exhibitions || 0, o.total_views || 0,
       o.average_rating || 0, (o.services || []).join("; "), o.founded_year || "",
@@ -428,11 +428,18 @@ export default function OrganizersAdmin() {
                         <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0">
-                        <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate block">{org.name}</Link>
-                        {org.name_ar && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</p>}
+                        <div className="flex items-center gap-1.5">
+                          <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
+                          {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
+                          {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          {org.organizer_number && (
+                            <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5">{org.organizer_number}</Badge>
+                          )}
+                          {org.name_ar && <span className="text-[10px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</span>}
+                        </div>
                       </div>
-                      {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
-                      {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
                     </div>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">

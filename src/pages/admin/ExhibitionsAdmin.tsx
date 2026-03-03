@@ -413,9 +413,9 @@ export default function ExhibitionsAdmin() {
             </Button>
             <Button variant="outline" size="sm" onClick={() => {
               if (!filteredExhibitions?.length) return;
-              const headers = ["Title", "Type", "Status", "Start Date", "End Date", "City", "Country", "Organizer", "Is Virtual", "Is Free", "Views"];
+              const headers = ["Number", "Title", "Type", "Status", "Start Date", "End Date", "City", "Country", "Organizer", "Is Virtual", "Is Free", "Views"];
               const rows = filteredExhibitions.map(ex => [
-                ex.title, ex.type, ex.status,
+                (ex as any).exhibition_number || "", ex.title, ex.type, ex.status,
                 format(new Date(ex.start_date), "yyyy-MM-dd"),
                 format(new Date(ex.end_date), "yyyy-MM-dd"),
                 ex.city || "", ex.country || "", ex.organizer_name || "",
@@ -1089,6 +1089,9 @@ export default function ExhibitionsAdmin() {
                               <span className="text-primary ms-1 font-bold">{new Date(ex.start_date).getFullYear()}</span>
                             )}
                           </Link>
+                          {(ex as any).exhibition_number && (
+                            <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5 mt-0.5">{(ex as any).exhibition_number}</Badge>
+                          )}
                         </div>
                       </div>
                     </TableCell>
