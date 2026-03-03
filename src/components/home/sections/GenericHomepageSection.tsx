@@ -26,14 +26,6 @@ const GenericHomepageSection = forwardRef<HTMLElement, Props>(function GenericHo
     <section
       ref={ref}
       id={sectionKey}
-      className={cn(
-        "py-12",
-        section.spacing === "compact" && "py-6",
-        section.spacing === "relaxed" && "py-16",
-        section.spacing === "none" && "py-0",
-        section.css_class
-      )}
-      style={section.bg_color ? { backgroundColor: section.bg_color } : undefined}
     >
       <div className={cn(
         "container mx-auto px-4",

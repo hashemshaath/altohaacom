@@ -87,7 +87,7 @@ export function HomeMasterclasses() {
   if (classes.length === 0) return null;
 
   return (
-    <section className="container py-8 md:py-12" aria-labelledby="masterclasses-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section className="container" aria-labelledby="masterclasses-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionHeader
         icon={GraduationCap}
         badge={isAr ? "دروس متقدمة" : "Masterclasses"}

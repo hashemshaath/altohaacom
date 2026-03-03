@@ -67,7 +67,7 @@ export default function StatsBar() {
   ];
 
   return (
-    <section ref={ref} className="border-y border-border/40 bg-muted/20 py-8" dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="border-y border-border/40 bg-muted/20" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
           {items.map((item, idx) => (

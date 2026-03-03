@@ -39,10 +39,11 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
 
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
   const animation = ANIMATION_MAP[config.animation] || "";
+  const containerWidth = CONTAINER_MAP[config.container_width] || "";
 
   return (
     <div
-      className={cn(spacing, animation, config.css_class)}
+      className={cn(spacing, animation, containerWidth && "mx-auto px-4", containerWidth, config.css_class)}
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
       {children}

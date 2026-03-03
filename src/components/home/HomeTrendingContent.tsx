@@ -70,7 +70,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
 
   return (
     <div ref={ref}>
-      <section className="py-10 md:py-14" aria-label={isAr ? "المحتوى الرائج" : "Trending Content"} dir={isAr ? "rtl" : "ltr"}>
+      <section aria-label={isAr ? "المحتوى الرائج" : "Trending Content"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container">
           <SectionHeader
             icon={TrendingUp}
