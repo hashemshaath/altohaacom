@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
+import { forwardRef } from "react";
 
-export default function FeaturedChefsSection() {
+const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSection(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
@@ -53,7 +54,7 @@ export default function FeaturedChefsSection() {
   if (chefs.length === 0) return null;
 
   return (
-    <section className="py-16 sm:py-24" dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="py-16 sm:py-24" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {/* Header */}
         <div className="text-center mb-12">
@@ -141,4 +142,6 @@ export default function FeaturedChefsSection() {
       </div>
     </section>
   );
-}
+});
+
+export default FeaturedChefsSection;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -9,13 +9,13 @@ import { Mail, Sparkles, Shield } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 
-export function NewsletterSignup() {
+export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignup(_props, outerRef) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { ref, isVisible } = useScrollReveal();
+  const { ref: scrollRef, isVisible } = useScrollReveal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ export function NewsletterSignup() {
   };
 
   return (
-    <section ref={ref} className="relative border-y overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
+    <section ref={scrollRef} className="relative border-y overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-card/80 to-accent/8" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)]" />
 
@@ -90,4 +90,4 @@ export function NewsletterSignup() {
       </div>
     </section>
   );
-}
+});
