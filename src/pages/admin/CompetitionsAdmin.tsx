@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -673,33 +674,8 @@ export default function CompetitionsAdmin() {
       <Card className="rounded-2xl border-border/40 overflow-hidden">
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30 hover:bg-muted/30">
-                    <TableHead className="font-semibold">{isAr ? "المسابقة" : "Competition"}</TableHead>
-                    <TableHead className="font-semibold">{isAr ? "المنظم / المعرض" : "Organizer / Exhibition"}</TableHead>
-                    <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead className="font-semibold">{isAr ? "الفئات" : "Categories"}</TableHead>
-                    <TableHead className="font-semibold">{isAr ? "المشاركين" : "Participants"}</TableHead>
-                    <TableHead className="w-12"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <TableRow key={i}>
-                      <TableCell><Skeleton className="h-5 w-36" /><Skeleton className="h-3 w-20 mt-1.5" /></TableCell>
-                      <TableCell><div className="flex items-center gap-2"><Skeleton className="h-6 w-6 rounded-xl" /><Skeleton className="h-4 w-24" /></div></TableCell>
-                      <TableCell><Skeleton className="h-5 w-20 rounded-full" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                      <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-12" /></TableCell>
-                      <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="p-4">
+              <AdminTableSkeleton rows={6} columns={6} />
             </div>
           ) : competitions?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
