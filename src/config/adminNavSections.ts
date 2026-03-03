@@ -1,5 +1,9 @@
 import {
   Palette,
+  PanelTop,
+  Home,
+  Layers,
+  Type,
   LayoutDashboard,
   BarChart3,
   Users,
@@ -137,7 +141,13 @@ export const adminNavSections: NavSection[] = [
     titleEn: "Design & Identity",
     titleAr: "التصميم والهوية",
     items: [
-      { to: "/admin/design", icon: Palette, labelEn: "Design & Identity", labelAr: "التصميم والهوية" },
+      { to: "/admin/design", icon: Palette, labelEn: "Overview", labelAr: "نظرة عامة", end: true },
+      { to: "/admin/design/brand-identity", icon: Sparkles, labelEn: "Brand Identity", labelAr: "الهوية البصرية" },
+      { to: "/admin/design/branding", icon: Globe, labelEn: "Branding", labelAr: "العلامة التجارية" },
+      { to: "/admin/design/header-footer", icon: PanelTop, labelEn: "Header & Footer", labelAr: "الرأس والتذييل" },
+      { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الصفحة الرئيسية" },
+      { to: "/admin/design/covers", icon: Layers, labelEn: "Covers & Themes", labelAr: "الأغلفة والمظهر" },
+      { to: "/admin/design/typography", icon: Type, labelEn: "Typography", labelAr: "الخطوط" },
     ],
   },
   {
