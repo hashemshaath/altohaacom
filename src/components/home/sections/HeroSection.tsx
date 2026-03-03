@@ -188,13 +188,7 @@ export function HeroSection() {
         )}
       </div>
 
-      {/* Keyframe for content entrance */}
-      <style>{`
-        @keyframes heroFadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+
     </section>
   );
 }

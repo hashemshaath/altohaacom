@@ -44,7 +44,6 @@ export function SEOHead({
   useEffect(() => {
     const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
     document.title = fullTitle;
-    document.title = fullTitle;
 
     // Helper to set/create meta tags
     const setMeta = (attr: string, key: string, content: string) => {
