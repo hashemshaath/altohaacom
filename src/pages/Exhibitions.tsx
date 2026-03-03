@@ -174,8 +174,9 @@ export default function Exhibitions() {
       <section className="relative border-b border-border/30 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-background to-accent/4" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/30 to-transparent" />
         <div className="container relative py-10 md:py-14">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
             <div className="space-y-4 max-w-2xl flex-1">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
                 <div className="relative flex h-2 w-2">
@@ -482,6 +483,7 @@ export default function Exhibitions() {
           </section>
         )}
       </main>
+      <style>{`@keyframes heroFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }`}</style>
     </PageShell>
   );
 }
