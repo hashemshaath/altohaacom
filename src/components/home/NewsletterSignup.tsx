@@ -43,10 +43,9 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
   };
 
   return (
-    <section ref={scrollRef} className="relative overflow-hidden rounded-2xl mx-4 md:mx-auto md:max-w-3xl" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-card to-accent/5 border border-border/30 rounded-2xl" />
-
-      <div className="relative px-6 py-10 md:py-12">
+    <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
+      <div className="container relative">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-border/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 px-6 py-10 md:py-12">
         <div
           className={cn(
             "mx-auto max-w-xl text-center transition-all duration-700",
@@ -85,6 +84,7 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
             <Shield className="h-3 w-3" />
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </div>
+        </div>
         </div>
       </div>
     </section>
