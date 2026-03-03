@@ -19,6 +19,17 @@ const ArticlesSection = lazy(() => import("@/components/home/sections/ArticlesSe
 const StatsPartnersSection = lazy(() => import("@/components/home/sections/StatsPartnersSection"));
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const GenericHomepageSection = lazy(() => import("@/components/home/sections/GenericHomepageSection"));
+const HomeSearch = lazy(() => import("@/components/home/HomeSearch").then(m => ({ default: m.HomeSearch })));
+const RegionalEvents = lazy(() => import("@/components/home/RegionalEvents").then(m => ({ default: m.RegionalEvents })));
+const HomeEventsCalendarPreview = lazy(() => import("@/components/home/HomeEventsCalendarPreview").then(m => ({ default: m.HomeEventsCalendarPreview })));
+const NewlyJoinedUsers = lazy(() => import("@/components/home/NewlyJoinedUsers").then(m => ({ default: m.NewlyJoinedUsers })));
+const HomeProSuppliers = lazy(() => import("@/components/home/HomeProSuppliers").then(m => ({ default: m.HomeProSuppliers })));
+const HomeMasterclasses = lazy(() => import("@/components/home/HomeMasterclasses").then(m => ({ default: m.HomeMasterclasses })));
+const HomeTestimonials = lazy(() => import("@/components/home/HomeTestimonials").then(m => ({ default: m.HomeTestimonials })));
+const HomeTrendingContent = lazy(() => import("@/components/home/HomeTrendingContent").then(m => ({ default: m.HomeTrendingContent })));
+const HomeQuickActions = lazy(() => import("@/components/home/HomeQuickActions").then(m => ({ default: m.HomeQuickActions })));
+const PlatformFeatures = lazy(() => import("@/components/home/PlatformFeatures").then(m => ({ default: m.PlatformFeatures })));
+const SponsorshipOpportunities = lazy(() => import("@/components/home/SponsorshipOpportunities").then(m => ({ default: m.SponsorshipOpportunities })));
 
 const SectionFallback = () => (
   <div className="container py-16">
@@ -36,12 +47,23 @@ const SectionFallback = () => (
 
 /* Map section_key → dedicated lazy component (if available) */
 const DEDICATED_SECTIONS: Record<string, React.LazyExoticComponent<any>> = {
+  search: HomeSearch,
   stats: StatsBar,
-  featured_chefs: FeaturedChefsSection,
   events_by_category: CompetitionsSection,
-  articles: ArticlesSection,
-  partners: StatsPartnersSection,
+  regional_events: RegionalEvents,
+  events_calendar: HomeEventsCalendarPreview,
+  featured_chefs: FeaturedChefsSection,
+  newly_joined: NewlyJoinedUsers,
   sponsors: StatsPartnersSection,
+  partners: StatsPartnersSection,
+  pro_suppliers: HomeProSuppliers,
+  masterclasses: HomeMasterclasses,
+  articles: ArticlesSection,
+  testimonials: HomeTestimonials,
+  trending: HomeTrendingContent,
+  quick_actions: HomeQuickActions,
+  platform_features: PlatformFeatures,
+  sponsorship_opportunities: SponsorshipOpportunities,
   newsletter: NewsletterSignup,
 };
 
