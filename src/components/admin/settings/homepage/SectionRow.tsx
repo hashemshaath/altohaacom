@@ -19,6 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SectionIcon } from "./SectionIcon";
+import { BilingualField } from "./BilingualField";
 
 const SIZE_OPTIONS = [
   { value: "small", en: "Small", ar: "صغير" },
@@ -247,41 +248,26 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                 <Separator />
 
                 <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "العناوين" : "Titles"}</Label>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">English Title</Label>
-                      <Input value={merged.title_en} onChange={(e) => set("title_en", e.target.value)} className="text-xs h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">العنوان بالعربية</Label>
-                      <Input value={merged.title_ar} onChange={(e) => set("title_ar", e.target.value)} className="text-xs h-8" dir="rtl" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">English Subtitle</Label>
-                      <Input value={merged.subtitle_en || ""} onChange={(e) => set("subtitle_en", e.target.value)} className="text-xs h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">العنوان الفرعي</Label>
-                      <Input value={merged.subtitle_ar || ""} onChange={(e) => set("subtitle_ar", e.target.value)} className="text-xs h-8" dir="rtl" />
-                    </div>
-                  </div>
-                </div>
+                  <BilingualField
+                    label="Title" labelAr="العنوان"
+                    valueEn={merged.title_en} valueAr={merged.title_ar}
+                    onChangeEn={(v) => set("title_en", v)} onChangeAr={(v) => set("title_ar", v)}
+                    placeholderEn="Section title..." placeholderAr="عنوان القسم..."
+                  />
+                  <BilingualField
+                    label="Subtitle" labelAr="العنوان الفرعي"
+                    valueEn={merged.subtitle_en || ""} valueAr={merged.subtitle_ar || ""}
+                    onChangeEn={(v) => set("subtitle_en", v)} onChangeAr={(v) => set("subtitle_ar", v)}
+                    placeholderEn="Subtitle..." placeholderAr="العنوان الفرعي..."
+                  />
 
-                <Separator />
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "الوصف" : "Description"}</Label>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">English Description</Label>
-                      <Input value={merged.description_en || ""} onChange={(e) => set("description_en", e.target.value)} className="text-xs h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">الوصف بالعربية</Label>
-                      <Input value={merged.description_ar || ""} onChange={(e) => set("description_ar", e.target.value)} className="text-xs h-8" dir="rtl" />
-                    </div>
-                  </div>
+                  <BilingualField
+                    label="Description" labelAr="الوصف"
+                    valueEn={merged.description_en || ""} valueAr={merged.description_ar || ""}
+                    onChangeEn={(v) => set("description_en", v)} onChangeAr={(v) => set("description_ar", v)}
+                    placeholderEn="Description..." placeholderAr="الوصف..."
+                    multiline rows={2}
+                  />
                 </div>
 
                 <Separator />
