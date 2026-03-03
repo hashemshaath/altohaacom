@@ -12109,6 +12109,7 @@ export type Database = {
         Row: {
           animation: string
           bg_color: string | null
+          card_template: string
           container_width: string
           cover_height: number | null
           cover_image_url: string | null
@@ -12118,6 +12119,7 @@ export type Database = {
           custom_config: Json | null
           description_ar: string | null
           description_en: string | null
+          display_style: string
           id: string
           is_visible: boolean
           item_count: number | null
@@ -12125,9 +12127,17 @@ export type Database = {
           items_per_row: number | null
           max_items_mobile: number
           section_key: string
+          show_description: boolean
           show_filters: boolean | null
+          show_subtitle: boolean
+          show_title: boolean
           show_view_all: boolean | null
           sort_order: number
+          source_filters: Json | null
+          source_sort_by: string | null
+          source_sort_dir: string | null
+          source_table: string | null
+          source_type: string
           spacing: string
           subtitle_ar: string | null
           subtitle_en: string | null
@@ -12139,6 +12149,7 @@ export type Database = {
         Insert: {
           animation?: string
           bg_color?: string | null
+          card_template?: string
           container_width?: string
           cover_height?: number | null
           cover_image_url?: string | null
@@ -12148,6 +12159,7 @@ export type Database = {
           custom_config?: Json | null
           description_ar?: string | null
           description_en?: string | null
+          display_style?: string
           id?: string
           is_visible?: boolean
           item_count?: number | null
@@ -12155,9 +12167,17 @@ export type Database = {
           items_per_row?: number | null
           max_items_mobile?: number
           section_key: string
+          show_description?: boolean
           show_filters?: boolean | null
+          show_subtitle?: boolean
+          show_title?: boolean
           show_view_all?: boolean | null
           sort_order?: number
+          source_filters?: Json | null
+          source_sort_by?: string | null
+          source_sort_dir?: string | null
+          source_table?: string | null
+          source_type?: string
           spacing?: string
           subtitle_ar?: string | null
           subtitle_en?: string | null
@@ -12169,6 +12189,7 @@ export type Database = {
         Update: {
           animation?: string
           bg_color?: string | null
+          card_template?: string
           container_width?: string
           cover_height?: number | null
           cover_image_url?: string | null
@@ -12178,6 +12199,7 @@ export type Database = {
           custom_config?: Json | null
           description_ar?: string | null
           description_en?: string | null
+          display_style?: string
           id?: string
           is_visible?: boolean
           item_count?: number | null
@@ -12185,9 +12207,17 @@ export type Database = {
           items_per_row?: number | null
           max_items_mobile?: number
           section_key?: string
+          show_description?: boolean
           show_filters?: boolean | null
+          show_subtitle?: boolean
+          show_title?: boolean
           show_view_all?: boolean | null
           sort_order?: number
+          source_filters?: Json | null
+          source_sort_by?: string | null
+          source_sort_dir?: string | null
+          source_table?: string | null
+          source_type?: string
           spacing?: string
           subtitle_ar?: string | null
           subtitle_en?: string | null

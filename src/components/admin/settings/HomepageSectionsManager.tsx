@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from "react";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useHomepageSections,
@@ -8,17 +7,14 @@ import {
   useCreateHomepageSection,
   type HomepageSection,
 } from "@/hooks/useHomepageSections";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  Eye, EyeOff, ChevronDown, ChevronUp, Save, LayoutGrid,
-  Loader2, Search, RotateCcw, GripVertical, Filter, Trash2,
-  CheckSquare, Square, ArrowUpDown, Palette, Sparkles,
+  Eye, EyeOff, Save,
+  Loader2, Search, RotateCcw, Filter,
+  CheckSquare, Square, ArrowUpDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -69,11 +65,7 @@ export function HomepageSectionsManager() {
   };
 
   const toggleSelectAll = () => {
-    if (allSelected) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(filteredSections.map(s => s.id)));
-    }
+    setSelectedIds(allSelected ? new Set() : new Set(filteredSections.map(s => s.id)));
   };
 
   const toggle = (id: string) => {
@@ -87,10 +79,7 @@ export function HomepageSectionsManager() {
   const handleUpdate = async (section: HomepageSection, updates: Partial<HomepageSection>) => {
     try {
       await updateSection.mutateAsync({ id: section.id, ...updates });
-      toast({
-        title: isAr ? "تم الحفظ" : "Saved",
-        description: isAr ? `تم تحديث "${section.title_ar}"` : `Updated "${section.title_en}"`,
-      });
+      toast({ title: isAr ? "✓ تم الحفظ" : "✓ Saved" });
     } catch {
       toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
@@ -99,44 +88,23 @@ export function HomepageSectionsManager() {
   const handleQuickToggle = async (section: HomepageSection, visible: boolean) => {
     try {
       await updateSection.mutateAsync({ id: section.id, is_visible: visible });
-      toast({
-        title: visible ? (isAr ? "تم الإظهار" : "Shown") : (isAr ? "تم الإخفاء" : "Hidden"),
-        description: isAr ? section.title_ar : section.title_en,
-      });
     } catch {
       toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
   };
 
-  // Bulk actions
   const bulkToggleVisibility = async (visible: boolean) => {
     const targets = hasSelection
       ? displaySections.filter(s => selectedIds.has(s.id))
       : displaySections;
-    const updates = targets.map((s) => ({ id: s.id, is_visible: visible }));
     try {
-      await bulkUpdate.mutateAsync(updates);
-      toast({ title: isAr ? "تم التحديث" : "Updated", description: `${updates.length} ${isAr ? "قسم" : "sections"}` });
+      await bulkUpdate.mutateAsync(targets.map(s => ({ id: s.id, is_visible: visible })));
+      toast({ title: `${targets.length} ${isAr ? "تم التحديث" : "updated"}` });
       setSelectedIds(new Set());
     } catch {
       toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
   };
-
-  const bulkApplyAnimation = async (animation: HomepageSection["animation"]) => {
-    if (!hasSelection) return;
-    const updates = Array.from(selectedIds).map(id => ({ id, animation }));
-    try {
-      await bulkUpdate.mutateAsync(updates);
-      toast({ title: isAr ? "تم التحديث" : "Updated" });
-      setSelectedIds(new Set());
-    } catch {
-      toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
-    }
-  };
-
-  const expandAll = () => setOpenSections(new Set(displaySections.map((s) => s.id)));
-  const collapseAll = () => setOpenSections(new Set());
 
   // Drag and drop
   const handleDragStart = useCallback((idx: number) => (e: React.DragEvent) => {
@@ -151,13 +119,10 @@ export function HomepageSectionsManager() {
 
   const handleDrop = useCallback(() => (e: React.DragEvent) => {
     e.preventDefault();
-    if (dragItem.current === null || dragOverItem.current === null) return;
-    if (dragItem.current === dragOverItem.current) return;
-
+    if (dragItem.current === null || dragOverItem.current === null || dragItem.current === dragOverItem.current) return;
     const items = [...(orderedSections || sections)];
     const [draggedItem] = items.splice(dragItem.current, 1);
     items.splice(dragOverItem.current, 0, draggedItem);
-
     setOrderedSections(items);
     dragItem.current = null;
     dragOverItem.current = null;
@@ -170,17 +135,14 @@ export function HomepageSectionsManager() {
 
   const saveOrder = async () => {
     if (!orderedSections) return;
-    const updates = orderedSections.map((s, idx) => ({ id: s.id, sort_order: idx + 1 }));
     try {
-      await bulkUpdate.mutateAsync(updates);
+      await bulkUpdate.mutateAsync(orderedSections.map((s, i) => ({ id: s.id, sort_order: i + 1 })));
       setOrderedSections(null);
-      toast({ title: isAr ? "تم حفظ الترتيب" : "Order saved" });
+      toast({ title: isAr ? "✓ تم حفظ الترتيب" : "✓ Order saved" });
     } catch {
       toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
   };
-
-  const cancelReorder = () => setOrderedSections(null);
 
   const handleDuplicate = async (section: HomepageSection) => {
     const { id, updated_at, ...rest } = section;
@@ -193,7 +155,7 @@ export function HomepageSectionsManager() {
         sort_order: displaySections.length + 1,
         is_visible: false,
       });
-      toast({ title: isAr ? "تم التكرار" : "Duplicated", description: isAr ? section.title_ar : section.title_en });
+      toast({ title: isAr ? "✓ تم التكرار" : "✓ Duplicated" });
     } catch {
       toast({ title: isAr ? "خطأ" : "Error", variant: "destructive" });
     }
@@ -202,167 +164,75 @@ export function HomepageSectionsManager() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Stats bar */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card px-3 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
-            <LayoutGrid className="h-4 w-4 text-primary" />
-          </div>
-          <div>
-            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={displaySections.length} /></p>
-            <p className="text-[9px] text-muted-foreground">{isAr ? "إجمالي الأقسام" : "Total Sections"}</p>
-          </div>
+    <div className="space-y-2">
+      {/* Compact toolbar */}
+      <div className="flex items-center gap-1.5 flex-wrap rounded-xl border border-border/40 bg-muted/20 p-2">
+        <div className="relative flex-1 min-w-[140px] max-w-[200px]">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={isAr ? "بحث..." : "Search..."}
+            className="h-7 text-[10px] pl-7"
+          />
         </div>
-        <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card px-3 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
-            <Eye className="h-4 w-4 text-primary" />
-          </div>
-          <div>
-            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={visibleCount} /></p>
-            <p className="text-[9px] text-muted-foreground">{isAr ? "ظاهر" : "Visible"}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-card px-3 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted">
-            <EyeOff className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div>
-            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={hiddenCount} /></p>
-            <p className="text-[9px] text-muted-foreground">{isAr ? "مخفي" : "Hidden"}</p>
-          </div>
+
+        <Select value={visibilityFilter} onValueChange={(v) => setVisibilityFilter(v as any)}>
+          <SelectTrigger className="h-7 w-auto min-w-[80px] text-[10px] gap-1">
+            <Filter className="h-2.5 w-2.5" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="text-xs">{isAr ? "الكل" : "All"} ({displaySections.length})</SelectItem>
+            <SelectItem value="visible" className="text-xs">{isAr ? "مرئي" : "Visible"} ({visibleCount})</SelectItem>
+            <SelectItem value="hidden" className="text-xs">{isAr ? "مخفي" : "Hidden"} ({hiddenCount})</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <div className="h-4 w-px bg-border/40" />
+
+        <Button size="sm" variant={allSelected ? "default" : "ghost"} className="h-7 text-[9px] gap-1 px-2" onClick={toggleSelectAll}>
+          {allSelected ? <CheckSquare className="h-3 w-3" /> : <Square className="h-3 w-3" />}
+          {hasSelection && <span>{selectedIds.size}</span>}
+        </Button>
+
+        <Button size="sm" variant="ghost" className="h-7 text-[9px] gap-1 px-2" onClick={() => bulkToggleVisibility(true)}>
+          <Eye className="h-3 w-3" />
+        </Button>
+        <Button size="sm" variant="ghost" className="h-7 text-[9px] gap-1 px-2" onClick={() => bulkToggleVisibility(false)}>
+          <EyeOff className="h-3 w-3" />
+        </Button>
+
+        <div className="ms-auto flex items-center gap-1">
+          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-5 font-mono">
+            {visibleCount}/{displaySections.length}
+          </Badge>
         </div>
       </div>
 
-      {/* Toolbar */}
-      <Card className="border-border/50 bg-muted/30">
-        <CardContent className="p-3 space-y-2.5">
-          {/* Search + Filter row */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative flex-1 min-w-[160px] max-w-xs">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isAr ? "بحث في الأقسام..." : "Search sections..."}
-                className="h-8 text-xs pl-8"
-              />
-            </div>
+      {/* Reorder bar */}
+      {hasReorder && (
+        <div className="flex items-center gap-2 rounded-xl bg-primary/5 border border-primary/20 px-3 py-1.5">
+          <ArrowUpDown className="h-3.5 w-3.5 text-primary animate-pulse" />
+          <span className="text-[10px] font-medium flex-1">{isAr ? "احفظ الترتيب الجديد" : "Save new order"}</span>
+          <Button size="sm" className="h-6 text-[10px] gap-1 px-2" onClick={saveOrder} disabled={bulkUpdate.isPending}>
+            {bulkUpdate.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+            {isAr ? "حفظ" : "Save"}
+          </Button>
+          <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => setOrderedSections(null)}>
+            <RotateCcw className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
 
-            <Select value={visibilityFilter} onValueChange={(v) => setVisibilityFilter(v as any)}>
-              <SelectTrigger className="h-8 w-[120px] text-xs">
-                <Filter className="h-3 w-3 mr-1" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">{isAr ? "الكل" : "All"} ({displaySections.length})</SelectItem>
-                <SelectItem value="visible" className="text-xs">{isAr ? "مرئي" : "Visible"} ({visibleCount})</SelectItem>
-                <SelectItem value="hidden" className="text-xs">{isAr ? "مخفي" : "Hidden"} ({hiddenCount})</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <div className="flex items-center gap-1 ms-auto">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={expandAll}>
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">{isAr ? "فتح الكل" : "Expand All"}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={collapseAll}>
-                    <ChevronUp className="h-3.5 w-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">{isAr ? "إغلاق الكل" : "Collapse All"}</TooltipContent>
-              </Tooltip>
-            </div>
-          </div>
-
-          {/* Selection & Bulk actions row */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button
-              size="sm"
-              variant={allSelected ? "default" : "outline"}
-              className="h-7 text-[10px] gap-1.5"
-              onClick={toggleSelectAll}
-            >
-              {allSelected ? <CheckSquare className="h-3 w-3" /> : <Square className="h-3 w-3" />}
-              {allSelected ? (isAr ? "إلغاء التحديد" : "Deselect") : (isAr ? "تحديد الكل" : "Select All")}
-            </Button>
-
-            {hasSelection && (
-              <Badge variant="secondary" className="text-[10px] gap-1 px-2">
-                {selectedIds.size} {isAr ? "محدد" : "selected"}
-              </Badge>
-            )}
-
-            <div className="h-4 w-px bg-border/60 mx-0.5" />
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => bulkToggleVisibility(true)}>
-                  <Eye className="h-3 w-3" /> {isAr ? "إظهار" : "Show"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="text-xs">{hasSelection ? `${selectedIds.size} ${isAr ? "محدد" : "selected"}` : (isAr ? "جميع الأقسام" : "All sections")}</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => bulkToggleVisibility(false)}>
-                  <EyeOff className="h-3 w-3" /> {isAr ? "إخفاء" : "Hide"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent className="text-xs">{hasSelection ? `${selectedIds.size} ${isAr ? "محدد" : "selected"}` : (isAr ? "جميع الأقسام" : "All sections")}</TooltipContent>
-            </Tooltip>
-
-            {hasSelection && (
-              <>
-                <div className="h-4 w-px bg-border/60 mx-0.5" />
-                <Select onValueChange={(v) => bulkApplyAnimation(v as HomepageSection["animation"])}>
-                  <SelectTrigger className="h-7 w-[130px] text-[10px]">
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    {isAr ? "تحريك المحدد" : "Animate Selected"}
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["none", "fade", "slide-up", "slide-left", "scale", "blur"].map(a => (
-                      <SelectItem key={a} value={a} className="text-xs">{a}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </>
-            )}
-          </div>
-
-          {/* Reorder save bar */}
-          {hasReorder && (
-            <div className="flex items-center gap-2 rounded-xl bg-primary/5 border border-primary/20 px-3 py-2">
-              <ArrowUpDown className="h-4 w-4 text-primary animate-pulse" />
-              <span className="text-xs font-medium flex-1">{isAr ? "تم تغيير الترتيب - احفظ التغييرات" : "Order changed — save to apply"}</span>
-              <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={saveOrder} disabled={bulkUpdate.isPending}>
-                {bulkUpdate.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
-                {isAr ? "حفظ" : "Save"}
-              </Button>
-              <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={cancelReorder}>
-                <RotateCcw className="h-3 w-3" />
-                {isAr ? "إلغاء" : "Cancel"}
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Section cards */}
-      <div className="space-y-1.5">
+      {/* Section list */}
+      <div className="space-y-1">
         {filteredSections.map((section, idx) => (
           <SectionRow
             key={section.id}
@@ -388,7 +258,7 @@ export function HomepageSectionsManager() {
       </div>
 
       {filteredSections.length === 0 && searchQuery && (
-        <div className="text-center py-8 text-sm text-muted-foreground">
+        <div className="text-center py-6 text-xs text-muted-foreground">
           {isAr ? "لا توجد أقسام مطابقة" : "No matching sections"}
         </div>
       )}

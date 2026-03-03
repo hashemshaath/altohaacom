@@ -22,11 +22,21 @@ export interface HomepageSection {
   max_items_mobile: number;
   show_filters: boolean;
   show_view_all: boolean;
+  show_title: boolean;
+  show_subtitle: boolean;
+  show_description: boolean;
   spacing: "none" | "compact" | "normal" | "relaxed";
   animation: "none" | "fade" | "slide-up" | "slide-left" | "scale" | "blur";
   bg_color: string;
   css_class: string;
   container_width: "default" | "narrow" | "wide" | "full";
+  source_type: "auto" | "manual" | "query";
+  source_table: string;
+  source_filters: Record<string, any>;
+  source_sort_by: string;
+  source_sort_dir: "asc" | "desc";
+  display_style: "grid" | "carousel" | "list" | "masonry" | "featured";
+  card_template: "default" | "minimal" | "overlay" | "horizontal" | "stats";
   custom_config: Record<string, any>;
   updated_at: string;
 }

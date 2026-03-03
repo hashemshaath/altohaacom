@@ -12,25 +12,60 @@ import { Slider } from "@/components/ui/slider";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Type,
-  Filter, GripVertical, Loader2, Palette, Sparkles, Smartphone,
-  Clock, Box, Settings2, RotateCcw, Copy, ExternalLink,
+  Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Database,
+  GripVertical, Loader2, Palette, Sparkles,
+  Clock, Settings2, RotateCcw, Copy, ExternalLink, Rows3,
+  LayoutTemplate, SlidersHorizontal,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SectionIcon } from "./SectionIcon";
 import { BilingualField } from "./BilingualField";
 
-const SIZE_OPTIONS = [
-  { value: "small", en: "Small", ar: "صغير" },
-  { value: "medium", en: "Medium", ar: "متوسط" },
-  { value: "large", en: "Large", ar: "كبير" },
+const SOURCE_TYPE_OPTIONS = [
+  { value: "auto", en: "Automatic", ar: "تلقائي" },
+  { value: "manual", en: "Manual", ar: "يدوي" },
+  { value: "query", en: "Custom Query", ar: "استعلام مخصص" },
 ];
 
-const COVER_TYPE_OPTIONS = [
-  { value: "none", en: "No Cover", ar: "بدون غلاف" },
-  { value: "background", en: "Background Image", ar: "صورة خلفية" },
-  { value: "banner", en: "Top Banner", ar: "بانر علوي" },
+const SOURCE_TABLE_OPTIONS = [
+  { value: "", en: "Default", ar: "افتراضي" },
+  { value: "competitions", en: "Competitions", ar: "المسابقات" },
+  { value: "articles", en: "Articles", ar: "المقالات" },
+  { value: "profiles", en: "Chefs/Users", ar: "الطهاة/المستخدمين" },
+  { value: "companies", en: "Companies", ar: "الشركات" },
+  { value: "masterclasses", en: "Masterclasses", ar: "الدورات" },
+  { value: "establishments", en: "Establishments", ar: "المنشآت" },
+];
+
+const SORT_BY_OPTIONS = [
+  { value: "created_at", en: "Date Created", ar: "تاريخ الإنشاء" },
+  { value: "updated_at", en: "Last Updated", ar: "آخر تحديث" },
+  { value: "sort_order", en: "Manual Order", ar: "ترتيب يدوي" },
+  { value: "view_count", en: "Most Viewed", ar: "الأكثر مشاهدة" },
+  { value: "name", en: "Name (A-Z)", ar: "الاسم" },
+];
+
+const DISPLAY_STYLE_OPTIONS = [
+  { value: "grid", en: "Grid", ar: "شبكة", icon: "⊞" },
+  { value: "carousel", en: "Carousel", ar: "دوّار", icon: "⟳" },
+  { value: "list", en: "List", ar: "قائمة", icon: "☰" },
+  { value: "masonry", en: "Masonry", ar: "بناء", icon: "⊟" },
+  { value: "featured", en: "Featured", ar: "مميز", icon: "★" },
+];
+
+const CARD_TEMPLATE_OPTIONS = [
+  { value: "default", en: "Default", ar: "افتراضي" },
+  { value: "minimal", en: "Minimal", ar: "بسيط" },
+  { value: "overlay", en: "Overlay", ar: "مع تراكب" },
+  { value: "horizontal", en: "Horizontal", ar: "أفقي" },
+  { value: "stats", en: "Stats Card", ar: "بطاقة إحصائيات" },
+];
+
+const SIZE_OPTIONS = [
+  { value: "small", en: "S", ar: "ص" },
+  { value: "medium", en: "M", ar: "م" },
+  { value: "large", en: "L", ar: "ك" },
 ];
 
 const SPACING_OPTIONS = [
@@ -41,19 +76,25 @@ const SPACING_OPTIONS = [
 ];
 
 const ANIMATION_OPTIONS = [
-  { value: "none", en: "None", ar: "بدون" },
-  { value: "fade", en: "Fade In", ar: "تلاشي" },
-  { value: "slide-up", en: "Slide Up", ar: "انزلاق للأعلى" },
-  { value: "slide-left", en: "Slide Left", ar: "انزلاق يسار" },
+  { value: "none", en: "—", ar: "—" },
+  { value: "fade", en: "Fade", ar: "تلاشي" },
+  { value: "slide-up", en: "Up", ar: "↑" },
+  { value: "slide-left", en: "Left", ar: "←" },
   { value: "scale", en: "Scale", ar: "تكبير" },
-  { value: "blur", en: "Blur In", ar: "ضبابي" },
+  { value: "blur", en: "Blur", ar: "ضبابي" },
 ];
 
 const CONTAINER_OPTIONS = [
   { value: "default", en: "Default", ar: "افتراضي" },
   { value: "narrow", en: "Narrow", ar: "ضيق" },
   { value: "wide", en: "Wide", ar: "واسع" },
-  { value: "full", en: "Full Width", ar: "عرض كامل" },
+  { value: "full", en: "Full", ar: "كامل" },
+];
+
+const COVER_TYPE_OPTIONS = [
+  { value: "none", en: "None", ar: "بدون" },
+  { value: "background", en: "Background", ar: "خلفية" },
+  { value: "banner", en: "Banner", ar: "بانر" },
 ];
 
 interface SectionRowProps {
@@ -77,34 +118,6 @@ interface SectionRowProps {
   };
 }
 
-// Mini grid visualization component
-function GridPreview({ itemsPerRow, itemCount, size, isAr }: {
-  itemsPerRow: number;
-  itemCount: number;
-  size: string;
-  isAr: boolean;
-}) {
-  const rows = Math.ceil(Math.min(itemCount, 12) / itemsPerRow);
-  const cellH = size === "large" ? 6 : size === "medium" ? 4 : 3;
-
-  return (
-    <div className="rounded-md border border-border/40 bg-muted/30 p-1.5 w-fit">
-      <div
-        className="grid gap-0.5"
-        style={{ gridTemplateColumns: `repeat(${itemsPerRow}, 1fr)` }}
-      >
-        {Array.from({ length: Math.min(itemCount, itemsPerRow * rows) }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-[2px] bg-primary/20"
-            style={{ width: 10, height: cellH }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function SectionRow({
   section, index, isOpen, isSelected, onSelect, onToggle, onUpdate, onQuickToggle,
   onDuplicate, isPending, isAr, isDragging, dragHandleProps,
@@ -117,350 +130,296 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
     setLocal((prev) => ({ ...prev, [key]: value }));
   };
 
-  const save = () => {
-    onUpdate(local);
-    setLocal({});
-  };
-
+  const save = () => { onUpdate(local); setLocal({}); };
   const hasChanges = Object.keys(local).length > 0;
-  const lastUpdated = new Date(section.updated_at).toLocaleDateString(isAr ? "ar" : "en", {
-    month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
-  });
+
+  const configSummary = [
+    merged.display_style !== "grid" && merged.display_style,
+    merged.source_type !== "auto" && merged.source_type,
+    merged.card_template !== "default" && merged.card_template,
+    merged.animation !== "none" && merged.animation,
+    merged.cover_type !== "none" && (isAr ? "غلاف" : "cover"),
+  ].filter(Boolean);
 
   return (
     <Collapsible ref={ref} open={isOpen} onOpenChange={onToggle}>
       <div
         className={cn(
           "rounded-xl border transition-all",
-          isOpen ? "border-primary/30 bg-card shadow-sm" : "border-border/50 hover:border-border",
-          !merged.is_visible && "opacity-50",
-          isSelected && "ring-2 ring-primary/30 border-primary/40",
+          isOpen ? "border-primary/30 bg-card shadow-sm" : "border-border/40 hover:border-border/70",
+          !merged.is_visible && "opacity-40",
+          isSelected && "ring-1 ring-primary/30",
           isDragging && "opacity-30 scale-95"
         )}
         draggable
         {...dragHandleProps}
       >
-        {/* Header */}
-        <div className="flex items-center gap-1 px-1.5 py-1.5 sm:px-3 sm:py-2.5">
-          {/* Selection checkbox */}
+        {/* Compact header */}
+        <div className="flex items-center gap-1 px-2 py-1.5">
           <Checkbox
             checked={isSelected}
             onCheckedChange={() => onSelect?.()}
-            className="h-3.5 w-3.5 shrink-0"
+            className="h-3 w-3 shrink-0"
             onClick={(e) => e.stopPropagation()}
           />
-
-          <GripVertical className="h-4 w-4 text-muted-foreground/40 shrink-0 cursor-grab active:cursor-grabbing" />
+          <GripVertical className="h-3.5 w-3.5 text-muted-foreground/30 shrink-0 cursor-grab" />
 
           <button
             onClick={(e) => { e.stopPropagation(); onQuickToggle(!merged.is_visible); }}
-            className="p-1 rounded-md hover:bg-muted/50 transition-colors shrink-0"
-            title={isAr ? "إظهار/إخفاء" : "Toggle visibility"}
+            className="p-0.5 rounded hover:bg-muted/50 shrink-0"
           >
-            {merged.is_visible ? (
-              <Eye className="h-3.5 w-3.5 text-primary" />
-            ) : (
-              <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
-            )}
+            {merged.is_visible
+              ? <Eye className="h-3 w-3 text-primary" />
+              : <EyeOff className="h-3 w-3 text-muted-foreground" />
+            }
           </button>
 
           <CollapsibleTrigger asChild>
-            <button className="flex flex-1 items-center gap-2 text-start min-w-0 py-1">
-              <SectionIcon sectionKey={section.section_key} className="h-4 w-4 text-primary/70 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <span className="text-xs sm:text-sm font-medium truncate block">
-                  {isAr ? merged.title_ar : merged.title_en}
-                </span>
-                <span className="text-[9px] sm:text-[10px] text-muted-foreground font-mono">{section.section_key}</span>
-              </div>
+            <button className="flex flex-1 items-center gap-1.5 text-start min-w-0 py-0.5">
+              <SectionIcon sectionKey={section.section_key} className="h-3.5 w-3.5 text-primary/60 shrink-0" />
+              <span className="text-xs font-medium truncate flex-1">
+                {isAr ? merged.title_ar : merged.title_en}
+              </span>
+              <span className="text-[9px] text-muted-foreground font-mono hidden sm:inline">{section.section_key}</span>
 
-              <div className="flex items-center gap-1.5 shrink-0">
-                {/* Mini grid preview */}
-                <div className="hidden sm:block">
-                  <GridPreview
-                    itemsPerRow={merged.items_per_row}
-                    itemCount={merged.item_count}
-                    size={merged.item_size}
-                    isAr={isAr}
-                  />
+              {configSummary.length > 0 && (
+                <div className="hidden sm:flex items-center gap-0.5">
+                  {configSummary.slice(0, 3).map((c, i) => (
+                    <Badge key={i} variant="outline" className="text-[7px] px-1 py-0 h-3.5">{c}</Badge>
+                  ))}
                 </div>
+              )}
 
-                {merged.cover_type !== "none" && (
-                  <Badge variant="secondary" className="text-[8px] sm:text-[9px] gap-0.5 px-1.5 py-0">
-                    <Image className="h-2.5 w-2.5" /> {isAr ? "غلاف" : "Cover"}
-                  </Badge>
-                )}
-                {merged.animation !== "none" && (
-                  <Badge variant="outline" className="text-[8px] sm:text-[9px] gap-0.5 px-1.5 py-0 hidden sm:flex">
-                    <Sparkles className="h-2.5 w-2.5" /> {merged.animation}
-                  </Badge>
-                )}
-                <Badge variant="outline" className="text-[9px] font-mono px-1 py-0 bg-muted/50">
-                  #{index + 1}
-                </Badge>
-                <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
-              </div>
+              <Badge variant="outline" className="text-[8px] font-mono px-1 py-0 h-3.5 bg-muted/40">
+                #{index + 1}
+              </Badge>
+              <ChevronDown className={cn("h-3 w-3 text-muted-foreground transition-transform shrink-0", isOpen && "rotate-180")} />
             </button>
           </CollapsibleTrigger>
         </div>
 
-        {/* Cover preview when collapsed */}
-        {merged.cover_type !== "none" && merged.cover_image_url && !isOpen && (
-          <div className="mx-3 mb-2 rounded-md overflow-hidden h-10 relative">
-            <img src={merged.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-black" style={{ opacity: merged.cover_overlay_opacity / 100 }} />
-          </div>
-        )}
-
-        {/* Expanded content with tabs */}
+        {/* Expanded editor */}
         <CollapsibleContent>
-          <div className="border-t border-border/50">
-            <Tabs defaultValue="content" className="w-full">
-              <div className="px-3 pt-2">
-                <TabsList className="h-8 w-full grid grid-cols-5 bg-muted/50">
-                  <TabsTrigger value="content" className="text-[10px] gap-1 h-7">
-                    <Type className="h-3 w-3" /> {isAr ? "المحتوى" : "Content"}
+          <div className="border-t border-border/40">
+            <Tabs defaultValue="data" className="w-full">
+              <div className="px-2 pt-1.5">
+                <TabsList className="h-7 w-full grid grid-cols-5 bg-muted/40 p-0.5">
+                  <TabsTrigger value="data" className="text-[9px] gap-1 h-6 px-1">
+                    <Database className="h-3 w-3" /> {isAr ? "المصدر" : "Data"}
                   </TabsTrigger>
-                  <TabsTrigger value="layout" className="text-[10px] gap-1 h-7">
+                  <TabsTrigger value="layout" className="text-[9px] gap-1 h-6 px-1">
                     <LayoutGrid className="h-3 w-3" /> {isAr ? "التخطيط" : "Layout"}
                   </TabsTrigger>
-                  <TabsTrigger value="cover" className="text-[10px] gap-1 h-7">
-                    <Image className="h-3 w-3" /> {isAr ? "الغلاف" : "Cover"}
+                  <TabsTrigger value="card" className="text-[9px] gap-1 h-6 px-1">
+                    <LayoutTemplate className="h-3 w-3" /> {isAr ? "البطاقة" : "Card"}
                   </TabsTrigger>
-                  <TabsTrigger value="style" className="text-[10px] gap-1 h-7">
+                  <TabsTrigger value="style" className="text-[9px] gap-1 h-6 px-1">
                     <Palette className="h-3 w-3" /> {isAr ? "المظهر" : "Style"}
                   </TabsTrigger>
-                  <TabsTrigger value="advanced" className="text-[10px] gap-1 h-7">
-                    <Settings2 className="h-3 w-3" /> {isAr ? "متقدم" : "Advanced"}
+                  <TabsTrigger value="advanced" className="text-[9px] gap-1 h-6 px-1">
+                    <Settings2 className="h-3 w-3" /> {isAr ? "متقدم" : "More"}
                   </TabsTrigger>
                 </TabsList>
               </div>
 
-              {/* Content Tab */}
-              <TabsContent value="content" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs flex items-center gap-1.5">
-                    <Eye className="h-3 w-3" /> {isAr ? "إظهار القسم" : "Show Section"}
-                  </Label>
-                  <Switch checked={merged.is_visible} onCheckedChange={(v) => set("is_visible", v)} />
+              {/* Data Source Tab */}
+              <TabsContent value="data" className="px-2 py-3 space-y-3 mt-0">
+                <div className="grid gap-2 grid-cols-2 sm:grid-cols-3">
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "نوع المصدر" : "Source Type"}</Label>
+                    <Select value={merged.source_type} onValueChange={(v) => set("source_type", v as HomepageSection["source_type"])}>
+                      <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {SOURCE_TYPE_OPTIONS.map(o => (
+                          <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "جدول البيانات" : "Source Table"}</Label>
+                    <Select value={merged.source_table || ""} onValueChange={(v) => set("source_table", v)}>
+                      <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {SOURCE_TABLE_OPTIONS.map(o => (
+                          <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "الترتيب" : "Sort By"}</Label>
+                    <Select value={merged.source_sort_by || "created_at"} onValueChange={(v) => set("source_sort_by", v)}>
+                      <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {SORT_BY_OPTIONS.map(o => (
+                          <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
-                <Separator />
+                <div className="flex items-center gap-2">
+                  <Label className="text-[9px] text-muted-foreground shrink-0">{isAr ? "الاتجاه" : "Direction"}</Label>
+                  <div className="flex gap-1">
+                    {(["desc", "asc"] as const).map(dir => (
+                      <button
+                        key={dir}
+                        onClick={() => set("source_sort_dir", dir)}
+                        className={cn(
+                          "text-[9px] px-2 py-0.5 rounded-md border transition-colors",
+                          merged.source_sort_dir === dir ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground"
+                        )}
+                      >
+                        {dir === "desc" ? (isAr ? "تنازلي" : "Newest") : (isAr ? "تصاعدي" : "Oldest")}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-                <div className="space-y-3">
+                {merged.source_type === "query" && (
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "فلاتر مخصصة (JSON)" : "Filters (JSON)"}</Label>
+                    <Textarea
+                      value={JSON.stringify(merged.source_filters || {}, null, 2)}
+                      onChange={(e) => {
+                        try { set("source_filters", JSON.parse(e.target.value)); } catch { /* ignore */ }
+                      }}
+                      className="text-[10px] font-mono h-16 resize-none"
+                      placeholder='{ "status": "published" }'
+                    />
+                  </div>
+                )}
+
+                <Separator className="my-1" />
+
+                <div className="space-y-2">
                   <BilingualField
                     label="Title" labelAr="العنوان"
                     valueEn={merged.title_en} valueAr={merged.title_ar}
                     onChangeEn={(v) => set("title_en", v)} onChangeAr={(v) => set("title_ar", v)}
-                    placeholderEn="Section title..." placeholderAr="عنوان القسم..."
                   />
                   <BilingualField
                     label="Subtitle" labelAr="العنوان الفرعي"
                     valueEn={merged.subtitle_en || ""} valueAr={merged.subtitle_ar || ""}
                     onChangeEn={(v) => set("subtitle_en", v)} onChangeAr={(v) => set("subtitle_ar", v)}
-                    placeholderEn="Subtitle..." placeholderAr="العنوان الفرعي..."
                   />
-
-                  <BilingualField
-                    label="Description" labelAr="الوصف"
-                    valueEn={merged.description_en || ""} valueAr={merged.description_ar || ""}
-                    onChangeEn={(v) => set("description_en", v)} onChangeAr={(v) => set("description_ar", v)}
-                    placeholderEn="Description..." placeholderAr="الوصف..."
-                    multiline rows={2}
-                  />
-                </div>
-
-                <Separator />
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold flex items-center gap-1.5">
-                    <Filter className="h-3 w-3" /> {isAr ? "خيارات" : "Options"}
-                  </Label>
-                  <div className="flex flex-wrap gap-4">
-                    <div className="flex items-center gap-2">
-                      <Switch checked={merged.show_filters} onCheckedChange={(v) => set("show_filters", v)} id={`f-${section.id}`} />
-                      <Label htmlFor={`f-${section.id}`} className="text-xs">{isAr ? "الفلاتر" : "Filters"}</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Switch checked={merged.show_view_all} onCheckedChange={(v) => set("show_view_all", v)} id={`v-${section.id}`} />
-                      <Label htmlFor={`v-${section.id}`} className="text-xs">{isAr ? "عرض الكل" : "View All"}</Label>
-                    </div>
-                  </div>
                 </div>
               </TabsContent>
 
               {/* Layout Tab */}
-              <TabsContent value="layout" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
-                {/* Visual grid preview */}
-                <div className="rounded-xl border border-border/50 bg-muted/20 p-4 flex flex-col items-center gap-3">
-                  <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "معاينة الشبكة" : "Grid Preview"}</p>
-                  <div
-                    className="grid gap-1.5"
-                    style={{ gridTemplateColumns: `repeat(${merged.items_per_row}, 1fr)` }}
-                  >
-                    {Array.from({ length: Math.min(merged.item_count, merged.items_per_row * 3) }).map((_, i) => {
-                      const h = merged.item_size === "large" ? 24 : merged.item_size === "medium" ? 18 : 12;
-                      return (
-                        <div
-                          key={i}
-                          className="rounded bg-primary/15 border border-primary/20 flex items-center justify-center"
-                          style={{ width: 36, height: h }}
-                        >
-                          <span className="text-[7px] text-primary/50">{i + 1}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
-                    <span>{merged.items_per_row} {isAr ? "في الصف" : "per row"}</span>
-                    <span>·</span>
-                    <span>{merged.item_count} {isAr ? "عنصر" : "items"}</span>
-                    <span>·</span>
-                    <span>{isAr ? SIZE_OPTIONS.find(s => s.value === merged.item_size)?.ar : merged.item_size}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "شبكة العرض" : "Grid Layout"}</Label>
-                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{isAr ? "عدد العناصر" : "Items"}</Label>
-                      <Input type="number" min={1} max={50} value={merged.item_count} onChange={(e) => set("item_count", parseInt(e.target.value) || 8)} className="text-xs h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{isAr ? "في الصف" : "Per Row"}</Label>
-                      <Input type="number" min={1} max={8} value={merged.items_per_row} onChange={(e) => set("items_per_row", parseInt(e.target.value) || 4)} className="text-xs h-8" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{isAr ? "الحجم" : "Size"}</Label>
-                      <Select value={merged.item_size} onValueChange={(v) => set("item_size", v as HomepageSection["item_size"])}>
-                        <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {SIZE_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <Smartphone className="h-2.5 w-2.5" /> {isAr ? "موبايل" : "Mobile"}
-                      </Label>
-                      <Input type="number" min={1} max={8} value={merged.max_items_mobile} onChange={(e) => set("max_items_mobile", parseInt(e.target.value) || 4)} className="text-xs h-8" />
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "التباعد والحاوية" : "Spacing & Container"}</Label>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{isAr ? "التباعد" : "Spacing"}</Label>
-                      <Select value={merged.spacing} onValueChange={(v) => set("spacing", v as HomepageSection["spacing"])}>
-                        <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {SPACING_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <Box className="h-2.5 w-2.5" /> {isAr ? "عرض الحاوية" : "Container Width"}
-                      </Label>
-                      <Select value={merged.container_width} onValueChange={(v) => set("container_width", v as HomepageSection["container_width"])}>
-                        <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {CONTAINER_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Cover Tab */}
-              <TabsContent value="cover" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
-                <div className="space-y-3">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1">
-                      <Label className="text-[10px] text-muted-foreground">{isAr ? "نوع الغلاف" : "Cover Type"}</Label>
-                      <Select value={merged.cover_type} onValueChange={(v) => set("cover_type", v as HomepageSection["cover_type"])}>
-                        <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {COVER_TYPE_OPTIONS.map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value} className="text-xs">{isAr ? opt.ar : opt.en}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    {merged.cover_type !== "none" && (
-                      <div className="space-y-1">
-                        <Label className="text-[10px] text-muted-foreground">{isAr ? "رابط الصورة" : "Image URL"}</Label>
-                        <Input
-                          value={merged.cover_image_url || ""}
-                          onChange={(e) => set("cover_image_url", e.target.value)}
-                          placeholder="https://..."
-                          className="text-xs h-8 font-mono"
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {merged.cover_type !== "none" && (
-                    <>
-                      {merged.cover_image_url && (
-                        <div className="rounded-xl overflow-hidden relative" style={{ height: `${Math.min(merged.cover_height, 200)}px` }}>
-                          <img src={merged.cover_image_url} alt="Cover preview" className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-black" style={{ opacity: merged.cover_overlay_opacity / 100 }} />
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-white text-xs font-medium drop-shadow-md">{isAr ? "معاينة الغلاف" : "Cover Preview"}</span>
-                          </div>
-                        </div>
-                      )}
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-[10px] text-muted-foreground">{isAr ? "الارتفاع" : "Height"}</Label>
-                            <Badge variant="outline" className="text-[9px] font-mono">{merged.cover_height}px</Badge>
-                          </div>
-                          <Slider value={[merged.cover_height]} onValueChange={([v]) => set("cover_height", v)} min={100} max={500} step={10} />
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <Label className="text-[10px] text-muted-foreground">{isAr ? "التراكب" : "Overlay"}</Label>
-                            <Badge variant="outline" className="text-[9px] font-mono">{merged.cover_overlay_opacity}%</Badge>
-                          </div>
-                          <Slider value={[merged.cover_overlay_opacity]} onValueChange={([v]) => set("cover_overlay_opacity", v)} min={0} max={100} step={5} />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </TabsContent>
-
-              {/* Style Tab */}
-              <TabsContent value="style" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold flex items-center gap-1.5">
-                    <Sparkles className="h-3 w-3" /> {isAr ? "الحركة" : "Animation"}
-                  </Label>
-                  {/* Animation visual selector */}
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-                    {ANIMATION_OPTIONS.map(opt => (
+              <TabsContent value="layout" className="px-2 py-3 space-y-3 mt-0">
+                {/* Display style selector */}
+                <div className="space-y-1">
+                  <Label className="text-[9px] text-muted-foreground">{isAr ? "أسلوب العرض" : "Display Style"}</Label>
+                  <div className="flex gap-1">
+                    {DISPLAY_STYLE_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
-                        onClick={() => set("animation", opt.value as HomepageSection["animation"])}
+                        onClick={() => set("display_style", opt.value as HomepageSection["display_style"])}
                         className={cn(
-                          "rounded-xl border px-2 py-2 text-center transition-all",
-                          merged.animation === opt.value
-                            ? "border-primary bg-primary/10 shadow-sm"
-                            : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
+                          "flex-1 rounded-lg border py-1.5 text-center transition-all text-[9px]",
+                          merged.display_style === opt.value
+                            ? "border-primary bg-primary/10 text-primary font-medium"
+                            : "border-border/40 text-muted-foreground hover:border-primary/30"
+                        )}
+                      >
+                        <span className="block text-sm leading-none mb-0.5">{opt.icon}</span>
+                        {isAr ? opt.ar : opt.en}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-2 grid-cols-4">
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "العدد" : "Items"}</Label>
+                    <Input type="number" min={1} max={50} value={merged.item_count} onChange={(e) => set("item_count", parseInt(e.target.value) || 8)} className="text-[10px] h-7" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "بالصف" : "Per Row"}</Label>
+                    <Input type="number" min={1} max={8} value={merged.items_per_row} onChange={(e) => set("items_per_row", parseInt(e.target.value) || 4)} className="text-[10px] h-7" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "الحجم" : "Size"}</Label>
+                    <div className="flex gap-0.5">
+                      {SIZE_OPTIONS.map(s => (
+                        <button
+                          key={s.value}
+                          onClick={() => set("item_size", s.value as HomepageSection["item_size"])}
+                          className={cn(
+                            "flex-1 text-[9px] py-1 rounded-md border transition-colors",
+                            merged.item_size === s.value ? "border-primary bg-primary/10 text-primary" : "border-border/40"
+                          )}
+                        >
+                          {isAr ? s.ar : s.en}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "موبايل" : "Mobile"}</Label>
+                    <Input type="number" min={1} max={8} value={merged.max_items_mobile} onChange={(e) => set("max_items_mobile", parseInt(e.target.value) || 4)} className="text-[10px] h-7" />
+                  </div>
+                </div>
+
+                <div className="grid gap-2 grid-cols-2">
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "التباعد" : "Spacing"}</Label>
+                    <Select value={merged.spacing} onValueChange={(v) => set("spacing", v as HomepageSection["spacing"])}>
+                      <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {SPACING_OPTIONS.map(o => <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "الحاوية" : "Container"}</Label>
+                    <Select value={merged.container_width} onValueChange={(v) => set("container_width", v as HomepageSection["container_width"])}>
+                      <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {CONTAINER_OPTIONS.map(o => <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Toggles row */}
+                <div className="flex flex-wrap gap-3">
+                  {([
+                    ["show_title", isAr ? "العنوان" : "Title"],
+                    ["show_subtitle", isAr ? "الفرعي" : "Subtitle"],
+                    ["show_description", isAr ? "الوصف" : "Desc"],
+                    ["show_filters", isAr ? "الفلاتر" : "Filters"],
+                    ["show_view_all", isAr ? "عرض الكل" : "View All"],
+                  ] as const).map(([key, label]) => (
+                    <div key={key} className="flex items-center gap-1">
+                      <Switch
+                        checked={merged[key] as boolean}
+                        onCheckedChange={(v) => set(key, v)}
+                        className="scale-75"
+                      />
+                      <span className="text-[9px] text-muted-foreground">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+
+              {/* Card Template Tab */}
+              <TabsContent value="card" className="px-2 py-3 space-y-3 mt-0">
+                <div className="space-y-1">
+                  <Label className="text-[9px] text-muted-foreground">{isAr ? "قالب البطاقة" : "Card Template"}</Label>
+                  <div className="grid grid-cols-5 gap-1">
+                    {CARD_TEMPLATE_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => set("card_template", opt.value as HomepageSection["card_template"])}
+                        className={cn(
+                          "rounded-lg border py-2 text-center transition-all",
+                          merged.card_template === opt.value
+                            ? "border-primary bg-primary/10"
+                            : "border-border/40 hover:border-primary/30"
                         )}
                       >
                         <span className="text-[9px] font-medium block">{isAr ? opt.ar : opt.en}</span>
@@ -471,142 +430,152 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
 
                 <Separator />
 
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold flex items-center gap-1.5">
-                    <Palette className="h-3 w-3" /> {isAr ? "لون الخلفية" : "Background Color"}
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="color"
-                      value={merged.bg_color || "#ffffff"}
-                      onChange={(e) => set("bg_color", e.target.value)}
-                      className="h-8 w-12 p-1 cursor-pointer"
-                    />
-                    <Input
-                      value={merged.bg_color || ""}
-                      onChange={(e) => set("bg_color", e.target.value)}
-                      placeholder={isAr ? "مثال: #f5f5f5 أو اتركه فارغاً" : "e.g. #f5f5f5 or leave empty"}
-                      className="text-xs h-8 font-mono flex-1"
-                    />
-                    {merged.bg_color && (
-                      <Button size="sm" variant="ghost" className="h-8 text-[10px]" onClick={() => set("bg_color", "")}>
-                        {isAr ? "مسح" : "Clear"}
-                      </Button>
-                    )}
+                {/* Cover settings */}
+                <div className="grid gap-2 grid-cols-2">
+                  <div className="space-y-1">
+                    <Label className="text-[9px] text-muted-foreground">{isAr ? "الغلاف" : "Cover"}</Label>
+                    <Select value={merged.cover_type} onValueChange={(v) => set("cover_type", v as HomepageSection["cover_type"])}>
+                      <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {COVER_TYPE_OPTIONS.map(o => <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  {merged.bg_color && (
-                    <div className="rounded-md border border-border/50 h-8 w-full" style={{ backgroundColor: merged.bg_color }} />
+                  {merged.cover_type !== "none" && (
+                    <div className="space-y-1">
+                      <Label className="text-[9px] text-muted-foreground">{isAr ? "رابط الصورة" : "Image URL"}</Label>
+                      <Input
+                        value={merged.cover_image_url || ""}
+                        onChange={(e) => set("cover_image_url", e.target.value)}
+                        placeholder="https://..."
+                        className="text-[10px] h-7 font-mono"
+                      />
+                    </div>
                   )}
                 </div>
 
-                <Separator />
+                {merged.cover_type !== "none" && (
+                  <div className="grid gap-2 grid-cols-2">
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <Label className="text-[9px] text-muted-foreground">{isAr ? "الارتفاع" : "Height"}</Label>
+                        <span className="text-[8px] font-mono text-muted-foreground">{merged.cover_height}px</span>
+                      </div>
+                      <Slider value={[merged.cover_height]} onValueChange={([v]) => set("cover_height", v)} min={100} max={500} step={10} />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between">
+                        <Label className="text-[9px] text-muted-foreground">{isAr ? "التراكب" : "Overlay"}</Label>
+                        <span className="text-[8px] font-mono text-muted-foreground">{merged.cover_overlay_opacity}%</span>
+                      </div>
+                      <Slider value={[merged.cover_overlay_opacity]} onValueChange={([v]) => set("cover_overlay_opacity", v)} min={0} max={100} step={5} />
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
 
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "فئة CSS مخصصة" : "Custom CSS Class"}</Label>
-                  <Input
-                    value={merged.css_class || ""}
-                    onChange={(e) => set("css_class", e.target.value)}
-                    placeholder={isAr ? "مثال: bg-gradient-to-r from-primary/5" : "e.g. bg-gradient-to-r from-primary/5"}
-                    className="text-xs h-8 font-mono"
-                  />
-                  <p className="text-[10px] text-muted-foreground">
-                    {isAr ? "أضف فئات Tailwind CSS مخصصة لهذا القسم" : "Add custom Tailwind CSS classes to this section"}
-                  </p>
+              {/* Style Tab */}
+              <TabsContent value="style" className="px-2 py-3 space-y-3 mt-0">
+                <div className="space-y-1">
+                  <Label className="text-[9px] text-muted-foreground">{isAr ? "الحركة" : "Animation"}</Label>
+                  <div className="flex gap-0.5">
+                    {ANIMATION_OPTIONS.map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => set("animation", opt.value as HomepageSection["animation"])}
+                        className={cn(
+                          "flex-1 rounded-md border py-1 text-[8px] transition-colors",
+                          merged.animation === opt.value
+                            ? "border-primary bg-primary/10 text-primary font-medium"
+                            : "border-border/40 text-muted-foreground"
+                        )}
+                      >
+                        {isAr ? opt.ar : opt.en}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-[9px] text-muted-foreground">{isAr ? "لون الخلفية" : "Background"}</Label>
+                  <div className="flex items-center gap-1.5">
+                    <Input type="color" value={merged.bg_color || "#ffffff"} onChange={(e) => set("bg_color", e.target.value)} className="h-7 w-9 p-0.5 cursor-pointer" />
+                    <Input value={merged.bg_color || ""} onChange={(e) => set("bg_color", e.target.value)} placeholder="#f5f5f5" className="text-[10px] h-7 font-mono flex-1" />
+                    {merged.bg_color && <Button size="sm" variant="ghost" className="h-7 text-[9px] px-1.5" onClick={() => set("bg_color", "")}>✕</Button>}
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-[9px] text-muted-foreground">{isAr ? "فئة CSS" : "CSS Class"}</Label>
+                  <Input value={merged.css_class || ""} onChange={(e) => set("css_class", e.target.value)} placeholder="custom-class" className="text-[10px] h-7 font-mono" />
                 </div>
               </TabsContent>
 
               {/* Advanced Tab */}
-              <TabsContent value="advanced" className="px-3 sm:px-4 py-4 space-y-4 mt-0">
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold flex items-center gap-1.5">
-                    <Settings2 className="h-3 w-3" /> {isAr ? "تكوين مخصص (JSON)" : "Custom Config (JSON)"}
-                  </Label>
+              <TabsContent value="advanced" className="px-2 py-3 space-y-3 mt-0">
+                <BilingualField
+                  label="Description" labelAr="الوصف"
+                  valueEn={merged.description_en || ""} valueAr={merged.description_ar || ""}
+                  onChangeEn={(v) => set("description_en", v)} onChangeAr={(v) => set("description_ar", v)}
+                  multiline rows={2}
+                />
+
+                <div className="space-y-1">
+                  <Label className="text-[9px] text-muted-foreground">{isAr ? "تكوين مخصص (JSON)" : "Custom Config"}</Label>
                   <Textarea
                     value={JSON.stringify(merged.custom_config || {}, null, 2)}
                     onChange={(e) => {
-                      try {
-                        const parsed = JSON.parse(e.target.value);
-                        set("custom_config", parsed);
-                        setJsonError(null);
-                      } catch {
-                        setJsonError(isAr ? "JSON غير صالح" : "Invalid JSON");
-                      }
+                      try { set("custom_config", JSON.parse(e.target.value)); setJsonError(null); }
+                      catch { setJsonError("Invalid JSON"); }
                     }}
-                    className="text-xs font-mono min-h-[120px] resize-y"
-                    placeholder='{ "key": "value" }'
+                    className="text-[10px] font-mono h-20 resize-none"
                   />
-                  {jsonError && (
-                    <p className="text-[10px] text-destructive">{jsonError}</p>
+                  {jsonError && <p className="text-[9px] text-destructive">{jsonError}</p>}
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {onDuplicate && (
+                    <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1 px-2" onClick={() => onDuplicate(section)}>
+                      <Copy className="h-2.5 w-2.5" /> {isAr ? "تكرار" : "Duplicate"}
+                    </Button>
                   )}
+                  <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1 px-2" onClick={() => {
+                    setLocal({ animation: "fade", spacing: "normal", container_width: "default", bg_color: "", css_class: "", cover_type: "none" });
+                  }}>
+                    <RotateCcw className="h-2.5 w-2.5" /> {isAr ? "إعادة تعيين" : "Reset"}
+                  </Button>
+                  <Button size="sm" variant="outline" className="h-6 text-[9px] gap-1 px-2" asChild>
+                    <a href={`/#${section.section_key}`} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="h-2.5 w-2.5" /> {isAr ? "معاينة" : "Preview"}
+                    </a>
+                  </Button>
                 </div>
 
-                <Separator />
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-semibold">{isAr ? "إجراءات سريعة" : "Quick Actions"}</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {onDuplicate && (
-                      <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => onDuplicate(section)}>
-                        <Copy className="h-3 w-3" /> {isAr ? "تكرار القسم" : "Duplicate"}
-                      </Button>
-                    )}
-                    <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" onClick={() => {
-                      setLocal({
-                        animation: "fade",
-                        spacing: "normal",
-                        container_width: "default",
-                        bg_color: "",
-                        css_class: "",
-                        cover_type: "none",
-                        cover_overlay_opacity: 30,
-                        cover_height: 200,
-                      });
-                    }}>
-                      <RotateCcw className="h-3 w-3" /> {isAr ? "إعادة تعيين المظهر" : "Reset Style"}
-                    </Button>
-                    <Button size="sm" variant="outline" className="h-7 text-[10px] gap-1" asChild>
-                      <a href={`/#${section.section_key}`} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-3 w-3" /> {isAr ? "معاينة" : "Preview"}
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="rounded-xl bg-muted/50 p-3 space-y-1.5">
-                  <p className="text-[10px] font-semibold text-muted-foreground">{isAr ? "معلومات القسم" : "Section Info"}</p>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] text-muted-foreground">
-                    <span>ID:</span><span className="font-mono truncate">{section.id}</span>
-                    <span>Key:</span><span className="font-mono">{section.section_key}</span>
-                    <span>Sort:</span><span>{section.sort_order}</span>
-                    <span>{isAr ? "آخر تحديث" : "Updated"}:</span><span>{lastUpdated}</span>
-                  </div>
+                <div className="rounded-lg bg-muted/30 p-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[9px] text-muted-foreground">
+                  <span>Key:</span><span className="font-mono">{section.section_key}</span>
+                  <span>Sort:</span><span>{section.sort_order}</span>
+                  <span>{isAr ? "تحديث" : "Updated"}:</span>
+                  <span className="flex items-center gap-0.5">
+                    <Clock className="h-2 w-2" />
+                    {new Date(section.updated_at).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric" })}
+                  </span>
                 </div>
               </TabsContent>
             </Tabs>
 
-            {/* Footer: Save + meta */}
-            <div className="px-3 sm:px-4 pb-3 flex items-center justify-between gap-2">
-              {hasChanges ? (
-                <div className="flex items-center gap-2">
-                  <Button size="sm" className="gap-1.5 h-8" onClick={save} disabled={isPending}>
-                    {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-                    {isAr ? "حفظ" : "Save"}
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => { setLocal({}); setJsonError(null); }} className="text-xs h-8">
-                    {isAr ? "إلغاء" : "Cancel"}
-                  </Button>
-                  <Badge variant="secondary" className="text-[9px]">
-                    {Object.keys(local).length} {isAr ? "تغيير" : "changes"}
-                  </Badge>
-                </div>
-              ) : <div />}
-
-              <span className="text-[9px] text-muted-foreground flex items-center gap-1">
-                <Clock className="h-2.5 w-2.5" /> {lastUpdated}
-              </span>
-            </div>
+            {/* Save footer */}
+            {hasChanges && (
+              <div className="px-2 pb-2 flex items-center gap-1.5">
+                <Button size="sm" className="gap-1 h-7 text-[10px]" onClick={save} disabled={isPending}>
+                  {isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+                  {isAr ? "حفظ" : "Save"}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => { setLocal({}); setJsonError(null); }} className="text-[10px] h-7">
+                  {isAr ? "إلغاء" : "Cancel"}
+                </Button>
+                <Badge variant="secondary" className="text-[8px] ms-auto">{Object.keys(local).length} {isAr ? "تغيير" : "changes"}</Badge>
+              </div>
+            )}
           </div>
         </CollapsibleContent>
       </div>
