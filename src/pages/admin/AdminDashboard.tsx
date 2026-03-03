@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils";
 // Lazy load ALL heavy widgets - they render far below the fold
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
-const AdminFinanceOverview = lazy(() => import("@/components/admin/AdminFinanceOverview").then(m => ({ default: m.AdminFinanceOverview })));
+
 const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
 const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
 const AdminKPITrends = lazy(() => import("@/components/admin/AdminKPITrends").then(m => ({ default: m.AdminKPITrends })));
@@ -55,7 +55,7 @@ const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDash
 const AdminAuditTrail = lazy(() => import("@/components/admin/AdminAuditTrail").then(m => ({ default: m.AdminAuditTrail })));
 const AdminAdvancedAnalytics = lazy(() => import("@/components/admin/AdminAdvancedAnalytics").then(m => ({ default: m.AdminAdvancedAnalytics })));
 const AdminAutomationRules = lazy(() => import("@/components/admin/AdminAutomationRules").then(m => ({ default: m.AdminAutomationRules })));
-const PerformanceOptimizationWidget = lazy(() => import("@/components/admin/PerformanceOptimizationWidget").then(m => ({ default: m.PerformanceOptimizationWidget })));
+
 const ContentCalendarWidget = lazy(() => import("@/components/admin/ContentCalendarWidget").then(m => ({ default: m.ContentCalendarWidget })));
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
 const DashboardLiveMetricsWidget = lazy(() => import("@/components/admin/DashboardLiveMetricsWidget").then(m => ({ default: m.DashboardLiveMetricsWidget })));
@@ -518,13 +518,12 @@ export default function AdminDashboard() {
         </div>
       </LazySection>
 
-      {/* ── Row: Activity Feed + Moderation + Alerts + Finance ── */}
+      {/* ── Row: Activity Feed + Moderation + Alerts ── */}
       <LazySection>
-        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
           <AdminActivityFeed />
           <AdminModerationQueue />
           <AdminAlertCenter />
-          <AdminFinanceOverview />
         </div>
       </LazySection>
 
@@ -706,8 +705,6 @@ export default function AdminDashboard() {
       {/* Performance Monitor */}
       <LazySection><PerformanceMonitorWidget /></LazySection>
 
-      {/* App Performance */}
-      <LazySection><PerformanceOptimizationWidget /></LazySection>
 
       {/* Quick Data Export */}
       <LazySection><ScheduledExportWidget /></LazySection>
