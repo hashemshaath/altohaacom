@@ -61,9 +61,12 @@ const DEDICATED_SECTIONS: Record<string, React.LazyExoticComponent<any>> = {
   articles: ArticlesSection,
   testimonials: HomeTestimonials,
   trending: HomeTrendingContent,
+  trending_content: HomeTrendingContent,
   quick_actions: HomeQuickActions,
   platform_features: PlatformFeatures,
+  features: PlatformFeatures,
   sponsorship_opportunities: SponsorshipOpportunities,
+  sponsorships: SponsorshipOpportunities,
   newsletter: NewsletterSignup,
 };
 
