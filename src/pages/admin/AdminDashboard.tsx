@@ -173,7 +173,7 @@ export default function AdminDashboard() {
         supabase.from("masterclasses").select("*", { count: "exact", head: true }),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "professional"),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "fan"),
-        supabase.from("admin_actions").select("*").order("created_at", { ascending: false }).limit(5),
+        supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
 
@@ -245,11 +245,11 @@ export default function AdminDashboard() {
         tables.map((table) =>
           supabase
             .from(table)
-            .select("created_at")
+            .select("created_at", { count: "exact" })
             .gte("created_at", fullStart)
             .lte("created_at", fullEnd)
             .order("created_at", { ascending: true })
-            .limit(1000)
+            .limit(500)
             .then(({ data }) => data || [])
         )
       );
