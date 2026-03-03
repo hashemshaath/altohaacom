@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useEffect } from "react";
+import { lazy, Suspense, useMemo, useEffect, ComponentType } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -18,6 +18,7 @@ const CompetitionsSection = lazy(() => import("@/components/home/sections/Compet
 const ArticlesSection = lazy(() => import("@/components/home/sections/ArticlesSection"));
 const StatsPartnersSection = lazy(() => import("@/components/home/sections/StatsPartnersSection"));
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
+const GenericHomepageSection = lazy(() => import("@/components/home/sections/GenericHomepageSection"));
 
 const SectionFallback = () => (
   <div className="container py-16">
@@ -33,20 +34,16 @@ const SectionFallback = () => (
   </div>
 );
 
-/* Map section_key → lazy component */
-const SECTION_MAP: Record<string, React.LazyExoticComponent<any>> = {
+/* Map section_key → dedicated lazy component (if available) */
+const DEDICATED_SECTIONS: Record<string, React.LazyExoticComponent<any>> = {
   stats: StatsBar,
   featured_chefs: FeaturedChefsSection,
   events_by_category: CompetitionsSection,
   articles: ArticlesSection,
   partners: StatsPartnersSection,
+  sponsors: StatsPartnersSection,
   newsletter: NewsletterSignup,
 };
-
-function isVisible(sections: HomepageSection[], key: string): boolean {
-  const s = sections.find(sec => sec.section_key === key);
-  return s ? s.is_visible : true;
-}
 
 const Index = () => {
   const { language } = useLanguage();
@@ -54,28 +51,34 @@ const Index = () => {
   useEffect(() => { prefetchCommonRoutes(); }, []);
   const { data: sections = [] } = useHomepageSections();
 
-  /* Build dynamic sections following DB sort_order */
+  /* Build dynamic sections following DB sort_order — ALL visible sections render */
   const dynamicSections = useMemo(() => {
-    const supportedKeys = Object.keys(SECTION_MAP);
-
     if (sections.length > 0) {
       return sections
-        .filter(s => s.is_visible && supportedKeys.includes(s.section_key))
+        .filter(s => s.is_visible && s.section_key !== "hero")
         .sort((a, b) => a.sort_order - b.sort_order)
         .map(s => {
-          const Comp = SECTION_MAP[s.section_key];
-          if (!Comp) return null;
+          const Dedicated = DEDICATED_SECTIONS[s.section_key];
+          if (Dedicated) {
+            return (
+              <Suspense key={s.section_key} fallback={<SectionFallback />}>
+                <Dedicated />
+              </Suspense>
+            );
+          }
+          // Render generic section for keys without a dedicated component
           return (
             <Suspense key={s.section_key} fallback={<SectionFallback />}>
-              <Comp />
+              <GenericHomepageSection sectionKey={s.section_key} />
             </Suspense>
           );
         });
     }
 
-    // Fallback order when no sections configured
-    return supportedKeys.map(key => {
-      const Comp = SECTION_MAP[key];
+    // Fallback when no sections configured
+    const fallbackKeys = Object.keys(DEDICATED_SECTIONS);
+    return fallbackKeys.map(key => {
+      const Comp = DEDICATED_SECTIONS[key];
       return (
         <Suspense key={key} fallback={<SectionFallback />}>
           <Comp />
@@ -108,10 +111,10 @@ const Index = () => {
       <Header />
 
       <main className="flex flex-col">
-        {/* Hero */}
-        {isVisible(sections, "hero") && <HeroSection />}
+        {/* Hero — always first */}
+        {sections.find(s => s.section_key === "hero")?.is_visible !== false && <HeroSection />}
 
-        {/* Dynamic Sections */}
+        {/* All other sections in DB sort_order */}
         {dynamicSections}
       </main>
 
