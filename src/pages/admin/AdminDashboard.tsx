@@ -39,32 +39,17 @@ const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerati
 
 const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
 const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
-const AdminKPITrends = lazy(() => import("@/components/admin/AdminKPITrends").then(m => ({ default: m.AdminKPITrends })));
 const ContentAnalyticsWidget = lazy(() => import("@/components/admin/ContentAnalyticsWidget").then(m => ({ default: m.ContentAnalyticsWidget })));
 const FinanceAnalyticsWidget = lazy(() => import("@/components/admin/FinanceAnalyticsWidget").then(m => ({ default: m.FinanceAnalyticsWidget })));
-const CRMPipelineWidget = lazy(() => import("@/components/admin/CRMPipelineWidget").then(m => ({ default: m.CRMPipelineWidget })));
-const PerformanceMonitorWidget = lazy(() => import("@/components/admin/PerformanceMonitorWidget").then(m => ({ default: m.PerformanceMonitorWidget })));
 const CompetitionInsightsWidget = lazy(() => import("@/components/admin/CompetitionInsightsWidget").then(m => ({ default: m.CompetitionInsightsWidget })));
 const ExhibitionInsightsWidget = lazy(() => import("@/components/admin/ExhibitionInsightsWidget").then(m => ({ default: m.ExhibitionInsightsWidget })));
 const SupportInsightsWidget = lazy(() => import("@/components/admin/SupportInsightsWidget").then(m => ({ default: m.SupportInsightsWidget })));
-const SecurityInsightsWidget = lazy(() => import("@/components/admin/SecurityInsightsWidget").then(m => ({ default: m.SecurityInsightsWidget })));
-const AutomationStatusWidget = lazy(() => import("@/components/admin/AutomationStatusWidget").then(m => ({ default: m.AutomationStatusWidget })));
-const AdminPDFReportGenerator = lazy(() => import("@/components/admin/AdminPDFReportGenerator").then(m => ({ default: m.AdminPDFReportGenerator })));
-const AdminReportHub = lazy(() => import("@/components/admin/AdminReportHub").then(m => ({ default: m.AdminReportHub })));
 const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
-const AdminAuditTrail = lazy(() => import("@/components/admin/AdminAuditTrail").then(m => ({ default: m.AdminAuditTrail })));
-const AdminAdvancedAnalytics = lazy(() => import("@/components/admin/AdminAdvancedAnalytics").then(m => ({ default: m.AdminAdvancedAnalytics })));
-const AdminAutomationRules = lazy(() => import("@/components/admin/AdminAutomationRules").then(m => ({ default: m.AdminAutomationRules })));
 
 const ContentCalendarWidget = lazy(() => import("@/components/admin/ContentCalendarWidget").then(m => ({ default: m.ContentCalendarWidget })));
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
-const CommunicationsDashboardWidget = lazy(() => import("@/components/admin/CommunicationsDashboardWidget").then(m => ({ default: m.CommunicationsDashboardWidget })));
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
-const AdminScheduledExports = lazy(() => import("@/components/admin/AdminScheduledExports").then(m => ({ default: m.AdminScheduledExports })));
-const ScheduledExportWidget = lazy(() => import("@/components/admin/ScheduledExportWidget").then(m => ({ default: m.ScheduledExportWidget })));
-const AdminAnalyticsWidgets = lazy(() => import("@/components/admin/AdminAnalyticsWidgets").then(m => ({ default: m.AdminAnalyticsWidgets })));
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
-const MLAnalyticsDashboard = lazy(() => import("@/components/admin/MLAnalyticsDashboard").then(m => ({ default: m.MLAnalyticsDashboard })));
 
 /** Renders children only when the section scrolls into view */
 function LazySection({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
@@ -375,10 +360,6 @@ export default function AdminDashboard() {
       </div>
 
 
-      {/* KPI Trends (week-over-week comparison) */}
-      <LazySection>
-        <AdminKPITrends />
-      </LazySection>
 
       {/* Stats Grid with sparklines */}
       <div className="space-y-2">
@@ -649,59 +630,8 @@ export default function AdminDashboard() {
       {/* Support & Communications */}
       <LazySection><SupportInsightsWidget /></LazySection>
 
-      {/* Security & Permissions */}
-      <LazySection><SecurityInsightsWidget /></LazySection>
-
-      {/* Content Analytics */}
-      <LazySection><ContentAnalyticsWidget /></LazySection>
-
-      {/* Finance Analytics */}
-      <LazySection><FinanceAnalyticsWidget /></LazySection>
-
-      {/* CRM Pipeline */}
-      <LazySection><CRMPipelineWidget /></LazySection>
-
-      {/* Automation Rules */}
-      <LazySection><AdminAutomationRules /></LazySection>
-
-      {/* Content Calendar + Communications + Exports */}
-      <LazySection>
-        <div className="grid gap-4 lg:grid-cols-3">
-          <ContentCalendarWidget />
-          <CommunicationsDashboardWidget />
-          <AdminScheduledExports />
-        </div>
-      </LazySection>
-
-      {/* Automation & Notifications Status */}
-      <LazySection><AutomationStatusWidget /></LazySection>
-
-      {/* Advanced Analytics */}
-      <LazySection><AdminAdvancedAnalytics /></LazySection>
-
-      {/* Quick Report Hub */}
-      <LazySection><AdminReportHub /></LazySection>
-
-      {/* PDF Report Generator */}
-      <LazySection><AdminPDFReportGenerator /></LazySection>
-
       {/* Company Dashboard */}
       <LazySection><CompanyDashboardWidget /></LazySection>
-
-      {/* Audit Trail */}
-      <LazySection><AdminAuditTrail /></LazySection>
-
-      {/* Performance Monitor */}
-      <LazySection><PerformanceMonitorWidget /></LazySection>
-
-
-      {/* Quick Data Export */}
-      <LazySection><ScheduledExportWidget /></LazySection>
-
-      {/* Deep Analytics */}
-      <LazySection><AdminAnalyticsWidgets /></LazySection>
-
-      <LazySection><MLAnalyticsDashboard /></LazySection>
     </div>
   );
 }
