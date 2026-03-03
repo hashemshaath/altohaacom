@@ -7,13 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { LogoUploader } from "./LogoUploader";
 import {
-  Save, Image, Upload, Palette, Type, AlertTriangle, Bell,
-  Eye, Moon, Sun, Contrast, Check, Calendar, Trash2, Plus, Star
+  Save, Image, Upload, Palette, AlertTriangle, Bell,
+  Eye, Contrast, Check, Calendar, Trash2, Star
 } from "lucide-react";
 
 interface Props {
@@ -256,13 +254,7 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
             <Image className="h-3.5 w-3.5" />{isAr ? "الشعارات" : "Logos"}
           </TabsTrigger>
           <TabsTrigger value="colors" className="text-xs gap-1.5 flex-1 min-w-[100px]">
-            <Palette className="h-3.5 w-3.5" />{isAr ? "الألوان" : "Colors"}
-          </TabsTrigger>
-          <TabsTrigger value="contrast" className="text-xs gap-1.5 flex-1 min-w-[100px]">
-            <Contrast className="h-3.5 w-3.5" />{isAr ? "التباين" : "Contrast"}
-          </TabsTrigger>
-          <TabsTrigger value="typography" className="text-xs gap-1.5 flex-1 min-w-[100px]">
-            <Type className="h-3.5 w-3.5" />{isAr ? "ألوان الخطوط" : "Typography"}
+            <Palette className="h-3.5 w-3.5" />{isAr ? "الألوان والتباين" : "Colors & Contrast"}
           </TabsTrigger>
           <TabsTrigger value="status" className="text-xs gap-1.5 flex-1 min-w-[100px]">
             <Bell className="h-3.5 w-3.5" />{isAr ? "التنبيهات" : "Alerts"}
@@ -382,10 +374,8 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* ── CONTRAST TAB ── */}
-        <TabsContent value="contrast" className="mt-4">
+          {/* Contrast Ratios within Colors tab */}
           <Card className="border-border/50">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -419,48 +409,6 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
               <div className="flex items-start gap-2 pt-2 text-[11px] text-muted-foreground">
                 <Eye className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                 <span>{isAr ? "AAA = 7:1+ (ممتاز) | AA = 4.5:1+ (جيد) | AA Large = 3:1+ (نص كبير فقط)" : "AAA = 7:1+ (Excellent) | AA = 4.5:1+ (Good) | AA Large = 3:1+ (Large text only)"}</span>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ── TYPOGRAPHY COLORS TAB ── */}
-        <TabsContent value="typography" className="mt-4">
-          <Card className="border-border/50">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <Type className="h-4.5 w-4.5 text-primary" />
-                {isAr ? "ألوان الخطوط والنصوص" : "Typography Colors"}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {isAr ? "ألوان مخصصة للعناوين، النصوص، التعليقات والروابط" : "Colors for headings, body text, captions, and links"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Live preview */}
-              <div className="rounded-xl border border-border/40 p-5 space-y-2" style={{ backgroundColor: `hsl(${secondaryColors.background})` }}>
-                <h3 className="text-lg font-serif font-bold" style={{ color: `hsl(${typographyColors.heading})` }}>
-                  {isAr ? "عنوان تجريبي" : "Sample Heading"}
-                </h3>
-                <p className="text-sm" style={{ color: `hsl(${typographyColors.body})` }}>
-                  {isAr ? "هذا نص تجريبي يوضح لون النص الأساسي المستخدم في الفقرات." : "This is sample body text showing the primary paragraph color."}
-                </p>
-                <p className="text-xs" style={{ color: `hsl(${typographyColors.caption})` }}>
-                  {isAr ? "تعليق توضيحي — نص مساعد" : "Caption text — supporting information"}
-                </p>
-                <a className="text-sm font-medium underline cursor-pointer" style={{ color: `hsl(${typographyColors.link})` }}>
-                  {isAr ? "رابط تفاعلي" : "Interactive Link"}
-                </a>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <ColorSwatch label="Headings" labelAr="العناوين" isAr={isAr}
-                  value={typographyColors.heading} onChange={v => setTypographyColors({ ...typographyColors, heading: v })} />
-                <ColorSwatch label="Body Text" labelAr="نص الفقرة" isAr={isAr}
-                  value={typographyColors.body} onChange={v => setTypographyColors({ ...typographyColors, body: v })} />
-                <ColorSwatch label="Captions" labelAr="التعليقات" isAr={isAr}
-                  value={typographyColors.caption} onChange={v => setTypographyColors({ ...typographyColors, caption: v })} />
-                <ColorSwatch label="Links" labelAr="الروابط" isAr={isAr}
-                  value={typographyColors.link} onChange={v => setTypographyColors({ ...typographyColors, link: v })} />
               </div>
             </CardContent>
           </Card>
