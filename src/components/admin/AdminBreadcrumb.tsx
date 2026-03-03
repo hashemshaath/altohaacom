@@ -51,12 +51,10 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/chef-schedule": { en: "Chef Schedule", ar: "جدول الشيف" },
   "/admin/organizers": { en: "Organizers", ar: "المنظمون" },
   "/admin/design": { en: "Design & Identity", ar: "التصميم والهوية" },
-  "/admin/design/brand-identity": { en: "Brand Identity", ar: "الهوية البصرية" },
-  "/admin/design/branding": { en: "Branding", ar: "العلامة التجارية" },
+  "/admin/design/brand-identity": { en: "Identity & Branding", ar: "الهوية والعلامة التجارية" },
   "/admin/design/header-footer": { en: "Header & Footer", ar: "الرأس والتذييل" },
   "/admin/design/homepage": { en: "Homepage", ar: "الصفحة الرئيسية" },
   "/admin/design/covers": { en: "Covers & Themes", ar: "الأغلفة والمظهر" },
-  "/admin/design/typography": { en: "Typography", ar: "الخطوط" },
   "/admin/design/layout": { en: "Layout & Spacing", ar: "التخطيط والتباعد" },
   "/admin/design/custom-css": { en: "Custom CSS", ar: "CSS مخصص" },
 };
