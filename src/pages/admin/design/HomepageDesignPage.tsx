@@ -2,24 +2,24 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Home, Layers, ArrowRight, LayoutGrid } from "lucide-react";
+import { Home, Layers, ArrowRight } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
-import { BlockListManager } from "@/components/admin/settings/homepage/BlockListManager";
-import { BlockLivePreview } from "@/components/admin/settings/homepage/BlockLivePreview";
-import { useHomepageBlocks } from "@/hooks/useHomepageBlocks";
+import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
+import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
+import { useHomepageSections } from "@/hooks/useHomepageSections";
 
 export default function HomepageDesignPage() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const { data: blocks = [] } = useHomepageBlocks();
+  const { data: sections = [] } = useHomepageSections();
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         icon={Home}
         title={isAr ? "الصفحة الرئيسية" : "Homepage Design"}
-        description={isAr ? "تحكم شامل في بلوكات الصفحة الرئيسية — مصدر البيانات والتخطيط والتصميم" : "Full control over homepage blocks — data source, layout, and design"}
+        description={isAr ? "تحكم شامل في أقسام الصفحة الرئيسية — الترتيب والظهور والتصميم" : "Full control over homepage sections — order, visibility, and design"}
       />
 
       <HomepageTemplateSwitcher />
@@ -44,10 +44,10 @@ export default function HomepageDesignPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 xl:grid-cols-[1fr_260px]">
-        <BlockListManager />
+      <div className="grid gap-4 xl:grid-cols-[1fr_280px]">
+        <HomepageSectionsManager />
         <div className="hidden xl:block sticky top-4">
-          <BlockLivePreview blocks={blocks} isAr={isAr} />
+          <HomepageLivePreview sections={sections} isAr={isAr} />
         </div>
       </div>
     </div>
