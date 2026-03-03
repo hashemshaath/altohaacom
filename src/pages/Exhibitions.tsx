@@ -483,7 +483,7 @@ export default function Exhibitions() {
           </section>
         )}
       </main>
-      <style>{`@keyframes heroFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+      
     </PageShell>
   );
 }
