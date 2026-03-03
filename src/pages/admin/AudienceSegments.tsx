@@ -48,6 +48,8 @@ import {
 import { format } from "date-fns";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 interface Segment {
@@ -361,19 +363,18 @@ export default function AudienceSegments() {
 
       {/* Segments Grid */}
       {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map(i => <Skeleton key={i} className="h-48" />)}
-        </div>
+        <AdminWidgetSkeleton rows={4} />
       ) : segments.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <Target className="mb-4 h-12 w-12 text-muted-foreground/30" />
-            <p className="text-lg font-medium">{isAr ? "لا توجد شرائح" : "No segments yet"}</p>
-            <p className="text-sm text-muted-foreground">
-              {isAr ? "أنشئ شريحة لاستهداف مجموعة معينة من المستخدمين" : "Create a segment to target specific user groups"}
-            </p>
-          </CardContent>
-        </Card>
+        <AdminEmptyState
+          icon={Target}
+          title="No segments yet"
+          titleAr="لا توجد شرائح"
+          description="Create a segment to target specific user groups"
+          descriptionAr="أنشئ شريحة لاستهداف مجموعة معينة من المستخدمين"
+          actionLabel="New Segment"
+          actionLabelAr="شريحة جديدة"
+          onAction={() => setIsCreateOpen(true)}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {segments.map(segment => {

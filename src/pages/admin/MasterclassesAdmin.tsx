@@ -29,6 +29,8 @@ import { ModuleLessonManager } from "@/components/masterclass/ModuleLessonManage
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
 import { MasterclassInsightsWidget } from "@/components/admin/MasterclassInsightsWidget";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export default function MasterclassesAdmin() {
   const { language } = useLanguage();
@@ -324,14 +326,18 @@ export default function MasterclassesAdmin() {
       <Card>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
+            <AdminTableSkeleton rows={5} columns={8} />
           ) : masterclasses.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <GraduationCap className="h-12 w-12 text-muted-foreground/30 mb-4" />
-              <p className="text-muted-foreground">{language === "ar" ? "لا توجد دورات" : "No masterclasses yet"}</p>
-            </div>
+            <AdminEmptyState
+              icon={GraduationCap}
+              title="No masterclasses yet"
+              titleAr="لا توجد دورات"
+              description="Create your first masterclass to get started"
+              descriptionAr="أنشئ أول دورة تعليمية للبدء"
+              actionLabel="Create Masterclass"
+              actionLabelAr="إنشاء دورة"
+              onAction={() => setShowCreateForm(true)}
+            />
           ) : (
             <Table>
               <TableHeader>

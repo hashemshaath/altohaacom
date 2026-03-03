@@ -22,6 +22,8 @@ import {
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
 
 export default function MediaAdmin() {
   const { language } = useLanguage();
@@ -41,7 +43,7 @@ export default function MediaAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("media_library")
-        .select("*")
+        .select("id, filename, original_filename, file_url, file_type, file_size, alt_text, uploaded_by, created_at")
         .order("created_at", { ascending: false });
 
       if (search) {
@@ -263,14 +265,18 @@ export default function MediaAdmin() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex justify-center py-12">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
+            <AdminWidgetSkeleton rows={5} />
           ) : !filteredMedia || filteredMedia.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Image className="mx-auto h-12 w-12 mb-4 opacity-50" />
-              <p>{language === "ar" ? "لا توجد ملفات" : "No files found"}</p>
-            </div>
+            <AdminEmptyState
+              icon={ImageIcon}
+              title="No files found"
+              titleAr="لا توجد ملفات"
+              description="Upload your first file to get started"
+              descriptionAr="ارفع أول ملف للبدء"
+              actionLabel="Upload File"
+              actionLabelAr="رفع ملف"
+              onAction={() => fileInputRef.current?.click()}
+            />
           ) : viewMode === "grid" ? (
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {filteredMedia.map((file) => {

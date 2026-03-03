@@ -27,6 +27,8 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminCommentModeration } from "@/components/admin/AdminCommentModeration";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 interface Report {
   id: string;
@@ -55,7 +57,7 @@ export default function ContentModeration() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("content_reports")
-        .select("*")
+        .select("id, reporter_id, content_type, content_id, reason, status, resolution_notes, resolved_by, resolved_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Report[];
@@ -196,14 +198,15 @@ export default function ContentModeration() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            </div>
+            <AdminTableSkeleton rows={4} columns={4} showActions={false} />
           ) : reports?.length === 0 ? (
-            <div className="py-12 text-center">
-              <CheckCircle className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-              <p className="text-muted-foreground">{language === "ar" ? "لا توجد بلاغات" : "No reports found"}</p>
-            </div>
+            <AdminEmptyState
+              icon={CheckCircle}
+              title="No reports found"
+              titleAr="لا توجد بلاغات"
+              description="All clear! No content reports to review."
+              descriptionAr="كل شيء واضح! لا توجد بلاغات للمراجعة."
+            />
           ) : (
             <div className="space-y-2">
               {reports?.map((report) => (

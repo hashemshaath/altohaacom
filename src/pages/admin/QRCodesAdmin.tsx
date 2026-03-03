@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];
@@ -32,7 +33,7 @@ export default function QRCodesAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("qr_codes")
-        .select("*")
+        .select("id, code, entity_type, entity_id, category, scan_count, is_active, created_at, metadata")
         .order("created_at", { ascending: false })
         .limit(200);
 
