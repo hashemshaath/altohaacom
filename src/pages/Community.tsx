@@ -63,9 +63,10 @@ export default function Community() {
       <section className="relative overflow-hidden border-b border-border/30">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-chart-2/5" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/30 to-transparent" />
         <div className="container relative py-8 md:py-12">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl space-y-3.5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
+            <div className="max-w-2xl space-y-4">
               <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 ring-1 ring-primary/15 shadow-sm shadow-primary/5">
                 <Users className="h-4 w-4 text-primary" />
                 <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-primary">
@@ -115,6 +116,7 @@ export default function Community() {
       </main>
       <ScrollToTopFAB />
       <Footer />
+      <style>{`@keyframes heroFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }`}</style>
     </div>
   );
 }

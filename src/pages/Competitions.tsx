@@ -160,9 +160,10 @@ export default function Competitions() {
         <section className="relative overflow-hidden border-b border-border/30">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_60%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
-          <div className="container relative py-6 md:py-14">
-            <div className="flex items-end justify-between gap-4">
-              <div className="space-y-2.5 sm:space-y-4 max-w-2xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-background/40 to-transparent" />
+          <div className="container relative py-8 md:py-14">
+            <div className="flex items-end justify-between gap-4" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
+              <div className="space-y-3 sm:space-y-4 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/15">
                   <Sparkles className="h-3 w-3 text-primary animate-pulse" />
                   <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-primary">
@@ -347,6 +348,7 @@ export default function Competitions() {
           )}
         </div>
       </main>
+      <style>{`@keyframes heroFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }`}</style>
     </PageShell>
   );
 }
