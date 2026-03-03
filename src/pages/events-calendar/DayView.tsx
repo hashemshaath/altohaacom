@@ -19,18 +19,30 @@ export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; 
     <Card className="shadow-sm border-border/40">
       <div className={cn("flex items-center gap-4 px-5 py-5 border-b border-border/20", isToday && "bg-primary/5")}>
         <div className={cn(
-          "flex h-16 w-16 flex-col items-center justify-center rounded-2xl shadow-sm",
+          "flex h-16 w-16 flex-col items-center justify-center rounded-2xl shadow-sm shrink-0",
           isToday ? "bg-primary text-primary-foreground" : "bg-muted"
         )}>
           <span className="text-[10px] font-bold uppercase leading-none tracking-wider">{format(currentDate, "EEE", isAr ? { locale: arLocale } : undefined)}</span>
           <span className="text-3xl font-bold leading-none tabular-nums mt-1">{currentDate.getDate()}</span>
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <h3 className="text-lg font-bold">{format(currentDate, isAr ? "d MMMM yyyy" : "MMMM d, yyyy", isAr ? { locale: arLocale } : undefined)}</h3>
           <p className="text-sm text-muted-foreground">
             {dayEvents.length} {isAr ? "فعاليات مجدولة" : "events scheduled"}
             {isToday && <span className="text-primary font-semibold ms-1.5">• {isAr ? "اليوم" : "Today"}</span>}
           </p>
+          {dayEvents.length > 0 && dayEvents.length <= 3 && (
+            <div className="mt-1 flex flex-wrap gap-1.5">
+              {dayEvents.map(ev => {
+                const evColors = GLOBAL_EVENT_COLORS[ev.type];
+                return (
+                  <Badge key={ev.id} variant="outline" className={cn("text-[10px] px-1.5 py-0 gap-1 border", evColors?.bg, evColors?.text, evColors?.border)}>
+                    {isAr && ev.title_ar ? ev.title_ar : ev.title}
+                  </Badge>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
       <CardContent className="p-5">

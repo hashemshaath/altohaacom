@@ -86,7 +86,7 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
           </div>
         )}
 
-        <div className={cn("grid gap-6 grid-cols-2 sm:grid-cols-3", gridCols)}>
+        <div className={cn("grid gap-4 grid-cols-2 sm:grid-cols-3", gridCols)}>
           {chefs.map((chef: any, idx: number) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
@@ -94,20 +94,23 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
             const hasMedals = chef.gold_medals > 0 || chef.silver_medals > 0 || chef.bronze_medals > 0;
             const countryObj = allCountries.find((c: any) => c.code === chef.country_code);
             const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : "";
+            const natCode = chef.show_nationality !== false ? chef.nationality : null;
+            const natObj = natCode ? allCountries.find((c: any) => c.code === natCode) : null;
+            const natName = natObj ? (isAr ? natObj.name_ar || natObj.name : natObj.name) : "";
 
             return (
               <Link
                 key={chef.user_id || idx}
                 to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
-                className="group text-center"
+                className="group flex flex-col items-center gap-2 rounded-xl border border-border/30 bg-card/50 p-4 transition-all duration-300 hover:shadow-md hover:border-primary/20 hover:bg-card"
               >
-                <div className="relative mx-auto mb-3 w-fit">
+                <div className="relative">
                   <Avatar className={cn(
-                    "h-20 w-20 sm:h-24 sm:w-24 ring-2 ring-border/40 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105",
-                    idx < 3 && "ring-primary/20"
+                    "h-16 w-16 sm:h-20 sm:w-20 ring-2 ring-border/40 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105",
+                    idx < 3 && "ring-primary/30"
                   )}>
                     <AvatarImage src={chef.avatar_url} alt={name} loading="lazy" />
-                    <AvatarFallback className="bg-muted text-muted-foreground font-bold text-lg">{initials}</AvatarFallback>
+                    <AvatarFallback className="bg-muted text-muted-foreground font-bold">{initials}</AvatarFallback>
                   </Avatar>
                   {chef.is_verified && (
                     <div className="absolute -bottom-0.5 -end-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
@@ -119,23 +122,30 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
                       #{idx + 1}
                     </div>
                   )}
+                  {natCode && (
+                    <div className="absolute -bottom-0.5 -start-0.5 text-base leading-none" title={natName}>
+                      {countryFlag(natCode)}
+                    </div>
+                  )}
                 </div>
-                <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-                  {name || (isAr ? "طاهٍ" : "Chef")}
-                </h3>
-                {spec && (
-                  <p className="mt-0.5 text-xs text-muted-foreground truncate flex items-center justify-center gap-1">
-                    <ChefHat className="h-3 w-3 shrink-0" />
-                    {spec}
-                  </p>
-                )}
-                {countryName && (
-                  <p className="mt-0.5 text-[10px] text-muted-foreground/60 truncate">
-                    {countryFlag(chef.country_code)} {countryName}
-                  </p>
-                )}
+                <div className="text-center min-w-0 w-full">
+                  <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+                    {name || (isAr ? "طاهٍ" : "Chef")}
+                  </h3>
+                  {spec && (
+                    <p className="mt-0.5 text-[11px] text-muted-foreground truncate flex items-center justify-center gap-1">
+                      <ChefHat className="h-3 w-3 shrink-0" />
+                      {spec}
+                    </p>
+                  )}
+                  {countryName && (
+                    <p className="mt-0.5 text-[10px] text-muted-foreground/50 truncate">
+                      {countryFlag(chef.country_code)} {countryName}
+                    </p>
+                  )}
+                </div>
                 {hasMedals && (
-                  <div className="mt-1.5 flex items-center justify-center gap-2 text-[11px]">
+                  <div className="flex items-center justify-center gap-2 text-[11px]">
                     {chef.gold_medals > 0 && <span className="text-chart-4">🥇{chef.gold_medals}</span>}
                     {chef.silver_medals > 0 && <span className="text-muted-foreground">🥈{chef.silver_medals}</span>}
                     {chef.bronze_medals > 0 && <span className="text-chart-3">🥉{chef.bronze_medals}</span>}
