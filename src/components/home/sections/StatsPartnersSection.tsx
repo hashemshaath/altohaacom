@@ -31,12 +31,14 @@ export default function StatsPartnersSection() {
   });
 
   const { data: entities = [] } = useQuery({
-    queryKey: ["home-entity-logos"],
+    queryKey: ["home-entity-logos", itemCount],
     queryFn: async () => {
       const { data } = await supabase
         .from("culinary_entities")
-        .select("id, name, name_ar, logo_url, slug, is_verified")
-        .eq("is_verified", true)
+        .select("id, name, name_ar, logo_url, slug, is_verified, is_visible")
+        .eq("status", "active")
+        .eq("is_visible", true)
+        .not("logo_url", "is", null)
         .order("name")
         .limit(itemCount);
       return data || [];
