@@ -19,7 +19,7 @@ import {
   CheckCircle2,
   Loader2,
   Home,
-  Layers,
+  
   ArrowRight,
   LayoutGrid,
   Activity,
@@ -38,16 +38,12 @@ import { RegistrationSettings } from "@/components/admin/settings/RegistrationSe
 import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel";
 import { TypographySettings } from "@/components/admin/settings/TypographySettings";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
-import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
-import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
-import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
-import { SectionPresets } from "@/components/admin/settings/homepage/SectionPresets";
 import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
 import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
 import { DatabaseOverviewWidget } from "@/components/admin/DatabaseOverviewWidget";
 import { RecentAdminActions } from "@/components/admin/RecentAdminActions";
-import { useHomepageSections, useUpdateHomepageSection } from "@/hooks/useHomepageSections";
+
 
 const tabs = [
   { value: "brand-identity", icon: Palette, en: "Brand Identity", ar: "الهوية البصرية", descEn: "Logos, colors & seasonal", descAr: "الشعارات والألوان والمناسبات" },
@@ -99,8 +95,6 @@ export default function SystemSettings() {
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("branding");
   const { settings, isLoading, saveSetting } = useSiteSettings();
-  const { data: homepageSections = [] } = useHomepageSections();
-  const updateSection = useUpdateHomepageSection();
 
   const handleSave = (key: string, value: Record<string, any>, category?: string) => {
     saveSetting.mutate({ key, value, category });
@@ -222,67 +216,24 @@ export default function SystemSettings() {
             </TabsContent>
 
             <TabsContent value="homepage" className="mt-0 space-y-3">
-              {/* Template Switcher */}
-              <HomepageTemplateSwitcher />
-              {/* Quick links */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Card className="border-primary/20 bg-primary/5">
-                  <CardContent className="flex items-center justify-between gap-3 p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-                        <Layers className="h-4 w-4 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">{isAr ? "شرائح القسم الرئيسي" : "Hero Slides"}</p>
-                        <p className="text-xs text-muted-foreground">{isAr ? "5 قوالب احترافية" : "5 professional templates"}</p>
-                      </div>
-                    </div>
-                    <Button size="sm" variant="default" className="gap-1.5 shrink-0" asChild>
-                      <Link to="/admin/hero-slides">
-                        {isAr ? "إدارة" : "Manage"}
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-                <Card className="border-border/50 bg-muted/20">
-                  <CardContent className="flex items-center justify-between gap-3 p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted">
-                        <LayoutGrid className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">{isAr ? "أقسام الصفحة الرئيسية" : "Homepage Sections"}</p>
-                        <p className="text-xs text-muted-foreground">{isAr ? "ترتيب وإظهار الأقسام" : "Order, visibility & design"}</p>
-                      </div>
-                    </div>
-                    <Button size="sm" variant="outline" className="gap-1.5 shrink-0" asChild>
-                      <Link to="/admin/design/homepage">
-                        {isAr ? "إدارة" : "Manage"}
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Main content + sidebar */}
-              <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
-                <HomepageSectionsManager />
-                <div className="space-y-4">
-                  <HomepageLivePreview sections={homepageSections} isAr={isAr} />
-                  <SectionPresets
-                    isAr={isAr}
-                    isPending={updateSection.isPending}
-                    onApply={(config) => {
-                      // Apply preset to all visible sections
-                      homepageSections.filter(s => s.is_visible).forEach(s => {
-                        updateSection.mutate({ id: s.id, ...config });
-                      });
-                    }}
-                  />
-                </div>
-              </div>
+              {/* Redirect to dedicated homepage design page */}
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="flex flex-col items-center gap-4 p-8 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                    <Home className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-base font-semibold">{isAr ? "إدارة الصفحة الرئيسية" : "Homepage Management"}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{isAr ? "تم نقل إدارة أقسام الصفحة الرئيسية إلى صفحة مخصصة للتحكم الكامل" : "Homepage section management has moved to a dedicated page for full control"}</p>
+                  </div>
+                  <Button className="gap-2" asChild>
+                    <Link to="/admin/design/homepage">
+                      {isAr ? "فتح إدارة الصفحة الرئيسية" : "Open Homepage Manager"}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="cover" className="mt-0 space-y-6">
