@@ -1245,6 +1245,7 @@ export type Database = {
       bookings: {
         Row: {
           booking_date: string
+          booking_number: string | null
           booking_type: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
@@ -1266,6 +1267,7 @@ export type Database = {
         }
         Insert: {
           booking_date: string
+          booking_number?: string | null
           booking_type?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
@@ -1287,6 +1289,7 @@ export type Database = {
         }
         Update: {
           booking_date?: string
+          booking_number?: string | null
           booking_type?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
@@ -8078,6 +8081,7 @@ export type Database = {
           description: string | null
           description_ar: string | null
           email: string | null
+          establishment_number: string | null
           id: string
           is_active: boolean | null
           is_verified: boolean | null
@@ -8104,6 +8108,7 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           email?: string | null
+          establishment_number?: string | null
           id?: string
           is_active?: boolean | null
           is_verified?: boolean | null
@@ -8130,6 +8135,7 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           email?: string | null
+          establishment_number?: string | null
           id?: string
           is_active?: boolean | null
           is_verified?: boolean | null
@@ -10208,6 +10214,7 @@ export type Database = {
           organizer_response_by: string | null
           photo_urls: string[] | null
           rating: number
+          review_number: string | null
           reviewer_type: string | null
           title: string | null
           title_ar: string | null
@@ -10228,6 +10235,7 @@ export type Database = {
           organizer_response_by?: string | null
           photo_urls?: string[] | null
           rating: number
+          review_number?: string | null
           reviewer_type?: string | null
           title?: string | null
           title_ar?: string | null
@@ -10248,6 +10256,7 @@ export type Database = {
           organizer_response_by?: string | null
           photo_urls?: string[] | null
           rating?: number
+          review_number?: string | null
           reviewer_type?: string | null
           title?: string | null
           title_ar?: string | null
@@ -11666,6 +11675,7 @@ export type Database = {
           description_ar: string | null
           end_date: string | null
           end_time: string | null
+          event_number: string | null
           id: string
           image_url: string | null
           is_international: boolean | null
@@ -11699,6 +11709,7 @@ export type Database = {
           description_ar?: string | null
           end_date?: string | null
           end_time?: string | null
+          event_number?: string | null
           id?: string
           image_url?: string | null
           is_international?: boolean | null
@@ -11732,6 +11743,7 @@ export type Database = {
           description_ar?: string | null
           end_date?: string | null
           end_time?: string | null
+          event_number?: string | null
           id?: string
           image_url?: string | null
           is_international?: boolean | null
@@ -13622,6 +13634,7 @@ export type Database = {
           id: string
           max_attendees: number | null
           scheduled_at: string
+          session_number: string | null
           status: string
           stream_url: string | null
           tags: string[] | null
@@ -13639,6 +13652,7 @@ export type Database = {
           id?: string
           max_attendees?: number | null
           scheduled_at: string
+          session_number?: string | null
           status?: string
           stream_url?: string | null
           tags?: string[] | null
@@ -13656,6 +13670,7 @@ export type Database = {
           id?: string
           max_attendees?: number | null
           scheduled_at?: string
+          session_number?: string | null
           status?: string
           stream_url?: string | null
           tags?: string[] | null
@@ -13748,6 +13763,7 @@ export type Database = {
           certificate_issued: boolean | null
           completed_at: string | null
           enrolled_at: string
+          enrollment_number: string | null
           id: string
           masterclass_id: string
           progress_percent: number | null
@@ -13758,6 +13774,7 @@ export type Database = {
           certificate_issued?: boolean | null
           completed_at?: string | null
           enrolled_at?: string
+          enrollment_number?: string | null
           id?: string
           masterclass_id: string
           progress_percent?: number | null
@@ -13768,6 +13785,7 @@ export type Database = {
           certificate_issued?: boolean | null
           completed_at?: string | null
           enrolled_at?: string
+          enrollment_number?: string | null
           id?: string
           masterclass_id?: string
           progress_percent?: number | null
@@ -15941,6 +15959,7 @@ export type Database = {
           description: string | null
           description_ar: string | null
           id: string
+          ledger_number: string | null
           metadata: Json | null
           points: number
           reference_id: string | null
@@ -15954,6 +15973,7 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           id?: string
+          ledger_number?: string | null
           metadata?: Json | null
           points: number
           reference_id?: string | null
@@ -15967,6 +15987,7 @@ export type Database = {
           description?: string | null
           description_ar?: string | null
           id?: string
+          ledger_number?: string | null
           metadata?: Json | null
           points?: number
           reference_id?: string | null
@@ -16472,6 +16493,7 @@ export type Database = {
           moderated_by: string | null
           moderation_reason: string | null
           moderation_status: string
+          post_number: string | null
           replies_count: number
           reply_to_post_id: string | null
           reposts_count: number
@@ -16497,6 +16519,7 @@ export type Database = {
           moderated_by?: string | null
           moderation_reason?: string | null
           moderation_status?: string
+          post_number?: string | null
           replies_count?: number
           reply_to_post_id?: string | null
           reposts_count?: number
@@ -16522,6 +16545,7 @@ export type Database = {
           moderated_by?: string | null
           moderation_reason?: string | null
           moderation_status?: string
+          post_number?: string | null
           replies_count?: number
           reply_to_post_id?: string | null
           reposts_count?: number
@@ -17185,6 +17209,7 @@ export type Database = {
           id: string
           rating: number
           recipe_id: string
+          review_number: string | null
           updated_at: string
           user_id: string
         }
@@ -17194,6 +17219,7 @@ export type Database = {
           id?: string
           rating: number
           recipe_id: string
+          review_number?: string | null
           updated_at?: string
           user_id: string
         }
@@ -17203,6 +17229,7 @@ export type Database = {
           id?: string
           rating?: number
           recipe_id?: string
+          review_number?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -17299,6 +17326,7 @@ export type Database = {
           is_published: boolean | null
           prep_time_minutes: number | null
           protein_g: number | null
+          recipe_number: string | null
           save_count: number | null
           servings: number | null
           share_count: number | null
@@ -17332,6 +17360,7 @@ export type Database = {
           is_published?: boolean | null
           prep_time_minutes?: number | null
           protein_g?: number | null
+          recipe_number?: string | null
           save_count?: number | null
           servings?: number | null
           share_count?: number | null
@@ -17365,6 +17394,7 @@ export type Database = {
           is_published?: boolean | null
           prep_time_minutes?: number | null
           protein_g?: number | null
+          recipe_number?: string | null
           save_count?: number | null
           servings?: number | null
           share_count?: number | null
@@ -19837,6 +19867,7 @@ export type Database = {
           id: string
           is_verified_purchase: boolean | null
           rating: number
+          review_number: string | null
           status: string | null
           title: string | null
           updated_at: string
@@ -19849,6 +19880,7 @@ export type Database = {
           id?: string
           is_verified_purchase?: boolean | null
           rating: number
+          review_number?: string | null
           status?: string | null
           title?: string | null
           updated_at?: string
@@ -19861,6 +19893,7 @@ export type Database = {
           id?: string
           is_verified_purchase?: boolean | null
           rating?: number
+          review_number?: string | null
           status?: string | null
           title?: string | null
           updated_at?: string
@@ -22127,6 +22160,17 @@ export type Database = {
       check_email_exists: { Args: { p_email: string }; Returns: boolean }
       check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
       expire_membership_trials: { Args: never; Returns: number }
+      gen_booking_number: { Args: never; Returns: string }
+      gen_enrollment_number: { Args: never; Returns: string }
+      gen_establishment_number: { Args: never; Returns: string }
+      gen_event_number: { Args: never; Returns: string }
+      gen_exh_review_number: { Args: never; Returns: string }
+      gen_ledger_number: { Args: never; Returns: string }
+      gen_live_session_number: { Args: never; Returns: string }
+      gen_post_number: { Args: never; Returns: string }
+      gen_recipe_number: { Args: never; Returns: string }
+      gen_recipe_review_number: { Args: never; Returns: string }
+      gen_supplier_review_number: { Args: never; Returns: string }
       generate_account_number: {
         Args: { p_role: Database["public"]["Enums"]["app_role"] }
         Returns: string
