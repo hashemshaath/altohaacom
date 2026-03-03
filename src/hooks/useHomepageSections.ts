@@ -57,7 +57,7 @@ export function useHomepageSections() {
       if (error) throw error;
       return (data || []) as unknown as HomepageSection[];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 30, // 30s so admin changes reflect quickly
   });
 }
 
