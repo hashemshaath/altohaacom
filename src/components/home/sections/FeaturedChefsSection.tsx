@@ -118,8 +118,13 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
                     </div>
                   )}
                   {idx < 3 && (
-                    <div className="absolute -top-1 -end-1 flex h-6 w-6 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground text-[10px] font-bold shadow-sm">
-                      #{idx + 1}
+                    <div className={cn(
+                      "absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold shadow-sm ring-2 ring-background",
+                      idx === 0 && "bg-chart-4 text-chart-4-foreground",
+                      idx === 1 && "bg-muted-foreground/70 text-background",
+                      idx === 2 && "bg-chart-3 text-chart-3-foreground"
+                    )}>
+                      {idx + 1}
                     </div>
                   )}
                   {natCode && (

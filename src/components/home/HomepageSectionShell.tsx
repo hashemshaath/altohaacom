@@ -50,6 +50,8 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
       {children}
+      {/* Subtle separator between sections */}
+      <div className="mt-2 h-px bg-border/10" />
     </div>
   );
 }
