@@ -62,6 +62,7 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
       }));
     },
     staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   if (chefs.length === 0) return null;

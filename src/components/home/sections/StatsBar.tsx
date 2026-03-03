@@ -55,6 +55,7 @@ export default function StatsBar() {
       };
     },
     staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   if (!stats || (stats.members === 0 && stats.competitions === 0)) return null;
