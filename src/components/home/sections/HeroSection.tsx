@@ -3,8 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { usePreloadImage } from "@/hooks/usePreloadImage";
 
@@ -57,14 +57,19 @@ export function HeroSection() {
   if (slides.length === 0) {
     return (
       <section className="relative flex min-h-[60vh] items-center justify-center bg-muted/30">
-        <div className="text-center space-y-4 px-4">
-          <h1 className="text-4xl font-serif font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+        <div className="text-center space-y-5 px-4">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
+          </div>
+          <h1 className="text-4xl font-serif font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl drop-shadow-sm">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
             {isAr ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم" : "Join the finest chefs, judges, and organizers worldwide"}
           </p>
-          <Button size="lg" className="rounded-xl mt-2" asChild>
+          <Button size="lg" className="rounded-xl mt-2 shadow-[var(--shadow-md)]" asChild>
             <Link to="/register">
               {isAr ? "ابدأ الآن" : "Get Started"}
               <ArrowRight className="ms-2 h-4 w-4" />
@@ -80,13 +85,13 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background" dir={isAr ? "rtl" : "ltr"}>
       <div className="relative min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh]">
-        {/* Background Image */}
+        {/* Background Images */}
         {slides.map((s, idx) => (
           <div
             key={s.id}
             className={cn(
               "absolute inset-0 transition-opacity duration-1000 ease-in-out",
-              idx === current ? "opacity-100" : "opacity-0"
+              idx === current ? "opacity-100" : "opacity-0 pointer-events-none"
             )}
           >
             <img
@@ -98,62 +103,82 @@ export function HeroSection() {
               )}
               loading={idx === 0 ? "eager" : "lazy"}
             />
+            {/* Enhanced multi-layer gradient overlay */}
             <div
-              className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"
+              className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"
               style={{ opacity: (s.overlay_opacity || 50) / 100 }}
             />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/40 to-transparent" />
           </div>
         ))}
 
         {/* Content */}
         <div className="container relative flex h-full min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh] items-end pb-16 sm:pb-20 lg:pb-24">
-          <div className="max-w-2xl space-y-4 animate-fade-in">
-            <h1 className="text-3xl font-serif font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
+          <div
+            key={slide.id}
+            className="max-w-2xl space-y-5"
+            style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-xs font-semibold text-primary shadow-sm">
+              <Sparkles className="h-3 w-3" />
+              {isAr ? "مميّز" : "Featured"}
+            </div>
+
+            <h1 className="text-3xl font-serif font-bold tracking-tight sm:text-4xl lg:text-5xl leading-[1.15] drop-shadow-sm"
+              style={{ textShadow: "0 2px 12px hsl(var(--background) / 0.4)" }}
+            >
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
+
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-base text-muted-foreground sm:text-lg max-w-lg leading-relaxed">
+              <p className="text-base text-muted-foreground sm:text-lg max-w-lg leading-relaxed"
+                style={{ textShadow: "0 1px 8px hsl(var(--background) / 0.3)" }}
+              >
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
+
             {slide.link_url && (
-              <Button size="lg" className="rounded-xl shadow-md" asChild>
+              <Button size="lg" className="rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300" asChild>
                 <Link to={slide.link_url}>
                   {isAr ? slide.link_label_ar || slide.link_label || "اكتشف المزيد" : slide.link_label || "Learn More"}
-                  <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
+                  <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </Button>
             )}
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation Arrows — glassmorphic */}
         {slides.length > 1 && (
           <>
             <button
               onClick={prev}
-              className="absolute start-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border/50 text-foreground shadow-sm transition-all hover:bg-background hover:shadow-md"
+              className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95"
               aria-label="Previous"
             >
               <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <button
               onClick={next}
-              className="absolute end-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border/50 text-foreground shadow-sm transition-all hover:bg-background hover:shadow-md"
+              className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95"
               aria-label="Next"
             >
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
             </button>
 
-            {/* Dots */}
-            <div className="absolute bottom-6 start-1/2 -translate-x-1/2 flex gap-2">
+            {/* Slide indicators — pill with glassmorphism */}
+            <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrent(idx)}
                   className={cn(
-                    "h-1.5 rounded-full transition-all duration-500",
-                    idx === current ? "w-8 bg-primary" : "w-1.5 bg-foreground/20 hover:bg-foreground/40"
+                    "h-2 rounded-full transition-all duration-500 ease-out",
+                    idx === current
+                      ? "w-7 bg-primary shadow-[var(--shadow-glow)]"
+                      : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
                   )}
                   aria-label={`Slide ${idx + 1}`}
                 />
@@ -162,6 +187,14 @@ export function HeroSection() {
           </>
         )}
       </div>
+
+      {/* Keyframe for content entrance */}
+      <style>{`
+        @keyframes heroFadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </section>
   );
 }
