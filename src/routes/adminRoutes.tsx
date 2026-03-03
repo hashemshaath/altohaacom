@@ -57,6 +57,8 @@ const HeaderFooterPage = lazy(() => import("@/pages/admin/design/HeaderFooterPag
 const HomepageDesignPage = lazy(() => import("@/pages/admin/design/HomepageDesignPage"));
 const CoversThemesPage = lazy(() => import("@/pages/admin/design/CoversThemesPage"));
 const TypographyPage = lazy(() => import("@/pages/admin/design/TypographyPage"));
+const LayoutSpacingPage = lazy(() => import("@/pages/admin/design/LayoutSpacingPage"));
+const CustomCSSPage = lazy(() => import("@/pages/admin/design/CustomCSSPage"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -118,6 +120,8 @@ export const adminRoutes = (
     <Route path="design/homepage" element={<HomepageDesignPage />} />
     <Route path="design/covers" element={<CoversThemesPage />} />
     <Route path="design/typography" element={<TypographyPage />} />
+    <Route path="design/layout" element={<LayoutSpacingPage />} />
+    <Route path="design/custom-css" element={<CustomCSSPage />} />
 
     {/* System */}
     <Route path="settings" element={<SystemSettings />} />

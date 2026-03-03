@@ -148,6 +148,8 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الصفحة الرئيسية" },
       { to: "/admin/design/covers", icon: Layers, labelEn: "Covers & Themes", labelAr: "الأغلفة والمظهر" },
       { to: "/admin/design/typography", icon: Type, labelEn: "Typography", labelAr: "الخطوط" },
+      { to: "/admin/design/layout", icon: Layers, labelEn: "Layout & Spacing", labelAr: "التخطيط والتباعد" },
+      { to: "/admin/design/custom-css", icon: Palette, labelEn: "Custom CSS", labelAr: "CSS مخصص" },
     ],
   },
   {
