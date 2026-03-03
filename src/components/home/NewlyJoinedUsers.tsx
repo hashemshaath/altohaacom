@@ -46,6 +46,7 @@ export function NewlyJoinedUsers() {
       return data || [];
     },
     staleTime: 1000 * 60 * 3,
+    refetchOnWindowFocus: false,
   });
 
   const countries = useMemo(() => {
@@ -113,7 +114,7 @@ export function NewlyJoinedUsers() {
 
             return (
               <Link key={user.id} to={user.username ? `/${user.username}` : `/profile/${user.user_id}`} className="group block">
-                <Card className="h-full border-border/40 p-3 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+                <Card className="h-full border-border/40 rounded-2xl p-3 text-center transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/20">
                   <div className="relative mx-auto mb-2.5 w-fit">
                     <Avatar className="h-11 w-11 sm:h-14 sm:w-14 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
                       <AvatarImage src={user.avatar_url} alt={name} />
