@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Building2 } from "lucide-react";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 export default function StatsPartnersSection() {
@@ -55,6 +54,11 @@ export default function StatsPartnersSection() {
 
   if (allLogos.length === 0) return null;
 
+  const displayLogos = allLogos.slice(0, itemCount);
+  // Duplicate logos for seamless infinite scroll effect
+  const marqueeLogos = displayLogos.length >= 4 ? [...displayLogos, ...displayLogos] : displayLogos;
+  const useMarquee = displayLogos.length >= 4;
+
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
@@ -69,22 +73,52 @@ export default function StatsPartnersSection() {
           </div>
         )}
 
-        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
-          {allLogos.slice(0, itemCount).map((item) => (
+        {useMarquee ? (
+          <div className="relative overflow-hidden">
+            {/* Fade edges */}
+            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-16 bg-gradient-to-e from-background to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-16 bg-gradient-to-s from-background to-transparent" />
             <div
-              key={item.id}
-              className="flex h-12 items-center justify-center grayscale opacity-60 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
-              title={item.name}
+              className={cn(
+                "flex items-center gap-10 sm:gap-14",
+                isAr ? "animate-marquee-rtl" : "animate-marquee"
+              )}
+              style={{ width: "max-content" }}
             >
-              <img
-                src={item.logo}
-                alt={item.name}
-                className="h-full max-w-[120px] object-contain"
-                loading="lazy"
-              />
+              {marqueeLogos.map((item, idx) => (
+                <div
+                  key={`${item.id}-${idx}`}
+                  className="flex h-12 shrink-0 items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+                  title={item.name}
+                >
+                  <img
+                    src={item.logo}
+                    alt={item.name}
+                    className="h-full max-w-[120px] object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+            {displayLogos.map((item) => (
+              <div
+                key={item.id}
+                className="flex h-12 items-center justify-center grayscale opacity-60 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+                title={item.name}
+              >
+                <img
+                  src={item.logo}
+                  alt={item.name}
+                  className="h-full max-w-[120px] object-contain"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

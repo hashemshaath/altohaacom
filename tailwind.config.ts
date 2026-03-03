@@ -84,10 +84,25 @@ export default {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "marquee-rtl": {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(50%)" },
+        },
+        "ken-burns": {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1.08)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        marquee: "marquee 30s linear infinite",
+        "marquee-rtl": "marquee-rtl 30s linear infinite",
+        "ken-burns": "ken-burns 8s ease-out forwards",
       },
     },
   },

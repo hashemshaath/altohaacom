@@ -92,7 +92,10 @@ export function HeroSection() {
             <img
               src={s.image_url}
               alt=""
-              className="h-full w-full object-cover"
+              className={cn(
+                "h-full w-full object-cover",
+                idx === current && "animate-ken-burns"
+              )}
               loading={idx === 0 ? "eager" : "lazy"}
             />
             <div

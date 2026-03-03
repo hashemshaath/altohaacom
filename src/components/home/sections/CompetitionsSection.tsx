@@ -72,8 +72,9 @@ export default function CompetitionsSection() {
   if (allEvents.length === 0) return null;
 
   return (
-    <section className="bg-muted/30" dir={isAr ? "rtl" : "ltr"}>
-      <div className="container">
+    <section className="relative overflow-hidden bg-muted/30" dir={isAr ? "rtl" : "ltr"}>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.04),transparent_60%)]" />
+      <div className="container relative">
         {showTitle && (
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
