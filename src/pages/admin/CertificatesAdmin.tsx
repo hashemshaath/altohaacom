@@ -1,4 +1,6 @@
 import { useState, useRef, useCallback } from "react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -110,7 +112,7 @@ export default function CertificatesAdmin() {
   const { data: certificates = [], isLoading } = useQuery({
     queryKey: ["certificates", searchQuery, statusFilter, typeFilter],
     queryFn: async () => {
-      let query = supabase.from("certificates").select("*").order("created_at", { ascending: false });
+      let query = supabase.from("certificates").select("id, certificate_number, verification_code, recipient_name, recipient_name_ar, recipient_email, recipient_id, type, status, event_name, event_name_ar, event_date, event_location, event_location_ar, achievement, achievement_ar, issued_at, signed_at, signed_by, sent_at, created_at, competition_id").order("created_at", { ascending: false });
       if (searchQuery) query = query.or(`recipient_name.ilike.%${searchQuery}%,certificate_number.ilike.%${searchQuery}%,verification_code.ilike.%${searchQuery}%`);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as any);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as any);
@@ -538,13 +540,22 @@ export default function CertificatesAdmin() {
 
                 return (
                   <ScrollArea className="h-[500px]">
-                    {groupBy === "none" ? (
+                    {isLoading ? (
+                      <AdminTableSkeleton rows={6} columns={7} />
+                    ) : groupBy === "none" ? (
                       <>
                         {renderTable(filtered)}
                         {filtered.length === 0 && (
-                          <div className="text-center text-muted-foreground py-12">
-                            {language === "ar" ? "لا توجد شهادات" : "No certificates found"}
-                          </div>
+                          <AdminEmptyState
+                            icon={Award}
+                            title="No certificates found"
+                            titleAr="لا توجد شهادات"
+                            description="Try adjusting your filters or issue a new certificate"
+                            descriptionAr="جرب تعديل الفلاتر أو أصدر شهادة جديدة"
+                            actionLabel="Issue Certificate"
+                            actionLabelAr="إصدار شهادة"
+                            onAction={() => setActiveTab("issue")}
+                          />
                         )}
                       </>
                     ) : (
