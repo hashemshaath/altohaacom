@@ -8,21 +8,28 @@ import { Button } from "@/components/ui/button";
 import { Quote, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimonials(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
+  const sectionConfig = useSectionConfig();
+
+  const itemCount = sectionConfig?.item_count || 10;
+  const sectionTitle = sectionConfig
+    ? (isAr ? sectionConfig.title_ar || "ماذا يقول أعضاؤنا" : sectionConfig.title_en || "What Our Members Say")
+    : (isAr ? "ماذا يقول أعضاؤنا" : "What Our Members Say");
 
   const { data: testimonials = [] } = useQuery({
-    queryKey: ["home-testimonials"],
+    queryKey: ["home-testimonials", itemCount],
     queryFn: async () => {
       const { data } = await (supabase as any)
         .from("testimonials")
         .select("*")
         .eq("is_active", true)
         .order("sort_order", { ascending: true })
-        .limit(10);
+        .limit(itemCount);
       return (data as any[]) || [];
     },
     staleTime: 1000 * 60 * 10,
@@ -61,7 +68,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
           <SectionHeader
             icon={Quote}
             badge={isAr ? "آراء المجتمع" : "Community Voices"}
-            title={isAr ? "ماذا يقول أعضاؤنا" : "What Our Members Say"}
+            title={sectionTitle}
             dataSource="testimonials"
             itemCount={testimonials.length}
             isAr={isAr}

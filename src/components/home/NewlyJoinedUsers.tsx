@@ -16,21 +16,33 @@ import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 export function NewlyJoinedUsers() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
+  const sectionConfig = useSectionConfig();
+
+  const itemCount = sectionConfig?.item_count || 12;
+  const showFilters = sectionConfig?.show_filters ?? true;
+  const showViewAll = sectionConfig?.show_view_all ?? true;
+  const sectionTitle = sectionConfig
+    ? (isAr ? sectionConfig.title_ar || "أحدث الأعضاء في مجتمعنا" : sectionConfig.title_en || "Welcome Our Newest Members")
+    : (isAr ? "أحدث الأعضاء في مجتمعنا" : "Welcome Our Newest Members");
+  const sectionSubtitle = sectionConfig
+    ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
+    : (isAr ? "انضم إلى مجتمع متنامٍ من الطهاة والمحترفين حول العالم" : "Join a growing community of chefs and professionals worldwide");
 
   const { data: users = [] } = useQuery({
-    queryKey: ["newly-joined-users"],
+    queryKey: ["newly-joined-users", itemCount],
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
         .select("id, user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, nationality, show_nationality, created_at")
         .order("created_at", { ascending: false })
-        .limit(12);
+        .limit(itemCount);
       return data || [];
     },
     staleTime: 1000 * 60 * 3,
@@ -60,14 +72,14 @@ export function NewlyJoinedUsers() {
         <SectionHeader
           icon={UserPlus}
           badge={isAr ? "انضموا حديثاً" : "Newly Joined"}
-          title={isAr ? "أحدث الأعضاء في مجتمعنا" : "Welcome Our Newest Members"}
-          subtitle={isAr ? "انضم إلى مجتمع متنامٍ من الطهاة والمحترفين حول العالم" : "Join a growing community of chefs and professionals worldwide"}
+          title={sectionTitle}
+          subtitle={sectionSubtitle}
           dataSource="profiles"
           itemCount={filtered.length}
-          viewAllHref="/community"
+          viewAllHref={showViewAll ? "/community" : undefined}
           viewAllLabel={isAr ? "عرض المجتمع" : "View Community"}
           isAr={isAr}
-          filters={countries.length > 1 ? (
+          filters={showFilters && countries.length > 1 ? (
             <>
               <FilterChip label={isAr ? "الكل" : "All"} active={!countryFilter} count={users.length} onClick={() => setCountryFilter(null)} />
               {countries.map(({ code, count }) => {

@@ -10,6 +10,7 @@ import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const LEVEL_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   beginner: { en: "Beginner", ar: "مبتدئ", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
@@ -37,16 +38,27 @@ export function HomeMasterclasses() {
   const isAr = language === "ar";
   const [levelFilter, setLevelFilter] = useState<string | null>(null);
   const [catFilter, setCatFilter] = useState<string | null>(null);
+  const sectionConfig = useSectionConfig();
+
+  const itemCount = sectionConfig?.item_count || 8;
+  const showFilters = sectionConfig?.show_filters ?? true;
+  const showViewAll = sectionConfig?.show_view_all ?? true;
+  const sectionTitle = sectionConfig
+    ? (isAr ? sectionConfig.title_ar || "طوّر مهاراتك مع الخبراء" : sectionConfig.title_en || "Level Up with Expert-Led Classes")
+    : (isAr ? "طوّر مهاراتك مع الخبراء" : "Level Up with Expert-Led Classes");
+  const sectionSubtitle = sectionConfig
+    ? (isAr ? sectionConfig.subtitle_ar || "" : sectionConfig.subtitle_en || "")
+    : (isAr ? "تعلّم من أمهر الطهاة واحترف فنون الطهي" : "Learn from top chefs and master culinary arts");
 
   const { data: classes = [] } = useQuery({
-    queryKey: ["home-masterclasses"],
+    queryKey: ["home-masterclasses", itemCount],
     queryFn: async () => {
       const { data } = await supabase
         .from("masterclasses")
         .select("id, title, title_ar, cover_image_url, category, level, price, currency, is_free, start_date, duration_hours, status")
         .in("status", ["published", "upcoming"])
         .order("start_date", { ascending: true, nullsFirst: false })
-        .limit(8);
+        .limit(itemCount);
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
@@ -79,13 +91,13 @@ export function HomeMasterclasses() {
       <SectionHeader
         icon={GraduationCap}
         badge={isAr ? "دروس متقدمة" : "Masterclasses"}
-        title={isAr ? "طوّر مهاراتك مع الخبراء" : "Level Up with Expert-Led Classes"}
-        subtitle={isAr ? "تعلّم من أمهر الطهاة واحترف فنون الطهي" : "Learn from top chefs and master culinary arts"}
+        title={sectionTitle}
+        subtitle={sectionSubtitle}
         dataSource="masterclasses"
         itemCount={filtered.length}
-        viewAllHref="/masterclasses"
+        viewAllHref={showViewAll ? "/masterclasses" : undefined}
         isAr={isAr}
-        filters={(levels.length > 1 || categories.length > 1) ? (
+        filters={showFilters && (levels.length > 1 || categories.length > 1) ? (
           <>
             <FilterChip label={isAr ? "الكل" : "All"} active={!levelFilter && !catFilter} count={classes.length} onClick={() => { setLevelFilter(null); setCatFilter(null); }} />
             {levels.map(l => {

@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { localizeLocation } from "@/lib/localizeLocation";
+import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const STATUS_STYLES: Record<string, { en: string; ar: string; class: string }> = {
   registration_open: { en: "Open", ar: "مفتوح", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
@@ -20,16 +21,28 @@ const STATUS_STYLES: Record<string, { en: string; ar: string; class: string }> =
 export default function CompetitionsSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const config = useSectionConfig();
+
+  const itemCount = config?.item_count || 6;
+  const title = config
+    ? (isAr ? config.title_ar || "انضم إلى الأحداث القادمة" : config.title_en || "Upcoming Events")
+    : (isAr ? "انضم إلى الأحداث القادمة" : "Upcoming Events");
+  const subtitle = config
+    ? (isAr ? config.subtitle_ar || "" : config.subtitle_en || "")
+    : (isAr ? "تنافس وشارك في أفضل الفعاليات الطهوية حول العالم" : "Compete and participate in world-class culinary events");
+  const showTitle = config?.show_title ?? true;
+  const showSubtitle = config?.show_subtitle ?? true;
+  const showViewAll = config?.show_view_all ?? true;
 
   const { data: competitions = [] } = useQuery({
-    queryKey: ["home-competitions-minimal"],
+    queryKey: ["home-competitions-minimal", itemCount],
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions")
         .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, country_code, is_virtual")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
-        .limit(6);
+        .limit(itemCount);
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
@@ -52,29 +65,29 @@ export default function CompetitionsSection() {
   const allEvents = [
     ...competitions.map((c: any) => ({ ...c, type: "competition", date: c.competition_start, link: `/competitions/${c.id}` })),
     ...exhibitions.map((e: any) => ({ ...e, type: "exhibition", date: e.start_date, link: `/exhibitions/${e.slug || e.id}` })),
-  ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, 6);
+  ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, itemCount);
 
   if (allEvents.length === 0) return null;
 
   return (
     <section className="py-16 sm:py-24 bg-muted/30" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-            {isAr ? "مسابقات وفعاليات" : "Competitions & Events"}
-          </Badge>
-          <h2 className={cn("text-2xl font-bold sm:text-3xl lg:text-4xl text-foreground tracking-tight", !isAr && "font-serif")}>
-            {isAr ? "انضم إلى الأحداث القادمة" : "Upcoming Events"}
-          </h2>
-          <p className="mt-2 text-muted-foreground max-w-lg mx-auto">
-            {isAr ? "تنافس وشارك في أفضل الفعاليات الطهوية حول العالم" : "Compete and participate in world-class culinary events"}
-          </p>
-        </div>
+        {showTitle && (
+          <div className="text-center mb-12">
+            <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
+              {isAr ? "مسابقات وفعاليات" : "Competitions & Events"}
+            </Badge>
+            <h2 className={cn("text-2xl font-bold sm:text-3xl lg:text-4xl text-foreground tracking-tight", !isAr && "font-serif")}>
+              {title}
+            </h2>
+            {showSubtitle && subtitle && (
+              <p className="mt-2 text-muted-foreground max-w-lg mx-auto">{subtitle}</p>
+            )}
+          </div>
+        )}
 
         {/* Featured Event (first) + Grid */}
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* Featured Card */}
           {allEvents[0] && (
             <Link to={allEvents[0].link} className="group">
               <Card className="overflow-hidden border-border/30 h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 rounded-2xl">
@@ -122,7 +135,6 @@ export default function CompetitionsSection() {
             </Link>
           )}
 
-          {/* Smaller Cards */}
           <div className="grid gap-4 sm:grid-cols-2">
             {allEvents.slice(1, 5).map((event: any) => (
               <Link key={event.id} to={event.link} className="group">
@@ -160,15 +172,16 @@ export default function CompetitionsSection() {
           </div>
         </div>
 
-        {/* View All */}
-        <div className="mt-10 text-center">
-          <Button variant="outline" className="rounded-xl" asChild>
-            <Link to="/events-calendar">
-              {isAr ? "عرض جميع الفعاليات" : "View All Events"}
-              <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
-            </Link>
-          </Button>
-        </div>
+        {showViewAll && (
+          <div className="mt-10 text-center">
+            <Button variant="outline" className="rounded-xl" asChild>
+              <Link to="/events-calendar">
+                {isAr ? "عرض جميع الفعاليات" : "View All Events"}
+                <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
+              </Link>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
