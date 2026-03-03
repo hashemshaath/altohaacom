@@ -4,8 +4,9 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { usePreloadImage } from "@/hooks/usePreloadImage";
 
 interface HeroSlide {
   id: string;
@@ -38,7 +39,11 @@ export function HeroSection() {
       return (data || []) as HeroSlide[];
     },
     staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
+
+  // Preload the first slide image for faster LCP
+  usePreloadImage(slides[0]?.image_url);
 
   const next = useCallback(() => setCurrent(c => (c + 1) % Math.max(slides.length, 1)), [slides.length]);
   const prev = useCallback(() => setCurrent(c => (c - 1 + slides.length) % Math.max(slides.length, 1)), [slides.length]);

@@ -57,7 +57,8 @@ export function useHomepageSections() {
       if (error) throw error;
       return (data || []) as unknown as HomepageSection[];
     },
-    staleTime: 1000 * 30, // 30s so admin changes reflect quickly
+    staleTime: 1000 * 60 * 5, // 5 min – admin can force-refresh from manager
+    refetchOnWindowFocus: false,
   });
 }
 

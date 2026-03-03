@@ -46,6 +46,7 @@ export default function CompetitionsSection() {
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   const { data: exhibitions = [] } = useQuery({
@@ -60,6 +61,7 @@ export default function CompetitionsSection() {
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   const allEvents = [
