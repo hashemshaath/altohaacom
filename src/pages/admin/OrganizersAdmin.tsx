@@ -3,6 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useCSVExport } from "@/hooks/useCSVExport";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +15,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,12 +33,11 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield, Landmark, Users, BarChart3, Calendar,
+  Shield,
   Twitter, Facebook, Linkedin, Instagram,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 
 interface OrganizerForm {
   name: string;
@@ -87,7 +88,6 @@ export default function OrganizersAdmin() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<OrganizerForm>(emptyForm);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [formTab, setFormTab] = useState("basic");
 
   const { data: organizers, isLoading } = useQuery({
@@ -95,7 +95,7 @@ export default function OrganizersAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("organizers")
-        .select("*")
+        .select("id, name, name_ar, slug, email, phone, website, city, country, status, is_verified, is_featured, logo_url, cover_image_url, organizer_number, total_exhibitions, total_views, average_rating, description, description_ar, address, address_ar, city_ar, country_ar, country_code, services, targeted_sectors, founded_year, social_links, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -106,6 +106,37 @@ export default function OrganizersAdmin() {
     [...new Set((organizers || []).map((o: any) => o.country).filter(Boolean))] as string[],
     [organizers]
   );
+
+  const filtered = useMemo(() => (organizers || []).filter((o: any) => {
+    const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === "all" || o.status === statusFilter;
+    const matchCountry = countryFilter === "all" || o.country === countryFilter;
+    return matchSearch && matchStatus && matchCountry;
+  }), [organizers, search, statusFilter, countryFilter]);
+
+  const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: selectedCount } = useAdminBulkActions(filtered);
+
+  const { exportCSV } = useCSVExport({
+    columns: [
+      { header: "Number", accessor: (o: any) => o.organizer_number },
+      { header: "Name", accessor: (o: any) => o.name },
+      { header: "Name (AR)", accessor: (o: any) => o.name_ar },
+      { header: "Email", accessor: (o: any) => o.email },
+      { header: "Phone", accessor: (o: any) => o.phone },
+      { header: "Website", accessor: (o: any) => o.website },
+      { header: "City", accessor: (o: any) => o.city },
+      { header: "Country", accessor: (o: any) => o.country },
+      { header: "Status", accessor: (o: any) => o.status },
+      { header: "Verified", accessor: (o: any) => o.is_verified ? "Yes" : "No" },
+      { header: "Featured", accessor: (o: any) => o.is_featured ? "Yes" : "No" },
+      { header: "Events", accessor: (o: any) => o.total_exhibitions || 0 },
+      { header: "Views", accessor: (o: any) => o.total_views || 0 },
+      { header: "Rating", accessor: (o: any) => o.average_rating || 0 },
+      { header: "Services", accessor: (o: any) => (o.services || []).join("; ") },
+      { header: "Founded", accessor: (o: any) => o.founded_year },
+    ],
+    filename: "organizers",
+  });
 
   const saveMutation = useMutation({
     mutationFn: async (f: OrganizerForm) => {
@@ -179,7 +210,7 @@ export default function OrganizersAdmin() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-organizers"] });
-      setSelectedIds([]);
+      clearSelection();
       toast.success(isAr ? "تم الحذف" : "Deleted");
     },
   });
@@ -191,7 +222,7 @@ export default function OrganizersAdmin() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-organizers"] });
-      setSelectedIds([]);
+      clearSelection();
       toast.success(isAr ? "تم التحديث" : "Updated");
     },
   });
@@ -203,7 +234,7 @@ export default function OrganizersAdmin() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-organizers"] });
-      setSelectedIds([]);
+      clearSelection();
       toast.success(isAr ? "تم التحديث" : "Updated");
     },
   });
@@ -244,13 +275,6 @@ export default function OrganizersAdmin() {
     setDialogOpen(true);
   };
 
-  const filtered = (organizers || []).filter((o: any) => {
-    const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || o.status === statusFilter;
-    const matchCountry = countryFilter === "all" || o.country === countryFilter;
-    return matchSearch && matchStatus && matchCountry;
-  });
-
   const stats = {
     total: organizers?.length || 0,
     active: organizers?.filter((o: any) => o.status === "active").length || 0,
@@ -258,46 +282,7 @@ export default function OrganizersAdmin() {
     featured: organizers?.filter((o: any) => o.is_featured).length || 0,
   };
 
-  const toggleAll = () => {
-    if (selectedIds.length === filtered.length) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filtered.map((o: any) => o.id));
-    }
-  };
-
-  const toggleOne = (id: string) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  };
-
-  const { toast: toastHook } = useToast();
-  const handleExport = () => {
-    const data = organizers || [];
-    if (!data.length) {
-      toastHook({ title: isAr ? "لا توجد بيانات" : "No data", variant: "destructive" });
-      return;
-    }
-    const escape = (val: any): string => {
-      const str = val == null ? "" : String(val);
-      return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
-    };
-    const headers = ["Number", "Name", "Name (AR)", "Email", "Phone", "Website", "City", "Country", "Status", "Verified", "Featured", "Events", "Views", "Rating", "Services", "Founded"];
-    const rows = data.map((o: any) => [
-      o.organizer_number || "", o.name, o.name_ar || "", o.email || "", o.phone || "", o.website || "",
-      o.city || "", o.country || "", o.status, o.is_verified ? "Yes" : "No",
-      o.is_featured ? "Yes" : "No", o.total_exhibitions || 0, o.total_views || 0,
-      o.average_rating || 0, (o.services || []).join("; "), o.founded_year || "",
-    ].map(escape).join(","));
-    const csv = "\uFEFF" + [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `organizers_${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toastHook({ title: isAr ? `✅ تم تصدير ${data.length} صف` : `✅ Exported ${data.length} rows` });
-  };
+  const selectedArray = Array.from(selected);
 
   return (
     <div className="space-y-6">
@@ -330,26 +315,23 @@ export default function OrganizersAdmin() {
       </div>
 
       {/* Bulk Action Bar */}
-      {selectedIds.length > 0 && (
-        <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="p-3 flex flex-wrap gap-2 items-center justify-between">
-            <span className="text-sm font-medium">
-              {selectedIds.length} {isAr ? "محدد" : "selected"}
-            </span>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => bulkStatusMutation.mutate({ ids: selectedIds, status: "active" })}>
-                <CheckCircle2 className="h-3.5 w-3.5 me-1" />{isAr ? "تفعيل" : "Activate"}
-              </Button>
-              <Button size="sm" variant="outline" onClick={() => bulkVerifyMutation.mutate({ ids: selectedIds, verified: true })}>
-                <Shield className="h-3.5 w-3.5 me-1" />{isAr ? "توثيق" : "Verify"}
-              </Button>
-              <Button size="sm" variant="destructive" onClick={() => { if (confirm(isAr ? "حذف المحدد؟" : "Delete selected?")) bulkDeleteMutation.mutate(selectedIds); }}>
-                <Trash2 className="h-3.5 w-3.5 me-1" />{isAr ? "حذف" : "Delete"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <BulkActionBar
+        count={selectedCount}
+        onClear={clearSelection}
+        onDelete={() => { if (confirm(isAr ? "حذف المحدد؟" : "Delete selected?")) bulkDeleteMutation.mutate(selectedArray); }}
+        onStatusChange={() => bulkStatusMutation.mutate({ ids: selectedArray, status: "active" })}
+        onExport={() => exportCSV(filtered.filter((o: any) => selected.has(o.id)))}
+      >
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5"
+          onClick={() => bulkVerifyMutation.mutate({ ids: selectedArray, verified: true })}
+        >
+          <Shield className="h-3.5 w-3.5" />
+          {isAr ? "توثيق" : "Verify"}
+        </Button>
+      </BulkActionBar>
 
       {/* Toolbar */}
       <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
@@ -379,7 +361,7 @@ export default function OrganizersAdmin() {
             )}
           </div>
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={handleExport}>
+            <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
               <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
             </Button>
             <Button size="sm" onClick={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}>
@@ -392,13 +374,24 @@ export default function OrganizersAdmin() {
       {/* Table */}
       {isLoading ? (
         <AdminTableSkeleton rows={6} columns={5} />
+      ) : filtered.length === 0 ? (
+        <AdminEmptyState
+          icon={Building2}
+          title="No organizers found"
+          titleAr="لا توجد نتائج"
+          description="Create your first organizer to get started"
+          descriptionAr="أنشئ أول منظم للبدء"
+          actionLabel="Add Organizer"
+          actionLabelAr="إضافة منظم"
+          onAction={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}
+        />
       ) : (
         <Card className="rounded-2xl border-border/40 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10">
-                  <Checkbox checked={selectedIds.length === filtered.length && filtered.length > 0} onCheckedChange={toggleAll} />
+                  <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                 </TableHead>
                 <TableHead>{isAr ? "المنظم" : "Organizer"}</TableHead>
                 <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
@@ -411,16 +404,10 @@ export default function OrganizersAdmin() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
-                    {isAr ? "لا توجد نتائج" : "No organizers found"}
-                  </TableCell>
-                </TableRow>
-              ) : filtered.map((org: any) => (
-                <TableRow key={org.id} className={selectedIds.includes(org.id) ? "bg-primary/5" : ""}>
+              {filtered.map((org: any) => (
+                <TableRow key={org.id} className={selected.has(org.id) ? "bg-primary/5" : ""}>
                   <TableCell>
-                    <Checkbox checked={selectedIds.includes(org.id)} onCheckedChange={() => toggleOne(org.id)} />
+                    <Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
