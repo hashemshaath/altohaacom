@@ -39,14 +39,9 @@ const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerati
 
 const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
 const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
-const ContentAnalyticsWidget = lazy(() => import("@/components/admin/ContentAnalyticsWidget").then(m => ({ default: m.ContentAnalyticsWidget })));
-const FinanceAnalyticsWidget = lazy(() => import("@/components/admin/FinanceAnalyticsWidget").then(m => ({ default: m.FinanceAnalyticsWidget })));
-const CompetitionInsightsWidget = lazy(() => import("@/components/admin/CompetitionInsightsWidget").then(m => ({ default: m.CompetitionInsightsWidget })));
-const ExhibitionInsightsWidget = lazy(() => import("@/components/admin/ExhibitionInsightsWidget").then(m => ({ default: m.ExhibitionInsightsWidget })));
-const SupportInsightsWidget = lazy(() => import("@/components/admin/SupportInsightsWidget").then(m => ({ default: m.SupportInsightsWidget })));
 const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
 
-const ContentCalendarWidget = lazy(() => import("@/components/admin/ContentCalendarWidget").then(m => ({ default: m.ContentCalendarWidget })));
+
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
@@ -621,14 +616,6 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
 
-      {/* Competition & Evaluation Insights */}
-      <LazySection><CompetitionInsightsWidget /></LazySection>
-
-      {/* Exhibition & Events Insights */}
-      <LazySection><ExhibitionInsightsWidget /></LazySection>
-
-      {/* Support & Communications */}
-      <LazySection><SupportInsightsWidget /></LazySection>
 
       {/* Company Dashboard */}
       <LazySection><CompanyDashboardWidget /></LazySection>
