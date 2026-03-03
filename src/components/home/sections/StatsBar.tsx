@@ -39,23 +39,25 @@ export default function StatsBar() {
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
     queryFn: async () => {
-      const [profiles, comps, ents, exhs] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("competitions").select("*", { count: "exact", head: true }),
-        supabase.from("culinary_entities").select("*", { count: "exact", head: true }),
-        supabase.from("exhibitions").select("*", { count: "exact", head: true }),
+      const results = await Promise.allSettled([
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("competitions").select("id", { count: "exact", head: true }),
+        supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
+        supabase.from("exhibitions").select("id", { count: "exact", head: true }),
       ]);
+      const getCount = (r: PromiseSettledResult<any>) => 
+        r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
       return {
-        members: profiles.count || 0,
-        competitions: comps.count || 0,
-        entities: ents.count || 0,
-        exhibitions: exhs.count || 0,
+        members: getCount(results[0]),
+        competitions: getCount(results[1]),
+        entities: getCount(results[2]),
+        exhibitions: getCount(results[3]),
       };
     },
     staleTime: 1000 * 60 * 10,
   });
 
-  if (!stats) return null;
+  if (!stats || (stats.members === 0 && stats.competitions === 0)) return null;
 
   const items = [
     { value: stats.members, label: isAr ? "عضو" : "Members", icon: Users },
