@@ -2,6 +2,7 @@ import { lazy, Suspense, useMemo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
+import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
@@ -54,8 +55,6 @@ const SECTION_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
   platform_features: PlatformFeatures,
   newsletter: NewsletterSignup,
   quick_actions: HomeQuickActions,
-  ad_banner_top: GenericHomepageSection,
-  ad_banner_mid: GenericHomepageSection,
 };
 
 // ── Section loading skeleton ──
@@ -97,43 +96,32 @@ const Index = () => {
           section_key: key,
           is_visible: true,
           sort_order: i + 1,
-          // Provide defaults for the config props
-          item_count: 6,
-          items_per_row: 3,
-          max_items_mobile: 4,
-          item_size: "medium" as const,
-          display_style: "grid" as const,
-          show_filters: true,
-          show_view_all: true,
-          show_title: true,
-          show_subtitle: true,
         }));
 
     return sectionList.map((s) => {
       const key = s.section_key;
       const Component = SECTION_COMPONENTS[key];
 
+      // No dedicated component → use GenericHomepageSection
       if (!Component) {
         return (
           <Suspense key={key} fallback={<SectionSkeleton />}>
-            <GenericHomepageSection sectionKey={key} />
+            <SectionKeyProvider sectionKey={key}>
+              <HomepageSectionShell>
+                <GenericHomepageSection sectionKey={key} />
+              </HomepageSectionShell>
+            </SectionKeyProvider>
           </Suspense>
         );
       }
 
-      if (key.startsWith("ad_banner")) {
-        return (
-          <Suspense key={key} fallback={null}>
-            <GenericHomepageSection sectionKey={key} />
-          </Suspense>
-        );
-      }
-
-      // Wrap each component in SectionKeyProvider so it can read its own DB config
+      // Wrap each component in SectionKeyProvider + Shell for DB config application
       return (
         <Suspense key={key} fallback={<SectionSkeleton />}>
           <SectionKeyProvider sectionKey={key}>
-            <Component />
+            <HomepageSectionShell>
+              <Component />
+            </HomepageSectionShell>
           </SectionKeyProvider>
         </Suspense>
       );
