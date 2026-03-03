@@ -40,6 +40,7 @@ const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerati
 const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
 const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
 const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
+const FinanceMembershipWidget = lazy(() => import("@/components/admin/FinanceMembershipWidget").then(m => ({ default: m.FinanceMembershipWidget })));
 
 
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
@@ -473,6 +474,11 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Finance & Membership */}
+      <LazySection>
+        <FinanceMembershipWidget />
+      </LazySection>
 
       <LazySection>
         <ReportsSummaryWidget />
