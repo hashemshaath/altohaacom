@@ -25,14 +25,14 @@ const MobileBottomNav = lazy(() => import("@/components/mobile/MobileBottomNav")
 const GoogleTrackingProvider = lazy(() => import("@/components/tracking/GoogleTrackingProvider").then(m => ({ default: m.GoogleTrackingProvider })));
 const TrackingScriptsInjector = lazy(() => import("@/components/tracking/TrackingScriptsInjector").then(m => ({ default: m.TrackingScriptsInjector })));
 const PageTracker = lazy(() => import("@/components/tracking/PageTracker").then(m => ({ default: m.PageTracker })));
-const SmartInstallBanner = lazy(() => import("@/components/pwa/SmartInstallBanner").then(m => ({ default: m.SmartInstallBanner })));
-const OfflineBanner = lazy(() => import("@/components/pwa/OfflineBanner").then(m => ({ default: m.OfflineBanner })));
-const UpdatePrompt = lazy(() => import("@/components/pwa/UpdatePrompt").then(m => ({ default: m.UpdatePrompt })));
-const IOSInstallGuide = lazy(() => import("@/components/pwa/IOSInstallGuide").then(m => ({ default: m.IOSInstallGuide })));
-const PullToRefreshIndicator = lazy(() => import("@/components/pwa/PullToRefreshIndicator").then(m => ({ default: m.PullToRefreshIndicator })));
-const ScrollProgress = lazy(() => import("@/components/ui/scroll-progress").then(m => ({ default: m.ScrollProgress })));
-const BackToTop = lazy(() => import("@/components/ui/back-to-top").then(m => ({ default: m.BackToTop })));
-const RoutePrefetcher = lazy(() => import("@/components/ui/route-prefetcher").then(m => ({ default: m.RoutePrefetcher })));
+import { SmartInstallBanner } from "@/components/pwa/SmartInstallBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
+import { IOSInstallGuide } from "@/components/pwa/IOSInstallGuide";
+import { PullToRefreshIndicator } from "@/components/pwa/PullToRefreshIndicator";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { BackToTop } from "@/components/ui/back-to-top";
+import { RoutePrefetcher } from "@/components/ui/route-prefetcher";
 
 const LiveChatWidget = lazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget })));
 const WelcomeModal = lazy(() => import("@/components/onboarding/WelcomeModal").then(m => ({ default: m.WelcomeModal })));
@@ -66,7 +66,7 @@ function AppContent() {
   useEnhancedSEO(language);
   return (
     <>
-      <ErrorBoundary><Suspense fallback={null}><PullToRefreshIndicator {...ptr} /></Suspense></ErrorBoundary>
+      <ErrorBoundary><PullToRefreshIndicator {...ptr} /></ErrorBoundary>
       <ScrollToTop />
       <SkipToContent />
       <ErrorBoundary>
@@ -95,18 +95,14 @@ function AppContent() {
       <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
       <ErrorBoundary><Suspense fallback={null}><WelcomeModal /></Suspense></ErrorBoundary>
       <ErrorBoundary><Suspense fallback={null}><GuidedTour /></Suspense></ErrorBoundary>
-      <Suspense fallback={null}>
-        <MobileBottomNav />
-        <ScrollProgress />
-        <BackToTop />
-      </Suspense>
+      <Suspense fallback={null}><MobileBottomNav /></Suspense>
+      <ScrollProgress />
+      <BackToTop />
       <ErrorBoundary>
-        <Suspense fallback={null}>
-          <SmartInstallBanner />
-          <IOSInstallGuide />
-          <OfflineBanner />
-          <UpdatePrompt />
-        </Suspense>
+        <SmartInstallBanner />
+        <IOSInstallGuide />
+        <OfflineBanner />
+        <UpdatePrompt />
       </ErrorBoundary>
     </>
   );
@@ -129,7 +125,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ResourceHints />
-              <ErrorBoundary><Suspense fallback={null}><RoutePrefetcher /></Suspense></ErrorBoundary>
+              <ErrorBoundary><RoutePrefetcher /></ErrorBoundary>
               <AppContent />
             </BrowserRouter>
           </TooltipProvider>
