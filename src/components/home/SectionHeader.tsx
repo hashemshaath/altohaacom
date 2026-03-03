@@ -28,7 +28,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
   ) {
     return (
       <SectionReveal ref={ref}>
-        <div className={cn("mb-6", className)}>
+        <div className={cn("mb-8", className)}>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -38,7 +38,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
                 </Badge>
               </div>
               <h2 className={cn(
-                "text-xl font-bold sm:text-2xl text-foreground tracking-tight leading-tight",
+                "text-xl font-bold sm:text-2xl lg:text-3xl text-foreground tracking-tight leading-tight",
                 !isAr && "font-serif"
               )}>
                 {title}

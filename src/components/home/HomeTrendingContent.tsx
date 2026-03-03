@@ -51,6 +51,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   });
 
   const types = useMemo(() => {
@@ -104,7 +105,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <SectionReveal delay={0}>
                 <Link to={`/articles/${featured.slug}`}>
-                  <Card className="overflow-hidden group h-full border-border/40 hover:shadow-lg transition-all">
+                  <Card className="overflow-hidden group h-full border-border/40 rounded-2xl hover:shadow-lg transition-all">
                     <div className="relative aspect-[16/10] overflow-hidden">
                       {featured.featured_image_url ? (
                         <img src={featured.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -148,7 +149,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                 {rest.map((article, i) => (
                   <SectionReveal key={article.id} delay={(i + 1) * 80}>
                     <Link to={`/articles/${article.slug}`}>
-                      <Card className="flex overflow-hidden group border-border/40 hover:shadow-md transition-all h-full">
+                      <Card className="flex overflow-hidden group border-border/40 rounded-2xl hover:shadow-md transition-all h-full">
                         <div className="w-20 sm:w-28 shrink-0 overflow-hidden">
                           {article.featured_image_url ? (
                             <img src={article.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />

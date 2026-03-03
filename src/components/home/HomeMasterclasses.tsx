@@ -63,6 +63,7 @@ export function HomeMasterclasses() {
     },
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   const categories = useMemo(() => {
@@ -145,7 +146,7 @@ export function HomeMasterclasses() {
 
               return (
                 <Link key={mc.id} to={`/masterclasses/${mc.id}`} className="group block snap-start min-w-[15rem] shrink-0 sm:min-w-0 sm:shrink touch-manipulation">
-                  <Card className="h-full overflow-hidden border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                  <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
                     <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                       {mc.cover_image_url ? (
                         <img src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 will-change-transform" loading="lazy" decoding="async" />
