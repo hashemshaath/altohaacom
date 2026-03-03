@@ -48,7 +48,7 @@ export function PlatformFeatures() {
   const whyReveal = useScrollReveal();
 
   return (
-    <>
+    <div className="space-y-10 md:space-y-16">
       {/* Services */}
       <section ref={servicesReveal.ref} className="container" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
@@ -240,6 +240,6 @@ export function PlatformFeatures() {
           </div>
         </section>
       )}
-    </>
+    </div>
   );
 }
