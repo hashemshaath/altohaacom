@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { haptic } from "./useHaptics";
+
+// No-op haptic stub (native haptics module removed)
+const haptic = (_type?: string) => {};
 
 interface UsePullToRefreshOptions {
   onRefresh?: () => Promise<void> | void;
