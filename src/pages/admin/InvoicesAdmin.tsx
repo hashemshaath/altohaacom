@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -754,12 +755,16 @@ export default function InvoicesAdmin() {
               </Table>
             </div>
           ) : (
-            <div className="py-12 text-center">
-              <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-              <p className="text-muted-foreground">
-                {language === "ar" ? "لا توجد فواتير" : "No invoices found"}
-              </p>
-            </div>
+              <AdminEmptyState
+                icon={FileText}
+                title="No invoices found"
+                titleAr="لا توجد فواتير"
+                description="Try adjusting your filters or create a new invoice"
+                descriptionAr="جرب تعديل الفلاتر أو أنشئ فاتورة جديدة"
+                actionLabel="New Invoice"
+                actionLabelAr="فاتورة جديدة"
+                onAction={() => setShowForm(true)}
+              />
           )}
         </CardContent>
       </Card>

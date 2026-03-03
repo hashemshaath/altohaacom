@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -134,7 +135,7 @@ export default function SupportTicketsAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("support_tickets")
-        .select("*")
+        .select("id, ticket_number, subject, subject_ar, status, priority, category, user_id, assigned_to, created_at, updated_at, resolved_at, satisfaction_rating, description")
         .order("created_at", { ascending: false })
         .limit(200);
 
@@ -172,7 +173,7 @@ export default function SupportTicketsAdmin() {
       if (!selectedTicketId) return [];
       const { data, error } = await supabase
         .from("support_ticket_messages")
-        .select("*")
+        .select("id, ticket_id, sender_id, message, message_ar, is_internal_note, attachments, created_at")
         .eq("ticket_id", selectedTicketId)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -558,12 +559,13 @@ export default function SupportTicketsAdmin() {
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
                 </div>
               ) : filteredTickets.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 sm:py-16">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-3">
-                    <Ticket className="h-5 w-5 text-muted-foreground/40" />
-                  </div>
-                  <p className="text-sm text-muted-foreground font-medium">{isAr ? "لا توجد تذاكر" : "No tickets found"}</p>
-                </div>
+                <AdminEmptyState
+                  icon={Ticket}
+                  title="No tickets found"
+                  titleAr="لا توجد تذاكر"
+                  description="Support tickets will appear here when users submit them"
+                  descriptionAr="ستظهر تذاكر الدعم هنا عندما يرسلها المستخدمون"
+                />
               ) : (
                 <>
                   {/* Mobile card list */}
