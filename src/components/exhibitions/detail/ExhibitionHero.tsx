@@ -131,6 +131,11 @@ export function ExhibitionHero({
                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider border-primary/30 text-primary px-2 py-0.5">
                   {isAr ? typeLabels[exhibition.type]?.ar : typeLabels[exhibition.type]?.en}
                 </Badge>
+                {exhibition.exhibition_number && (
+                  <Badge variant="secondary" className="text-[9px] font-mono px-1.5 py-0.5">
+                    {exhibition.exhibition_number}
+                  </Badge>
+                )}
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <MapPin className="h-3 w-3" />
                   {exhibition.city}{exhibition.country && `, ${exhibition.country}`}
