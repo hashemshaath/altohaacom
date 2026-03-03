@@ -319,7 +319,7 @@ export default function DesignIdentityAdmin() {
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { to: "/admin/hero-slides", icon: Layers, en: "Hero Slides", ar: "شرائح البطل", descEn: "Manage hero slides", descAr: "إدارة شرائح البطل" },
-              { to: "/admin/homepage-sections", icon: LayoutGrid, en: "Homepage Sections", ar: "أقسام الصفحة", descEn: "Order & customize", descAr: "ترتيب وتخصيص" },
+              { to: "/admin/design/homepage", icon: LayoutGrid, en: "Homepage Sections", ar: "أقسام الصفحة", descEn: "Order & customize", descAr: "ترتيب وتخصيص" },
               { to: "/admin/design/covers", icon: Palette, en: "Theme Presets", ar: "قوالب المظهر", descEn: "Change color scheme", descAr: "تغيير نظام الألوان" },
               { to: "/admin/design/custom-css", icon: Code2, en: "Custom CSS", ar: "CSS مخصص", descEn: "Advanced styling", descAr: "تخصيص متقدم" },
             ].map(action => (
