@@ -151,7 +151,7 @@ const NotFound = () => {
         <Card className="mt-6 w-full border-border/50 bg-card/80">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-3">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <AlertTriangle className="h-4 w-4 text-destructive" />
               <h2 className="text-sm font-semibold text-foreground">
                 {isAr ? "التشخيص والأسباب المحتملة" : "Diagnosis & Possible Causes"}
               </h2>
