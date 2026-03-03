@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
 import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
@@ -1386,9 +1387,17 @@ export default function OrdersAdmin() {
                     ))}
                     {orders.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={10} className="text-center py-12 text-muted-foreground">
-                          <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                          <p>{isAr ? "لا توجد طلبات" : "No orders found"}</p>
+                        <TableCell colSpan={10} className="p-0">
+                          <AdminEmptyState
+                            icon={Package}
+                            title="No orders found"
+                            titleAr="لا توجد طلبات"
+                            description="Try adjusting your filters or create a new order"
+                            descriptionAr="جرب تعديل الفلاتر أو أنشئ طلباً جديداً"
+                            actionLabel="New Order"
+                            actionLabelAr="طلب جديد"
+                            onAction={() => setShowOrderForm(true)}
+                          />
                         </TableCell>
                       </TableRow>
                     )}
@@ -1483,9 +1492,14 @@ export default function OrdersAdmin() {
                     ))}
                     {shopOrders.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-12 text-muted-foreground">
-                          <ShoppingBag className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                          <p>{isAr ? "لا توجد طلبات" : "No shop orders found"}</p>
+                        <TableCell colSpan={8} className="p-0">
+                          <AdminEmptyState
+                            icon={ShoppingBag}
+                            title="No shop orders found"
+                            titleAr="لا توجد طلبات"
+                            description="Shop orders will appear here once customers place orders"
+                            descriptionAr="ستظهر الطلبات هنا بمجرد أن يقوم العملاء بالطلب"
+                          />
                         </TableCell>
                       </TableRow>
                     )}

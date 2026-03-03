@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -90,7 +91,7 @@ export default function NotificationsAdmin() {
     queryKey: ["recent-notifications"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notifications").select("*")
+        .from("notifications").select("id, user_id, title, title_ar, body, body_ar, type, link, is_read, channel, created_at, metadata")
         .order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
       return data || [];
@@ -116,7 +117,7 @@ export default function NotificationsAdmin() {
     queryKey: ["notification-queue-items"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notification_queue").select("*")
+        .from("notification_queue").select("id, notification_id, user_id, channel, status, scheduled_for, sent_at, error_message, created_at")
         .order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
       return data || [];
@@ -127,7 +128,7 @@ export default function NotificationsAdmin() {
     queryKey: ["notification-templates"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notification_templates").select("*")
+        .from("notification_templates").select("id, name, name_ar, subject, subject_ar, body, body_ar, type, channel, is_active, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -580,10 +581,13 @@ export default function NotificationsAdmin() {
                   </Table>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <Bell className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                  <p className="text-muted-foreground">{isAr ? "لا توجد إشعارات" : "No notifications found"}</p>
-                </div>
+                <AdminEmptyState
+                  icon={Bell}
+                  title="No notifications found"
+                  titleAr="لا توجد إشعارات"
+                  description="Notifications will appear here once sent"
+                  descriptionAr="ستظهر الإشعارات هنا بمجرد إرسالها"
+                />
               )}
             </CardContent>
           </Card>
@@ -710,10 +714,13 @@ export default function NotificationsAdmin() {
                   </Table>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-16">
-                  <Send className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                  <p className="text-muted-foreground">{isAr ? "لا توجد عناصر" : "No queue items"}</p>
-                </div>
+                <AdminEmptyState
+                  icon={Send}
+                  title="No queue items"
+                  titleAr="لا توجد عناصر"
+                  description="Queued notifications will appear here"
+                  descriptionAr="ستظهر الإشعارات المجدولة هنا"
+                />
               )}
             </CardContent>
           </Card>
@@ -881,10 +888,13 @@ export default function NotificationsAdmin() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Zap className="h-12 w-12 text-muted-foreground/30 mb-3" />
-                  <p className="text-muted-foreground">{isAr ? "لا توجد قوالب" : "No templates available"}</p>
-                </div>
+                <AdminEmptyState
+                  icon={Zap}
+                  title="No templates available"
+                  titleAr="لا توجد قوالب"
+                  description="Create notification templates for quick broadcasting"
+                  descriptionAr="أنشئ قوالب إشعارات للبث السريع"
+                />
               )}
             </CardContent>
           </Card>
