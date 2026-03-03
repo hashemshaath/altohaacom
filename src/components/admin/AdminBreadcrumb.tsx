@@ -50,6 +50,13 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/live-chat": { en: "Live Chat", ar: "الدردشة المباشرة" },
   "/admin/chef-schedule": { en: "Chef Schedule", ar: "جدول الشيف" },
   "/admin/organizers": { en: "Organizers", ar: "المنظمون" },
+  "/admin/design": { en: "Design & Identity", ar: "التصميم والهوية" },
+  "/admin/design/brand-identity": { en: "Brand Identity", ar: "الهوية البصرية" },
+  "/admin/design/branding": { en: "Branding", ar: "العلامة التجارية" },
+  "/admin/design/header-footer": { en: "Header & Footer", ar: "الرأس والتذييل" },
+  "/admin/design/homepage": { en: "Homepage", ar: "الصفحة الرئيسية" },
+  "/admin/design/covers": { en: "Covers & Themes", ar: "الأغلفة والمظهر" },
+  "/admin/design/typography": { en: "Typography", ar: "الخطوط" },
 };
 
 export function AdminBreadcrumb() {
@@ -60,6 +67,9 @@ export function AdminBreadcrumb() {
 
   if (pathname === "/admin") return null;
 
+  // Handle nested design routes
+  const isDesignSub = pathname.startsWith("/admin/design/");
+  const parentLabel = isDesignSub ? ROUTE_LABELS["/admin/design"] : null;
   const currentLabel = ROUTE_LABELS[pathname];
   if (!currentLabel) return null;
 
@@ -69,6 +79,14 @@ export function AdminBreadcrumb() {
         <LayoutDashboard className="h-3 w-3" />
         <span>{isAr ? "لوحة التحكم" : "Dashboard"}</span>
       </Link>
+      {parentLabel && (
+        <>
+          <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
+          <Link to="/admin/design" className="rounded-xl px-2 py-1 hover:bg-muted hover:text-foreground transition-all duration-200">
+            {isAr ? parentLabel.ar : parentLabel.en}
+          </Link>
+        </>
+      )}
       <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
       <span className="rounded-xl bg-primary/8 px-2.5 py-1 text-primary font-semibold">
         {isAr ? currentLabel.ar : currentLabel.en}

@@ -1,190 +1,234 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import {
   Palette,
+  Sparkles,
   Globe,
   PanelTop,
   Home,
-  Layout,
   Layers,
+  Type,
   ArrowRight,
-  LayoutGrid,
-  Loader2,
   CheckCircle2,
+  Circle,
+  Image,
+  LayoutGrid,
 } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { BrandingSettings } from "@/components/admin/settings/BrandingSettings";
-import { BrandIdentityPanel } from "@/components/admin/settings/BrandIdentityPanel";
-import { HeaderFooterSettings } from "@/components/admin/settings/HeaderFooterSettings";
-import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel";
-import { TypographySettings } from "@/components/admin/settings/TypographySettings";
-import { CoverSettings } from "@/components/admin/settings/CoverSettings";
-import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
-import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
-import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
-import { SectionPresets } from "@/components/admin/settings/homepage/SectionPresets";
-import { useHomepageSections, useUpdateHomepageSection } from "@/hooks/useHomepageSections";
+import { useHomepageSections } from "@/hooks/useHomepageSections";
+import { useFadeIn, useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-const tabs = [
-  { value: "brand-identity", icon: Palette, en: "Brand Identity", ar: "الهوية البصرية", descEn: "Logos, colors & seasonal", descAr: "الشعارات والألوان والمناسبات" },
-  { value: "branding", icon: Globe, en: "Branding", ar: "العلامة التجارية", descEn: "Site name & registration", descAr: "اسم الموقع والتسجيل" },
-  { value: "header-footer", icon: PanelTop, en: "Header & Footer", ar: "الرأس والتذييل", descEn: "Navigation & social links", descAr: "التنقل وروابط التواصل" },
-  { value: "homepage", icon: Home, en: "Homepage", ar: "الصفحة الرئيسية", descEn: "Sections, covers & layout", descAr: "الأقسام والأغلفة والتخطيط" },
-  { value: "cover", icon: Layout, en: "Covers & Themes", ar: "الأغلفة والمظهر", descEn: "Cover height, gradient & pages", descAr: "ارتفاع الغطاء والتدرج والصفحات" },
+const designSections = [
+  {
+    to: "/admin/design/brand-identity",
+    icon: Sparkles,
+    enTitle: "Brand Identity",
+    arTitle: "الهوية البصرية",
+    enDesc: "Logos, color palette, contrast checker, status colors & seasonal identities",
+    arDesc: "الشعارات، لوحة الألوان، فحص التباين، ألوان الحالات والهويات الموسمية",
+    settingsKey: "brand_identity",
+    accent: "from-amber-500/20 to-orange-500/20",
+  },
+  {
+    to: "/admin/design/branding",
+    icon: Globe,
+    enTitle: "Branding",
+    arTitle: "العلامة التجارية",
+    enDesc: "Site name, description, contact info, favicon & registration settings",
+    arDesc: "اسم الموقع، الوصف، معلومات الاتصال، الأيقونة وإعدادات التسجيل",
+    settingsKey: "branding",
+    accent: "from-blue-500/20 to-indigo-500/20",
+  },
+  {
+    to: "/admin/design/header-footer",
+    icon: PanelTop,
+    enTitle: "Header & Footer",
+    arTitle: "الرأس والتذييل",
+    enDesc: "Navigation visibility, social links, copyright text & sticky behavior",
+    arDesc: "عناصر التنقل، روابط التواصل، نص حقوق النشر والسلوك الثابت",
+    settingsKey: "header",
+    accent: "from-emerald-500/20 to-teal-500/20",
+  },
+  {
+    to: "/admin/design/homepage",
+    icon: Home,
+    enTitle: "Homepage",
+    arTitle: "الصفحة الرئيسية",
+    enDesc: "Section management, template switching, hero slides & live preview",
+    arDesc: "إدارة الأقسام، تبديل القوالب، شرائح البطل والمعاينة المباشرة",
+    settingsKey: "homepage",
+    accent: "from-violet-500/20 to-purple-500/20",
+  },
+  {
+    to: "/admin/design/covers",
+    icon: Layers,
+    enTitle: "Covers & Themes",
+    arTitle: "الأغلفة والمظهر",
+    enDesc: "Cover gradients, per-page modes, theme presets & color schemes",
+    arDesc: "تدرجات الأغلفة، أوضاع لكل صفحة، قوالب المظهر وأنظمة الألوان",
+    settingsKey: "cover",
+    accent: "from-rose-500/20 to-pink-500/20",
+  },
+  {
+    to: "/admin/design/typography",
+    icon: Type,
+    enTitle: "Typography",
+    arTitle: "الخطوط",
+    enDesc: "Body and heading fonts, live preview & global font configuration",
+    arDesc: "خطوط النص والعناوين، معاينة مباشرة وإعدادات الخطوط العامة",
+    settingsKey: "typography",
+    accent: "from-cyan-500/20 to-sky-500/20",
+  },
 ];
 
 export default function DesignIdentityAdmin() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [activeTab, setActiveTab] = useState("brand-identity");
-  const { settings, isLoading, saveSetting } = useSiteSettings();
+  const { settings } = useSiteSettings();
   const { data: homepageSections = [] } = useHomepageSections();
-  const updateSection = useUpdateHomepageSection();
+  const { getStyle } = useStaggeredReveal(designSections.length, 60);
 
-  const handleSave = (key: string, value: Record<string, any>, category?: string) => {
-    saveSetting.mutate({ key, value, category });
-  };
+  // Calculate completion
+  const configuredCount = designSections.filter(s => {
+    const val = settings[s.settingsKey];
+    return val && Object.keys(val).length > 0;
+  }).length;
+  const completionPercent = Math.round((configuredCount / designSections.length) * 100);
+
+  const visibleSections = homepageSections.filter((s: any) => s.is_visible).length;
+  const totalSections = homepageSections.length;
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         icon={Palette}
         title={isAr ? "التصميم والهوية" : "Design & Identity"}
-        description={isAr ? "إدارة الهوية البصرية والعلامة التجارية والمظهر العام للمنصة" : "Manage visual identity, branding, and overall platform appearance"}
-        actions={
-          <div className="flex items-center gap-2">
-            {saveSetting.isPending && (
-              <Badge variant="outline" className="gap-1 text-xs animate-pulse">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                {isAr ? "جارٍ الحفظ..." : "Saving..."}
-              </Badge>
-            )}
-            <Badge variant="secondary" className="gap-1 text-xs">
-              <CheckCircle2 className="h-3 w-3" />
-              {Object.keys(settings).length} {isAr ? "مجموعات محفوظة" : "saved groups"}
-            </Badge>
-          </div>
-        }
+        description={isAr ? "مركز التحكم الشامل بالهوية البصرية والمظهر العام للمنصة" : "Comprehensive control center for visual identity and platform appearance"}
       />
 
-      {isLoading ? (
-        <div className="space-y-4">
-          <Skeleton className="h-12 w-full rounded-xl" />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Skeleton className="h-64 w-full rounded-xl" />
-            <Skeleton className="h-64 w-full rounded-xl" />
-          </div>
-        </div>
-      ) : (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <Card className="rounded-2xl border-border/40 bg-muted/30 backdrop-blur overflow-hidden">
-            <CardContent className="p-1.5 sm:p-2 relative">
-              <TabsList className="flex sm:grid h-auto w-auto sm:w-full gap-1.5 overflow-x-auto scrollbar-none sm:overflow-visible sm:grid-cols-5 bg-transparent p-0 justify-start sm:justify-center">
-                {tabs.map(tab => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="flex sm:flex-col items-center sm:items-start gap-1.5 sm:gap-0.5 rounded-xl px-3 py-2 sm:py-2.5 whitespace-nowrap sm:whitespace-normal sm:text-start transition-all duration-300 shrink-0 sm:shrink data-[state=active]:bg-background data-[state=active]:shadow-md data-[state=active]:shadow-primary/5 data-[state=active]:border data-[state=active]:border-primary/20 data-[state=active]:scale-[1.02] h-auto relative hover:bg-background/50"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <tab.icon className="h-3.5 w-3.5 shrink-0" />
-                      <span className="text-xs font-medium">{isAr ? tab.ar : tab.en}</span>
-                    </div>
-                    <span className="hidden sm:block text-[10px] text-muted-foreground leading-tight">
-                      {isAr ? tab.descAr : tab.descEn}
-                    </span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-muted/30 to-transparent sm:hidden" />
+      {/* Quick Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { icon: Palette, value: configuredCount, label: isAr ? "أقسام مهيأة" : "Configured", suffix: `/${designSections.length}` },
+          { icon: Image, value: Object.keys(settings.brand_identity?.logos || {}).filter(k => settings.brand_identity?.logos?.[k]).length, label: isAr ? "شعارات مرفوعة" : "Logos Uploaded" },
+          { icon: LayoutGrid, value: visibleSections, label: isAr ? "أقسام مرئية" : "Visible Sections", suffix: `/${totalSections}` },
+          { icon: CheckCircle2, value: completionPercent, label: isAr ? "اكتمال التهيئة" : "Setup Complete", suffix: "%" },
+        ].map((item, i) => (
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5" style={getStyle(i)}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                <item.icon className="h-5 w-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xl font-bold tabular-nums">
+                  <AnimatedCounter value={item.value} />{item.suffix}
+                </p>
+                <p className="text-[10px] text-muted-foreground truncate">{item.label}</p>
+              </div>
             </CardContent>
           </Card>
+        ))}
+      </div>
 
-          <TabsContent value="brand-identity" className="mt-0">
-            <BrandIdentityPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-          </TabsContent>
+      {/* Progress Bar */}
+      <Card className="rounded-2xl border-border/40">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-medium">{isAr ? "اكتمال التصميم والهوية" : "Design & Identity Completion"}</p>
+            <span className="text-xs text-muted-foreground">{configuredCount}/{designSections.length} {isAr ? "أقسام" : "sections"}</span>
+          </div>
+          <Progress value={completionPercent} className="h-2" />
+        </CardContent>
+      </Card>
 
-          <TabsContent value="branding" className="mt-0">
-            <BrandingSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-          </TabsContent>
-
-          <TabsContent value="header-footer" className="mt-0">
-            <HeaderFooterSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-          </TabsContent>
-
-          <TabsContent value="homepage" className="mt-0 space-y-3">
-            <HomepageTemplateSwitcher />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Card className="border-primary/20 bg-primary/5">
-                <CardContent className="flex items-center justify-between gap-3 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-                      <Layers className="h-4 w-4 text-primary" />
+      {/* Section Cards Grid */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {designSections.map((section, i) => {
+          const isConfigured = !!settings[section.settingsKey] && Object.keys(settings[section.settingsKey]).length > 0;
+          return (
+            <Link key={section.to} to={section.to} className="group" style={getStyle(i)}>
+              <Card className="h-full rounded-2xl border-border/40 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30 overflow-hidden">
+                <div className={`h-1.5 bg-gradient-to-r ${section.accent}`} />
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
+                        <section.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-sm">{isAr ? section.arTitle : section.enTitle}</CardTitle>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {isConfigured ? (
+                            <Badge variant="secondary" className="text-[9px] gap-1 py-0">
+                              <CheckCircle2 className="h-2.5 w-2.5" />
+                              {isAr ? "مهيأ" : "Configured"}
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-[9px] gap-1 py-0 text-muted-foreground">
+                              <Circle className="h-2.5 w-2.5" />
+                              {isAr ? "غير مهيأ" : "Not Configured"}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold">{isAr ? "شرائح القسم الرئيسي" : "Hero Slides"}</p>
-                      <p className="text-xs text-muted-foreground">{isAr ? "5 قوالب احترافية" : "5 professional templates"}</p>
-                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary rtl:rotate-180 rtl:group-hover:-translate-x-1" />
                   </div>
-                  <Button size="sm" variant="default" className="gap-1.5 shrink-0" asChild>
-                    <Link to="/admin/hero-slides">
-                      {isAr ? "إدارة" : "Manage"}
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <CardDescription className="text-xs leading-relaxed">
+                    {isAr ? section.arDesc : section.enDesc}
+                  </CardDescription>
                 </CardContent>
               </Card>
-              <Card className="border-border/50 bg-muted/20">
-                <CardContent className="flex items-center justify-between gap-3 p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted">
-                      <LayoutGrid className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{isAr ? "أقسام الصفحة الرئيسية" : "Homepage Sections"}</p>
-                      <p className="text-xs text-muted-foreground">{isAr ? "ترتيب وإظهار الأقسام" : "Order, visibility & design"}</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="outline" className="gap-1.5 shrink-0" asChild>
-                    <Link to="/admin/homepage-sections">
-                      {isAr ? "إدارة" : "Manage"}
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
-              <HomepageSectionsManager />
-              <div className="space-y-4">
-                <HomepageLivePreview sections={homepageSections} isAr={isAr} />
-                <SectionPresets
-                  isAr={isAr}
-                  isPending={updateSection.isPending}
-                  onApply={(config) => {
-                    homepageSections.filter(s => s.is_visible).forEach(s => {
-                      updateSection.mutate({ id: s.id, ...config });
-                    });
-                  }}
-                />
-              </div>
-            </div>
-          </TabsContent>
+            </Link>
+          );
+        })}
+      </div>
 
-          <TabsContent value="cover" className="mt-0 space-y-6">
-            <ThemePresetsPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-            <TypographySettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-            <CoverSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-          </TabsContent>
-        </Tabs>
-      )}
+      {/* Quick Actions */}
+      <Card className="rounded-2xl border-border/40">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">{isAr ? "إجراءات سريعة" : "Quick Actions"}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <Button variant="outline" className="justify-start gap-2 h-auto py-3" asChild>
+              <Link to="/admin/hero-slides">
+                <Layers className="h-4 w-4 text-primary" />
+                <div className="text-start">
+                  <p className="text-xs font-medium">{isAr ? "شرائح البطل" : "Hero Slides"}</p>
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "إدارة شرائح الصفحة الرئيسية" : "Manage homepage hero slides"}</p>
+                </div>
+              </Link>
+            </Button>
+            <Button variant="outline" className="justify-start gap-2 h-auto py-3" asChild>
+              <Link to="/admin/homepage-sections">
+                <LayoutGrid className="h-4 w-4 text-primary" />
+                <div className="text-start">
+                  <p className="text-xs font-medium">{isAr ? "أقسام الصفحة الرئيسية" : "Homepage Sections"}</p>
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "ترتيب وتخصيص الأقسام" : "Order & customize sections"}</p>
+                </div>
+              </Link>
+            </Button>
+            <Button variant="outline" className="justify-start gap-2 h-auto py-3" asChild>
+              <Link to="/admin/design/covers">
+                <Palette className="h-4 w-4 text-primary" />
+                <div className="text-start">
+                  <p className="text-xs font-medium">{isAr ? "قوالب المظهر" : "Theme Presets"}</p>
+                  <p className="text-[10px] text-muted-foreground">{isAr ? "تغيير نظام الألوان" : "Change color scheme"}</p>
+                </div>
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

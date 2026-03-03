@@ -51,6 +51,12 @@ const LoyaltyAdmin = lazy(() => import("@/pages/admin/LoyaltyAdmin"));
 const SecurityAdmin = lazy(() => import("@/pages/admin/SecurityAdmin"));
 const OrganizersAdmin = lazy(() => import("@/pages/admin/OrganizersAdmin"));
 const DesignIdentityAdmin = lazy(() => import("@/pages/admin/DesignIdentityAdmin"));
+const BrandIdentityPage = lazy(() => import("@/pages/admin/design/BrandIdentityPage"));
+const BrandingPage = lazy(() => import("@/pages/admin/design/BrandingPage"));
+const HeaderFooterPage = lazy(() => import("@/pages/admin/design/HeaderFooterPage"));
+const HomepageDesignPage = lazy(() => import("@/pages/admin/design/HomepageDesignPage"));
+const CoversThemesPage = lazy(() => import("@/pages/admin/design/CoversThemesPage"));
+const TypographyPage = lazy(() => import("@/pages/admin/design/TypographyPage"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -106,6 +112,12 @@ export const adminRoutes = (
 
     {/* Design & Identity */}
     <Route path="design" element={<DesignIdentityAdmin />} />
+    <Route path="design/brand-identity" element={<BrandIdentityPage />} />
+    <Route path="design/branding" element={<BrandingPage />} />
+    <Route path="design/header-footer" element={<HeaderFooterPage />} />
+    <Route path="design/homepage" element={<HomepageDesignPage />} />
+    <Route path="design/covers" element={<CoversThemesPage />} />
+    <Route path="design/typography" element={<TypographyPage />} />
 
     {/* System */}
     <Route path="settings" element={<SystemSettings />} />
