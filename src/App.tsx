@@ -95,7 +95,7 @@ function AppContent() {
       <ErrorBoundary><Suspense fallback={null}><LiveChatWidget /></Suspense></ErrorBoundary>
       <ErrorBoundary><Suspense fallback={null}><WelcomeModal /></Suspense></ErrorBoundary>
       <ErrorBoundary><Suspense fallback={null}><GuidedTour /></Suspense></ErrorBoundary>
-      <Suspense fallback={null}><MobileBottomNav /></Suspense>
+      <ErrorBoundary><Suspense fallback={null}><MobileBottomNav /></Suspense></ErrorBoundary>
       <ScrollProgress />
       <BackToTop />
       <ErrorBoundary>
