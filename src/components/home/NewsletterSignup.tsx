@@ -43,7 +43,7 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
   };
 
   return (
-    <section ref={scrollRef} className="relative border-y overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
+    <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-card/80 to-accent/8" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)]" />
 
