@@ -1,4 +1,5 @@
 import {
+  Palette,
   LayoutDashboard,
   BarChart3,
   Users,
@@ -130,6 +131,13 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/templates", icon: MailOpen, labelEn: "Templates", labelAr: "القوالب" },
       { to: "/admin/notifications", icon: Bell, labelEn: "Notifications", labelAr: "الإشعارات" },
       { to: "/admin/marketing-automation", icon: Megaphone, labelEn: "Automation", labelAr: "الأتمتة" },
+    ],
+  },
+  {
+    titleEn: "Design & Identity",
+    titleAr: "التصميم والهوية",
+    items: [
+      { to: "/admin/design", icon: Palette, labelEn: "Design & Identity", labelAr: "التصميم والهوية" },
     ],
   },
   {
