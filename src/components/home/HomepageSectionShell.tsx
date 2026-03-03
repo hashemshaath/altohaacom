@@ -34,8 +34,10 @@ const ANIMATION_MAP: Record<string, string> = {
 export function HomepageSectionShell({ children }: { children: ReactNode }) {
   const config = useSectionConfig();
 
-  // If no config, render children with defaults
-  if (!config) return <>{children}</>;
+  // If no config, render children with sensible default spacing
+  if (!config) {
+    return <div className={SPACING_MAP.normal}>{children}</div>;
+  }
 
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
   const animation = ANIMATION_MAP[config.animation] || "";
