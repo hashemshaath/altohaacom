@@ -8801,6 +8801,7 @@ export type Database = {
           logo_url: string | null
           name: string
           name_ar: string | null
+          series_number: string | null
           series_type: string
           tags: string[] | null
           updated_at: string
@@ -8827,6 +8828,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           name_ar?: string | null
+          series_number?: string | null
           series_type?: string
           tags?: string[] | null
           updated_at?: string
@@ -8853,6 +8855,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           name_ar?: string | null
+          series_number?: string | null
           series_type?: string
           tags?: string[] | null
           updated_at?: string
@@ -10024,6 +10027,7 @@ export type Database = {
           logo_url: string | null
           name: string
           name_ar: string | null
+          organizer_id: string | null
           role: string | null
           sort_order: number | null
           website_url: string | null
@@ -10037,6 +10041,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           name_ar?: string | null
+          organizer_id?: string | null
           role?: string | null
           sort_order?: number | null
           website_url?: string | null
@@ -10050,6 +10055,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           name_ar?: string | null
+          organizer_id?: string | null
           role?: string | null
           sort_order?: number | null
           website_url?: string | null
@@ -10074,6 +10080,13 @@ export type Database = {
             columns: ["exhibition_id"]
             isOneToOne: false
             referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_organizers_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "organizers"
             referencedColumns: ["id"]
           },
         ]
@@ -11173,6 +11186,7 @@ export type Database = {
           edition_year: number | null
           end_date: string
           entry_details: Json | null
+          exhibition_number: string | null
           gallery_urls: string[] | null
           highlights: Json | null
           id: string
@@ -11244,6 +11258,7 @@ export type Database = {
           edition_year?: number | null
           end_date: string
           entry_details?: Json | null
+          exhibition_number?: string | null
           gallery_urls?: string[] | null
           highlights?: Json | null
           id?: string
@@ -11315,6 +11330,7 @@ export type Database = {
           edition_year?: number | null
           end_date?: string
           entry_details?: Json | null
+          exhibition_number?: string | null
           gallery_urls?: string[] | null
           highlights?: Json | null
           id?: string
@@ -13965,11 +13981,13 @@ export type Database = {
           description_ar: string | null
           duration_hours: number | null
           end_date: string | null
+          exhibition_id: string | null
           id: string
           instructor_id: string
           is_free: boolean | null
           is_self_paced: boolean | null
           level: string
+          masterclass_number: string | null
           max_enrollments: number | null
           prerequisites: string | null
           prerequisites_ar: string | null
@@ -13993,11 +14011,13 @@ export type Database = {
           description_ar?: string | null
           duration_hours?: number | null
           end_date?: string | null
+          exhibition_id?: string | null
           id?: string
           instructor_id: string
           is_free?: boolean | null
           is_self_paced?: boolean | null
           level?: string
+          masterclass_number?: string | null
           max_enrollments?: number | null
           prerequisites?: string | null
           prerequisites_ar?: string | null
@@ -14021,11 +14041,13 @@ export type Database = {
           description_ar?: string | null
           duration_hours?: number | null
           end_date?: string | null
+          exhibition_id?: string | null
           id?: string
           instructor_id?: string
           is_free?: boolean | null
           is_self_paced?: boolean | null
           level?: string
+          masterclass_number?: string | null
           max_enrollments?: number | null
           prerequisites?: string | null
           prerequisites_ar?: string | null
@@ -14046,6 +14068,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "countries"
             referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "masterclasses_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -15570,6 +15599,7 @@ export type Database = {
           metadata: Json | null
           name: string
           name_ar: string | null
+          organizer_number: string | null
           phone: string | null
           services: string[] | null
           services_ar: string[] | null
@@ -15610,6 +15640,7 @@ export type Database = {
           metadata?: Json | null
           name: string
           name_ar?: string | null
+          organizer_number?: string | null
           phone?: string | null
           services?: string[] | null
           services_ar?: string[] | null
@@ -15650,6 +15681,7 @@ export type Database = {
           metadata?: Json | null
           name?: string
           name_ar?: string | null
+          organizer_number?: string | null
           phone?: string | null
           services?: string[] | null
           services_ar?: string[] | null
@@ -22113,15 +22145,19 @@ export type Database = {
       }
       generate_cost_estimate_number: { Args: never; Returns: string }
       generate_entity_number: { Args: never; Returns: string }
+      generate_exhibition_number: { Args: never; Returns: string }
       generate_exhibition_ticket_number: { Args: never; Returns: string }
       generate_invoice_number: { Args: never; Returns: string }
+      generate_masterclass_number: { Args: never; Returns: string }
       generate_membership_number: { Args: never; Returns: string }
       generate_membership_verification: { Args: never; Returns: string }
       generate_order_number: { Args: never; Returns: string }
+      generate_organizer_number: { Args: never; Returns: string }
       generate_qr_code: { Args: { p_prefix?: string }; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       generate_registration_number: { Args: never; Returns: string }
       generate_report_token: { Args: never; Returns: string }
+      generate_series_number: { Args: never; Returns: string }
       generate_shop_order_number: { Args: never; Returns: string }
       generate_statement_number: { Args: never; Returns: string }
       generate_ticket_number: { Args: never; Returns: string }
