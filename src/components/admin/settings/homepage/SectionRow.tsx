@@ -29,7 +29,7 @@ const SOURCE_TYPE_OPTIONS = [
 ];
 
 const SOURCE_TABLE_OPTIONS = [
-  { value: "", en: "Default", ar: "افتراضي" },
+  { value: "default", en: "Default", ar: "افتراضي" },
   { value: "competitions", en: "Competitions", ar: "المسابقات" },
   { value: "articles", en: "Articles", ar: "المقالات" },
   { value: "profiles", en: "Chefs/Users", ar: "الطهاة/المستخدمين" },
@@ -238,7 +238,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   </div>
                   <div className="space-y-1">
                     <Label className="text-[9px] text-muted-foreground">{isAr ? "جدول البيانات" : "Source Table"}</Label>
-                    <Select value={merged.source_table || ""} onValueChange={(v) => set("source_table", v)}>
+                    <Select value={merged.source_table || "default"} onValueChange={(v) => set("source_table", v === "default" ? "" : v)}>
                       <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {SOURCE_TABLE_OPTIONS.map(o => (
