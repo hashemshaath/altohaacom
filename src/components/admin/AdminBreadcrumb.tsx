@@ -57,6 +57,8 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/design/homepage": { en: "Homepage", ar: "الصفحة الرئيسية" },
   "/admin/design/covers": { en: "Covers & Themes", ar: "الأغلفة والمظهر" },
   "/admin/design/typography": { en: "Typography", ar: "الخطوط" },
+  "/admin/design/layout": { en: "Layout & Spacing", ar: "التخطيط والتباعد" },
+  "/admin/design/custom-css": { en: "Custom CSS", ar: "CSS مخصص" },
 };
 
 export function AdminBreadcrumb() {
