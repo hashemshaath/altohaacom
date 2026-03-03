@@ -13,12 +13,14 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
   const siteSettings = useSiteSettingsContext();
   const footerCfg = siteSettings.footer || {};
   const brandCfg = siteSettings.branding || {};
+  const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
 
   // If footer is explicitly hidden, render nothing
   if (footerCfg.showFooter === false) return null;
 
   const siteName = isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha");
-  const logoUrl = brandCfg.logoUrl || "/altoha-logo.png";
+  // Priority: brand_identity logos > branding logoUrl > fallback
+  const logoUrl = identityLogos.natural || identityLogos.variation2 || brandCfg.logoUrl || "/altoha-logo.png";
   const contactEmail = brandCfg.contactEmail || "info@altoha.com";
   const siteDesc = isAr
     ? (brandCfg.siteDescriptionAr || "المنصة الرائدة لمجتمع الطهي العالمي — تجمع الطهاة والحكام والمنظمين والرعاة في مكان واحد.")

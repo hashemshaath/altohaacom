@@ -56,6 +56,9 @@ export function Header() {
   const siteSettings = useSiteSettingsContext();
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
+  const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
+  // Priority: brand_identity logos > branding logoUrl > fallback
+  const logoUrl = identityLogos.natural || identityLogos.variation2 || brandCfg.logoUrl || "/altoha-logo.png";
 
   const visiblePrimary = primaryNav;
 
@@ -82,7 +85,7 @@ export function Header() {
         >
           {headerCfg.showLogo !== false && (
             <img
-              src={brandCfg.logoUrl || "/altoha-logo.png"}
+              src={logoUrl}
               alt={brandCfg.siteName || "Altoha"}
               className="h-8 w-auto sm:h-9 transition-transform duration-200 group-hover:scale-105"
             />
