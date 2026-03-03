@@ -17,12 +17,14 @@ const StatItem = forwardRef<HTMLDivElement, {
     <div
       ref={ref}
       className={cn(
-        "flex flex-col items-center gap-1.5 transition-all duration-700",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        "group relative flex flex-col items-center gap-2 rounded-2xl border border-border/30 bg-card/50 backdrop-blur-sm p-5 transition-all duration-700 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <Icon className="h-5 w-5 text-primary/70" />
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/15">
+        <Icon className="h-5 w-5 text-primary" />
+      </div>
       <p className="text-2xl sm:text-3xl font-black tracking-tight tabular-nums text-foreground">
         <AnimatedCounter value={count} className="inline" />+
       </p>
@@ -68,9 +70,9 @@ export default function StatsBar() {
   ];
 
   return (
-    <section ref={ref} className="bg-muted/20" dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {items.map((item, idx) => (
             <StatItem
               key={item.label}
@@ -78,7 +80,7 @@ export default function StatsBar() {
               label={item.label}
               icon={item.icon}
               isVisible={isVisible}
-              delay={idx * 100}
+              delay={idx * 120}
             />
           ))}
         </div>

@@ -103,7 +103,7 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
               <Link
                 key={chef.user_id || idx}
                 to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
-                className="group flex flex-col items-center gap-2 rounded-xl border border-border/30 bg-card/50 p-4 transition-all duration-300 hover:shadow-md hover:border-primary/20 hover:bg-card"
+                className="group flex flex-col items-center gap-2.5 rounded-2xl border border-border/30 bg-card/50 backdrop-blur-sm p-5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 hover:bg-card hover:-translate-y-1"
               >
                 <div className="relative">
                   <Avatar className={cn(
