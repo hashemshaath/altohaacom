@@ -50,6 +50,7 @@ const SmartImportAdmin = lazy(() => import("@/pages/admin/SmartImportAdmin"));
 const LoyaltyAdmin = lazy(() => import("@/pages/admin/LoyaltyAdmin"));
 const SecurityAdmin = lazy(() => import("@/pages/admin/SecurityAdmin"));
 const OrganizersAdmin = lazy(() => import("@/pages/admin/OrganizersAdmin"));
+const DesignIdentityAdmin = lazy(() => import("@/pages/admin/DesignIdentityAdmin"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -102,6 +103,9 @@ export const adminRoutes = (
     <Route path="templates" element={<CommunicationTemplatesAdmin />} />
     <Route path="notifications" element={<NotificationsAdmin />} />
     <Route path="marketing-automation" element={<MarketingAutomationAdmin />} />
+
+    {/* Design & Identity */}
+    <Route path="design" element={<DesignIdentityAdmin />} />
 
     {/* System */}
     <Route path="settings" element={<SystemSettings />} />
