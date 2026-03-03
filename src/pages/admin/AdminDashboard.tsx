@@ -58,10 +58,7 @@ const AdminAutomationRules = lazy(() => import("@/components/admin/AdminAutomati
 
 const ContentCalendarWidget = lazy(() => import("@/components/admin/ContentCalendarWidget").then(m => ({ default: m.ContentCalendarWidget })));
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
-const DashboardLiveMetricsWidget = lazy(() => import("@/components/admin/DashboardLiveMetricsWidget").then(m => ({ default: m.DashboardLiveMetricsWidget })));
 const CommunicationsDashboardWidget = lazy(() => import("@/components/admin/CommunicationsDashboardWidget").then(m => ({ default: m.CommunicationsDashboardWidget })));
-const CommunityEngagementWidget = lazy(() => import("@/components/admin/CommunityEngagementWidget").then(m => ({ default: m.CommunityEngagementWidget })));
-const ProfileCompletenessWidget = lazy(() => import("@/components/admin/ProfileCompletenessWidget").then(m => ({ default: m.ProfileCompletenessWidget })));
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
 const AdminScheduledExports = lazy(() => import("@/components/admin/AdminScheduledExports").then(m => ({ default: m.AdminScheduledExports })));
 const ScheduledExportWidget = lazy(() => import("@/components/admin/ScheduledExportWidget").then(m => ({ default: m.ScheduledExportWidget })));
@@ -377,10 +374,6 @@ export default function AdminDashboard() {
         <ShortcutHintsCard />
       </div>
 
-      {/* Live Platform Pulse */}
-      <LazySection>
-        <DashboardLiveMetricsWidget />
-      </LazySection>
 
       {/* KPI Trends (week-over-week comparison) */}
       <LazySection>
@@ -509,13 +502,9 @@ export default function AdminDashboard() {
         <ReportsSummaryWidget />
       </LazySection>
 
-      {/* ── Row: Community + Profile + Shop ── */}
+      {/* ── Row: Shop ── */}
       <LazySection>
-        <div className="grid gap-4 lg:grid-cols-3">
-          <CommunityEngagementWidget />
-          <ProfileCompletenessWidget />
-          <ShopOrdersOverviewWidget />
-        </div>
+        <ShopOrdersOverviewWidget />
       </LazySection>
 
       {/* ── Row: Activity Feed + Moderation + Alerts ── */}
