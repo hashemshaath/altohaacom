@@ -12,6 +12,23 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    warmup: {
+      clientFiles: ["./src/main.tsx", "./src/App.tsx"],
+    },
+  },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "@supabase/supabase-js",
+      "@tanstack/react-query",
+      "@radix-ui/react-tooltip",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-tabs",
+    ],
   },
   plugins: [
     react(),
