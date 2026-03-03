@@ -37,8 +37,9 @@ export function SEOHead({
   const siteSettings = useSiteSettingsContext();
   const brandCfg = siteSettings.branding || {};
   const seoCfg = siteSettings.seo || {};
+  const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
 
-  const siteName = brandCfg.siteName || "Altoha";
+  const siteName = lang === "ar" ? (brandCfg.siteNameAr || brandCfg.siteName || "Altoha") : (brandCfg.siteName || "Altoha");
 
   useEffect(() => {
     const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
@@ -74,7 +75,7 @@ export function SEOHead({
     const altLang = lang === "ar" ? "en_US" : "ar_SA";
     setMeta("property", "og:locale:alternate", altLang);
 
-    const effectiveOgImage = ogImage || seoCfg.ogImageUrl;
+    const effectiveOgImage = ogImage || seoCfg.ogImageUrl || identityLogos.natural;
     if (effectiveOgImage) {
       const imageUrl = effectiveOgImage.startsWith("http") ? effectiveOgImage : `${window.location.origin}${effectiveOgImage}`;
       setMeta("property", "og:image", imageUrl);

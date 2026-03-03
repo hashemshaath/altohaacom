@@ -8,7 +8,7 @@ const LOCAL_HEADING_FONT_KEY = "altoha_heading_font";
 
 /**
  * Applies theme CSS variables to the document root.
- * Priority: Brand Identity custom colors > Theme Preset > defaults.
+ * Priority: Seasonal Identity > Brand Identity custom colors > Theme Preset > defaults.
  * localStorage user overrides still take precedence for preset selection.
  */
 export function useApplyTheme() {
@@ -40,18 +40,40 @@ export function useApplyTheme() {
       const st = identity.statusColors;
 
       if (pc) {
-        if (pc.primary) root.style.setProperty("--primary", pc.primary);
+        if (pc.primary) {
+          root.style.setProperty("--primary", pc.primary);
+          root.style.setProperty("--ring", pc.primary);
+        }
         if (pc.accent) root.style.setProperty("--accent", pc.accent);
         if (pc.tertiary) root.style.setProperty("--chart-1", pc.tertiary);
       }
       if (sc) {
-        if (sc.background) root.style.setProperty("--background", sc.background);
-        if (sc.card) root.style.setProperty("--card", sc.card);
+        if (sc.background) {
+          root.style.setProperty("--background", sc.background);
+          root.style.setProperty("--popover", sc.background);
+        }
+        if (sc.card) {
+          root.style.setProperty("--card", sc.card);
+        }
         if (sc.surface) root.style.setProperty("--secondary", sc.surface);
         if (sc.muted) root.style.setProperty("--muted", sc.muted);
         if (sc.border) {
           root.style.setProperty("--border", sc.border);
           root.style.setProperty("--input", sc.border);
+        }
+      }
+      // Apply typography colors (heading → foreground, body → card-foreground, caption → muted-foreground, link → primary)
+      if (tc) {
+        if (tc.heading) {
+          root.style.setProperty("--foreground", tc.heading);
+          root.style.setProperty("--popover-foreground", tc.heading);
+        }
+        if (tc.body) {
+          root.style.setProperty("--card-foreground", tc.body);
+          root.style.setProperty("--secondary-foreground", tc.body);
+        }
+        if (tc.caption) {
+          root.style.setProperty("--muted-foreground", tc.caption);
         }
       }
       if (st) {
@@ -80,7 +102,7 @@ export function useApplyTheme() {
       }
     }
 
-    // Apply typography
+    // Apply typography fonts
     const globalTypo = (settings.typography as any) || {};
     const localBodyFont = localStorage.getItem(LOCAL_FONT_KEY);
     const localHeadingFont = localStorage.getItem(LOCAL_HEADING_FONT_KEY);
