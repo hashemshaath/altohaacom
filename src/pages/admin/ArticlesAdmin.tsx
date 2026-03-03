@@ -28,6 +28,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { 
   Plus, Search, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
   Calendar, Clock, Star, Download, BarChart3, TrendingUp,
@@ -65,7 +66,7 @@ export default function ArticlesAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("articles")
-        .select("*")
+        .select("id, title, title_ar, slug, excerpt, excerpt_ar, content, content_ar, type, status, featured_image_url, is_featured, published_at, view_count, created_at, updated_at")
         .order("created_at", { ascending: false });
 
       if (search) {
@@ -581,8 +582,17 @@ export default function ArticlesAdmin() {
                 ))
               ) : articles?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    {language === "ar" ? "لا توجد مقالات" : "No articles found"}
+                  <TableCell colSpan={7} className="p-0">
+                    <AdminEmptyState
+                      icon={FileText}
+                      title="No articles found"
+                      titleAr="لا توجد مقالات"
+                      description="Create your first article to get started"
+                      descriptionAr="أنشئ أول مقال للبدء"
+                      actionLabel="New Article"
+                      actionLabelAr="مقال جديد"
+                      onAction={() => setViewMode("create")}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (

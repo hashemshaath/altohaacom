@@ -27,6 +27,7 @@ import {
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 interface Template {
   id: string;
@@ -397,8 +398,17 @@ export default function CommunicationTemplatesAdmin() {
             );
           })}
           {templates.length === 0 && (
-            <div className="col-span-full py-12 text-center text-muted-foreground">
-              {isAr ? "لا توجد قوالب" : "No templates found"}
+            <div className="col-span-full">
+              <AdminEmptyState
+                icon={MessageSquare}
+                title="No templates found"
+                titleAr="لا توجد قوالب"
+                description="Create your first communication template"
+                descriptionAr="أنشئ أول قالب تواصل"
+                actionLabel="Create Template"
+                actionLabelAr="إنشاء قالب"
+                onAction={openCreate}
+              />
             </div>
           )}
         </div>

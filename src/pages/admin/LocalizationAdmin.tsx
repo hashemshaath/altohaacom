@@ -26,6 +26,8 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 // ─── Types ───
 interface TranslationKey {
@@ -521,21 +523,23 @@ export default function LocalizationAdmin() {
                   <TableBody>
                     {loadingTranslations ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                          <RefreshCw className="h-5 w-5 animate-spin mx-auto mb-2" />
-                          {isAr ? "جاري التحميل..." : "Loading..."}
+                        <TableCell colSpan={7} className="p-0">
+                          <AdminTableSkeleton rows={5} columns={5} showActions />
                         </TableCell>
                       </TableRow>
                     ) : filteredTranslations.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                          {isAr ? "لا توجد مفاتيح ترجمة" : "No translation keys found"}
-                          <div className="mt-2">
-                            <Button size="sm" onClick={() => setShowAddDialog(true)}>
-                              <Plus className="h-4 w-4 me-1" />
-                              {isAr ? "إضافة أول مفتاح" : "Add First Key"}
-                            </Button>
-                          </div>
+                        <TableCell colSpan={7} className="p-0">
+                          <AdminEmptyState
+                            icon={Languages}
+                            title="No translation keys found"
+                            titleAr="لا توجد مفاتيح ترجمة"
+                            description="Add your first translation key to get started"
+                            descriptionAr="أضف أول مفتاح ترجمة للبدء"
+                            actionLabel="Add Key"
+                            actionLabelAr="إضافة مفتاح"
+                            onAction={() => setShowAddDialog(true)}
+                          />
                         </TableCell>
                       </TableRow>
                     ) : (
