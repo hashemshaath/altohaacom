@@ -22,7 +22,7 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judge_analytics")
-        .select("*")
+        .select("id, competition_id, judge_id, avg_score_given, score_std_deviation, bias_indicator, consistency_score, completion_rate, scores_count, avg_scoring_time_seconds")
         .eq("competition_id", competitionId);
       if (error) throw error;
 

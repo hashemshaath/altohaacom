@@ -61,7 +61,7 @@ export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, is
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_tickets")
-        .select("*")
+        .select("id, ticket_number, attendee_name, attendee_email, checked_in_at, created_at, status, ticket_type")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false })
         .limit(100);

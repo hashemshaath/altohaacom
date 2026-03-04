@@ -15,10 +15,10 @@ export function ContentStatsWidget() {
     queryKey: ["content-stats-widget"],
     queryFn: async () => {
       const [totalRes, publishedRes, draftRes, featuredRes, topArticles] = await Promise.all([
-        supabase.from("articles").select("*", { count: "exact", head: true }),
-        supabase.from("articles").select("*", { count: "exact", head: true }).eq("status", "published"),
-        supabase.from("articles").select("*", { count: "exact", head: true }).eq("status", "draft"),
-        supabase.from("articles").select("*", { count: "exact", head: true }).eq("is_featured", true),
+        supabase.from("articles").select("id", { count: "exact", head: true }),
+        supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "published"),
+        supabase.from("articles").select("id", { count: "exact", head: true }).eq("status", "draft"),
+        supabase.from("articles").select("id", { count: "exact", head: true }).eq("is_featured", true),
         supabase.from("articles").select("id, title, title_ar, view_count, type, status").order("view_count", { ascending: false }).limit(5),
       ]);
       return {

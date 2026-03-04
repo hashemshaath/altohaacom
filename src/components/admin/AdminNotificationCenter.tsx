@@ -29,7 +29,7 @@ export function AdminNotificationCenter() {
     queryFn: async () => {
       let query = supabase
         .from("notifications")
-        .select("*")
+        .select("id, title, title_ar, body, body_ar, type, is_read, created_at, link, metadata")
         .order("created_at", { ascending: false })
         .limit(50);
 
