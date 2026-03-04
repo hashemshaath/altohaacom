@@ -147,7 +147,7 @@ export default function CompetitionDetail() {
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("*").eq("id", id).maybeSingle();
+      const { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) throw new Error("Competition not found");
       return data;
@@ -159,7 +159,7 @@ export default function CompetitionDetail() {
   const { data: categories } = useQuery({
     queryKey: ["competition-categories", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competition_categories").select("*").eq("competition_id", id).order("sort_order");
+      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar, description, description_ar, max_participants, gender, sort_order, cover_image_url, participant_level, status").eq("competition_id", id).order("sort_order");
       if (error) throw error;
       return data;
     },
@@ -170,7 +170,7 @@ export default function CompetitionDetail() {
   const { data: criteria } = useQuery({
     queryKey: ["judging-criteria", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("judging_criteria").select("*").eq("competition_id", id).order("sort_order");
+      const { data, error } = await supabase.from("judging_criteria").select("id, name, name_ar, description, description_ar, max_score, weight, sort_order").eq("competition_id", id).order("sort_order");
       if (error) throw error;
       return data;
     },
@@ -182,7 +182,7 @@ export default function CompetitionDetail() {
     queryKey: ["my-registration", id, user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("competition_registrations").select("*").eq("competition_id", id).eq("participant_id", user.id).maybeSingle();
+      const { data } = await supabase.from("competition_registrations").select("id, status, competition_id, participant_id, category_id, dish_name, entry_type, team_name, registered_at").eq("competition_id", id).eq("participant_id", user.id).maybeSingle();
       return data;
     },
     enabled: !!id && !!user,

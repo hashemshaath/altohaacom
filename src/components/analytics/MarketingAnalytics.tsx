@@ -128,7 +128,7 @@ export function MarketingAnalytics() {
   const { data: trackingConfigs = [] } = useQuery({
     queryKey: ["marketing-tracking-configs"],
     queryFn: async () => {
-      const { data } = await supabase.from("marketing_tracking_config").select("*").order("created_at");
+      const { data } = await supabase.from("marketing_tracking_config").select("id, platform, tracking_id, is_active, created_at").order("created_at");
       return data || [];
     },
     staleTime: 60000,

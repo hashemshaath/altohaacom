@@ -19,9 +19,9 @@ export function LoyaltyLiveStatsWidget() {
     queryFn: async () => {
       const [ledgerRes, challengesRes, tiersRes, campaignsRes, walletsRes] = await Promise.all([
         supabase.from("points_ledger").select("id, user_id, action_type, points, created_at, balance_after").order("created_at", { ascending: false }).limit(1000),
-        supabase.from("challenges").select("*"),
-        supabase.from("loyalty_tiers").select("*").order("sort_order"),
-        supabase.from("bonus_campaigns").select("*"),
+        supabase.from("challenges").select("id, title, is_active"),
+        supabase.from("loyalty_tiers").select("id, name, name_ar, min_points, sort_order").order("sort_order"),
+        supabase.from("bonus_campaigns").select("id, name, is_active, starts_at, ends_at"),
         supabase.from("user_wallets").select("user_id, points_balance"),
       ]);
 
