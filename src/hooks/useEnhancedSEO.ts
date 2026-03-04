@@ -8,12 +8,16 @@ import { useLocation } from "react-router-dom";
 const routeMeta: Record<string, { title: string; titleAr: string; description: string; descriptionAr: string; type?: string }> = {
   "/": { title: "Altoha — Professional Culinary Network", titleAr: "الطهاة — شبكة الطهاة المحترفين", description: "Join the leading culinary competition and networking platform for professional chefs worldwide.", descriptionAr: "انضم إلى منصة مسابقات الطهي الرائدة وشبكة الطهاة المحترفين حول العالم.", type: "website" },
   "/competitions": { title: "Culinary Competitions — Altoha", titleAr: "مسابقات الطهي — الطهاة", description: "Browse and join culinary competitions worldwide. Compete with top chefs.", descriptionAr: "تصفح وانضم لمسابقات الطهي حول العالم. تنافس مع أفضل الطهاة.", type: "CollectionPage" },
+  "/discover": { title: "Discover Competitions — Altoha", titleAr: "اكتشف المسابقات — الطهاة", description: "Discover upcoming culinary competitions and events near you.", descriptionAr: "اكتشف مسابقات الطهي والفعاليات القادمة بالقرب منك.", type: "CollectionPage" },
   "/shop": { title: "Culinary Shop — Altoha", titleAr: "متجر الطهي — الطهاة", description: "Shop professional culinary tools, books, and ingredients.", descriptionAr: "تسوق أدوات الطهي الاحترافية والكتب والمكونات.", type: "Store" },
   "/recipes": { title: "Recipes — Altoha", titleAr: "الوصفات — الطهاة", description: "Discover professional recipes from top chefs.", descriptionAr: "اكتشف وصفات احترافية من أفضل الطهاة.", type: "CollectionPage" },
   "/community": { title: "Chef Community — Altoha", titleAr: "مجتمع الطهاة — الطهاة", description: "Connect with fellow chefs, share recipes, and discuss culinary arts.", descriptionAr: "تواصل مع الطهاة وشارك الوصفات وناقش فنون الطهي.", type: "CollectionPage" },
   "/exhibitions": { title: "Culinary Exhibitions — Altoha", titleAr: "معارض الطهي — الطهاة", description: "Explore culinary exhibitions and food events worldwide.", descriptionAr: "استكشف معارض الطهي والفعاليات الغذائية حول العالم.", type: "CollectionPage" },
   "/masterclasses": { title: "Masterclasses — Altoha", titleAr: "الدروس المتقدمة — الطهاة", description: "Learn from expert chefs through professional masterclasses.", descriptionAr: "تعلم من طهاة خبراء عبر دروس احترافية متقدمة.", type: "CollectionPage" },
   "/rankings": { title: "Chef Rankings — Altoha", titleAr: "تصنيف الطهاة — الطهاة", description: "Global chef rankings based on competition performance.", descriptionAr: "تصنيف الطهاة العالمي بناءً على أداء المسابقات.", type: "CollectionPage" },
+  "/suppliers": { title: "Culinary Suppliers — Altoha", titleAr: "موردي الطهي — الطهاة", description: "Find trusted culinary suppliers and equipment providers.", descriptionAr: "اعثر على موردي الطهي الموثوقين ومزودي المعدات.", type: "CollectionPage" },
+  "/news": { title: "Culinary News — Altoha", titleAr: "أخبار الطهي — الطهاة", description: "Latest culinary news, events, and industry updates.", descriptionAr: "آخر أخبار الطهي والفعاليات وتحديثات الصناعة.", type: "CollectionPage" },
+  "/tastings": { title: "Chef's Table Tastings — Altoha", titleAr: "تذوق طاولة الشيف — الطهاة", description: "Exclusive chef's table tasting experiences with top chefs.", descriptionAr: "تجارب تذوق حصرية على طاولة الشيف مع أفضل الطهاة.", type: "CollectionPage" },
 };
 
 export function useEnhancedSEO(language: string) {
