@@ -9,7 +9,7 @@ export function useLoyaltyTiers() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("loyalty_tiers")
-        .select("*")
+        .select("id, name, name_ar, slug, min_points, multiplier, icon_emoji, color, benefits, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -60,7 +60,7 @@ export function useChallenges() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("challenges")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, target_action, target_count, reward_points, reward_badge, challenge_type, category, difficulty, icon_emoji, sort_order, starts_at, ends_at, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -94,7 +94,7 @@ export function useRewardsCatalog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("rewards_catalog")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, points_cost, category, image_url, sort_order, is_active, stock")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -190,7 +190,7 @@ export function useUserBadges(userId?: string) {
       if (!targetId) return [];
       const { data, error } = await supabase
         .from("user_badges")
-        .select("*")
+        .select("id, user_id, badge_id, badge_name, badge_name_ar, badge_icon, earned_at")
         .eq("user_id", targetId)
         .order("earned_at", { ascending: false });
       if (error) throw error;
@@ -208,7 +208,7 @@ export function useUserStreaks() {
       if (!user?.id) return [];
       const { data, error } = await supabase
         .from("user_streaks")
-        .select("*")
+        .select("id, user_id, streak_type, current_streak, longest_streak, last_activity_date")
         .eq("user_id", user.id);
       if (error) throw error;
       return data || [];

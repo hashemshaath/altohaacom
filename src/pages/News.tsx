@@ -68,7 +68,7 @@ export default function News() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("articles")
-        .select("*")
+        .select("id, title, title_ar, slug, type, excerpt, excerpt_ar, featured_image_url, published_at, category_id, is_featured, status, view_count, author_id, created_at, event_start, event_end, event_location, event_location_ar")
         .eq("status", "published")
         .order("published_at", { ascending: false });
       if (error) throw error;
@@ -80,7 +80,7 @@ export default function News() {
   const { data: categories = [] } = useQuery({
     queryKey: ["news-categories"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_categories").select("*");
+      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug");
       return (data || []) as Category[];
     },
     staleTime: 1000 * 60 * 10,

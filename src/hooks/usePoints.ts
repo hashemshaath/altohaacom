@@ -31,7 +31,7 @@ export function usePointsLedger() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("points_ledger")
-        .select("*")
+        .select("id, user_id, action_type, points, balance_after, description, description_ar, reference_type, reference_id, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -48,7 +48,7 @@ export function usePointsRewards() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("points_rewards")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, points_cost, category, reward_type, image_url, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -64,7 +64,7 @@ export function useEarningRules() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("points_earning_rules")
-        .select("*")
+        .select("id, action_type, action_label, action_label_ar, points, is_active, max_per_day, max_per_user")
         .eq("is_active", true)
         .order("points", { ascending: false });
       if (error) throw error;
