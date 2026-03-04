@@ -30,7 +30,7 @@ export default function Organizers() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("organizers")
-        .select("*")
+        .select("id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, city, city_ar, country, country_ar, country_code, categories, services, services_ar, total_exhibitions, average_rating, is_featured, is_verified, website, email, phone, status")
         .eq("status", "active")
         .order("is_featured", { ascending: false })
         .order("total_exhibitions", { ascending: false });

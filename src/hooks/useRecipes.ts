@@ -51,7 +51,7 @@ export function useRecipes(filters?: {
     queryFn: async () => {
       let q = supabase
         .from("recipes")
-        .select("*")
+        .select("id, title, title_ar, slug, description, description_ar, image_url, cuisine, difficulty, category, tags, prep_time_minutes, cook_time_minutes, servings, author_id, created_at")
         .eq("is_published", true)
         .order("created_at", { ascending: false })
         .limit(100);
@@ -114,7 +114,7 @@ export function useRecipeBySlug(slug: string | undefined) {
 
       const [profileRes, ratingsRes] = await Promise.all([
         supabase.from("profiles").select("user_id, full_name, avatar_url, username").eq("user_id", data.author_id).maybeSingle(),
-        supabase.from("recipe_ratings").select("*").eq("recipe_id", data.id),
+        supabase.from("recipe_ratings").select("id, recipe_id, rating, user_id").eq("recipe_id", data.id),
       ]);
 
       const ratings = ratingsRes.data || [];
