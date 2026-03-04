@@ -66,8 +66,8 @@ export function EventsTab() {
 
   const fetchData = async () => {
     const [eventsRes, pollsRes] = await Promise.all([
-      supabase.from("community_events").select("*").order("event_date", { ascending: true }),
-      supabase.from("community_polls").select("*").eq("is_active", true).order("created_at", { ascending: false }),
+      supabase.from("community_events").select("id, title, title_ar, description, description_ar, event_date, event_end_date, event_type, location, location_ar, is_virtual, max_attendees, organizer_id, status, image_url, created_at").order("event_date", { ascending: true }),
+      supabase.from("community_polls").select("id, question, question_ar, options, author_id, is_active, expires_at, created_at").eq("is_active", true).order("created_at", { ascending: false }),
     ]);
 
     const eventIds = eventsRes.data?.map((e) => e.id) || [];
