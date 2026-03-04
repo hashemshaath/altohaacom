@@ -68,7 +68,7 @@ export const LiveChatWidget = forwardRef<HTMLDivElement>(function LiveChatWidget
       return data;
     },
     enabled: !!activeSessionId,
-    refetchInterval: 3000,
+    staleTime: 1000 * 60,
   });
 
   // Realtime subscription for messages

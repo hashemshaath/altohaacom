@@ -86,7 +86,7 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
         .limit(200);
       return data || [];
     },
-    refetchInterval: 5000,
+    staleTime: 1000 * 60,
   });
 
   // Realtime subscription
