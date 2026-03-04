@@ -75,7 +75,7 @@ export function NotificationDeliveryWidget() {
         topTypes: typeReadRates.slice(0, 5),
       };
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

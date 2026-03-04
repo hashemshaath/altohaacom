@@ -50,7 +50,7 @@ export function SessionMonitorWidget() {
         suspicious,
       };
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   if (!data) return null;

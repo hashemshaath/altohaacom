@@ -76,9 +76,8 @@ export function useSocialLinkPageByUsername(username?: string) {
       return { profile, page, items };
     },
     enabled: !!username,
-    staleTime: 15_000,
-    refetchInterval: 15_000,
-    refetchIntervalInBackground: true,
+    staleTime: 30_000,
+    refetchInterval: 30_000,
     gcTime: 10 * 60_000,
   });
 }

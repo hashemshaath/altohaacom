@@ -41,7 +41,7 @@ export function AdminNotificationCenter() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   const markAllReadMutation = useMutation({

@@ -50,7 +50,7 @@ export function UserActivityTimeline() {
         target: a.target_user_id ? profileMap.get(a.target_user_id) : null,
       }));
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   return (
