@@ -25,7 +25,7 @@ export default function CompanyEvaluations() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_evaluations")
-        .select("*")
+        .select("id, company_id, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, evaluated_by, order_id, competition_id, company_response, company_response_ar, responded_at, responded_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;

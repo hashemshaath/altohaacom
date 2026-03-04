@@ -49,7 +49,7 @@ export function SupplierReviews({ companyId }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("supplier_reviews")
-        .select("*")
+        .select("id, user_id, company_id, rating, title, comment, is_verified_purchase, status, created_at")
         .eq("company_id", companyId)
         .eq("status", "published")
         .order("created_at", { ascending: false });

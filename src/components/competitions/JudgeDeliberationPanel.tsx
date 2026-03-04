@@ -32,7 +32,7 @@ export function JudgeDeliberationPanel({ competitionId }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judge_deliberations")
-        .select("*")
+        .select("id, competition_id, topic, status, created_by, resolved_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -46,7 +46,7 @@ export function JudgeDeliberationPanel({ competitionId }: Props) {
       if (!activeDeliberation) return [];
       const { data, error } = await supabase
         .from("deliberation_messages")
-        .select("*")
+        .select("id, deliberation_id, sender_id, message, created_at")
         .eq("deliberation_id", activeDeliberation)
         .order("created_at");
       if (error) throw error;

@@ -43,7 +43,7 @@ export default function ProSupplierDetail() {
       if (!id) return null;
       const { data, error } = await supabase
         .from("companies")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, logo_url, cover_image_url, phone, email, website, address, address_ar, city, country_code, postal_code, type, status, is_verified, verification_level, company_number, classifications, social_links, tagline, tagline_ar, supplier_category, specializations, founded_year, country, operating_countries")
         .eq("id", id)
         .eq("status", "active")
         .maybeSingle();
@@ -59,7 +59,7 @@ export default function ProSupplierDetail() {
       if (!id) return [];
       const { data } = await supabase
         .from("company_catalog")
-        .select("*")
+        .select("id, company_id, name, name_ar, description, description_ar, category, price, currency, unit, image_url, is_active, sku, sort_order")
         .eq("company_id", id)
         .eq("is_active", true)
         .order("category")

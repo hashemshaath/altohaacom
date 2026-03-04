@@ -53,7 +53,7 @@ export function InvitationManager({ competitionId }: InvitationManagerProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_invitations")
-        .select("*")
+        .select("id, competition_id, invitee_name, invitee_name_ar, invitee_email, invitee_phone, invitee_role, invitation_channel, status, invited_by, sent_at, responded_at, checked_in_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;

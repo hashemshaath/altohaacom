@@ -84,7 +84,7 @@ export default function NotificationPreferences() {
     try {
       const { data, error } = await supabase
         .from("notification_preferences")
-        .select("*")
+        .select("id, channel, enabled, quiet_hours_start, quiet_hours_end, digest_frequency, muted_types")
         .eq("user_id", user?.id);
       if (error) throw error;
 
