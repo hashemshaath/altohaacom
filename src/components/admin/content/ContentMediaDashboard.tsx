@@ -25,7 +25,7 @@ export default function ContentMediaDashboard() {
   const { data: articles = [], isLoading: articlesLoading } = useQuery({
     queryKey: ["admin-content-articles", search, statusFilter],
     queryFn: async () => {
-      let query = supabase.from("articles").select("*").order("created_at", { ascending: false }).limit(50);
+      let query = supabase.from("articles").select("id, title, title_ar, slug, status, type, featured_image_url, excerpt, excerpt_ar, author_id, category_id, view_count, is_featured, created_at, updated_at, published_at").order("created_at", { ascending: false }).limit(50);
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
       if (search) query = query.or(`title.ilike.%${search}%,title_ar.ilike.%${search}%`);
       const { data, error } = await query;
@@ -38,7 +38,7 @@ export default function ContentMediaDashboard() {
   const { data: mediaFiles = [], isLoading: mediaLoading } = useQuery({
     queryKey: ["admin-content-media"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("media_library").select("*").order("created_at", { ascending: false }).limit(50);
+      const { data, error } = await supabase.from("media_library").select("id, file_name, file_url, file_type, file_size, alt_text, category, tags, uploaded_by, created_at").order("created_at", { ascending: false }).limit(50);
       if (error) return [];
       return data || [];
     },

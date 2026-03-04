@@ -72,7 +72,7 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
   const { data: mediaItems = [] } = useQuery({
     queryKey: ["company-media-logos", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_media").select("*")
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, file_name, category, media_type, created_at")
         .eq("company_id", companyId).in("category", ["logo", "product_images"]).order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];

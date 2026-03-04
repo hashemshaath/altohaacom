@@ -38,7 +38,7 @@ export default function JudgeProfileForm({ userId, isAdmin }: Props) {
   const { data: baseProfile } = useQuery({
     queryKey: ["base-profile", userId],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("user_id", userId).single();
+      const { data } = await supabase.from("profiles").select("user_id, full_name, full_name_ar, username, email, phone, avatar_url, bio, bio_ar, specialization, nationality, country_code, city, gender, date_of_birth, years_of_experience, job_title, job_title_ar").eq("user_id", userId).single();
       return data;
     },
   });

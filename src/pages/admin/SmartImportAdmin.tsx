@@ -730,7 +730,7 @@ export default function SmartImportAdmin() {
   const loadHistory = async () => {
     setLoadingHistory(true);
     try {
-      const { data } = await supabase.from("smart_import_logs").select("*").order("created_at", { ascending: false }).limit(50);
+      const { data } = await supabase.from("smart_import_logs").select("id, entity_type, source, total_rows, success_rows, failed_rows, status, created_at, created_by, errors").order("created_at", { ascending: false }).limit(50);
       setImportHistory(data || []);
     } catch (e) { console.error('Failed to load history:', e); }
     finally { setLoadingHistory(false); }

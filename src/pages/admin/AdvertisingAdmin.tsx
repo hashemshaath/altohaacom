@@ -78,7 +78,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: placements = [] } = useQuery({
     queryKey: ["admin-ad-placements"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_placements").select("*").order("sort_order");
+      const { data, error } = await supabase.from("ad_placements").select("id, name, name_ar, slug, placement_type, format, position, page_location, width, height, is_active, is_premium, base_cpm, base_cpc, base_cpv, max_ads, sort_order, description, description_ar").order("sort_order");
       if (error) throw error;
       return data;
     },
@@ -88,7 +88,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: packages = [] } = useQuery({
     queryKey: ["admin-ad-packages"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_packages").select("*").order("sort_order");
+      const { data, error } = await supabase.from("ad_packages").select("id, name, name_ar, tier, price, currency, duration_days, max_impressions, max_clicks, max_campaigns, included_placements, features, is_active, sort_order, description, description_ar").order("sort_order");
       if (error) throw error;
       return data;
     },

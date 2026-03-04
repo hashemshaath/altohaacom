@@ -18,7 +18,7 @@ export function PersonalDashboard() {
   const { data: profile } = useQuery({
     queryKey: ["personal-dashboard-profile", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("user_id", user!.id).single();
+      const { data } = await supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, bio, bio_ar, specialization, account_type, is_verified, loyalty_points, country_code, city").eq("user_id", user!.id).single();
       return data;
     },
     enabled: !!user?.id,

@@ -50,7 +50,7 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
   const { data: group } = useQuery({
     queryKey: ["chatGroup", groupId],
     queryFn: async () => {
-      const { data } = await supabase.from("chat_groups").select("*").eq("id", groupId).single();
+      const { data } = await supabase.from("chat_groups").select("id, name, name_ar, avatar_url, created_by, created_at, updated_at").eq("id", groupId).single();
       return data;
     },
   });
@@ -60,7 +60,7 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
     queryFn: async () => {
       const { data: memberRows } = await supabase
         .from("chat_group_members")
-        .select("*")
+        .select("id, group_id, user_id, role, joined_at")
         .eq("group_id", groupId);
       if (!memberRows) return [];
       const userIds = memberRows.map((m) => m.user_id);
@@ -80,7 +80,7 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
     queryFn: async () => {
       const { data } = await supabase
         .from("chat_group_messages")
-        .select("*")
+        .select("id, group_id, sender_id, content, message_type, attachment_urls, attachment_names, metadata, created_at")
         .eq("group_id", groupId)
         .order("created_at", { ascending: true })
         .limit(200);

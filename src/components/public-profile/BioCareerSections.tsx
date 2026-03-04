@@ -234,7 +234,7 @@ export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
   const { data: records = [], isLoading: recordsLoading } = useQuery({
     queryKey: ["bio-career-records", userId],
     queryFn: async () => {
-      const { data } = await supabase.from("user_career_records").select("*")
+      const { data } = await supabase.from("user_career_records").select("id, user_id, record_type, title, title_ar, entity_name, entity_name_ar, description, description_ar, start_date, end_date, is_current, location, country_code, sort_order, department, department_ar, employment_type, education_level, field_of_study, field_of_study_ar, grade, entity_id")
         .eq("user_id", userId)
         .order("is_current", { ascending: false })
         .order("start_date", { ascending: false });
