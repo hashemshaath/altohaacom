@@ -34,7 +34,7 @@ export default function CompetitionDiscovery() {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions")
-        .select("*, competition_registrations(id)")
+        .select("id, title, title_ar, description, description_ar, cover_image_url, status, registration_start, registration_end, competition_start, competition_end, venue, venue_ar, city, country, country_code, is_virtual, max_participants, organizer_id, edition_year, competition_registrations(id)")
         .not("status", "eq", "draft")
         .order("competition_start", { ascending: true });
       return (data || []) as CompetitionWithRegs[];
