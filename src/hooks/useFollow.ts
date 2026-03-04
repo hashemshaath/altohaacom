@@ -63,7 +63,7 @@ export function usePendingFollowRequest(targetUserId: string | undefined) {
       if (!user?.id || !targetUserId) return null;
       const { data } = await supabase
         .from("follow_requests")
-        .select("*")
+        .select("id, status, created_at")
         .eq("requester_id", user.id)
         .eq("target_id", targetUserId)
         .eq("status", "pending")
@@ -252,7 +252,7 @@ export function useIncomingFollowRequests() {
       if (!user?.id) return [];
       const { data, error } = await supabase
         .from("follow_requests")
-        .select("*")
+        .select("id, requester_id, status, created_at")
         .eq("target_id", user.id)
         .eq("status", "pending")
         .order("created_at", { ascending: false });
@@ -278,7 +278,7 @@ export function useIncomingFollowRequests() {
       
       const { data: request } = await supabase
         .from("follow_requests")
-        .select("*")
+        .select("id, requester_id, target_id, status")
         .eq("id", requestId)
         .single();
       

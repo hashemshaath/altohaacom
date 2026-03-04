@@ -185,7 +185,7 @@ export function useMessagesData() {
       if (!user || !selectedPartner) return [];
       const { data } = await supabase
         .from("messages")
-        .select("*")
+        .select("id, sender_id, receiver_id, content, message_type, is_read, is_starred, category, attachment_urls, attachment_names, created_at")
         .or(
           `and(sender_id.eq.${user.id},receiver_id.eq.${selectedPartner.user_id}),and(sender_id.eq.${selectedPartner.user_id},receiver_id.eq.${user.id})`
         )

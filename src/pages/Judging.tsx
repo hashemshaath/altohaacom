@@ -76,7 +76,7 @@ export default function Judging() {
       
       const { data: competitions, error: compError } = await supabase
         .from("competitions")
-        .select("*")
+        .select("id, title, title_ar, status, competition_start, competition_end, country_code, city")
         .in("id", competitionIds)
         .in("status", ["in_progress", "judging"])
         .order("competition_start", { ascending: false });
@@ -128,7 +128,7 @@ export default function Judging() {
       
       const { data, error } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, competition_id, name, name_ar, max_score, weight, sort_order, description, description_ar")
         .eq("competition_id", selectedCompetition)
         .order("sort_order");
       
@@ -146,7 +146,7 @@ export default function Judging() {
       
       const { data, error } = await supabase
         .from("competition_scores")
-        .select("*")
+        .select("id, judge_id, registration_id, criteria_id, score, notes, scored_at")
         .eq("judge_id", user.id);
       
       if (error) throw error;

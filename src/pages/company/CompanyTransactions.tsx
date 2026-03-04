@@ -41,7 +41,7 @@ export default function CompanyTransactions() {
       if (!companyId) return [];
       let query = supabase
         .from("company_transactions")
-        .select("*")
+        .select("id, company_id, type, amount, currency, description, description_ar, transaction_number, transaction_date, invoice_id, balance_after, is_reconciled, created_at")
         .eq("company_id", companyId)
         .order("transaction_date", { ascending: false });
 
