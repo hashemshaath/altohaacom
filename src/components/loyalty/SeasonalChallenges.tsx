@@ -32,7 +32,7 @@ export function SeasonalChallenges() {
       const now = new Date().toISOString();
       const { data } = await supabase
         .from("challenges")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, challenge_type, target_count, reward_points, difficulty, icon_emoji, ends_at, sort_order")
         .eq("is_active", true)
         .eq("is_hidden", false)
         .or(`ends_at.is.null,ends_at.gte.${now}`)
@@ -49,7 +49,7 @@ export function SeasonalChallenges() {
       if (!user?.id) return [];
       const { data } = await supabase
         .from("user_challenges")
-        .select("*")
+        .select("id, challenge_id, progress, completed_at")
         .eq("user_id", user.id);
       return data || [];
     },

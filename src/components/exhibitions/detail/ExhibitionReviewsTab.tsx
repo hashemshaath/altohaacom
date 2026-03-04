@@ -157,7 +157,7 @@ function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_review_replies")
-        .select("*")
+        .select("id, review_id, user_id, content, created_at")
         .eq("review_id", reviewId)
         .order("created_at", { ascending: true });
       if (!data || data.length === 0) return [];
@@ -267,7 +267,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_reviews")
-        .select("*")
+        .select("id, exhibition_id, user_id, rating, title, content, photo_urls, helpful_count, is_verified_attendee, organizer_response, organizer_response_at, organizer_response_by, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("helpful_count", { ascending: false })
         .order("created_at", { ascending: false });
@@ -291,7 +291,7 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }
       if (!user) return null;
       const { data } = await supabase
         .from("exhibition_reviews")
-        .select("*")
+        .select("id")
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id)
         .maybeSingle();

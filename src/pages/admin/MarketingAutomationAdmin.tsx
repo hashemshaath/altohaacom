@@ -58,7 +58,7 @@ export default function MarketingAutomationAdmin() {
     queryFn: async () => {
       const { data } = await supabase
         .from("automation_runs")
-        .select("*")
+        .select("id, action, status, triggered_by, results, error_message, started_at, completed_at, created_at")
         .order("created_at", { ascending: false })
         .limit(50);
       return data || [];
@@ -71,7 +71,7 @@ export default function MarketingAutomationAdmin() {
     queryFn: async () => {
       const { data } = await supabase
         .from("lifecycle_triggers")
-        .select("*")
+        .select("id, name, name_ar, trigger_event, channels, delay_minutes, is_active, created_at")
         .order("created_at", { ascending: true });
       return data || [];
     },

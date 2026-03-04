@@ -86,7 +86,7 @@ export function SmartNotificationRules() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("notification_rules")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, trigger_event, conditions, notification_title, notification_title_ar, notification_body, notification_body_ar, notification_type, notification_link, channels, delay_minutes, is_active, priority, max_sends_per_user, cooldown_hours, created_at")
         .order("priority", { ascending: false });
       if (error) throw error;
       return (data || []) as NotificationRule[];
