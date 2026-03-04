@@ -27,7 +27,7 @@ export function useMyVerificationRequests() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("verification_requests")
-        .select("*")
+        .select("id, user_id, entity_type, verification_level, applicant_name, applicant_name_ar, applicant_role, applicant_position, documents, status, ai_analysis, ai_risk_score, ai_flags, ai_reviewed_at, reviewed_by, reviewed_at, reviewer_notes, rejection_reason, created_at")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -42,7 +42,7 @@ export function useAllVerificationRequests() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("verification_requests")
-        .select("*")
+        .select("id, user_id, company_id, culinary_entity_id, entity_type, verification_level, applicant_name, applicant_name_ar, applicant_role, applicant_position, documents, status, ai_analysis, ai_risk_score, ai_flags, ai_reviewed_at, reviewed_by, reviewed_at, reviewer_notes, rejection_reason, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;

@@ -57,7 +57,7 @@ export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirement_lists")
-        .select("*")
+        .select("id, competition_id, title, title_ar, description, category, status, created_by, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;

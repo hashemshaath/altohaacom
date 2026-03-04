@@ -9,7 +9,7 @@ export function useCareerData(userId: string) {
   const { data: dbSections = [], isLoading: sectionsLoading } = useQuery({
     queryKey: ["user-career-sections", userId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("user_career_sections").select("*")
+      const { data, error } = await supabase.from("user_career_sections").select("id, user_id, section_key, is_custom, name_en, name_ar, icon, color, sort_order")
         .eq("user_id", userId).order("sort_order", { ascending: true });
       if (error) throw error;
       return data || [];
@@ -65,7 +65,7 @@ export function useCareerData(userId: string) {
   const { data: records = [], isLoading: recordsLoading } = useQuery({
     queryKey: ["career-records", userId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("user_career_records").select("*")
+      const { data, error } = await supabase.from("user_career_records").select("id, user_id, record_type, title, title_ar, entity_id, entity_name, entity_name_ar, description, description_ar, start_date, end_date, is_current, location, sort_order, country_code, department, department_ar, education_level, employment_type, field_of_study, field_of_study_ar, grade, created_at, updated_at")
         .eq("user_id", userId).order("sort_order", { ascending: true })
         .order("is_current", { ascending: false })
         .order("end_date", { ascending: false, nullsFirst: true }).order("start_date", { ascending: false });
