@@ -137,7 +137,7 @@ export default function CRMCustomerDetail() {
   const { data: allGroups = [] } = useQuery({
     queryKey: ["crm-all-groups"],
     queryFn: async () => {
-      const { data } = await supabase.from("customer_groups").select("*").eq("is_active", true).order("name");
+      const { data } = await supabase.from("customer_groups").select("id, name, name_ar, description, color").eq("is_active", true).order("name");
       return data || [];
     },
   });

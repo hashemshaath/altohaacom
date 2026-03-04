@@ -95,7 +95,7 @@ export default function CommunicationsAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("company_communications")
-        .select("*")
+        .select("id, company_id, sender_id, subject, message, direction, status, parent_id, is_internal_note, is_archived, is_starred, tags, response_time_minutes, priority, created_at, updated_at")
         .is("parent_id", null)
         .eq("is_internal_note", false)
         .order("created_at", { ascending: false });
@@ -146,7 +146,7 @@ export default function CommunicationsAdmin() {
     queryFn: async () => {
       if (!selectedMessage) return [];
       const { data, error } = await supabase
-        .from("company_communications").select("*")
+        .from("company_communications").select("id, company_id, sender_id, subject, message, direction, status, parent_id, is_internal_note, is_archived, is_starred, tags, response_time_minutes, priority, created_at, updated_at")
         .eq("parent_id", selectedMessage.id).order("created_at", { ascending: true });
       if (error) throw error;
       return (data || []) as Communication[];
@@ -160,7 +160,7 @@ export default function CommunicationsAdmin() {
     queryFn: async () => {
       if (!selectedMessage) return [];
       const { data, error } = await supabase
-        .from("company_communications").select("*")
+        .from("company_communications").select("id, company_id, sender_id, subject, message, direction, status, parent_id, is_internal_note, is_archived, is_starred, tags, response_time_minutes, priority, created_at, updated_at")
         .eq("parent_id", selectedMessage.id).eq("is_internal_note", true)
         .order("created_at", { ascending: true });
       if (error) throw error;

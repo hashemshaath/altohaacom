@@ -202,7 +202,7 @@ export default function UserManagement() {
   const { data: groups = [] } = useQuery({
     queryKey: ["customerGroups"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("customer_groups").select("*").order("name");
+      const { data, error } = await supabase.from("customer_groups").select("id, name, name_ar, description, is_active, color, created_at").order("name");
       if (error) throw error;
       return data || [];
     },

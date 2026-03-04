@@ -181,7 +181,7 @@ export function HeroSlideAdmin() {
   const { data: slides = [], isLoading } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides-admin"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("hero_slides").select("*").order("sort_order");
+      const { data, error } = await supabase.from("hero_slides").select("id, title, title_ar, subtitle, subtitle_ar, image_url, link_url, link_label, link_label_ar, sort_order, is_active, template, text_position, overlay_opacity, overlay_color, height_preset, custom_height, badge_text, badge_text_ar, cta_secondary_label, cta_secondary_label_ar, cta_secondary_url, text_color, accent_color, gradient_direction, autoplay_interval, animation_effect, object_fit, object_position").order("sort_order");
       if (error) throw error;
       return (data || []) as HeroSlide[];
     },

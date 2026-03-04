@@ -52,7 +52,7 @@ export function EntityProgramsTab({ entityId, onDeleteRequest }: Props) {
   const { data: programs } = useQuery({
     queryKey: ["admin-entity-programs", entityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("entity_programs").select("*").eq("entity_id", entityId).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("entity_programs").select("id, name, name_ar, description, program_type, level, duration_months, status, max_students, tuition_fee, start_date, end_date, created_at").eq("entity_id", entityId).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },

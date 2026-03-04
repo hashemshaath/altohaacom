@@ -41,7 +41,7 @@ export default function EditCompetition() {
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("*").eq("id", id).maybeSingle();
+      const { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, link_type, linked_entity_id, linked_chef_id, linked_tasting_id, series_id").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) throw new Error("Competition not found");
       return data;
@@ -52,7 +52,7 @@ export default function EditCompetition() {
   const { data: existingCategories } = useQuery({
     queryKey: ["competition-categories", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competition_categories").select("*").eq("competition_id", id).order("sort_order");
+      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar, description, description_ar, max_participants, gender, sort_order").eq("competition_id", id).order("sort_order");
       if (error) throw error;
       return data;
     },
@@ -62,7 +62,7 @@ export default function EditCompetition() {
   const { data: existingCriteria } = useQuery({
     queryKey: ["judging-criteria", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("judging_criteria").select("*").eq("competition_id", id).order("sort_order");
+      const { data, error } = await supabase.from("judging_criteria").select("id, name, name_ar, description, description_ar, max_score, weight, sort_order").eq("competition_id", id).order("sort_order");
       if (error) throw error;
       return data;
     },
