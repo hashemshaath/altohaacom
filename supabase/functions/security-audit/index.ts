@@ -205,7 +205,7 @@ serve(async (req) => {
     }
   } catch (error: any) {
     console.error("Security audit error:", error);
-    return new Response(JSON.stringify({ error: error.message || "Internal error" }), {
+    return new Response(JSON.stringify({ error: "An internal error occurred" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
