@@ -54,7 +54,7 @@ export default function Competitions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("*, competition_registrations(id)")
+        .select("id, title, title_ar, description, description_ar, cover_image_url, status, registration_start, registration_end, competition_start, competition_end, venue, venue_ar, city, country, country_code, is_virtual, max_participants, organizer_id, edition_year, competition_registrations(id)")
         .order("competition_start", { ascending: true });
       if (error) throw error;
       return data as CompetitionWithRegs[];
