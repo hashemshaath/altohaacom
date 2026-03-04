@@ -31,7 +31,7 @@ export default function OrganizerPortal() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("exhibitions")
-        .select("*")
+        .select("id, title, title_ar, slug, status, start_date, end_date, cover_image_url, city, country, view_count, registration_deadline")
         .eq("created_by", user.id)
         .order("start_date", { ascending: false });
       if (error) throw error;

@@ -178,7 +178,7 @@ export default function OrdersAdmin() {
       if (!selectedOrder) return [];
       const { data, error } = await supabase
         .from("order_communications")
-        .select("*")
+        .select("id, order_id, message, sender_type, sender_id, created_at")
         .eq("order_id", selectedOrder)
         .order("created_at", { ascending: true });
       if (error) throw error;

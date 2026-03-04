@@ -81,7 +81,7 @@ export default function CompanyNotifications() {
       if (!user?.id) return [];
       const { data, error } = await supabase
         .from("notifications")
-        .select("*")
+        .select("id, title, title_ar, body, body_ar, type, is_read, link, created_at, metadata")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(100);

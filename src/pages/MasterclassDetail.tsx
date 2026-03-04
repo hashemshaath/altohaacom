@@ -35,7 +35,7 @@ export default function MasterclassDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("masterclasses")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, cover_image_url, category, level, is_free, price, currency, duration_hours, instructor_id, what_you_learn, what_you_learn_ar, status")
         .eq("id", id!)
         .maybeSingle();
       if (error) throw error;
@@ -78,7 +78,7 @@ export default function MasterclassDetail() {
       if (!user) return null;
       const { data, error } = await supabase
         .from("masterclass_enrollments")
-        .select("*")
+        .select("id, masterclass_id, user_id, status, progress_percent, certificate_issued, completed_at")
         .eq("masterclass_id", id!)
         .eq("user_id", user.id)
         .maybeSingle();
@@ -94,7 +94,7 @@ export default function MasterclassDetail() {
       if (!enrollment) return [];
       const { data, error } = await supabase
         .from("masterclass_lesson_progress")
-        .select("*")
+        .select("id, enrollment_id, lesson_id, completed, completed_at")
         .eq("enrollment_id", enrollment.id);
       if (error) throw error;
       return data || [];

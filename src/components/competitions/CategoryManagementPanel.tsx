@@ -62,7 +62,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_categories")
-        .select("*")
+        .select("id, competition_id, name, name_ar, description, description_ar, max_participants, gender, participant_level, status, sort_order, cover_image_url")
         .eq("competition_id", competitionId)
         .order("sort_order");
       if (error) throw error;

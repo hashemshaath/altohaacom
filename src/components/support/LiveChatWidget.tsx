@@ -65,7 +65,7 @@ export function LiveChatWidget() {
     const fetchMessages = async () => {
       const { data } = await supabase
         .from("chat_session_messages")
-        .select("*")
+        .select("id, message, sender_id, message_type, created_at")
         .eq("session_id", sessionId)
         .order("created_at", { ascending: true });
       if (data) setMessages(data);
