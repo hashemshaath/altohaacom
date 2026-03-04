@@ -49,7 +49,7 @@ export default function LiveChatAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("chat_sessions")
-        .select("*")
+        .select("id, user_id, agent_id, status, subject, subject_ar, rating, feedback, started_at, ended_at, created_at")
         .order("created_at", { ascending: false })
         .limit(100);
 
