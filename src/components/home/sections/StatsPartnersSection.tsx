@@ -21,7 +21,7 @@ export default function StatsPartnersSection() {
     queryFn: async () => {
       const { data } = await supabase
         .from("partner_logos")
-        .select("*")
+        .select("id, name, name_ar, logo_url, website_url, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       return data || [];

@@ -32,7 +32,7 @@ export default function CompanyPublicProfile() {
       if (!id) return null;
       const { data, error } = await supabase
         .from("companies")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, logo_url, cover_image_url, website, email, phone, country_code, city, country, address, postal_code, type, status, is_verified, social_links, company_number, rating, total_reviews, classifications, operating_countries, created_at")
         .eq("id", id)
         .eq("status", "active")
         .maybeSingle();

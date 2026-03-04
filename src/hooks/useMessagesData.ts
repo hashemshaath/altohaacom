@@ -105,7 +105,7 @@ export function useMessagesData() {
       if (!user) return [];
       const { data: messages } = await supabase
         .from("messages")
-        .select("*")
+        .select("id, sender_id, receiver_id, content, message_type, is_read, is_starred, category, attachment_url, attachment_name, created_at")
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .order("created_at", { ascending: false });
       if (!messages) return [];
@@ -170,7 +170,7 @@ export function useMessagesData() {
       const groupIds = memberRows.map((m) => m.group_id);
       const { data: groups } = await supabase
         .from("chat_groups")
-        .select("*")
+        .select("id, name, name_ar, avatar_url, created_by, updated_at")
         .in("id", groupIds)
         .order("updated_at", { ascending: false });
       return groups || [];
