@@ -53,7 +53,7 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("company_invitations")
-        .select("*")
+        .select("id, title, title_ar, invitation_type, status, response_notes, created_at")
         .eq("company_id", companyId)
         .in("invitation_type", ["sponsorship", "exhibition_sponsor", "section_sponsor"])
         .order("created_at", { ascending: false });

@@ -41,7 +41,7 @@ export function useGlobalEvents(filters?: { status?: string }) {
     queryFn: async () => {
       let query = (supabase as any)
         .from("global_events")
-        .select("*")
+        .select("id, type, title, title_ar, description, description_ar, start_date, end_date, all_day, start_time, end_time, timezone, city, country_code, venue, venue_ar, organizer, organizer_ar, link, image_url, is_international, is_recurring, recurrence_rule, target_audience, tags, color, status, priority, created_by, created_at, updated_at")
         .order("start_date", { ascending: true });
 
       if (filters?.status && filters.status !== "all") {

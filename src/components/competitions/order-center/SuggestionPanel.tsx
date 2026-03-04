@@ -46,7 +46,7 @@ export function SuggestionPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirement_suggestions")
-        .select("*")
+        .select("id, competition_id, suggested_by, item_name, item_name_ar, category, quantity, unit, description, estimated_cost, priority, status, reviewed_by, reviewed_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;

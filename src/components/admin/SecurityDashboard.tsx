@@ -313,7 +313,7 @@ function SessionsPanel() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("user_sessions")
-        .select("*")
+        .select("id, user_id, device_info, ip_address, last_active_at, is_active")
         .eq("is_active", true)
         .order("last_active_at", { ascending: false })
         .limit(50);
@@ -389,7 +389,7 @@ function PermissionsOverview() {
     queryFn: async () => {
       const [rolesRes, overridesRes, permissionsRes] = await Promise.all([
         supabase.from("user_roles").select("role"),
-        supabase.from("user_permission_overrides").select("*").limit(20),
+        supabase.from("user_permission_overrides").select("id, user_id, permission_id, granted, reason, expires_at").limit(20),
         supabase.from("role_permissions").select("role, permissions(code, name, name_ar, category)"),
       ]);
       

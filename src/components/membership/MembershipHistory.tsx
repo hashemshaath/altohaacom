@@ -44,7 +44,7 @@ export function MembershipHistory() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("membership_history")
-        .select("*")
+        .select("id, user_id, previous_tier, new_tier, reason, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);

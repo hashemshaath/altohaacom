@@ -34,7 +34,7 @@ export function AdminUserDetailsDrawer({ userId, open, onOpenChange }: Props) {
     queryFn: async () => {
       if (!userId) return null;
       const [profileRes, rolesRes, walletRes, actionsRes] = await Promise.all([
-        supabase.from("profiles").select("*").eq("user_id", userId).single(),
+        supabase.from("profiles").select("user_id, full_name, username, email, phone, avatar_url, country_code, created_at, last_login_at, loyalty_points, account_status, account_number").eq("user_id", userId).single(),
         supabase.from("user_roles").select("role").eq("user_id", userId),
         supabase.from("user_wallets").select("balance, points_balance, wallet_number").eq("user_id", userId).maybeSingle(),
         supabase.from("admin_actions").select("action_type, details, created_at").eq("target_user_id", userId).order("created_at", { ascending: false }).limit(10),

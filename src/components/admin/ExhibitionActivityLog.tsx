@@ -17,7 +17,7 @@ export function ExhibitionActivityLog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_actions")
-        .select("*")
+        .select("id, action_type, created_at")
         .or("action_type.ilike.%exhibition%,action_type.eq.approve_exhibition,action_type.eq.reject_exhibition")
         .order("created_at", { ascending: false })
         .limit(20);
