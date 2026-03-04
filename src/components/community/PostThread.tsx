@@ -46,7 +46,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
 
   const fetchThread = async () => {
     // Fetch parent post
-    const { data: post } = await supabase.from("posts").select("*").eq("id", postId).single();
+    const { data: post } = await supabase.from("posts").select("id, content, author_id, image_url, image_urls, video_url, link_url, link_preview, visibility, replies_count, reposts_count, is_pinned, reply_to_post_id, created_at, updated_at").eq("id", postId).single();
     if (!post) return;
 
     // Fetch profile

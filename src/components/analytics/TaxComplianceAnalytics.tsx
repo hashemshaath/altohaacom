@@ -41,7 +41,7 @@ export function TaxComplianceAnalytics() {
         { data: shopOrders },
       ] = await Promise.all([
         supabase.from("invoices").select("amount, status, created_at, paid_at, tax_amount").gte("created_at", yearStart).lte("created_at", yearEnd),
-        supabase.from("tax_reports").select("*").gte("period_start", yearStart).lte("period_end", yearEnd).order("period_start"),
+        supabase.from("tax_reports").select("id, report_type, period_start, period_end, total_revenue, tax_amount, taxable_amount, tax_rate, status, created_at").gte("period_start", yearStart).lte("period_end", yearEnd).order("period_start"),
         supabase.from("shop_orders").select("total_amount, status, created_at").gte("created_at", yearStart).lte("created_at", yearEnd),
       ]);
 

@@ -35,7 +35,7 @@ export function UserDataExport() {
     try {
       // Fetch all user data in parallel
       const [profileRes, walletsRes, pointsRes, certsRes, membershipRes] = await Promise.all([
-        supabase.from("profiles").select("*").eq("user_id", user.id).single(),
+        supabase.from("profiles").select("user_id, full_name, full_name_ar, username, email, phone, avatar_url, bio, bio_ar, specialization, country_code, city, nationality, gender, date_of_birth, account_type, is_verified, created_at").eq("user_id", user.id).single(),
         supabase.from("user_wallets").select("wallet_number, balance, points_balance, currency, created_at").eq("user_id", user.id).single(),
         supabase.from("points_ledger").select("action_type, points, balance_after, description, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(100),
         supabase.from("certificates").select("certificate_number, type, status, recipient_name, event_name, achievement, issued_at").eq("recipient_id", user.id).order("issued_at", { ascending: false }),

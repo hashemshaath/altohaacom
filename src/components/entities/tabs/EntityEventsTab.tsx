@@ -46,7 +46,7 @@ export function EntityEventsTab({ entityId, onDeleteRequest }: Props) {
   const { data: events } = useQuery({
     queryKey: ["admin-entity-events", entityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("entity_events").select("*").eq("entity_id", entityId).order("start_date", { ascending: false });
+      const { data, error } = await supabase.from("entity_events").select("id, entity_id, title, title_ar, description, event_type, start_date, end_date, location, is_virtual, max_attendees, status, created_at").eq("entity_id", entityId).order("start_date", { ascending: false });
       if (error) throw error;
       return data;
     },
