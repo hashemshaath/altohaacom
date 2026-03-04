@@ -37,7 +37,7 @@ export function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
         recent: recent.data || [],
       };
     },
-    refetchInterval: 10000,
+    refetchInterval: 30000,
   });
 
   const checkinMutation = useMutation({

@@ -153,7 +153,7 @@ export function useMessagesData() {
         .sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
     },
     enabled: !!user,
-    refetchInterval: 15000,
+    refetchInterval: 30000,
     staleTime: 1000 * 60 * 1,
   });
 

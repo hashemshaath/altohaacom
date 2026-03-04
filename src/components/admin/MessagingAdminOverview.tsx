@@ -64,8 +64,8 @@ export function MessagingAdminOverview() {
         messagesToday: messagesToday || 0,
       };
     },
-    staleTime: 30000,
-    refetchInterval: 30000,
+    staleTime: 60000,
+    refetchInterval: 60000,
   });
 
   if (!data) return null;

@@ -25,7 +25,7 @@ export function AdminSessionTracker() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   const { data: recentEvents = [] } = useQuery({
@@ -39,7 +39,7 @@ export function AdminSessionTracker() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 30000,
+    refetchInterval: 60000,
   });
 
   const getSeverityColor = (severity: string) => {

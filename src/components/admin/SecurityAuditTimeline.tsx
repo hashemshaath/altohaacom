@@ -50,7 +50,7 @@ export function SecurityAuditTimeline() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 15000,
+    refetchInterval: 60000,
   });
 
   const stats = {
