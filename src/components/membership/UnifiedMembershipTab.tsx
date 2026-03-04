@@ -61,7 +61,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_cards")
-        .select("*")
+        .select("id, user_id, membership_number, verification_code, card_status, card_orientation, is_trial, trial_ends_at, expires_at, issued_at, created_at")
         .eq("user_id", userId)
         .maybeSingle();
       if (error) throw error;
@@ -75,7 +75,7 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
     queryFn: async () => {
       const { data } = await supabase
         .from("membership_history")
-        .select("*")
+        .select("id, previous_tier, new_tier, reason, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(10);

@@ -43,7 +43,7 @@ export default function MembershipReferral() {
     queryFn: async () => {
       const { data } = await supabase
         .from("membership_referrals")
-        .select("*")
+        .select("id, referrer_id, referred_id, status, tier, referrer_bonus_points, referred_discount_percent, referred_bonus_points, created_at")
         .eq("referrer_id", user!.id)
         .order("created_at", { ascending: false });
       return data || [];
@@ -56,7 +56,7 @@ export default function MembershipReferral() {
     queryFn: async () => {
       const { data } = await supabase
         .from("membership_referrals")
-        .select("*")
+        .select("id, referred_discount_percent, referred_bonus_points, status")
         .eq("referred_id", user!.id)
         .maybeSingle();
       return data;

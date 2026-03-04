@@ -37,7 +37,7 @@ export default function JudgeMembershipsPanel({ userId, isAdmin }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judge_memberships")
-        .select("*")
+        .select("id, user_id, organization_name, organization_name_ar, membership_type, membership_number, role_in_organization, role_in_organization_ar, joined_date, expiry_date, is_active, notes")
         .eq("user_id", userId)
         .order("is_active", { ascending: false });
       if (error) throw error;

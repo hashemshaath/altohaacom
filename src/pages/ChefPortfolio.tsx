@@ -25,7 +25,7 @@ export default function ChefPortfolio() {
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["portfolio-profile", targetUserId],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles_public").select("*").eq("user_id", targetUserId!).single();
+      const { data } = await supabase.from("profiles_public").select("user_id, full_name, username, avatar_url, job_title, country_code, bio, specialization").eq("user_id", targetUserId!).single();
       return data;
     },
     enabled: !!targetUserId,
@@ -72,7 +72,7 @@ export default function ChefPortfolio() {
     queryFn: async () => {
       const { data } = await supabase
         .from("certificates")
-        .select("*")
+        .select("id, type, event_name, event_name_ar, issued_at, status")
         .eq("recipient_id", targetUserId!)
         .eq("status", "issued")
         .order("issued_at", { ascending: false });
@@ -86,7 +86,7 @@ export default function ChefPortfolio() {
     queryFn: async () => {
       const { data } = await supabase
         .from("chef_rankings")
-        .select("*")
+        .select("id, user_id, rank, total_points, gold_medals, silver_medals, bronze_medals, average_score, ranking_period")
         .eq("user_id", targetUserId!)
         .eq("ranking_period", "all_time")
         .maybeSingle();

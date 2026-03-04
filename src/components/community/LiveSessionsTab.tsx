@@ -50,9 +50,10 @@ export function LiveSessionsTab() {
   const fetchSessions = async () => {
     const now = new Date().toISOString();
 
+    const sessionFields = "id, host_id, title, title_ar, description, description_ar, scheduled_at, duration_minutes, status, max_attendees, cover_image_url";
     const [upcomingRes, pastRes] = await Promise.all([
-      supabase.from("live_sessions").select("*").in("status", ["scheduled", "live"]).gte("scheduled_at", now).order("scheduled_at", { ascending: true }).limit(20),
-      supabase.from("live_sessions").select("*").eq("status", "ended").order("scheduled_at", { ascending: false }).limit(10),
+      supabase.from("live_sessions").select(sessionFields).in("status", ["scheduled", "live"]).gte("scheduled_at", now).order("scheduled_at", { ascending: true }).limit(20),
+      supabase.from("live_sessions").select(sessionFields).eq("status", "ended").order("scheduled_at", { ascending: false }).limit(10),
     ]);
 
     const allData = [...(upcomingRes.data || []), ...(pastRes.data || [])];
