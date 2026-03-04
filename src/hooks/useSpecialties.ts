@@ -24,7 +24,7 @@ export function useAllSpecialties() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("specialties")
-        .select("*")
+        .select("id, name, name_ar, slug, category, is_approved, is_active, created_by, approved_by, approved_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];

@@ -50,7 +50,7 @@ export default function SupplierCompare() {
       if (selectedIds.length === 0) return [];
       const { data } = await supabase
         .from("companies")
-        .select("*")
+        .select("id, name, name_ar, slug, type, logo_url, cover_image_url, description, description_ar, city, country_code, status, website, phone, email, specializations, is_verified, created_at")
         .in("id", selectedIds)
         .eq("status", "active");
       return data || [];
