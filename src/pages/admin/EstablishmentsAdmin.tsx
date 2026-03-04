@@ -43,7 +43,7 @@ export default function EstablishmentsAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("culinary_entities")
-        .select("*, entity_followers:entity_followers(id)")
+        .select("id, name, name_ar, abbreviation, abbreviation_ar, type, scope, status, is_visible, country, city, logo_url, website, email, phone, description, description_ar, entity_number, slug, created_at, entity_followers:entity_followers(id)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;

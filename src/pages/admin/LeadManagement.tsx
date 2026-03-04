@@ -140,7 +140,7 @@ export default function LeadManagement() {
     queryFn: async () => {
       let query = supabase
         .from("leads")
-        .select("*")
+        .select("id, contact_name, company_name, email, phone, message, type, status, source, notes, assigned_to, metadata, created_at, updated_at")
         .order("created_at", { ascending: false })
         .limit(200);
 

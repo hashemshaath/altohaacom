@@ -177,7 +177,7 @@ export default function CompaniesAdmin() {
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["companies", searchQuery, typeFilter, statusFilter],
     queryFn: async () => {
-      let query = supabase.from("companies").select("*").order("created_at", { ascending: false });
+      let query = supabase.from("companies").select("id, name, name_ar, type, status, company_number, email, phone, city, country, country_code, operating_countries, logo_url, created_at, import_source, rating, neighborhood, google_maps_url, latitude, longitude").order("created_at", { ascending: false });
       if (searchQuery) query = query.or(`name.ilike.%${searchQuery}%,name_ar.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as CompanyType);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as CompanyStatus);
