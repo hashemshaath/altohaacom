@@ -49,7 +49,7 @@ export default function SmartNotificationCenter({ open, onClose }: Props) {
       return data || [];
     },
     enabled: !!user?.id && open,
-    refetchInterval: 30000,
+    staleTime: 1000 * 60 * 2,
   });
 
   // Realtime subscription

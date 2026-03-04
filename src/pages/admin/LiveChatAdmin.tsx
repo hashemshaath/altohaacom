@@ -63,7 +63,7 @@ export default function LiveChatAdmin() {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   // Fetch user profiles
@@ -98,7 +98,7 @@ export default function LiveChatAdmin() {
       return data;
     },
     enabled: !!selectedSessionId,
-    refetchInterval: 3000,
+    staleTime: 1000 * 60,
   });
 
   // Realtime
