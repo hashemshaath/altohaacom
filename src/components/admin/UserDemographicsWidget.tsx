@@ -25,10 +25,10 @@ export function UserDemographicsWidget() {
         supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(1000),
         supabase.from("user_roles").select("role").limit(1000),
         supabase.from("profiles").select("membership_tier").limit(1000),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("is_verified", true),
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("last_login_at", new Date(Date.now() - 3600000).toISOString()),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_verified", true),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("last_login_at", new Date(Date.now() - 3600000).toISOString()),
       ]);
 
       // Country distribution - top 5

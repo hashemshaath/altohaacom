@@ -40,7 +40,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_sponsor_packages")
-        .select("*")
+        .select("id, name, name_ar, tier, price, currency, benefits, sort_order")
         .eq("exhibition_id", exhibitionId)
         .eq("is_active", true)
         .order("sort_order");
@@ -54,7 +54,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_sponsors")
-        .select("*")
+        .select("id, name, name_ar, tier, logo_url, website_url, sort_order")
         .eq("exhibition_id", exhibitionId)
         .eq("is_active", true)
         .order("sort_order");

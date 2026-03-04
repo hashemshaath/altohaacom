@@ -19,7 +19,7 @@ export function FanStreaks() {
       if (!user) return null;
       const { data } = await supabase
         .from("fan_streaks")
-        .select("*")
+        .select("id, user_id, current_streak, longest_streak, total_active_days, last_activity_date, updated_at")
         .eq("user_id", user.id)
         .maybeSingle();
       return data;
@@ -35,7 +35,7 @@ export function FanStreaks() {
     const updateStreak = async () => {
       const { data: existing } = await supabase
         .from("fan_streaks")
-        .select("*")
+        .select("id, current_streak, longest_streak, total_active_days, last_activity_date")
         .eq("user_id", user.id)
         .maybeSingle();
 

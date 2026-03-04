@@ -28,10 +28,10 @@ export function FinanceMembershipWidget() {
         { data: walletData },
       ] = await Promise.all([
         supabase.from("invoices").select("amount, status, currency").limit(1000),
-        supabase.from("invoices").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("membership_cards").select("*", { count: "exact", head: true }),
-        supabase.from("membership_cards").select("*", { count: "exact", head: true }).eq("is_trial", true),
-        supabase.from("membership_cards").select("*", { count: "exact", head: true }).eq("is_trial", false),
+        supabase.from("invoices").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("membership_cards").select("id", { count: "exact", head: true }),
+        supabase.from("membership_cards").select("id", { count: "exact", head: true }).eq("is_trial", true),
+        supabase.from("membership_cards").select("id", { count: "exact", head: true }).eq("is_trial", false),
         supabase.from("user_wallets").select("balance, points_balance").limit(1000),
       ]);
 

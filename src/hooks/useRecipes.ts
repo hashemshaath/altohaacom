@@ -106,7 +106,7 @@ export function useRecipeBySlug(slug: string | undefined) {
       if (!slug) return null;
       const { data, error } = await supabase
         .from("recipes")
-        .select("*")
+        .select("id, title, title_ar, slug, description, description_ar, image_url, gallery_urls, video_url, ingredients, steps, prep_time_minutes, cook_time_minutes, servings, difficulty, category, cuisine, country_code, tags, calories, protein_g, carbs_g, fat_g, fiber_g, is_published, save_count, share_count, author_id, source_url, recipe_number, created_at, updated_at")
         .eq("slug", slug)
         .maybeSingle();
       if (error) throw error;

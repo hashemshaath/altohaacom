@@ -94,7 +94,7 @@ export function SupermarketCatalog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirement_items")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, category, subcategory, unit, default_quantity, estimated_cost, brand, is_active, image_url, tags")
         .order("category")
         .order("subcategory")
         .order("name")

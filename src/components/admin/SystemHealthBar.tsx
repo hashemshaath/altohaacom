@@ -28,10 +28,10 @@ export function SystemHealthBar() {
         { count: pendingReports },
         { count: activeLastHour },
       ] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
-        supabase.from("posts").select("*", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
-        supabase.from("content_reports").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("last_login_at", hourAgo.toISOString()),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
+        supabase.from("posts").select("id", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
+        supabase.from("content_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("last_login_at", hourAgo.toISOString()),
       ]);
 
       return {

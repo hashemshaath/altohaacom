@@ -102,7 +102,7 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_team_members")
-        .select("*")
+        .select("id, competition_id, name, name_ar, role, email, phone, title, title_ar, photo_url, notes, is_checked_in, checked_in_at, is_active, created_at")
         .eq("competition_id", competitionId)
         .order("created_at");
       if (error) throw error;
