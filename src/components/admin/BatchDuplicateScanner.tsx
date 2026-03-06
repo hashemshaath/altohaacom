@@ -21,9 +21,10 @@ const TABLE_OPTIONS = [
   { value: "companies", label_en: "Companies", label_ar: "الشركات" },
   { value: "culinary_entities", label_en: "Culinary Entities", label_ar: "الكيانات" },
   { value: "establishments", label_en: "Establishments", label_ar: "المنشآت" },
+  { value: "exhibitions", label_en: "Exhibitions", label_ar: "المعارض" },
 ];
 
-const CROSS_TABLES = ["organizers", "companies", "culinary_entities", "establishments"];
+const CROSS_TABLES = ["organizers", "companies", "culinary_entities", "establishments", "exhibitions"];
 
 interface BatchDuplicateScannerProps {
   defaultTable?: string;
