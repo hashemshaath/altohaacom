@@ -45,6 +45,7 @@ import {
   Sparkles,
   Bot,
   Database,
+  ScanSearch,
   type LucideIcon,
 } from "lucide-react";
 
