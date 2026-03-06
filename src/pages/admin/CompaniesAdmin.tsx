@@ -4,6 +4,7 @@ import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useTableSort } from "@/hooks/useTableSort";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Checkbox } from "@/components/ui/checkbox";
