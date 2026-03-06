@@ -689,6 +689,7 @@ export default function CompaniesAdmin() {
   };
 
   const { sorted: sortedCompanies, sortColumn, sortDirection, toggleSort } = useTableSort(companies, "created_at", "desc");
+  const companyPagination = usePagination(sortedCompanies, { defaultPageSize: 15 });
   const bulk = useAdminBulkActions(sortedCompanies);
 
   const { exportCSV: exportCompaniesCSV } = useCSVExport({
