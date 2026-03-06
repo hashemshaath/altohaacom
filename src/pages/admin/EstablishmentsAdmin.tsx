@@ -10,6 +10,8 @@ import EntityTableRow from "@/components/admin/entities/EntityTableRow";
 import EntityFormTabs, { EntityFormData, emptyForm, typeOptions, scopeOptions } from "@/components/admin/entities/EntityFormTabs";
 import EstablishmentDetailDrawer from "@/components/admin/establishments/EstablishmentDetailDrawer";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Card, CardContent } from "@/components/ui/card";
