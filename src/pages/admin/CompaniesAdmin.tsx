@@ -1600,6 +1600,13 @@ export default function CompaniesAdmin() {
         <BulkImportPanel entityType="company" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["companies"] }); }} />
       )}
 
+      {showDedupScanner && (
+        <BatchDuplicateScanner
+          defaultTable="companies"
+          onMergeComplete={() => queryClient.invalidateQueries({ queryKey: ["companies"] })}
+        />
+      )}
+
       {showCompanyForm ? (
         <Card>
           <CardHeader>
