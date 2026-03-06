@@ -4,7 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { cn } from "@/lib/utils";
 import { usePreloadImage } from "@/hooks/usePreloadImage";
 
@@ -24,6 +24,41 @@ interface HeroSlide {
   is_active: boolean;
   sort_order: number;
 }
+
+/* ── Slide background — memoized to avoid re-renders ── */
+const SlideBackground = memo(function SlideBackground({
+  slide,
+  isActive,
+  isFirst,
+}: {
+  slide: HeroSlide;
+  isActive: boolean;
+  isFirst: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "absolute inset-0 transition-all duration-[1200ms] ease-in-out will-change-[opacity,transform]",
+        isActive ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
+      )}
+    >
+      <img
+        src={slide.image_url}
+        alt=""
+        className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
+        loading={isFirst ? "eager" : "lazy"}
+        decoding={isFirst ? "sync" : "async"}
+      />
+      {/* Triple-layer gradient for guaranteed text readability */}
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/5"
+        style={{ opacity: Math.max((slide.overlay_opacity || 50) / 100, 0.55) }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/20 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent" />
+    </div>
+  );
+});
 
 export function HeroSection() {
   const { language } = useLanguage();
@@ -54,10 +89,16 @@ export function HeroSection() {
     lastTickRef.current = performance.now();
   }, []);
 
-  const next = useCallback(() => goTo((current + 1) % Math.max(slides.length, 1)), [current, slides.length, goTo]);
-  const prev = useCallback(() => goTo((current - 1 + slides.length) % Math.max(slides.length, 1)), [current, slides.length, goTo]);
+  const next = useCallback(
+    () => goTo((current + 1) % Math.max(slides.length, 1)),
+    [current, slides.length, goTo]
+  );
+  const prev = useCallback(
+    () => goTo((current - 1 + slides.length) % Math.max(slides.length, 1)),
+    [current, slides.length, goTo]
+  );
 
-  // RAF-based progress bar + auto-advance
+  // RAF-based progress + auto-advance
   useEffect(() => {
     if (slides.length <= 1) return;
     lastTickRef.current = performance.now();
@@ -67,7 +108,7 @@ export function HeroSection() {
       const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
       setProgress(pct);
       if (pct >= 100) {
-        setCurrent(c => (c + 1) % slides.length);
+        setCurrent((c) => (c + 1) % slides.length);
         setProgress(0);
         lastTickRef.current = now;
       }
@@ -80,19 +121,25 @@ export function HeroSection() {
     };
   }, [slides.length, current]);
 
+  /* ── Fallback: no slides ── */
   if (slides.length === 0) {
     return (
-      <section className="relative flex min-h-[60vh] items-center justify-center bg-muted/30">
-        <div className="text-center space-y-6 px-4">
+      <section className="relative flex min-h-[60vh] items-center justify-center bg-muted/30 overflow-hidden">
+        {/* Decorative radial glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+
+        <div className="text-center space-y-6 px-4 relative">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </div>
-          <h1 className="text-5xl font-serif font-bold tracking-[-0.02em] text-foreground sm:text-6xl lg:text-7xl">
+          <h1 className="text-4xl font-sans font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1]">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
-          <p className="text-lg font-light text-muted-foreground max-w-xl mx-auto leading-relaxed tracking-wide">
-            {isAr ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم" : "Join the finest chefs, judges, and organizers worldwide"}
+          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg">
+            {isAr
+              ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
+              : "Join the finest chefs, judges, and organizers worldwide"}
           </p>
           <Button size="lg" className="rounded-xl mt-2 shadow-[var(--shadow-md)]" asChild>
             <Link to="/register">
@@ -110,71 +157,64 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background" dir={isAr ? "rtl" : "ltr"}>
       <div className="relative min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh]">
-        {/* Background Images — crossfade with scale */}
+        {/* Background slides */}
         {slides.map((s, idx) => (
-          <div
+          <SlideBackground
             key={s.id}
-            className={cn(
-              "absolute inset-0 transition-all duration-[1200ms] ease-in-out will-change-[opacity,transform]",
-              idx === current
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-105 pointer-events-none"
-            )}
-          >
-            <img
-              src={s.image_url}
-              alt=""
-              className={cn(
-                "h-full w-full object-cover",
-                idx === current && "animate-ken-burns"
-              )}
-              loading={idx === 0 ? "eager" : "lazy"}
-            />
-            {/* Triple-layer gradient for guaranteed text readability */}
-            <div
-              className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/5"
-              style={{ opacity: Math.max((s.overlay_opacity || 50) / 100, 0.55) }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/20 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent" />
-          </div>
+            slide={s}
+            isActive={idx === current}
+            isFirst={idx === 0}
+          />
         ))}
 
         {/* Content */}
         <div className="container relative flex h-full min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh] items-end pb-20 sm:pb-24 lg:pb-28">
           <div
             key={slide.id}
-            className="max-w-2xl space-y-5"
-            style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
+            className="max-w-2xl space-y-4 sm:space-y-5"
+            style={{
+              animation: "heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+            }}
           >
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-primary shadow-sm">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </div>
 
-            {/* Title — mixed weight contrast: thin "the" + ultra-bold main */}
+            {/* Title — font-sans (DM Sans / Noto Sans Arabic) to match platform */}
             <h1
-              className="text-4xl font-serif font-extrabold tracking-[-0.025em] sm:text-5xl lg:text-6xl leading-[1.08]"
-              style={{ textShadow: "0 2px 20px hsl(var(--background) / 0.5), 0 4px 40px hsl(var(--background) / 0.3)" }}
+              className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1]"
+              style={{
+                textShadow:
+                  "0 2px 16px hsl(var(--background) / 0.5), 0 4px 32px hsl(var(--background) / 0.3)",
+              }}
             >
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
-            {/* Subtitle — light weight for contrast */}
+            {/* Subtitle — regular weight for contrast */}
             {(slide.subtitle || slide.subtitle_ar) && (
               <p
-                className="text-base font-light text-muted-foreground sm:text-lg max-w-lg leading-relaxed tracking-wide"
-                style={{ textShadow: "0 1px 12px hsl(var(--background) / 0.4)" }}
+                className="font-sans text-sm font-normal text-muted-foreground sm:text-base lg:text-lg max-w-lg leading-relaxed"
+                style={{
+                  textShadow: "0 1px 10px hsl(var(--background) / 0.4)",
+                }}
               >
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
 
             {slide.link_url && (
-              <Button size="lg" className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300" asChild>
+              <Button
+                size="lg"
+                className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300"
+                asChild
+              >
                 <Link to={slide.link_url}>
-                  {isAr ? slide.link_label_ar || slide.link_label || "اكتشف المزيد" : slide.link_label || "Learn More"}
+                  {isAr
+                    ? slide.link_label_ar || slide.link_label || "اكتشف المزيد"
+                    : slide.link_label || "Learn More"}
                   <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </Button>
@@ -182,7 +222,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Navigation Arrows */}
+        {/* Navigation */}
         {slides.length > 1 && (
           <>
             <button
@@ -200,7 +240,7 @@ export function HeroSection() {
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
             </button>
 
-            {/* Slide indicators with progress bar */}
+            {/* Progress indicators */}
             <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
               {slides.map((_, idx) => (
                 <button
@@ -217,7 +257,10 @@ export function HeroSection() {
                   {idx === current && (
                     <span
                       className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-[var(--shadow-glow)]"
-                      style={{ width: `${progress}%`, transition: "width 80ms linear" }}
+                      style={{
+                        width: `${progress}%`,
+                        transition: "width 80ms linear",
+                      }}
                     />
                   )}
                 </button>
