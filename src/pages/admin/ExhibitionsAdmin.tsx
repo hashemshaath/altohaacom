@@ -506,7 +506,7 @@ export default function ExhibitionsAdmin() {
           </CardHeader>
           <CardContent className="space-y-6">
             <EntityFormGuard
-              entity={{ name: (form.title as string) || "", name_ar: (form.title_ar as string) || "", email: (form.email as string) || "", phone: (form.phone as string) || "", website: (form.website as string) || "", city: (form.city as string) || "", country: (form.country as string) || "" }}
+              entity={{ name: (form.title as string) || "", name_ar: (form.title_ar as string) || "", email: (form.contact_email as string) || "", website: (form.website_url as string) || "", city: (form.city as string) || "", country: (form.country as string) || "" }}
               tables={["exhibitions", "organizers", "companies"]}
               excludeId={editingId || undefined}
               translationFields={[
