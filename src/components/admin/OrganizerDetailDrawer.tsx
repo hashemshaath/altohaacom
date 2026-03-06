@@ -308,6 +308,12 @@ export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Pr
               )}
             </TabsContent>
 
+
+            {/* Analytics Tab */}
+            <TabsContent value="analytics" className="mt-0">
+              <OrganizerAnalyticsTab organizerId={org.id} exhibitions={exhibitions} />
+            </TabsContent>
+
             {/* Activity Tab */}
             <TabsContent value="activity" className="space-y-3 mt-0">
               <div className="space-y-3">
