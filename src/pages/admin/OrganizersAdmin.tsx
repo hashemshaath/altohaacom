@@ -95,6 +95,7 @@ export default function OrganizersAdmin() {
   const [form, setForm] = useState<OrganizerForm>(emptyForm);
   const [formTab, setFormTab] = useState("basic");
   const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   // Dedup
   const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
