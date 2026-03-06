@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -5,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
-export default function StatsPartnersSection() {
+const StatsPartnersSection = forwardRef<HTMLElement>(function StatsPartnersSection(_, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
@@ -58,7 +59,7 @@ export default function StatsPartnersSection() {
   const useMarquee = displayLogos.length >= 4;
 
   return (
-    <section dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {showTitle && (
           <div className="text-center mb-10">
@@ -120,4 +121,6 @@ export default function StatsPartnersSection() {
       </div>
     </section>
   );
-}
+});
+
+export default StatsPartnersSection;
