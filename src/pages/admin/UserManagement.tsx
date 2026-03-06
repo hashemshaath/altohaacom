@@ -1322,6 +1322,7 @@ export default function UserManagement() {
                       </TableCell>
                       <TableCell>{getMembershipBadge(profile.membership_tier)}</TableCell>
                       <TableCell>{getStatusBadge(profile.account_status)}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{profile.country_code || "—"}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{format(new Date(profile.created_at), "MMM d, yyyy")}</TableCell>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1">
