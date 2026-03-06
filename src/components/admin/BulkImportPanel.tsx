@@ -346,6 +346,24 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
         }).throwOnError();
         break;
       }
+      case "organizer": {
+        const slug = (row.name || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+        await supabase.from("organizers").insert({
+          name: row.name, name_ar: row.name_ar || null, slug,
+          description: row.description || null, description_ar: row.description_ar || null,
+          email: row.email || null, phone: row.phone || null, website: row.website || null,
+          address: row.address || null, address_ar: row.address_ar || null,
+          city: row.city || null, city_ar: row.city_ar || null,
+          country: row.country || null, country_ar: row.country_ar || null,
+          country_code: row.country_code || null,
+          services: row.services ? row.services.split(",").map((s: string) => s.trim()) : [],
+          targeted_sectors: row.targeted_sectors ? row.targeted_sectors.split(",").map((s: string) => s.trim()) : [],
+          founded_year: row.founded_year ? parseInt(row.founded_year) : null,
+          logo_url: row.logo_url || null, cover_image_url: row.cover_image_url || null,
+          status: "pending",
+        }).throwOnError();
+        break;
+      }
       default:
         // For participant/judge/winner, save to bulk_imports for manual processing
         break;
