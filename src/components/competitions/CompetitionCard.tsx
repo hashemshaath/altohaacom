@@ -107,8 +107,8 @@ export const CompetitionCard = memo(
       const onImgLoad = useCallback(() => setImgLoaded(true), []);
 
       return (
-        <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.98] transition-transform duration-150">
-          <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-1.5 hover:border-primary/20">
+        <Link to={`/competitions/${competition.id}`} className="group block h-full active:scale-[0.97] transition-transform duration-150 touch-manipulation">
+          <Card ref={ref} className="flex h-full flex-col overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/8 hover:-translate-y-1.5 hover:border-primary/20 active:shadow-lg">
             {/* Image Section */}
             <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-muted" role="img" aria-label={title}>
               {competition.cover_image_url ? (
@@ -161,8 +161,8 @@ export const CompetitionCard = memo(
             </div>
 
             {/* Content Section */}
-            <CardContent className="flex flex-1 flex-col p-3.5 sm:p-4">
-              <h3 className="mb-2 flex-1 line-clamp-2 text-[13px] sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
+            <CardContent className="flex flex-1 flex-col p-3 sm:p-4">
+              <h3 className="mb-1.5 flex-1 line-clamp-2 text-sm sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
                 {title}
               </h3>
 

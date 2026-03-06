@@ -5,9 +5,9 @@ import { useSectionConfig } from "./SectionKeyContext";
 
 const SPACING_MAP: Record<string, string> = {
   none: "py-0",
-  compact: "py-4 md:py-5",
-  normal: "py-6 md:py-8",
-  relaxed: "py-8 md:py-12",
+  compact: "py-3 md:py-5",
+  normal: "py-5 md:py-8",
+  relaxed: "py-6 md:py-12",
 };
 
 const CONTAINER_MAP: Record<string, string> = {
