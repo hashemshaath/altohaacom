@@ -1098,7 +1098,7 @@ export default function ExhibitionsAdmin() {
                 filteredExhibitions?.map((ex) => {
                   const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
                   return (
-                  <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`}>
+                  <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 cursor-pointer ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`} onClick={() => setDrawerExhibitionId(ex.id)}>
                     <TableCell onClick={e => e.stopPropagation()}>
                       <Checkbox checked={bulk.isSelected(ex.id)} onCheckedChange={() => bulk.toggleOne(ex.id)} />
                     </TableCell>
