@@ -836,6 +836,17 @@ export default function OrganizersAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Organizer Exhibitions Panel */}
+      {exhibitionsPanel && (
+        <OrganizerExhibitionsPanel
+          open={!!exhibitionsPanel}
+          onOpenChange={o => { if (!o) setExhibitionsPanel(null); }}
+          organizerId={exhibitionsPanel.id}
+          organizerName={exhibitionsPanel.name}
+          organizerLogo={exhibitionsPanel.logo}
+        />
+      )}
     </div>
   );
 }
