@@ -54,6 +54,24 @@ export const BatchDuplicateScanner = memo(function BatchDuplicateScanner({
         mergeConfirm.selected,
         table
       );
+      // Log to admin_actions audit trail
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from("admin_actions").insert({
+            admin_id: user.id,
+            action_type: "entity_merge",
+            details: {
+              table,
+              primary_id: mergeConfirm.group.primary.id,
+              primary_name: mergeConfirm.group.primary.name,
+              merged_ids: mergeConfirm.selected,
+              merged_count: mergeConfirm.selected.length,
+              source: "batch_scanner",
+            },
+          });
+        }
+      } catch { /* audit log is best-effort */ }
       toast.success(isAr ? "تم الدمج بنجاح" : "Merge completed");
       setMergeConfirm(null);
       onMergeComplete?.();
