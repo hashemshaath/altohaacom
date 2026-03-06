@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
