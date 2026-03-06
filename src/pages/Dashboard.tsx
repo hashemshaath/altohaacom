@@ -167,7 +167,7 @@ export default function Dashboard() {
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
-      <div className="grid gap-6 lg:grid-cols-12">
+      <div className="grid gap-4 md:gap-6 lg:grid-cols-12">
         {/* Left Column - Profile & Identity (sticky on desktop) */}
         <aside className="lg:col-span-3 space-y-4">
           <div className="lg:sticky lg:top-20 space-y-4">
