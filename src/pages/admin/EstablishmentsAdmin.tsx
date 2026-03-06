@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
