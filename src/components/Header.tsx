@@ -109,6 +109,12 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-0.5 sm:gap-1 ms-auto">
+          {/* Mobile search button */}
+          {headerCfg.showSearch !== false && (
+            <Button variant="ghost" size="icon" asChild className="rounded-full md:hidden h-9 w-9">
+              <Link to="/search"><Search className="h-4.5 w-4.5" /></Link>
+            </Button>
+          )}
           {headerCfg.showSearch !== false && (
             <div className="hidden md:block">
               <Button variant="ghost" size="icon" asChild className="rounded-full">

@@ -68,7 +68,7 @@ export function PostCard({
     <article
       className={cn(
         "transition-all duration-200 animate-in fade-in-50",
-        !isEditing && "px-4 py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30",
+        !isEditing && "px-3 sm:px-4 py-3 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20",
         post.is_pinned && "bg-primary/5 border-s-primary/40"
       )}
     >
@@ -90,7 +90,7 @@ export function PostCard({
       {!isEditing && (
         <div className="flex gap-3">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
-            <Avatar className="h-11 w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
+            <Avatar className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
               <AvatarImage src={post.author_avatar || undefined} className="object-cover rounded-xl" />
               <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
@@ -175,7 +175,7 @@ export function PostCard({
 
             {/* Content */}
             <div
-              className="mt-2 text-[14.5px] leading-[1.7] whitespace-pre-wrap break-words text-foreground/90"
+              className="mt-2 text-[14px] sm:text-[14.5px] leading-[1.65] whitespace-pre-wrap break-words text-foreground/90"
               onClick={() => onOpenThread(post.id)}
             >
               <MentionText content={post.content} />
