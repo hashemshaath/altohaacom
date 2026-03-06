@@ -120,6 +120,7 @@ export default function ExhibitionsAdmin() {
   const [showSeries, setShowSeries] = useState(false);
   const [seriesFilter, setSeriesFilter] = useState<string>("all");
   const { data: countries } = useCountries();
+  const [drawerExhibitionId, setDrawerExhibitionId] = useState<string | null>(null);
 
   const t = (en: string, ar: string) => isAr ? ar : en;
 
