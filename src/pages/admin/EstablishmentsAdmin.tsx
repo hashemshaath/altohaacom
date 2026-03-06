@@ -291,6 +291,7 @@ export default function EstablishmentsAdmin() {
           onSave={handleSave}
           onCancel={() => { setShowForm(false); setEditingId(null); setForm(emptyForm); }}
         />
+        </>
       )}
 
       {/* Table */}

@@ -1603,6 +1603,17 @@ export default function CompaniesAdmin() {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
+            <EntityFormGuard
+              entity={{ name: companyForm.name, name_ar: companyForm.name_ar, email: companyForm.email, phone: companyForm.phone, website: companyForm.website, city: companyForm.city, country: companyForm.country }}
+              tables={["companies", "organizers", "culinary_entities", "establishments"]}
+              translationFields={[
+                { en: companyForm.name, ar: companyForm.name_ar, key: "name" },
+                { en: companyForm.description, ar: companyForm.description_ar, key: "description" },
+                { en: companyForm.address, ar: companyForm.address_ar, key: "address" },
+              ]}
+              translationContext="company / business / food industry supplier"
+              onTranslated={(u) => setCompanyForm(f => ({ ...f, ...u }))}
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
