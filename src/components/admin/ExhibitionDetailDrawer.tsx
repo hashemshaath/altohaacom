@@ -63,8 +63,8 @@ export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: 
         supabase.from("exhibition_tickets").select("id, status, created_at, checked_in_at, ticket_type, attendee_name").eq("exhibition_id", exhibitionId!) as any,
         supabase.from("exhibition_reviews").select("id, rating, content, created_at, user_id, is_verified_attendee, helpful_count").eq("exhibition_id", exhibitionId!).order("created_at", { ascending: false }),
         supabase.from("exhibition_followers").select("id, created_at").eq("exhibition_id", exhibitionId!),
-        supabase.from("exhibition_booths").select("id, booth_number, status, assigned_to, price, size, booth_type").eq("exhibition_id", exhibitionId!),
-        supabase.from("exhibition_sponsors").select("id, tier, company_name, company_name_ar, logo_url, amount").eq("exhibition_id", exhibitionId!),
+        supabase.from("exhibition_booths").select("id, booth_number, status, assigned_to, price, size").eq("exhibition_id", exhibitionId!),
+        supabase.from("exhibition_sponsors").select("id, tier, name, name_ar, logo_url").eq("exhibition_id", exhibitionId!),
       ]);
 
       const tickets = ticketsRes.data || [];
