@@ -1284,7 +1284,7 @@ export default function UserManagement() {
                 <TableBody>
                   {sortedUsers?.map((profile) => (
                     <TableRow key={profile.id} className={`transition-colors cursor-pointer ${editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : "hover:bg-muted/40"}`} onClick={() => { setDrawerUserId(profile.user_id); setDrawerOpen(true); }}>
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={isSelected(profile.id)} onCheckedChange={() => toggleOne(profile.id)} />
                       </TableCell>
                       <TableCell>
