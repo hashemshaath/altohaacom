@@ -99,20 +99,53 @@ export function useEnhancedSEO(language: string) {
       document.head.appendChild(script);
     }
     
-    const jsonLd: any = {
+    const origin = window.location.origin;
+    const jsonLdItems: any[] = [];
+
+    // Primary page schema
+    const pageSchema: any = {
       "@context": "https://schema.org",
       "@type": meta.type || "WebPage",
       name: isAr ? meta.titleAr : meta.title,
       description: isAr ? meta.descriptionAr : meta.description,
-      url: `${window.location.origin}${path}`,
+      url: `${origin}${path}`,
       inLanguage: isAr ? "ar" : "en",
       isPartOf: {
         "@type": "WebSite",
         name: "Altoha",
-        url: window.location.origin,
+        url: origin,
       },
     };
-    script.textContent = JSON.stringify(jsonLd);
+    jsonLdItems.push(pageSchema);
+
+    // Homepage-specific rich schemas
+    if (path === "/") {
+      jsonLdItems.push({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "Altoha",
+        url: origin,
+        description: isAr
+          ? "منصة الطهي الاحترافية الرائدة — مسابقات، معارض، تواصل بين الطهاة"
+          : "The leading professional culinary platform — competitions, exhibitions, and chef networking",
+        sameAs: [],
+      });
+      jsonLdItems.push({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Altoha",
+        url: origin,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${origin}/discover?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      });
+    }
+
+    script.textContent = JSON.stringify(
+      jsonLdItems.length === 1 ? jsonLdItems[0] : jsonLdItems
+    );
 
     return () => {
       // Cleanup is handled by overwriting on next route
