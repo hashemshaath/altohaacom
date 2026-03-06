@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Search, Trophy, Globe, ChefHat, Utensils, BookOpen, Store } from "lucide-react";
@@ -16,7 +16,7 @@ const categories = [
   { key: "shop", icon: Store, labelEn: "Shop", labelAr: "المتجر" },
 ];
 
-export const HomeSearch = memo(function HomeSearch() {
+export const HomeSearch = memo(forwardRef<HTMLElement, Record<string, never>>(function HomeSearch(_, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const HomeSearch = memo(function HomeSearch() {
   };
 
   return (
-    <section className="relative -mt-7 z-30 px-3 sm:-mt-9" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="relative -mt-7 z-30 px-3 sm:-mt-9" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <div className="mx-auto max-w-2xl rounded-3xl border border-border/40 bg-card/90 backdrop-blur-xl p-3.5 shadow-2xl shadow-primary/8 ring-1 ring-primary/5 sm:p-5">
           {/* Category pills */}
@@ -74,4 +74,4 @@ export const HomeSearch = memo(function HomeSearch() {
       </div>
     </section>
   );
-});
+}));
