@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { cn } from "@/lib/utils";
-import { usePreloadImage } from "@/hooks/usePreloadImage";
 
 const SLIDE_DURATION = 6000;
 
@@ -25,7 +24,7 @@ interface HeroSlide {
   sort_order: number;
 }
 
-/* ── Slide background — memoized to avoid re-renders ── */
+/* ── Slide background — memoised to avoid heavy re-renders ── */
 const SlideBackground = memo(function SlideBackground({
   slide,
   isActive,
@@ -48,14 +47,15 @@ const SlideBackground = memo(function SlideBackground({
         className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
         loading={isFirst ? "eager" : "lazy"}
         decoding={isFirst ? "sync" : "async"}
+        fetchPriority={isFirst ? "high" : undefined}
       />
-      {/* Triple-layer gradient for guaranteed text readability */}
+      {/* Triple-layer gradient for text readability */}
       <div
-        className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/5"
+        className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent"
         style={{ opacity: Math.max((slide.overlay_opacity || 50) / 100, 0.55) }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/20 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/15 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background to-transparent" />
     </div>
   );
 });
@@ -73,15 +73,13 @@ export function HeroSection() {
     queryFn: async () => {
       const { data } = await supabase
         .from("hero_slides")
-        .select("*")
+        .select("id,title,title_ar,subtitle,subtitle_ar,image_url,link_label,link_label_ar,link_url,overlay_opacity,is_active,sort_order")
         .eq("is_active", true)
         .order("sort_order");
       return (data || []) as HeroSlide[];
     },
     staleTime: 1000 * 60 * 10,
   });
-
-  usePreloadImage(slides[0]?.image_url);
 
   const goTo = useCallback((idx: number) => {
     setCurrent(idx);
@@ -125,7 +123,6 @@ export function HeroSection() {
   if (slides.length === 0) {
     return (
       <section className="relative flex min-h-[60vh] items-center justify-center bg-muted/30 overflow-hidden">
-        {/* Decorative radial glow */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
 
         <div className="text-center space-y-6 px-4 relative">
@@ -133,7 +130,10 @@ export function HeroSection() {
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </div>
-          <h1 className="text-4xl font-sans font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1]">
+          <h1 className={cn(
+            "text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.08]",
+            !isAr && "font-serif"
+          )}>
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg">
@@ -171,7 +171,7 @@ export function HeroSection() {
         <div className="container relative flex h-full min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh] items-end pb-20 sm:pb-24 lg:pb-28">
           <div
             key={slide.id}
-            className="max-w-2xl space-y-4 sm:space-y-5"
+            className="max-w-2xl space-y-5"
             style={{
               animation: "heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
             }}
@@ -182,9 +182,12 @@ export function HeroSection() {
               {isAr ? "مميّز" : "Featured"}
             </div>
 
-            {/* Title — font-sans (DM Sans / Noto Sans Arabic) to match platform */}
+            {/* Title — font-serif for English, font-sans (Noto Sans Arabic) for Arabic */}
             <h1
-              className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1]"
+              className={cn(
+                "text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.08] text-foreground",
+                !isAr && "font-serif"
+              )}
               style={{
                 textShadow:
                   "0 2px 16px hsl(var(--background) / 0.5), 0 4px 32px hsl(var(--background) / 0.3)",
@@ -193,10 +196,10 @@ export function HeroSection() {
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
-            {/* Subtitle — regular weight for contrast */}
+            {/* Subtitle */}
             {(slide.subtitle || slide.subtitle_ar) && (
               <p
-                className="font-sans text-sm font-normal text-muted-foreground sm:text-base lg:text-lg max-w-lg leading-relaxed"
+                className="text-sm font-normal text-muted-foreground sm:text-base lg:text-lg max-w-lg leading-relaxed"
                 style={{
                   textShadow: "0 1px 10px hsl(var(--background) / 0.4)",
                 }}
@@ -222,7 +225,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation arrows */}
         {slides.length > 1 && (
           <>
             <button
