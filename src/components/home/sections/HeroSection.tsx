@@ -25,19 +25,16 @@ interface HeroSlide {
 }
 
 /* ── Memoised slide background ── */
-const SlideBackground = memo(function SlideBackground({
-  slide,
-  isActive,
-  isFirst,
-}: {
+const SlideBackground = memo(forwardRef<HTMLDivElement, {
   slide: HeroSlide;
   isActive: boolean;
   isFirst: boolean;
-}) {
+}>(function SlideBackground({ slide, isActive, isFirst }, ref) {
   const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.55);
 
   return (
     <div
+      ref={ref}
       className={cn(
         "absolute inset-0 transition-all duration-[1200ms] ease-in-out will-change-[opacity,transform]",
         isActive ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
@@ -49,7 +46,7 @@ const SlideBackground = memo(function SlideBackground({
         className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
         loading={isFirst ? "eager" : "lazy"}
         decoding={isFirst ? "sync" : "async"}
-        fetchPriority={isFirst ? "high" : undefined}
+        {...(isFirst ? { fetchPriority: "high" } : {})}
       />
       <div
         className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent"
@@ -59,7 +56,7 @@ const SlideBackground = memo(function SlideBackground({
       <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background to-transparent" />
     </div>
   );
-});
+}));
 
 export function HeroSection() {
   const { language } = useLanguage();
