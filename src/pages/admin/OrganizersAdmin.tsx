@@ -38,8 +38,8 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield, ScanSearch, Languages, FileSpreadsheet,
-  Twitter, Facebook, Linkedin, Instagram,
+  Shield, ScanSearch, Languages, FileSpreadsheet, Upload, X, ImageIcon, Loader2,
+  Twitter, Facebook, Linkedin, Instagram, AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
