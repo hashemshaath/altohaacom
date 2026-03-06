@@ -162,14 +162,17 @@ export function MobileBottomNav() {
               return (
                 <button
                   key="fab"
-                  onClick={() => setFabOpen((o) => !o)}
+                  onClick={() => {
+                    try { if ("vibrate" in navigator) navigator.vibrate(12); } catch {}
+                    setFabOpen((o) => !o);
+                  }}
                   aria-expanded={fabOpen}
                   aria-label={isAr ? "قائمة الإنشاء" : "Create menu"}
                   className="flex flex-col items-center justify-center gap-0.5 flex-1 py-1 min-h-[48px] touch-manipulation"
                 >
                   <div
                     className={cn(
-                      "flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-all duration-300 active:scale-[0.88]",
+                      "flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-all duration-300 active:scale-[0.85]",
                       fabOpen && "rotate-45 bg-destructive shadow-destructive/30 scale-105"
                     )}
                   >
@@ -189,8 +192,7 @@ export function MobileBottomNav() {
                 key={item.to}
                 to={item.to}
                 onClick={() => {
-                  // Haptic feedback on tap
-                  try { if ("vibrate" in navigator) navigator.vibrate(10); } catch {}
+                  try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {}
                 }}
                 className={cn(
                   "relative flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-[0.88] min-h-[48px] touch-manipulation select-none",
@@ -215,6 +217,7 @@ export function MobileBottomNav() {
                       "h-5 w-5 transition-all duration-200",
                       isActive ? "text-primary" : "text-muted-foreground"
                     )}
+                    strokeWidth={isActive ? 2.5 : 2}
                   />
                   {/* Notification badge on Dashboard/Profile tab */}
                   {item.to === "/dashboard" && unreadCount > 0 && (
