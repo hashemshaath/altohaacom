@@ -93,19 +93,33 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
     setSectionsOpen((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const NavItem = ({ to, icon: Icon, children, active }: { to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean }) => (
+  const NavItem = ({ to, icon: Icon, children, active, badge }: { to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean; badge?: string }) => (
     <Link
       to={to}
-      onClick={() => setOpen(false)}
+      onClick={() => {
+        try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {}
+        setOpen(false);
+      }}
       className={cn(
-        "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
+        "relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all duration-200 touch-manipulation select-none",
         active
-          ? "bg-primary/10 text-primary font-medium shadow-sm"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.98]"
+          ? "bg-primary/10 text-primary font-semibold"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.97] active:bg-muted/60"
       )}
     >
-      <Icon className="h-4 w-4" />
-      {children}
+      {active && (
+        <span className="absolute inset-y-1.5 start-0 w-[3px] rounded-full bg-primary animate-in slide-in-from-left-1 duration-200" />
+      )}
+      <div className={cn(
+        "flex h-8 w-8 items-center justify-center rounded-lg transition-colors shrink-0",
+        active ? "bg-primary/15" : "bg-muted/50"
+      )}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <span className="flex-1">{children}</span>
+      {badge && (
+        <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-bold">{badge}</Badge>
+      )}
     </Link>
   );
 
