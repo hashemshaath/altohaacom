@@ -137,7 +137,7 @@ export function LiveChatWidget() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-[5.5rem] md:bottom-6 end-6 z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation"
+          className="fixed bottom-[6rem] md:bottom-6 end-4 md:end-6 z-40 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation"
           aria-label={isAr ? "دردشة مباشرة" : "Live Chat"}
         >
           <MessageCircle className="h-6 w-6" />

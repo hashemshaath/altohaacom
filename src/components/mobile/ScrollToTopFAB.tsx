@@ -36,7 +36,7 @@ export const ScrollToTopFAB = memo(function ScrollToTopFAB() {
       size="icon"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
-        "fixed bottom-[7.5rem] end-4 z-50 h-10 w-10 rounded-full shadow-lg transition-all duration-300 touch-manipulation",
+        "fixed bottom-[8.5rem] end-4 z-40 h-10 w-10 rounded-full shadow-lg transition-all duration-300 touch-manipulation",
         "bg-primary text-primary-foreground hover:bg-primary/90",
         visible
           ? "translate-y-0 opacity-100 scale-100"
