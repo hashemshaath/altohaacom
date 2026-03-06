@@ -567,19 +567,19 @@ export default function OrganizersAdmin() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10"><Checkbox checked={isAllSelected} onCheckedChange={toggleAll} /></TableHead>
-                    <TableHead>{isAr ? "المنظم" : "Organizer"}</TableHead>
-                    <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
+                    <TableHead><button onClick={() => toggleSort("name")} className="flex items-center gap-1 hover:text-foreground transition-colors">{isAr ? "المنظم" : "Organizer"} <SortIcon col="name" /></button></TableHead>
+                    <TableHead><button onClick={() => toggleSort("country")} className="flex items-center gap-1 hover:text-foreground transition-colors">{isAr ? "الموقع" : "Location"} <SortIcon col="country" /></button></TableHead>
                     <TableHead>{isAr ? "التواصل" : "Contact"}</TableHead>
                     <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "المعارض" : "Events"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "المشاهدات" : "Views"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "التقييم" : "Rating"}</TableHead>
+                    <TableHead className="text-center"><button onClick={() => toggleSort("total_exhibitions")} className="flex items-center gap-1 hover:text-foreground transition-colors mx-auto">{isAr ? "المعارض" : "Events"} <SortIcon col="total_exhibitions" /></button></TableHead>
+                    <TableHead className="text-center"><button onClick={() => toggleSort("total_views")} className="flex items-center gap-1 hover:text-foreground transition-colors mx-auto">{isAr ? "المشاهدات" : "Views"} <SortIcon col="total_views" /></button></TableHead>
+                    <TableHead className="text-center"><button onClick={() => toggleSort("average_rating")} className="flex items-center gap-1 hover:text-foreground transition-colors mx-auto">{isAr ? "التقييم" : "Rating"} <SortIcon col="average_rating" /></button></TableHead>
                     <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filtered.map((org: any) => (
-                    <TableRow key={org.id} className={selected.has(org.id) ? "bg-primary/5" : ""}>
+                    <TableRow key={org.id} className={`cursor-pointer ${selected.has(org.id) ? "bg-primary/5" : ""}`} onClick={() => setDetailId(org.id)}>
                       <TableCell><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
