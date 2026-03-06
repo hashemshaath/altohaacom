@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import { format, subDays, startOfDay, parseISO } from "date-fns";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const WEEKS = 12;
 const DAYS = WEEKS * 7;
@@ -30,10 +29,11 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
       if (!user) return null;
       const since = subDays(new Date(), DAYS).toISOString();
 
-      // Aggregate multiple activity sources
-      const postsRes: any = await supabase.from("posts" as any).select("created_at").eq("author_id", user.id).gte("created_at", since);
-      const recipesRes: any = await supabase.from("recipes" as any).select("created_at").eq("author_id", user.id).gte("created_at", since);
-      const commentsRes: any = await supabase.from("post_comments" as any).select("created_at").eq("user_id", user.id).gte("created_at", since);
+      const [postsRes, recipesRes, commentsRes]: any[] = await Promise.all([
+        supabase.from("posts" as any).select("created_at").eq("author_id", user.id).gte("created_at", since),
+        supabase.from("recipes" as any).select("created_at").eq("author_id", user.id).gte("created_at", since),
+        supabase.from("post_comments" as any).select("created_at").eq("user_id", user.id).gte("created_at", since),
+      ]);
 
       const allDates: string[] = [
         ...(postsRes.data || []).map((d: any) => d.created_at),
@@ -41,7 +41,6 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
         ...(commentsRes.data || []).map((d: any) => d.created_at),
       ];
 
-      // Build day map
       const dayMap: Record<string, number> = {};
       for (let i = DAYS - 1; i >= 0; i--) {
         dayMap[format(subDays(new Date(), i), "yyyy-MM-dd")] = 0;
@@ -53,9 +52,8 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
 
       const totalActivities = allDates.length;
       const activeDays = Object.values(dayMap).filter(v => v > 0).length;
-      const maxPerDay = Math.max(...Object.values(dayMap), 0);
 
-      return { dayMap, totalActivities, activeDays, maxPerDay };
+      return { dayMap, totalActivities, activeDays };
     },
     enabled: !!user,
     staleTime: 5 * 60 * 1000,
@@ -64,7 +62,6 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
   if (!data) return null;
 
   const days = Object.entries(data.dayMap);
-  // Group into weeks (columns)
   const weeks: [string, number][][] = [];
   for (let i = 0; i < days.length; i += 7) {
     weeks.push(days.slice(i, i + 7) as [string, number][]);
@@ -88,27 +85,19 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
             {isAr ? `نشاط في آخر ${WEEKS} أسبوع` : `activities in last ${WEEKS} weeks`}
           </span>
         </div>
-        <TooltipProvider delayDuration={100}>
-          <div className="flex gap-[3px] overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            {weeks.map((week, wi) => (
-              <div key={wi} className="flex flex-col gap-[3px]">
-                {week.map(([date, count]) => (
-                  <Tooltip key={date}>
-                    <TooltipTrigger asChild>
-                      <div
-                        className={`h-3 w-3 rounded-[2px] transition-colors duration-200 cursor-default ${getIntensity(count)}`}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-[10px] px-2 py-1">
-                      <p className="font-bold">{count} {isAr ? "نشاط" : "activities"}</p>
-                      <p className="text-muted-foreground">{format(parseISO(date), "MMM d, yyyy")}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            ))}
-          </div>
-        </TooltipProvider>
+        <div className="flex gap-[3px] overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          {weeks.map((week, wi) => (
+            <div key={wi} className="flex flex-col gap-[3px]">
+              {week.map(([date, count]) => (
+                <div
+                  key={date}
+                  title={`${count} ${isAr ? "نشاط" : "activities"} — ${format(parseISO(date), "MMM d, yyyy")}`}
+                  className={`h-3 w-3 rounded-[2px] transition-colors duration-200 cursor-default ${getIntensity(count)}`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
         {/* Legend */}
         <div className="flex items-center gap-1.5 mt-3 text-[9px] text-muted-foreground">
           <span>{isAr ? "أقل" : "Less"}</span>
