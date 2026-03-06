@@ -160,10 +160,6 @@ export default function Dashboard() {
         <div className="mb-5"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
       )}
 
-      {/* Fan Upgrade Banner */}
-      {user && isFan && (
-        <div className="mb-5"><W><FanUpgradeBanner /></W></div>
-      )}
 
       {/* Daily Digest */}
       {user && (
