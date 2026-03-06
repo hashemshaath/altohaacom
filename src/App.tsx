@@ -40,10 +40,10 @@ const FloatingHelpButton = safeLazy(() => import("@/components/FloatingHelpButto
 const MobileBottomNav = safeLazy(() => import("@/components/mobile/MobileBottomNav").then(m => ({ default: m.MobileBottomNav as any })));
 const GoogleTrackingProvider = safeLazy(() => import("@/components/tracking/GoogleTrackingProvider").then(m => ({ default: m.GoogleTrackingProvider as any })));
 const TrackingScriptsInjector = safeLazy(() => import("@/components/tracking/TrackingScriptsInjector").then(m => ({ default: m.TrackingScriptsInjector as any })));
-const PageTracker = safeLazy(() => import("@/components/tracking/PageTracker").then(m => ({ default: m.PageTracker as any })));
+const PageTracker = safeLazy(() => import("@/components/tracking/PageTracker").then(m => ({ default: m.PageTracker })));
 const SmartInstallBanner = safeLazy(() => import("@/components/pwa/SmartInstallBanner").then(m => ({ default: m.SmartInstallBanner as any })));
 const OfflineBanner = safeLazy(() => import("@/components/pwa/OfflineBanner").then(m => ({ default: m.OfflineBanner as any })));
-const UpdatePrompt = safeLazy(() => import("@/components/pwa/UpdatePrompt").then(m => ({ default: m.UpdatePrompt as any })));
+const UpdatePrompt = safeLazy(() => import("@/components/pwa/UpdatePrompt").then(m => ({ default: m.UpdatePrompt })));
 const IOSInstallGuide = safeLazy(() => import("@/components/pwa/IOSInstallGuide").then(m => ({ default: m.IOSInstallGuide as any })));
 const PullToRefreshIndicator = lazy(() => import("@/components/pwa/PullToRefreshIndicator").then(m => ({ default: m.PullToRefreshIndicator })).catch(() => ({ default: ((_props: any) => null) as any })));
 const ScrollProgress = safeLazy(() => import("@/components/ui/scroll-progress").then(m => ({ default: m.ScrollProgress as any })));
