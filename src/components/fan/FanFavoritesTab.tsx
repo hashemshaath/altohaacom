@@ -88,13 +88,14 @@ export function FanFavoritesTab() {
                       )}
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
-                      <FanShareButton
-                        title={chef.full_name || "Chef"}
-                        url={`${window.location.origin}/${chef.username || chef.user_id}`}
-                        size="icon"
+                      <Button
                         variant="ghost"
+                        size="icon"
                         className="h-8 w-8 text-muted-foreground"
-                      />
+                        onClick={() => navigator.share?.({ title: chef.full_name || "Chef", url: `${window.location.origin}/${chef.username || chef.user_id}` })}
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
