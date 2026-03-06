@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,6 +8,10 @@ import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useEntityDedup } from "@/hooks/useEntityDedup";
+import { useAutoTranslate } from "@/hooks/useAutoTranslate";
+import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +37,7 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield,
+  Shield, ScanSearch, Languages,
   Twitter, Facebook, Linkedin, Instagram,
 } from "lucide-react";
 import { toast } from "sonner";
