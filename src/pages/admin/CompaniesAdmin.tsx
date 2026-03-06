@@ -111,6 +111,7 @@ export default function CompaniesAdmin() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showDedupScanner, setShowDedupScanner] = useState(false);
   const [showSmartImport, setShowSmartImport] = useState(false);
   const [mainTab, setMainTab] = useState<"companies" | "suppliers" | "reviews">("companies");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
