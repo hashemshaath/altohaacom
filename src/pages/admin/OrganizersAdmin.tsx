@@ -852,6 +852,13 @@ export default function OrganizersAdmin() {
           organizerLogo={exhibitionsPanel.logo}
         />
       )}
+
+      {/* Detail Drawer */}
+      <OrganizerDetailDrawer
+        organizerId={detailId}
+        open={!!detailId}
+        onClose={() => setDetailId(null)}
+      />
     </div>
   );
 }
