@@ -161,8 +161,8 @@ export const CompetitionCard = memo(
             </div>
 
             {/* Content Section */}
-            <CardContent className="flex flex-1 flex-col p-3.5 sm:p-4">
-              <h3 className="mb-2 flex-1 line-clamp-2 text-[13px] sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
+            <CardContent className="flex flex-1 flex-col p-3 sm:p-4">
+              <h3 className="mb-1.5 flex-1 line-clamp-2 text-sm sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
                 {title}
               </h3>
 
