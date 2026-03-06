@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, ChefHat, UtensilsCrossed, HeartOff, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { FanShareButton } from "./FanShareButton";
+import { Share2 } from "lucide-react";
 
 export function FanFavoritesTab() {
   const { user } = useAuth();

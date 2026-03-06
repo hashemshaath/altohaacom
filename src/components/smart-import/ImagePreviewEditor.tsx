@@ -7,22 +7,26 @@ interface ImagePreviewEditorProps {
   label: string;
   value?: string | null;
   editing?: boolean;
-  onUpdate?: (url: string) => void;
+  fieldKey?: string;
+  onUpdate?: (key: string, value: string) => void;
+  aspectRatio?: "square" | "wide";
+  isAr?: boolean;
+  readOnly?: boolean;
 }
 
-export function ImagePreviewEditor({ label, value, editing, onUpdate }: ImagePreviewEditorProps) {
+export function ImagePreviewEditor({ label, value, editing, fieldKey, onUpdate, aspectRatio, readOnly }: ImagePreviewEditorProps) {
   const [url, setUrl] = useState(value || "");
-
+  const imgClass = aspectRatio === "wide" ? "max-h-32" : "max-h-48";
 
   return (
     <div className="space-y-2">
       <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
-      {editing ? (
+      {editing && !readOnly ? (
         <Input
           value={url}
           onChange={(e) => {
             setUrl(e.target.value);
-            onUpdate?.(e.target.value);
+            onUpdate?.(fieldKey || "image_url", e.target.value);
           }}
           placeholder="https://..."
           className="text-xs"
@@ -32,7 +36,7 @@ export function ImagePreviewEditor({ label, value, editing, onUpdate }: ImagePre
         <img
           src={editing ? url : (value || "")}
           alt={label}
-          className="w-full max-h-48 object-contain rounded-lg border border-border/40 bg-muted/20"
+          className={`w-full ${imgClass} object-contain rounded-lg border border-border/40 bg-muted/20`}
           onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
         />
       ) : (
