@@ -38,7 +38,7 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield, ScanSearch, Languages,
+  Shield, ScanSearch, Languages, FileSpreadsheet,
   Twitter, Facebook, Linkedin, Instagram,
 } from "lucide-react";
 import { toast } from "sonner";
