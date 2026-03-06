@@ -36,6 +36,7 @@ const ENTITY_LABELS: Record<EntityType, { en: string; ar: string }> = {
   entity: { en: "Entities", ar: "الجهات" },
   volunteer: { en: "Volunteers & Team", ar: "المتطوعين والفريق" },
   sponsor: { en: "Sponsors", ar: "الرعاة" },
+  organizer: { en: "Organizers", ar: "المنظمين" },
 };
 
 export function BulkImportPanel({ entityType, onImportComplete, competitionNumber }: BulkImportPanelProps) {
