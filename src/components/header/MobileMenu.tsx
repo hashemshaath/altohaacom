@@ -151,10 +151,10 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side={isAr ? "right" : "left"} className="w-[300px] p-0">
+        <SheetContent side={isAr ? "right" : "left"} className="w-[300px] p-0 overflow-hidden">
           <div className="flex h-full flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between border-b p-4 bg-gradient-to-b from-primary/5 to-transparent">
+            <div className="flex items-center justify-between border-b px-4 py-3.5 bg-gradient-to-b from-primary/5 to-transparent">
               <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
                 <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-auto" />
                 <span className="font-serif text-lg font-bold text-primary">Altoha</span>
