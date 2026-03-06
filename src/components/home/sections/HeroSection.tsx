@@ -130,9 +130,9 @@ export function HeroSection() {
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </div>
-          <h1 className={cn(
-            "text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.08]",
-            !isAr && "font-serif"
+           <h1 className={cn(
+            "text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.05]",
+            isAr ? "font-sans" : "font-serif"
           )}>
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
