@@ -146,12 +146,7 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
 
   return (
     <div className="space-y-6">
-      <AdminBreadcrumb
-        items={[
-          { label: isAr ? "لوحة التحكم" : "Dashboard", href: "/admin" },
-          { label: isAr ? "فاحص التكرارات" : "Deduplication Center" },
-        ]}
-      />
+      <AdminBreadcrumb />
 
       {/* Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

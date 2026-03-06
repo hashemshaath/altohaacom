@@ -138,5 +138,6 @@ export const adminRoutes = (
     <Route path="ai" element={<AIConfigAdmin />} />
     <Route path="audit" element={<AuditLog />} />
     <Route path="database" element={<DatabaseAdmin />} />
+    <Route path="deduplication" element={<DeduplicationAdmin />} />
   </Route>
 );
