@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Building2, Plus, Search, XCircle, CheckCircle, Eye } from "lucide-react";
+import { Building2, Plus, Search, XCircle, CheckCircle, Eye, FileSpreadsheet, ScanSearch, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function EstablishmentsAdmin() {
