@@ -158,7 +158,7 @@ const Index = () => {
       />
       <Header />
 
-      <main className="flex flex-col">
+      <main className="flex flex-col pb-20 md:pb-0">
         {showHero && <HeroSection />}
         {renderedSections}
       </main>
