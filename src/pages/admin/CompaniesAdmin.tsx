@@ -1574,6 +1574,10 @@ export default function CompaniesAdmin() {
 
       {/* Bulk Import & Export */}
       <div className="flex flex-wrap gap-2">
+        <Button variant={showDedupScanner ? "secondary" : "outline"} size="sm" onClick={() => { setShowDedupScanner(!showDedupScanner); if (showBulkImport) setShowBulkImport(false); }}>
+          <Search className="me-2 h-4 w-4" />
+          {isAr ? "فاحص التكرارات" : "Dedup Scanner"}
+        </Button>
         <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
           <FileSpreadsheet className="me-2 h-4 w-4" />
           {isAr ? "استيراد جماعي" : "Bulk Import"}
