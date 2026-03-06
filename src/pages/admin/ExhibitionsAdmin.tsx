@@ -2,6 +2,7 @@ import { useState } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
 import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";

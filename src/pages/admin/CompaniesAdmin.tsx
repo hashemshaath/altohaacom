@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
