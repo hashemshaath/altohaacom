@@ -398,12 +398,6 @@ export default function RecipeDetail() {
             </div>
           </div>
 
-          {/* Reviews Section */}
-          <div className="mt-8">
-            <Suspense fallback={<div className="h-32 rounded-xl bg-muted animate-pulse" />}>
-              <RecipeReviews recipeId={recipe.id} />
-            </Suspense>
-          </div>
         </div>
       </main>
 

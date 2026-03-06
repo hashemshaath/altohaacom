@@ -208,14 +208,9 @@ export default function Dashboard() {
             {user && <W><LiveCompetitionsWidget /></W>}
 
             {/* Fan sidebar */}
-            {user && isFan && <W><FanNotificationsCenter /></W>}
-            {user && isFan && <W><FanStreaks /></W>}
-            {user && isFan && <W><FanRecipeCollections /></W>}
             {user && isFan && <W><FanEventWatchlist /></W>}
-            {user && isFan && <W><FanSocialNetwork /></W>}
             {user && isFan && <W><FanSuggestedFollowsWidget /></W>}
             {user && isFan && <W><FanTrendingWidget /></W>}
-            {user && isFan && <W><FanLeaderboard /></W>}
 
             {/* Pro sidebar */}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}

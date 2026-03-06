@@ -175,17 +175,6 @@ export default function Profile() {
             {isTabAllowed("favorites") ? (user && <FanFavoritesTab />) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
           </TabsContent>
 
-          <TabsContent value="following" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("following") ? (user && <FanFollowingTab />) : <UpgradePrompt variant="card" featureName="Following" featureNameAr="المتابَعون" />}
-          </TabsContent>
-
-          <TabsContent value="achievements" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("achievements") ? (user && <FanAchievementBadges />) : <UpgradePrompt variant="card" featureName="Achievements" featureNameAr="الإنجازات" />}
-          </TabsContent>
-
-          <TabsContent value="customize" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("customize") ? (user && <FanProfileCustomization />) : <UpgradePrompt variant="card" featureName="Customization" featureNameAr="التخصيص" />}
-          </TabsContent>
 
           <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={refetchProfile} />}

@@ -13,6 +13,7 @@ interface ImagePreviewEditorProps {
 export function ImagePreviewEditor({ label, value, editing, onUpdate }: ImagePreviewEditorProps) {
   const [url, setUrl] = useState(value || "");
 
+
   return (
     <div className="space-y-2">
       <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
