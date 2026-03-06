@@ -74,7 +74,7 @@ export function getTabBucket(comp: Competition): "upcoming" | "active" | "past" 
 }
 
 /* ─── Status Badge (reusable) ─── */
-function StatusBadge({ derived, isAr, className = "" }: { derived: ReturnType<typeof getDerivedStatus>; isAr: boolean; className?: string }) {
+const StatusBadge = forwardRef<HTMLDivElement, { derived: ReturnType<typeof getDerivedStatus>; isAr: boolean; className?: string }>(function StatusBadge({ derived, isAr, className = "" }, ref) {
   return (
     <Badge className={`px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md rounded-xl ${derived.color} ring-1 ring-white/10 ${className}`}>
       {derived.color.includes("chart-3") ? (
@@ -88,7 +88,8 @@ function StatusBadge({ derived, isAr, className = "" }: { derived: ReturnType<ty
       {isAr ? derived.labelAr : derived.label}
     </Badge>
   );
-}
+});
+StatusBadge.displayName = "StatusBadge";
 
 /* ─── Competition Card — Premium Editorial ─── */
 export const CompetitionCard = memo(
