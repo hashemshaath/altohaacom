@@ -188,15 +188,6 @@ export default function OrganizersAdmin() {
     return errors;
   }, [isAr]);
 
-  const handleSave = useCallback(() => {
-    const errors = validateForm(form);
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      toast.error(isAr ? "يرجى تصحيح الأخطاء" : "Please fix validation errors");
-      return;
-    }
-    saveMutation.mutate(form);
-  }, [form, validateForm, saveMutation, isAr]);
 
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["admin-organizers"],
