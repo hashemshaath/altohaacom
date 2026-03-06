@@ -58,8 +58,50 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
   const [optimizeProgress, setOptimizeProgress] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saveProgress, setSaveProgress] = useState(0);
+  const [dupChecking, setDupChecking] = useState(false);
+  const [dupResults, setDupResults] = useState<Record<number, { score: number; match: string }>>({});
 
   const label = ENTITY_LABELS[entityType];
+
+  // Check rows for duplicates before insert
+  const handleDedupCheck = async () => {
+    const nameTables: Record<string, string[]> = {
+      exhibition: ["exhibitions"],
+      company: ["companies", "organizers"],
+      entity: ["culinary_entities", "establishments"],
+      organizer: ["organizers", "companies", "culinary_entities"],
+    };
+    const tables = nameTables[entityType];
+    if (!tables) return;
+
+    setDupChecking(true);
+    const results: Record<number, { score: number; match: string }> = {};
+    try {
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const name = row.name || row.title || "";
+        if (!name) continue;
+        const { data } = await supabase.functions.invoke("entity-dedup", {
+          body: { mode: "check", entity: { name, email: row.email, phone: row.phone, website: row.website }, tables },
+        });
+        if (data?.duplicates?.length > 0) {
+          const top = data.duplicates[0];
+          results[i] = { score: top.score, match: top.record?.name || "Unknown" };
+        }
+      }
+      setDupResults(results);
+      const dupCount = Object.keys(results).length;
+      if (dupCount > 0) {
+        toast({ variant: "destructive", title: t(`${dupCount} potential duplicates found`, `تم العثور على ${dupCount} تكرار محتمل`) });
+      } else {
+        toast({ title: t("No duplicates found ✨", "لا توجد تكرارات ✨") });
+      }
+    } catch (err) {
+      console.error("Dedup check failed:", err);
+    } finally {
+      setDupChecking(false);
+    }
+  };
 
   // Download template
   const handleDownloadTemplate = async () => {
