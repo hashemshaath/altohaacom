@@ -290,6 +290,16 @@ export default function OrganizersAdmin() {
     onError: (e: any) => toast.error(e.message),
   });
 
+  const handleSave = useCallback(() => {
+    const errors = validateForm(form);
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      toast.error(isAr ? "يرجى تصحيح الأخطاء" : "Please fix validation errors");
+      return;
+    }
+    saveMutation.mutate(form);
+  }, [form, validateForm, saveMutation, isAr]);
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("organizers").delete().eq("id", id);
