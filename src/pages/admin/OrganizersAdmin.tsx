@@ -238,6 +238,8 @@ export default function OrganizersAdmin() {
 
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: selectedCount } = useAdminBulkActions(filtered);
 
+  const pagination = usePagination(filtered, { defaultPageSize: 15 });
+
   const { exportCSV } = useCSVExport({
     columns: [
       { header: "Number", accessor: (o: any) => o.organizer_number },
