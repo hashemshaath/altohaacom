@@ -10,10 +10,11 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import {
   Upload, Download, FileSpreadsheet, CheckCircle, XCircle, Loader2,
-  Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages,
+  Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages, ShieldAlert,
 } from "lucide-react";
 
 type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor" | "organizer";
