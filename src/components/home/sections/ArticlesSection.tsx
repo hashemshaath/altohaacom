@@ -3,13 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Clock, Newspaper } from "lucide-react";
+import { Clock, Newspaper } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { SectionHeader } from "@/components/home/SectionHeader";
+import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 
 const TYPE_MAP: Record<string, { en: string; ar: string }> = {
   news: { en: "News", ar: "أخبار" },
@@ -24,14 +25,13 @@ export default function ArticlesSection() {
   const isAr = language === "ar";
   const config = useSectionConfig();
 
-  const itemCount = config?.item_count || 6;
+  const itemCount = config?.item_count || 8;
   const title = config
     ? (isAr ? config.title_ar || "أحدث المقالات" : config.title_en || "Latest from the Kitchen")
     : (isAr ? "أحدث المقالات" : "Latest from the Kitchen");
   const subtitle = config
     ? (isAr ? config.subtitle_ar || "" : config.subtitle_en || "")
     : (isAr ? "آخر الأخبار والمقالات من عالم الطهي" : "Stay updated with the latest culinary news and stories");
-  const showTitle = config?.show_title ?? true;
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
@@ -51,109 +51,61 @@ export default function ArticlesSection() {
 
   if (articles.length === 0) return null;
 
-  const featured = articles[0];
-  const rest = articles.slice(1, 5);
-
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        {showTitle && (
-          <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-              {isAr ? "أخبار ومقالات" : "News & Articles"}
-            </Badge>
-            <h2 className={cn("text-2xl font-bold sm:text-3xl lg:text-4xl text-foreground tracking-tight", !isAr && "font-serif")}>
-              {title}
-            </h2>
-            {showSubtitle && subtitle && (
-              <p className="mt-2 text-muted-foreground max-w-lg mx-auto">{subtitle}</p>
-            )}
-          </div>
-        )}
+        <SectionHeader
+          icon={Newspaper}
+          badge={isAr ? "أخبار ومقالات" : "News & Articles"}
+          title={title}
+          subtitle={showSubtitle ? subtitle : undefined}
+          viewAllHref={showViewAll ? "/articles" : undefined}
+          viewAllLabel={isAr ? "عرض جميع المقالات" : "View All Articles"}
+          isAr={isAr}
+        />
 
-        <div className="grid gap-8 lg:grid-cols-5">
-          <Link to={`/articles/${featured.slug}`} className="group lg:col-span-3">
-            <Card className="overflow-hidden border-border/30 h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 rounded-2xl">
-              <div className="relative aspect-[16/9] overflow-hidden">
-                {featured.featured_image_url ? (
-                  <img src={featured.featured_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                ) : (
-                  <div className="h-full w-full bg-muted flex items-center justify-center">
-                    <Newspaper className="h-12 w-12 text-muted-foreground/30" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
-                {featured.type && TYPE_MAP[featured.type] && (
-                  <Badge variant="secondary" className="absolute top-3 start-3 text-[10px]">
-                    {isAr ? TYPE_MAP[featured.type].ar : TYPE_MAP[featured.type].en}
-                  </Badge>
-                )}
-              </div>
-              <CardContent className="p-5">
-                <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                  {isAr ? featured.title_ar || featured.title : featured.title}
-                </h3>
-                {(featured.excerpt || featured.excerpt_ar) && (
-                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-                    {isAr ? featured.excerpt_ar || featured.excerpt : featured.excerpt}
-                  </p>
-                )}
-                {featured.published_at && (
-                  <p className="mt-3 text-xs text-muted-foreground/60 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {formatDistanceToNow(new Date(featured.published_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </Link>
-
-          <div className="lg:col-span-2 flex flex-col gap-4">
-            {rest.map((article: any) => (
-              <Link key={article.id} to={`/articles/${article.slug}`} className="group">
-                <Card className="flex overflow-hidden border-border/30 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 rounded-2xl">
-                  <div className="w-24 sm:w-28 shrink-0 overflow-hidden">
-                    {article.featured_image_url ? (
-                      <img src={article.featured_image_url} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
-                    ) : (
-                      <div className="h-full w-full bg-muted flex items-center justify-center">
-                        <Newspaper className="h-5 w-5 text-muted-foreground/20" />
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="flex flex-col justify-center p-3 min-h-[5rem]">
-                    <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-                      {isAr ? article.title_ar || article.title : article.title}
-                    </h3>
-                    <div className="mt-1 flex items-center gap-2">
-                      {article.type && TYPE_MAP[article.type] && (
-                        <span className="text-[10px] text-muted-foreground/60">
-                          {isAr ? TYPE_MAP[article.type].ar : TYPE_MAP[article.type].en}
-                        </span>
-                      )}
-                      {article.published_at && (
-                        <span className="text-[10px] text-muted-foreground/40">
-                          {formatDistanceToNow(new Date(article.published_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                        </span>
-                      )}
+        <HorizontalScrollRow isAr={isAr}>
+          {articles.map((article: any) => (
+            <Link
+              key={article.id}
+              to={`/articles/${article.slug}`}
+              className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
+            >
+              <Card className="overflow-hidden border-border/30 h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 rounded-2xl active:scale-[0.98]">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  {article.featured_image_url ? (
+                    <img src={article.featured_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                  ) : (
+                    <div className="h-full w-full bg-muted flex items-center justify-center">
+                      <Newspaper className="h-8 w-8 text-muted-foreground/20" />
                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {showViewAll && (
-          <div className="mt-10 text-center">
-            <Button variant="outline" className="rounded-xl" asChild>
-              <Link to="/articles">
-                {isAr ? "عرض جميع المقالات" : "View All Articles"}
-                <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
-              </Link>
-            </Button>
-          </div>
-        )}
+                  )}
+                  {article.type && TYPE_MAP[article.type] && (
+                    <Badge variant="secondary" className="absolute top-2 start-2 text-[9px]">
+                      {isAr ? TYPE_MAP[article.type].ar : TYPE_MAP[article.type].en}
+                    </Badge>
+                  )}
+                </div>
+                <CardContent className="p-3">
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                    {isAr ? article.title_ar || article.title : article.title}
+                  </h3>
+                  {(article.excerpt || article.excerpt_ar) && (
+                    <p className="mt-1 text-[11px] text-muted-foreground line-clamp-2">
+                      {isAr ? article.excerpt_ar || article.excerpt : article.excerpt}
+                    </p>
+                  )}
+                  {article.published_at && (
+                    <p className="mt-1.5 text-[10px] text-muted-foreground/60 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {formatDistanceToNow(new Date(article.published_at), { addSuffix: true, locale: isAr ? ar : undefined })}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </HorizontalScrollRow>
       </div>
     </section>
   );

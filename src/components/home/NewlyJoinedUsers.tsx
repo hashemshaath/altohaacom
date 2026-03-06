@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { UserPlus, ChefHat, MapPin } from "lucide-react";
-import { StaggeredList } from "@/components/ui/staggered-list";
 import { cn } from "@/lib/utils";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
@@ -17,6 +16,7 @@ import { ar } from "date-fns/locale";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
 export function NewlyJoinedUsers() {
   const { language } = useLanguage();
@@ -99,7 +99,7 @@ export function NewlyJoinedUsers() {
           ) : undefined}
         />
 
-        <StaggeredList className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-6" stagger={60}>
+        <HorizontalScrollRow isAr={isAr}>
           {filtered.map((user: any) => {
             const name = getDisplayName(user, isAr);
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
@@ -112,10 +112,14 @@ export function NewlyJoinedUsers() {
             const locationParts = [localizeCity(user.city || "", isAr), countryName].filter(Boolean).join(", ");
 
             return (
-              <Link key={user.id} to={user.username ? `/${user.username}` : `/profile/${user.user_id}`} className="group block">
-                <Card className="h-full border-border/40 rounded-2xl p-3 text-center transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/20">
-                  <div className="relative mx-auto mb-2.5 w-fit">
-                    <Avatar className="h-11 w-11 sm:h-14 sm:w-14 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
+              <Link
+                key={user.id}
+                to={user.username ? `/${user.username}` : `/profile/${user.user_id}`}
+                className="group block snap-start shrink-0 w-[32vw] sm:w-[24vw] md:w-[18vw] lg:w-[14vw] xl:w-[11vw] touch-manipulation"
+              >
+                <Card className="h-full border-border/40 rounded-2xl p-3 text-center transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                  <div className="relative mx-auto mb-2 w-fit">
+                    <Avatar className="h-11 w-11 sm:h-13 sm:w-13 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
                       <AvatarImage src={user.avatar_url} alt={name} />
                       <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
                         {initials}
@@ -125,31 +129,26 @@ export function NewlyJoinedUsers() {
                       <span className="absolute -bottom-1 -end-1 text-sm leading-none drop-shadow">{nationalityEmoji}</span>
                     )}
                   </div>
-                  <h3 className="text-xs sm:text-sm font-bold truncate text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="text-[11px] sm:text-xs font-bold truncate text-foreground group-hover:text-primary transition-colors">
                     {name || (isAr ? "عضو جديد" : "New Member")}
                   </h3>
                   {spec && (
-                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] sm:text-[11px] text-muted-foreground">
-                      <ChefHat className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0" />
+                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground">
+                      <ChefHat className="h-2.5 w-2.5 shrink-0" />
                       <span className="truncate">{spec}</span>
                     </div>
                   )}
                   {user.country_code && (
-                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[9px] sm:text-[10px] text-muted-foreground/70">
-                      <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0" />
+                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[9px] text-muted-foreground/70">
+                      <MapPin className="h-2 w-2 shrink-0" />
                       <span className="truncate">{countryFlag(user.country_code)} {locationParts}</span>
                     </div>
-                  )}
-                  {user.created_at && (
-                    <p className="mt-1 text-[9px] text-muted-foreground/50">
-                      {formatDistanceToNow(new Date(user.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                    </p>
                   )}
                 </Card>
               </Link>
             );
           })}
-        </StaggeredList>
+        </HorizontalScrollRow>
       </div>
     </section>
   );

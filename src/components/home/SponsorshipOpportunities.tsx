@@ -4,17 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Crown, Trophy, Calendar, MapPin, ArrowRight, Sparkles, Users } from "lucide-react";
+import { Crown, Trophy, Calendar, MapPin, Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { localizeLocation } from "@/lib/localizeLocation";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { SectionReveal } from "@/components/ui/section-reveal";
 import { SectionHeader } from "./SectionHeader";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -70,7 +69,6 @@ export function SponsorshipOpportunities() {
 
   return (
     <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
       <div className="container relative">
         <SectionHeader
           icon={Sparkles}
@@ -84,19 +82,19 @@ export function SponsorshipOpportunities() {
           isAr={isAr}
         />
 
-        {/* Sponsorship Packages */}
+        {/* Sponsorship Packages pills */}
         {opportunities[0]?.packages?.length > 0 && (
-          <div className="mb-5">
+          <div className="mb-4">
             <ScrollArea className="w-full">
-              <div className="flex gap-2.5 pb-2" dir={isAr ? "rtl" : "ltr"}>
+              <div className="flex gap-2 pb-1" dir={isAr ? "rtl" : "ltr"}>
                 {opportunities[0].packages.map((pkg: any) => {
                   const tier = TIER_LABELS[pkg.tier] || TIER_LABELS.bronze;
                   return (
                     <div
                       key={pkg.id}
-                      className={cn("flex shrink-0 items-center gap-2 rounded-full border px-4 py-2", tier.color)}
+                      className={cn("flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5", tier.color)}
                     >
-                      <Crown className="h-3.5 w-3.5" />
+                      <Crown className="h-3 w-3" />
                       <span className="text-xs font-medium">
                         {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
                       </span>
@@ -114,77 +112,69 @@ export function SponsorshipOpportunities() {
           </div>
         )}
 
-        {/* Competition Cards */}
-        <SectionReveal delay={80}>
-          <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-            {opportunities.slice(0, 4).map((comp: any) => {
-              const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
-              return (
-                <Link key={comp.id} to={`/competitions/${comp.id}`} className="group block">
-                  <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                    <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                      {comp.cover_image_url ? (
-                        <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                      ) : (
-                        <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                          <Trophy className="h-10 w-10 text-primary/30" />
+        {/* Competition Cards - horizontal scroll */}
+        <HorizontalScrollRow isAr={isAr}>
+          {opportunities.map((comp: any) => {
+            const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
+            return (
+              <Link
+                key={comp.id}
+                to={`/competitions/${comp.id}`}
+                className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
+              >
+                <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                    {comp.cover_image_url ? (
+                      <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                        <Trophy className="h-10 w-10 text-primary/30" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-3">
+                      <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">{title}</h3>
+                    </div>
+                    <Badge className="absolute end-2 top-2 text-[10px] bg-primary/90 shadow-sm gap-1">
+                      <Crown className="h-2.5 w-2.5" />
+                      {isAr ? "رعاية" : "Sponsor"}
+                    </Badge>
+                  </div>
+                  <CardContent className="p-3 space-y-1.5">
+                    <div className="space-y-1 text-[11px] text-muted-foreground">
+                      {comp.competition_start && (
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
+                          <span>{format(new Date(comp.competition_start), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-3">
-                        <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">{title}</h3>
-                      </div>
-                      <Badge className="absolute end-2 top-2 text-[10px] bg-primary/90 shadow-sm gap-1">
-                        <Crown className="h-2.5 w-2.5" />
-                        {isAr ? "فرصة رعاية" : "Sponsor"}
-                      </Badge>
-                    </div>
-                    <CardContent className="p-3 space-y-2">
-                      <div className="space-y-1 text-[11px] text-muted-foreground">
-                        {comp.competition_start && (
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
-                            <span>{format(new Date(comp.competition_start), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>
-                          </div>
-                        )}
-                        {comp.is_virtual ? (
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-                            <span>{isAr ? "افتراضي" : "Virtual"}</span>
-                          </div>
-                        ) : comp.city ? (
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-                            <span className="truncate">{localizeLocation({ city: comp.city, country: comp.country, countryCode: comp.country_code }, isAr)}</span>
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="flex items-center justify-between pt-1 border-t border-border/40">
-                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                          <Users className="h-3 w-3" />
-                          <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
+                      {comp.is_virtual ? (
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                          <span>{isAr ? "افتراضي" : "Virtual"}</span>
                         </div>
-                        <span className="text-[11px] font-medium text-primary">
-                          {isAr ? "تقدّم الآن" : "Apply Now"} →
-                        </span>
+                      ) : comp.city ? (
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                          <span className="truncate">{localizeLocation({ city: comp.city, country: comp.country, countryCode: comp.country_code }, isAr)}</span>
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="flex items-center justify-between pt-1 border-t border-border/40">
+                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <Users className="h-3 w-3" />
+                        <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-        </SectionReveal>
-
-        {/* Mobile View All */}
-        <div className="mt-5 text-center sm:hidden">
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/sponsors">
-              {isAr ? "جميع فرص الرعاية" : "All Sponsorship Opportunities"}
-              <ArrowRight className="ms-1 h-3.5 w-3.5" />
-            </Link>
-          </Button>
-        </div>
+                      <span className="text-[11px] font-medium text-primary">
+                        {isAr ? "تقدّم" : "Apply"} →
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </HorizontalScrollRow>
       </div>
     </section>
   );

@@ -7,13 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Eye, Flame } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
-import { SectionReveal } from "@/components/ui/section-reveal";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
-import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
 const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   news: { en: "News", ar: "أخبار" },
@@ -29,7 +29,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
   const sectionConfig = useSectionConfig();
 
-  const itemCount = sectionConfig?.item_count || 6;
+  const itemCount = sectionConfig?.item_count || 8;
   const showFilters = sectionConfig?.show_filters ?? true;
   const showViewAll = sectionConfig?.show_view_all ?? true;
   const sectionTitle = sectionConfig
@@ -66,8 +66,6 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
 
   if (articles.length === 0) return null;
 
-  const [featured, ...rest] = filtered;
-
   return (
     <div ref={ref}>
       <section aria-label={isAr ? "المحتوى الرائج" : "Trending Content"} dir={isAr ? "rtl" : "ltr"}>
@@ -100,91 +98,55 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
             ) : undefined}
           />
 
-          {featured ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-              <SectionReveal delay={0}>
-                <Link to={`/articles/${featured.slug}`}>
-                  <Card className="overflow-hidden group h-full border-border/40 rounded-2xl hover:shadow-lg transition-all">
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      {featured.featured_image_url ? (
-                        <img src={featured.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                      ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <TrendingUp className="h-10 w-10 text-muted-foreground/20" />
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
-                      <div className="absolute bottom-0 p-4">
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <Badge className="bg-chart-4/90 text-chart-4-foreground text-[10px] gap-1">
-                            <Flame className="h-2.5 w-2.5" />
-                            {isAr ? "الأكثر رواجاً" : "Top Trending"}
-                          </Badge>
-                          <Badge variant="outline" className="text-[10px] capitalize">{TYPE_LABELS[featured.type] ? (isAr ? TYPE_LABELS[featured.type].ar : TYPE_LABELS[featured.type].en) : featured.type}</Badge>
-                        </div>
-                        <h3 className="text-lg font-bold leading-tight line-clamp-2 text-foreground group-hover:text-primary transition-colors">
-                          {isAr && featured.title_ar ? featured.title_ar : featured.title}
-                        </h3>
-                        {(isAr ? featured.excerpt_ar : featured.excerpt) && (
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {isAr && featured.excerpt_ar ? featured.excerpt_ar : featured.excerpt}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
-                          {featured.published_at && <span>{format(new Date(featured.published_at), "d MMM yyyy", { locale: isAr ? ar : undefined })}</span>}
-                          {featured.view_count > 0 && (
-                            <span className="flex items-center gap-0.5">
-                              <Eye className="h-2.5 w-2.5" /> <AnimatedCounter value={featured.view_count} className="inline" />
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              </SectionReveal>
-
-              <div className="flex flex-col gap-3">
-                {rest.map((article, i) => (
-                  <SectionReveal key={article.id} delay={(i + 1) * 80}>
-                    <Link to={`/articles/${article.slug}`}>
-                      <Card className="flex overflow-hidden group border-border/40 rounded-2xl hover:shadow-md transition-all h-full">
-                        <div className="w-20 sm:w-28 shrink-0 overflow-hidden">
-                          {article.featured_image_url ? (
-                            <img src={article.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-                          ) : (
-                            <div className="w-full h-full bg-muted flex items-center justify-center">
-                              <TrendingUp className="h-5 w-5 text-muted-foreground/20" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 p-3 flex flex-col justify-center min-w-0">
-                          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                            <Badge variant="outline" className="text-[9px] capitalize">{TYPE_LABELS[article.type] ? (isAr ? TYPE_LABELS[article.type].ar : TYPE_LABELS[article.type].en) : article.type}</Badge>
-                            <span className="text-[9px] text-muted-foreground/60">#{i + 2}</span>
-                          </div>
-                          <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-                            {isAr && article.title_ar ? article.title_ar : article.title}
-                          </h4>
-                          <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground">
-                            {article.published_at && <span>{format(new Date(article.published_at), "d MMM", { locale: isAr ? ar : undefined })}</span>}
-                            {article.view_count > 0 && (
-                              <span className="flex items-center gap-0.5">
-                                <Eye className="h-2.5 w-2.5" /> <AnimatedCounter value={article.view_count} className="inline" />
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </Card>
-                    </Link>
-                  </SectionReveal>
-                ))}
-              </div>
-            </div>
-          ) : (
+          {filtered.length === 0 ? (
             <div className="py-8 text-center text-sm text-muted-foreground">
               {isAr ? "لا توجد نتائج" : "No results for this filter"}
             </div>
+          ) : (
+            <HorizontalScrollRow isAr={isAr}>
+              {filtered.map((article: any, i: number) => (
+                <Link
+                  key={article.id}
+                  to={`/articles/${article.slug}`}
+                  className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
+                >
+                  <Card className="overflow-hidden h-full border-border/40 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]">
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      {article.featured_image_url ? (
+                        <img src={article.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      ) : (
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                          <TrendingUp className="h-8 w-8 text-muted-foreground/20" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
+                      <div className="absolute bottom-0 p-3">
+                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                          {i === 0 && (
+                            <Badge className="bg-chart-4/90 text-chart-4-foreground text-[9px] gap-0.5">
+                              <Flame className="h-2.5 w-2.5" />
+                              {isAr ? "الأكثر رواجاً" : "Top"}
+                            </Badge>
+                          )}
+                          <Badge variant="outline" className="text-[9px] capitalize bg-background/60 backdrop-blur-sm">{TYPE_LABELS[article.type] ? (isAr ? TYPE_LABELS[article.type].ar : TYPE_LABELS[article.type].en) : article.type}</Badge>
+                        </div>
+                        <h3 className="text-sm font-bold leading-tight line-clamp-2 text-foreground group-hover:text-primary transition-colors">
+                          {isAr && article.title_ar ? article.title_ar : article.title}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="px-3 py-2 flex items-center gap-3 text-[10px] text-muted-foreground">
+                      {article.published_at && <span>{format(new Date(article.published_at), "d MMM", { locale: isAr ? ar : undefined })}</span>}
+                      {article.view_count > 0 && (
+                        <span className="flex items-center gap-0.5">
+                          <Eye className="h-2.5 w-2.5" /> <AnimatedCounter value={article.view_count} className="inline" />
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </HorizontalScrollRow>
           )}
         </div>
       </section>
