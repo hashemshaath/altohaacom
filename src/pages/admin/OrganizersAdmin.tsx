@@ -94,6 +94,58 @@ export default function OrganizersAdmin() {
   const [form, setForm] = useState<OrganizerForm>(emptyForm);
   const [formTab, setFormTab] = useState("basic");
 
+  const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
+
+  // Dedup
+  const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
+    tables: ["organizers", "companies", "culinary_entities", "establishments"],
+    excludeId: editId || undefined,
+  });
+
+  // Auto-translate
+  const { autoTranslateFields } = useAutoTranslate();
+  const [translating, setTranslating] = useState(false);
+
+  // Debounced dedup check on name/email change
+  useEffect(() => {
+    if (!dialogOpen || (!form.name && !form.email)) return;
+    const timer = setTimeout(() => {
+      checkEntity({
+        name: form.name,
+        name_ar: form.name_ar,
+        email: form.email,
+        phone: form.phone,
+        website: form.website,
+        city: form.city,
+        country: form.country,
+      });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [form.name, form.email, form.website, dialogOpen]);
+
+  const handleAutoTranslate = useCallback(async () => {
+    setTranslating(true);
+    try {
+      const updates = await autoTranslateFields([
+        { en: form.name, ar: form.name_ar, key: "name" },
+        { en: form.description, ar: form.description_ar, key: "description" },
+        { en: form.address, ar: form.address_ar, key: "address" },
+        { en: form.city, ar: form.city_ar, key: "city" },
+        { en: form.country, ar: form.country_ar, key: "country" },
+      ], "event organizer / exhibition management");
+      if (Object.keys(updates).length > 0) {
+        setForm(f => ({ ...f, ...updates }));
+        toast.success(isAr ? "تمت الترجمة التلقائية" : "Auto-translated successfully");
+      } else {
+        toast.info(isAr ? "لا حاجة للترجمة" : "Nothing to translate");
+      }
+    } catch {
+      toast.error(isAr ? "فشلت الترجمة" : "Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  }, [form, autoTranslateFields, isAr]);
+
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["admin-organizers"],
     queryFn: async () => {
