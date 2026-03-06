@@ -310,7 +310,7 @@ export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: 
                           {analytics.sponsors.slice(0, 5).map((sp: any) => (
                             <div key={sp.id} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
                               {sp.logo_url && <img src={sp.logo_url} alt="" className="h-6 w-6 rounded object-contain" />}
-                              <span className="truncate flex-1">{isAr && sp.company_name_ar ? sp.company_name_ar : sp.company_name}</span>
+                              <span className="truncate flex-1">{isAr && sp.name_ar ? sp.name_ar : sp.name}</span>
                               <Badge variant="outline" className="text-[9px] h-4">{sp.tier}</Badge>
                             </div>
                           ))}
