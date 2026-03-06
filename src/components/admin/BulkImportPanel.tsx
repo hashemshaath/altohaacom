@@ -16,7 +16,7 @@ import {
   Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages,
 } from "lucide-react";
 
-type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor";
+type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor" | "organizer";
 type ImportStep = "upload" | "preview" | "optimize" | "review" | "saving";
 
 interface BulkImportPanelProps {
