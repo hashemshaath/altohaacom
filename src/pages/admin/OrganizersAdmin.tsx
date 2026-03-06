@@ -582,7 +582,7 @@ export default function OrganizersAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((org: any) => (
+                  {pagination.paginated.map((org: any) => (
                     <TableRow key={org.id} className={`cursor-pointer ${selected.has(org.id) ? "bg-primary/5" : ""}`} onClick={() => setDetailId(org.id)}>
                       <TableCell onClick={e => e.stopPropagation()}><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
                       <TableCell>
