@@ -178,4 +178,4 @@ export function WelcomeModal() {
       </DialogContent>
     </Dialog>
   );
-});
+}
