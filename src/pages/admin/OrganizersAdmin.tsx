@@ -430,6 +430,9 @@ export default function OrganizersAdmin() {
                 )}
               </div>
               <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => { setShowBulkImport(!showBulkImport); }}>
+                  <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
+                </Button>
                 <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
                   <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
                 </Button>
@@ -439,6 +442,13 @@ export default function OrganizersAdmin() {
               </div>
             </CardContent>
           </Card>
+
+          {showBulkImport && (
+            <BulkImportPanel
+              entityType="organizer"
+              onImportComplete={() => { setShowBulkImport(false); qc.invalidateQueries({ queryKey: ["admin-organizers"] }); }}
+            />
+          )}
 
           {/* Table */}
           {isLoading ? (
