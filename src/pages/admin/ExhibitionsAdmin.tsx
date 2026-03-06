@@ -99,6 +99,7 @@ export default function ExhibitionsAdmin() {
   const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showDedupScanner, setShowDedupScanner] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<ExhibitionInsert>>(emptyForm);
   const [tagsInput, setTagsInput] = useState("");
