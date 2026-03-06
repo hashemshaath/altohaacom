@@ -102,6 +102,7 @@ export default function OrganizersAdmin() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [exhibitionsPanel, setExhibitionsPanel] = useState<{ id: string; name: string; logo?: string | null } | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
