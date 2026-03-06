@@ -39,6 +39,8 @@ export default function EstablishmentsAdmin() {
   const [selectedManager, setSelectedManager] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [showBulkImport, setShowBulkImport] = useState(false);
+  const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
 
   // Fetch culinary_entities
   const { data: entities, isLoading } = useQuery({
