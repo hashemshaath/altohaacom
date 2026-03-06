@@ -45,6 +45,7 @@ import {
   Sparkles,
   Bot,
   Database,
+  ScanSearch,
   type LucideIcon,
 } from "lucide-react";
 
@@ -159,6 +160,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/countries", icon: Earth, labelEn: "Countries", labelAr: "الدول" },
       { to: "/admin/integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات" },
       { to: "/admin/smart-import", icon: Sparkles, labelEn: "Smart Import", labelAr: "استيراد ذكي" },
+      { to: "/admin/deduplication", icon: ScanSearch, labelEn: "Deduplication", labelAr: "فاحص التكرارات" },
       { to: "/admin/ai", icon: Bot, labelEn: "AI Config", labelAr: "الذكاء الاصطناعي" },
       { to: "/admin/audit", icon: FileText, labelEn: "Audit Log", labelAr: "سجل العمليات" },
       { to: "/admin/database", icon: Database, labelEn: "Database", labelAr: "قاعدة البيانات" },
