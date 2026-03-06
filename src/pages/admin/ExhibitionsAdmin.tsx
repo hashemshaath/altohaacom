@@ -1248,6 +1248,11 @@ export default function ExhibitionsAdmin() {
           </Table>
         </CardContent>
       </Card>
+      <ExhibitionDetailDrawer
+        exhibitionId={drawerExhibitionId}
+        open={!!drawerExhibitionId}
+        onClose={() => setDrawerExhibitionId(null)}
+      />
     </div>
   );
 }
