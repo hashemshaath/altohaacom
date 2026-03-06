@@ -41,9 +41,6 @@ const TAB_FEATURE_MAP: Record<string, string> = {
   analytics: "tab_analytics",
   "social-links": "tab_social_links",
   favorites: "tab_favorites",
-  following: "tab_following",
-  achievements: "tab_achievements",
-  customize: "tab_customize",
 };
 
 export default function Profile() {
