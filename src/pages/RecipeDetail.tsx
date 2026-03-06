@@ -23,7 +23,7 @@ import {
 import { RecipeActionBar } from "@/components/recipes/RecipeActionBar";
 import { CookingTimer } from "@/components/recipes/CookingTimer";
 
-const RecipeReviews = lazy(() => import("@/components/fan/RecipeReviews").then(m => ({ default: m.RecipeReviews })));
+
 
 const difficultyColor = (d: string) => {
   if (d === "easy") return "bg-chart-3/10 text-chart-3";
