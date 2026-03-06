@@ -249,7 +249,7 @@ export function OrganizerExhibitionsPanel({
                             {exh.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{exh.city}, {exh.country}</span>}
                           </div>
                         </div>
-                        <Badge variant={exh.status === "published" ? "default" : "secondary"} className="text-[9px] capitalize shrink-0">
+                        <Badge variant={exh.status === "active" ? "default" : "secondary"} className="text-[9px] capitalize shrink-0">
                           {exh.status}
                         </Badge>
                       </div>
