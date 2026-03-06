@@ -161,6 +161,9 @@ export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Pr
                 <Landmark className="h-3 w-3" />{isAr ? "المعارض" : "Events"}
                 <Badge variant="secondary" className="text-[8px] h-3.5 px-1 ms-0.5">{exhibitions.length}</Badge>
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs gap-1">
+                <BarChart3 className="h-3 w-3" />{isAr ? "التحليلات" : "Analytics"}
+              </TabsTrigger>
               <TabsTrigger value="activity" className="text-xs gap-1">
                 <Clock className="h-3 w-3" />{isAr ? "النشاط" : "Activity"}
               </TabsTrigger>
