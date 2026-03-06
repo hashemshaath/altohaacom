@@ -20,7 +20,7 @@ export const FloatingHelpButton = forwardRef<HTMLDivElement>(function FloatingHe
 
   return (
     <>
-      <div className="fixed bottom-6 end-6 z-40 md:bottom-6 bottom-[5.5rem]">
+      <div className="fixed bottom-[5.5rem] md:bottom-6 end-6 z-40">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
