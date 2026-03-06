@@ -10,13 +10,14 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import {
   Upload, Download, FileSpreadsheet, CheckCircle, XCircle, Loader2,
-  Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages,
+  Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages, ShieldAlert,
 } from "lucide-react";
 
-type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor";
+type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor" | "organizer";
 type ImportStep = "upload" | "preview" | "optimize" | "review" | "saving";
 
 interface BulkImportPanelProps {
@@ -36,6 +37,7 @@ const ENTITY_LABELS: Record<EntityType, { en: string; ar: string }> = {
   entity: { en: "Entities", ar: "الجهات" },
   volunteer: { en: "Volunteers & Team", ar: "المتطوعين والفريق" },
   sponsor: { en: "Sponsors", ar: "الرعاة" },
+  organizer: { en: "Organizers", ar: "المنظمين" },
 };
 
 export function BulkImportPanel({ entityType, onImportComplete, competitionNumber }: BulkImportPanelProps) {
@@ -56,8 +58,50 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
   const [optimizeProgress, setOptimizeProgress] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saveProgress, setSaveProgress] = useState(0);
+  const [dupChecking, setDupChecking] = useState(false);
+  const [dupResults, setDupResults] = useState<Record<number, { score: number; match: string }>>({});
 
   const label = ENTITY_LABELS[entityType];
+
+  // Check rows for duplicates before insert
+  const handleDedupCheck = async () => {
+    const nameTables: Record<string, string[]> = {
+      exhibition: ["exhibitions"],
+      company: ["companies", "organizers"],
+      entity: ["culinary_entities", "establishments"],
+      organizer: ["organizers", "companies", "culinary_entities"],
+    };
+    const tables = nameTables[entityType];
+    if (!tables) return;
+
+    setDupChecking(true);
+    const results: Record<number, { score: number; match: string }> = {};
+    try {
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const name = row.name || row.title || "";
+        if (!name) continue;
+        const { data } = await supabase.functions.invoke("entity-dedup", {
+          body: { mode: "check", entity: { name, email: row.email, phone: row.phone, website: row.website }, tables },
+        });
+        if (data?.duplicates?.length > 0) {
+          const top = data.duplicates[0];
+          results[i] = { score: top.score, match: top.record?.name || "Unknown" };
+        }
+      }
+      setDupResults(results);
+      const dupCount = Object.keys(results).length;
+      if (dupCount > 0) {
+        toast({ variant: "destructive", title: t(`${dupCount} potential duplicates found`, `تم العثور على ${dupCount} تكرار محتمل`) });
+      } else {
+        toast({ title: t("No duplicates found ✨", "لا توجد تكرارات ✨") });
+      }
+    } catch (err) {
+      console.error("Dedup check failed:", err);
+    } finally {
+      setDupChecking(false);
+    }
+  };
 
   // Download template
   const handleDownloadTemplate = async () => {
@@ -345,6 +389,24 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
         }).throwOnError();
         break;
       }
+      case "organizer": {
+        const slug = (row.name || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+        await supabase.from("organizers").insert({
+          name: row.name, name_ar: row.name_ar || null, slug,
+          description: row.description || null, description_ar: row.description_ar || null,
+          email: row.email || null, phone: row.phone || null, website: row.website || null,
+          address: row.address || null, address_ar: row.address_ar || null,
+          city: row.city || null, city_ar: row.city_ar || null,
+          country: row.country || null, country_ar: row.country_ar || null,
+          country_code: row.country_code || null,
+          services: row.services ? row.services.split(",").map((s: string) => s.trim()) : [],
+          targeted_sectors: row.targeted_sectors ? row.targeted_sectors.split(",").map((s: string) => s.trim()) : [],
+          founded_year: row.founded_year ? parseInt(row.founded_year) : null,
+          logo_url: row.logo_url || null, cover_image_url: row.cover_image_url || null,
+          status: "pending",
+        }).throwOnError();
+        break;
+      }
       default:
         // For participant/judge/winner, save to bulk_imports for manual processing
         break;
@@ -363,6 +425,7 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
     setFileName("");
     setOptimizeProgress(0);
     setSaveProgress(0);
+    setDupResults({});
   };
 
   // Get display columns (first 5 meaningful columns)
@@ -539,6 +602,10 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
                 <Button variant="ghost" size="sm" onClick={resetState}>
                   {t("Cancel", "إلغاء")}
                 </Button>
+                <Button variant="outline" size="sm" onClick={handleDedupCheck} disabled={dupChecking}>
+                  {dupChecking ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <ShieldAlert className="me-2 h-4 w-4" />}
+                  {t("Check Duplicates", "فحص التكرارات")}
+                </Button>
                 <Button variant="outline" size="sm" onClick={handleSaveAsDraft}>
                   <Save className="me-2 h-4 w-4" />
                   {t("Save as Draft", "حفظ كمسودة")}
@@ -559,11 +626,12 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
                       <TableHead key={col} className="text-xs">{col}</TableHead>
                     ))}
                     <TableHead className="w-12">{t("Status", "الحالة")}</TableHead>
+                    <TableHead className="w-12">{t("Dup?", "تكرار؟")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rows.map((row, idx) => (
-                    <TableRow key={idx}>
+                    <TableRow key={idx} className={dupResults[idx] ? "bg-destructive/5" : ""}>
                       <TableCell className="text-xs text-muted-foreground">{idx + 1}</TableCell>
                       {displayColumns.map(col => (
                         <TableCell key={col} className="text-xs max-w-[150px] truncate" dir={col.endsWith("_ar") ? "rtl" : "ltr"}>
@@ -576,6 +644,22 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
                         ) : (
                           <CheckCircle className="h-4 w-4 text-chart-5" />
                         )}
+                      </TableCell>
+                      <TableCell>
+                        {dupResults[idx] ? (
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Badge variant="destructive" className="text-[8px]">
+                                {Math.round(dupResults[idx].score)}%
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">{t("Similar to:", "مشابه لـ:")} {dupResults[idx].match}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : Object.keys(dupResults).length > 0 ? (
+                          <CheckCircle className="h-3.5 w-3.5 text-chart-5" />
+                        ) : null}
                       </TableCell>
                     </TableRow>
                   ))}

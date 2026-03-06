@@ -303,6 +303,38 @@ const TEMPLATES: Record<string, {
       cover_image_url: "URL to cover image",
     },
   },
+  organizer: {
+    columns: [
+      "name", "name_ar", "description", "description_ar",
+      "email", "phone", "website",
+      "address", "address_ar", "city", "city_ar", "country", "country_ar", "country_code",
+      "services", "targeted_sectors", "founded_year",
+      "logo_url", "cover_image_url",
+    ],
+    required: ["name"],
+    options: {},
+    instructions: {
+      name: "Organizer name in English (required)",
+      name_ar: "Organizer name in Arabic (auto-translated if empty)",
+      description: "Description in English",
+      description_ar: "Description in Arabic (auto-translated if empty)",
+      email: "Official email address",
+      phone: "Phone with country code e.g. +966...",
+      website: "Official website URL",
+      address: "Full address in English",
+      address_ar: "Full address in Arabic",
+      city: "City name in English",
+      city_ar: "City name in Arabic",
+      country: "Country name in English",
+      country_ar: "Country name in Arabic",
+      country_code: "2-letter ISO code e.g. SA, AE, KW",
+      services: "Comma-separated services e.g. event planning, venue management",
+      targeted_sectors: "Comma-separated sectors e.g. food, hospitality",
+      founded_year: "Year founded (integer)",
+      logo_url: "URL to logo",
+      cover_image_url: "URL to cover image",
+    },
+  },
 };
 
 serve(async (req) => {

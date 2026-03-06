@@ -6,6 +6,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
@@ -37,7 +38,7 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield, ScanSearch, Languages,
+  Shield, ScanSearch, Languages, FileSpreadsheet,
   Twitter, Facebook, Linkedin, Instagram,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -94,6 +95,7 @@ export default function OrganizersAdmin() {
   const [form, setForm] = useState<OrganizerForm>(emptyForm);
   const [formTab, setFormTab] = useState("basic");
   const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   // Dedup
   const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
@@ -428,6 +430,9 @@ export default function OrganizersAdmin() {
                 )}
               </div>
               <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => { setShowBulkImport(!showBulkImport); }}>
+                  <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
+                </Button>
                 <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
                   <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
                 </Button>
@@ -437,6 +442,13 @@ export default function OrganizersAdmin() {
               </div>
             </CardContent>
           </Card>
+
+          {showBulkImport && (
+            <BulkImportPanel
+              entityType="organizer"
+              onImportComplete={() => { setShowBulkImport(false); qc.invalidateQueries({ queryKey: ["admin-organizers"] }); }}
+            />
+          )}
 
           {/* Table */}
           {isLoading ? (
