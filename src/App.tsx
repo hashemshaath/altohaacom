@@ -13,6 +13,7 @@ import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { MaintenanceGuard } from "@/components/MaintenanceGuard";
+import { PageTransition } from "@/components/mobile/PageTransition";
 import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
@@ -89,6 +90,7 @@ function AppContent() {
       <ErrorBoundary>
       <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
       <main id="main-content" className="pt-14 pb-16 md:pb-0 overflow-x-hidden">
+      <PageTransition>
       <Routes>
         {publicRoutes}
         {protectedRoutes}
@@ -96,6 +98,7 @@ function AppContent() {
         {companyRoutes}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </PageTransition>
       </main>
       </Suspense>
       </ErrorBoundary>
