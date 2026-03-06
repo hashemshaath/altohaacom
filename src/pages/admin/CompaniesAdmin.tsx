@@ -1986,6 +1986,19 @@ export default function CompaniesAdmin() {
               </Table>
             </ScrollArea>
           </CardContent>
+          <AdminTablePagination
+            page={companyPagination.page}
+            totalPages={companyPagination.totalPages}
+            totalItems={companyPagination.totalItems}
+            startItem={companyPagination.startItem}
+            endItem={companyPagination.endItem}
+            pageSize={companyPagination.pageSize}
+            pageSizeOptions={companyPagination.pageSizeOptions}
+            hasNext={companyPagination.hasNext}
+            hasPrev={companyPagination.hasPrev}
+            onPageChange={companyPagination.goTo}
+            onPageSizeChange={companyPagination.changePageSize}
+          />
         </Card>
         </>
         )}
