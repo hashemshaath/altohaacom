@@ -161,24 +161,24 @@ export default function Dashboard() {
       {/* Quick Navigation */}
       <QuickAccessGrid sections={sections} isAr={isAr} />
 
-      {/* Quick Stats - Full width */}
+      {/* Quick Stats */}
       {user && isVisible("quick-stats") && (
-        <div className="mb-6"><W lines={1}><QuickStatsWidget /></W></div>
-      )}
-
-      {/* Daily Digest - Full width */}
-      {user && (
-        <div className="mb-6"><W><DailyDigestWidget /></W></div>
+        <div className="mb-5"><W lines={1}><QuickStatsWidget /></W></div>
       )}
 
       {/* Achievements Summary */}
       {user && isVisible("achievements") && (
-        <div className="mb-6"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
+        <div className="mb-5"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
       )}
 
       {/* Fan Upgrade Banner */}
       {user && isFan && (
-        <div className="mb-6"><W><FanUpgradeBanner /></W></div>
+        <div className="mb-5"><W><FanUpgradeBanner /></W></div>
+      )}
+
+      {/* Daily Digest */}
+      {user && (
+        <div className="mb-5"><W><DailyDigestWidget /></W></div>
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
@@ -369,9 +369,9 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
     queryKey: ["dashboard-achievements", userId],
     queryFn: async (): Promise<{ certificates: number; competitions: number; badges: number }> => {
       const [certsRes, regsRes, badgesRes] = await Promise.all([
-        supabase.from("certificates").select("*", { count: "exact", head: true }).eq("recipient_id", userId),
-        supabase.from("competition_registrations").select("*", { count: "exact", head: true }).eq("participant_id", userId),
-        supabase.from("user_badges").select("*", { count: "exact", head: true }).eq("user_id", userId),
+        supabase.from("certificates").select("id", { count: "exact", head: true }).eq("recipient_id", userId),
+        supabase.from("competition_registrations").select("id", { count: "exact", head: true }).eq("participant_id", userId),
+        supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", userId),
       ]);
       return {
         certificates: certsRes.count || 0,
