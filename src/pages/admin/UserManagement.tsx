@@ -1277,6 +1277,7 @@ export default function UserManagement() {
                     <TableHead>{isAr ? "الأدوار" : "Roles"}</TableHead>
                     <SortableTableHead column="membership_tier" label={t("membershipTier")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <SortableTableHead column="account_status" label={t("accountStatus")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="country_code" label={isAr ? "الدولة" : "Country"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <SortableTableHead column="created_at" label={isAr ? "تاريخ الإنشاء" : "Created"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead className="w-40">{isAr ? "الإجراءات" : "Actions"}</TableHead>
                   </TableRow>
