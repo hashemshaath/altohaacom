@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidget";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { CompanyLiveStatsWidget } from "@/components/admin/CompanyLiveStatsWidget";
 import { format } from "date-fns";
 
