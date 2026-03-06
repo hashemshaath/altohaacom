@@ -498,8 +498,8 @@ export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: 
                                   </span>
                                 </div>
                               </div>
-                              {rv.comment && (
-                                <p className="text-[11px] text-muted-foreground line-clamp-2">{rv.comment}</p>
+                              {rv.content && (
+                                <p className="text-[11px] text-muted-foreground line-clamp-2">{rv.content}</p>
                               )}
                             </div>
                           ))}
