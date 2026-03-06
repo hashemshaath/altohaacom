@@ -425,6 +425,7 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
     setFileName("");
     setOptimizeProgress(0);
     setSaveProgress(0);
+    setDupResults({});
   };
 
   // Get display columns (first 5 meaningful columns)
