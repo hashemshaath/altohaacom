@@ -82,7 +82,7 @@ export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: 
         : "0";
       const assignedBooths = booths.filter(b => b.assigned_to).length;
       const boothOccupancy = booths.length > 0 ? Math.round((assignedBooths / booths.length) * 100) : 0;
-      const sponsorRevenue = sponsors.reduce((s, sp) => s + ((sp as any).amount || 0), 0);
+      const sponsorRevenue = 0;
 
       // Ticket trend (last 14 days)
       const now = new Date();
