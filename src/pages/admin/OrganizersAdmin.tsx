@@ -671,6 +671,8 @@ export default function OrganizersAdmin() {
                 onPageSizeChange={pagination.changePageSize}
               />
             </Card>
+          )}
+        </>
       )}
 
       {/* Create/Edit Dialog with Dedup + Auto-Translate */}
