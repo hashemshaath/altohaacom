@@ -589,7 +589,7 @@ export default function OrganizersAdmin() {
                           </Avatar>
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
+                              <Link to={`/organizers/${org.slug}`} onClick={e => e.stopPropagation()} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
                               {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
                               {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
                             </div>
