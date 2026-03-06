@@ -47,7 +47,7 @@ export const FloatingHelpButton = forwardRef<HTMLDivElement>(function FloatingHe
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {user && <LiveChatWidget />}
+      
     </>
   );
 });
