@@ -601,6 +601,10 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
                 <Button variant="ghost" size="sm" onClick={resetState}>
                   {t("Cancel", "إلغاء")}
                 </Button>
+                <Button variant="outline" size="sm" onClick={handleDedupCheck} disabled={dupChecking}>
+                  {dupChecking ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <ShieldAlert className="me-2 h-4 w-4" />}
+                  {t("Check Duplicates", "فحص التكرارات")}
+                </Button>
                 <Button variant="outline" size="sm" onClick={handleSaveAsDraft}>
                   <Save className="me-2 h-4 w-4" />
                   {t("Save as Draft", "حفظ كمسودة")}
