@@ -44,6 +44,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import ExhibitionDetailDrawer from "@/components/admin/ExhibitionDetailDrawer";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -119,6 +120,7 @@ export default function ExhibitionsAdmin() {
   const [showSeries, setShowSeries] = useState(false);
   const [seriesFilter, setSeriesFilter] = useState<string>("all");
   const { data: countries } = useCountries();
+  const [drawerExhibitionId, setDrawerExhibitionId] = useState<string | null>(null);
 
   const t = (en: string, ar: string) => isAr ? ar : en;
 
@@ -1096,7 +1098,7 @@ export default function ExhibitionsAdmin() {
                 filteredExhibitions?.map((ex) => {
                   const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
                   return (
-                  <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`}>
+                  <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 cursor-pointer ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`} onClick={() => setDrawerExhibitionId(ex.id)}>
                     <TableCell onClick={e => e.stopPropagation()}>
                       <Checkbox checked={bulk.isSelected(ex.id)} onCheckedChange={() => bulk.toggleOne(ex.id)} />
                     </TableCell>
@@ -1246,6 +1248,11 @@ export default function ExhibitionsAdmin() {
           </Table>
         </CardContent>
       </Card>
+      <ExhibitionDetailDrawer
+        exhibitionId={drawerExhibitionId}
+        open={!!drawerExhibitionId}
+        onClose={() => setDrawerExhibitionId(null)}
+      />
     </div>
   );
 }
