@@ -269,6 +269,18 @@ export default function EstablishmentsAdmin() {
 
       {/* Form */}
       {showForm && (
+        <>
+        <EntityFormGuard
+          entity={{ name: form.name, name_ar: form.name_ar, email: form.email, phone: form.phone, website: form.website, city: form.city, country: form.country }}
+          tables={["culinary_entities", "organizers", "companies", "establishments"]}
+          excludeId={editingId || undefined}
+          translationFields={[
+            { en: form.name, ar: form.name_ar, key: "name" },
+            { en: form.description, ar: form.description_ar, key: "description" },
+          ]}
+          translationContext="culinary entity / association / academy"
+          onTranslated={(u) => setForm(prev => ({ ...prev, ...u }))}
+        />
         <EntityFormTabs
           form={form}
           editingId={editingId}
