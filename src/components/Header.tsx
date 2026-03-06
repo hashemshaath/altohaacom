@@ -37,6 +37,7 @@ const primaryNav = [
 ];
 
 const moreLinks = [
+  { to: "/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
   { to: "/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدروس المتقدمة" },
   { to: "/recipes", icon: UtensilsCrossed, labelEn: "Recipes", labelAr: "الوصفات" },
   { to: "/shop", icon: ShoppingBag, labelEn: "Shop", labelAr: "المتجر" },
