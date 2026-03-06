@@ -1277,14 +1277,15 @@ export default function UserManagement() {
                     <TableHead>{isAr ? "الأدوار" : "Roles"}</TableHead>
                     <SortableTableHead column="membership_tier" label={t("membershipTier")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <SortableTableHead column="account_status" label={t("accountStatus")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="country_code" label={isAr ? "الدولة" : "Country"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <SortableTableHead column="created_at" label={isAr ? "تاريخ الإنشاء" : "Created"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead className="w-40">{isAr ? "الإجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sortedUsers?.map((profile) => (
-                    <TableRow key={profile.id} className={`transition-colors ${editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : "hover:bg-muted/40"}`}>
-                      <TableCell>
+                    <TableRow key={profile.id} className={`transition-colors cursor-pointer ${editingUserId === profile.user_id ? "bg-primary/5" : isSelected(profile.id) ? "bg-primary/5" : "hover:bg-muted/40"}`} onClick={() => { setDrawerUserId(profile.user_id); setDrawerOpen(true); }}>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={isSelected(profile.id)} onCheckedChange={() => toggleOne(profile.id)} />
                       </TableCell>
                       <TableCell>
@@ -1321,8 +1322,9 @@ export default function UserManagement() {
                       </TableCell>
                       <TableCell>{getMembershipBadge(profile.membership_tier)}</TableCell>
                       <TableCell>{getStatusBadge(profile.account_status)}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{profile.country_code || "—"}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{format(new Date(profile.created_at), "MMM d, yyyy")}</TableCell>
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1">
                           <Button variant={editingUserId === profile.user_id ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => editingUserId === profile.user_id ? setEditingUserId(null) : handleOpenEdit(profile)}>
                             <Edit className="h-3.5 w-3.5" />
