@@ -58,7 +58,7 @@ export function RecipesTab() {
   const fetchRecipes = async () => {
     const { data, error } = await supabase
       .from("recipes")
-      .select("*")
+      .select("id, title, title_ar, description, description_ar, image_url, author_id, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, is_published, created_at, save_count, slug")
       .eq("is_published", true)
       .order("created_at", { ascending: false })
       .limit(50);
