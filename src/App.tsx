@@ -49,7 +49,7 @@ const PullToRefreshIndicator = lazy(() => import("@/components/pwa/PullToRefresh
 const ScrollProgress = safeLazy(() => import("@/components/ui/scroll-progress").then(m => ({ default: m.ScrollProgress as any })));
 const BackToTop = safeLazy(() => import("@/components/ui/back-to-top").then(m => ({ default: m.BackToTop as any })));
 const RoutePrefetcher = safeLazy(() => import("@/components/ui/route-prefetcher").then(m => ({ default: m.RoutePrefetcher as any })));
-const LiveChatWidget = safeLazy(() => import("@/components/crm/LiveChatWidget").then(m => ({ default: m.LiveChatWidget as any })));
+const LiveChatWidget = safeLazy(() => import("@/components/support/LiveChatWidget").then(m => ({ default: m.LiveChatWidget as any })));
 const WelcomeModal = safeLazy(() => import("@/components/onboarding/WelcomeModal").then(m => ({ default: m.WelcomeModal as any })));
 const GuidedTour = safeLazy(() => import("@/components/onboarding/GuidedTour").then(m => ({ default: m.GuidedTour as any })));
 const NotFound = safeLazy(() => import("./pages/NotFound"));
