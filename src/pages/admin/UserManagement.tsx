@@ -1322,7 +1322,7 @@ export default function UserManagement() {
                       <TableCell>{getMembershipBadge(profile.membership_tier)}</TableCell>
                       <TableCell>{getStatusBadge(profile.account_status)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{format(new Date(profile.created_at), "MMM d, yyyy")}</TableCell>
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1">
                           <Button variant={editingUserId === profile.user_id ? "secondary" : "ghost"} size="icon" className="h-7 w-7" onClick={() => editingUserId === profile.user_id ? setEditingUserId(null) : handleOpenEdit(profile)}>
                             <Edit className="h-3.5 w-3.5" />
