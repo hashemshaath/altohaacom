@@ -13,6 +13,7 @@ import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { MaintenanceGuard } from "@/components/MaintenanceGuard";
+import { PageTransition } from "@/components/mobile/PageTransition";
 import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
