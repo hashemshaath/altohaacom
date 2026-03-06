@@ -686,7 +686,8 @@ export default function CompaniesAdmin() {
     suppliers: companies.filter(c => c.type === "supplier").length,
   };
 
-  const bulk = useAdminBulkActions(companies);
+  const { sorted: sortedCompanies, sortColumn, sortDirection, toggleSort } = useTableSort(companies, "created_at", "desc");
+  const bulk = useAdminBulkActions(sortedCompanies);
 
   const { exportCSV: exportCompaniesCSV } = useCSVExport({
     columns: [
