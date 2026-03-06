@@ -59,13 +59,13 @@ const SECTION_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
 
 // ── Section loading skeleton ──
 const SectionSkeleton = () => (
-  <div className="container py-12">
-    <div className="space-y-4">
-      <Skeleton className="h-5 w-40 mx-auto rounded-xl" />
-      <Skeleton className="h-3 w-64 mx-auto rounded-lg" />
-      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-        {[1, 2, 3].map(i => (
-          <Skeleton key={i} className="aspect-[4/3] rounded-2xl" />
+  <div className="container py-8">
+    <div className="space-y-3">
+      <Skeleton className="h-4 w-32 rounded-lg" />
+      <Skeleton className="h-6 w-56 rounded-xl" />
+      <div className="flex gap-3 mt-4 overflow-hidden">
+        {[1, 2, 3, 4].map(i => (
+          <Skeleton key={i} className="aspect-[4/3] w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] shrink-0 rounded-2xl" />
         ))}
       </div>
     </div>

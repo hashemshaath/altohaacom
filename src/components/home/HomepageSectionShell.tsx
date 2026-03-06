@@ -5,9 +5,9 @@ import { useSectionConfig } from "./SectionKeyContext";
 
 const SPACING_MAP: Record<string, string> = {
   none: "py-0",
-  compact: "py-4 md:py-6",
-  normal: "py-8 md:py-12",
-  relaxed: "py-12 md:py-20",
+  compact: "py-4 md:py-5",
+  normal: "py-6 md:py-8",
+  relaxed: "py-8 md:py-12",
 };
 
 const CONTAINER_MAP: Record<string, string> = {
@@ -42,8 +42,6 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
   const animation = ANIMATION_MAP[config.animation] || "";
 
-  // Don't apply container width here — sections manage their own containers.
-  // Shell only handles vertical spacing, background, animation, and css overrides.
   return (
     <div
       className={cn(spacing, animation, config.css_class)}
