@@ -213,12 +213,26 @@ export default function OrganizersAdmin() {
     [organizers]
   );
 
-  const filtered = useMemo(() => (organizers || []).filter((o: any) => {
-    const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || o.status === statusFilter;
-    const matchCountry = countryFilter === "all" || o.country === countryFilter;
-    return matchSearch && matchStatus && matchCountry;
-  }), [organizers, search, statusFilter, countryFilter]);
+  const filtered = useMemo(() => {
+    const list = (organizers || []).filter((o: any) => {
+      const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
+      const matchStatus = statusFilter === "all" || o.status === statusFilter;
+      const matchCountry = countryFilter === "all" || o.country === countryFilter;
+      const matchVerified = verifiedFilter === "all" || (verifiedFilter === "verified" ? o.is_verified : !o.is_verified);
+      return matchSearch && matchStatus && matchCountry && matchVerified;
+    });
+    // Sort
+    return list.sort((a: any, b: any) => {
+      let av = a[sortKey], bv = b[sortKey];
+      if (typeof av === "string") av = av.toLowerCase();
+      if (typeof bv === "string") bv = bv.toLowerCase();
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (av < bv) return sortDir === "asc" ? -1 : 1;
+      if (av > bv) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [organizers, search, statusFilter, countryFilter, verifiedFilter, sortKey, sortDir]);
 
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: selectedCount } = useAdminBulkActions(filtered);
 
