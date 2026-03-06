@@ -41,6 +41,7 @@ const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPen
 const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
 const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
 const FinanceMembershipWidget = lazy(() => import("@/components/admin/FinanceMembershipWidget").then(m => ({ default: m.FinanceMembershipWidget })));
+const DedupDashboardWidget = lazy(() => import("@/components/admin/DedupDashboardWidget").then(m => ({ default: m.DedupDashboardWidget })));
 
 
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
