@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,6 +8,10 @@ import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useEntityDedup } from "@/hooks/useEntityDedup";
+import { useAutoTranslate } from "@/hooks/useAutoTranslate";
+import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +37,7 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield,
+  Shield, ScanSearch, Languages,
   Twitter, Facebook, Linkedin, Instagram,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -89,6 +93,57 @@ export default function OrganizersAdmin() {
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState<OrganizerForm>(emptyForm);
   const [formTab, setFormTab] = useState("basic");
+  const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
+
+  // Dedup
+  const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
+    tables: ["organizers", "companies", "culinary_entities", "establishments"],
+    excludeId: editId || undefined,
+  });
+
+  // Auto-translate
+  const { autoTranslateFields } = useAutoTranslate();
+  const [translating, setTranslating] = useState(false);
+
+  // Debounced dedup check on name/email change
+  useEffect(() => {
+    if (!dialogOpen || (!form.name && !form.email)) return;
+    const timer = setTimeout(() => {
+      checkEntity({
+        name: form.name,
+        name_ar: form.name_ar,
+        email: form.email,
+        phone: form.phone,
+        website: form.website,
+        city: form.city,
+        country: form.country,
+      });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [form.name, form.email, form.website, dialogOpen]);
+
+  const handleAutoTranslate = useCallback(async () => {
+    setTranslating(true);
+    try {
+      const updates = await autoTranslateFields([
+        { en: form.name, ar: form.name_ar, key: "name" },
+        { en: form.description, ar: form.description_ar, key: "description" },
+        { en: form.address, ar: form.address_ar, key: "address" },
+        { en: form.city, ar: form.city_ar, key: "city" },
+        { en: form.country, ar: form.country_ar, key: "country" },
+      ], "event organizer / exhibition management");
+      if (Object.keys(updates).length > 0) {
+        setForm(f => ({ ...f, ...updates }));
+        toast.success(isAr ? "تمت الترجمة التلقائية" : "Auto-translated successfully");
+      } else {
+        toast.info(isAr ? "لا حاجة للترجمة" : "Nothing to translate");
+      }
+    } catch {
+      toast.error(isAr ? "فشلت الترجمة" : "Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  }, [form, autoTranslateFields, isAr]);
 
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["admin-organizers"],
@@ -286,206 +341,217 @@ export default function OrganizersAdmin() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        icon={Building2}
-        title={isAr ? "المنظمين" : "Organizers"}
-        description={isAr ? "إدارة منظمي الفعاليات وربطهم بالمعارض" : "Manage event organizers and link them to exhibitions"}
-      />
+      {/* Header with tab toggle */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <AdminPageHeader
+          icon={Building2}
+          title={isAr ? "المنظمين" : "Organizers"}
+          description={isAr ? "إدارة منظمي الفعاليات وربطهم بالمعارض" : "Manage event organizers and link them to exhibitions"}
+        />
+        <div className="flex gap-2 shrink-0">
+          <Button variant={adminTab === "list" ? "default" : "outline"} size="sm" onClick={() => setAdminTab("list")}>
+            <Building2 className="h-4 w-4 me-1" />{isAr ? "القائمة" : "List"}
+          </Button>
+          <Button variant={adminTab === "scanner" ? "default" : "outline"} size="sm" onClick={() => setAdminTab("scanner")}>
+            <ScanSearch className="h-4 w-4 me-1" />{isAr ? "فاحص التكرارات" : "Dedup Scanner"}
+          </Button>
+        </div>
+      </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: Building2 },
-          { label: isAr ? "نشط" : "Active", value: stats.active, icon: CheckCircle2 },
-          { label: isAr ? "موثق" : "Verified", value: stats.verified, icon: Shield },
-          { label: isAr ? "مميز" : "Featured", value: stats.featured, icon: Star },
-        ].map(s => (
-          <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-            <CardContent className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
-                <s.icon className="h-4 w-4 text-primary" />
+      {adminTab === "scanner" ? (
+        <BatchDuplicateScanner
+          defaultTable="organizers"
+          onMergeComplete={() => qc.invalidateQueries({ queryKey: ["admin-organizers"] })}
+        />
+      ) : (
+        <>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: Building2 },
+              { label: isAr ? "نشط" : "Active", value: stats.active, icon: CheckCircle2 },
+              { label: isAr ? "موثق" : "Verified", value: stats.verified, icon: Shield },
+              { label: isAr ? "مميز" : "Featured", value: stats.featured, icon: Star },
+            ].map(s => (
+              <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+                <CardContent className="p-3 flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
+                    <s.icon className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold">{s.value}</p>
+                    <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Bulk Action Bar */}
+          <BulkActionBar
+            count={selectedCount}
+            onClear={clearSelection}
+            onDelete={() => { if (confirm(isAr ? "حذف المحدد؟" : "Delete selected?")) bulkDeleteMutation.mutate(selectedArray); }}
+            onStatusChange={() => bulkStatusMutation.mutate({ ids: selectedArray, status: "active" })}
+            onExport={() => exportCSV(filtered.filter((o: any) => selected.has(o.id)))}
+          >
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => bulkVerifyMutation.mutate({ ids: selectedArray, verified: true })}>
+              <Shield className="h-3.5 w-3.5" />{isAr ? "توثيق" : "Verify"}
+            </Button>
+          </BulkActionBar>
+
+          {/* Toolbar */}
+          <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
+            <CardContent className="p-3 flex flex-wrap gap-3 items-center justify-between">
+              <div className="flex gap-2 items-center flex-1 min-w-0">
+                <div className="relative flex-1 max-w-xs">
+                  <Search className="absolute start-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9 h-9" />
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                    <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                    <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
+                    <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
+                  </SelectContent>
+                </Select>
+                {countries.length > 0 && (
+                  <Select value={countryFilter} onValueChange={setCountryFilter}>
+                    <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{isAr ? "كل الدول" : "All"}</SelectItem>
+                      {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
-              <div>
-                <p className="text-lg font-bold">{s.value}</p>
-                <p className="text-[10px] text-muted-foreground">{s.label}</p>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
+                  <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
+                </Button>
+                <Button size="sm" onClick={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}>
+                  <Plus className="h-4 w-4 me-1.5" />{isAr ? "إضافة منظم" : "Add Organizer"}
+                </Button>
               </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      {/* Bulk Action Bar */}
-      <BulkActionBar
-        count={selectedCount}
-        onClear={clearSelection}
-        onDelete={() => { if (confirm(isAr ? "حذف المحدد؟" : "Delete selected?")) bulkDeleteMutation.mutate(selectedArray); }}
-        onStatusChange={() => bulkStatusMutation.mutate({ ids: selectedArray, status: "active" })}
-        onExport={() => exportCSV(filtered.filter((o: any) => selected.has(o.id)))}
-      >
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1.5"
-          onClick={() => bulkVerifyMutation.mutate({ ids: selectedArray, verified: true })}
-        >
-          <Shield className="h-3.5 w-3.5" />
-          {isAr ? "توثيق" : "Verify"}
-        </Button>
-      </BulkActionBar>
-
-      {/* Toolbar */}
-      <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
-        <CardContent className="p-3 flex flex-wrap gap-3 items-center justify-between">
-          <div className="flex gap-2 items-center flex-1 min-w-0">
-            <div className="relative flex-1 max-w-xs">
-              <Search className="absolute start-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9 h-9" />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-                <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
-                <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
-              </SelectContent>
-            </Select>
-            {countries.length > 0 && (
-              <Select value={countryFilter} onValueChange={setCountryFilter}>
-                <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل الدول" : "All"}</SelectItem>
-                  {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
-              <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
-            </Button>
-            <Button size="sm" onClick={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}>
-              <Plus className="h-4 w-4 me-1.5" />{isAr ? "إضافة منظم" : "Add Organizer"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Table */}
-      {isLoading ? (
-        <AdminTableSkeleton rows={6} columns={5} />
-      ) : filtered.length === 0 ? (
-        <AdminEmptyState
-          icon={Building2}
-          title="No organizers found"
-          titleAr="لا توجد نتائج"
-          description="Create your first organizer to get started"
-          descriptionAr="أنشئ أول منظم للبدء"
-          actionLabel="Add Organizer"
-          actionLabelAr="إضافة منظم"
-          onAction={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}
-        />
-      ) : (
-        <Card className="rounded-2xl border-border/40 overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">
-                  <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
-                </TableHead>
-                <TableHead>{isAr ? "المنظم" : "Organizer"}</TableHead>
-                <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
-                <TableHead>{isAr ? "التواصل" : "Contact"}</TableHead>
-                <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                <TableHead className="text-center">{isAr ? "المعارض" : "Events"}</TableHead>
-                <TableHead className="text-center">{isAr ? "المشاهدات" : "Views"}</TableHead>
-                <TableHead className="text-center">{isAr ? "التقييم" : "Rating"}</TableHead>
-                <TableHead className="w-10" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((org: any) => (
-                <TableRow key={org.id} className={selected.has(org.id) ? "bg-primary/5" : ""}>
-                  <TableCell>
-                    <Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-9 w-9 rounded-xl">
-                        {org.logo_url && <AvatarImage src={org.logo_url} />}
-                        <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
-                          {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
-                          {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+          {/* Table */}
+          {isLoading ? (
+            <AdminTableSkeleton rows={6} columns={5} />
+          ) : filtered.length === 0 ? (
+            <AdminEmptyState
+              icon={Building2}
+              title="No organizers found"
+              titleAr="لا توجد نتائج"
+              description="Create your first organizer to get started"
+              descriptionAr="أنشئ أول منظم للبدء"
+              actionLabel="Add Organizer"
+              actionLabelAr="إضافة منظم"
+              onAction={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}
+            />
+          ) : (
+            <Card className="rounded-2xl border-border/40 overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-10"><Checkbox checked={isAllSelected} onCheckedChange={toggleAll} /></TableHead>
+                    <TableHead>{isAr ? "المنظم" : "Organizer"}</TableHead>
+                    <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
+                    <TableHead>{isAr ? "التواصل" : "Contact"}</TableHead>
+                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
+                    <TableHead className="text-center">{isAr ? "المعارض" : "Events"}</TableHead>
+                    <TableHead className="text-center">{isAr ? "المشاهدات" : "Views"}</TableHead>
+                    <TableHead className="text-center">{isAr ? "التقييم" : "Rating"}</TableHead>
+                    <TableHead className="w-10" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((org: any) => (
+                    <TableRow key={org.id} className={selected.has(org.id) ? "bg-primary/5" : ""}>
+                      <TableCell><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-9 w-9 rounded-xl">
+                            {org.logo_url && <AvatarImage src={org.logo_url} />}
+                            <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
+                              {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
+                              {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              {org.organizer_number && <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5">{org.organizer_number}</Badge>}
+                              {org.name_ar && <span className="text-[10px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</span>}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          {org.organizer_number && (
-                            <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5">{org.organizer_number}</Badge>
-                          )}
-                          {org.name_ar && <span className="text-[10px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</span>}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {org.city && org.country ? `${org.city}, ${org.country}` : org.country || "—"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5">
+                          {org.email && <Mail className="h-3.5 w-3.5 text-muted-foreground" />}
+                          {org.phone && <Phone className="h-3.5 w-3.5 text-muted-foreground" />}
+                          {org.website && <Globe className="h-3.5 w-3.5 text-muted-foreground" />}
                         </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {org.city && org.country ? `${org.city}, ${org.country}` : org.country || "—"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1.5">
-                      {org.email && <Mail className="h-3.5 w-3.5 text-muted-foreground" />}
-                      {org.phone && <Phone className="h-3.5 w-3.5 text-muted-foreground" />}
-                      {org.website && <Globe className="h-3.5 w-3.5 text-muted-foreground" />}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[10px] capitalize">{org.status}</Badge>
-                  </TableCell>
-                  <TableCell className="text-center text-sm font-medium">{org.total_exhibitions || 0}</TableCell>
-                  <TableCell className="text-center text-sm text-muted-foreground">{(org.total_views || 0).toLocaleString()}</TableCell>
-                  <TableCell className="text-center">
-                    {org.average_rating > 0 ? (
-                      <span className="text-sm font-medium flex items-center justify-center gap-0.5">
-                        <Star className="h-3 w-3 text-amber-500" />{org.average_rating}
-                      </span>
-                    ) : <span className="text-muted-foreground text-xs">—</span>}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-4 w-4" /></Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => openEdit(org)}>
-                          <Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => refreshStatsMutation.mutate(org.id)}>
-                          <RefreshCw className="h-3.5 w-3.5 me-2" />{isAr ? "تحديث الإحصائيات" : "Refresh Stats"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive" onClick={() => { if (confirm(isAr ? "هل أنت متأكد؟" : "Are you sure?")) deleteMutation.mutate(org.id); }}>
-                          <Trash2 className="h-3.5 w-3.5 me-2" />{isAr ? "حذف" : "Delete"}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[10px] capitalize">{org.status}</Badge>
+                      </TableCell>
+                      <TableCell className="text-center text-sm font-medium">{org.total_exhibitions || 0}</TableCell>
+                      <TableCell className="text-center text-sm text-muted-foreground">{(org.total_views || 0).toLocaleString()}</TableCell>
+                      <TableCell className="text-center">
+                        {org.average_rating > 0 ? (
+                          <span className="text-sm font-medium flex items-center justify-center gap-0.5">
+                            <Star className="h-3 w-3 text-amber-500" />{org.average_rating}
+                          </span>
+                        ) : <span className="text-muted-foreground text-xs">—</span>}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-4 w-4" /></Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                              <Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => openEdit(org)}>
+                              <Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => refreshStatsMutation.mutate(org.id)}>
+                              <RefreshCw className="h-3.5 w-3.5 me-2" />{isAr ? "تحديث الإحصائيات" : "Refresh Stats"}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive" onClick={() => { if (confirm(isAr ? "هل أنت متأكد؟" : "Are you sure?")) deleteMutation.mutate(org.id); }}>
+                              <Trash2 className="h-3.5 w-3.5 me-2" />{isAr ? "حذف" : "Delete"}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          )}
+        </>
       )}
 
-      {/* Create/Edit Dialog with Tabs */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      {/* Create/Edit Dialog with Dedup + Auto-Translate */}
+      <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) clearDuplicates(); }}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editId ? (isAr ? "تعديل المنظم" : "Edit Organizer") : (isAr ? "إضافة منظم" : "Add Organizer")}</DialogTitle>
           </DialogHeader>
+
+          {/* Dedup warnings */}
+          <DeduplicationPanel duplicates={duplicates} checking={checking} onDismiss={clearDuplicates} compact />
 
           <Tabs value={formTab} onValueChange={setFormTab}>
             <TabsList className="w-full grid grid-cols-4">
@@ -578,7 +644,17 @@ export default function OrganizersAdmin() {
             </TabsContent>
           </Tabs>
 
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="gap-1.5 me-auto"
+              onClick={handleAutoTranslate}
+              disabled={translating}
+            >
+              <Languages className="h-3.5 w-3.5" />
+              {translating ? "..." : (isAr ? "ترجمة تلقائية" : "Auto-Translate")}
+            </Button>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
             <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>
               {saveMutation.isPending ? "..." : editId ? (isAr ? "تحديث" : "Update") : (isAr ? "إضافة" : "Create")}
