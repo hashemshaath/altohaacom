@@ -10,10 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import OrganizerAnalyticsTab from "./OrganizerAnalyticsTab";
 import {
   Building2, Landmark, Eye, Star, MapPin, Globe, Mail, Phone,
   Calendar, CheckCircle2, ExternalLink, Ticket, TrendingUp,
-  ArrowUpRight, Clock, Shield, UserCircle2,
+  ArrowUpRight, Clock, Shield, UserCircle2, BarChart3,
 } from "lucide-react";
 
 interface Props {
@@ -160,6 +161,9 @@ export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Pr
                 <Landmark className="h-3 w-3" />{isAr ? "المعارض" : "Events"}
                 <Badge variant="secondary" className="text-[8px] h-3.5 px-1 ms-0.5">{exhibitions.length}</Badge>
               </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs gap-1">
+                <BarChart3 className="h-3 w-3" />{isAr ? "التحليلات" : "Analytics"}
+              </TabsTrigger>
               <TabsTrigger value="activity" className="text-xs gap-1">
                 <Clock className="h-3 w-3" />{isAr ? "النشاط" : "Activity"}
               </TabsTrigger>
@@ -302,6 +306,12 @@ export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Pr
                   </Link>
                 ))
               )}
+            </TabsContent>
+
+
+            {/* Analytics Tab */}
+            <TabsContent value="analytics" className="mt-0">
+              <OrganizerAnalyticsTab organizerId={org.id} exhibitions={exhibitions} />
             </TabsContent>
 
             {/* Activity Tab */}
