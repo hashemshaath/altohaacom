@@ -22,9 +22,6 @@ const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileRefer
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
 const ProfileOrdersTab = lazy(() => import("@/components/profile/ProfileOrdersTab").then(m => ({ default: m.ProfileOrdersTab })));
 const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").then(m => ({ default: m.FanFavoritesTab })));
-const FanFollowingTab = lazy(() => import("@/components/fan/FanFollowingTab").then(m => ({ default: m.FanFollowingTab })));
-const FanAchievementBadges = lazy(() => import("@/components/fan/FanAchievementBadges").then(m => ({ default: m.FanAchievementBadges })));
-const FanProfileCustomization = lazy(() => import("@/components/fan/FanProfileCustomization").then(m => ({ default: m.FanProfileCustomization })));
 
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
