@@ -1913,7 +1913,7 @@ export default function CompaniesAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedCompanies.map(company => (
+                  {companyPagination.paginated.map(company => (
                     <TableRow key={company.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(company.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedCompany(company.id)}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={bulk.isSelected(company.id)} onCheckedChange={() => bulk.toggleOne(company.id)} />
