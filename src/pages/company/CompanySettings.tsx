@@ -57,7 +57,7 @@ function CompanySettingsContent() {
     queryKey: ["companySettings", companyId],
     queryFn: async () => {
       if (!companyId) return null;
-      const { data, error } = await supabase.from("companies").select("*").eq("id", companyId).single();
+      const { data, error } = await supabase.from("companies").select("id, name, name_ar, company_number, type, status, is_verified, verification_level, email, website, phone, phone_secondary, fax, google_maps_url, city, country_code, district, district_ar, street, street_ar, postal_code, national_address, currency, payment_terms, credit_limit, tax_number, registration_number, tagline, tagline_ar, description, description_ar, founded_year, social_links, created_at").eq("id", companyId).single();
       if (error) throw error;
       return data;
     },

@@ -9,7 +9,7 @@ export function useSocialLinkPage(userId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("social_link_pages")
-        .select("*")
+        .select("id, user_id, page_title, page_title_ar, bio, bio_ar, theme, is_published, created_at, updated_at, background_color, background_image_url, button_color, button_style, text_color, show_avatar, show_social_icons, font_family, custom_css")
         .eq("user_id", userId!)
         .maybeSingle();
       if (error) throw error;
@@ -27,7 +27,7 @@ export function useSocialLinkItems(pageId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("social_link_items")
-        .select("*")
+        .select("id, page_id, user_id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, created_at, page_tab, thumbnail_url, scheduled_start, scheduled_end, ab_enabled, ab_variant_title, ab_variant_title_ar, ab_variant_icon, ab_variant_click_count")
         .eq("page_id", pageId!)
         .order("sort_order", { ascending: true });
       if (error) throw error;
@@ -60,7 +60,7 @@ export function useSocialLinkPageByUsername(username?: string) {
       // Fetch page and items in parallel if page exists
       const { data: page, error: pgErr } = await supabase
         .from("social_link_pages")
-        .select("*")
+        .select("id, user_id, page_title, page_title_ar, bio, bio_ar, theme, is_published, created_at, updated_at, background_color, background_image_url, button_color, button_style, text_color, show_avatar, show_social_icons, font_family, custom_css")
         .eq("user_id", profile.user_id)
         .maybeSingle();
       if (pgErr) throw pgErr;

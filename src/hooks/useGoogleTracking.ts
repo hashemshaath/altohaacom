@@ -14,7 +14,7 @@ export function useGoogleTracking() {
     queryFn: async () => {
       const { data } = await supabase
         .from("marketing_tracking_config")
-        .select("*")
+        .select("platform, tracking_id, is_active")
         .eq("is_active", true);
       return data || [];
     },

@@ -173,6 +173,8 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     cssMinify: true,
+    sourcemap: false,
+    chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -186,6 +188,9 @@ export default defineConfig(({ mode }) => ({
           "vendor-form": ["react-hook-form", "@hookform/resolvers", "zod"],
           "vendor-markdown": ["react-markdown"],
           "vendor-dates": ["date-fns"],
+          "vendor-qr": ["qrcode.react"],
+          "vendor-pdf": ["pdfjs-dist"],
+          "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
         },
       },
     },
