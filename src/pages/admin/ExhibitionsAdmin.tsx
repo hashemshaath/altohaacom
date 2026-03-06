@@ -2,6 +2,7 @@ import { useState } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
 import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";
@@ -98,6 +99,7 @@ export default function ExhibitionsAdmin() {
   const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showDedupScanner, setShowDedupScanner] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<Partial<ExhibitionInsert>>(emptyForm);
   const [tagsInput, setTagsInput] = useState("");
@@ -410,7 +412,11 @@ export default function ExhibitionsAdmin() {
               <Layers className="me-2 h-4 w-4" />
               {t("Series", "السلاسل")}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); }}>
+            <Button variant={showDedupScanner ? "secondary" : "outline"} size="sm" onClick={() => { setShowDedupScanner(!showDedupScanner); if (showBulkImport) setShowBulkImport(false); }}>
+              <Search className="me-2 h-4 w-4" />
+              {t("Dedup Scanner", "فاحص التكرارات")}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); if (showDedupScanner) setShowDedupScanner(false); }}>
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {t("Bulk Import", "استيراد جماعي")}
             </Button>
@@ -494,6 +500,14 @@ export default function ExhibitionsAdmin() {
       {/* Bulk Import */}
       {showBulkImport && (
         <BulkImportPanel entityType="exhibition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] }); }} />
+      )}
+
+      {/* Dedup Scanner */}
+      {showDedupScanner && (
+        <BatchDuplicateScanner
+          defaultTable="exhibitions"
+          onMergeComplete={() => queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] })}
+        />
       )}
 
       {/* Inline Form */}

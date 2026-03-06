@@ -10,6 +10,8 @@ import EntityTableRow from "@/components/admin/entities/EntityTableRow";
 import EntityFormTabs, { EntityFormData, emptyForm, typeOptions, scopeOptions } from "@/components/admin/entities/EntityFormTabs";
 import EstablishmentDetailDrawer from "@/components/admin/establishments/EstablishmentDetailDrawer";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Building2, Plus, Search, XCircle, CheckCircle, Eye } from "lucide-react";
+import { Building2, Plus, Search, XCircle, CheckCircle, Eye, FileSpreadsheet, ScanSearch, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function EstablishmentsAdmin() {
@@ -37,6 +39,8 @@ export default function EstablishmentsAdmin() {
   const [selectedManager, setSelectedManager] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [showBulkImport, setShowBulkImport] = useState(false);
+  const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
 
   // Fetch culinary_entities
   const { data: entities, isLoading } = useQuery({
@@ -228,12 +232,29 @@ export default function EstablishmentsAdmin() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        icon={Building2}
-        title={isAr ? "إدارة الجهات" : "Entities Management"}
-        description={isAr ? "إدارة الجمعيات والأكاديميات والجهات الحكومية" : "Manage associations, academies, and organizations"}
-      />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <AdminPageHeader
+          icon={Building2}
+          title={isAr ? "إدارة الجهات" : "Entities Management"}
+          description={isAr ? "إدارة الجمعيات والأكاديميات والجهات الحكومية" : "Manage associations, academies, and organizations"}
+        />
+        <div className="flex gap-2 shrink-0">
+          <Button variant={adminTab === "list" ? "default" : "outline"} size="sm" onClick={() => setAdminTab("list")}>
+            <Building2 className="h-4 w-4 me-1" />{isAr ? "القائمة" : "List"}
+          </Button>
+          <Button variant={adminTab === "scanner" ? "default" : "outline"} size="sm" onClick={() => setAdminTab("scanner")}>
+            <ScanSearch className="h-4 w-4 me-1" />{isAr ? "فاحص التكرارات" : "Dedup Scanner"}
+          </Button>
+        </div>
+      </div>
 
+      {adminTab === "scanner" ? (
+        <BatchDuplicateScanner
+          defaultTable="culinary_entities"
+          onMergeComplete={() => queryClient.invalidateQueries({ queryKey: ["admin-culinary-entities"] })}
+        />
+      ) : (
+      <>
       <EntityStatsCards stats={stats} activeFilter={statusFilter} onFilterChange={f => setStatusFilter(f || "all")} />
 
       {/* Toolbar */}
@@ -252,12 +273,22 @@ export default function EstablishmentsAdmin() {
               {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
             </SelectContent>
           </Select>
+          <Button size="sm" variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
+            <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
+          </Button>
           <Button size="sm" className="gap-1.5" onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(!showForm); }}>
             <Plus className="h-4 w-4" />
             {isAr ? "إضافة جهة" : "Add Entity"}
           </Button>
         </CardContent>
       </Card>
+
+      {showBulkImport && (
+        <BulkImportPanel
+          entityType="entity"
+          onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-culinary-entities"] }); }}
+        />
+      )}
 
       {/* Bulk Actions */}
       <BulkActionBar count={count} onClear={clearSelection} onExport={() => exportCSV(selectedItems)} onStatusChange={bulkActivate}>
@@ -348,6 +379,8 @@ export default function EstablishmentsAdmin() {
         open={!!detailId}
         onClose={() => setDetailId(null)}
       />
+      </>
+      )}
     </div>
   );
 }

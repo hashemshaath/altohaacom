@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
+import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -110,6 +111,7 @@ export default function CompaniesAdmin() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCompanyForm, setShowCompanyForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [showDedupScanner, setShowDedupScanner] = useState(false);
   const [showSmartImport, setShowSmartImport] = useState(false);
   const [mainTab, setMainTab] = useState<"companies" | "suppliers" | "reviews">("companies");
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
@@ -1572,6 +1574,10 @@ export default function CompaniesAdmin() {
 
       {/* Bulk Import & Export */}
       <div className="flex flex-wrap gap-2">
+        <Button variant={showDedupScanner ? "secondary" : "outline"} size="sm" onClick={() => { setShowDedupScanner(!showDedupScanner); if (showBulkImport) setShowBulkImport(false); }}>
+          <Search className="me-2 h-4 w-4" />
+          {isAr ? "فاحص التكرارات" : "Dedup Scanner"}
+        </Button>
         <Button variant={showBulkImport ? "secondary" : "outline"} size="sm" onClick={() => setShowBulkImport(!showBulkImport)}>
           <FileSpreadsheet className="me-2 h-4 w-4" />
           {isAr ? "استيراد جماعي" : "Bulk Import"}
@@ -1592,6 +1598,13 @@ export default function CompaniesAdmin() {
       </div>
       {showBulkImport && (
         <BulkImportPanel entityType="company" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["companies"] }); }} />
+      )}
+
+      {showDedupScanner && (
+        <BatchDuplicateScanner
+          defaultTable="companies"
+          onMergeComplete={() => queryClient.invalidateQueries({ queryKey: ["companies"] })}
+        />
       )}
 
       {showCompanyForm ? (
