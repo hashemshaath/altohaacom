@@ -96,6 +96,11 @@ export default function OrganizersAdmin() {
   const [formTab, setFormTab] = useState("basic");
   const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const logoRef = useRef<HTMLInputElement>(null);
+  const coverRef = useRef<HTMLInputElement>(null);
 
   // Dedup
   const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
