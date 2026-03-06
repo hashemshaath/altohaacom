@@ -342,8 +342,38 @@ export default function OrganizersAdmin() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        icon={Building2}
+      <div className="flex items-center gap-2">
+        <AdminPageHeader
+          icon={Building2}
+          title={isAr ? "المنظمين" : "Organizers"}
+          description={isAr ? "إدارة منظمي الفعاليات وربطهم بالمعارض" : "Manage event organizers and link them to exhibitions"}
+        />
+        <div className="ms-auto flex gap-2">
+          <Button
+            variant={adminTab === "list" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setAdminTab("list")}
+          >
+            <Building2 className="h-4 w-4 me-1" />
+            {isAr ? "القائمة" : "List"}
+          </Button>
+          <Button
+            variant={adminTab === "scanner" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setAdminTab("scanner")}
+          >
+            <ScanSearch className="h-4 w-4 me-1" />
+            {isAr ? "فاحص التكرارات" : "Dedup Scanner"}
+          </Button>
+        </div>
+      </div>
+
+      {adminTab === "scanner" ? (
+        <BatchDuplicateScanner
+          defaultTable="organizers"
+          onMergeComplete={() => qc.invalidateQueries({ queryKey: ["admin-organizers"] })}
+        />
+      ) : (<>
         title={isAr ? "المنظمين" : "Organizers"}
         description={isAr ? "إدارة منظمي الفعاليات وربطهم بالمعارض" : "Manage event organizers and link them to exhibitions"}
       />
