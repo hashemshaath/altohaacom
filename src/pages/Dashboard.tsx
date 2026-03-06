@@ -181,10 +181,6 @@ export default function Dashboard() {
 
         {/* Center Column - Main Content Feed */}
         <main className="lg:col-span-6 space-y-5">
-          {/* Fan content */}
-          {user && isFan && <W><FanWeeklyDigest /></W>}
-          {user && isFan && <W><FanFollowingFeed /></W>}
-          {user && isFan && <W><FanActivityFeed /></W>}
 
           {/* Common content */}
           {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
