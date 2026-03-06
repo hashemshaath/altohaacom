@@ -6,6 +6,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
