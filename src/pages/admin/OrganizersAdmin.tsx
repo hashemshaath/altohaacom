@@ -591,6 +591,9 @@ export default function OrganizersAdmin() {
                             <DropdownMenuItem onClick={() => openEdit(org)}>
                               <Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setExhibitionsPanel({ id: org.id, name: org.name, logo: org.logo_url })}>
+                              <LinkIcon className="h-3.5 w-3.5 me-2" />{isAr ? "المعارض المرتبطة" : "Linked Exhibitions"}
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => refreshStatsMutation.mutate(org.id)}>
                               <RefreshCw className="h-3.5 w-3.5 me-2" />{isAr ? "تحديث الإحصائيات" : "Refresh Stats"}
                             </DropdownMenuItem>
