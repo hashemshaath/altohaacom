@@ -587,6 +587,9 @@ export default function OrganizersAdmin() {
                             <Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-4 w-4" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setDetailId(org.id)}>
+                              <Building2 className="h-3.5 w-3.5 me-2" />{isAr ? "التفاصيل" : "Details"}
+                            </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                               <Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link>
                             </DropdownMenuItem>
