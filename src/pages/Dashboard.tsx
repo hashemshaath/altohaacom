@@ -48,18 +48,7 @@ const GoalsMilestonesWidget = lazy(() => import("@/components/dashboard/GoalsMil
 const FanTrendingWidget = lazy(() => import("@/components/dashboard/FanTrendingWidget").then(m => ({ default: m.FanTrendingWidget })));
 const FanSuggestedFollowsWidget = lazy(() => import("@/components/dashboard/FanSuggestedFollowsWidget").then(m => ({ default: m.FanSuggestedFollowsWidget })));
 const FanRecommendationsWidget = lazy(() => import("@/components/dashboard/FanRecommendationsWidget").then(m => ({ default: m.FanRecommendationsWidget })));
-const FanUpgradeBanner = lazy(() => import("@/components/fan/FanUpgradeBanner").then(m => ({ default: m.FanUpgradeBanner })));
-const FanActivityFeed = lazy(() => import("@/components/fan/FanActivityFeed").then(m => ({ default: m.FanActivityFeed })));
-const FanAchievementBadges = lazy(() => import("@/components/fan/FanAchievementBadges").then(m => ({ default: m.FanAchievementBadges })));
-const FanNotificationsCenter = lazy(() => import("@/components/fan/FanNotificationsCenter").then(m => ({ default: m.FanNotificationsCenter })));
-const FanLeaderboard = lazy(() => import("@/components/fan/FanLeaderboard").then(m => ({ default: m.FanLeaderboard })));
 const FanEventWatchlist = lazy(() => import("@/components/fan/FanEventWatchlist").then(m => ({ default: m.FanEventWatchlist })));
-const FanSmartRecommendations = lazy(() => import("@/components/fan/FanSmartRecommendations").then(m => ({ default: m.FanSmartRecommendations })));
-const FanSocialNetwork = lazy(() => import("@/components/fan/FanSocialNetwork").then(m => ({ default: m.FanSocialNetwork })));
-const FanRecipeCollections = lazy(() => import("@/components/fan/FanRecipeCollections").then(m => ({ default: m.FanRecipeCollections })));
-const FanFollowingFeed = lazy(() => import("@/components/fan/FanFollowingFeed").then(m => ({ default: m.FanFollowingFeed })));
-const FanStreaks = lazy(() => import("@/components/fan/FanStreaks").then(m => ({ default: m.FanStreaks })));
-const FanWeeklyDigest = lazy(() => import("@/components/fan/FanWeeklyDigest").then(m => ({ default: m.FanWeeklyDigest })));
 
 // Enhancement widgets
 const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
@@ -171,10 +160,6 @@ export default function Dashboard() {
         <div className="mb-5"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
       )}
 
-      {/* Fan Upgrade Banner */}
-      {user && isFan && (
-        <div className="mb-5"><W><FanUpgradeBanner /></W></div>
-      )}
 
       {/* Daily Digest */}
       {user && (
@@ -196,19 +181,12 @@ export default function Dashboard() {
 
         {/* Center Column - Main Content Feed */}
         <main className="lg:col-span-6 space-y-5">
-          {/* Fan content */}
-          {user && isFan && <W><FanWeeklyDigest /></W>}
-          {user && isFan && <W><FanFollowingFeed /></W>}
-          {user && isFan && <W><FanActivityFeed /></W>}
 
           {/* Common content */}
           {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
           {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
           {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
 
-          {/* Fan extras */}
-          {user && isFan && <W><FanSmartRecommendations /></W>}
-          {user && isFan && <W><FanAchievementBadges /></W>}
 
           {/* Pro extras */}
           {user && !isFan && <W><ActivityHeatmapWidget /></W>}
@@ -230,14 +208,9 @@ export default function Dashboard() {
             {user && <W><LiveCompetitionsWidget /></W>}
 
             {/* Fan sidebar */}
-            {user && isFan && <W><FanNotificationsCenter /></W>}
-            {user && isFan && <W><FanStreaks /></W>}
-            {user && isFan && <W><FanRecipeCollections /></W>}
             {user && isFan && <W><FanEventWatchlist /></W>}
-            {user && isFan && <W><FanSocialNetwork /></W>}
             {user && isFan && <W><FanSuggestedFollowsWidget /></W>}
             {user && isFan && <W><FanTrendingWidget /></W>}
-            {user && isFan && <W><FanLeaderboard /></W>}
 
             {/* Pro sidebar */}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}

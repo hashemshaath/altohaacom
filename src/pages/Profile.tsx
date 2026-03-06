@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageShell } from "@/components/PageShell";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Award, Sparkles, Lock } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Lock } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -22,9 +22,6 @@ const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileRefer
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
 const ProfileOrdersTab = lazy(() => import("@/components/profile/ProfileOrdersTab").then(m => ({ default: m.ProfileOrdersTab })));
 const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").then(m => ({ default: m.FanFavoritesTab })));
-const FanFollowingTab = lazy(() => import("@/components/fan/FanFollowingTab").then(m => ({ default: m.FanFollowingTab })));
-const FanAchievementBadges = lazy(() => import("@/components/fan/FanAchievementBadges").then(m => ({ default: m.FanAchievementBadges })));
-const FanProfileCustomization = lazy(() => import("@/components/fan/FanProfileCustomization").then(m => ({ default: m.FanProfileCustomization })));
 
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -44,9 +41,6 @@ const TAB_FEATURE_MAP: Record<string, string> = {
   analytics: "tab_analytics",
   "social-links": "tab_social_links",
   favorites: "tab_favorites",
-  following: "tab_following",
-  achievements: "tab_achievements",
-  customize: "tab_customize",
 };
 
 export default function Profile() {
@@ -84,9 +78,6 @@ export default function Profile() {
     { id: "overview", label: isAr ? "ملفي الشخصي" : "Profile", icon: User },
     ...(isFan ? [
       { id: "favorites", label: isAr ? "المفضلة" : "Favorites", icon: Heart },
-      { id: "following", label: isAr ? "المتابَعون" : "Following", icon: Users },
-      { id: "achievements", label: isAr ? "الإنجازات" : "Achievements", icon: Award },
-      { id: "customize", label: isAr ? "التخصيص" : "Customize", icon: Sparkles },
     ] : [
       { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy },
     ]),
@@ -178,17 +169,6 @@ export default function Profile() {
             {isTabAllowed("favorites") ? (user && <FanFavoritesTab />) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
           </TabsContent>
 
-          <TabsContent value="following" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("following") ? (user && <FanFollowingTab />) : <UpgradePrompt variant="card" featureName="Following" featureNameAr="المتابَعون" />}
-          </TabsContent>
-
-          <TabsContent value="achievements" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("achievements") ? (user && <FanAchievementBadges />) : <UpgradePrompt variant="card" featureName="Achievements" featureNameAr="الإنجازات" />}
-          </TabsContent>
-
-          <TabsContent value="customize" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("customize") ? (user && <FanProfileCustomization />) : <UpgradePrompt variant="card" featureName="Customization" featureNameAr="التخصيص" />}
-          </TabsContent>
 
           <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={refetchProfile} />}

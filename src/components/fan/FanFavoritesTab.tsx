@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, ChefHat, UtensilsCrossed, HeartOff, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { FanShareButton } from "./FanShareButton";
+import { Share2 } from "lucide-react";
 
 export function FanFavoritesTab() {
   const { user } = useAuth();
@@ -88,13 +88,14 @@ export function FanFavoritesTab() {
                       )}
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
-                      <FanShareButton
-                        title={chef.full_name || "Chef"}
-                        url={`${window.location.origin}/${chef.username || chef.user_id}`}
-                        size="icon"
+                      <Button
                         variant="ghost"
+                        size="icon"
                         className="h-8 w-8 text-muted-foreground"
-                      />
+                        onClick={() => navigator.share?.({ title: chef.full_name || "Chef", url: `${window.location.origin}/${chef.username || chef.user_id}` })}
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
