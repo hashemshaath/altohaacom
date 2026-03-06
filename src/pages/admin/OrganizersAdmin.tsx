@@ -657,9 +657,20 @@ export default function OrganizersAdmin() {
                   ))}
                 </TableBody>
               </Table>
+              <AdminTablePagination
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                startItem={pagination.startItem}
+                endItem={pagination.endItem}
+                pageSize={pagination.pageSize}
+                pageSizeOptions={pagination.pageSizeOptions}
+                hasNext={pagination.hasNext}
+                hasPrev={pagination.hasPrev}
+                onPageChange={pagination.goTo}
+                onPageSizeChange={pagination.changePageSize}
+              />
             </Card>
-          )}
-        </>
       )}
 
       {/* Create/Edit Dialog with Dedup + Auto-Translate */}
