@@ -10,10 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import OrganizerAnalyticsTab from "./OrganizerAnalyticsTab";
 import {
   Building2, Landmark, Eye, Star, MapPin, Globe, Mail, Phone,
   Calendar, CheckCircle2, ExternalLink, Ticket, TrendingUp,
-  ArrowUpRight, Clock, Shield, UserCircle2,
+  ArrowUpRight, Clock, Shield, UserCircle2, BarChart3,
 } from "lucide-react";
 
 interface Props {
