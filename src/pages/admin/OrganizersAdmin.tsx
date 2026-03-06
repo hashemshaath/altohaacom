@@ -152,6 +152,52 @@ export default function OrganizersAdmin() {
     }
   }, [form, autoTranslateFields, isAr]);
 
+  // Image upload handler
+  const handleImageUpload = useCallback(async (
+    file: File,
+    type: "logo" | "cover"
+  ) => {
+    const setter = type === "logo" ? setUploadingLogo : setUploadingCover;
+    setter(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `organizers/${type}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("company-media").upload(path, file, { contentType: file.type });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
+      const url = urlData.publicUrl;
+      setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: url }));
+      toast.success(isAr ? "تم الرفع بنجاح" : "Uploaded successfully");
+    } catch (err: any) {
+      toast.error(err.message || (isAr ? "فشل الرفع" : "Upload failed"));
+    } finally {
+      setter(false);
+    }
+  }, [isAr]);
+
+  // Form validation
+  const validateForm = useCallback((f: OrganizerForm): Record<string, string> => {
+    const errors: Record<string, string> = {};
+    if (!f.name.trim()) errors.name = isAr ? "الاسم مطلوب" : "Name is required";
+    if (f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errors.email = isAr ? "بريد غير صالح" : "Invalid email";
+    if (f.website && !/^https?:\/\/.+/.test(f.website)) errors.website = isAr ? "رابط غير صالح (يبدأ بـ https://)" : "Invalid URL (must start with https://)";
+    if (f.founded_year && (parseInt(f.founded_year) < 1900 || parseInt(f.founded_year) > new Date().getFullYear())) {
+      errors.founded_year = isAr ? "سنة غير صالحة" : "Invalid year";
+    }
+    if (f.country_code && f.country_code.length !== 2) errors.country_code = isAr ? "رمز من حرفين" : "Must be 2 letters";
+    return errors;
+  }, [isAr]);
+
+  const handleSave = useCallback(() => {
+    const errors = validateForm(form);
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      toast.error(isAr ? "يرجى تصحيح الأخطاء" : "Please fix validation errors");
+      return;
+    }
+    saveMutation.mutate(form);
+  }, [form, validateForm, saveMutation, isAr]);
+
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["admin-organizers"],
     queryFn: async () => {
