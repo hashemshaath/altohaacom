@@ -505,6 +505,17 @@ export default function ExhibitionsAdmin() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            <EntityFormGuard
+              entity={{ name: (form.title as string) || "", name_ar: (form.title_ar as string) || "", email: (form.email as string) || "", phone: (form.phone as string) || "", website: (form.website as string) || "", city: (form.city as string) || "", country: (form.country as string) || "" }}
+              tables={["exhibitions", "organizers", "companies"]}
+              excludeId={editingId || undefined}
+              translationFields={[
+                { en: (form.title as string) || null, ar: (form.title_ar as string) || null, key: "title" },
+                { en: (form.description as string) || null, ar: (form.description_ar as string) || null, key: "description" },
+              ]}
+              translationContext="exhibition / food event / trade show"
+              onTranslated={(u) => setForm(f => ({ ...f, ...u }))}
+            />
             {/* Section: Series & Edition */}
             <div>
               <SectionHeader icon={Layers} title={t("Event Series & Edition", "سلسلة الفعالية والإصدار")} />
