@@ -42,7 +42,7 @@ const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter"
 const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
 const FinanceMembershipWidget = lazy(() => import("@/components/admin/FinanceMembershipWidget").then(m => ({ default: m.FinanceMembershipWidget })));
 const DedupDashboardWidget = lazy(() => import("@/components/admin/DedupDashboardWidget").then(m => ({ default: m.DedupDashboardWidget })));
-
+const DataQualityDashboardWidget = lazy(() => import("@/components/admin/DataQualityDashboardWidget").then(m => ({ default: m.DataQualityDashboardWidget })));
 
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
@@ -629,6 +629,9 @@ export default function AdminDashboard() {
 
       {/* Deduplication Widget */}
       <LazySection><DedupDashboardWidget /></LazySection>
+
+      {/* Data Quality Widget */}
+      <LazySection><DataQualityDashboardWidget /></LazySection>
     </div>
   );
 }
