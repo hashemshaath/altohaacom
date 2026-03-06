@@ -1,4 +1,9 @@
-import { lazy, Suspense, useMemo, useEffect } from "react";
+import React, { lazy, Suspense, useMemo, useEffect } from "react";
+
+/** Thin wrapper to prevent React from attaching refs to lazy function components */
+function SectionWrapper({ Component }: { Component: React.LazyExoticComponent<any> }) {
+  return <Component />;
+}
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
@@ -115,12 +120,11 @@ const Index = () => {
         );
       }
 
-      // Wrap each component in SectionKeyProvider + Shell for DB config application
       return (
         <Suspense key={key} fallback={<SectionSkeleton />}>
           <SectionKeyProvider sectionKey={key}>
             <HomepageSectionShell>
-              <Component />
+              <SectionWrapper Component={Component} />
             </HomepageSectionShell>
           </SectionKeyProvider>
         </Suspense>
