@@ -78,9 +78,6 @@ export default function Profile() {
     { id: "overview", label: isAr ? "ملفي الشخصي" : "Profile", icon: User },
     ...(isFan ? [
       { id: "favorites", label: isAr ? "المفضلة" : "Favorites", icon: Heart },
-      { id: "following", label: isAr ? "المتابَعون" : "Following", icon: Users },
-      { id: "achievements", label: isAr ? "الإنجازات" : "Achievements", icon: Award },
-      { id: "customize", label: isAr ? "التخصيص" : "Customize", icon: Sparkles },
     ] : [
       { id: "competitions", label: isAr ? "المسابقات" : "Competitions", icon: Trophy },
     ]),
