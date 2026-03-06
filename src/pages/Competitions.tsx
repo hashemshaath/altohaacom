@@ -152,48 +152,42 @@ export default function Competitions() {
     >
       <main className="flex-1">
         {/* Top Banner Ad */}
-        <div className="container mt-4">
+        <div className="container mt-3">
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
 
-        {/* Editorial Hero */}
-        <section className="relative overflow-hidden border-b border-border/30">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/40 to-transparent" />
-          <div className="container relative py-8 md:py-14">
-            <div className="flex items-end justify-between gap-4" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
-              <div className="space-y-3 sm:space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/15">
-                  <Sparkles className="h-3 w-3 text-primary animate-pulse" />
-                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-primary">
+        {/* Editorial Hero — compact & clean */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="container relative py-6 md:py-10">
+            <div className="flex items-end justify-between gap-4">
+              <div className="space-y-2.5 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/15">
+                  <Sparkles className="h-3 w-3 text-primary" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                     {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
                   </span>
                 </div>
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight md:text-5xl">
+                <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight md:text-4xl">
                   {isAr ? "المسابقات" : "Competitions"}
                 </h1>
-                <p className="hidden sm:block text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl">
+                <p className="hidden sm:block text-muted-foreground text-sm leading-relaxed max-w-lg">
                   {isAr
                     ? "اكتشف مسابقات الطهي واشترك فيها. تنافس مع أفضل الطهاة."
                     : "Discover and join culinary competitions. Compete with top chefs worldwide."}
                 </p>
 
-                {/* Stats row */}
-                <div className="flex items-center gap-3 sm:gap-6">
+                {/* Stats chips */}
+                <div className="flex items-center gap-2 sm:gap-4 pt-1">
                   {[
-                    { numValue: counts.all, label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
-                    { numValue: counts.active, label: isAr ? "نشطة الآن" : "Live Now", icon: <Flame className="h-3 w-3 sm:h-3.5 sm:w-3.5" />, live: counts.active > 0 },
-                    { numValue: countryCodes.length, label: isAr ? "الدول" : "Countries", icon: <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> },
+                    { numValue: counts.all, label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3" /> },
+                    { numValue: counts.active, label: isAr ? "نشطة" : "Live", icon: <Flame className="h-3 w-3" />, live: counts.active > 0 },
+                    { numValue: countryCodes.length, label: isAr ? "دول" : "Countries", icon: <Globe className="h-3 w-3" /> },
                   ].map((stat, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <div className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl ${stat.live ? "bg-chart-3/10 text-chart-3" : "bg-primary/10 text-primary"} ring-1 ${stat.live ? "ring-chart-3/15" : "ring-primary/10"}`}>
-                        {stat.icon}
-                      </div>
-                      <div>
-                        <AnimatedCounter value={stat.numValue} className="text-base sm:text-lg font-black leading-none tabular-nums" />
-                        <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
-                      </div>
+                    <div key={i} className="flex items-center gap-1.5 rounded-full bg-muted/40 px-2.5 py-1.5 ring-1 ring-border/30">
+                      <span className={stat.live ? "text-chart-3" : "text-primary"}>{stat.icon}</span>
+                      <AnimatedCounter value={stat.numValue} className="text-sm font-bold tabular-nums" />
+                      <span className="text-[10px] text-muted-foreground font-medium hidden sm:inline">{stat.label}</span>
                     </div>
                   ))}
                 </div>
@@ -212,34 +206,34 @@ export default function Competitions() {
           </div>
         </section>
 
-        <div className="container py-4 md:py-6">
+        <div className="container py-4 md:py-6 space-y-6">
           {/* Featured Competition */}
           {featured && !search && activeTab === "all" && (
             <FeaturedCompetitionCard competition={featured} language={language} isAr={isAr} />
           )}
 
-          {/* Sticky Filters + Tab Pills + Sort */}
-          <div className="sticky top-12 z-30 -mx-4 mb-6 border-y border-border/30 bg-background/90 px-4 py-3 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-5 md:bg-card/60 space-y-3">
+          {/* Sticky Filters */}
+          <div className="sticky top-12 z-30 -mx-4 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-border/20 md:rounded-2xl md:border md:border-border/20 md:mx-0 md:px-4 md:bg-card/60 space-y-2.5">
             <div className="flex gap-2 items-center">
               <div className="relative flex-1">
-                <Search className="absolute start-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
+                <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/50" />
                 <Input
                   placeholder={isAr ? "ابحث..." : "Search..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="h-9 border-border/30 bg-muted/15 ps-9 text-sm transition-all focus:bg-background rounded-xl"
+                  className="h-9 border-border/20 bg-muted/10 ps-9 text-sm rounded-xl"
                 />
               </div>
               {countryCodes.length > 1 && (
                 <Select value={countryFilter} onValueChange={setCountryFilter}>
-                  <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[120px] border-border/30 bg-muted/15 rounded-xl text-xs px-2.5">
-                    <MapPin className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                  <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[120px] border-border/20 bg-muted/10 rounded-xl text-xs px-2.5">
+                    <MapPin className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
                     <SelectValue placeholder={isAr ? "دولة" : "Country"} />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl border-border/30">
-                    <SelectItem value="all" className="rounded-xl">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
+                  <SelectContent className="rounded-xl border-border/20">
+                    <SelectItem value="all" className="rounded-lg">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
                     {countryCodes.map((code) => (
-                      <SelectItem key={code} value={code} className="rounded-xl">
+                      <SelectItem key={code} value={code} className="rounded-lg">
                         <span className="flex items-center gap-2">
                           <span>{countryFlag(code)}</span>
                           <span className="hidden sm:inline">{getCountryName(code)}</span>
@@ -250,34 +244,31 @@ export default function Competitions() {
                 </Select>
               )}
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-                <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[130px] border-border/30 bg-muted/15 rounded-xl text-xs px-2.5">
-                  <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                <SelectTrigger className="h-9 w-auto min-w-[42px] max-w-[130px] border-border/20 bg-muted/10 rounded-xl text-xs px-2.5">
+                  <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-border/30">
-                  <SelectItem value="date" className="rounded-xl text-xs">{isAr ? "التاريخ" : "Date"}</SelectItem>
-                  <SelectItem value="name" className="rounded-xl text-xs">{isAr ? "الاسم" : "Name"}</SelectItem>
-                  <SelectItem value="popularity" className="rounded-xl text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
+                <SelectContent className="rounded-xl border-border/20">
+                  <SelectItem value="date" className="rounded-lg text-xs">{isAr ? "التاريخ" : "Date"}</SelectItem>
+                  <SelectItem value="name" className="rounded-lg text-xs">{isAr ? "الاسم" : "Name"}</SelectItem>
+                  <SelectItem value="popularity" className="rounded-lg text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             {/* Tab Pills */}
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-none">
+            <div className="flex gap-1 overflow-x-auto scrollbar-none">
               {TAB_FILTERS.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 touch-manipulation active:scale-95 ${
+                  className={`relative inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-200 touch-manipulation active:scale-95 ${
                     activeTab === tab
-                      ? "text-primary-foreground"
-                      : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                      : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
                   }`}
                 >
-                  {activeTab === tab && (
-                    <div className="absolute inset-0 rounded-xl bg-primary shadow-lg shadow-primary/20 animate-in fade-in zoom-in-95 duration-300" />
-                  )}
-                  <span className="relative z-10">{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
-                  <span className={`relative z-10 ms-1 inline-flex h-4 min-w-[16px] items-center justify-center rounded-xl px-1 text-[9px] font-black tabular-nums ${
+                  <span>{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
+                  <span className={`ms-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-black tabular-nums ${
                     activeTab === tab
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"
@@ -291,13 +282,13 @@ export default function Competitions() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
               {Array.from({ length: 6 }, (_, i) => (
-                <Card key={i} className="overflow-hidden rounded-2xl">
+                <Card key={i} className="overflow-hidden rounded-2xl border-border/20">
                   <Skeleton className="aspect-[16/10] w-full" />
                   <CardContent className="space-y-2 p-3">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
+                    <Skeleton className="h-4 w-3/4 rounded-lg" />
+                    <Skeleton className="h-3 w-1/2 rounded-lg" />
                   </CardContent>
                 </Card>
               ))}
@@ -316,7 +307,7 @@ export default function Competitions() {
               ) : undefined}
             />
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
               {filtered?.map((comp) => (
                 <CompetitionCard key={comp.id} competition={comp} language={language} isAr={isAr} />
               ))}
@@ -325,7 +316,7 @@ export default function Competitions() {
 
           {/* Stats Footer */}
           {competitions && competitions.length > 0 && (
-            <section className="mt-14 border-t border-border/20 pt-8">
+            <section className="border-t border-border/10 pt-6">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
                   { label: isAr ? "إجمالي المسابقات" : "Total Competitions", value: counts.all, icon: Trophy, color: "text-primary" },
@@ -333,12 +324,12 @@ export default function Competitions() {
                   { label: isAr ? "المسجلين" : "Registrations", value: totalRegistrations, icon: Users, color: "text-chart-1" },
                   { label: isAr ? "الدول" : "Countries", value: countryCodes.length, icon: Globe, color: "text-accent-foreground" },
                 ].map((stat) => (
-                  <Card key={stat.label} className="border-border/20 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 rounded-2xl">
-                    <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/30">
-                        <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
+                  <Card key={stat.label} className="border-border/10 bg-card/50 rounded-2xl">
+                    <CardContent className="p-3.5 flex flex-col items-center text-center gap-1">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/30">
+                        <stat.icon className={`h-4 w-4 ${stat.color} opacity-50`} />
                       </div>
-                      <AnimatedCounter value={stat.value} className="text-2xl font-bold text-foreground sm:text-3xl tabular-nums" />
+                      <AnimatedCounter value={stat.value} className="text-xl font-bold text-foreground sm:text-2xl tabular-nums" />
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
                     </CardContent>
                   </Card>
