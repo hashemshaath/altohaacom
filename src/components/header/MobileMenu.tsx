@@ -187,7 +187,7 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
               </Link>
             )}
 
-            <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+            <nav className="flex-1 overflow-y-auto overscroll-contain p-3 space-y-0.5 scroll-smooth">
               {user ? (
                 <>
                   {/* Quick actions - always visible */}
