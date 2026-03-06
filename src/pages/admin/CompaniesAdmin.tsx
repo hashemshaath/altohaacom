@@ -7,6 +7,8 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useTableSort } from "@/hooks/useTableSort";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { usePagination } from "@/hooks/usePagination";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

@@ -9,6 +9,8 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { usePagination } from "@/hooks/usePagination";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
 import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
