@@ -4,6 +4,7 @@ import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { useTableSort } from "@/hooks/useTableSort";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,6 +41,7 @@ import {
 } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidget";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { CompanyLiveStatsWidget } from "@/components/admin/CompanyLiveStatsWidget";
 import { format } from "date-fns";
 
@@ -684,7 +686,8 @@ export default function CompaniesAdmin() {
     suppliers: companies.filter(c => c.type === "supplier").length,
   };
 
-  const bulk = useAdminBulkActions(companies);
+  const { sorted: sortedCompanies, sortColumn, sortDirection, toggleSort } = useTableSort(companies, "created_at", "desc");
+  const bulk = useAdminBulkActions(sortedCompanies);
 
   const { exportCSV: exportCompaniesCSV } = useCSVExport({
     columns: [
@@ -1897,17 +1900,17 @@ export default function CompaniesAdmin() {
                     <TableHead className="w-10">
                       <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                     </TableHead>
-                    <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
-                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
+                    <SortableTableHead column="name" label={isAr ? "الشركة" : "Company"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead>{isAr ? "الاتصال" : "Contact"}</TableHead>
-                    <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
-                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                    <SortableTableHead column="country" label={isAr ? "الموقع" : "Location"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {companies.map(company => (
+                  {sortedCompanies.map(company => (
                     <TableRow key={company.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(company.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedCompany(company.id)}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={bulk.isSelected(company.id)} onCheckedChange={() => bulk.toggleOne(company.id)} />
