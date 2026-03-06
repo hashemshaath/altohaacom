@@ -629,6 +629,9 @@ export default function AdminDashboard() {
 
       {/* Deduplication Widget */}
       <LazySection><DedupDashboardWidget /></LazySection>
+
+      {/* Data Quality Widget */}
+      <LazySection><DataQualityDashboardWidget /></LazySection>
     </div>
   );
 }
