@@ -7,6 +7,8 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useTableSort } from "@/hooks/useTableSort";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { usePagination } from "@/hooks/usePagination";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -687,6 +689,7 @@ export default function CompaniesAdmin() {
   };
 
   const { sorted: sortedCompanies, sortColumn, sortDirection, toggleSort } = useTableSort(companies, "created_at", "desc");
+  const companyPagination = usePagination(sortedCompanies, { defaultPageSize: 15 });
   const bulk = useAdminBulkActions(sortedCompanies);
 
   const { exportCSV: exportCompaniesCSV } = useCSVExport({
@@ -1910,7 +1913,7 @@ export default function CompaniesAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedCompanies.map(company => (
+                  {companyPagination.paginated.map(company => (
                     <TableRow key={company.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(company.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedCompany(company.id)}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={bulk.isSelected(company.id)} onCheckedChange={() => bulk.toggleOne(company.id)} />
@@ -1983,6 +1986,19 @@ export default function CompaniesAdmin() {
               </Table>
             </ScrollArea>
           </CardContent>
+          <AdminTablePagination
+            page={companyPagination.page}
+            totalPages={companyPagination.totalPages}
+            totalItems={companyPagination.totalItems}
+            startItem={companyPagination.startItem}
+            endItem={companyPagination.endItem}
+            pageSize={companyPagination.pageSize}
+            pageSizeOptions={companyPagination.pageSizeOptions}
+            hasNext={companyPagination.hasNext}
+            hasPrev={companyPagination.hasPrev}
+            onPageChange={companyPagination.goTo}
+            onPageSizeChange={companyPagination.changePageSize}
+          />
         </Card>
         </>
         )}

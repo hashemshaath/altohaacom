@@ -9,6 +9,8 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { usePagination } from "@/hooks/usePagination";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
 import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
@@ -235,6 +237,8 @@ export default function OrganizersAdmin() {
   }, [organizers, search, statusFilter, countryFilter, verifiedFilter, sortKey, sortDir]);
 
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: selectedCount } = useAdminBulkActions(filtered);
+
+  const pagination = usePagination(filtered, { defaultPageSize: 15 });
 
   const { exportCSV } = useCSVExport({
     columns: [
@@ -578,7 +582,7 @@ export default function OrganizersAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((org: any) => (
+                  {pagination.paginated.map((org: any) => (
                     <TableRow key={org.id} className={`cursor-pointer ${selected.has(org.id) ? "bg-primary/5" : ""}`} onClick={() => setDetailId(org.id)}>
                       <TableCell onClick={e => e.stopPropagation()}><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
                       <TableCell>
@@ -653,6 +657,19 @@ export default function OrganizersAdmin() {
                   ))}
                 </TableBody>
               </Table>
+              <AdminTablePagination
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.totalItems}
+                startItem={pagination.startItem}
+                endItem={pagination.endItem}
+                pageSize={pagination.pageSize}
+                pageSizeOptions={pagination.pageSizeOptions}
+                hasNext={pagination.hasNext}
+                hasPrev={pagination.hasPrev}
+                onPageChange={pagination.goTo}
+                onPageSizeChange={pagination.changePageSize}
+              />
             </Card>
           )}
         </>
