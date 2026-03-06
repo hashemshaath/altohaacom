@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -504,6 +505,17 @@ export default function ExhibitionsAdmin() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
+            <EntityFormGuard
+              entity={{ name: (form.title as string) || "", name_ar: (form.title_ar as string) || "", website: (form.website_url as string) || "", city: (form.city as string) || "", country: (form.country as string) || "" }}
+              tables={["exhibitions", "organizers", "companies"]}
+              excludeId={editingId || undefined}
+              translationFields={[
+                { en: (form.title as string) || null, ar: (form.title_ar as string) || null, key: "title" },
+                { en: (form.description as string) || null, ar: (form.description_ar as string) || null, key: "description" },
+              ]}
+              translationContext="exhibition / food event / trade show"
+              onTranslated={(u) => setForm(f => ({ ...f, ...u }))}
+            />
             {/* Section: Series & Edition */}
             <div>
               <SectionHeader icon={Layers} title={t("Event Series & Edition", "سلسلة الفعالية والإصدار")} />
