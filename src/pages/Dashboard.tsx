@@ -187,9 +187,6 @@ export default function Dashboard() {
           {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
           {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
 
-          {/* Fan extras */}
-          {user && isFan && <W><FanSmartRecommendations /></W>}
-          {user && isFan && <W><FanAchievementBadges /></W>}
 
           {/* Pro extras */}
           {user && !isFan && <W><ActivityHeatmapWidget /></W>}
