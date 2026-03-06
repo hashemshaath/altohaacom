@@ -13,13 +13,16 @@ export function PageTransition({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (pathname !== prevPath.current && ref.current) {
       ref.current.style.opacity = "0";
-      ref.current.style.transform = "translateY(6px)";
+      ref.current.style.transform = "translateY(4px)";
+      // Double rAF ensures the browser paints the "hidden" state first
       requestAnimationFrame(() => {
-        if (ref.current) {
-          ref.current.style.transition = "opacity 0.22s ease-out, transform 0.22s ease-out";
-          ref.current.style.opacity = "1";
-          ref.current.style.transform = "translateY(0)";
-        }
+        requestAnimationFrame(() => {
+          if (ref.current) {
+            ref.current.style.transition = "opacity 0.2s cubic-bezier(0.22,1,0.36,1), transform 0.2s cubic-bezier(0.22,1,0.36,1)";
+            ref.current.style.opacity = "1";
+            ref.current.style.transform = "translateY(0)";
+          }
+        });
       });
       prevPath.current = pathname;
     }
