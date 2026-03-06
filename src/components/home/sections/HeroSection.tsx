@@ -24,7 +24,7 @@ interface HeroSlide {
   sort_order: number;
 }
 
-/* ── Slide background — memoised to avoid heavy re-renders ── */
+/* ── Memoised slide background ── */
 const SlideBackground = memo(function SlideBackground({
   slide,
   isActive,
@@ -34,6 +34,8 @@ const SlideBackground = memo(function SlideBackground({
   isActive: boolean;
   isFirst: boolean;
 }) {
+  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.55);
+
   return (
     <div
       className={cn(
@@ -49,10 +51,9 @@ const SlideBackground = memo(function SlideBackground({
         decoding={isFirst ? "sync" : "async"}
         fetchPriority={isFirst ? "high" : undefined}
       />
-      {/* Triple-layer gradient for text readability */}
       <div
         className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent"
-        style={{ opacity: Math.max((slide.overlay_opacity || 50) / 100, 0.55) }}
+        style={{ opacity }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/15 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background to-transparent" />
@@ -65,8 +66,8 @@ export function HeroSection() {
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
-  const progressRef = useRef<number | null>(null);
-  const lastTickRef = useRef(0);
+  const rafRef = useRef<number>(0);
+  const startRef = useRef(0);
 
   const { data: slides = [] } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides"],
@@ -84,59 +85,52 @@ export function HeroSection() {
   const goTo = useCallback((idx: number) => {
     setCurrent(idx);
     setProgress(0);
-    lastTickRef.current = performance.now();
+    startRef.current = performance.now();
   }, []);
 
   const next = useCallback(
     () => goTo((current + 1) % Math.max(slides.length, 1)),
     [current, slides.length, goTo]
   );
+
   const prev = useCallback(
     () => goTo((current - 1 + slides.length) % Math.max(slides.length, 1)),
     [current, slides.length, goTo]
   );
 
-  // RAF-based progress + auto-advance
   useEffect(() => {
     if (slides.length <= 1) return;
-    lastTickRef.current = performance.now();
+    startRef.current = performance.now();
 
     const tick = (now: number) => {
-      const elapsed = now - lastTickRef.current;
-      const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      const pct = Math.min(((now - startRef.current) / SLIDE_DURATION) * 100, 100);
       setProgress(pct);
       if (pct >= 100) {
-        setCurrent((c) => (c + 1) % slides.length);
+        setCurrent(c => (c + 1) % slides.length);
         setProgress(0);
-        lastTickRef.current = now;
+        startRef.current = now;
       }
-      progressRef.current = requestAnimationFrame(tick);
+      rafRef.current = requestAnimationFrame(tick);
     };
 
-    progressRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (progressRef.current) cancelAnimationFrame(progressRef.current);
-    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [slides.length, current]);
 
-  /* ── Fallback: no slides ── */
-  if (slides.length === 0) {
+  /* ── Empty state ── */
+  if (!slides.length) {
     return (
       <section className="relative flex min-h-[60vh] items-center justify-center bg-muted/30 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
-
         <div className="text-center space-y-6 px-4 relative">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
-          </div>
-           <h1 className={cn(
-            "text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.05]",
-            isAr ? "font-sans" : "font-serif"
-          )}>
+          </span>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1] font-sans">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg">
+          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg font-sans">
             {isAr
               ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
               : "Join the finest chefs, judges, and organizers worldwide"}
@@ -157,14 +151,8 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-background" dir={isAr ? "rtl" : "ltr"}>
       <div className="relative min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh]">
-        {/* Background slides */}
         {slides.map((s, idx) => (
-          <SlideBackground
-            key={s.id}
-            slide={s}
-            isActive={idx === current}
-            isFirst={idx === 0}
-          />
+          <SlideBackground key={s.id} slide={s} isActive={idx === current} isFirst={idx === 0} />
         ))}
 
         {/* Content */}
@@ -172,34 +160,19 @@ export function HeroSection() {
           <div
             key={slide.id}
             className="max-w-2xl space-y-5"
-            style={{
-              animation: "heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-            }}
+            style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
-            </div>
+            </span>
 
-            {/* Title — font-serif for English, font-sans (Noto Sans Arabic) for Arabic */}
-            <h1
-              className={cn(
-                "text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.05] text-foreground drop-shadow-lg",
-                isAr ? "font-sans" : "font-serif"
-              )}
-            >
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-foreground drop-shadow-lg font-sans">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
-            {/* Subtitle */}
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p
-                className={cn(
-                  "text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed drop-shadow-md",
-                  isAr ? "font-sans font-light text-foreground/80" : "font-light text-muted-foreground"
-                )}
-              >
+              <p className="text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed text-muted-foreground drop-shadow-md font-sans">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
@@ -221,7 +194,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Navigation arrows */}
+        {/* Navigation */}
         {slides.length > 1 && (
           <>
             <button
@@ -239,7 +212,6 @@ export function HeroSection() {
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
             </button>
 
-            {/* Progress indicators */}
             <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
               {slides.map((_, idx) => (
                 <button
@@ -247,19 +219,14 @@ export function HeroSection() {
                   onClick={() => goTo(idx)}
                   className={cn(
                     "relative h-2 rounded-full transition-all duration-500 ease-out overflow-hidden",
-                    idx === current
-                      ? "w-8 bg-muted-foreground/15"
-                      : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
+                    idx === current ? "w-8 bg-muted-foreground/15" : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
                   )}
                   aria-label={`Slide ${idx + 1}`}
                 >
                   {idx === current && (
                     <span
                       className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-[var(--shadow-glow)]"
-                      style={{
-                        width: `${progress}%`,
-                        transition: "width 80ms linear",
-                      }}
+                      style={{ width: `${progress}%`, transition: "width 80ms linear" }}
                     />
                   )}
                 </button>
