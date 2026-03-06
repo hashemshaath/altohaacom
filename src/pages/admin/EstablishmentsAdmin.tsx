@@ -379,6 +379,8 @@ export default function EstablishmentsAdmin() {
         open={!!detailId}
         onClose={() => setDetailId(null)}
       />
+      </>
+      )}
     </div>
   );
 }
