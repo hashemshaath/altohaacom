@@ -502,6 +502,14 @@ export default function ExhibitionsAdmin() {
         <BulkImportPanel entityType="exhibition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] }); }} />
       )}
 
+      {/* Dedup Scanner */}
+      {showDedupScanner && (
+        <BatchDuplicateScanner
+          defaultTable="exhibitions"
+          onMergeComplete={() => queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] })}
+        />
+      )}
+
       {/* Inline Form */}
       {showForm && (
         <Card className="border-primary/20">
