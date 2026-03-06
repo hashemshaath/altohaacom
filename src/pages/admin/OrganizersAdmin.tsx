@@ -414,6 +414,22 @@ export default function OrganizersAdmin() {
 
   const selectedArray = Array.from(selected);
 
+  const toggleSort = useCallback((key: string) => {
+    setSortKey(prev => {
+      if (prev === key) {
+        setSortDir(d => d === "asc" ? "desc" : "asc");
+        return key;
+      }
+      setSortDir("asc");
+      return key;
+    });
+  }, []);
+
+  const SortIcon = ({ col }: { col: string }) => {
+    if (sortKey !== col) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />;
+    return sortDir === "asc" ? <ArrowUp className="h-3 w-3 text-primary" /> : <ArrowDown className="h-3 w-3 text-primary" />;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header with tab toggle */}
