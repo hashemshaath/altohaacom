@@ -130,9 +130,9 @@ export function HeroSection() {
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </div>
-          <h1 className={cn(
-            "text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.08]",
-            !isAr && "font-serif"
+           <h1 className={cn(
+            "text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.05]",
+            isAr ? "font-sans" : "font-serif"
           )}>
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
@@ -185,13 +185,9 @@ export function HeroSection() {
             {/* Title — font-serif for English, font-sans (Noto Sans Arabic) for Arabic */}
             <h1
               className={cn(
-                "text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.08] text-foreground",
-                !isAr && "font-serif"
+                "text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.05] text-foreground drop-shadow-lg",
+                isAr ? "font-sans" : "font-serif"
               )}
-              style={{
-                textShadow:
-                  "0 2px 16px hsl(var(--background) / 0.5), 0 4px 32px hsl(var(--background) / 0.3)",
-              }}
             >
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
@@ -199,10 +195,10 @@ export function HeroSection() {
             {/* Subtitle */}
             {(slide.subtitle || slide.subtitle_ar) && (
               <p
-                className="text-sm font-normal text-muted-foreground sm:text-base lg:text-lg max-w-lg leading-relaxed"
-                style={{
-                  textShadow: "0 1px 10px hsl(var(--background) / 0.4)",
-                }}
+                className={cn(
+                  "text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed drop-shadow-md",
+                  isAr ? "font-sans font-light text-foreground/80" : "font-light text-muted-foreground"
+                )}
               >
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
