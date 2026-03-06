@@ -44,6 +44,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import ExhibitionDetailDrawer from "@/components/admin/ExhibitionDetailDrawer";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
