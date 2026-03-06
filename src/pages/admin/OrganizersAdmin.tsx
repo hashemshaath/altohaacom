@@ -41,7 +41,7 @@ import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
   Shield, ScanSearch, Languages, FileSpreadsheet, Upload, X, ImageIcon, Loader2,
-  Twitter, Facebook, Linkedin, Instagram, AlertCircle, Link2,
+  Twitter, Facebook, Linkedin, Instagram, AlertCircle, Link2, ArrowUpDown, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -103,6 +103,9 @@ export default function OrganizersAdmin() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [exhibitionsPanel, setExhibitionsPanel] = useState<{ id: string; name: string; logo?: string | null } | null>(null);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<string>("created_at");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [verifiedFilter, setVerifiedFilter] = useState<"all" | "verified" | "unverified">("all");
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
@@ -210,12 +213,26 @@ export default function OrganizersAdmin() {
     [organizers]
   );
 
-  const filtered = useMemo(() => (organizers || []).filter((o: any) => {
-    const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || o.status === statusFilter;
-    const matchCountry = countryFilter === "all" || o.country === countryFilter;
-    return matchSearch && matchStatus && matchCountry;
-  }), [organizers, search, statusFilter, countryFilter]);
+  const filtered = useMemo(() => {
+    const list = (organizers || []).filter((o: any) => {
+      const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
+      const matchStatus = statusFilter === "all" || o.status === statusFilter;
+      const matchCountry = countryFilter === "all" || o.country === countryFilter;
+      const matchVerified = verifiedFilter === "all" || (verifiedFilter === "verified" ? o.is_verified : !o.is_verified);
+      return matchSearch && matchStatus && matchCountry && matchVerified;
+    });
+    // Sort
+    return list.sort((a: any, b: any) => {
+      let av = a[sortKey], bv = b[sortKey];
+      if (typeof av === "string") av = av.toLowerCase();
+      if (typeof bv === "string") bv = bv.toLowerCase();
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (av < bv) return sortDir === "asc" ? -1 : 1;
+      if (av > bv) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [organizers, search, statusFilter, countryFilter, verifiedFilter, sortKey, sortDir]);
 
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count: selectedCount } = useAdminBulkActions(filtered);
 
@@ -397,6 +414,22 @@ export default function OrganizersAdmin() {
 
   const selectedArray = Array.from(selected);
 
+  const toggleSort = useCallback((key: string) => {
+    setSortKey(prev => {
+      if (prev === key) {
+        setSortDir(d => d === "asc" ? "desc" : "asc");
+        return key;
+      }
+      setSortDir("asc");
+      return key;
+    });
+  }, []);
+
+  const SortIcon = ({ col }: { col: string }) => {
+    if (sortKey !== col) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />;
+    return sortDir === "asc" ? <ArrowUp className="h-3 w-3 text-primary" /> : <ArrowDown className="h-3 w-3 text-primary" />;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header with tab toggle */}
@@ -484,6 +517,14 @@ export default function OrganizersAdmin() {
                     </SelectContent>
                   </Select>
                 )}
+                <Select value={verifiedFilter} onValueChange={(v: any) => setVerifiedFilter(v)}>
+                  <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                    <SelectItem value="verified">{isAr ? "موثق" : "Verified"}</SelectItem>
+                    <SelectItem value="unverified">{isAr ? "غير موثق" : "Unverified"}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => { setShowBulkImport(!showBulkImport); }}>
@@ -526,20 +567,20 @@ export default function OrganizersAdmin() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10"><Checkbox checked={isAllSelected} onCheckedChange={toggleAll} /></TableHead>
-                    <TableHead>{isAr ? "المنظم" : "Organizer"}</TableHead>
-                    <TableHead>{isAr ? "الموقع" : "Location"}</TableHead>
+                    <TableHead><button onClick={() => toggleSort("name")} className="flex items-center gap-1 hover:text-foreground transition-colors">{isAr ? "المنظم" : "Organizer"} <SortIcon col="name" /></button></TableHead>
+                    <TableHead><button onClick={() => toggleSort("country")} className="flex items-center gap-1 hover:text-foreground transition-colors">{isAr ? "الموقع" : "Location"} <SortIcon col="country" /></button></TableHead>
                     <TableHead>{isAr ? "التواصل" : "Contact"}</TableHead>
                     <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "المعارض" : "Events"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "المشاهدات" : "Views"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "التقييم" : "Rating"}</TableHead>
+                    <TableHead className="text-center"><button onClick={() => toggleSort("total_exhibitions")} className="flex items-center gap-1 hover:text-foreground transition-colors mx-auto">{isAr ? "المعارض" : "Events"} <SortIcon col="total_exhibitions" /></button></TableHead>
+                    <TableHead className="text-center"><button onClick={() => toggleSort("total_views")} className="flex items-center gap-1 hover:text-foreground transition-colors mx-auto">{isAr ? "المشاهدات" : "Views"} <SortIcon col="total_views" /></button></TableHead>
+                    <TableHead className="text-center"><button onClick={() => toggleSort("average_rating")} className="flex items-center gap-1 hover:text-foreground transition-colors mx-auto">{isAr ? "التقييم" : "Rating"} <SortIcon col="average_rating" /></button></TableHead>
                     <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filtered.map((org: any) => (
-                    <TableRow key={org.id} className={selected.has(org.id) ? "bg-primary/5" : ""}>
-                      <TableCell><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
+                    <TableRow key={org.id} className={`cursor-pointer ${selected.has(org.id) ? "bg-primary/5" : ""}`} onClick={() => setDetailId(org.id)}>
+                      <TableCell onClick={e => e.stopPropagation()}><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-9 w-9 rounded-xl">
@@ -548,7 +589,7 @@ export default function OrganizersAdmin() {
                           </Avatar>
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <Link to={`/organizers/${org.slug}`} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
+                              <Link to={`/organizers/${org.slug}`} onClick={e => e.stopPropagation()} className="font-medium text-sm hover:text-primary truncate">{org.name}</Link>
                               {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
                               {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
                             </div>
@@ -581,7 +622,7 @@ export default function OrganizersAdmin() {
                           </span>
                         ) : <span className="text-muted-foreground text-xs">—</span>}
                       </TableCell>
-                      <TableCell>
+                      <TableCell onClick={e => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-4 w-4" /></Button>
