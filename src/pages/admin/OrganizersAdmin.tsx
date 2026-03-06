@@ -13,6 +13,7 @@ import { useEntityDedup } from "@/hooks/useEntityDedup";
 import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
+import { OrganizerExhibitionsPanel } from "@/components/admin/OrganizerExhibitionsPanel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +40,7 @@ import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
   Shield, ScanSearch, Languages, FileSpreadsheet, Upload, X, ImageIcon, Loader2,
-  Twitter, Facebook, Linkedin, Instagram, AlertCircle,
+  Twitter, Facebook, Linkedin, Instagram, AlertCircle, Link2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -99,6 +100,7 @@ export default function OrganizersAdmin() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [exhibitionsPanel, setExhibitionsPanel] = useState<{ id: string; name: string; logo?: string | null } | null>(null);
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
@@ -589,6 +591,9 @@ export default function OrganizersAdmin() {
                             <DropdownMenuItem onClick={() => openEdit(org)}>
                               <Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setExhibitionsPanel({ id: org.id, name: org.name, logo: org.logo_url })}>
+                              <Link2 className="h-3.5 w-3.5 me-2" />{isAr ? "المعارض المرتبطة" : "Linked Exhibitions"}
+                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => refreshStatsMutation.mutate(org.id)}>
                               <RefreshCw className="h-3.5 w-3.5 me-2" />{isAr ? "تحديث الإحصائيات" : "Refresh Stats"}
                             </DropdownMenuItem>
@@ -831,6 +836,17 @@ export default function OrganizersAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Organizer Exhibitions Panel */}
+      {exhibitionsPanel && (
+        <OrganizerExhibitionsPanel
+          open={!!exhibitionsPanel}
+          onOpenChange={o => { if (!o) setExhibitionsPanel(null); }}
+          organizerId={exhibitionsPanel.id}
+          organizerName={exhibitionsPanel.name}
+          organizerLogo={exhibitionsPanel.logo}
+        />
+      )}
     </div>
   );
 }
