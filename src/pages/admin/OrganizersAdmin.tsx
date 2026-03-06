@@ -517,6 +517,14 @@ export default function OrganizersAdmin() {
                     </SelectContent>
                   </Select>
                 )}
+                <Select value={verifiedFilter} onValueChange={(v: any) => setVerifiedFilter(v)}>
+                  <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                    <SelectItem value="verified">{isAr ? "موثق" : "Verified"}</SelectItem>
+                    <SelectItem value="unverified">{isAr ? "غير موثق" : "Unverified"}</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => { setShowBulkImport(!showBulkImport); }}>
