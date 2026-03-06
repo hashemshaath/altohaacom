@@ -625,11 +625,12 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
                       <TableHead key={col} className="text-xs">{col}</TableHead>
                     ))}
                     <TableHead className="w-12">{t("Status", "الحالة")}</TableHead>
+                    <TableHead className="w-12">{t("Dup?", "تكرار؟")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rows.map((row, idx) => (
-                    <TableRow key={idx}>
+                    <TableRow key={idx} className={dupResults[idx] ? "bg-destructive/5" : ""}>
                       <TableCell className="text-xs text-muted-foreground">{idx + 1}</TableCell>
                       {displayColumns.map(col => (
                         <TableCell key={col} className="text-xs max-w-[150px] truncate" dir={col.endsWith("_ar") ? "rtl" : "ltr"}>
@@ -642,6 +643,22 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
                         ) : (
                           <CheckCircle className="h-4 w-4 text-chart-5" />
                         )}
+                      </TableCell>
+                      <TableCell>
+                        {dupResults[idx] ? (
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Badge variant="destructive" className="text-[8px]">
+                                {Math.round(dupResults[idx].score)}%
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">{t("Similar to:", "مشابه لـ:")} {dupResults[idx].match}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        ) : Object.keys(dupResults).length > 0 ? (
+                          <CheckCircle className="h-3.5 w-3.5 text-chart-5" />
+                        ) : null}
                       </TableCell>
                     </TableRow>
                   ))}
