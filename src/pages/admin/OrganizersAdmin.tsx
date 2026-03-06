@@ -14,6 +14,7 @@ import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { OrganizerExhibitionsPanel } from "@/components/admin/OrganizerExhibitionsPanel";
+import OrganizerDetailDrawer from "@/components/admin/OrganizerDetailDrawer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -101,6 +102,7 @@ export default function OrganizersAdmin() {
   const [uploadingCover, setUploadingCover] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [exhibitionsPanel, setExhibitionsPanel] = useState<{ id: string; name: string; logo?: string | null } | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
@@ -585,6 +587,9 @@ export default function OrganizersAdmin() {
                             <Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-4 w-4" /></Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setDetailId(org.id)}>
+                              <Building2 className="h-3.5 w-3.5 me-2" />{isAr ? "التفاصيل" : "Details"}
+                            </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                               <Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link>
                             </DropdownMenuItem>
@@ -847,6 +852,13 @@ export default function OrganizersAdmin() {
           organizerLogo={exhibitionsPanel.logo}
         />
       )}
+
+      {/* Detail Drawer */}
+      <OrganizerDetailDrawer
+        organizerId={detailId}
+        open={!!detailId}
+        onClose={() => setDetailId(null)}
+      />
     </div>
   );
 }
