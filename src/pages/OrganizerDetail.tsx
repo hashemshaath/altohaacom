@@ -13,17 +13,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Building2, Mail, Phone, Globe, MapPin, Calendar, Eye, Landmark,
   Users, TrendingUp, ExternalLink, Newspaper, ChevronRight,
   Award, Target, Sparkles, BarChart3, Clock, Star,
   Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight,
   CalendarDays, Ticket, GraduationCap, Swords, Mic2, BookOpen,
+  Copy, Check, Image as ImageIcon, UserCircle2,
 } from "lucide-react";
 import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from "date-fns";
 import { ar } from "date-fns/locale";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { toast } from "sonner";
 
 interface ExhibitionRow {
   [key: string]: any;
@@ -35,18 +38,18 @@ export default function OrganizerDetail() {
   const isAr = language === "ar";
   const decodedName = decodeURIComponent(name || "");
   const [viewMode, setViewMode] = useState<"grid" | "timeline">("grid");
+  const [copied, setCopied] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
     queryFn: async () => {
-      // Try to find organizer in the dedicated table first (by slug)
       const { data: orgRecord } = await supabase
         .from("organizers")
         .select("*")
         .eq("slug", decodedName)
         .maybeSingle();
 
-      // Fetch exhibitions linked to this organizer
       let exhibitions: any[] = [];
       if (orgRecord) {
         const { data: exByOrgId } = await supabase
@@ -56,7 +59,6 @@ export default function OrganizerDetail() {
           .order("start_date", { ascending: false });
         exhibitions = exByOrgId || [];
       } else {
-        // Fallback: lookup by organizer_name in exhibitions
         const { data: exByName } = await supabase
           .from("exhibitions")
           .select("*")
@@ -112,11 +114,21 @@ export default function OrganizerDetail() {
   const articles = data?.articles || [];
   const orgRecord = data?.orgRecord;
 
-  // Derive organizer info: prefer orgRecord, fallback to first exhibition
   const org = orgRecord || exhibitions[0] || null;
   const useOrgRecord = !!orgRecord;
 
-  // Compute all derived data
+  const handleShare = useCallback(() => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: org?.name || "", url });
+    } else {
+      navigator.clipboard.writeText(url);
+      setCopied(true);
+      toast.success(isAr ? "تم نسخ الرابط" : "Link copied");
+      setTimeout(() => setCopied(false), 2000);
+    }
+  }, [org, isAr]);
+
   const computed = useMemo(() => {
     if (!exhibitions.length && !orgRecord) return null;
 
@@ -134,10 +146,8 @@ export default function OrganizerDetail() {
     const types = [...new Set(exhibitions.map((e: ExhibitionRow) => e.type))] as string[];
     const venues = [...new Set(exhibitions.map((e: ExhibitionRow) => isAr && e.venue_ar ? e.venue_ar : e.venue).filter(Boolean))] as string[];
 
-    // Cover from orgRecord or latest exhibition
     const coverImage = useOrgRecord ? org?.cover_image_url : exhibitions.find((e: ExhibitionRow) => e.cover_image_url)?.cover_image_url;
 
-    // Aggregate sectors, categories, tags
     const allSectors = new Set<string>();
     const allCategories = new Set<string>();
     const allTags = new Set<string>();
@@ -147,19 +157,16 @@ export default function OrganizerDetail() {
       (e.tags || []).forEach((t: string) => allTags.add(t));
     });
 
-    // Services offered
     const services = {
       competitions: exhibitions.some((e: ExhibitionRow) => e.includes_competitions),
       training: exhibitions.some((e: ExhibitionRow) => e.includes_training),
       seminars: exhibitions.some((e: ExhibitionRow) => e.includes_seminars),
     };
 
-    // Social links from org exhibitions
     const rawSocial = exhibitions.find((e: ExhibitionRow) => e.social_links)?.social_links;
     const socialLinks: Record<string, string> = (rawSocial && typeof rawSocial === 'object' && !Array.isArray(rawSocial))
       ? rawSocial as Record<string, string> : {};
 
-    // Group by year
     const byYear: Record<string, ExhibitionRow[]> = {};
     exhibitions.forEach((e: ExhibitionRow) => {
       const year = new Date(e.start_date).getFullYear().toString();
@@ -168,7 +175,6 @@ export default function OrganizerDetail() {
     });
     const sortedYears = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 
-    // Upcoming & past breakdown
     const upcoming = exhibitions.filter((e: ExhibitionRow) => e.start_date && isFuture(new Date(e.start_date)));
     const past = exhibitions.filter((e: ExhibitionRow) => e.end_date && isPast(new Date(e.end_date)));
     const active = exhibitions.filter((e: ExhibitionRow) => {
@@ -177,12 +183,10 @@ export default function OrganizerDetail() {
       return now >= new Date(e.start_date) && now <= new Date(e.end_date);
     });
 
-    // Earliest & latest year
     const years = exhibitions.map((e: ExhibitionRow) => new Date(e.start_date).getFullYear()).filter(Boolean);
     const firstYear = Math.min(...years);
     const lastYear = Math.max(...years);
 
-    // Aggregate edition stats
     const editionStats: { exhibitors?: number; visitors?: number; area?: number } = {};
     exhibitions.forEach((e: ExhibitionRow) => {
       if (e.edition_stats) {
@@ -193,7 +197,6 @@ export default function OrganizerDetail() {
       }
     });
 
-    // Aggregate sponsors
     const allSponsors: { name: string; logo?: string; tier?: string }[] = [];
     exhibitions.forEach((e: ExhibitionRow) => {
       if (e.sponsors_info && Array.isArray(e.sponsors_info)) {
@@ -205,7 +208,6 @@ export default function OrganizerDetail() {
       }
     });
 
-    // Next upcoming event
     const nextEvent = upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
 
     return {
@@ -227,9 +229,9 @@ export default function OrganizerDetail() {
           <div className="container max-w-6xl py-8 space-y-6">
             <Skeleton className="h-12 w-1/3" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}
+              {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24 rounded-2xl" />)}
             </div>
-            <Skeleton className="h-80 w-full rounded-xl" />
+            <Skeleton className="h-80 w-full rounded-2xl" />
           </div>
         </main>
       </div>
@@ -244,8 +246,8 @@ export default function OrganizerDetail() {
           <Building2 className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
           <h2 className="text-xl font-semibold mb-2">{isAr ? "لم يتم العثور على المنظم" : "Organizer Not Found"}</h2>
           <p className="text-muted-foreground text-sm">{isAr ? "لا توجد بيانات لهذا المنظم" : "No data available for this organizer"}</p>
-          <Link to="/exhibitions">
-            <Button variant="outline" className="mt-4">{isAr ? "العودة للمعارض" : "Back to Exhibitions"}</Button>
+          <Link to="/organizers">
+            <Button variant="outline" className="mt-4">{isAr ? "العودة للمنظمين" : "Back to Organizers"}</Button>
           </Link>
         </main>
       </div>
@@ -261,7 +263,6 @@ export default function OrganizerDetail() {
     orgDescription, orgGallery, orgKeyContacts,
   } = computed;
 
-  // Contact info: prefer orgRecord, fallback to exhibition data
   const contactEmail = orgRecord?.email || org?.organizer_email;
   const contactPhone = orgRecord?.phone || org?.organizer_phone;
   const contactWebsite = orgRecord?.website || org?.organizer_website;
@@ -278,19 +279,19 @@ export default function OrganizerDetail() {
         {/* ═══════ Hero Section ═══════ */}
         <div className="relative">
           {coverImage ? (
-            <div className="h-52 md:h-64 overflow-hidden relative">
+            <div className="h-56 md:h-72 overflow-hidden relative">
               <img src={coverImage} alt="" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/10" />
             </div>
           ) : (
-            <div className="h-40 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
+            <div className="h-44 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
           )}
 
           <div className="container max-w-6xl relative">
             <div className={`flex flex-col sm:flex-row items-start gap-5 ${coverImage ? "-mt-16" : "-mt-8"}`}>
-              <Avatar className="h-24 w-24 rounded-2xl border-4 border-background shadow-lg ring-2 ring-primary/20">
+              <Avatar className="h-28 w-28 rounded-3xl border-4 border-background shadow-xl ring-2 ring-primary/20">
                 {orgLogo ? <AvatarImage src={orgLogo} alt={orgName} /> : null}
-                <AvatarFallback className="rounded-2xl bg-primary/10 text-primary text-3xl font-bold">
+                <AvatarFallback className="rounded-3xl bg-primary/10 text-primary text-3xl font-bold">
                   {orgName.charAt(0)}
                 </AvatarFallback>
               </Avatar>
@@ -300,8 +301,20 @@ export default function OrganizerDetail() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{orgName}</h1>
-                      {org.organizer_number && (
-                        <Badge variant="secondary" className="text-[10px] font-mono h-5">{org.organizer_number}</Badge>
+                      {orgRecord?.is_verified && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Badge variant="secondary" className="gap-1 text-[10px]">
+                                <Check className="h-3 w-3 text-primary" />{isAr ? "موثق" : "Verified"}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>{isAr ? "منظم موثق من المنصة" : "Verified by platform"}</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                      {orgRecord?.organizer_number && (
+                        <Badge variant="outline" className="text-[10px] font-mono h-5">{orgRecord.organizer_number}</Badge>
                       )}
                     </div>
                     {org.organizer_name_ar && !isAr && (
@@ -312,6 +325,16 @@ export default function OrganizerDetail() {
                     )}
                   </div>
                   <div className="flex gap-2 shrink-0">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon" className="h-9 w-9" onClick={handleShare}>
+                            {copied ? <Check className="h-4 w-4 text-primary" /> : <Share2 className="h-4 w-4" />}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{isAr ? "مشاركة" : "Share"}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     {contactWebsite && (
                       <Button variant="outline" size="sm" asChild>
                         <a
@@ -351,7 +374,7 @@ export default function OrganizerDetail() {
 
                 {/* Social Links Row */}
                 {Object.keys(socialLinks).length > 0 && (
-                  <div className="flex gap-2 mt-3">
+                  <div className="flex gap-3 mt-3">
                     {socialLinks.twitter && (
                       <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                         <Twitter className="h-4 w-4" />
@@ -377,7 +400,7 @@ export default function OrganizerDetail() {
 
                 {/* Description */}
                 {orgDescription && (
-                  <p className="text-sm text-muted-foreground mt-3 line-clamp-3">{orgDescription}</p>
+                  <p className="text-sm text-muted-foreground mt-3 line-clamp-3 max-w-2xl">{orgDescription}</p>
                 )}
               </div>
             </div>
@@ -389,18 +412,18 @@ export default function OrganizerDetail() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
               { icon: Landmark, label: isAr ? "المعارض" : "Events", value: totalExhibitions, color: "text-primary" },
-              { icon: Eye, label: isAr ? "المشاهدات" : "Views", value: totalViews.toLocaleString(), color: "text-blue-500" },
+              { icon: Eye, label: isAr ? "المشاهدات" : "Views", value: totalViews, color: "text-blue-500" },
               { icon: MapPin, label: isAr ? "الدول" : "Countries", value: countries.length, color: "text-emerald-500" },
               { icon: Building2, label: isAr ? "المدن" : "Cities", value: cities.length, color: "text-orange-500" },
-              { icon: Ticket, label: isAr ? "التذاكر" : "Tickets", value: (data?.totalTickets || 0).toLocaleString(), color: "text-violet-500" },
-              { icon: Star, label: isAr ? "التقييمات" : "Reviews", value: (data?.totalReviews || 0).toLocaleString(), color: "text-amber-500" },
+              { icon: Ticket, label: isAr ? "التذاكر" : "Tickets", value: data?.totalTickets || 0, color: "text-violet-500" },
+              { icon: Star, label: isAr ? "التقييمات" : "Reviews", value: data?.totalReviews || 0, color: "text-amber-500" },
             ].map(s => (
-              <Card key={s.label} className="border-border/40 hover:shadow-sm transition-shadow">
+              <Card key={s.label} className="border-border/40 hover:shadow-sm transition-shadow rounded-2xl">
                 <CardContent className="p-3 text-center">
                   <div className={`flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-muted/50 mb-2 ${s.color}`}>
                     <s.icon className="h-5 w-5" />
                   </div>
-                  <p className="text-xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
+                  <p className="text-xl font-bold"><AnimatedCounter value={s.value} /></p>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
                 </CardContent>
               </Card>
@@ -410,7 +433,7 @@ export default function OrganizerDetail() {
           {/* Next Event Highlight */}
           {nextEvent && (
             <Link to={`/exhibitions/${nextEvent.slug}`} className="block mt-4 group">
-              <Card className="border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors overflow-hidden">
+              <Card className="border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors overflow-hidden rounded-2xl">
                 <CardContent className="p-4 flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0">
                     <CalendarDays className="h-6 w-6 text-primary" />
@@ -435,6 +458,57 @@ export default function OrganizerDetail() {
             </Link>
           )}
         </div>
+
+        {/* ═══════ Gallery Section ═══════ */}
+        {orgGallery.length > 0 && (
+          <div className="container max-w-6xl pb-6">
+            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+              <ImageIcon className="h-4 w-4 text-primary" />
+              {isAr ? "معرض الصور" : "Gallery"}
+            </h3>
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {orgGallery.map((url: string, i: number) => (
+                <img
+                  key={i}
+                  src={url}
+                  alt=""
+                  className="h-28 w-44 rounded-2xl object-cover shrink-0 cursor-pointer hover:opacity-90 transition-opacity border border-border/40"
+                  onClick={() => setGalleryOpen(url)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════ Key Contacts ═══════ */}
+        {orgKeyContacts.length > 0 && (
+          <div className="container max-w-6xl pb-6">
+            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+              <UserCircle2 className="h-4 w-4 text-primary" />
+              {isAr ? "جهات الاتصال الرئيسية" : "Key Contacts"}
+            </h3>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {orgKeyContacts.map((c: any, i: number) => (
+                <Card key={i} className="rounded-2xl border-border/40">
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <Avatar className="h-10 w-10 rounded-xl">
+                      {c.photo_url && <AvatarImage src={c.photo_url} />}
+                      <AvatarFallback className="rounded-xl bg-muted">{(c.name || "?").charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium truncate">{c.name}</p>
+                      {c.title && <p className="text-[10px] text-muted-foreground">{c.title}</p>}
+                    </div>
+                    <div className="flex gap-1.5">
+                      {c.email && <a href={`mailto:${c.email}`}><Mail className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" /></a>}
+                      {c.phone && <a href={`tel:${c.phone}`}><Phone className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" /></a>}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ═══════ Main Content Tabs ═══════ */}
         <div className="container max-w-6xl pb-12 space-y-6">
@@ -471,7 +545,6 @@ export default function OrganizerDetail() {
 
             {/* ═══════ Exhibitions Tab ═══════ */}
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
-              {/* View toggle + filter summary */}
               <div className="flex items-center justify-between">
                 <div className="flex gap-2 text-xs">
                   <Badge variant={upcoming.length ? "default" : "outline"} className="text-[10px]">
@@ -495,7 +568,6 @@ export default function OrganizerDetail() {
               </div>
 
               {viewMode === "timeline" ? (
-                /* Timeline View */
                 <div className="relative">
                   <div className="absolute top-0 bottom-0 start-6 w-px bg-border" />
                   {sortedYears.map(year => (
@@ -511,7 +583,7 @@ export default function OrganizerDetail() {
                           const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                           return (
                             <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group block">
-                              <Card className="hover:shadow-md transition-all border-border/40 hover:border-primary/30">
+                              <Card className="hover:shadow-md transition-all border-border/40 hover:border-primary/30 rounded-2xl">
                                 <CardContent className="p-3 flex items-center gap-4">
                                   {ex.cover_image_url && (
                                     <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" />
@@ -543,7 +615,6 @@ export default function OrganizerDetail() {
                   ))}
                 </div>
               ) : (
-                /* Grid View */
                 sortedYears.map(year => (
                   <div key={year}>
                     <div className="flex items-center gap-2 mb-3">
@@ -556,7 +627,7 @@ export default function OrganizerDetail() {
                         const edStats = ex.edition_stats ? (typeof ex.edition_stats === 'string' ? JSON.parse(ex.edition_stats) : ex.edition_stats) : null;
                         return (
                           <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group">
-                            <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full">
+                            <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                               {ex.cover_image_url && (
                                 <div className="relative h-36 overflow-hidden">
                                   <img src={ex.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -598,7 +669,6 @@ export default function OrganizerDetail() {
                                   {ex.max_attendees && <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{ex.max_attendees}</span>}
                                 </div>
 
-                                {/* Edition Stats Mini */}
                                 {edStats && (
                                   <div className="grid grid-cols-3 gap-1 pt-1 border-t border-border/40">
                                     {edStats.visitors && (
@@ -641,8 +711,7 @@ export default function OrganizerDetail() {
             {/* ═══════ Profile Tab ═══════ */}
             <TabsContent value="profile" className="mt-4">
               <div className="grid gap-4 md:grid-cols-2">
-                {/* Contact Info */}
-                <Card>
+                <Card className="rounded-2xl">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Mail className="h-4 w-4 text-primary" />
@@ -677,8 +746,7 @@ export default function OrganizerDetail() {
                   </CardContent>
                 </Card>
 
-                {/* Locations */}
-                <Card>
+                <Card className="rounded-2xl">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-primary" />
@@ -722,8 +790,7 @@ export default function OrganizerDetail() {
                   </CardContent>
                 </Card>
 
-                {/* Services & Expertise */}
-                <Card>
+                <Card className="rounded-2xl">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Sparkles className="h-4 w-4 text-primary" />
@@ -761,9 +828,8 @@ export default function OrganizerDetail() {
                   </CardContent>
                 </Card>
 
-                {/* Sectors & Categories */}
                 {(allSectors.size > 0 || allCategories.size > 0) && (
-                  <Card>
+                  <Card className="rounded-2xl">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
                         <Target className="h-4 w-4 text-primary" />
@@ -811,8 +877,7 @@ export default function OrganizerDetail() {
             {/* ═══════ Analytics Tab ═══════ */}
             <TabsContent value="stats" className="mt-4 space-y-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {/* Activity Overview */}
-                <Card className="md:col-span-2 lg:col-span-3">
+                <Card className="md:col-span-2 lg:col-span-3 rounded-2xl">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <BarChart3 className="h-4 w-4 text-primary" />
@@ -839,9 +904,8 @@ export default function OrganizerDetail() {
                   </CardContent>
                 </Card>
 
-                {/* Aggregated Edition Stats */}
                 {(editionStats.visitors || editionStats.exhibitors || editionStats.area) && (
-                  <Card>
+                  <Card className="rounded-2xl">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
                         <TrendingUp className="h-4 w-4 text-primary" />
@@ -871,8 +935,7 @@ export default function OrganizerDetail() {
                   </Card>
                 )}
 
-                {/* Event Type Distribution */}
-                <Card>
+                <Card className="rounded-2xl">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Target className="h-4 w-4 text-primary" />
@@ -895,8 +958,7 @@ export default function OrganizerDetail() {
                   </CardContent>
                 </Card>
 
-                {/* Geographic Reach */}
-                <Card>
+                <Card className="rounded-2xl">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Globe className="h-4 w-4 text-primary" />
@@ -927,7 +989,7 @@ export default function OrganizerDetail() {
               <TabsContent value="partners" className="mt-4">
                 <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {allSponsors.map((sponsor, i) => (
-                    <Card key={i} className="border-border/40">
+                    <Card key={i} className="border-border/40 rounded-2xl">
                       <CardContent className="p-4 flex items-center gap-3">
                         {sponsor.logo ? (
                           <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" />
@@ -953,7 +1015,7 @@ export default function OrganizerDetail() {
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {articles.map(article => (
                     <Link key={article.id} to={`/news/${article.slug}`} className="group">
-                      <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full">
+                      <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (
                           <img src={article.featured_image_url} alt="" className="w-full h-36 object-cover" />
                         )}
@@ -984,6 +1046,13 @@ export default function OrganizerDetail() {
           </Tabs>
         </div>
       </main>
+
+      {/* Gallery Lightbox */}
+      {galleryOpen && (
+        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setGalleryOpen(null)}>
+          <img src={galleryOpen} alt="" className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" />
+        </div>
+      )}
     </div>
   );
 }
