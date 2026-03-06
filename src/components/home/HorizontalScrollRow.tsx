@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { useRef, useState, useEffect, forwardRef, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,12 +11,12 @@ interface HorizontalScrollRowProps {
   showArrows?: boolean;
 }
 
-export function HorizontalScrollRow({
+export const HorizontalScrollRow = forwardRef<HTMLDivElement, HorizontalScrollRowProps>(function HorizontalScrollRow({
   children,
   className,
   isAr = false,
   showArrows = true,
-}: HorizontalScrollRowProps) {
+}, ref) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollStart, setCanScrollStart] = useState(false);
   const [canScrollEnd, setCanScrollEnd] = useState(false);
@@ -104,4 +104,4 @@ export function HorizontalScrollRow({
       </div>
     </div>
   );
-}
+});
