@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -38,8 +38,8 @@ import {
 import {
   Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield, ScanSearch, Languages, FileSpreadsheet,
-  Twitter, Facebook, Linkedin, Instagram,
+  Shield, ScanSearch, Languages, FileSpreadsheet, Upload, X, ImageIcon, Loader2,
+  Twitter, Facebook, Linkedin, Instagram, AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -96,6 +96,11 @@ export default function OrganizersAdmin() {
   const [formTab, setFormTab] = useState("basic");
   const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
   const [showBulkImport, setShowBulkImport] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const logoRef = useRef<HTMLInputElement>(null);
+  const coverRef = useRef<HTMLInputElement>(null);
 
   // Dedup
   const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
@@ -146,6 +151,43 @@ export default function OrganizersAdmin() {
       setTranslating(false);
     }
   }, [form, autoTranslateFields, isAr]);
+
+  // Image upload handler
+  const handleImageUpload = useCallback(async (
+    file: File,
+    type: "logo" | "cover"
+  ) => {
+    const setter = type === "logo" ? setUploadingLogo : setUploadingCover;
+    setter(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `organizers/${type}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("company-media").upload(path, file, { contentType: file.type });
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
+      const url = urlData.publicUrl;
+      setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: url }));
+      toast.success(isAr ? "تم الرفع بنجاح" : "Uploaded successfully");
+    } catch (err: any) {
+      toast.error(err.message || (isAr ? "فشل الرفع" : "Upload failed"));
+    } finally {
+      setter(false);
+    }
+  }, [isAr]);
+
+  // Form validation
+  const validateForm = useCallback((f: OrganizerForm): Record<string, string> => {
+    const errors: Record<string, string> = {};
+    if (!f.name.trim()) errors.name = isAr ? "الاسم مطلوب" : "Name is required";
+    if (f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errors.email = isAr ? "بريد غير صالح" : "Invalid email";
+    if (f.website && !/^https?:\/\/.+/.test(f.website)) errors.website = isAr ? "رابط غير صالح (يبدأ بـ https://)" : "Invalid URL (must start with https://)";
+    if (f.founded_year && (parseInt(f.founded_year) < 1900 || parseInt(f.founded_year) > new Date().getFullYear())) {
+      errors.founded_year = isAr ? "سنة غير صالحة" : "Invalid year";
+    }
+    if (f.country_code && f.country_code.length !== 2) errors.country_code = isAr ? "رمز من حرفين" : "Must be 2 letters";
+    return errors;
+  }, [isAr]);
+
 
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["admin-organizers"],
@@ -247,6 +289,16 @@ export default function OrganizersAdmin() {
     },
     onError: (e: any) => toast.error(e.message),
   });
+
+  const handleSave = useCallback(() => {
+    const errors = validateForm(form);
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      toast.error(isAr ? "يرجى تصحيح الأخطاء" : "Please fix validation errors");
+      return;
+    }
+    saveMutation.mutate(form);
+  }, [form, validateForm, saveMutation, isAr]);
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -556,7 +608,7 @@ export default function OrganizersAdmin() {
       )}
 
       {/* Create/Edit Dialog with Dedup + Auto-Translate */}
-      <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) clearDuplicates(); }}>
+      <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) { clearDuplicates(); setFormErrors({}); } }}>
         <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editId ? (isAr ? "تعديل المنظم" : "Edit Organizer") : (isAr ? "إضافة منظم" : "Add Organizer")}</DialogTitle>
@@ -574,20 +626,106 @@ export default function OrganizersAdmin() {
             </TabsList>
 
             <TabsContent value="basic" className="space-y-4 mt-4">
+              {/* Name fields */}
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
-                <div><Label>{isAr ? "الاسم (AR)" : "Name (AR)"}</Label><Input value={form.name_ar} onChange={e => setForm(f => ({ ...f, name_ar: e.target.value }))} dir="rtl" /></div>
+                <div>
+                  <Label>{isAr ? "الاسم (EN)" : "Name (EN)"} *</Label>
+                  <Input value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setFormErrors(e2 => ({ ...e2, name: "" })); }} className={formErrors.name ? "border-destructive" : ""} />
+                  {formErrors.name && <p className="text-[11px] text-destructive mt-0.5 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
+                </div>
+                <div>
+                  <Label>{isAr ? "الاسم (AR)" : "Name (AR)"}</Label>
+                  <Input value={form.name_ar} onChange={e => setForm(f => ({ ...f, name_ar: e.target.value }))} dir="rtl" />
+                </div>
               </div>
-              <div><Label>Slug</Label><Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder="auto-generated" /></div>
+
+              <div>
+                <Label>Slug</Label>
+                <Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder={isAr ? "يُولَّد تلقائياً" : "auto-generated from name"} className="font-mono text-xs" />
+              </div>
+
+              {/* Description */}
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>{isAr ? "الوصف (EN)" : "Description (EN)"}</Label><Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} /></div>
-                <div><Label>{isAr ? "الوصف (AR)" : "Description (AR)"}</Label><Textarea value={form.description_ar} onChange={e => setForm(f => ({ ...f, description_ar: e.target.value }))} rows={3} dir="rtl" /></div>
+                <div>
+                  <Label>{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                  <Textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} />
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{form.description.length}/500</p>
+                </div>
+                <div>
+                  <Label>{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                  <Textarea value={form.description_ar} onChange={e => setForm(f => ({ ...f, description_ar: e.target.value }))} rows={3} dir="rtl" />
+                  <p className="text-[10px] text-muted-foreground mt-0.5">{form.description_ar.length}/500</p>
+                </div>
               </div>
+
+              {/* Logo & Cover Upload */}
               <div className="grid grid-cols-2 gap-3">
-                <div><Label>{isAr ? "رابط الشعار" : "Logo URL"}</Label><Input value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} /></div>
-                <div><Label>{isAr ? "صورة الغلاف" : "Cover Image URL"}</Label><Input value={form.cover_image_url} onChange={e => setForm(f => ({ ...f, cover_image_url: e.target.value }))} /></div>
+                {/* Logo */}
+                <div className="space-y-2">
+                  <Label>{isAr ? "الشعار" : "Logo"}</Label>
+                  <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "logo"); }} />
+                  {form.logo_url ? (
+                    <div className="relative group rounded-xl border bg-muted/30 p-2 flex items-center gap-3">
+                      <img src={form.logo_url} alt="Logo" className="h-14 w-14 rounded-xl object-cover shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
+                        <div className="flex gap-1.5 mt-1">
+                          <Button type="button" variant="outline" size="sm" className="h-6 text-[10px] px-2" onClick={() => logoRef.current?.click()}>
+                            {isAr ? "تغيير" : "Change"}
+                          </Button>
+                          <Button type="button" variant="ghost" size="sm" className="h-6 text-[10px] px-2 text-destructive" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}>
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => logoRef.current?.click()}
+                      disabled={uploadingLogo}
+                      className="w-full rounded-xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-colors p-4 flex flex-col items-center gap-1.5 text-muted-foreground"
+                    >
+                      {uploadingLogo ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />}
+                      <span className="text-[11px]">{uploadingLogo ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع شعار" : "Upload Logo")}</span>
+                    </button>
+                  )}
+                  <Input value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-[11px] h-7" />
+                </div>
+
+                {/* Cover */}
+                <div className="space-y-2">
+                  <Label>{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
+                  <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "cover"); }} />
+                  {form.cover_image_url ? (
+                    <div className="relative group rounded-xl border bg-muted/30 overflow-hidden">
+                      <img src={form.cover_image_url} alt="Cover" className="w-full h-20 object-cover" />
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button type="button" variant="secondary" size="sm" className="h-7 text-[10px]" onClick={() => coverRef.current?.click()}>
+                          {isAr ? "تغيير" : "Change"}
+                        </Button>
+                        <Button type="button" variant="destructive" size="sm" className="h-7 text-[10px]" onClick={() => setForm(f => ({ ...f, cover_image_url: "" }))}>
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => coverRef.current?.click()}
+                      disabled={uploadingCover}
+                      className="w-full rounded-xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-colors p-4 flex flex-col items-center gap-1.5 text-muted-foreground"
+                    >
+                      {uploadingCover ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImageIcon className="h-5 w-5" />}
+                      <span className="text-[11px]">{uploadingCover ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع غلاف" : "Upload Cover")}</span>
+                    </button>
+                  )}
+                  <Input value={form.cover_image_url} onChange={e => setForm(f => ({ ...f, cover_image_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-[11px] h-7" />
+                </div>
               </div>
-              <div className="flex gap-6">
+
+              {/* Toggles */}
+              <div className="flex gap-6 flex-wrap">
                 <div className="flex items-center gap-2">
                   <Switch checked={form.is_verified} onCheckedChange={v => setForm(f => ({ ...f, is_verified: v }))} />
                   <Label>{isAr ? "موثق" : "Verified"}</Label>
@@ -609,9 +747,20 @@ export default function OrganizersAdmin() {
 
             <TabsContent value="contact" className="space-y-4 mt-4">
               <div className="grid grid-cols-3 gap-3">
-                <div><Label>{isAr ? "البريد" : "Email"}</Label><Input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} type="email" /></div>
-                <div><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} dir="ltr" /></div>
-                <div><Label>{isAr ? "الموقع" : "Website"}</Label><Input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} /></div>
+                <div>
+                  <Label>{isAr ? "البريد" : "Email"}</Label>
+                  <Input value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setFormErrors(e2 => ({ ...e2, email: "" })); }} type="email" className={formErrors.email ? "border-destructive" : ""} />
+                  {formErrors.email && <p className="text-[11px] text-destructive mt-0.5 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.email}</p>}
+                </div>
+                <div>
+                  <Label>{isAr ? "الهاتف" : "Phone"}</Label>
+                  <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} dir="ltr" />
+                </div>
+                <div>
+                  <Label>{isAr ? "الموقع" : "Website"}</Label>
+                  <Input value={form.website} onChange={e => { setForm(f => ({ ...f, website: e.target.value })); setFormErrors(e2 => ({ ...e2, website: "" })); }} className={formErrors.website ? "border-destructive" : ""} placeholder="https://..." />
+                  {formErrors.website && <p className="text-[11px] text-destructive mt-0.5 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.website}</p>}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>{isAr ? "العنوان (EN)" : "Address (EN)"}</Label><Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} /></div>
@@ -624,12 +773,20 @@ export default function OrganizersAdmin() {
               <div className="grid grid-cols-3 gap-3">
                 <div><Label>{isAr ? "الدولة" : "Country"}</Label><Input value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} /></div>
                 <div><Label>{isAr ? "الدولة (AR)" : "Country (AR)"}</Label><Input value={form.country_ar} onChange={e => setForm(f => ({ ...f, country_ar: e.target.value }))} dir="rtl" /></div>
-                <div><Label>{isAr ? "رمز الدولة" : "Code"}</Label><Input value={form.country_code} onChange={e => setForm(f => ({ ...f, country_code: e.target.value }))} maxLength={2} placeholder="SA" /></div>
+                <div>
+                  <Label>{isAr ? "رمز الدولة" : "Code"}</Label>
+                  <Input value={form.country_code} onChange={e => { setForm(f => ({ ...f, country_code: e.target.value.toUpperCase() })); setFormErrors(e2 => ({ ...e2, country_code: "" })); }} maxLength={2} placeholder="SA" className={formErrors.country_code ? "border-destructive" : ""} />
+                  {formErrors.country_code && <p className="text-[11px] text-destructive mt-0.5">{formErrors.country_code}</p>}
+                </div>
               </div>
             </TabsContent>
 
             <TabsContent value="details" className="space-y-4 mt-4">
-              <div><Label>{isAr ? "سنة التأسيس" : "Founded Year"}</Label><Input value={form.founded_year} onChange={e => setForm(f => ({ ...f, founded_year: e.target.value }))} type="number" placeholder="2010" /></div>
+              <div>
+                <Label>{isAr ? "سنة التأسيس" : "Founded Year"}</Label>
+                <Input value={form.founded_year} onChange={e => { setForm(f => ({ ...f, founded_year: e.target.value })); setFormErrors(e2 => ({ ...e2, founded_year: "" })); }} type="number" placeholder="2010" className={formErrors.founded_year ? "border-destructive" : ""} />
+                {formErrors.founded_year && <p className="text-[11px] text-destructive mt-0.5">{formErrors.founded_year}</p>}
+              </div>
               <div><Label>{isAr ? "الخدمات (مفصولة بفاصلة)" : "Services (comma-separated)"}</Label><Input value={form.services} onChange={e => setForm(f => ({ ...f, services: e.target.value }))} placeholder="Exhibitions, Training, Competitions" /></div>
               <div><Label>{isAr ? "القطاعات المستهدفة" : "Targeted Sectors"}</Label><Input value={form.targeted_sectors} onChange={e => setForm(f => ({ ...f, targeted_sectors: e.target.value }))} placeholder="Food & Beverage, Hospitality" /></div>
             </TabsContent>
@@ -668,7 +825,7 @@ export default function OrganizersAdmin() {
               {translating ? "..." : (isAr ? "ترجمة تلقائية" : "Auto-Translate")}
             </Button>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-            <Button onClick={() => saveMutation.mutate(form)} disabled={!form.name || saveMutation.isPending}>
+            <Button onClick={handleSave} disabled={!form.name || saveMutation.isPending || uploadingLogo || uploadingCover}>
               {saveMutation.isPending ? "..." : editId ? (isAr ? "تحديث" : "Update") : (isAr ? "إضافة" : "Create")}
             </Button>
           </DialogFooter>
