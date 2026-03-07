@@ -170,7 +170,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       // Get criteria for those categories
       const { data: criteria } = await supabase
         .from("evaluation_criteria" as any)
-        .select("*")
+        .select("id, category_id, name, name_ar, description, description_ar, max_score, weight, scoring_guide, scoring_guide_ar, is_required, sort_order, is_active, created_at, updated_at")
         .in("category_id", catIds)
         .eq("is_active", true)
         .order("sort_order");
