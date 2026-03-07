@@ -122,7 +122,7 @@ export function useTastingSessions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_sessions" as any)
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, competition_id, organizer_id, eval_method, status, max_score, session_date, session_end, venue, venue_ar, city, country, country_code, cover_image_url, notes, is_blind_tasting, allow_notes, evaluation_category, evaluation_type, round, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as TastingSession[];
@@ -136,7 +136,7 @@ export function useTastingSession(id: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_sessions" as any)
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, competition_id, organizer_id, eval_method, status, max_score, session_date, session_end, venue, venue_ar, city, country, country_code, cover_image_url, notes, is_blind_tasting, allow_notes, evaluation_category, evaluation_type, round, created_at, updated_at")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -152,7 +152,7 @@ export function useTastingCriteria(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_criteria" as any)
-        .select("*")
+        .select("id, session_id, name, name_ar, description, description_ar, category, weight, max_score, sort_order, is_required, stage, guidelines, guidelines_ar, reference_images, eval_scale, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
@@ -168,7 +168,7 @@ export function useTastingEntries(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_entries" as any)
-        .select("*")
+        .select("id, session_id, entry_number, dish_name, dish_name_ar, description, description_ar, chef_name, chef_name_ar, chef_id, photo_url, category, is_active, sort_order, images, stage, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
@@ -184,7 +184,7 @@ export function useTastingScores(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_scores" as any)
-        .select("*")
+        .select("id, session_id, entry_id, criterion_id, judge_id, score, stars, passed, note, note_ar, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as TastingScore[];
@@ -199,7 +199,7 @@ export function useCriteriaPresets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_criteria_presets" as any)
-        .select("*");
+        .select("id, preset_name, preset_name_ar, category, criteria, is_system");
       if (error) throw error;
       return (data || []) as unknown as CriteriaPreset[];
     },
@@ -212,7 +212,7 @@ export function useTastingJudges(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_judges" as any)
-        .select("*")
+        .select("id, session_id, judge_id, assigned_at, has_completed, completed_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as TastingJudge[];

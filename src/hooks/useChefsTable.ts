@@ -180,7 +180,7 @@ export function useChefsTableSessions(statusFilter?: string) {
     queryFn: async () => {
       let query = supabase
         .from("chefs_table_sessions" as any)
-        .select("*")
+        .select("id, request_id, company_id, session_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, max_chefs, is_published, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (statusFilter && statusFilter !== "all") {
         query = query.eq("status", statusFilter);
@@ -198,7 +198,7 @@ export function useChefsTableSession(id: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_sessions" as any)
-        .select("*")
+        .select("id, request_id, company_id, session_number, title, title_ar, description, description_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, chef_selection_method, max_chefs, sample_delivery_address, sample_delivery_notes, notes, notes_ar, is_published, published_at, created_at, updated_at")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -214,7 +214,7 @@ export function useChefsTableRequests() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_requests" as any)
-        .select("*")
+        .select("id, company_id, requested_by, request_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, preferred_city, preferred_country_code, preferred_date_start, preferred_date_end, budget, currency, chef_count, status, admin_notes, reviewed_at, rejection_reason, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as ChefsTableRequest[];
@@ -228,7 +228,7 @@ export function useChefsTableInvitations(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_invitations" as any)
-        .select("*")
+        .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, sample_tracking_number, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as ChefsTableInvitation[];
@@ -243,7 +243,7 @@ export function useChefsTableEvaluations(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_evaluations" as any)
-        .select("*")
+        .select("id, session_id, invitation_id, chef_id, taste_score, texture_score, aroma_score, versatility_score, value_score, presentation_score, overall_score, is_recommended, recommendation_level, review_title, review_title_ar, review_text, review_text_ar, pros, pros_ar, cons, cons_ar, usage_suggestions, usage_suggestions_ar, endorsement_text, endorsement_text_ar, allow_publish, status, submitted_at, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as ChefsTableEvaluation[];
@@ -258,7 +258,7 @@ export function useChefsTableMedia(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_media" as any)
-        .select("*")
+        .select("id, session_id, evaluation_id, uploaded_by, media_type, media_url, thumbnail_url, title, title_ar, description, description_ar, sort_order, is_featured, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
@@ -274,7 +274,7 @@ export function useChefsTableCriteriaPresets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_criteria_presets" as any)
-        .select("*");
+        .select("id, preset_name, preset_name_ar, product_category, criteria, is_system, created_at");
       if (error) throw error;
       return (data || []) as unknown as ChefsTableCriteriaPreset[];
     },
@@ -288,7 +288,7 @@ export function useMyChefInvitations() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_invitations" as any)
-        .select("*")
+        .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("chef_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;

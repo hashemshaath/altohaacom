@@ -34,7 +34,7 @@ export default function MembershipHistoryTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_history")
-        .select("*")
+        .select("id, user_id, previous_tier, new_tier, reason, changed_by, created_at")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw error;

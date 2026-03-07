@@ -29,7 +29,7 @@ export function useMembershipFeatures() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_features")
-        .select("*")
+        .select("id, code, name, name_ar, description, description_ar, category, icon, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -46,7 +46,7 @@ export function useFeatureTierMappings() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_feature_tiers")
-        .select("*");
+        .select("id, feature_id, tier, is_enabled");
       if (error) throw error;
       return data as FeatureTierMapping[];
     },
