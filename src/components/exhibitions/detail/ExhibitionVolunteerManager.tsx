@@ -33,7 +33,7 @@ export function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_volunteers")
-        .select("*")
+        .select("id, user_id, status, role_title, role_title_ar, skills, availability_start, availability_end, checked_in_at, checked_out_at, total_hours, created_at, notes")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
