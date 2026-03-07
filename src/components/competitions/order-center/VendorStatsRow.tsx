@@ -52,4 +52,4 @@ export const VendorStatsRow = memo(function VendorStatsRow({ totalItems, assigne
       </Card>
     </div>
   );
-}
+});
