@@ -189,7 +189,7 @@ export function useEvaluationScores(entityId?: string, domainSlug?: string) {
     queryFn: async () => {
       let query = supabase
         .from("evaluation_scores" as any)
-        .select("*")
+        .select("id, domain_slug, entity_id, evaluator_id, subject_id, criterion_id, score, notes, notes_ar, evidence_urls, created_at, updated_at")
         .eq("entity_id", entityId!);
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
       const { data, error } = await query;
