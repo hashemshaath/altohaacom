@@ -164,4 +164,4 @@ function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
       </Card>
     </Link>
   );
-});
+}
