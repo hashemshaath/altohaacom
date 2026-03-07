@@ -56,6 +56,7 @@ export function Header() {
   const isJudge = userRoles.includes("judge");
   const isAr = language === "ar";
   const scrolled = useScrolled();
+  const { visible: headerVisible } = useScrollDirection(12);
   const siteSettings = useSiteSettingsContext();
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
