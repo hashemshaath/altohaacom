@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,7 +36,7 @@ const categoryLabels: Record<string, { en: string; ar: string }> = {
   side_dish: { en: "Side Dish", ar: "طبق جانبي" },
 };
 
-function RecipeCard({ recipe, isAr }: { recipe: RecipeWithMeta; isAr: boolean }) {
+const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWithMeta; isAr: boolean }) {
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const cat = categoryLabels[recipe.category || "main_course"];
 
@@ -108,7 +108,7 @@ function RecipeCard({ recipe, isAr }: { recipe: RecipeWithMeta; isAr: boolean })
       </Card>
     </Link>
   );
-}
+});
 
 export default function Recipes() {
   const { language } = useLanguage();
@@ -128,19 +128,25 @@ export default function Recipes() {
     category: category !== "all" ? category : undefined,
   });
 
+  const sortedRecipes = useMemo(() => {
+    if (sortBy === "top_rated") return [...recipes].sort((a, b) => b.avg_rating - a.avg_rating);
+    if (sortBy === "quickest") return [...recipes].sort((a, b) => ((a.prep_time_minutes || 0) + (a.cook_time_minutes || 0)) - ((b.prep_time_minutes || 0) + (b.cook_time_minutes || 0)));
+    return recipes;
+  }, [recipes, sortBy]);
+
+  const jsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: isAr ? "وصفات الطهي" : "Culinary Recipes",
+    url: `${window.location.origin}/recipes`,
+    isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
+  }), [isAr]);
+
   return (
     <PageShell
       title={isAr ? "الوصفات — الطهاة" : "Recipe Database — Altoha"}
       description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
-      seoProps={{
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          name: isAr ? "وصفات الطهي" : "Culinary Recipes",
-          url: `${window.location.origin}/recipes`,
-          isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
-        },
-      }}
+      seoProps={{ jsonLd }}
       container={false}
       padding="none"
     >
@@ -269,11 +275,7 @@ export default function Recipes() {
             </div>
           ) : (
             <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {[...recipes].sort((a, b) => {
-                if (sortBy === "top_rated") return b.avg_rating - a.avg_rating;
-                if (sortBy === "quickest") return ((a.prep_time_minutes || 0) + (a.cook_time_minutes || 0)) - ((b.prep_time_minutes || 0) + (b.cook_time_minutes || 0));
-                return 0; // newest is default from API
-              }).map(recipe => (
+              {sortedRecipes.map(recipe => (
                 <RecipeCard key={recipe.id} recipe={recipe} isAr={isAr} />
               ))}
             </div>
