@@ -669,7 +669,7 @@ export default function OrganizerDetail() {
                             <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                               {ex.cover_image_url && (
                                 <div className="relative h-36 overflow-hidden">
-                                  <img src={ex.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <img src={ex.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                                   <div className="absolute top-2 end-2">
                                     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium backdrop-blur-sm ${derived.color}`}>
