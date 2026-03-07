@@ -86,7 +86,7 @@ export default function News() {
     staleTime: 1000 * 60 * 10,
   });
 
-  const filteredArticles = articles.filter((article) => {
+  const filteredArticles = useMemo(() => articles.filter((article) => {
     const matchesSearch =
       searchQuery === "" ||
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -95,24 +95,25 @@ export default function News() {
     const matchesType = activeType === "all" || article.type === activeType;
     const matchesCategory = selectedCategory === "all" || article.category_id === selectedCategory;
     return matchesSearch && matchesType && matchesCategory;
-  });
+  }), [articles, searchQuery, activeType, selectedCategory]);
 
-  const featuredArticles = filteredArticles.filter((a) => a.is_featured);
-  const regularArticles = filteredArticles.filter((a) => !a.is_featured);
+  const featuredArticles = useMemo(() => filteredArticles.filter((a) => a.is_featured), [filteredArticles]);
+  const regularArticles = useMemo(() => filteredArticles.filter((a) => !a.is_featured), [filteredArticles]);
 
-  const formatDate = (date: string) =>
-    toEnglishDigits(format(new Date(date), "MMM dd, yyyy", { locale: isAr ? ar : enUS }));
+  const formatDate = useCallback((date: string) =>
+    toEnglishDigits(format(new Date(date), "MMM dd, yyyy", { locale: isAr ? ar : enUS })),
+  [isAr]);
 
-  const typeBadgeLabel = (type: string) => {
+  const typeBadgeLabel = useCallback((type: string) => {
     const map: Record<string, { en: string; ar: string }> = {
       news: { en: "News", ar: "خبر" },
       blog: { en: "Blog", ar: "مدونة" },
       exhibition: { en: "Exhibition", ar: "معرض" },
     };
     return isAr ? map[type]?.ar || type : map[type]?.en || type;
-  };
+  }, [isAr]);
 
-  const jsonLd = {
+  const jsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: isAr ? "أخبار ومقالات الطهاة" : "Culinary News & Articles",
@@ -120,10 +121,10 @@ export default function News() {
       ? "أحدث أخبار الطهاة والشركات والجمعيات في عالم فنون الطهي"
       : "Latest news about chefs, companies, and associations in the culinary world",
     url: `${window.location.origin}/news`,
-  };
+  }), [isAr]);
 
   // Stats
-  const totalViews = articles.reduce((sum, a) => sum + (a.view_count || 0), 0);
+  const totalViews = useMemo(() => articles.reduce((sum, a) => sum + (a.view_count || 0), 0), [articles]);
 
   return (
     <PageShell
