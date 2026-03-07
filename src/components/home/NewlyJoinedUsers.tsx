@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +18,7 @@ import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
-export function NewlyJoinedUsers() {
+export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
@@ -152,4 +152,4 @@ export function NewlyJoinedUsers() {
       </div>
     </section>
   );
-}
+});

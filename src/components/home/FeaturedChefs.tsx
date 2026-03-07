@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { useQuery } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ import { localizeCity } from "@/lib/localizeLocation";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 
-export function FeaturedChefs() {
+export const FeaturedChefs = memo(function FeaturedChefs() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
@@ -193,4 +193,4 @@ export function FeaturedChefs() {
       </div>
     </section>
   );
-}
+});

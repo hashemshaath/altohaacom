@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
@@ -25,7 +26,7 @@ function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   );
 }
 
-export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps) {
+export const ProfileOverviewTab = memo(function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -102,4 +103,4 @@ export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps)
       )}
     </StaggeredList>
   );
-}
+});

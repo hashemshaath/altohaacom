@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,7 +32,7 @@ const COMP_STATUS_CONFIG: Record<string, { color: string; bg: string; label: str
   registration_open: { color: "text-chart-2", bg: "bg-chart-2/10", label: "Open", labelAr: "مفتوح" },
 };
 
-export function CompetitionHistory({ userId }: CompetitionHistoryProps) {
+export const CompetitionHistory = memo(function CompetitionHistory({ userId }: CompetitionHistoryProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
@@ -249,4 +249,4 @@ export function CompetitionHistory({ userId }: CompetitionHistoryProps) {
       )}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +22,7 @@ const TYPE_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   interview: { en: "Interview", ar: "مقابلة", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
 };
 
-export function HomeArticles() {
+export const HomeArticles = memo(function HomeArticles() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
@@ -228,4 +228,4 @@ export function HomeArticles() {
       )}
     </section>
   );
-}
+});

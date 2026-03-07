@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +14,7 @@ interface UserCompetitionStatsProps {
   userId: string;
 }
 
-export function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
+export const UserCompetitionStats = memo(function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -201,4 +202,4 @@ export function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
       )}
     </StaggeredList>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +13,7 @@ import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign 
  * Compact profile completion card that encourages users
  * to finish setting up their profile.
  */
-export function ProfileCompletionCard() {
+export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -108,4 +109,4 @@ export function ProfileCompletionCard() {
       </CardContent>
     </Card>
   );
-}
+});

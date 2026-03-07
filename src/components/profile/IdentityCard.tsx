@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { useEntityQRCode } from "@/hooks/useQRCode";
@@ -37,7 +37,7 @@ function renderBarcodeBars(value: string): number[] {
   return bars;
 }
 
-export function IdentityCard({ profile, userId }: IdentityCardProps) {
+export const IdentityCard = memo(function IdentityCard({ profile, userId }: IdentityCardProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
@@ -257,4 +257,4 @@ export function IdentityCard({ profile, userId }: IdentityCardProps) {
       </div>
     </section>
   );
-}
+});

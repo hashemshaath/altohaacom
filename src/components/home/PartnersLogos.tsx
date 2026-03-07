@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +7,7 @@ import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 
-export function PartnersLogos() {
+export const PartnersLogos = memo(function PartnersLogos() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -126,4 +127,4 @@ export function PartnersLogos() {
       </div>
     </section>
   );
-}
+});

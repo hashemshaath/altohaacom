@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,7 +14,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 
-export function PlatformFeatures() {
+export const PlatformFeatures = memo(function PlatformFeatures() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -242,4 +243,4 @@ export function PlatformFeatures() {
       )}
     </div>
   );
-}
+});

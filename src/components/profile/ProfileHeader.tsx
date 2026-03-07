@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +22,7 @@ interface ProfileHeaderProps {
   onProfileUpdate: () => void;
 }
 
-export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: ProfileHeaderProps) {
+export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userId, onProfileUpdate }: ProfileHeaderProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
@@ -257,4 +257,4 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
       </div>
     </div>
   );
-}
+});
