@@ -38,6 +38,7 @@ const MembershipGift = lazy(() => import("@/pages/MembershipGift"));
 const MembershipReferral = lazy(() => import("@/pages/MembershipReferral"));
 const MembershipGiftsHistory = lazy(() => import("@/pages/MembershipGiftsHistory"));
 const OrganizerPortal = lazy(() => import("@/pages/OrganizerPortal"));
+const ForYou = lazy(() => import("@/pages/ForYou"));
 
 export const protectedRoutes = (
   <>
