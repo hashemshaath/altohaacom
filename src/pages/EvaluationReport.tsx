@@ -126,8 +126,10 @@ export default function EvaluationReport() {
     );
   }
 
-  const recommendedCount = evaluations.filter(e => e.is_recommended).length;
-  const recommendRate = evaluations.length ? Math.round((recommendedCount / evaluations.length) * 100) : 0;
+  const { recommendedCount, recommendRate } = useMemo(() => {
+    const count = evaluations.filter(e => e.is_recommended).length;
+    return { recommendedCount: count, recommendRate: evaluations.length ? Math.round((count / evaluations.length) * 100) : 0 };
+  }, [evaluations]);
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">

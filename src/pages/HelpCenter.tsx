@@ -64,7 +64,7 @@ export default function HelpCenter() {
     fetchData();
   }, []);
 
-  const filteredFaqs = faqs.filter(faq => {
+  const filteredFaqs = useMemo(() => faqs.filter(faq => {
     const matchesSearch = searchQuery === "" || 
       faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
       faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -74,9 +74,9 @@ export default function HelpCenter() {
     const matchesCategory = activeCategory === "all" || faq.category === activeCategory;
     
     return matchesSearch && matchesCategory;
-  });
+  }), [faqs, searchQuery, activeCategory]);
 
-  const featuredFaqs = faqs.filter(f => f.is_featured);
+  const featuredFaqs = useMemo(() => faqs.filter(f => f.is_featured), [faqs]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

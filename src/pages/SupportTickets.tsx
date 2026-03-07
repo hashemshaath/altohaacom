@@ -224,12 +224,12 @@ export default function SupportTickets() {
     return <Badge className={p.class} variant="outline">{isAr ? p.ar : p.en}</Badge>;
   };
 
-  const filteredTickets = tickets.filter(t =>
+  const filteredTickets = useMemo(() => tickets.filter(t =>
     !searchQuery || t.subject.toLowerCase().includes(searchQuery.toLowerCase()) || t.ticket_number.includes(searchQuery)
-  );
+  ), [tickets, searchQuery]);
 
-  const openCount = tickets.filter(t => t.status === "open" || t.status === "in_progress").length;
-  const resolvedCount = tickets.filter(t => t.status === "resolved" || t.status === "closed").length;
+  const openCount = useMemo(() => tickets.filter(t => t.status === "open" || t.status === "in_progress").length, [tickets]);
+  const resolvedCount = useMemo(() => tickets.filter(t => t.status === "resolved" || t.status === "closed").length, [tickets]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
