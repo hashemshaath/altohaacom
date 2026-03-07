@@ -205,6 +205,7 @@ export default function Dashboard() {
             {user && <W><NotificationGroupWidget /></W>}
             {user && <W><RecentChatsWidget /></W>}
             {user && <W><GoalsMilestonesWidget /></W>}
+            {user && <W><AchievementsChallengesWidget /></W>}
             {user && <W><RecentOrdersWidget /></W>}
             {user && <W><LiveCompetitionsWidget /></W>}
 
