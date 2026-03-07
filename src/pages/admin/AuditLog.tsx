@@ -61,7 +61,7 @@ export default function AuditLog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_actions")
-        .select("*")
+        .select("id, admin_id, action_type, target_user_id, details, created_at")
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw error;
