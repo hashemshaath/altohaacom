@@ -321,7 +321,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-20 md:pb-0">
       <AdminPageHeader
         icon={LayoutDashboard}
         title={isAr ? "لوحة التحكم" : "Admin Dashboard"}
