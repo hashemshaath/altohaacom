@@ -42,7 +42,7 @@ export default function KnowledgePortal() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("knowledge_categories")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, icon, sort_order, parent_id")
         .order("sort_order");
       if (error) throw error;
       return data;
