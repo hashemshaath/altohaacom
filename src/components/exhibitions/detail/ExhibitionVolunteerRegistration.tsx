@@ -28,7 +28,7 @@ export function ExhibitionVolunteerRegistration({ exhibitionId, isAr }: Props) {
       if (!user) return null;
       const { data } = await supabase
         .from("exhibition_volunteers")
-        .select("*")
+        .select("id, status, role_title, role_title_ar, created_at")
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id)
         .maybeSingle();

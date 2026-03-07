@@ -39,12 +39,12 @@ export function ExhibitionCookingSessionManager({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_cooking_sessions")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, chef_id, scheduled_start, scheduled_end, status, max_audience, cuisine_type, difficulty, is_featured")
         .eq("exhibition_id", exhibitionId)
         .order("scheduled_start");
       return data || [];
     },
-    staleTime: 1000 * 30,
+    staleTime: 1000 * 60 * 2,
   });
 
   const { data: regCounts = {} } = useQuery({

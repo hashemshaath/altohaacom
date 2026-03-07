@@ -31,7 +31,7 @@ export function ExhibitionTicketTypeManager({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_ticket_types")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, price, currency, max_quantity, sold_count, is_active, color, sort_order, benefits")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order", { ascending: true });
       if (error) throw error;
