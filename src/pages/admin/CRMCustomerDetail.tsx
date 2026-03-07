@@ -112,7 +112,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_wishlist")
-        .select("*")
+        .select("id, user_id, item_id, item_type, item_name, item_name_ar, item_image_url, item_price, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data || [];
