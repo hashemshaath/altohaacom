@@ -269,9 +269,9 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
   const TypeIcon = POST_TYPE_CONFIG[postType].icon;
 
   return (
-    <div className={cn("border-b border-border px-4 py-3", compact && "px-3 py-2")}>
-      <div className="flex gap-3">
-        <Avatar className={cn("shrink-0 ring-2 ring-primary/10", compact ? "h-8 w-8" : "h-10 w-10")}>
+    <div className={cn("border-b border-border px-3 sm:px-4 py-2.5 sm:py-3", compact && "px-3 py-2")}>
+      <div className="flex gap-2.5 sm:gap-3">
+        <Avatar className={cn("shrink-0 ring-2 ring-primary/10", compact ? "h-8 w-8" : "h-9 w-9 sm:h-10 sm:w-10")}>
           <AvatarImage src={profile?.avatar_url || undefined} />
           <AvatarFallback className="bg-primary/10 text-primary">
             <User className="h-4 w-4" />
