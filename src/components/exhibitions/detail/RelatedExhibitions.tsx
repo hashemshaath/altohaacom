@@ -51,7 +51,7 @@ export function RelatedExhibitions({ exhibitionId, country, type, seriesId, isAr
         const { data } = await supabase
           .from("exhibitions")
           .select("id, title, title_ar, slug, start_date, end_date, city, country, cover_image_url, type, edition_year")
-          .eq("type", type)
+          .eq("type", type as any)
           .neq("id", exhibitionId)
           .order("start_date", { ascending: false })
           .limit(6);
