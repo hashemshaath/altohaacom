@@ -211,8 +211,8 @@ export function ChatArea({
   return (
     <>
       {/* Chat Header */}
-      <div className="border-b border-border/30 p-3 flex items-center gap-3 bg-card/80 backdrop-blur-sm">
-        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl" onClick={onBack}>
+      <div className="border-b border-border/30 p-2.5 sm:p-3 flex items-center gap-2.5 sm:gap-3 bg-card/80 backdrop-blur-sm">
+        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl touch-manipulation active:scale-90" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="relative">
