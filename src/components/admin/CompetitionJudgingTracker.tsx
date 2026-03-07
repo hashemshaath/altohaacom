@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Gavel, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
-export function CompetitionJudgingTracker() {
+export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
