@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
 import { Header } from "@/components/Header";
+import { OrganizerAnalyticsTab } from "@/components/organizers/OrganizerAnalyticsTab";
+import { OrganizerRatingSummary } from "@/components/organizers/OrganizerRatingSummary";
 import { SEOHead } from "@/components/SEOHead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +20,7 @@ import {
   Building2, Mail, Phone, Globe, MapPin, Calendar, Eye, Landmark,
   Users, TrendingUp, ExternalLink, Newspaper, ChevronRight,
   Award, Target, Sparkles, BarChart3, Clock, Star,
-  Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight,
+  Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight, Heart,
   CalendarDays, Ticket, GraduationCap, Swords, Mic2, BookOpen,
   Copy, Check, Image as ImageIcon, UserCircle2,
 } from "lucide-react";
@@ -26,6 +28,7 @@ import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from 
 import { ar } from "date-fns/locale";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 interface ExhibitionRow {
@@ -40,6 +43,8 @@ export default function OrganizerDetail() {
   const [viewMode, setViewMode] = useState<"grid" | "timeline">("grid");
   const [copied, setCopied] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState<string | null>(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
@@ -325,6 +330,19 @@ export default function OrganizerDetail() {
                     )}
                   </div>
                   <div className="flex gap-2 shrink-0">
+                    <Button
+                      variant={isFollowing ? "default" : "outline"}
+                      size="sm"
+                      className="gap-1.5"
+                      onClick={() => {
+                        if (!user) { toast.error(isAr ? "يرجى تسجيل الدخول" : "Please log in first"); return; }
+                        setIsFollowing(!isFollowing);
+                        toast.success(isFollowing ? (isAr ? "تم إلغاء المتابعة" : "Unfollowed") : (isAr ? "تمت المتابعة" : "Following!"));
+                      }}
+                    >
+                      <Heart className={`h-3.5 w-3.5 ${isFollowing ? "fill-current" : ""}`} />
+                      {isFollowing ? (isAr ? "متابَع" : "Following") : (isAr ? "متابعة" : "Follow")}
+                    </Button>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -512,6 +530,9 @@ export default function OrganizerDetail() {
 
         {/* ═══════ Main Content Tabs ═══════ */}
         <div className="container max-w-6xl pb-12 space-y-6">
+          {/* Rating Summary */}
+          <OrganizerRatingSummary exhibitionIds={exhibitions.map((e: ExhibitionRow) => e.id)} isAr={isAr} />
+
           <Tabs defaultValue="exhibitions" className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
               <TabsTrigger value="exhibitions" className="gap-1.5">
@@ -875,113 +896,23 @@ export default function OrganizerDetail() {
             </TabsContent>
 
             {/* ═══════ Analytics Tab ═══════ */}
-            <TabsContent value="stats" className="mt-4 space-y-4">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="md:col-span-2 lg:col-span-3 rounded-2xl">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <BarChart3 className="h-4 w-4 text-primary" />
-                      {isAr ? "نشاط المنظم عبر السنوات" : "Organizer Activity Over Years"}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-end gap-1 h-32">
-                      {sortedYears.slice().reverse().map(year => {
-                        const count = byYear[year].length;
-                        const maxCount = Math.max(...Object.values(byYear).map(arr => arr.length));
-                        const heightPct = maxCount > 0 ? (count / maxCount) * 100 : 0;
-                        return (
-                          <div key={year} className="flex-1 flex flex-col items-center gap-1">
-                            <span className="text-[9px] font-semibold">{count}</span>
-                            <div className="w-full bg-primary/20 rounded-t-sm relative" style={{ height: `${Math.max(heightPct, 8)}%` }}>
-                              <div className="absolute inset-0 bg-primary rounded-t-sm" />
-                            </div>
-                            <span className="text-[9px] text-muted-foreground">{year}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {(editionStats.visitors || editionStats.exhibitors || editionStats.area) && (
-                  <Card className="rounded-2xl">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4 text-primary" />
-                        {isAr ? "إحصائيات تراكمية" : "Cumulative Stats"}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {editionStats.visitors && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</span>
-                          <span className="text-lg font-bold">{editionStats.visitors.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {editionStats.exhibitors && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">{isAr ? "إجمالي العارضين" : "Total Exhibitors"}</span>
-                          <span className="text-lg font-bold">{editionStats.exhibitors.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {editionStats.area && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">{isAr ? "أكبر مساحة" : "Largest Area"}</span>
-                          <span className="text-lg font-bold">{editionStats.area.toLocaleString()} m²</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-
-                <Card className="rounded-2xl">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Target className="h-4 w-4 text-primary" />
-                      {isAr ? "توزيع الحالات" : "Status Distribution"}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-xs">{isAr ? "قادمة" : "Upcoming"}</span>
-                      <Badge variant="secondary" className="text-[10px]">{upcoming.length}</Badge>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-xs">{isAr ? "جارية" : "Active"}</span>
-                      <Badge variant="secondary" className="text-[10px]">{active.length}</Badge>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-xs">{isAr ? "منتهية" : "Completed"}</span>
-                      <Badge variant="secondary" className="text-[10px]">{past.length}</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="rounded-2xl">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-primary" />
-                      {isAr ? "التوزيع الجغرافي" : "Geographic Reach"}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {countries.map(country => {
-                      const countryEvents = exhibitions.filter((e: ExhibitionRow) => e.country === country);
-                      const pct = Math.round((countryEvents.length / totalExhibitions) * 100);
-                      return (
-                        <div key={country}>
-                          <div className="flex items-center justify-between text-xs mb-1">
-                            <span>{country}</span>
-                            <span className="text-muted-foreground">{countryEvents.length} ({pct}%)</span>
-                          </div>
-                          <Progress value={pct} className="h-1.5" />
-                        </div>
-                      );
-                    })}
-                  </CardContent>
-                </Card>
-              </div>
+            <TabsContent value="stats" className="mt-4">
+              <OrganizerAnalyticsTab
+                exhibitions={exhibitions}
+                byYear={byYear}
+                sortedYears={sortedYears}
+                upcoming={upcoming}
+                active={active}
+                past={past}
+                countries={countries}
+                totalExhibitions={totalExhibitions}
+                totalViews={totalViews}
+                totalTickets={data?.totalTickets || 0}
+                totalReviews={data?.totalReviews || 0}
+                editionStats={editionStats}
+                types={types}
+                isAr={isAr}
+              />
             </TabsContent>
 
             {/* ═══════ Partners Tab ═══════ */}
