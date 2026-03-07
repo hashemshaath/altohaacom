@@ -227,15 +227,15 @@ export default function CompetitionDetail() {
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="flex-1">
-          <Skeleton className="h-72 w-full sm:h-80 md:h-96" />
-          <div className="border-b border-border/40 px-4 py-3">
+          <Skeleton className="h-56 w-full sm:h-80 md:h-96" />
+          <div className="border-b border-border/40 px-3 sm:px-4 py-2.5 sm:py-3">
             <div className="container flex gap-2">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton key={i} className="h-9 w-24 rounded-full shrink-0" />
               ))}
             </div>
           </div>
-          <div className="container py-8">
+          <div className="container py-5 md:py-8">
             <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-24 rounded-2xl" />

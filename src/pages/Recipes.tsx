@@ -148,16 +148,16 @@ export default function Recipes() {
       <main className="flex-1">
         {/* Compact Hero */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-12">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-3 max-w-2xl">
+          <div className="container py-5 md:py-12">
+            <div className="flex flex-col gap-4 md:gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-2 md:space-y-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                   <UtensilsCrossed className="h-3.5 w-3.5 text-primary" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                     {isAr ? "قاعدة الوصفات" : "Recipe Vault"}
                   </span>
                 </div>
-                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                <h1 className="font-serif text-2xl font-bold tracking-tight md:text-4xl">
                   {isAr ? "الوصفات" : "Recipes"}
                 </h1>
                 <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
@@ -187,9 +187,9 @@ export default function Recipes() {
           </div>
         </section>
 
-        <div className="container py-4 md:py-6 space-y-8">
+        <div className="container py-3 md:py-6 space-y-6 md:space-y-8">
           {/* Sticky Filters Bar */}
-          <div className="sticky top-12 z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
+          <div className="sticky top-12 z-40 -mx-4 mb-4 md:mb-8 border-y border-border/40 bg-background/80 px-3 sm:px-4 py-3 md:py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">
                 <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
@@ -240,7 +240,7 @@ export default function Recipes() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {[1, 2, 3, 4, 5, 6].map(i => (
                 <Card key={i} className="overflow-hidden">
                   <Skeleton className="aspect-video w-full" />
@@ -268,7 +268,7 @@ export default function Recipes() {
               )}
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {[...recipes].sort((a, b) => {
                 if (sortBy === "top_rated") return b.avg_rating - a.avg_rating;
                 if (sortBy === "quickest") return ((a.prep_time_minutes || 0) + (a.cook_time_minutes || 0)) - ((b.prep_time_minutes || 0) + (b.cook_time_minutes || 0));
