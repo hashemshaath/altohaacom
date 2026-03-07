@@ -94,7 +94,7 @@ export function useEvaluationDomains() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_domains" as any)
-        .select("*")
+        .select("id, name, name_ar, slug, description, description_ar, icon, is_active, sort_order, created_at")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
