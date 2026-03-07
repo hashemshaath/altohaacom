@@ -26,8 +26,8 @@ export function useOfflineSync() {
       const [compRes, artRes, recRes] = await Promise.allSettled([
         supabase
           .from("competitions")
-          .select("id,title,title_ar,slug,status,competition_start,competition_end,country_code,venue,venue_ar,cover_image_url,edition_year")
-          .in("status", ["published", "registration_open", "ongoing"])
+          .select("id,title,title_ar,status,competition_start,competition_end,country_code,venue,venue_ar,cover_image_url,edition_year")
+          .in("status", ["registration_open", "upcoming", "in_progress"])
           .order("competition_start", { ascending: false })
           .limit(50),
         supabase
@@ -38,7 +38,7 @@ export function useOfflineSync() {
           .limit(50),
         supabase
           .from("recipes")
-          .select("id,title,title_ar,slug,description,description_ar,image_url,cuisine_type,difficulty,prep_time,cook_time,is_published")
+          .select("id,title,title_ar,slug,description,description_ar,image_url,cuisine,difficulty,prep_time_minutes,cook_time_minutes,is_published")
           .eq("is_published", true)
           .order("created_at", { ascending: false })
           .limit(50),
@@ -47,13 +47,13 @@ export function useOfflineSync() {
       const tasks: Promise<void>[] = [];
 
       if (compRes.status === "fulfilled" && compRes.value.data) {
-        tasks.push(cacheItems("competitions", compRes.value.data));
+        tasks.push(cacheItems("competitions", compRes.value.data as any));
       }
       if (artRes.status === "fulfilled" && artRes.value.data) {
-        tasks.push(cacheItems("articles", artRes.value.data));
+        tasks.push(cacheItems("articles", artRes.value.data as any));
       }
       if (recRes.status === "fulfilled" && recRes.value.data) {
-        tasks.push(cacheItems("recipes", recRes.value.data));
+        tasks.push(cacheItems("recipes", recRes.value.data as any));
       }
 
       await Promise.all(tasks);
