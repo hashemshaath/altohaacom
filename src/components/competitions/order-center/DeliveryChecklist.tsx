@@ -172,18 +172,11 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
     }
   }, [filteredItems, selectedIds.size]);
 
-  if (isLoading) {
-    return <ChecklistSkeleton />;
-  }
-
-  if (!allItems?.length) {
-    return <OrderEmptyState type="checklist" />;
-  }
-
   const { total, delivered, overdue, progress, grouped } = useMemo(() => {
-    const t = allItems.length;
-    const d = allItems.filter(i => i.status === "delivered").length;
-    const o = allItems.filter(i => i.deadline && isPast(new Date(i.deadline)) && i.status !== "delivered").length;
+    const items = allItems || [];
+    const t = items.length;
+    const d = items.filter(i => i.status === "delivered").length;
+    const o = items.filter(i => i.deadline && isPast(new Date(i.deadline)) && i.status !== "delivered").length;
     const p = t > 0 ? Math.round((d / t) * 100) : 0;
     const g = lists?.map(list => ({
       ...list,
@@ -191,6 +184,14 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
     })).filter(g => g.items.length > 0) || [];
     return { total: t, delivered: d, overdue: o, progress: p, grouped: g };
   }, [allItems, filteredItems, lists]);
+
+  if (isLoading) {
+    return <ChecklistSkeleton />;
+  }
+
+  if (!allItems?.length) {
+    return <OrderEmptyState type="checklist" />;
+  }
 
   return (
     <div className="space-y-4">
