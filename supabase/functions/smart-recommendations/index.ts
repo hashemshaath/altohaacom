@@ -56,8 +56,8 @@ serve(async (req) => {
       cuisineTypes: [...new Set(cuisineTypes)].slice(0, 5),
     };
 
-    // Fetch candidate content
-    const [compsRes, recipesRes, articlesRes, chefsRes] = await Promise.all([
+    // Fetch candidate content (now includes exhibitions)
+    const [compsRes, recipesRes, articlesRes, chefsRes, exhibitionsRes] = await Promise.all([
       supabase.from("competitions")
         .select("id, title, title_ar, category, country_code, competition_start, image_url, slug")
         .eq("status", "published")
@@ -78,6 +78,13 @@ serve(async (req) => {
         .select("user_id, full_name, full_name_ar, username, avatar_url, specialization, is_verified")
         .eq("is_verified", true)
         .not("user_id", "in", `(${[user.id, ...followingIds.slice(0, 20)].join(",")})`)
+        .limit(15),
+      supabase.from("exhibitions")
+        .select("id, title, title_ar, slug, start_date, end_date, venue, venue_ar, city, country_code, image_url, status")
+        .eq("status", "published")
+        .eq("is_cancelled", false)
+        .gte("end_date", new Date().toISOString())
+        .order("start_date", { ascending: true })
         .limit(15),
     ]);
 
@@ -102,7 +109,9 @@ ARTICLES (pick top 3): ${JSON.stringify(articlesRes.data?.map((a: any, i: number
 
 CHEFS (pick top 4): ${JSON.stringify(chefsRes.data?.map((c: any, i: number) => ({ i, name: c.full_name, spec: c.specialization })) || [])}
 
-Return the indices of the best matches for each category, plus a short personalized tip.`;
+EXHIBITIONS (pick top 4): ${JSON.stringify(exhibitionsRes.data?.map((e: any, i: number) => ({ i, title: e.title, city: e.city, country: e.country_code })) || [])}
+
+Return the indices of the best matches for each category, plus a short personalized tip. For each recommendation, include a brief "reason" why it was recommended.`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -113,25 +122,31 @@ Return the indices of the best matches for each category, plus a short personali
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: "You are a culinary recommendation engine. Return structured recommendations." },
+          { role: "system", content: "You are a culinary recommendation engine. Return structured recommendations with reasons." },
           { role: "user", content: prompt },
         ],
         tools: [{
           type: "function",
           function: {
             name: "recommend",
-            description: "Return personalized recommendations",
+            description: "Return personalized recommendations with reasons",
             parameters: {
               type: "object",
               properties: {
                 competition_indices: { type: "array", items: { type: "integer" } },
+                competition_reasons: { type: "array", items: { type: "string" }, description: "Short reason for each competition recommendation" },
                 recipe_indices: { type: "array", items: { type: "integer" } },
+                recipe_reasons: { type: "array", items: { type: "string" } },
                 article_indices: { type: "array", items: { type: "integer" } },
+                article_reasons: { type: "array", items: { type: "string" } },
                 chef_indices: { type: "array", items: { type: "integer" } },
+                chef_reasons: { type: "array", items: { type: "string" } },
+                exhibition_indices: { type: "array", items: { type: "integer" } },
+                exhibition_reasons: { type: "array", items: { type: "string" } },
                 tip: { type: "string", description: "Short personalized tip in English" },
                 tip_ar: { type: "string", description: "Same tip in Arabic" },
               },
-              required: ["competition_indices", "recipe_indices", "article_indices", "chef_indices", "tip", "tip_ar"],
+              required: ["competition_indices", "recipe_indices", "article_indices", "chef_indices", "exhibition_indices", "tip", "tip_ar"],
               additionalProperties: false,
             },
           },
@@ -144,12 +159,13 @@ Return the indices of the best matches for each category, plus a short personali
       const status = aiRes.status;
       if (status === 429) return new Response(JSON.stringify({ error: "Rate limited" }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
       if (status === 402) return new Response(JSON.stringify({ error: "Credits exhausted" }), { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      // Fallback: return first items without AI ranking
+      // Fallback without AI
       return new Response(JSON.stringify({
         competitions: (compsRes.data || []).slice(0, 4),
         recipes: (recipesRes.data || []).slice(0, 4),
         articles: (articlesRes.data || []).slice(0, 3),
         chefs: (chefsRes.data || []).slice(0, 4),
+        exhibitions: (exhibitionsRes.data || []).slice(0, 4),
         tip: "Explore new culinary content tailored for you!",
         tip_ar: "اكتشف محتوى طهي جديد مخصص لك!",
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -162,14 +178,19 @@ Return the indices of the best matches for each category, plus a short personali
       parsed = JSON.parse(toolCall?.function?.arguments || "{}");
     } catch { /* fallback */ }
 
-    const pick = (arr: any[], indices: number[]) => 
-      (indices || []).map(i => arr?.[i]).filter(Boolean);
+    const pick = (arr: any[], indices: number[], reasons?: string[]) =>
+      (indices || []).map((idx, i) => {
+        const item = arr?.[idx];
+        if (!item) return null;
+        return { ...item, _reason: reasons?.[i] || null };
+      }).filter(Boolean);
 
     return new Response(JSON.stringify({
-      competitions: pick(compsRes.data || [], parsed.competition_indices || [0, 1, 2, 3]),
-      recipes: pick(recipesRes.data || [], parsed.recipe_indices || [0, 1, 2, 3]),
-      articles: pick(articlesRes.data || [], parsed.article_indices || [0, 1, 2]),
-      chefs: pick(chefsRes.data || [], parsed.chef_indices || [0, 1, 2, 3]),
+      competitions: pick(compsRes.data || [], parsed.competition_indices || [0, 1, 2, 3], parsed.competition_reasons),
+      recipes: pick(recipesRes.data || [], parsed.recipe_indices || [0, 1, 2, 3], parsed.recipe_reasons),
+      articles: pick(articlesRes.data || [], parsed.article_indices || [0, 1, 2], parsed.article_reasons),
+      chefs: pick(chefsRes.data || [], parsed.chef_indices || [0, 1, 2, 3], parsed.chef_reasons),
+      exhibitions: pick(exhibitionsRes.data || [], parsed.exhibition_indices || [0, 1, 2, 3], parsed.exhibition_reasons),
       tip: parsed.tip || "Explore new culinary content!",
       tip_ar: parsed.tip_ar || "اكتشف محتوى طهي جديد!",
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
