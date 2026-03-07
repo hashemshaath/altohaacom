@@ -78,7 +78,7 @@ export default function RoleManagement() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_actions")
-        .select("*")
+        .select("id, admin_id, action_type, target_user_id, details, created_at")
         .in("action_type", ["assign_role", "remove_role", "change_membership"])
         .order("created_at", { ascending: false })
         .limit(50);

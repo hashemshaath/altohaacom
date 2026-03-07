@@ -90,7 +90,7 @@ export function GoogleIntegrationPanel() {
     queryFn: async () => {
       const { data } = await supabase
         .from("integration_settings")
-        .select("*")
+        .select("id, integration_type, config, is_active, created_by, created_at, updated_at")
         .in("integration_type", googleIntegrations.map(g => g.type));
       return data || [];
     },

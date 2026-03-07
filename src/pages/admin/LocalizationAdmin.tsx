@@ -91,7 +91,7 @@ export default function LocalizationAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("translation_keys")
-        .select("*")
+        .select("id, key, namespace, en, ar, context, is_verified, auto_translated, updated_by, created_at, updated_at")
         .order("namespace")
         .order("key");
       if (error) throw error;
@@ -104,7 +104,7 @@ export default function LocalizationAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("platform_languages")
-        .select("*")
+        .select("id, code, name, native_name, flag_emoji, is_enabled, is_default, is_rtl, sort_order, created_at, updated_at")
         .order("sort_order");
       if (error) throw error;
       return data as PlatformLanguage[];
