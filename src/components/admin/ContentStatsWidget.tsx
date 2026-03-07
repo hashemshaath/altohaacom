@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { FileText, Eye, Star, TrendingUp, Clock, BarChart3 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function ContentStatsWidget() {
+export const ContentStatsWidget = memo(function ContentStatsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
