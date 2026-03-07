@@ -152,7 +152,7 @@ export function useTastingCriteria(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_criteria" as any)
-        .select("*")
+        .select("id, session_id, name, name_ar, description, description_ar, category, weight, max_score, sort_order, is_required, stage, guidelines, guidelines_ar, reference_images, eval_scale, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
