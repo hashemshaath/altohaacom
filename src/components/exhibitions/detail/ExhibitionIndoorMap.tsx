@@ -34,7 +34,7 @@ export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_map_waypoints")
-        .select("id, exhibition_id, name, name_ar, description, description_ar, waypoint_type, floor_number, x_position, y_position, sort_order, is_accessible, booth_number, exhibitor_name, exhibitor_name_ar")
+        .select("id, exhibition_id, name, name_ar, description, description_ar, waypoint_type, floor_number, x_position, y_position, sort_order, is_accessible")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order");
       return data || [];

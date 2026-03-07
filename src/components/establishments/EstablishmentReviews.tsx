@@ -36,7 +36,7 @@ export default function EstablishmentReviews({ establishmentId }: Props) {
     queryFn: async () => {
       let query = supabase
         .from("establishment_reviews")
-        .select("id, establishment_id, user_id, rating, title, content, status, helpful_count, created_at")
+        .select("id, establishment_id, user_id, rating, title, content, status, helpful_count, is_verified_visit, reply_text, reply_text_ar, created_at")
         .eq("establishment_id", establishmentId)
         .eq("status", "published");
 
