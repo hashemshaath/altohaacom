@@ -282,7 +282,6 @@ export default function OrganizerDetail() {
   const contactPhone = orgRecord?.phone || org?.organizer_phone;
   const contactWebsite = orgRecord?.website || org?.organizer_website;
 
-            <div {...swipeHandlers} className="touch-pan-y">
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
