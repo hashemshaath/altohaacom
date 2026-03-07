@@ -318,7 +318,7 @@ export function CommunityFeed() {
   }, [user]);
 
   // Optimistic repost
-  const handleRepost = async (postId: string, isReposted: boolean) => {
+  const handleRepost = useCallback(async (postId: string, isReposted: boolean) => {
     if (!user) return;
     setPosts((prev) =>
       prev.map((p) =>
@@ -335,7 +335,7 @@ export function CommunityFeed() {
         )
       );
     }
-  };
+  }, [user]);
 
   const handleDelete = async (postId: string) => {
     if (!user) return;
