@@ -492,6 +492,19 @@ export function ChatArea({
       {/* Reply Preview */}
       <ReplyPreview replyToMessage={replyTo} onClear={() => setReplyTo(null)} />
 
+      {/* Quick Reply Suggestions */}
+      {!newMessage.trim() && !replyTo && !pendingFiles.length && (
+        <div className="border-t border-border/20 bg-muted/5 px-3 py-1.5">
+          <QuickReplySuggestions
+            lastMessage={lastReceivedMsg}
+            isAr={isAr}
+            onSelect={(text) => {
+              sendMessage.mutate({ content: text, message_type: "text" });
+            }}
+          />
+        </div>
+      )}
+
       {/* Message Input */}
       <form onSubmit={handleSendWithReply} className="border-t border-border/30 bg-card/80 backdrop-blur-sm p-2 sm:p-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 0.5rem)" }}>
         <div className="flex gap-1.5 sm:gap-2 items-end">
