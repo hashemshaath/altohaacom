@@ -30,7 +30,7 @@ export function useEstablishment(id?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("establishments")
-        .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, phone, email, website, cuisine_type, star_rating, logo_url, cover_image_url, is_active, created_by, created_at, updated_at, latitude, longitude, google_maps_url, instagram_url, facebook_url, twitter_url, tiktok_url, verification_status, verified_at, verified_by")
+        .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, address_ar, phone, email, website, cuisine_type, cuisine_type_ar, star_rating, logo_url, cover_image_url, is_active, is_verified, created_by, created_at, updated_at, google_maps_url, instagram_url, facebook_url, twitter_url, tiktok_url, verification_status, verified_at, verified_by")
         .eq("id", id!)
         .single();
       if (error) throw error;
