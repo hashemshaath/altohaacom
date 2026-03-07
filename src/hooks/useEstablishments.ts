@@ -96,7 +96,7 @@ export function useAssociationQualifications(associationId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chef_establishment_qualifications")
-        .select("id, association_id, user_id, qualification_name, qualification_name_ar, qualification_type, issued_date, expiry_date, credential_id, description, document_url, verified, verified_by, verified_at, created_at")
+        .select("id, association_id, user_id, qualification_name, qualification_name_ar, qualification_type, issued_date, expiry_date, credential_id, description, verified, verified_by, verified_at, created_at")
         .eq("association_id", associationId!)
         .order("issued_date", { ascending: false });
       if (error) throw error;
