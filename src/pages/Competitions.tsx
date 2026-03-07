@@ -260,6 +260,23 @@ export default function Competitions() {
                   <SelectItem value="popularity" className="rounded-lg text-xs">{isAr ? "الأكثر شعبية" : "Popular"}</SelectItem>
                 </SelectContent>
               </Select>
+              {/* View Mode Toggle */}
+              <div className="flex items-center gap-0.5 border border-border/20 rounded-xl p-0.5 bg-muted/10 shrink-0">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`flex items-center justify-center h-7 w-7 rounded-md transition-all ${viewMode === "grid" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  aria-label="Grid view"
+                >
+                  <LayoutGrid className="h-3 w-3" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`flex items-center justify-center h-7 w-7 rounded-md transition-all ${viewMode === "list" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  aria-label="List view"
+                >
+                  <List className="h-3 w-3" />
+                </button>
+              </div>
             </div>
             {/* Tab Pills */}
             <div className="flex gap-1 overflow-x-auto scrollbar-none">
