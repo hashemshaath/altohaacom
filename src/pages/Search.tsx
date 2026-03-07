@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
@@ -37,6 +37,8 @@ import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
 import type { Database } from "@/integrations/supabase/types";
+
+const AISearchPanel = lazy(() => import("@/components/search/AISearchPanel").then(m => ({ default: m.AISearchPanel })));
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
@@ -283,7 +285,16 @@ export default function Search() {
         )}
 
         {/* Results area */}
-        <div className="container max-w-3xl py-6">
+        <div className="container max-w-3xl py-6 pb-24 md:pb-6">
+          {/* AI Search Panel */}
+          {filters.query && filters.query.trim().length >= 2 && (
+            <div className="mb-5">
+              <Suspense fallback={null}>
+                <AISearchPanel query={filters.query} />
+              </Suspense>
+            </div>
+          )}
+
           {/* Results count */}
           {filters.query && !isLoading && (
             <p className="text-xs text-muted-foreground mb-5">
