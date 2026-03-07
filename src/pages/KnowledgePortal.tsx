@@ -78,7 +78,7 @@ export default function KnowledgePortal() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const filteredResources = resources?.filter(r => {
+  const filteredResources = useMemo(() => resources?.filter(r => {
     const matchesSearch = !searchQuery ||
       r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.title_ar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -88,9 +88,9 @@ export default function KnowledgePortal() {
     const matchesType = selectedType === "all" || r.resource_type === selectedType;
     const matchesCompetition = selectedCompetition === "all" || r.competition_id === selectedCompetition;
     return matchesSearch && matchesCategory && matchesType && matchesCompetition;
-  });
+  }), [resources, searchQuery, selectedCategory, selectedType, selectedCompetition]);
 
-  const resourceTypeIcon = (type: string) => {
+  const resourceTypeIcon = useCallback((type: string) => {
     switch (type) {
       case "link": return <Link className="h-4 w-4" />;
       case "file": case "document": return <FileText className="h-4 w-4" />;
@@ -98,14 +98,14 @@ export default function KnowledgePortal() {
       case "law": return <Scale className="h-4 w-4" />;
       default: return <BookOpen className="h-4 w-4" />;
     }
-  };
+  }, []);
 
-  const ratingLabels: Record<string, string> = {
+  const ratingLabels: Record<string, string> = useMemo(() => ({
     excellent: language === "ar" ? "ممتاز" : "Excellent",
     good: language === "ar" ? "جيد" : "Good",
     average: language === "ar" ? "متوسط" : "Average",
     poor: language === "ar" ? "ضعيف" : "Poor",
-  };
+  }), [language]);
 
   const ratingColors: Record<string, string> = {
     excellent: "bg-chart-3/10 text-chart-3",

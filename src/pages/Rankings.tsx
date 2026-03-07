@@ -62,17 +62,17 @@ export default function Rankings() {
     staleTime: 1000 * 60 * 10,
   });
 
-  const filteredRankings = rankings?.filter(r => {
+  const filteredRankings = useMemo(() => rankings?.filter(r => {
     if (!searchQuery) return true;
     const name = r.profile?.full_name?.toLowerCase() || "";
     const username = r.profile?.username?.toLowerCase() || "";
     return name.includes(searchQuery.toLowerCase()) || username.includes(searchQuery.toLowerCase());
-  });
+  }), [rankings, searchQuery]);
 
-  const topThree = filteredRankings?.slice(0, 3) || [];
-  const rest = filteredRankings?.slice(3) || [];
+  const topThree = useMemo(() => filteredRankings?.slice(0, 3) || [], [filteredRankings]);
+  const rest = useMemo(() => filteredRankings?.slice(3) || [], [filteredRankings]);
 
-  const podiumOrder = topThree.length === 3 ? [topThree[1], topThree[0], topThree[2]] : topThree;
+  const podiumOrder = useMemo(() => topThree.length === 3 ? [topThree[1], topThree[0], topThree[2]] : topThree, [topThree]);
 
   return (
     <PageShell

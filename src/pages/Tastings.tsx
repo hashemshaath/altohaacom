@@ -32,12 +32,12 @@ export default function Tastings() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const filtered = sessions?.filter(s => {
+  const filtered = useMemo(() => sessions?.filter(s => {
     const q = search.toLowerCase();
     const matchSearch = s.title.toLowerCase().includes(q) || s.description?.toLowerCase().includes(q);
     const matchStatus = statusFilter === "all" || s.status === statusFilter;
     return matchSearch && matchStatus;
-  });
+  }), [sessions, search, statusFilter]);
 
   return (
     <>
