@@ -52,7 +52,7 @@ export default function CompanyAdminMessaging() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_support_messages")
-        .select("*")
+        .select("id, company_id, sender_id, sender_type, subject, message, is_read, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: true });
       if (error) throw error;

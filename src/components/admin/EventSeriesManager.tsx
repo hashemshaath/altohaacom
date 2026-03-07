@@ -79,7 +79,7 @@ export function EventSeriesManager({ onCreateEdition }: Props) {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("event_series")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, series_type, logo_url, cover_image_url, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, default_organizer_phone, default_organizer_website, website_url, tags, is_active, created_at")
         .order("name");
       if (error) throw error;
       return data as SeriesRow[];

@@ -29,7 +29,7 @@ export function AdminCommentModeration() {
     queryFn: async () => {
       let query = supabase
         .from("event_comments")
-        .select("*")
+        .select("id, content, created_at, event_id, event_type, user_id, is_flagged, is_hidden, flag_reason, flagged_at, hidden_at, hidden_by, likes_count, parent_id")
         .order("created_at", { ascending: false })
         .limit(100);
 

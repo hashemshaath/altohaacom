@@ -26,7 +26,7 @@ export function UserModificationHistory({ userId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_actions")
-        .select("*")
+        .select("id, action_type, admin_id, created_at, details, target_user_id")
         .eq("target_user_id", userId)
         .order("created_at", { ascending: false })
         .limit(50);
