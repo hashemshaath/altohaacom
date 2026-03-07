@@ -59,7 +59,7 @@ export function InvoiceTrackerWidget() {
         currency: all[0]?.currency || "SAR",
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

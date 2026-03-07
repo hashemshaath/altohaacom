@@ -89,7 +89,7 @@ export function CompetitionJudgingTracker() {
       return { competitions };
     },
     staleTime: 60000,
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data || data.competitions.length === 0) return null;

@@ -73,7 +73,7 @@ export function CompetitionScoringOverview() {
 
       return { totalScores, totalJudges, activeComps, avgScore, scoreRanges, compProgress };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

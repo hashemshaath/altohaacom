@@ -55,7 +55,7 @@ export function CertificateAnalyticsWidget() {
         typeDist,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (isLoading) return <Skeleton className="h-44 w-full rounded-xl" />;

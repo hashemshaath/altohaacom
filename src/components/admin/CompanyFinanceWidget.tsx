@@ -79,7 +79,7 @@ export function CompanyFinanceWidget() {
         dailyVolume,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

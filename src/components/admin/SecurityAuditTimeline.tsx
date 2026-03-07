@@ -50,7 +50,7 @@ export function SecurityAuditTimeline() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   const stats = {
