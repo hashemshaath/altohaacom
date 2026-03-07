@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function ContentQuickToolbar() {
+export const ContentQuickToolbar = memo(function ContentQuickToolbar() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
