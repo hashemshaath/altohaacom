@@ -111,6 +111,24 @@ export interface RecipeResult {
   _relevance?: number;
 }
 
+export interface ExhibitionResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  cover_image_url: string | null;
+  slug: string;
+  start_date: string | null;
+  end_date: string | null;
+  venue: string | null;
+  venue_ar: string | null;
+  city: string | null;
+  country: string | null;
+  status: string;
+  _relevance?: number;
+}
+
 export interface SearchResults {
   competitions: CompetitionResult[];
   articles: ArticleResult[];
@@ -118,6 +136,7 @@ export interface SearchResults {
   posts: PostResult[];
   entities: EntityResult[];
   recipes: RecipeResult[];
+  exhibitions: ExhibitionResult[];
 }
 
 const DEFAULT_FILTERS: SearchFilters = {
