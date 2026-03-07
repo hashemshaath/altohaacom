@@ -180,7 +180,7 @@ export function useChefsTableSessions(statusFilter?: string) {
     queryFn: async () => {
       let query = supabase
         .from("chefs_table_sessions" as any)
-        .select("*")
+        .select("id, request_id, company_id, session_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, max_chefs, is_published, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (statusFilter && statusFilter !== "all") {
         query = query.eq("status", statusFilter);
