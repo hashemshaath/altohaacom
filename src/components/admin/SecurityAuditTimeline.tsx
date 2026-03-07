@@ -39,7 +39,7 @@ export function SecurityAuditTimeline() {
     queryFn: async () => {
       let query = supabase
         .from("security_events")
-        .select("*")
+        .select("id, event_type, severity, description, description_ar, ip_address, user_agent, user_id, metadata, created_at")
         .order("created_at", { ascending: false })
         .limit(100);
 

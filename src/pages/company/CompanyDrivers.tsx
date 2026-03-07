@@ -44,7 +44,7 @@ export default function CompanyDrivers() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_drivers")
-        .select("*")
+        .select("id, company_id, branch_id, name, name_ar, phone, license_number, vehicle_type, vehicle_plate, is_active, is_available, created_at")
         .eq("company_id", companyId)
         .order("name");
       if (error) throw error;

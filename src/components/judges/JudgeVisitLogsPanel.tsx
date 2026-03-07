@@ -58,7 +58,7 @@ export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judge_visit_logs")
-        .select("*")
+        .select("id, user_id, competition_id, event_name, event_name_ar, event_type, role_played, location, country, start_date, end_date, achievements, notes, created_by, created_at, updated_at")
         .eq("user_id", userId)
         .order("start_date", { ascending: false });
       if (error) throw error;

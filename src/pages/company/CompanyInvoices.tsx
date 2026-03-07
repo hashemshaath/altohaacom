@@ -38,7 +38,7 @@ export default function CompanyInvoices() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("invoices")
-        .select("*")
+        .select("id, invoice_number, title, title_ar, description, description_ar, amount, subtotal, tax_amount, tax_rate, discount_amount, currency, status, due_date, paid_at, payment_method, payment_reference, items, notes, notes_ar, company_id, competition_id, order_id, session_id, user_id, issued_by, created_at, updated_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;
