@@ -90,17 +90,12 @@ export default function OrganizerDetail() {
       let totalReviews = 0;
       if (exhibitions.length > 0) {
         const exIds = exhibitions.map(e => e.id);
-        const { count: ticketCount } = await supabase
-          .from("exhibition_tickets")
-          .select("id", { count: "exact", head: true })
-          .in("exhibition_id", exIds);
-        totalTickets = ticketCount || 0;
-
-        const { count: reviewCount } = await supabase
-          .from("exhibition_reviews")
-          .select("id", { count: "exact", head: true })
-          .in("exhibition_id", exIds);
-        totalReviews = reviewCount || 0;
+        const [ticketRes, reviewRes] = await Promise.all([
+          supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", exIds),
+          supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).in("exhibition_id", exIds),
+        ]);
+        totalTickets = ticketRes.count || 0;
+        totalReviews = reviewRes.count || 0;
       }
 
       return {
