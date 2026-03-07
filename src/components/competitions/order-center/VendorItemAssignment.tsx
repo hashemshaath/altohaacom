@@ -30,7 +30,7 @@ interface Props {
   onToggleSelect?: (id: string) => void;
 }
 
-export function VendorItemAssignment({ grouped, companies, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
+export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped, companies, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
   return (
     <div className="space-y-4">
       {!grouped.length ? (
