@@ -18,7 +18,7 @@ import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
-export function NewlyJoinedUsers() {
+export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
