@@ -218,12 +218,18 @@ export default function CRMCustomerDetail() {
   });
 
   // Computed stats
-  const totalOrders = orders.length;
-  const totalOrderValue = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
-  const avgOrderValue = totalOrders > 0 ? totalOrderValue / totalOrders : 0;
-  const cancelledOrders = orders.filter(o => o.status === "cancelled").length;
-  const lastOrder = orders[0];
-  const totalLoyalty = loyaltyTx.reduce((s, t) => s + (t.type === "earn" || t.type === "bonus" ? t.points : -t.points), 0);
+  const { totalOrders, totalOrderValue, avgOrderValue, cancelledOrders, lastOrder, totalLoyalty } = useMemo(() => {
+    const tot = orders.length;
+    const totVal = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
+    return {
+      totalOrders: tot,
+      totalOrderValue: totVal,
+      avgOrderValue: tot > 0 ? totVal / tot : 0,
+      cancelledOrders: orders.filter(o => o.status === "cancelled").length,
+      lastOrder: orders[0],
+      totalLoyalty: loyaltyTx.reduce((s, t) => s + (t.type === "earn" || t.type === "bonus" ? t.points : -t.points), 0),
+    };
+  }, [orders, loyaltyTx]);
 
   if (isLoading) {
     return (

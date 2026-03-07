@@ -157,14 +157,16 @@ export default function MarketingAutomationAdmin() {
   });
 
   // Stats
-  const completedRuns = runs.filter(r => r.status === "completed").length;
-  const failedRuns = runs.filter(r => r.status === "failed").length;
-  const totalProcessed = runs
-    .filter(r => r.results)
-    .reduce((sum, r) => {
-      const res = r.results as Record<string, number>;
-      return sum + Object.values(res).reduce((a, b) => a + (typeof b === "number" ? b : 0), 0);
-    }, 0);
+  const { completedRuns, failedRuns, totalProcessed } = useMemo(() => ({
+    completedRuns: runs.filter(r => r.status === "completed").length,
+    failedRuns: runs.filter(r => r.status === "failed").length,
+    totalProcessed: runs
+      .filter(r => r.results)
+      .reduce((sum, r) => {
+        const res = r.results as Record<string, number>;
+        return sum + Object.values(res).reduce((a, b) => a + (typeof b === "number" ? b : 0), 0);
+      }, 0),
+  }), [runs]);
 
   return (
     <div className="space-y-6">
