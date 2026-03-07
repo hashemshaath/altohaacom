@@ -40,27 +40,11 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
     },
   });
 
-  if (isLoading) {
-    return <div className="space-y-4">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>;
-  }
-
   const judges = analytics?.judges || [];
   const profiles = analytics?.profiles || {};
 
-  if (!judges.length) {
-    return (
-      <Card>
-        <CardContent className="flex flex-col items-center py-12 text-center">
-          <BarChart3 className="h-10 w-10 text-muted-foreground/20 mb-3" />
-          <p className="font-semibold text-sm">{isAr ? "لا توجد بيانات تحليلية" : "No analytics data yet"}</p>
-          <p className="text-xs text-muted-foreground">{isAr ? "ستظهر البيانات بعد تقديم التقييمات" : "Analytics will appear after scores are submitted"}</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Aggregate metrics
   const { avgConsistency, avgBias, avgCompletion, totalScores, consistencyData, scoringData } = useMemo(() => {
+    if (!judges.length) return { avgConsistency: 0, avgBias: 0, avgCompletion: 0, totalScores: 0, consistencyData: [] as any[], scoringData: [] as any[] };
     const avgC = judges.reduce((s, j) => s + (j.consistency_score || 0), 0) / judges.length;
     const avgB = judges.reduce((s, j) => s + Math.abs(j.bias_indicator || 0), 0) / judges.length;
     const avgCo = judges.reduce((s, j) => s + (j.completion_rate || 0), 0) / judges.length;
@@ -80,6 +64,22 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
 
     return { avgConsistency: avgC, avgBias: avgB, avgCompletion: avgCo, totalScores: total, consistencyData: cData, scoringData: sData };
   }, [judges, profiles]);
+
+  if (isLoading) {
+    return <div className="space-y-4">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>;
+  }
+
+  if (!judges.length) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center py-12 text-center">
+          <BarChart3 className="h-10 w-10 text-muted-foreground/20 mb-3" />
+          <p className="font-semibold text-sm">{isAr ? "لا توجد بيانات تحليلية" : "No analytics data yet"}</p>
+          <p className="text-xs text-muted-foreground">{isAr ? "ستظهر البيانات بعد تقديم التقييمات" : "Analytics will appear after scores are submitted"}</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const getBiasLevel = (bias: number) => {
     if (bias < 0.1) return { label: isAr ? "ممتاز" : "Excellent", color: "text-chart-5", variant: "default" as const };
