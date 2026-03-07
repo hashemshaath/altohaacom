@@ -45,6 +45,7 @@ export default function OrganizerDetail() {
   const [copied, setCopied] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [activeTab, setActiveTab] = useState("exhibitions");
   const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
