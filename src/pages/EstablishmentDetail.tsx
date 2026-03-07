@@ -106,7 +106,7 @@ export default function EstablishmentDetail() {
           <div className="container">
             <div className="flex items-start gap-5">
               {est.logo_url ? (
-                <img src={est.logo_url} alt={name} className="h-20 w-20 rounded-2xl object-cover shadow-sm" />
+                <img src={est.logo_url} alt={name} className="h-20 w-20 rounded-2xl object-cover shadow-sm" loading="lazy" />
               ) : (
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-primary/10">
                   <Building2 className="h-10 w-10 text-primary" />

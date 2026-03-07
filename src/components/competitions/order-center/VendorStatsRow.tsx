@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Package, UserPlus, AlertTriangle, Building2 } from "lucide-react";
@@ -12,7 +13,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function VendorStatsRow({ totalItems, assignedItems, unassignedItems, vendorCount, assignmentRate, isAr }: Props) {
+export const VendorStatsRow = memo(function VendorStatsRow({ totalItems, assignedItems, unassignedItems, vendorCount, assignmentRate, isAr }: Props) {
   const stats = [
     { icon: Package, value: totalItems, label: isAr ? "إجمالي العناصر" : "Total Items", color: "text-primary" },
     { icon: UserPlus, value: assignedItems, label: isAr ? "تم التعيين" : "Assigned", color: "text-chart-1" },
@@ -51,4 +52,4 @@ export function VendorStatsRow({ totalItems, assignedItems, unassignedItems, ven
       </Card>
     </div>
   );
-}
+});

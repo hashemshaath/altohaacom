@@ -272,7 +272,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
     <div className={cn("flex gap-3 p-3 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
       {event.cover_image_url ? (
         <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-muted">
-          <img src={event.cover_image_url} alt="" className="w-full h-full object-cover" />
+          <img src={event.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
         </div>
       ) : (
         <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
@@ -318,7 +318,7 @@ const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
       <div className="flex">
         <div className={cn("w-24 sm:w-32 shrink-0 relative overflow-hidden", !event.cover_image_url && colors.bg)}>
           {event.cover_image_url ? (
-            <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
           ) : (
             <div className="flex items-center justify-center h-full">
               <IconComp className={cn("h-7 w-7 opacity-40", colors.text)} />
@@ -326,7 +326,7 @@ const HomeListEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
           )}
           {event.logo_url && (
             <div className="absolute bottom-1.5 start-1.5 h-7 w-7 rounded-md bg-background/90 shadow-sm flex items-center justify-center overflow-hidden">
-              <img src={event.logo_url} alt="" className="h-5 w-5 object-contain" />
+              <img src={event.logo_url} alt="" className="h-5 w-5 object-contain" loading="lazy" />
             </div>
           )}
           {!countdown.past && (

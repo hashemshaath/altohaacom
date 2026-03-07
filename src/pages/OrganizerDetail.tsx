@@ -302,7 +302,7 @@ export default function OrganizerDetail() {
         <div className="relative">
           {coverImage ? (
             <div className="h-56 md:h-72 overflow-hidden relative">
-              <img src={coverImage} alt="" className="w-full h-full object-cover" />
+              <img src={coverImage} alt="" className="w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/10" />
             </div>
           ) : (
@@ -625,7 +625,7 @@ export default function OrganizerDetail() {
                               <Card className="hover:shadow-md transition-all border-border/40 hover:border-primary/30 rounded-2xl">
                                 <CardContent className="p-3 flex items-center gap-4">
                                   {ex.cover_image_url && (
-                                    <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" />
+                                    <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" loading="lazy" />
                                   )}
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
@@ -669,7 +669,7 @@ export default function OrganizerDetail() {
                             <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                               {ex.cover_image_url && (
                                 <div className="relative h-36 overflow-hidden">
-                                  <img src={ex.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                  <img src={ex.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                                   <div className="absolute top-2 end-2">
                                     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium backdrop-blur-sm ${derived.color}`}>
@@ -941,7 +941,7 @@ export default function OrganizerDetail() {
                     <Card key={i} className="border-border/40 rounded-2xl">
                       <CardContent className="p-4 flex items-center gap-3">
                         {sponsor.logo ? (
-                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" />
+                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" loading="lazy" />
                         ) : (
                           <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                             <Award className="h-5 w-5 text-primary" />
@@ -966,7 +966,7 @@ export default function OrganizerDetail() {
                     <Link key={article.id} to={`/news/${article.slug}`} className="group">
                       <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (
-                          <img src={article.featured_image_url} alt="" className="w-full h-36 object-cover" />
+                          <img src={article.featured_image_url} alt="" className="w-full h-36 object-cover" loading="lazy" />
                         )}
                         <CardContent className="p-3">
                           <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">

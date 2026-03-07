@@ -225,7 +225,7 @@ export function ExhibitionStep({
                     >
                       <div className="flex gap-3">
                         {exh.cover_image_url && (
-                          <img src={exh.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                          <img src={exh.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" loading="lazy" />
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
@@ -289,7 +289,7 @@ export function ExhibitionStep({
                       }`}
                     >
                       {ent.logo_url ? (
-                        <img src={ent.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" />
+                        <img src={ent.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" loading="lazy" />
                       ) : (
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted shrink-0">
                           <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -341,7 +341,7 @@ export function ExhibitionStep({
                       }`}
                     >
                       {chef.avatar_url ? (
-                        <img src={chef.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover shrink-0" />
+                        <img src={chef.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover shrink-0" loading="lazy" />
                       ) : (
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted shrink-0">
                           <ChefHat className="h-4 w-4 text-muted-foreground" />

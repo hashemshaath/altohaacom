@@ -226,7 +226,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
 
         <Card className="overflow-hidden">
           {cat.cover_image_url && (
-            <img src={cat.cover_image_url} alt={cat.name} className="h-40 w-full object-cover" />
+            <img src={cat.cover_image_url} alt={cat.name} className="h-40 w-full object-cover" loading="lazy" />
           )}
           <CardHeader>
             <div className="flex items-start justify-between">
@@ -516,7 +516,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
             return (
               <Card key={cat.id} className="overflow-hidden group hover:shadow-md transition-shadow cursor-pointer" onClick={() => openDetail(cat.id)}>
                 {cat.cover_image_url ? (
-                  <img src={cat.cover_image_url} alt={cat.name} className="h-28 w-full object-cover" />
+                  <img src={cat.cover_image_url} alt={cat.name} className="h-28 w-full object-cover" loading="lazy" />
                 ) : (
                   <div className="h-28 w-full bg-gradient-to-br from-primary/10 via-accent/5 to-muted flex items-center justify-center">
                     <Trophy className="h-10 w-10 text-primary/20" />
