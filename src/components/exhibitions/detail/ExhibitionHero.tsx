@@ -143,7 +143,7 @@ export function ExhibitionHero({
               </div>
 
               {/* Title — clean, no year duplication, mobile-friendly size */}
-              <h1 className={`text-xl font-bold leading-tight tracking-tight sm:text-2xl md:text-3xl text-foreground ${isAr ? "" : "font-serif"}`}>
+              <h1 className={`text-lg font-bold leading-tight tracking-tight sm:text-2xl md:text-3xl text-foreground ${isAr ? "" : "font-serif"}`}>
                 {title}
               </h1>
 
