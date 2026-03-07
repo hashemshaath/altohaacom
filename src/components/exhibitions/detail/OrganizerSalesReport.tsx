@@ -39,7 +39,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
 
       // Revenue calculation
       const totalRevenue = confirmed.reduce((s, t) => {
-        const price = parseFloat((t as any).ticket_price || "0");
+        const price = parseFloat((t as any).price_paid || "0");
         return s + price;
       }, 0);
 
