@@ -374,7 +374,7 @@ export default function AdminDashboard() {
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
 
       {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-3">
         {/* Today's Activity */}
         <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
           <CardContent className="p-4">
