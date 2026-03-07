@@ -29,7 +29,7 @@ export function EventComments({ eventType, eventId }: EventCommentsProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("event_comments")
-        .select("*")
+        .select("id, content, user_id, event_type, event_id, parent_id, likes_count, is_flagged, is_hidden, created_at")
         .eq("event_type", eventType)
         .eq("event_id", eventId)
         .is("parent_id", null)
