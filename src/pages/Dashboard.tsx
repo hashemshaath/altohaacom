@@ -197,7 +197,7 @@ export default function Dashboard() {
           {/* AI Recommendations */}
           {user && <W><SmartRecommendationsWidget /></W>}
 
-          {/* Pro extras */}
+          {user && !isFan && <W><WeeklyTrendChart /></W>}
           {user && !isFan && <W><ActivityHeatmapWidget /></W>}
           {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
           {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
