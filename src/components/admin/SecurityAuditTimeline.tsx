@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -54,12 +54,12 @@ export function SecurityAuditTimeline() {
     refetchInterval: useVisibleRefetchInterval(60000),
   });
 
-  const stats = {
+  const stats = useMemo(() => ({
     critical: events.filter((e: any) => e.severity === "critical").length,
     high: events.filter((e: any) => e.severity === "high").length,
     medium: events.filter((e: any) => e.severity === "medium").length,
     total: events.length,
-  };
+  }), [events]);
 
   return (
     <Card>

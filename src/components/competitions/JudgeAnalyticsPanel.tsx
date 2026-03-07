@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -39,12 +40,34 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
     },
   });
 
+  const judges = analytics?.judges || [];
+  const profiles = analytics?.profiles || {};
+
+  const { avgConsistency, avgBias, avgCompletion, totalScores, consistencyData, scoringData } = useMemo(() => {
+    if (!judges.length) return { avgConsistency: 0, avgBias: 0, avgCompletion: 0, totalScores: 0, consistencyData: [] as any[], scoringData: [] as any[] };
+    const avgC = judges.reduce((s, j) => s + (j.consistency_score || 0), 0) / judges.length;
+    const avgB = judges.reduce((s, j) => s + Math.abs(j.bias_indicator || 0), 0) / judges.length;
+    const avgCo = judges.reduce((s, j) => s + (j.completion_rate || 0), 0) / judges.length;
+    const total = judges.reduce((s, j) => s + (j.scores_count || 0), 0);
+
+    const cData = judges.map(j => ({
+      name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
+      consistency: Number((j.consistency_score || 0).toFixed(1)),
+      bias: Number(Math.abs(j.bias_indicator || 0).toFixed(2)),
+    }));
+
+    const sData = judges.map(j => ({
+      name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
+      avgScore: Number((j.avg_score_given || 0).toFixed(1)),
+      stdDev: Number((j.score_std_deviation || 0).toFixed(1)),
+    }));
+
+    return { avgConsistency: avgC, avgBias: avgB, avgCompletion: avgCo, totalScores: total, consistencyData: cData, scoringData: sData };
+  }, [judges, profiles]);
+
   if (isLoading) {
     return <div className="space-y-4">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div>;
   }
-
-  const judges = analytics?.judges || [];
-  const profiles = analytics?.profiles || {};
 
   if (!judges.length) {
     return (
@@ -57,25 +80,6 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
       </Card>
     );
   }
-
-  // Aggregate metrics
-  const avgConsistency = judges.reduce((s, j) => s + (j.consistency_score || 0), 0) / judges.length;
-  const avgBias = judges.reduce((s, j) => s + Math.abs(j.bias_indicator || 0), 0) / judges.length;
-  const avgCompletion = judges.reduce((s, j) => s + (j.completion_rate || 0), 0) / judges.length;
-  const totalScores = judges.reduce((s, j) => s + (j.scores_count || 0), 0);
-
-  // Chart data
-  const consistencyData = judges.map(j => ({
-    name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
-    consistency: Number((j.consistency_score || 0).toFixed(1)),
-    bias: Number(Math.abs(j.bias_indicator || 0).toFixed(2)),
-  }));
-
-  const scoringData = judges.map(j => ({
-    name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
-    avgScore: Number((j.avg_score_given || 0).toFixed(1)),
-    stdDev: Number((j.score_std_deviation || 0).toFixed(1)),
-  }));
 
   const getBiasLevel = (bias: number) => {
     if (bias < 0.1) return { label: isAr ? "ممتاز" : "Excellent", color: "text-chart-5", variant: "default" as const };
