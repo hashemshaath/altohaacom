@@ -29,7 +29,7 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, competition_start, status, country_code, organizer_id")
+        .select("id, title, title_ar, competition_start, competition_end, venue, venue_ar, status, country_code, organizer_id")
         .eq("id", competitionId)
         .single();
       if (error) throw error;
