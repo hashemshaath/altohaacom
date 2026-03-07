@@ -175,7 +175,7 @@ export function useMentorshipMatchDetails(matchId: string | undefined) {
       // Try with profile joins
       const { data, error } = await supabase
         .from("mentorship_matches")
-        .select("*")
+        .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .eq("id", matchId)
         .maybeSingle();
       if (error) throw error;
