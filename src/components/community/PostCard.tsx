@@ -260,12 +260,12 @@ export function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-3 flex items-center justify-between -ms-2 pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-0.5">
+            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-0">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 gap-1.5 rounded-xl px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
+                  className="h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[11px] sm:text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 touch-manipulation active:scale-95"
                   onClick={() => onOpenThread(post.id)}
                 >
                   <MessageCircle className="h-4 w-4" />
