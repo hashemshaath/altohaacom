@@ -42,7 +42,7 @@ export default function KnowledgePortal() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("knowledge_categories")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, icon, sort_order, parent_id")
         .order("sort_order");
       if (error) throw error;
       return data;
@@ -55,7 +55,7 @@ export default function KnowledgePortal() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reference_gallery")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, image_url, category, category_id, competition_category, rating, score_range_min, score_range_max, tags, sort_order, is_active, uploaded_by_name")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;

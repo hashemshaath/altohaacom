@@ -42,7 +42,7 @@ export function useActiveBonusCampaigns() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("bonus_campaigns")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, campaign_type, bonus_points, multiplier, starts_at, ends_at, is_active, badge_text, badge_text_ar, banner_color, target_actions")
         .eq("is_active", true)
         .lte("starts_at", new Date().toISOString())
         .gte("ends_at", new Date().toISOString())
@@ -60,7 +60,7 @@ export function useReferralTiers() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_tier_bonuses")
-        .select("*")
+        .select("id, label, label_ar, min_referrals, max_referrals, bonus_points")
         .order("min_referrals");
       if (error) throw error;
       return data || [];

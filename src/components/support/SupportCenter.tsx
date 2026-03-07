@@ -53,7 +53,7 @@ export function SupportCenter() {
     queryFn: async () => {
       const { data } = await supabase
         .from("support_tickets")
-        .select("*")
+        .select("id, ticket_number, subject, subject_ar, description, category, priority, status, user_id, assigned_to, created_at, updated_at, resolved_at, closed_at, satisfaction_rating")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -67,7 +67,7 @@ export function SupportCenter() {
     queryFn: async () => {
       const { data } = await (supabase
         .from("support_ticket_replies" as any)
-        .select("*")
+        .select("id, ticket_id, sender_id, message, message_ar, is_internal, created_at")
         .eq("ticket_id", selectedTicket!.id)
         .order("created_at", { ascending: true }) as any);
       return data || [];
