@@ -68,7 +68,7 @@ export function Header() {
     <header
       role="banner"
       className={cn(
-        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300",
+        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 will-change-[background-color,box-shadow]",
         headerCfg.stickyHeader === false && "relative",
         scrolled
           ? "bg-card/80 backdrop-blur-xl border-border/50 shadow-lg shadow-foreground/[0.03]"
