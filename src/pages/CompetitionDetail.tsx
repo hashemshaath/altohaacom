@@ -849,7 +849,7 @@ export default function CompetitionDetail() {
                   )}
 
                   {/* Sponsors */}
-                  <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />
+                  <Suspense fallback={null}><CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} /></Suspense>
                 </>
               )}
 
