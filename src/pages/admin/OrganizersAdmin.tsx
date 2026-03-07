@@ -734,7 +734,7 @@ export default function OrganizersAdmin() {
                   <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "logo"); }} />
                   {form.logo_url ? (
                     <div className="relative group rounded-xl border bg-muted/30 p-2 flex items-center gap-3">
-                      <img src={form.logo_url} alt="Logo" className="h-14 w-14 rounded-xl object-cover shrink-0" />
+                      <img src={form.logo_url} alt="Logo" className="h-14 w-14 rounded-xl object-cover shrink-0" loading="lazy" />
                       <div className="flex-1 min-w-0">
                         <p className="text-[10px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
                         <div className="flex gap-1.5 mt-1">
