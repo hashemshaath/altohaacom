@@ -756,7 +756,7 @@ export default function CompaniesAdmin() {
           <div className="flex-1">
             <div className="flex items-center gap-4">
               {companyDetails.logo_url ? (
-                <img src={companyDetails.logo_url} alt={companyDetails.name} className="h-12 w-12 rounded-xl object-cover" />
+                <img src={companyDetails.logo_url} alt={companyDetails.name} className="h-12 w-12 rounded-xl object-cover" loading="lazy" />
               ) : (
                 <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Building2 className="h-6 w-6 text-primary" />
