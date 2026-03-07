@@ -168,7 +168,7 @@ export function useTastingEntries(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_entries" as any)
-        .select("*")
+        .select("id, session_id, entry_number, dish_name, dish_name_ar, description, description_ar, chef_name, chef_name_ar, chef_id, photo_url, category, is_active, sort_order, images, stage, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
