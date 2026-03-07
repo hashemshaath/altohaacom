@@ -108,7 +108,7 @@ export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Pr
         <div className="relative">
           {org.cover_image_url ? (
             <div className="h-32 overflow-hidden">
-              <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" />
+              <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
             </div>
           ) : (
