@@ -503,6 +503,7 @@ export default function Search() {
             </div>
           )}
         </div>
+        </SearchQueryContext.Provider>
       </main>
 
       <Footer />
