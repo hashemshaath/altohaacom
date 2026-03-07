@@ -28,7 +28,7 @@ export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetails
     queryFn: async () => {
       const { data } = await supabase
         .from("membership_cards")
-        .select("id, user_id, card_number, tier, status, issued_at, expires_at, auto_renew, billing_cycle, created_at")
+        .select("id, user_id, membership_number, card_status, billing_cycle, auto_renew, issued_at, expires_at, is_trial, trial_ends_at, next_billing_date, payment_method, last_payment_amount, renewed_at, created_at")
         .eq("user_id", userId)
         .maybeSingle();
       return data;
