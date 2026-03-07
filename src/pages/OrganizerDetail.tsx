@@ -43,6 +43,8 @@ export default function OrganizerDetail() {
   const [viewMode, setViewMode] = useState<"grid" | "timeline">("grid");
   const [copied, setCopied] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState<string | null>(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
