@@ -14,7 +14,7 @@ export function TrackingScriptsInjector() {
     queryFn: async () => {
       const { data } = await supabase
         .from("marketing_tracking_config")
-        .select("*")
+        .select("id, platform, tracking_id, config, is_active, created_by, created_at, updated_at")
         .eq("is_active", true)
         .in("platform", ["meta_pixel", "tiktok_pixel", "snapchat_pixel"]);
       return data || [];

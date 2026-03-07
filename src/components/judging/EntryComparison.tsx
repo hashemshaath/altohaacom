@@ -66,7 +66,7 @@ export function EntryComparison({ competitionId }: EntryComparisonProps) {
 
       const { data: scores } = await supabase
         .from("competition_scores")
-        .select("*")
+        .select("id, criteria_id, registration_id, judge_id, score, notes, detailed_feedback, flag_status, flag_reason, scored_at")
         .in("registration_id", [leftId, rightId]);
 
       if (!scores) return null;

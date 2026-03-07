@@ -102,7 +102,7 @@ export default function CompanyCampaignDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("ad_placements")
-        .select("*")
+        .select("id, name, name_ar, slug, placement_type, format, position, page_location, width, height, is_active, is_premium, max_ads, base_cpm, base_cpc, base_cpv, description, description_ar, sort_order, created_at, updated_at")
         .eq("is_active", true)
         .order("sort_order");
       return data || [];

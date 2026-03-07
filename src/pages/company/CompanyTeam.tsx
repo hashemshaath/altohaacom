@@ -69,7 +69,7 @@ export default function CompanyTeam() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_employee_invites")
-        .select("*")
+        .select("id, company_id, email, role, department, title, title_ar, message, message_ar, status, token, invited_by, expires_at, accepted_at, accepted_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;

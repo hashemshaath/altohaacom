@@ -185,7 +185,7 @@ export default function CRMDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("leads")
-        .select("*")
+        .select("id, contact_name, email, phone, company_name, type, source, status, message, notes, assigned_to, metadata, created_at, updated_at")
         .order("created_at", { ascending: false })
         .limit(5);
       return data || [];
