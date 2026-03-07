@@ -115,7 +115,7 @@ export default function SupportTickets() {
       if (!user) return [];
       let query = supabase
         .from("support_tickets")
-        .select("*")
+        .select("id, ticket_number, subject, subject_ar, description, description_ar, category, priority, status, user_id, assigned_to, tags, satisfaction_rating, satisfaction_feedback, resolved_at, closed_at, created_at, updated_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
