@@ -86,7 +86,7 @@ export function StoriesBar() {
   const fetchStories = async () => {
     const { data: stories } = await supabase
       .from("community_stories")
-      .select("*")
+      .select("id, user_id, media_url, media_type, caption, expires_at, created_at")
       .gt("expires_at", new Date().toISOString())
       .order("created_at", { ascending: false });
 

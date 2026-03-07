@@ -39,7 +39,7 @@ export function PostComments({ postId, onCommentCountChange }: PostCommentsProps
   const fetchComments = async () => {
     const { data, error } = await supabase
       .from("post_comments")
-      .select("*")
+      .select("id, post_id, author_id, content, parent_comment_id, created_at")
       .eq("post_id", postId)
       .order("created_at", { ascending: true });
 

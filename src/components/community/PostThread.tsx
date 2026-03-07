@@ -59,7 +59,7 @@ export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) 
     // Fetch replies
     const { data: repliesData } = await supabase
       .from("posts")
-      .select("*")
+      .select("id, author_id, content, created_at, edited_at, image_url, image_urls, is_pinned, link_preview, link_url, moderation_status, post_number, replies_count, reply_to_post_id, reposts_count, video_url, visibility")
       .eq("reply_to_post_id", postId)
       .eq("moderation_status", "approved")
       .order("created_at", { ascending: true });
