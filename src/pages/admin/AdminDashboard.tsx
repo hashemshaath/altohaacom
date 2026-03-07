@@ -500,7 +500,7 @@ export default function AdminDashboard() {
       </LazySection>
 
       {/* ── Row: Quick Actions + Recent Actions ── */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
         {/* Quick Actions */}
         <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-3">
