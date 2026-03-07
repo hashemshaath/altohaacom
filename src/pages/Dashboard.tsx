@@ -211,6 +211,7 @@ export default function Dashboard() {
         {/* Right Column - Activity & Social */}
         <aside className="lg:col-span-3 space-y-4">
           <div className="lg:sticky lg:top-20 space-y-4">
+            {user && <W><NotificationDigest /></W>}
             {user && <W><NotificationGroupWidget /></W>}
             {user && <W><RecentChatsWidget /></W>}
             {user && <W><GoalsMilestonesWidget /></W>}
