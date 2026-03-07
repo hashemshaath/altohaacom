@@ -38,7 +38,7 @@ interface Props {
   compact?: boolean;
 }
 
-export function NotificationActionButtons({ notification, onMarkRead, compact = true }: Props) {
+export const NotificationActionButtons = memo(function NotificationActionButtons({ notification, onMarkRead, compact = true }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
