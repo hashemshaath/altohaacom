@@ -1,4 +1,4 @@
-import { useState, useCallback, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";
