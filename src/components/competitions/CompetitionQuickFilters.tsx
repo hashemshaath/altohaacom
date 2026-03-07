@@ -53,4 +53,4 @@ export const CompetitionQuickFilters = memo(function CompetitionQuickFilters({ a
       })}
     </div>
   );
-}
+});

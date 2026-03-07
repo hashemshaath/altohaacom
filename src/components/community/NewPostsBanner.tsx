@@ -30,4 +30,4 @@ export const NewPostsBanner = memo(function NewPostsBanner({ count, onClick }: N
         : `${count} new post${count > 1 ? "s" : ""}`}
     </button>
   );
-}
+});

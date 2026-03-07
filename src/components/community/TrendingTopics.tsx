@@ -93,4 +93,4 @@ export const TrendingTopics = memo(function TrendingTopics() {
       </CardContent>
     </Card>
   );
-}
+});

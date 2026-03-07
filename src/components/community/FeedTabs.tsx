@@ -46,4 +46,4 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
         ))}
     </div>
   );
-}
+});
