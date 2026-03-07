@@ -144,7 +144,7 @@ export function useReferralMilestones() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_milestones")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, required_referrals, reward_type, reward_value, reward_description, reward_description_ar, badge_icon, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
