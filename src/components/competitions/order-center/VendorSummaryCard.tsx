@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function VendorSummaryCard({ vendorSummary, isAr }: Props) {
+export const VendorSummaryCard = memo(function VendorSummaryCard({ vendorSummary, isAr }: Props) {
   if (vendorSummary.length === 0) return null;
 
   return (
