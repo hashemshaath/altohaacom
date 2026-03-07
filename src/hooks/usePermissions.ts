@@ -13,7 +13,7 @@ export function usePermissions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("permissions")
-        .select("*")
+        .select("id, code, name, name_ar, description, description_ar, category, created_at")
         .order("category")
         .order("code");
       if (error) throw error;
