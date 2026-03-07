@@ -138,6 +138,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <Suspense fallback={null}><AchievementCelebration /></Suspense>
             <BrowserRouter>
               <ResourceHints />
               <Suspense fallback={null}><RoutePrefetcher /></Suspense>
