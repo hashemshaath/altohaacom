@@ -15,11 +15,12 @@ export function PartnersLogos() {
     queryFn: async () => {
       const { data } = await supabase
         .from("partner_logos")
-        .select("*")
+        .select("id, name, name_ar, logo_url, website_url, category, sort_order")
         .eq("is_active", true)
         .order("sort_order");
       return data || [];
     },
+    staleTime: 1000 * 60 * 15,
   });
 
   const grouped: Record<string, any[]> = {};

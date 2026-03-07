@@ -29,7 +29,7 @@ export function ProductCatalog({ onAddToCart }: Props) {
     queryFn: async () => {
       let query = supabase
         .from("shop_products")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, price, compare_at_price, discount_percent, currency, image_url, category, brand, brand_ar, stock_quantity, is_featured, product_type, seller_id, tags, created_at")
         .eq("is_active", true);
 
       if (search.length >= 2) {
