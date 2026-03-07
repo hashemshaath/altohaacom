@@ -58,7 +58,7 @@ export function SupplierCatalogManager() {
       if (!companyId) return [];
       const { data } = await supabase
         .from("company_catalog")
-        .select("*")
+        .select("id, company_id, name, name_ar, description, description_ar, category, subcategory, sku, unit, unit_price, currency, quantity_available, in_stock, is_active, image_url, created_at, updated_at")
         .eq("company_id", companyId)
         .order("category")
         .order("name");

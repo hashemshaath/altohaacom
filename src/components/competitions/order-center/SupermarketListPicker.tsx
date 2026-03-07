@@ -61,7 +61,7 @@ export function SupermarketListPicker({ listId, existingItemIds = [], onItemAdde
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirement_items")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, category, subcategory, unit, estimated_cost, currency, default_quantity, brand, brand_ar, image_url, is_active, tags, alternatives, size, size_ar, material, material_ar")
         .eq("is_active", true)
         .order("category")
         .order("name")

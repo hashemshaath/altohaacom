@@ -42,7 +42,7 @@ export function CountryAuditLog({ countryCode }: { countryCode?: string }) {
     queryFn: async () => {
       let query = supabase
         .from("country_audit_log")
-        .select("*")
+        .select("id, country_code, action, changed_by, changes, summary, summary_ar, created_at")
         .order("created_at", { ascending: false })
         .limit(100);
 
