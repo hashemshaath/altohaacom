@@ -218,7 +218,7 @@ export function SupervisingBodiesStep({
                   }`}
                 >
                   {judge.profile_photo_url ? (
-                    <img src={judge.profile_photo_url} alt="" className="h-9 w-9 rounded-full object-cover shrink-0" />
+                    <img src={judge.profile_photo_url} alt="" className="h-9 w-9 rounded-full object-cover shrink-0" loading="lazy" />
                   ) : (
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted shrink-0">
                       <Gavel className="h-4 w-4 text-muted-foreground" />
