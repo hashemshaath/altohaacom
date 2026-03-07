@@ -36,7 +36,7 @@ const categoryLabels: Record<string, { en: string; ar: string }> = {
   side_dish: { en: "Side Dish", ar: "طبق جانبي" },
 };
 
-function RecipeCard({ recipe, isAr }: { recipe: RecipeWithMeta; isAr: boolean }) {
+const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWithMeta; isAr: boolean }) {
   const totalTime = (recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0);
   const cat = categoryLabels[recipe.category || "main_course"];
 
