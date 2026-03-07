@@ -82,12 +82,12 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
     { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
   ];
 
-  const tabs = allTabs.filter(tab => {
+  const tabs = useMemo(() => allTabs.filter(tab => {
     const featureCode = TAB_FEATURE_MAP[tab.id];
     if (!featureCode) return true;
     if (!enabledFeatures) return true;
     return enabledFeatures.has(featureCode);
-  });
+  }), [allTabs, enabledFeatures]);
 
   return (
     <aside className={cn(

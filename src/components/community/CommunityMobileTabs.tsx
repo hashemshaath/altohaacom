@@ -34,11 +34,11 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
     { id: "network", label: isAr ? "شبكتي" : "Network", icon: UserPlus, requiresAuth: true },
   ];
 
-  const tabs = allTabs.filter(tab => {
+  const tabs = useMemo(() => allTabs.filter(tab => {
     const featureCode = TAB_FEATURE_MAP[tab.id];
     if (featureCode && enabledFeatures && !enabledFeatures.has(featureCode)) return false;
     return true;
-  });
+  }), [allTabs, enabledFeatures]);
 
   return (
     <div className="sticky top-12 z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
