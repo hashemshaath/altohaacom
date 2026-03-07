@@ -107,6 +107,7 @@ export default function OrganizerDetail() {
       };
     },
     enabled: !!decodedName,
+    staleTime: 1000 * 60 * 5,
   });
 
   // Increment views

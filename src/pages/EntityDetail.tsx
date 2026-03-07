@@ -85,7 +85,7 @@ export default function EntityDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("culinary_entities")
-        .select("*")
+        .select("id, name, name_ar, slug, entity_number, type, scope, description, description_ar, mission, mission_ar, abbreviation, abbreviation_ar, logo_url, cover_image_url, email, phone, website, address, address_ar, city, country, country_code, postal_code, latitude, longitude, founded_year, member_count, president_name, president_name_ar, secretary_name, secretary_name_ar, services, specializations, affiliated_organizations, social_links, gallery_urls, is_verified, status, view_count, map_url")
         .eq("slug", slug!)
         .maybeSingle();
       if (error) throw error;
