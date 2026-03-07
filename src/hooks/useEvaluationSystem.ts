@@ -128,7 +128,7 @@ export function useEvaluationCriteria(categoryId?: string) {
     queryFn: async () => {
       let query = supabase
         .from("evaluation_criteria" as any)
-        .select("*")
+        .select("id, category_id, name, name_ar, description, description_ar, max_score, weight, scoring_guide, scoring_guide_ar, is_required, sort_order, is_active, created_at, updated_at")
         .eq("is_active", true)
         .order("sort_order");
       if (categoryId) query = query.eq("category_id", categoryId);
