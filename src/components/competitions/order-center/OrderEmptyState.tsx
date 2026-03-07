@@ -41,7 +41,7 @@ interface Props {
   onAction?: () => void;
 }
 
-export function OrderEmptyState({ type, actionLabel, actionLabelAr, onAction }: Props) {
+export const OrderEmptyState = memo(function OrderEmptyState({ type, actionLabel, actionLabelAr, onAction }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = EMPTY_STATE_CONFIG[type];
