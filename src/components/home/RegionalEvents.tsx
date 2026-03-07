@@ -115,7 +115,7 @@ export const RegionalEvents = memo(function RegionalEvents() {
       </div>
     </section>
   );
-}
+});
 
 function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
   const title = isAr && item.title_ar ? item.title_ar : item.title;
