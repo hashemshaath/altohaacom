@@ -148,6 +148,8 @@ const DEFAULT_FILTERS: SearchFilters = {
   articleStatus: "published",
   memberRole: "all",
   experienceLevel: "all",
+  country: "all",
+  cuisineType: "all",
 };
 
 /** Split query into searchable words (>=2 chars) */
