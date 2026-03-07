@@ -556,6 +556,7 @@ function CompetitionRow({
   isAr: boolean;
   getStatusLabel: (s: CompetitionStatus) => string;
 }) {
+  const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
