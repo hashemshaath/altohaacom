@@ -74,6 +74,7 @@ export function PersonalDashboard() {
   ];
 
   // Profile completion
+  const completionFields = ["full_name", "bio", "avatar_url", "country", "phone", "specialization", "job_title"];
   const { completed, completionPct } = useMemo(() => {
     const c = completionFields.filter(f => profile?.[f]).length;
     return { completed: c, completionPct: Math.round((c / completionFields.length) * 100) };
