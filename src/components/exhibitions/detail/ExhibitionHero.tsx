@@ -66,7 +66,7 @@ export function ExhibitionHero({
       {/* Cover Image — only when visible */}
       {isVisible && (
       <div className="relative w-full overflow-hidden" style={{ maxHeight: height ? `${height}px` : "360px" }}>
-        <div className="aspect-[21/9] w-full">
+        <div className="aspect-[21/9] sm:aspect-[21/9] w-full">
           {exhibition.cover_image_url ? (
             <img
               src={exhibition.cover_image_url}
