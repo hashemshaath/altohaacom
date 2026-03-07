@@ -206,7 +206,7 @@ export function ParticipantsList({ competitionId, isOrganizer = false }: Partici
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_invitations")
-        .select("*")
+        .select("id, competition_id, invited_by, invitee_name, invitee_name_ar, invitee_email, invitee_phone, invitee_role, status, organization_name, organization_name_ar, organization_type, invitation_channel, message, sent_at, responded_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;

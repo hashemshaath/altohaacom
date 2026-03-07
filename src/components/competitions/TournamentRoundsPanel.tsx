@@ -65,7 +65,7 @@ export function TournamentRoundsPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_rounds")
-        .select("*")
+        .select("id, competition_id, name, name_ar, round_number, round_type, format, status, sort_order, start_time, end_time, advancement_count, advancement_rule, threshold_score, max_participants")
         .eq("competition_id", competitionId)
         .order("sort_order");
       if (error) throw error;

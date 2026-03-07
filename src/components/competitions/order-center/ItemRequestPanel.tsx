@@ -60,7 +60,7 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("order_item_requests")
-        .select("*")
+        .select("id, competition_id, item_name, item_name_ar, category, quantity, unit, priority, status, notes, notes_ar, requester_id, requester_role, assigned_vendor, assigned_vendor_ar, delivery_deadline, delivery_status, admin_notes, reviewed_by, reviewed_at, created_at, updated_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;

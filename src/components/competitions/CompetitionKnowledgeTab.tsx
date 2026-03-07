@@ -72,7 +72,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
     queryFn: async () => {
       const { data, error } = await supabase
         .from("knowledge_resources")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, resource_type, file_url, url, file_type, file_size, tags, is_judge_resource, is_published, category_id, competition_id, view_count, added_by, scraped_content, scraped_content_ar, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -86,7 +86,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order")
         .eq("competition_id", competitionId)
         .order("sort_order");
       if (error) throw error;

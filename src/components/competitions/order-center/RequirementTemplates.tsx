@@ -91,7 +91,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirement_items")
-        .select("*")
+        .select("id, name, name_ar, category, subcategory, unit, default_quantity, estimated_cost, currency, brand, brand_ar, image_url, is_active")
         .eq("is_active", true)
         .order("category")
         .limit(2000);

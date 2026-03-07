@@ -58,7 +58,7 @@ export function OrderActivityLog({ competitionId }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("order_activity_log" as any)
-        .select("*")
+        .select("id, competition_id, user_id, action_type, entity_type, entity_id, details, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false })
         .limit(100);

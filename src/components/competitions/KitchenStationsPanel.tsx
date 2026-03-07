@@ -35,7 +35,7 @@ export function KitchenStationsPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("kitchen_stations")
-        .select("*")
+        .select("id, competition_id, station_number, station_name, station_name_ar, status, assigned_registration_id, assigned_slot_id, equipment_list, created_at")
         .eq("competition_id", competitionId)
         .order("station_number");
       if (error) throw error;

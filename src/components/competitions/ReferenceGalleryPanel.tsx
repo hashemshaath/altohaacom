@@ -59,7 +59,7 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reference_gallery")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, image_url, category, competition_category, rating, score_range_min, score_range_max, tags, sort_order, is_active, added_by, uploaded_by_name, created_at")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
