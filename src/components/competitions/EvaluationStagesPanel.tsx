@@ -95,12 +95,12 @@ export function EvaluationStagesPanel({ competitionId, isOrganizer }: Props) {
     },
   });
 
-  if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
-
   const { totalWeight, weightValid } = useMemo(() => {
     const tw = stages?.reduce((sum, s) => sum + (Number(s.weight_percentage) || 0), 0) || 0;
     return { totalWeight: tw, weightValid: Math.abs(tw - 100) < 0.01 };
   }, [stages]);
+
+  if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
 
   return (
     <div className="space-y-4">
