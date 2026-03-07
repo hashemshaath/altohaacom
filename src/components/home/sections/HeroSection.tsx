@@ -147,29 +147,29 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <div className="relative min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh]">
+      <div className="relative min-h-[45vh] sm:min-h-[55vh] lg:min-h-[75vh]">
         {slides.map((s, idx) => (
           <SlideBackground key={s.id} slide={s} isActive={idx === current} isFirst={idx === 0} />
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh] items-end pb-20 sm:pb-24 lg:pb-28">
+        <div className="container relative flex h-full min-h-[45vh] sm:min-h-[55vh] lg:min-h-[75vh] items-end pb-16 sm:pb-24 lg:pb-28">
           <div
             key={slide.id}
             className="max-w-2xl space-y-5"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-foreground drop-shadow-lg font-sans">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-foreground drop-shadow-lg font-sans">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed text-muted-foreground drop-shadow-md font-sans">
+              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-muted-foreground drop-shadow-md font-sans">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
@@ -196,14 +196,14 @@ export function HeroSection() {
           <>
             <button
               onClick={prev}
-              className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95"
+              className="absolute start-2 sm:start-5 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
               aria-label="Previous"
             >
               <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <button
               onClick={next}
-              className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95"
+              className="absolute end-2 sm:end-5 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
               aria-label="Next"
             >
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
