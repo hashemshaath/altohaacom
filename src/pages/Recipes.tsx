@@ -157,7 +157,7 @@ export default function Recipes() {
                     {isAr ? "قاعدة الوصفات" : "Recipe Vault"}
                   </span>
                 </div>
-                <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+                <h1 className="font-serif text-2xl font-bold tracking-tight md:text-4xl">
                   {isAr ? "الوصفات" : "Recipes"}
                 </h1>
                 <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
