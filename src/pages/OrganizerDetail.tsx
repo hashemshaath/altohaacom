@@ -330,6 +330,19 @@ export default function OrganizerDetail() {
                     )}
                   </div>
                   <div className="flex gap-2 shrink-0">
+                    <Button
+                      variant={isFollowing ? "default" : "outline"}
+                      size="sm"
+                      className="gap-1.5"
+                      onClick={() => {
+                        if (!user) { toast.error(isAr ? "يرجى تسجيل الدخول" : "Please log in first"); return; }
+                        setIsFollowing(!isFollowing);
+                        toast.success(isFollowing ? (isAr ? "تم إلغاء المتابعة" : "Unfollowed") : (isAr ? "تمت المتابعة" : "Following!"));
+                      }}
+                    >
+                      <Heart className={`h-3.5 w-3.5 ${isFollowing ? "fill-current" : ""}`} />
+                      {isFollowing ? (isAr ? "متابَع" : "Following") : (isAr ? "متابعة" : "Follow")}
+                    </Button>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
