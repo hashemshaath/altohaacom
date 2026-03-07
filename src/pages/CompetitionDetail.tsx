@@ -387,7 +387,7 @@ export default function CompetitionDetail() {
           {/* Hero content bar — below image overlay */}
           <div className="absolute inset-x-0 bottom-0">
              <div className="container pb-5 sm:pb-8 md:pb-10">
-               <div className="max-w-4xl space-y-2.5 sm:space-y-4 animate-fade-in">
+                <div className="max-w-4xl space-y-2 sm:space-y-4 animate-fade-in">
                 <Button
                   variant="ghost"
                   size="sm"
