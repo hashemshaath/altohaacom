@@ -123,6 +123,11 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
     setFabOpen(false);
   }, [location.pathname]);
 
+  const toggleFab = useCallback(() => {
+    try { if ("vibrate" in navigator) navigator.vibrate(12); } catch {}
+    setFabOpen((o) => !o);
+  }, []);
+
   const visibleItems = navItems.filter((item) => {
     if (item.authOnly && !user) return false;
     if ((item as any).proOnly && isFan) return false;
@@ -130,11 +135,6 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
   });
 
   if (hiddenPaths.some((p) => location.pathname.startsWith(p))) return null;
-
-  const toggleFab = useCallback(() => {
-    try { if ("vibrate" in navigator) navigator.vibrate(12); } catch {}
-    setFabOpen((o) => !o);
-  }, []);
 
   return (
     <>
