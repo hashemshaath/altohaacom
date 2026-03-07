@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { ActivitySidebar } from "./ActivitySidebar";
+import { SmartRecommendations } from "./SmartRecommendations";
 import { TrendingTopics } from "./TrendingTopics";
 import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
 import { CommunitySearch } from "./CommunitySearch";
