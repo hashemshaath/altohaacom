@@ -104,7 +104,7 @@ export function SmartRecommendations() {
             <TabsContent value="exhibitions" className="mt-2 space-y-1.5">
               {data?.exhibitions?.length ? data.exhibitions.map((e: any) => (
                 <Link key={e.id} to={`/exhibitions/${e.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-                  {e.image_url && <img src={e.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  {e.image_url && <img src={e.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? e.title_ar || e.title : e.title}</p>
                     <p className="text-[10px] text-muted-foreground flex items-center gap-1">
