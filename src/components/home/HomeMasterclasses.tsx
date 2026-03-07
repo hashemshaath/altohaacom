@@ -33,7 +33,7 @@ const MC_CAT_LABELS: Record<string, { en: string; ar: string }> = {
   "food media": { en: "Food Media", ar: "إعلام غذائي" },
 };
 
-export function HomeMasterclasses() {
+export const HomeMasterclasses = memo(function HomeMasterclasses() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [levelFilter, setLevelFilter] = useState<string | null>(null);
