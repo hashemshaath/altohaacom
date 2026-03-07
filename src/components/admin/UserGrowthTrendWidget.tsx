@@ -12,7 +12,7 @@ import { format, subDays } from "date-fns";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
-export function UserGrowthTrendWidget() {
+export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
