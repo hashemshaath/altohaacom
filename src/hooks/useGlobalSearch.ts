@@ -7,13 +7,15 @@ type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 export interface SearchFilters {
   query: string;
-  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities" | "recipes";
+  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities" | "recipes" | "exhibitions";
   competitionStatus?: CompetitionStatus | "all";
   isVirtual?: boolean | null;
   articleType?: "news" | "blog" | "exhibition" | "all";
   articleStatus?: "published" | "draft" | "all";
   memberRole?: string | "all";
   experienceLevel?: "beginner" | "amateur" | "professional" | "all";
+  country?: string | "all";
+  cuisineType?: string | "all";
 }
 
 export interface CompetitionResult {
