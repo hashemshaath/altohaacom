@@ -73,7 +73,7 @@ export default function CompanyCampaignDetail() {
       if (!campaignId) return null;
       const { data, error } = await supabase
         .from("ad_campaigns")
-        .select("*")
+        .select("id, name, name_ar, description, company_id, package_id, status, billing_model, budget, spent, currency, start_date, end_date, priority, target_roles, target_countries, target_interests, total_impressions, total_clicks, total_views, approved_by, approved_at, rejection_reason, created_by, created_at, updated_at")
         .eq("id", campaignId)
         .maybeSingle();
       if (error) throw error;
