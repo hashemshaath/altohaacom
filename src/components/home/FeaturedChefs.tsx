@@ -16,7 +16,7 @@ import { localizeCity } from "@/lib/localizeLocation";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 
-export function FeaturedChefs() {
+export const FeaturedChefs = memo(function FeaturedChefs() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
