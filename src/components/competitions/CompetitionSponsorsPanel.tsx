@@ -71,7 +71,7 @@ export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: Competi
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sponsorship_packages")
-        .select("*")
+        .select("id, name, name_ar, tier, price, currency, description, description_ar, benefits, sort_order, is_active, logo_placement, logo_on_certificates, max_sponsors")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;

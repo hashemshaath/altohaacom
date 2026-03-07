@@ -94,7 +94,7 @@ export function useEvaluationDomains() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_domains" as any)
-        .select("*")
+        .select("id, name, name_ar, slug, description, description_ar, icon, is_active, sort_order, created_at")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -109,7 +109,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
     queryFn: async () => {
       let query = supabase
         .from("evaluation_criteria_categories" as any)
-        .select("*")
+        .select("id, domain_id, name, name_ar, description, description_ar, product_category, sort_order, is_active, created_at")
         .eq("is_active", true)
         .order("sort_order");
       if (domainId) query = query.eq("domain_id", domainId);
@@ -128,7 +128,7 @@ export function useEvaluationCriteria(categoryId?: string) {
     queryFn: async () => {
       let query = supabase
         .from("evaluation_criteria" as any)
-        .select("*")
+        .select("id, category_id, name, name_ar, description, description_ar, max_score, weight, scoring_guide, scoring_guide_ar, is_required, sort_order, is_active, created_at, updated_at")
         .eq("is_active", true)
         .order("sort_order");
       if (categoryId) query = query.eq("category_id", categoryId);
@@ -155,7 +155,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       // Get categories
       let catQuery = supabase
         .from("evaluation_criteria_categories" as any)
-        .select("*")
+        .select("id, domain_id, name, name_ar, description, description_ar, product_category, sort_order, is_active, created_at")
         .eq("domain_id", domainId)
         .eq("is_active", true)
         .order("sort_order");
@@ -170,7 +170,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       // Get criteria for those categories
       const { data: criteria } = await supabase
         .from("evaluation_criteria" as any)
-        .select("*")
+        .select("id, category_id, name, name_ar, description, description_ar, max_score, weight, scoring_guide, scoring_guide_ar, is_required, sort_order, is_active, created_at, updated_at")
         .in("category_id", catIds)
         .eq("is_active", true)
         .order("sort_order");
@@ -189,7 +189,7 @@ export function useEvaluationScores(entityId?: string, domainSlug?: string) {
     queryFn: async () => {
       let query = supabase
         .from("evaluation_scores" as any)
-        .select("*")
+        .select("id, domain_slug, entity_id, evaluator_id, subject_id, criterion_id, score, notes, notes_ar, evidence_urls, created_at, updated_at")
         .eq("entity_id", entityId!);
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
       const { data, error } = await query;
@@ -206,7 +206,7 @@ export function useEvaluationReports(domainSlug?: string) {
     queryFn: async () => {
       let query = supabase
         .from("evaluation_reports" as any)
-        .select("*")
+        .select("id, domain_slug, entity_id, report_number, title, title_ar, summary, summary_ar, overall_score, category_scores, evaluator_count, criteria_count, strengths, weaknesses, recommendations, images, status, generated_by, generated_at, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (domainSlug) query = query.eq("domain_slug", domainSlug);
       const { data, error } = await query;

@@ -72,7 +72,7 @@ export function useProfileAnalytics(profileUserId: string | undefined) {
 
       const { data: allViews } = await supabase
         .from("profile_views")
-        .select("*")
+        .select("id, created_at, viewer_user_id, viewer_ip, device_type, browser, viewer_type, referrer")
         .eq("profile_user_id", profileUserId)
         .gte("created_at", thirtyDaysAgo)
         .order("created_at", { ascending: true });

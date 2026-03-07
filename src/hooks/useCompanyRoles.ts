@@ -25,7 +25,7 @@ export function useCompanyRoles(companyId: string | null) {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_role_assignments")
-        .select("*")
+        .select("id, company_id, role, is_active, assigned_at")
         .eq("company_id", companyId)
         .order("assigned_at", { ascending: false });
       if (error) throw error;
