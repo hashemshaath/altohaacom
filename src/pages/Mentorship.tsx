@@ -111,11 +111,11 @@ export default function Mentorship() {
                 ))}
               </div>
             ) : (() => {
-              const filteredPrograms = useMemo(() => programs.filter(p => {
+              const filteredPrograms = programs.filter(p => {
                 if (!search) return true;
                 const q = search.toLowerCase();
                 return p.title?.toLowerCase().includes(q) || p.title_ar?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q);
-              }), [programs, search]);
+              });
               return filteredPrograms.length === 0 ? (
               <Card className="border-dashed">
                 <CardContent className="flex flex-col items-center py-16 text-center">

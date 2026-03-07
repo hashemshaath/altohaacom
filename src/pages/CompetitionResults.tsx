@@ -148,9 +148,9 @@ export default function CompetitionResults() {
   }
 
   const title = isAr && competition.title_ar ? competition.title_ar : competition.title;
-  const topThree = useMemo(() => rankedWinners?.slice(0, 3) || [], [rankedWinners]);
-  const others = useMemo(() => rankedWinners?.slice(3) || [], [rankedWinners]);
-  const podiumOrder = useMemo(() => [topThree[1], topThree[0], topThree[2]].filter(Boolean), [topThree]);
+  const topThree = rankedWinners?.slice(0, 3) || [];
+  const others = rankedWinners?.slice(3) || [];
+  const podiumOrder = [topThree[1], topThree[0], topThree[2]].filter(Boolean);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
