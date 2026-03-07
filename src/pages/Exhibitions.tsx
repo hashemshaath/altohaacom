@@ -145,12 +145,12 @@ export default function Exhibitions() {
     });
   }, [exhibitions, searchQuery, typeFilter, countryFilter, yearFilter, activeTab, sortBy, isAr]);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchQuery("");
     setTypeFilter("all");
     setCountryFilter("all");
     setYearFilter("all");
-  };
+  }, []);
 
   const hasActiveFilters = searchQuery || typeFilter !== "all" || countryFilter !== "all" || yearFilter !== "all";
 
