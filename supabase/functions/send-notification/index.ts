@@ -133,7 +133,7 @@ serve(async (req) => {
     if (templateSlug) {
       const { data: template, error: templateError } = await supabase
         .from("communication_templates")
-        .select("*")
+        .select("id, slug, name, name_ar, subject, subject_ar, body, body_ar, category, channels, is_active")
         .eq("slug", templateSlug)
         .eq("is_active", true)
         .single();
@@ -161,7 +161,7 @@ serve(async (req) => {
     if (templateName && !templateSlug) {
       const { data: template, error: templateError } = await supabase
         .from("notification_templates")
-        .select("*")
+        .select("id, name, title, title_ar, body, body_ar, channels")
         .eq("name", templateName)
         .single();
 

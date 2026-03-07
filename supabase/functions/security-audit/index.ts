@@ -95,7 +95,7 @@ serve(async (req) => {
         // Recent events
         const { data: recentEvents } = await supabase
           .from("security_events")
-          .select("*")
+          .select("id, event_type, severity, user_id, ip_address, details, created_at")
           .order("created_at", { ascending: false })
           .limit(50);
 

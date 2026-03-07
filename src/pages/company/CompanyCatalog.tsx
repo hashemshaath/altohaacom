@@ -36,7 +36,7 @@ export default function CompanyCatalog() {
       if (!companyId) return [];
       let query = supabase
         .from("company_catalog")
-        .select("*")
+        .select("id, company_id, name, name_ar, description, description_ar, category, subcategory, sku, unit, unit_price, currency, quantity_available, in_stock, is_active, image_url, created_at")
         .eq("company_id", companyId)
         .order("category")
         .order("name");
