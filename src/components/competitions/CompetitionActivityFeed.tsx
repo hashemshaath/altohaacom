@@ -40,7 +40,7 @@ export const CompetitionActivityFeed = React.forwardRef<HTMLDivElement, Competit
       queryFn: async () => {
         const { data, error } = await supabase
           .from("competition_updates")
-          .select("*")
+          .select("id, competition_id, author_id, title, title_ar, content, content_ar, update_type, is_pinned, created_at")
           .eq("competition_id", competitionId)
           .order("is_pinned", { ascending: false })
           .order("created_at", { ascending: false })

@@ -127,7 +127,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
     queryFn: async () => {
       let query = (supabase as any)
         .from("chef_schedule_events")
-        .select("*")
+        .select("id, chef_id, event_type, title, title_ar, description, description_ar, start_date, end_date, all_day, timezone, location, location_ar, city, country_code, venue, venue_ar, linked_entity_type, linked_entity_id, channel_name, channel_name_ar, program_name, program_name_ar, broadcast_type, media_url, participation_type, participation_type_ar, organizer, organizer_ar, is_contracted, contract_status, fee_amount, fee_currency, visibility, show_details_publicly, status, priority, color, is_recurring, recurrence_rule, recurrence_end_date, parent_event_id, notes, notes_ar, internal_notes, tags, attachments, created_by, updated_by, created_at, updated_at")
         .order("start_date", { ascending: true });
 
       if (chefId) query = query.eq("chef_id", chefId);
@@ -149,7 +149,7 @@ export function useChefScheduleSettings(chefId?: string) {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("chef_schedule_settings")
-        .select("*")
+        .select("id, chef_id, share_with_management, share_publicly, default_visibility, show_availability_on_profile, auto_sync_competitions, auto_sync_chefs_table, auto_sync_exhibitions, working_hours_start, working_hours_end, working_days, unavailable_message, unavailable_message_ar, created_at, updated_at")
         .eq("chef_id", chefId!)
         .maybeSingle();
       if (error) throw error;

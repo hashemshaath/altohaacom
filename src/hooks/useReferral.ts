@@ -12,7 +12,7 @@ export function useReferralCode() {
       if (!user) return null;
       const { data, error } = await supabase
         .from("referral_codes")
-        .select("*")
+        .select("id, code, user_id, is_active, total_clicks, total_invites_sent, total_conversions, total_points_earned, custom_slug, created_at, updated_at")
         .eq("user_id", user.id)
         .maybeSingle();
       if (error) throw error;
@@ -65,7 +65,7 @@ export function useReferralInvitations() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("referral_invitations")
-        .select("*")
+        .select("id, referral_code_id, referrer_id, invitee_email, invitee_phone, channel, platform, status, sent_at, clicked_at, registered_at, created_at")
         .eq("referrer_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
@@ -144,7 +144,7 @@ export function useReferralMilestones() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_milestones")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, required_referrals, reward_type, reward_value, reward_description, reward_description_ar, badge_icon, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
@@ -162,7 +162,7 @@ export function useUserMilestones() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("user_milestone_achievements")
-        .select("*")
+        .select("id, user_id, milestone_id, achieved_at, reward_claimed, reward_claimed_at")
         .eq("user_id", user.id);
       if (error) throw error;
       return data || [];

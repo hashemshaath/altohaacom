@@ -35,7 +35,7 @@ export function CertificateLogoManager({ logos, onChange }: CertificateLogoManag
     queryFn: async () => {
       const { data, error } = await supabase
         .from("certificate_logos")
-        .select("*")
+        .select("id, name, name_ar, logo_url, organization, is_sponsor, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;

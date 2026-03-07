@@ -18,7 +18,7 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("chef_rankings")
-        .select("*")
+        .select("id, user_id, ranking_period, period_value, rank, previous_rank, rank_change, total_points, average_score, gold_medals, silver_medals, bronze_medals, competitions_entered, competitions_won, specialty, country_code, updated_at")
         .eq("user_id", userId)
         .order("updated_at", { ascending: false })
         .limit(3);
