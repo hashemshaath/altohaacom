@@ -228,7 +228,15 @@ export default function Search() {
               >
                 <Filter className="h-4 w-4" />
               </Button>
+              <VoiceSearchButton onResult={(text) => handleSearch(text)} />
             </form>
+            <div className="flex items-center justify-between mt-1.5 px-1">
+              <p className="text-[10px] text-muted-foreground">
+                {isAr ? "اضغط" : "Press"}{" "}
+                <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[9px] font-mono">⌘K</kbd>{" "}
+                {isAr ? "للبحث السريع من أي مكان" : "for quick search anywhere"}
+              </p>
+            </div>
 
             {/* Tabs — horizontal pills like Google */}
             <Tabs
