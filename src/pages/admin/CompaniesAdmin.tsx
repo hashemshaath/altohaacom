@@ -1513,7 +1513,7 @@ export default function CompaniesAdmin() {
                         {catMedia.map((item: any) => (
                           <div key={item.id} className="relative group rounded-xl border overflow-hidden">
                             {item.file_type?.startsWith("image") ? (
-                              <img src={item.file_url} alt={item.title || item.filename} className="h-32 w-full object-cover" />
+                              <img src={item.file_url} alt={item.title || item.filename} className="h-32 w-full object-cover" loading="lazy" />
                             ) : (
                               <div className="flex h-32 w-full items-center justify-center bg-muted">
                                 <File className="h-8 w-8 text-muted-foreground" />

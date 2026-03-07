@@ -1357,7 +1357,7 @@ export default function OrdersAdmin() {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             {order.companies?.logo_url ? (
-                              <img src={order.companies.logo_url} alt="" className="h-6 w-6 rounded object-cover" />
+                              <img src={order.companies.logo_url} alt="" className="h-6 w-6 rounded object-cover" loading="lazy" />
                             ) : (
                               <Building2 className="h-4 w-4 text-muted-foreground" />
                             )}

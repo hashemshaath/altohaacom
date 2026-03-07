@@ -604,7 +604,7 @@ export default function AdminDashboard() {
               >
                 <div className="relative h-10 w-10 shrink-0 rounded-full overflow-hidden ring-2 ring-primary/20 transition-transform duration-300 group-hover:scale-110">
                   {user.avatar_url ? (
-                    <img src={user.avatar_url} alt={user.display_name || user.full_name || "User"} className="h-full w-full object-cover" />
+                    <img src={user.avatar_url} alt={user.display_name || user.full_name || "User"} className="h-full w-full object-cover" loading="lazy" />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary font-semibold">
                       {(user.display_name || user.full_name || "U")[0].toUpperCase()}

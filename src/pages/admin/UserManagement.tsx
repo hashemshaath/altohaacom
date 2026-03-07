@@ -1170,7 +1170,7 @@ export default function UserManagement() {
                   <Label>{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
                   <div className="relative rounded-xl border overflow-hidden h-40 bg-muted/30 group cursor-pointer" onClick={() => coverInputRef.current?.click()}>
                     {editingUser.cover_image_url ? (
-                      <img src={editingUser.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+                      <img src={editingUser.cover_image_url} alt="Cover" className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <div className="flex items-center justify-center h-full">
                         <ImageIcon className="h-8 w-8 text-muted-foreground/40" />

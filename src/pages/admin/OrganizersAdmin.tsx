@@ -767,7 +767,7 @@ export default function OrganizersAdmin() {
                   <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "cover"); }} />
                   {form.cover_image_url ? (
                     <div className="relative group rounded-xl border bg-muted/30 overflow-hidden">
-                      <img src={form.cover_image_url} alt="Cover" className="w-full h-20 object-cover" />
+                      <img src={form.cover_image_url} alt="Cover" className="w-full h-20 object-cover" loading="lazy" />
                       <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <Button type="button" variant="secondary" size="sm" className="h-7 text-[10px]" onClick={() => coverRef.current?.click()}>
                           {isAr ? "تغيير" : "Change"}
