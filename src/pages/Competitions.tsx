@@ -153,8 +153,12 @@ export default function Competitions() {
       padding="none"
     >
       <main className="flex-1">
-        {/* Top Banner Ad */}
+        {/* Breadcrumbs */}
         <div className="container mt-3">
+          <Breadcrumbs items={[{ label: isAr ? "المسابقات" : "Competitions" }]} />
+        </div>
+        {/* Top Banner Ad */}
+        <div className="container mt-2">
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
 
