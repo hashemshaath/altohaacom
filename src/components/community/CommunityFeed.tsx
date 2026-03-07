@@ -204,7 +204,7 @@ export function CommunityFeed() {
 
         const { data: postsData } = await supabase
           .from("posts")
-          .select("*")
+          .select("id, author_id, content, created_at, edited_at, group_id, image_url, image_urls, is_pinned, link_preview, link_url, moderation_status, post_number, replies_count, reply_to_post_id, reposts_count, video_url, visibility")
           .is("group_id", null)
           .is("reply_to_post_id", null)
           .eq("moderation_status", "approved")
