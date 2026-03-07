@@ -23,6 +23,9 @@ import { ForwardMessageDialog } from "@/components/messages/ForwardMessageDialog
 import { PinnedMessagesBar } from "@/components/messages/PinnedMessagesBar";
 import { LocationShareButton, LocationBubble } from "@/components/messages/LocationShareButton";
 import { MediaPreviewOverlay } from "@/components/messages/MediaPreviewOverlay";
+import { QuickReplySuggestions } from "@/components/messages/QuickReplySuggestions";
+import { UnreadDivider } from "@/components/messages/UnreadDivider";
+import { LastSeenLabel } from "@/components/messages/LastSeenLabel";
 import {
   Send, ArrowLeft, MoreVertical, Search, CheckSquare,
   Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare,
