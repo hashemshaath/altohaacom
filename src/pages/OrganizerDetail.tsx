@@ -302,7 +302,7 @@ export default function OrganizerDetail() {
         <div className="relative">
           {coverImage ? (
             <div className="h-56 md:h-72 overflow-hidden relative">
-              <img src={coverImage} alt="" className="w-full h-full object-cover" />
+              <img src={coverImage} alt="" className="w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/10" />
             </div>
           ) : (
