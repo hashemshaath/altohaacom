@@ -56,20 +56,20 @@ export function PredictiveChurnDashboard() {
     low: "bg-chart-2/10 text-chart-2 border-chart-2/20",
   };
 
-  const pieData = risks.map((r) => ({
-    name: r.segment,
-    value: r.affected_users_estimate,
-    color: riskColors[r.risk_level] || riskColors.low,
-  }));
-
-  const barData = risks.map((r) => ({
-    segment: r.segment.length > 20 ? r.segment.substring(0, 20) + "…" : r.segment,
-    users: r.affected_users_estimate,
-    fill: riskColors[r.risk_level] || riskColors.low,
-  }));
-
-  const totalAtRisk = risks.reduce((s, r) => s + r.affected_users_estimate, 0);
-  const criticalCount = risks.filter(r => r.risk_level === "critical" || r.risk_level === "high").length;
+  const { pieData, barData, totalAtRisk, criticalCount } = useMemo(() => ({
+    pieData: risks.map((r) => ({
+      name: r.segment,
+      value: r.affected_users_estimate,
+      color: riskColors[r.risk_level] || riskColors.low,
+    })),
+    barData: risks.map((r) => ({
+      segment: r.segment.length > 20 ? r.segment.substring(0, 20) + "…" : r.segment,
+      users: r.affected_users_estimate,
+      fill: riskColors[r.risk_level] || riskColors.low,
+    })),
+    totalAtRisk: risks.reduce((s, r) => s + r.affected_users_estimate, 0),
+    criticalCount: risks.filter(r => r.risk_level === "critical" || r.risk_level === "high").length,
+  }), [risks]);
 
   return (
     <div className="space-y-6 mt-4">
