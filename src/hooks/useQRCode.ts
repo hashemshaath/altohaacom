@@ -16,7 +16,7 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
       // Check if QR code already exists
       const { data: existing } = await supabase
         .from("qr_codes")
-        .select("*")
+        .select("id, code, entity_type, entity_id, category, is_active, scan_count, last_scanned_at, metadata, created_by, created_at, updated_at")
         .eq("entity_type", entityType)
         .eq("entity_id", entityId)
         .eq("is_active", true)

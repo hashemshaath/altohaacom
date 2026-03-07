@@ -55,7 +55,7 @@ export function TypesCategoriesStep({
     queryFn: async () => {
       let query = supabase
         .from("predefined_categories")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, type_id, gender, participant_level, default_max_participants, is_active, sort_order")
         .eq("is_active", true)
         .order("sort_order");
       if (selectedTypeIds.length > 0) {
