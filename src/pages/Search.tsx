@@ -341,6 +341,7 @@ export default function Search() {
         )}
 
         {/* Results area */}
+        <SearchQueryContext.Provider value={filters.query}>
         <div className="container max-w-3xl py-6 pb-24 md:pb-6">
           {/* AI Search Panel */}
           {filters.query && filters.query.trim().length >= 2 && (
