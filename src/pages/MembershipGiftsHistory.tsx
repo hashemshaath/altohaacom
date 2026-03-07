@@ -139,7 +139,7 @@ export default function MembershipGiftsHistory() {
     queryFn: async () => {
       const { data } = await supabase
         .from("membership_gifts")
-        .select("*")
+        .select("id, sender_id, recipient_email, recipient_id, recipient_name, tier, billing_cycle, duration_months, amount, currency, gift_code, message, message_ar, status, payment_status, payment_reference, purchased_at, expires_at, redeemed_at, redeemed_by, created_at, updated_at")
         .eq("recipient_email", user!.email)
         .order("created_at", { ascending: false });
       return data || [];
