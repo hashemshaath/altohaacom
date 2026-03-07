@@ -29,7 +29,7 @@ import {
   Settings,
   Crown,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 
 interface NavLink {
   to: string;
@@ -50,7 +50,41 @@ const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
   enterprise: { en: "Enterprise", ar: "مؤسسات", color: "bg-chart-4/15 text-chart-4" },
 };
 
-export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
+const NavItem = memo(function NavItem({ to, icon: Icon, children, active, badge, onClose }: {
+  to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean; badge?: string; onClose: () => void;
+}) {
+  return (
+    <Link
+      to={to}
+      onClick={() => {
+        try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {}
+        onClose();
+      }}
+      className={cn(
+        "relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all duration-200 touch-manipulation select-none active:scale-[0.97]",
+        active
+          ? "bg-primary/10 text-primary font-semibold"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted/60"
+      )}
+    >
+      {active && (
+        <span className="absolute inset-y-1.5 start-0 w-[3px] rounded-full bg-primary" />
+      )}
+      <div className={cn(
+        "flex h-8 w-8 items-center justify-center rounded-lg transition-colors shrink-0",
+        active ? "bg-primary/15" : "bg-muted/50"
+      )}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <span className="flex-1">{children}</span>
+      {badge && (
+        <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-bold">{badge}</Badge>
+      )}
+    </Link>
+  );
+});
+
+export const MobileMenu = memo(function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
   const { user, signOut } = useAuth();
   const { t, language } = useLanguage();
   const { data: isAdmin } = useIsAdmin();
@@ -89,44 +123,16 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
   const label = (en: string, ar: string) => (isAr ? ar : en);
 
-  const toggleSection = (key: string) => {
+  const toggleSection = useCallback((key: string) => {
     setSectionsOpen((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  }, []);
 
-  const NavItem = ({ to, icon: Icon, children, active, badge }: { to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean; badge?: string }) => (
-    <Link
-      to={to}
-      onClick={() => {
-        try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {}
-        setOpen(false);
-      }}
-      className={cn(
-        "relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all duration-200 touch-manipulation select-none",
-        active
-          ? "bg-primary/10 text-primary font-semibold"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground active:scale-[0.97] active:bg-muted/60"
-      )}
-    >
-      {active && (
-        <span className="absolute inset-y-1.5 start-0 w-[3px] rounded-full bg-primary animate-in slide-in-from-left-1 duration-200" />
-      )}
-      <div className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-lg transition-colors shrink-0",
-        active ? "bg-primary/15" : "bg-muted/50"
-      )}>
-        <Icon className="h-4 w-4" />
-      </div>
-      <span className="flex-1">{children}</span>
-      {badge && (
-        <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-bold">{badge}</Badge>
-      )}
-    </Link>
-  );
+  const closeMenu = useCallback(() => setOpen(false), []);
 
   const SectionToggle = ({ label: sectionLabel, sectionKey, count }: { label: string; sectionKey: string; count?: number }) => (
     <CollapsibleTrigger
       onClick={() => toggleSection(sectionKey)}
-      className="flex w-full items-center justify-between px-3 py-2 rounded-xl hover:bg-muted/40 transition-colors"
+      className="flex w-full items-center justify-between px-3 py-2 rounded-xl hover:bg-muted/40 transition-colors touch-manipulation"
     >
       <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
         {sectionLabel}
@@ -147,7 +153,7 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
     <div className="lg:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Button variant="ghost" size="icon" className="h-9 w-9 active:scale-90 transition-transform touch-manipulation">
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
@@ -155,15 +161,15 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
           <div className="flex h-full flex-col">
             {/* Header */}
             <div className="flex items-center justify-between border-b px-4 py-3.5 bg-gradient-to-b from-primary/5 to-transparent">
-              <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
-                <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-auto" />
+              <Link to="/" onClick={closeMenu} className="flex items-center gap-2.5">
+                <img src="/altoha-logo.png" alt="Altoha" className="h-8 w-auto" loading="lazy" />
                 <span className="font-serif text-lg font-bold text-primary">Altoha</span>
               </Link>
             </div>
 
             {/* User info bar */}
             {user && (
-              <Link to="/profile" onClick={() => setOpen(false)} className="block border-b hover:bg-muted/20 transition-colors">
+              <Link to="/profile" onClick={closeMenu} className="block border-b hover:bg-muted/20 transition-colors active:bg-muted/30">
                 <div className="flex items-center gap-3 px-4 py-3">
                   <Avatar className="h-10 w-10 border-2 border-primary/20 shadow-sm">
                     <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
@@ -182,34 +188,34 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
                       <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                     )}
                   </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground/50 shrink-0 rtl:rotate-180" />
                 </div>
               </Link>
             )}
 
-            <nav className="flex-1 overflow-y-auto overscroll-contain p-3 space-y-0.5 scroll-smooth">
+            <nav className="flex-1 overflow-y-auto overscroll-contain p-3 space-y-0.5 scroll-smooth -webkit-overflow-scrolling-touch">
               {user ? (
                 <>
-                  {/* Quick actions - always visible */}
-                  <NavItem to="/dashboard" icon={LayoutDashboard} active={isActive("/dashboard")}>
+                  {/* Quick actions */}
+                  <NavItem to="/dashboard" icon={LayoutDashboard} active={isActive("/dashboard")} onClose={closeMenu}>
                     {label("Dashboard", "لوحة التحكم")}
                   </NavItem>
-                  <NavItem to="/search" icon={Search}>
+                  <NavItem to="/search" icon={Search} onClose={closeMenu}>
                     {label("Search", "بحث")}
                   </NavItem>
 
                   <Separator className="my-2" />
 
-                  {/* Main Navigation - Collapsible */}
+                  {/* Main Navigation */}
                   <Collapsible open={sectionsOpen.main}>
                     <SectionToggle label={label("Navigate", "التنقل")} sectionKey="main" count={primaryNav.length + (isJudge ? 1 : 0)} />
                     <CollapsibleContent className="space-y-0.5 mt-1">
                       {primaryNav.map((link) => (
-                        <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
+                        <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)} onClose={closeMenu}>
                           {label(link.labelEn, link.labelAr)}
                         </NavItem>
                       ))}
-                      <NavItem to="/chefs-table" icon={Scale} active={isActive("/chefs-table")}>
+                      <NavItem to="/chefs-table" icon={Scale} active={isActive("/chefs-table")} onClose={closeMenu}>
                         {label("Chef's Table", "طاولة الشيف")}
                       </NavItem>
                     </CollapsibleContent>
@@ -217,12 +223,12 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
 
                   <Separator className="my-2" />
 
-                  {/* Explore - Collapsible */}
+                  {/* Explore */}
                   <Collapsible open={sectionsOpen.explore}>
                     <SectionToggle label={label("Explore", "اكتشف")} sectionKey="explore" count={moreLinks.length} />
                     <CollapsibleContent className="space-y-0.5 mt-1">
                       {moreLinks.map((link) => (
-                        <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
+                        <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)} onClose={closeMenu}>
                           {label(link.labelEn, link.labelAr)}
                         </NavItem>
                       ))}
@@ -231,20 +237,20 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
 
                   <Separator className="my-2" />
 
-                  {/* Account - Collapsible */}
+                  {/* Account */}
                   <Collapsible open={sectionsOpen.account}>
                     <SectionToggle label={label("Account", "الحساب")} sectionKey="account" />
                     <CollapsibleContent className="space-y-0.5 mt-1">
-                      <NavItem to="/profile" icon={User} active={isActive("/profile")}>
+                      <NavItem to="/profile" icon={User} active={isActive("/profile")} onClose={closeMenu}>
                         {t("myProfile")}
                       </NavItem>
-                      <NavItem to="/messages" icon={MessageSquare}>
+                      <NavItem to="/messages" icon={MessageSquare} onClose={closeMenu}>
                         {label("Messages", "الرسائل")}
                       </NavItem>
-                      <NavItem to="/notification-preferences" icon={Settings}>
+                      <NavItem to="/notification-preferences" icon={Settings} onClose={closeMenu}>
                         {label("Settings", "الإعدادات")}
                       </NavItem>
-                      <NavItem to="/help" icon={HelpCircle}>
+                      <NavItem to="/help" icon={HelpCircle} onClose={closeMenu}>
                         {label("Help Center", "مركز المساعدة")}
                       </NavItem>
                     </CollapsibleContent>
@@ -253,7 +259,7 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
                   {isAdmin && (
                     <>
                       <Separator className="my-2" />
-                      <NavItem to="/admin" icon={Shield}>
+                      <NavItem to="/admin" icon={Shield} onClose={closeMenu}>
                         {t("adminPanel")}
                       </NavItem>
                     </>
@@ -261,20 +267,20 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
                 </>
               ) : (
                 <>
-                  <NavItem to="/" icon={Home} active={isActive("/")}>
+                  <NavItem to="/" icon={Home} active={isActive("/")} onClose={closeMenu}>
                     {label("Home", "الرئيسية")}
                   </NavItem>
                   {primaryNav.filter((l) => !l.authOnly).map((link) => (
-                    <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)}>
+                    <NavItem key={link.to} to={link.to} icon={link.icon} active={isActive(link.to)} onClose={closeMenu}>
                       {label(link.labelEn, link.labelAr)}
                     </NavItem>
                   ))}
                   <Separator className="my-3" />
                   <div className="space-y-2 p-2">
-                    <Button className="w-full shadow-sm" asChild onClick={() => setOpen(false)}>
+                    <Button className="w-full shadow-sm" asChild onClick={closeMenu}>
                       <Link to="/login">{t("signIn")}</Link>
                     </Button>
-                    <Button variant="outline" className="w-full" asChild onClick={() => setOpen(false)}>
+                    <Button variant="outline" className="w-full" asChild onClick={closeMenu}>
                       <Link to="/register">{t("signUp")}</Link>
                     </Button>
                   </div>
@@ -286,10 +292,10 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
               <div className="border-t p-3 bg-muted/10">
                 <Button
                   variant="ghost"
-                  className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive transition-colors"
+                  className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive transition-colors active:scale-[0.97]"
                   onClick={() => {
                     signOut();
-                    setOpen(false);
+                    closeMenu();
                   }}
                 >
                   <LogOut className="h-4 w-4" />
@@ -302,4 +308,4 @@ export function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
       </Sheet>
     </div>
   );
-}
+});
