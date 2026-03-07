@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -355,9 +355,11 @@ export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
     );
   }
 
-  const liveSessions = sessions.filter((s: any) => s.status === "live");
-  const upcomingSessions = sessions.filter((s: any) => s.status === "scheduled");
-  const pastSessions = sessions.filter((s: any) => s.status === "completed");
+  const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
+    liveSessions: sessions.filter((s: any) => s.status === "live"),
+    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
+    pastSessions: sessions.filter((s: any) => s.status === "completed"),
+  }), [sessions]);
 
   return (
     <div className="space-y-6">
