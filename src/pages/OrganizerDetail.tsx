@@ -20,7 +20,7 @@ import {
   Building2, Mail, Phone, Globe, MapPin, Calendar, Eye, Landmark,
   Users, TrendingUp, ExternalLink, Newspaper, ChevronRight,
   Award, Target, Sparkles, BarChart3, Clock, Star,
-  Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight,
+  Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight, Heart,
   CalendarDays, Ticket, GraduationCap, Swords, Mic2, BookOpen,
   Copy, Check, Image as ImageIcon, UserCircle2,
 } from "lucide-react";
