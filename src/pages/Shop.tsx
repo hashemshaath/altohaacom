@@ -103,7 +103,7 @@ export default function Shop() {
 
       <ShopHero productCount={filtered.length} cart={cart} onCartOpen={() => setCartOpen(true)} />
 
-      <main className="container flex-1 py-4 md:py-6">
+      <main className="container flex-1 py-3 md:py-6">
         <ShopFilters
           search={search}
           onSearchChange={setSearch}
