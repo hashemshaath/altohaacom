@@ -148,9 +148,9 @@ export default function Recipes() {
       <main className="flex-1">
         {/* Compact Hero */}
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container py-8 md:py-12">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-3 max-w-2xl">
+          <div className="container py-5 md:py-12">
+            <div className="flex flex-col gap-4 md:gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-2 md:space-y-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                   <UtensilsCrossed className="h-3.5 w-3.5 text-primary" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
