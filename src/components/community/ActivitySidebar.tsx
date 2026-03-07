@@ -126,4 +126,4 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
       </div>
     </div>
   );
-}
+});

@@ -170,4 +170,4 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
       </CardContent>
     </Card>
   );
-}
+});

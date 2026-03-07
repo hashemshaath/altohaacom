@@ -490,4 +490,4 @@ export const StoriesBar = memo(function StoriesBar() {
       </Dialog>
     </>
   );
-}
+});
