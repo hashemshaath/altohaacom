@@ -68,7 +68,7 @@ export function PostCard({
     <article
       className={cn(
         "transition-all duration-200 animate-in fade-in-50",
-        !isEditing && "px-3 sm:px-4 py-3 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20",
+        !isEditing && "px-3 sm:px-4 py-2.5 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20 touch-manipulation",
         post.is_pinned && "bg-primary/5 border-s-primary/40"
       )}
     >
@@ -90,7 +90,7 @@ export function PostCard({
       {!isEditing && (
         <div className="flex gap-3">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
-            <Avatar className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
+            <Avatar className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
               <AvatarImage src={post.author_avatar || undefined} className="object-cover rounded-xl" />
               <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
@@ -175,7 +175,7 @@ export function PostCard({
 
             {/* Content */}
             <div
-              className="mt-2 text-[14px] sm:text-[14.5px] leading-[1.65] whitespace-pre-wrap break-words text-foreground/90"
+              className="mt-1.5 sm:mt-2 text-[13.5px] sm:text-[14.5px] leading-[1.6] whitespace-pre-wrap break-words text-foreground/90"
               onClick={() => onOpenThread(post.id)}
             >
               <MentionText content={post.content} />
@@ -260,12 +260,12 @@ export function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-3 flex items-center justify-between -ms-2 pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-0.5">
+            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-0">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 gap-1.5 rounded-xl px-3 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
+                  className="h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[11px] sm:text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 touch-manipulation active:scale-95"
                   onClick={() => onOpenThread(post.id)}
                 >
                   <MessageCircle className="h-4 w-4" />
@@ -275,7 +275,7 @@ export function PostCard({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-8 gap-1.5 rounded-xl px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90",
+                    "h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[11px] sm:text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90 touch-manipulation",
                     post.is_reposted ? "text-chart-3" : "text-muted-foreground"
                   )}
                   onClick={() => onRepost(post.id, post.is_reposted)}
