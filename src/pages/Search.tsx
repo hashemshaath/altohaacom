@@ -800,6 +800,34 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
   );
 }
 
+/* ──────────────── Exhibition Row ──────────────── */
+function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const title = isAr && data.title_ar ? data.title_ar : data.title;
+  const desc = isAr && data.description_ar ? data.description_ar : data.description;
+  const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
+  const location = [venue, data.city, data.country].filter(Boolean).join(" · ");
+  return (
+    <Link to={`/exhibitions/${data.slug || data.id}`} className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-chart-5/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+          {data.cover_image_url ? <img src={data.cover_image_url} alt="" className="w-full h-full object-cover" /> : <Ticket className="h-4 w-4 text-chart-5/60" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <Ticket className="h-3 w-3" /><span>{isAr ? "معرض" : "Exhibition"}</span>
+          </div>
+          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">{title}</h3>
+          {desc && <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">{desc}</p>}
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/80">
+            {data.start_date && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{format(new Date(data.start_date), "MMM d, yyyy")}</span>}
+            {location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span className="truncate max-w-[200px]">{location}</span></span>}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 /* ──────────────── Entity Row ──────────────── */
 function EntityRow({ data, isAr }: { data: any; isAr: boolean }) {
   const name = isAr && data.name_ar ? data.name_ar : data.name;
