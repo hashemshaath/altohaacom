@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { AlertTriangle, ArrowUp, Minus, ArrowDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
