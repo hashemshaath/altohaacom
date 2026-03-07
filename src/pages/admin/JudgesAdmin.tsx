@@ -52,7 +52,7 @@ export default function JudgesAdmin() {
       // Get profiles
       const { data: profiles, error: profErr } = await supabase
         .from("profiles")
-        .select("user_id, full_name, avatar_url, username, email, phone, country_code, specialization, account_status")
+        .select("user_id, full_name, avatar_url, username, email, phone, country_code, specialization, account_status, account_number, location")
         .in("user_id", judgeUserIds);
       if (profErr) throw profErr;
 
