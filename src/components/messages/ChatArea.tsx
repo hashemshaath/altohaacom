@@ -137,6 +137,31 @@ export function ChatArea({
 
   const pinnedMessages = useMemo(() => (messages || []).filter((m) => (m as any).is_pinned), [messages]);
 
+  // Compute unread divider position
+  const firstUnreadIdx = useMemo(() => {
+    if (!messages || !user) return -1;
+    return messages.findIndex((m) => m.receiver_id === user.id && !m.is_read);
+  }, [messages, user]);
+
+  const unreadCount = useMemo(() => {
+    if (!messages || !user) return 0;
+    return messages.filter((m) => m.receiver_id === user.id && !m.is_read).length;
+  }, [messages, user]);
+
+  // Last received message for quick reply context
+  const lastReceivedMsg = useMemo(() => {
+    if (!messages || !user) return null;
+    const received = messages.filter((m) => m.sender_id !== user.id);
+    return received.length > 0 ? received[received.length - 1] : null;
+  }, [messages, user]);
+
+  const handleDeleteMessage = useCallback(async (msgId: string) => {
+    const { error } = await supabase.from("messages").delete().eq("id", msgId);
+    if (!error) {
+      toast({ title: isAr ? "تم حذف الرسالة" : "Message deleted" });
+    }
+  }, [isAr, toast]);
+
   const handlePin = useCallback(async (msgId: string, pin: boolean) => {
     await supabase.from("messages").update({ is_pinned: pin } as any).eq("id", msgId);
     toast({ title: pin ? (isAr ? "تم تثبيت الرسالة" : "Message pinned") : (isAr ? "تم إلغاء التثبيت" : "Message unpinned") });
