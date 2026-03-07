@@ -12,7 +12,7 @@ import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function RevenueAnalyticsWidget() {
+export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
