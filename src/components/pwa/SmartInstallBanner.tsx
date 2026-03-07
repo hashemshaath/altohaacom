@@ -17,8 +17,8 @@ export function SmartInstallBanner() {
   ];
 
   return (
-    <div className="fixed bottom-20 inset-x-0 z-50 px-3 md:bottom-4 md:px-0 md:flex md:justify-center animate-in slide-in-from-bottom-4 duration-500">
-      <div className="rounded-2xl border border-primary/20 bg-card/95 p-4 shadow-xl backdrop-blur-md md:max-w-md">
+    <div className="fixed bottom-20 inset-x-0 z-50 px-3 md:bottom-4 md:px-0 md:flex md:justify-center animate-in slide-in-from-bottom-4 duration-500 safe-area-bottom">
+      <div className="rounded-2xl border border-primary/20 bg-card/95 p-3.5 sm:p-4 shadow-xl backdrop-blur-md md:max-w-md">
         <div className="flex items-start gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-chart-4/20">
             <Download className="h-6 w-6 text-primary" />

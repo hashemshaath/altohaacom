@@ -25,7 +25,7 @@ export default function Messages() {
     <PageShell title="Messages" footer={false} padding="none" container={false}>
       {/* Professional Header */}
       <section className="border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/2 to-background">
-        <div className="container py-5 md:py-6">
+        <div className="container py-3 md:py-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3.5">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm shadow-primary/10 ring-1 ring-primary/10">
@@ -71,8 +71,8 @@ export default function Messages() {
       </section>
 
       {/* Chat Interface */}
-      <div className="container py-4 md:py-6">
-        <Card className="mx-auto overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm shadow-2xl shadow-primary/5" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
+      <div className="container py-0 md:py-6">
+        <Card className="mx-auto overflow-hidden rounded-none md:rounded-2xl border-0 md:border border-border/30 bg-card/80 backdrop-blur-sm shadow-none md:shadow-2xl md:shadow-primary/5" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
           <div className="flex h-full">
             <ConversationList
               isAr={data.isAr}

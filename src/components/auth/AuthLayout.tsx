@@ -19,8 +19,8 @@ export function AuthLayout({ children, stage, isAr, showFooter = false, currentS
         <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} />
 
         {/* Form panel */}
-        <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
-          <div className="w-full max-w-md space-y-5">{children}</div>
+        <div className="flex flex-1 items-start md:items-center justify-center px-4 py-4 sm:px-6 sm:py-8 lg:px-10">
+          <div className="w-full max-w-md space-y-4 sm:space-y-5">{children}</div>
         </div>
       </main>
       {showFooter && <Footer />}
