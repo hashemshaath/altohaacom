@@ -64,7 +64,7 @@ export default function Community() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-chart-2/5" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_70%)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/30 to-transparent" />
-        <div className="container relative py-4 sm:py-8 md:py-12">
+        <div className="container relative py-3 sm:py-8 md:py-12">
           <div className="flex flex-col gap-2 sm:gap-4 md:flex-row md:items-end md:justify-between" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
             <div className="max-w-2xl space-y-2 sm:space-y-4">
               <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 ring-1 ring-primary/15 shadow-sm shadow-primary/5">
