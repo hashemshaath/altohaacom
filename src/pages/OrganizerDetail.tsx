@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
 import { Header } from "@/components/Header";
+import { OrganizerAnalyticsTab } from "@/components/organizers/OrganizerAnalyticsTab";
+import { OrganizerRatingSummary } from "@/components/organizers/OrganizerRatingSummary";
 import { SEOHead } from "@/components/SEOHead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
