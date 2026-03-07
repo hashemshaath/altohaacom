@@ -214,7 +214,7 @@ export function useCostTemplates(moduleType?: CostModuleType) {
     queryFn: async () => {
       let query = supabase
         .from("cost_templates" as any)
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, module_type, items, is_active, created_by, created_at, updated_at")
         .eq("is_active", true)
         .order("name");
       if (moduleType) {
