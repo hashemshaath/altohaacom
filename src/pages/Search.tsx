@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, createContext, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Header } from "@/components/Header";
@@ -39,6 +39,8 @@ import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
 import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
 import { SearchSuggestions } from "@/components/search/SearchSuggestions";
+import { HighlightText } from "@/components/search/HighlightText";
+import { VoiceSearchButton } from "@/components/search/VoiceSearchButton";
 import type { Database } from "@/integrations/supabase/types";
 
 const AISearchPanel = lazy(() => import("@/components/search/AISearchPanel").then(m => ({ default: m.AISearchPanel })));
@@ -56,6 +58,9 @@ const statusLabelsEn: Record<CompetitionStatus, string> = {
   completed: "Completed",
   cancelled: "Cancelled",
 };
+
+const SearchQueryContext = createContext("");
+function useSearchQuery() { return useContext(SearchQueryContext); }
 
 export default function Search() {
   const { t, language } = useLanguage();
@@ -226,7 +231,15 @@ export default function Search() {
               >
                 <Filter className="h-4 w-4" />
               </Button>
+              <VoiceSearchButton onResult={(text) => handleSearch(text)} />
             </form>
+            <div className="flex items-center justify-between mt-1.5 px-1">
+              <p className="text-[10px] text-muted-foreground">
+                {isAr ? "اضغط" : "Press"}{" "}
+                <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[9px] font-mono">⌘K</kbd>{" "}
+                {isAr ? "للبحث السريع من أي مكان" : "for quick search anywhere"}
+              </p>
+            </div>
 
             {/* Tabs — horizontal pills like Google */}
             <Tabs
@@ -328,6 +341,7 @@ export default function Search() {
         )}
 
         {/* Results area */}
+        <SearchQueryContext.Provider value={filters.query}>
         <div className="container max-w-3xl py-6 pb-24 md:pb-6">
           {/* AI Search Panel */}
           {filters.query && filters.query.trim().length >= 2 && (
@@ -489,6 +503,7 @@ export default function Search() {
             </div>
           )}
         </div>
+        </SearchQueryContext.Provider>
       </main>
 
       <Footer />
@@ -541,6 +556,7 @@ function CompetitionRow({
   isAr: boolean;
   getStatusLabel: (s: CompetitionStatus) => string;
 }) {
+  const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
@@ -606,6 +622,7 @@ function CompetitionRow({
 
 /* ──────────────── Article Row ──────────────── */
 function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const excerpt = isAr && data.excerpt_ar ? data.excerpt_ar : data.excerpt;
 
@@ -630,11 +647,11 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
             <span className="capitalize">{data.type}</span>
           </div>
           <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
-            {title}
+            <HighlightText text={title} query={sq} />
           </h3>
           {excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
-              {excerpt}
+              <HighlightText text={excerpt} query={sq} />
             </p>
           )}
           {data.published_at && (
@@ -650,6 +667,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Member Row ──────────────── */
 function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const sq = useSearchQuery();
   const displayName = isAr
     ? data.display_name_ar || data.full_name_ar || data.display_name || data.full_name || data.username || "?"
     : data.display_name || data.full_name || data.display_name_ar || data.full_name_ar || data.username || "?";
@@ -680,7 +698,7 @@ function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
           </div>
           <div className="flex items-center gap-1.5">
             <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
-              {displayName}
+              <HighlightText text={displayName} query={sq} />
             </h3>
             {data.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
           </div>
@@ -802,6 +820,7 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Exhibition Row ──────────────── */
 function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
@@ -816,8 +835,8 @@ function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
           <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
             <Ticket className="h-3 w-3" /><span>{isAr ? "معرض" : "Exhibition"}</span>
           </div>
-          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">{title}</h3>
-          {desc && <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">{desc}</p>}
+          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1"><HighlightText text={title} query={sq} /></h3>
+          {desc && <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed"><HighlightText text={desc} query={sq} /></p>}
           <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/80">
             {data.start_date && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{format(new Date(data.start_date), "MMM d, yyyy")}</span>}
             {location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span className="truncate max-w-[200px]">{location}</span></span>}

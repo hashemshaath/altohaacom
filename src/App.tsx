@@ -56,6 +56,7 @@ const RoutePrefetcher = safeLazy(() => import("@/components/ui/route-prefetcher"
 const LiveChatWidget = safeLazy(() => import("@/components/support/LiveChatWidget").then(m => ({ default: m.LiveChatWidget as any })));
 const WelcomeModal = safeLazy(() => import("@/components/onboarding/WelcomeModal").then(m => ({ default: m.WelcomeModal as any })));
 const GuidedTour = safeLazy(() => import("@/components/onboarding/GuidedTour").then(m => ({ default: m.GuidedTour as any })));
+const CommandPalette = safeLazy(() => import("@/components/search/CommandPalette").then(m => ({ default: m.CommandPalette as any })));
 const NotFound = safeLazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -112,6 +113,7 @@ function AppContent() {
       <Suspense fallback={null}><LiveChatWidget /></Suspense>
       <Suspense fallback={null}><WelcomeModal /></Suspense>
       <Suspense fallback={null}><GuidedTour /></Suspense>
+      <Suspense fallback={null}><CommandPalette /></Suspense>
       <Suspense fallback={null}>
         <MobileBottomNav />
         <ScrollProgress />
