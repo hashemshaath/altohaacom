@@ -30,7 +30,7 @@ export function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibition
     queryFn: async () => {
       let query = supabase
         .from("exhibition_social_posts")
-        .select("id, user_id, content, image_url, hashtags, likes_count, comments_count, is_pinned, created_at")
+        .select("id, user_id, content, image_url, hashtags, likes_count, is_pinned, created_at")
         .eq("exhibition_id", exhibitionId)
         .eq("is_approved", true)
         .order("is_pinned", { ascending: false })

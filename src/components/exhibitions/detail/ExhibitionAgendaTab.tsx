@@ -34,7 +34,7 @@ export function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: 
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_agenda_items")
-        .select("id, title, title_ar, description, description_ar, day_date, start_time, end_time, location, location_ar, category, speaker_name, speaker_name_ar, is_featured")
+        .select("id, title, title_ar, description, description_ar, day_date, start_time, end_time, location, location_ar, category, speaker_name, speaker_name_ar, is_highlighted, sort_order")
         .eq("exhibition_id", exhibitionId)
         .order("day_date", { ascending: true })
         .order("start_time", { ascending: true });
