@@ -329,11 +329,44 @@ export default function Competitions() {
                 </Button>
               ) : undefined}
             />
-          ) : (
+          ) : viewMode === "grid" ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
               {filtered?.map((comp) => (
                 <CompetitionCard key={comp.id} competition={comp} language={language} isAr={isAr} />
               ))}
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filtered?.map((comp) => {
+                const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                const status = getDerivedStatus(comp);
+                const regs = comp.competition_registrations?.length || 0;
+                return (
+                  <Link key={comp.id} to={`/competitions/${comp.id}`}>
+                    <Card className="group overflow-hidden rounded-2xl border-border/20 transition-all hover:shadow-md hover:-translate-y-0.5">
+                      <CardContent className="flex items-center gap-4 p-3.5">
+                        <div className="h-16 w-16 rounded-xl overflow-hidden bg-muted shrink-0">
+                          {comp.cover_image_url ? (
+                            <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
+                          ) : (
+                            <div className="flex h-full items-center justify-center"><Trophy className="h-6 w-6 text-muted-foreground/20" /></div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{title}</h3>
+                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-1">
+                            {comp.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{comp.city}</span>}
+                            <span className="flex items-center gap-1"><Users className="h-3 w-3" />{regs}</span>
+                          </div>
+                        </div>
+                        <Badge variant={status.status === "in_progress" ? "default" : "outline"} className="shrink-0 text-[10px]">
+                          {status.label}
+                        </Badge>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           )}
 
