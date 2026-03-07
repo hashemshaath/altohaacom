@@ -290,7 +290,7 @@ export default function EntityDetail() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           {entity.cover_image_url ? (
-            <img src={entity.cover_image_url} alt={name} className="h-full w-full object-cover" />
+            <img src={entity.cover_image_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
           ) : (
             <img src={entitiesHero} alt="" className="h-full w-full object-cover" />
           )}
