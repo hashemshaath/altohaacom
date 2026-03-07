@@ -535,7 +535,7 @@ export default function OrganizerDetail() {
           {/* Rating Summary */}
           <OrganizerRatingSummary exhibitionIds={exhibitions.map((e: ExhibitionRow) => e.id)} isAr={isAr} />
 
-          <Tabs defaultValue="exhibitions" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
               <TabsTrigger value="exhibitions" className="gap-1.5">
                 <Landmark className="h-3.5 w-3.5" />
