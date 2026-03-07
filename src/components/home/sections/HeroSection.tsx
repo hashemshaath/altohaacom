@@ -164,7 +164,7 @@ export function HeroSection() {
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-foreground drop-shadow-lg font-sans">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-foreground drop-shadow-lg font-sans">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
