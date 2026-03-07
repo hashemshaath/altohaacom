@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -43,7 +44,7 @@ interface PostCardProps {
   formatDate: (dateStr: string) => string;
 }
 
-export function PostCard({
+export const PostCard = memo(function PostCard({
   post,
   isEditing,
   onEdit,
@@ -325,4 +326,4 @@ export function PostCard({
       )}
     </article>
   );
-}
+});

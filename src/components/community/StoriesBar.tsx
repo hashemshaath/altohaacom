@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +32,7 @@ interface GroupedStories {
   hasViewed: boolean;
 }
 
-export function StoriesBar() {
+export const StoriesBar = memo(function StoriesBar() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -490,4 +490,4 @@ export function StoriesBar() {
       </Dialog>
     </>
   );
-}
+});

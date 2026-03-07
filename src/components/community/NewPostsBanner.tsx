@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,7 +8,7 @@ interface NewPostsBannerProps {
   onClick: () => void;
 }
 
-export function NewPostsBanner({ count, onClick }: NewPostsBannerProps) {
+export const NewPostsBanner = memo(function NewPostsBanner({ count, onClick }: NewPostsBannerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -29,4 +30,4 @@ export function NewPostsBanner({ count, onClick }: NewPostsBannerProps) {
         : `${count} new post${count > 1 ? "s" : ""}`}
     </button>
   );
-}
+});

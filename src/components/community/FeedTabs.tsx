@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Flame, UserCheck, Clock, Bookmark } from "lucide-react";
@@ -10,7 +11,7 @@ interface FeedTabsProps {
   isLoggedIn: boolean;
 }
 
-export function FeedTabs({ active, onChange, isLoggedIn }: FeedTabsProps) {
+export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }: FeedTabsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -45,4 +46,4 @@ export function FeedTabs({ active, onChange, isLoggedIn }: FeedTabsProps) {
         ))}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { formatNumber } from "@/lib/formatNumber";
 import { Eye, TrendingUp } from "lucide-react";
@@ -14,7 +15,7 @@ interface Props {
  * Compact engagement metrics displayed below a post.
  * Shows view count + trending indicator when engagement is high.
  */
-export function PostEngagementSummary({ likesCount, commentsCount, repostsCount = 0, viewCount }: Props) {
+export const PostEngagementSummary = memo(function PostEngagementSummary({ likesCount, commentsCount, repostsCount = 0, viewCount }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const totalEngagement = likesCount + commentsCount * 2 + repostsCount * 3;
@@ -39,4 +40,4 @@ export function PostEngagementSummary({ likesCount, commentsCount, repostsCount 
       )}
     </div>
   );
-}
+});

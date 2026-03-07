@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Flame, Hash, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function TrendingTopics() {
+export const TrendingTopics = memo(function TrendingTopics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -92,4 +93,4 @@ export function TrendingTopics() {
       </CardContent>
     </Card>
   );
-}
+});

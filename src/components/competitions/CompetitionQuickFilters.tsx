@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Flame, CalendarCheck, Trophy, Clock } from "lucide-react";
@@ -15,7 +16,7 @@ interface Props {
   counts?: Record<string, number>;
 }
 
-export function CompetitionQuickFilters({ active, onChange, counts }: Props) {
+export const CompetitionQuickFilters = memo(function CompetitionQuickFilters({ active, onChange, counts }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -52,4 +53,4 @@ export function CompetitionQuickFilters({ active, onChange, counts }: Props) {
       })}
     </div>
   );
-}
+});
