@@ -302,7 +302,7 @@ export function CommunityFeed() {
   }, [user]);
 
   // Optimistic bookmark
-  const handleBookmark = async (postId: string, isBookmarked: boolean) => {
+  const handleBookmark = useCallback(async (postId: string, isBookmarked: boolean) => {
     if (!user) return;
     setPosts((prev) =>
       prev.map((p) => p.id === postId ? { ...p, is_bookmarked: !isBookmarked } : p)
@@ -315,7 +315,7 @@ export function CommunityFeed() {
         prev.map((p) => p.id === postId ? { ...p, is_bookmarked: isBookmarked } : p)
       );
     }
-  };
+  }, [user]);
 
   // Optimistic repost
   const handleRepost = async (postId: string, isReposted: boolean) => {
