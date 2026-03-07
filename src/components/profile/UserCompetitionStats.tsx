@@ -14,7 +14,7 @@ interface UserCompetitionStatsProps {
   userId: string;
 }
 
-export function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
+export const UserCompetitionStats = memo(function UserCompetitionStats({ userId }: UserCompetitionStatsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
