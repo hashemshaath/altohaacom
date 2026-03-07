@@ -71,7 +71,7 @@ export function EntityProgramsTab({ entityId }: Props) {
         return (
           <Card key={program.id} className="overflow-hidden transition-all hover:shadow-md">
             {program.image_url && (
-              <img src={program.image_url} alt={name} className="h-36 w-full object-cover" />
+              <img src={program.image_url} alt={name} className="h-36 w-full object-cover" loading="lazy" />
             )}
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between gap-2">

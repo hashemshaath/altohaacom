@@ -90,7 +90,7 @@ export function SmartRecommendations() {
             <TabsContent value="competitions" className="mt-2 space-y-1.5">
               {data?.competitions?.length ? data.competitions.map((c: any) => (
                 <Link key={c.id} to={`/competitions/${c.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-                  {c.image_url && <img src={c.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  {c.image_url && <img src={c.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? c.title_ar || c.title : c.title}</p>
                     <p className="text-[10px] text-muted-foreground">{c.category} • {c.country_code}</p>
@@ -104,7 +104,7 @@ export function SmartRecommendations() {
             <TabsContent value="exhibitions" className="mt-2 space-y-1.5">
               {data?.exhibitions?.length ? data.exhibitions.map((e: any) => (
                 <Link key={e.id} to={`/exhibitions/${e.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-                  {e.image_url && <img src={e.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  {e.image_url && <img src={e.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? e.title_ar || e.title : e.title}</p>
                     <p className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -120,7 +120,7 @@ export function SmartRecommendations() {
             <TabsContent value="recipes" className="mt-2 space-y-1.5">
               {data?.recipes?.length ? data.recipes.map((r: any) => (
                 <Link key={r.id} to={`/recipes/${r.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-                  {r.image_url && <img src={r.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  {r.image_url && <img src={r.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? r.title_ar || r.title : r.title}</p>
                     <div className="flex items-center gap-1.5">
@@ -137,7 +137,7 @@ export function SmartRecommendations() {
             <TabsContent value="articles" className="mt-2 space-y-1.5">
               {data?.articles?.length ? data.articles.map((a: any) => (
                 <Link key={a.id} to={`/news/${a.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-                  {a.featured_image_url && <img src={a.featured_image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  {a.featured_image_url && <img src={a.featured_image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? a.title_ar || a.title : a.title}</p>
                     <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">{a.type}</Badge>

@@ -112,7 +112,7 @@ export function EntityMembersTab({ entityId }: Props) {
                   <CardContent className="flex items-center gap-3 p-3">
                     <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ring-2 ring-primary/20 bg-primary/5">
                       {profile?.avatar_url ? (
-                        <img src={profile.avatar_url} alt={displayName} className="h-12 w-12 rounded-xl object-cover" />
+                        <img src={profile.avatar_url} alt={displayName} className="h-12 w-12 rounded-xl object-cover" loading="lazy" />
                       ) : (
                         <User className="h-5 w-5 text-muted-foreground" />
                       )}

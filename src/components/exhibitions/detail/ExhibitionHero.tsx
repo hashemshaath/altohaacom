@@ -192,7 +192,7 @@ export function ExhibitionHero({
               <div className="flex items-center gap-2 pt-2">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10">
                   {organizerLogoUrl ? (
-                    <img src={organizerLogoUrl} alt={organizer} className="h-5 w-5 object-contain" />
+                    <img src={organizerLogoUrl} alt={organizer} className="h-5 w-5 object-contain" loading="lazy" />
                   ) : (
                     <Building className="h-3.5 w-3.5 text-primary" />
                   )}

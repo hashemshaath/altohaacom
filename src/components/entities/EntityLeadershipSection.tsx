@@ -103,7 +103,7 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
           <div className="relative">
             <div className="h-20 w-20 rounded-2xl ring-2 ring-chart-4/30 overflow-hidden bg-chart-4/10 sm:h-24 sm:w-24">
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
+                <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" loading="lazy" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
                   <Crown className="h-8 w-8 text-chart-4/60" />
@@ -149,7 +149,7 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
         <CardContent className="flex items-center gap-3 p-4">
           <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden ring-1 ring-border/50 bg-muted/50">
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
+              <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" loading="lazy" />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
                 <Icon className="h-5 w-5 text-muted-foreground/60" />

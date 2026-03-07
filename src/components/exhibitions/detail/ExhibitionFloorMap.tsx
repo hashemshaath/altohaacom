@@ -306,7 +306,7 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
             <div className="flex items-start gap-3">
               {selectedBooth.logo_url ? (
                 <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-border/50 bg-card p-1">
-                  <img src={selectedBooth.logo_url} alt={selectedBooth.name} className="h-full w-full object-contain" />
+                  <img src={selectedBooth.logo_url} alt={selectedBooth.name} className="h-full w-full object-contain" loading="lazy" />
                 </div>
               ) : (
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted shrink-0">

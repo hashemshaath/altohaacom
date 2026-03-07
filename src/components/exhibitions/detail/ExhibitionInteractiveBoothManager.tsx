@@ -152,7 +152,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
                           onClick={() => setSelectedBooth(booth)}
                         >
                           {booth.logo_url ? (
-                            <img src={booth.logo_url} alt={booth.name} className="h-8 w-8 rounded object-contain mb-1" />
+                            <img src={booth.logo_url} alt={booth.name} className="h-8 w-8 rounded object-contain mb-1" loading="lazy" />
                           ) : (
                             <LayoutGrid className="h-5 w-5 mb-1 opacity-60" />
                           )}
@@ -185,7 +185,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  {selectedBooth.logo_url && <img src={selectedBooth.logo_url} className="h-8 w-8 rounded object-contain" />}
+                  {selectedBooth.logo_url && <img src={selectedBooth.logo_url} className="h-8 w-8 rounded object-contain" loading="lazy" />}
                   {selectedBooth.booth_number} — {isAr && selectedBooth.name_ar ? selectedBooth.name_ar : selectedBooth.name}
                 </DialogTitle>
               </DialogHeader>

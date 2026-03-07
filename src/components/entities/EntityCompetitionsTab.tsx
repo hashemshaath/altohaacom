@@ -54,7 +54,7 @@ export function EntityCompetitionsTab({ entityId }: Props) {
           <Card key={p.id} className="transition-all hover:shadow-sm">
             <CardContent className="flex items-center gap-4 p-4">
               {comp.cover_image_url ? (
-                <img src={comp.cover_image_url} alt={name} className="h-14 w-20 shrink-0 rounded-md object-cover" />
+                <img src={comp.cover_image_url} alt={name} className="h-14 w-20 shrink-0 rounded-md object-cover" loading="lazy" />
               ) : (
                 <div className="flex h-14 w-20 shrink-0 items-center justify-center rounded-md bg-primary/10">
                   <Trophy className="h-6 w-6 text-primary" />

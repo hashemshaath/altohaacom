@@ -227,7 +227,7 @@ export const ExhibitionCard = memo(
                   return (
                     <Badge key={s.id} variant="outline" className="gap-1 text-[9px] font-bold uppercase tracking-wider bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
                       {logo ? (
-                        <img src={logo} alt={name || ""} className="h-3 w-3 rounded-sm object-contain" />
+                        <img src={logo} alt={name || ""} className="h-3 w-3 rounded-sm object-contain" loading="lazy" />
                       ) : (
                         <Building className="h-2.5 w-2.5" />
                       )}

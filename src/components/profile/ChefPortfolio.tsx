@@ -173,7 +173,7 @@ export default function ChefPortfolio({ userId }: Props) {
                 <Card key={r.id} className="overflow-hidden group cursor-pointer">
                   <div className="aspect-[4/3] bg-muted">
                     {r.image_url ? (
-                      <img src={r.image_url} alt={r.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <img src={r.image_url} alt={r.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center"><ChefHat className="h-8 w-8 text-muted-foreground/30" /></div>
                     )}
