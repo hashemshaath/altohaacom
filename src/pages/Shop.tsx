@@ -41,9 +41,12 @@ export default function Shop() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const categories = [...new Set(products.map((p: any) => p.category))].sort();
+  const categories = useMemo(
+    () => [...new Set(products.map((p: any) => p.category))].sort(),
+    [products]
+  );
 
-  const filtered = (() => {
+  const filtered = useMemo(() => {
     let result = products.filter((p: any) => {
       const title = isAr && p.title_ar ? p.title_ar : p.title;
       const matchesSearch = !search || title.toLowerCase().includes(search.toLowerCase());
@@ -66,10 +69,9 @@ export default function Shop() {
     } else if (sortBy === "popular") {
       result = [...result].sort((a: any, b: any) => (b.view_count || 0) - (a.view_count || 0));
     }
-    // "newest" is default from query order
 
     return result;
-  })();
+  }, [products, search, categoryFilter, typeFilter, sortBy, isAr]);
 
   const handleAddToCart = (product: any) => {
     if (!user) {
