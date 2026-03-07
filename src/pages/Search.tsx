@@ -820,8 +820,9 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Exhibition Row ──────────────── */
 function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
+function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
-  const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
   const location = [venue, data.city, data.country].filter(Boolean).join(" · ");
   return (
