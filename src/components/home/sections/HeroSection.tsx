@@ -169,7 +169,7 @@ export function HeroSection() {
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-sm sm:text-base lg:text-lg max-w-lg leading-relaxed text-muted-foreground drop-shadow-md font-sans">
+              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-muted-foreground drop-shadow-md font-sans">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
