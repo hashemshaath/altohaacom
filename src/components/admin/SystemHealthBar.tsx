@@ -105,4 +105,4 @@ export const SystemHealthBar = memo(function SystemHealthBar() {
       ))}
     </div>
   );
-}
+});

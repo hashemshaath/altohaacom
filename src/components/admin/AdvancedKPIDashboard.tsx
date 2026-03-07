@@ -174,4 +174,4 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
       </div>
     </div>
   );
-}
+});

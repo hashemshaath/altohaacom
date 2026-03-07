@@ -171,4 +171,4 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
       </div>
     </div>
   );
-}
+});

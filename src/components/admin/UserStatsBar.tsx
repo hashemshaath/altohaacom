@@ -66,4 +66,4 @@ export const UserStatsBar = memo(function UserStatsBar() {
       ))}
     </div>
   );
-}
+});

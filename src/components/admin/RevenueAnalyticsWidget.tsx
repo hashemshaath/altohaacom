@@ -182,4 +182,4 @@ export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

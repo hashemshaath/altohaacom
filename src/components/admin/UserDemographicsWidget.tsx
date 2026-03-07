@@ -136,4 +136,4 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
       </CardContent>
     </Card>
   );
-}
+});
