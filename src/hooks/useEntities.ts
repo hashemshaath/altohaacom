@@ -85,7 +85,7 @@ export function useEntityMemberships(entityId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("entity_memberships")
-        .select("id, entity_id, user_id, membership_type, status, start_date, end_date, created_at")
+        .select("id, entity_id, user_id, membership_type, status, enrollment_date, graduation_date, department, department_ar, title, title_ar, student_id, is_public, notes, created_at")
         .eq("entity_id", entityId!)
         .order("created_at", { ascending: false });
       if (error) throw error;
