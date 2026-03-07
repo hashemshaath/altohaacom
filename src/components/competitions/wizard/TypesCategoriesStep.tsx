@@ -42,7 +42,7 @@ export function TypesCategoriesStep({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_types")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, icon, cover_image_url, is_active, sort_order")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;
