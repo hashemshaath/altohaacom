@@ -25,7 +25,7 @@ export default function Messages() {
     <PageShell title="Messages" footer={false} padding="none" container={false}>
       {/* Professional Header */}
       <section className="border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/2 to-background">
-        <div className="container py-5 md:py-6">
+        <div className="container py-3 md:py-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3.5">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm shadow-primary/10 ring-1 ring-primary/10">
