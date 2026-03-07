@@ -21,7 +21,7 @@ export function ExhibitionTicketSelector({ exhibitionId, isAr, onSelect, selecte
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_ticket_types")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, price, currency, max_quantity, sold_count, sort_order, is_active, benefits")
         .eq("exhibition_id", exhibitionId)
         .eq("is_active", true)
         .order("sort_order", { ascending: true });

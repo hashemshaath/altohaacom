@@ -26,7 +26,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
     queryFn: async () => {
       const { data: tickets, error } = await supabase
         .from("exhibition_tickets")
-        .select("*")
+        .select("id, ticket_number, status, attendee_name, attendee_email, attendee_phone, checked_in_at, created_at, price_paid, ticket_type")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -39,7 +39,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
 
       // Revenue calculation
       const totalRevenue = confirmed.reduce((s, t) => {
-        const price = parseFloat((t as any).ticket_price || "0");
+        const price = parseFloat((t as any).price_paid || "0");
         return s + price;
       }, 0);
 
@@ -71,7 +71,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
       { header: t("Email", "البريد"), accessor: (r: any) => r.attendee_email },
       { header: t("Phone", "الهاتف"), accessor: (r: any) => r.attendee_phone },
       { header: t("Status", "الحالة"), accessor: (r: any) => r.status },
-      { header: t("Payment", "الدفع"), accessor: (r: any) => r.payment_status },
+      { header: t("Ticket Type", "نوع التذكرة"), accessor: (r: any) => r.ticket_type },
       { header: t("Check-in", "الدخول"), accessor: (r: any) => r.checked_in_at ? format(new Date(r.checked_in_at), "yyyy-MM-dd HH:mm") : "" },
       { header: t("Booked", "الحجز"), accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
     ],

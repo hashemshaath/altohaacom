@@ -50,7 +50,7 @@ export default function Masterclasses() {
       return data?.map((e) => e.masterclass_id) || [];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    staleTime: 1000 * 60 * 5,
   });
 
   const countryCodes = Array.from(

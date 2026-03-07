@@ -25,7 +25,7 @@ export default function Rankings() {
     queryFn: async () => {
       let query = supabase
         .from("chef_rankings")
-        .select("*")
+        .select("id, user_id, rank, previous_rank, rank_change, total_points, average_score, country_code, specialty, ranking_period, competitions_entered, competitions_won, gold_medals, silver_medals, bronze_medals")
         .eq("ranking_period", period)
         .order("rank", { ascending: true })
         .limit(100);
@@ -46,7 +46,7 @@ export default function Rankings() {
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
       return data.map(r => ({ ...r, profile: profileMap.get(r.user_id) }));
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: 1000 * 60 * 10,
   });
 
   const { data: countries } = useQuery({

@@ -36,12 +36,12 @@ function useCookingData(exhibitionId: string, userId?: string) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_cooking_sessions")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, chef_id, scheduled_start, scheduled_end, status, max_participants, current_participants, cover_image_url, is_live")
         .eq("exhibition_id", exhibitionId)
         .order("scheduled_start", { ascending: true });
       return data || [];
     },
-    staleTime: 1000 * 30,
+    staleTime: 1000 * 60 * 2,
   });
 
   const { data: profiles = {} } = useQuery({
@@ -82,7 +82,7 @@ function useSessionInteractions(sessionId: string | null) {
       if (!sessionId) return [];
       const { data } = await supabase
         .from("exhibition_session_interactions")
-        .select("*")
+        .select("id, user_id, interaction_type, content, emoji, created_at")
         .eq("session_id", sessionId)
         .order("created_at", { ascending: true })
         .limit(100);
