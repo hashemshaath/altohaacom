@@ -155,7 +155,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       // Get categories
       let catQuery = supabase
         .from("evaluation_criteria_categories" as any)
-        .select("*")
+        .select("id, domain_id, name, name_ar, description, description_ar, product_category, sort_order, is_active, created_at")
         .eq("domain_id", domainId)
         .eq("is_active", true)
         .order("sort_order");
