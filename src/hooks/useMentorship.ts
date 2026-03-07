@@ -205,7 +205,7 @@ export function useMentorshipSessions(matchId: string | undefined) {
       if (!matchId) return [];
       const { data, error } = await supabase
         .from("mentorship_sessions")
-        .select("*")
+        .select("id, match_id, title, title_ar, description, description_ar, scheduled_at, duration_minutes, status, meeting_url, mentor_feedback, mentee_feedback, mentor_rating, mentee_rating, created_at")
         .eq("match_id", matchId)
         .order("scheduled_at", { ascending: true });
       if (error) throw error;
