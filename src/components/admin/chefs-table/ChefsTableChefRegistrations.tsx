@@ -139,7 +139,7 @@ export function ChefsTableChefRegistrations() {
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
                         {reg.profile?.avatar_url ? (
-                          <img src={reg.profile.avatar_url} className="h-8 w-8 rounded-full object-cover" alt="" />
+                          <img src={reg.profile.avatar_url} className="h-8 w-8 rounded-full object-cover" alt="" loading="lazy" />
                         ) : (
                           <UserPlus className="h-4 w-4 text-primary" />
                         )}

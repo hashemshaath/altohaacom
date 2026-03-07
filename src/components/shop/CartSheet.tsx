@@ -189,7 +189,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
                   <div key={item.product_id} className="flex gap-3 rounded-xl border border-border/50 p-3 transition-all duration-200 hover:border-primary/20 hover:shadow-sm">
                     <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-muted ring-1 ring-border/30">
                       {item.image_url ? (
-                        <img src={item.image_url} alt={title} className="h-full w-full object-cover" />
+                        <img src={item.image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
                       ) : (
                         <div className="flex h-full items-center justify-center">
                           <ShoppingBag className="h-6 w-6 text-muted-foreground/30" />

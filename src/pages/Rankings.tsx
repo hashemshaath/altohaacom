@@ -153,7 +153,7 @@ export default function Rankings() {
                         {isFirst && <Crown className="absolute -top-5 start-1/2 -translate-x-1/2 h-6 w-6 text-yellow-500" />}
                         <div className={`${isFirst ? "h-20 w-20 ring-4 ring-yellow-500/30" : "h-16 w-16 ring-2 ring-border"} rounded-full overflow-hidden bg-muted`}>
                           {chef.profile?.avatar_url ? (
-                            <img src={chef.profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                            <img src={chef.profile.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                           ) : (
                             <div className="h-full w-full flex items-center justify-center">
                               <ChefHat className="h-6 w-6 text-muted-foreground/30" />
@@ -194,7 +194,7 @@ export default function Rankings() {
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <div className="h-9 w-9 rounded-full overflow-hidden bg-muted shrink-0">
                           {chef.profile?.avatar_url ? (
-                            <img src={chef.profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                            <img src={chef.profile.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                           ) : (
                             <div className="h-full w-full flex items-center justify-center"><ChefHat className="h-4 w-4 text-muted-foreground/30" /></div>
                           )}

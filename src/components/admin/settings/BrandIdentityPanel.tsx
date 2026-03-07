@@ -124,7 +124,7 @@ function LogoSlot({ label, labelAr, isAr, value, onChange, bgClass }: {
       <Label className="text-xs">{isAr ? labelAr : label}</Label>
       <div className={cn("rounded-xl border-2 border-dashed border-border/50 p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-colors", bgClass)}>
         {value ? (
-          <img src={value} alt={label} className="max-h-16 object-contain" />
+          <img src={value} alt={label} className="max-h-16 object-contain" loading="lazy" />
         ) : (
           <div className="flex flex-col items-center gap-1 text-muted-foreground">
             <Upload className="h-5 w-5" />

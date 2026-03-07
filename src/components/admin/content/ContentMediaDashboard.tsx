@@ -123,7 +123,7 @@ export default function ContentMediaDashboard() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           {a.featured_image_url && (
-                            <img src={a.featured_image_url} alt="" className="h-10 w-14 rounded object-cover" />
+                            <img src={a.featured_image_url} alt="" className="h-10 w-14 rounded object-cover" loading="lazy" />
                           )}
                           <div>
                             <p className="text-sm font-medium line-clamp-1">{isAr && a.title_ar ? a.title_ar : a.title}</p>
@@ -169,7 +169,7 @@ export default function ContentMediaDashboard() {
                 <Card key={f.id} className="overflow-hidden group cursor-pointer">
                   <div className="aspect-square bg-muted flex items-center justify-center">
                     {f.file_url && f.file_type?.startsWith("image") ? (
-                      <img src={f.file_url} alt={f.file_name} className="w-full h-full object-cover" />
+                      <img src={f.file_url} alt={f.file_name} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <FileText className="h-8 w-8 text-muted-foreground/40" />
                     )}

@@ -237,7 +237,7 @@ export function OrganizerExhibitionsPanel({
                   <Card key={link.id} className="rounded-xl border-border/40 overflow-hidden group">
                     {exh.cover_image_url && (
                       <div className="h-16 w-full overflow-hidden">
-                        <img src={exh.cover_image_url} alt="" className="w-full h-full object-cover" />
+                        <img src={exh.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
                       </div>
                     )}
                     <CardContent className="p-3 space-y-2">
