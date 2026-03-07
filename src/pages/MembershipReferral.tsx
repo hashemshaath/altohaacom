@@ -88,9 +88,9 @@ export default function MembershipReferral() {
     }
   };
 
-  const totalConverted = referrals?.filter((r: any) => r.status === "converted").length || 0;
-  const totalPending = referrals?.filter((r: any) => r.status === "pending").length || 0;
-  const totalPoints = referrals?.reduce((s: number, r: any) => s + (r.referrer_bonus_points || 0), 0) || 0;
+  const totalConverted = useMemo(() => referrals?.filter((r: any) => r.status === "converted").length || 0, [referrals]);
+  const totalPending = useMemo(() => referrals?.filter((r: any) => r.status === "pending").length || 0, [referrals]);
+  const totalPoints = useMemo(() => referrals?.reduce((s: number, r: any) => s + (r.referrer_bonus_points || 0), 0) || 0, [referrals]);
 
   const stats = [
     {
