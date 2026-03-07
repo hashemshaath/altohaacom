@@ -122,7 +122,7 @@ export default function Profile() {
         <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={refetchProfile} />
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4 sm:mt-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-3 sm:mt-6 pb-20 md:pb-0">
         {/* Tab Navigation */}
         <div className="sticky top-12 z-30 -mx-4 border-y border-border/20 bg-background/90 px-2 sm:px-3 py-1.5 sm:py-2 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-3 md:bg-card/60 shadow-sm">
           <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none snap-x snap-mandatory" dir={isAr ? "rtl" : "ltr"}>

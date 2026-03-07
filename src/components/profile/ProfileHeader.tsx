@@ -85,7 +85,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   return (
     <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
       {/* Cover Image */}
-      <div className="relative h-40 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
+      <div className="relative h-32 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
         {/* Ambient blurs */}
         <div className="pointer-events-none absolute -top-24 end-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[120px] animate-pulse" />
         <div className="pointer-events-none absolute -bottom-20 start-1/4 h-56 w-56 rounded-full bg-accent/8 blur-[100px] animate-pulse [animation-delay:2s]" />
@@ -119,11 +119,11 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
       </div>
 
       {/* Profile Info */}
-      <div className="relative px-4 pb-5 sm:px-8 sm:pb-7">
+      <div className="relative px-3 pb-4 sm:px-8 sm:pb-7">
         {/* Avatar */}
-        <div className="relative -mt-14 sm:-mt-22 mb-4 sm:mb-5">
+        <div className="relative -mt-12 sm:-mt-22 mb-3 sm:mb-5">
           <div className="relative inline-block">
-            <div className="relative h-24 w-24 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
+            <div className="relative h-20 w-20 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
               <Avatar className="h-full w-full rounded-[calc(1.5rem-2px)] ring-4 ring-card shadow-inner overflow-hidden bg-card">
                 <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
                 <AvatarFallback className="text-3xl sm:text-5xl font-black bg-primary/10 text-primary">
@@ -148,7 +148,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2.5">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className={`text-xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground break-words ${language !== "ar" ? "font-serif" : ""}`}>
+              <h1 className={`text-lg font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground break-words ${language !== "ar" ? "font-serif" : ""}`}>
                 {isAr ? (profile?.display_name_ar || profile?.full_name_ar || profile?.full_name) : (profile?.display_name || profile?.full_name)}
               </h1>
               <FeatureGate feature="feature_verification_badge">
@@ -201,7 +201,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         </div>
 
         {/* Quick stats bar */}
-        <div className="mt-6 flex items-center gap-1.5 flex-wrap rounded-2xl bg-muted/8 border border-border/15 p-1.5">
+        <div className="mt-4 sm:mt-6 flex items-center gap-1 sm:gap-1.5 flex-wrap rounded-2xl bg-muted/8 border border-border/15 p-1 sm:p-1.5">
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 hover:shadow-sm cursor-default">

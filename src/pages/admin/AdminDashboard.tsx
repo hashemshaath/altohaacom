@@ -321,7 +321,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 pb-20 md:pb-0">
       <AdminPageHeader
         icon={LayoutDashboard}
         title={isAr ? "لوحة التحكم" : "Admin Dashboard"}
@@ -349,7 +349,7 @@ export default function AdminDashboard() {
       <AdminMobileNavGrid />
 
       {/* Quick Actions & Shortcuts */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2.5 sm:gap-3">
         <div className="lg:col-span-3">
           <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
         </div>
@@ -374,7 +374,7 @@ export default function AdminDashboard() {
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
 
       {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-3">
         {/* Today's Activity */}
         <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
           <CardContent className="p-4">
@@ -461,7 +461,7 @@ export default function AdminDashboard() {
             </div>
             <h3 className="text-sm font-bold">{isAr ? "اختصارات سريعة" : "Quick Workflows"}</h3>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-2.5">
             {workflowShortcuts.map((shortcut) => (
               <Link key={shortcut.label} to={shortcut.link}>
                 <div className="group flex flex-col items-center gap-2 rounded-2xl border border-border/30 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 text-center">
@@ -500,7 +500,7 @@ export default function AdminDashboard() {
       </LazySection>
 
       {/* ── Row: Quick Actions + Recent Actions ── */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
         {/* Quick Actions */}
         <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-3">
