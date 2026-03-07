@@ -927,10 +927,13 @@ export default function CompetitionDetail() {
                   </Section>
                 </div>
               )}
+              </Suspense>
               {/* Comments Section */}
+              <Suspense fallback={null}>
               <Card className="p-5">
                 <EventComments eventType="competition" eventId={competition.id} />
               </Card>
+              </Suspense>
             </div>
 
             {/* ─── Sidebar ─── */}
