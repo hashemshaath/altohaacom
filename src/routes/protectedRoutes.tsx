@@ -76,5 +76,6 @@ export const protectedRoutes = (
     <Route path="/membership/gift" element={<ProtectedRoute><MembershipGift /></ProtectedRoute>} />
     <Route path="/membership/referral" element={<ProtectedRoute><MembershipReferral /></ProtectedRoute>} />
     <Route path="/membership/gifts" element={<ProtectedRoute><MembershipGiftsHistory /></ProtectedRoute>} />
+    <Route path="/for-you" element={<ProtectedRoute><ForYou /></ProtectedRoute>} />
   </>
 );
