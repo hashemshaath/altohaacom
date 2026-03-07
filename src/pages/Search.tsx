@@ -285,7 +285,16 @@ export default function Search() {
         )}
 
         {/* Results area */}
-        <div className="container max-w-3xl py-6">
+        <div className="container max-w-3xl py-6 pb-24 md:pb-6">
+          {/* AI Search Panel */}
+          {filters.query && filters.query.trim().length >= 2 && (
+            <div className="mb-5">
+              <Suspense fallback={null}>
+                <AISearchPanel query={filters.query} />
+              </Suspense>
+            </div>
+          )}
+
           {/* Results count */}
           {filters.query && !isLoading && (
             <p className="text-xs text-muted-foreground mb-5">
