@@ -81,15 +81,16 @@ export function OnboardingChecklist() {
 
   if (dismissed || !user || !profile) return null;
 
-  const completedSteps = STEPS.map((step) => {
-    if (step.id === "post") return postCount > 0;
-    if (step.id === "follow") return followCount >= 3;
-    return step.check(profile);
-  });
-
-  const completed = completedSteps.filter(Boolean).length;
+  const { completedSteps, completed, progress } = useMemo(() => {
+    const steps = STEPS.map((step) => {
+      if (step.id === "post") return postCount > 0;
+      if (step.id === "follow") return followCount >= 3;
+      return step.check(profile);
+    });
+    const done = steps.filter(Boolean).length;
+    return { completedSteps: steps, completed: done, progress: Math.round((done / STEPS.length) * 100) };
+  }, [profile, postCount, followCount]);
   const total = STEPS.length;
-  const progress = Math.round((completed / total) * 100);
 
   if (progress === 100) {
     localStorage.setItem(STORAGE_KEY, "true");

@@ -280,7 +280,7 @@ export default function CompanyCommunications() {
                   {language === "ar" ? "مُرسلة" : "Sent"}
                 </p>
                 <p className="text-xl font-bold">
-                  {messages.filter((m) => m.direction === "outgoing").length}
+                  {sentCount}
                 </p>
               </div>
             </div>
