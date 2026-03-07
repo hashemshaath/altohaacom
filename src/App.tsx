@@ -74,6 +74,7 @@ const queryClient = new QueryClient({
 function AppContent() {
   const ptr = usePullToRefresh();
   useRealtimeNotifications();
+  useOfflineSync();
   const { language } = useLanguageHook();
   useEnhancedSEO(language);
   return (
