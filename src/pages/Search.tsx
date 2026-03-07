@@ -647,11 +647,11 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
             <span className="capitalize">{data.type}</span>
           </div>
           <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
-            {title}
+            <HighlightText text={title} query={sq} />
           </h3>
           {excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
-              {excerpt}
+              <HighlightText text={excerpt} query={sq} />
             </p>
           )}
           {data.published_at && (
