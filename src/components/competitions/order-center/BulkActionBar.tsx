@@ -15,7 +15,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-export function BulkActionBar({
+export const BulkActionBar = memo(function BulkActionBar({
   selectedCount,
   onClearSelection,
   onBulkStatusChange,
