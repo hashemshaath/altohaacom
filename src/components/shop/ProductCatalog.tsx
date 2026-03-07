@@ -147,7 +147,7 @@ export function ProductCatalog({ onAddToCart }: Props) {
             <Card key={p.id} className={cn("group overflow-hidden transition-all hover:shadow-md", view === "list" && "flex flex-row")}>
               <div className={cn("relative overflow-hidden bg-muted", view === "grid" ? "aspect-square" : "w-32 shrink-0")}>
                 {p.image_url ? (
-                  <img src={p.image_url} alt={isAr ? p.name_ar || p.name : p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  <img src={p.image_url} alt={isAr ? p.name_ar || p.name : p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <Package className="h-10 w-10 text-muted-foreground/30" />

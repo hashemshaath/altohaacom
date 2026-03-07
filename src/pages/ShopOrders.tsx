@@ -134,7 +134,7 @@ export default function ShopOrders() {
                         <div key={item.id} className="flex items-center gap-3">
                           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-muted">
                             {imgUrl ? (
-                              <img src={imgUrl} alt="" className="h-full w-full object-cover" />
+                              <img src={imgUrl} alt="" className="h-full w-full object-cover" loading="lazy" />
                             ) : (
                               <div className="flex h-full items-center justify-center">
                                 <ShoppingBag className="h-4 w-4 text-muted-foreground/30" />

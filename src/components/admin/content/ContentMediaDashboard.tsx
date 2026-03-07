@@ -169,7 +169,7 @@ export default function ContentMediaDashboard() {
                 <Card key={f.id} className="overflow-hidden group cursor-pointer">
                   <div className="aspect-square bg-muted flex items-center justify-center">
                     {f.file_url && f.file_type?.startsWith("image") ? (
-                      <img src={f.file_url} alt={f.file_name} className="w-full h-full object-cover" />
+                      <img src={f.file_url} alt={f.file_name} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <FileText className="h-8 w-8 text-muted-foreground/40" />
                     )}

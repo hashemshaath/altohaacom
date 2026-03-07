@@ -140,7 +140,7 @@ export default function RecipeDetail() {
         {/* Hero image */}
         {recipe.image_url && (
           <div className="relative h-64 md:h-80 overflow-hidden">
-            <img src={recipe.image_url} alt={title} className="h-full w-full object-cover" />
+            <img src={recipe.image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
             <div className="absolute bottom-4 start-4">
               <Button variant="ghost" size="sm" className="text-primary-foreground" asChild>

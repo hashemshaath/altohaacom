@@ -301,7 +301,7 @@ export default function Entities() {
                         {/* Logo positioned at bottom-start */}
                         <div className="absolute -bottom-6 start-4">
                           {entity.logo_url ? (
-                            <img src={entity.logo_url} alt={name} className="h-14 w-14 rounded-xl border-2 border-background bg-background object-cover shadow-lg ring-1 ring-border/10" />
+                            <img src={entity.logo_url} alt={name} className="h-14 w-14 rounded-xl border-2 border-background bg-background object-cover shadow-lg ring-1 ring-border/10" loading="lazy" />
                           ) : (
                             <div className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-background bg-background shadow-lg ring-1 ring-border/10">
                               <Building2 className="h-7 w-7 text-primary" />

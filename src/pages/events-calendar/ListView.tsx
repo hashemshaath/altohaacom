@@ -98,7 +98,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           )}
           {event.logo_url && (
             <div className="absolute bottom-1.5 start-1.5 h-8 w-8 rounded-xl bg-background/90 shadow-sm flex items-center justify-center overflow-hidden ring-1 ring-border/20">
-              <img src={event.logo_url} alt="" className="h-6 w-6 object-contain" />
+              <img src={event.logo_url} alt="" className="h-6 w-6 object-contain" loading="lazy" />
             </div>
           )}
           {!countdown.past && (
