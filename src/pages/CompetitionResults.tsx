@@ -119,8 +119,8 @@ export default function CompetitionResults() {
   });
 
   const isLoading = loadingComp || loadingWinners;
-  const filteredWinners = winners?.filter((w) => categoryFilter === "all" ? true : w.category_id === categoryFilter);
-  const rankedWinners = filteredWinners?.map((w, i) => ({ ...w, rank: i + 1 }));
+  const filteredWinners = useMemo(() => winners?.filter((w) => categoryFilter === "all" ? true : w.category_id === categoryFilter), [winners, categoryFilter]);
+  const rankedWinners = useMemo(() => filteredWinners?.map((w, i) => ({ ...w, rank: i + 1 })), [filteredWinners]);
 
   if (isLoading) {
     return (
