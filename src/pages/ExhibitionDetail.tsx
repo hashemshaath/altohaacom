@@ -372,6 +372,13 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-4 pb-20 lg:pb-8 md:py-8">
+        {/* Breadcrumbs */}
+        <div className="mb-3">
+          <Breadcrumbs items={[
+            { label: "Exhibitions", labelAr: "المعارض", href: "/exhibitions" },
+            { label: title },
+          ]} />
+        </div>
         {/* Payment Callback */}
         {hasPaymentCallback && (
           <Suspense fallback={null}>
