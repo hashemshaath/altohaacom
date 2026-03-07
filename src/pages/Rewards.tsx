@@ -24,8 +24,8 @@ export default function Rewards() {
   const { data: redemptions } = useMyRedemptions();
   const redeemReward = useRedeemReward();
 
-  const totalEarned = ledger?.filter((l) => l.points > 0).reduce((sum, l) => sum + l.points, 0) || 0;
-  const totalSpent = ledger?.filter((l) => l.points < 0).reduce((sum, l) => sum + Math.abs(l.points), 0) || 0;
+  const totalEarned = useMemo(() => ledger?.filter((l) => l.points > 0).reduce((sum, l) => sum + l.points, 0) || 0, [ledger]);
+  const totalSpent = useMemo(() => ledger?.filter((l) => l.points < 0).reduce((sum, l) => sum + Math.abs(l.points), 0) || 0, [ledger]);
 
   if (!user) return null;
 
