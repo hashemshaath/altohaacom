@@ -408,7 +408,7 @@ export function useAllMentorApplications() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mentor_applications")
-        .select("*")
+        .select("id, user_id, program_id, expertise, bio, bio_ar, years_experience, status, reviewed_by, reviewed_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch profiles for each application
