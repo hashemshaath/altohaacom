@@ -574,6 +574,7 @@ export default function OrganizerDetail() {
               )}
             </TabsList>
 
+            <div {...swipeHandlers} className="touch-pan-y">
             {/* ═══════ Exhibitions Tab ═══════ */}
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
               <div className="flex items-center justify-between">
