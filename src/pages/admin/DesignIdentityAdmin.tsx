@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -95,16 +96,21 @@ export default function DesignIdentityAdmin() {
   const { data: homepageSections = [] } = useHomepageSections();
   const { getStyle } = useStaggeredReveal(designSections.length + 4, 50);
 
-  const configuredCount = designSections.filter(s => {
-    const val = settings[s.settingsKey];
-    return val && Object.keys(val).length > 0;
-  }).length;
-  const completionPercent = Math.round((configuredCount / designSections.length) * 100);
-  const visibleSections = homepageSections.filter((s: any) => s.is_visible).length;
-  const totalSections = homepageSections.length;
-
-  const auditChecks = getAuditChecks(settings, homepageSections, isAr);
-  const auditScore = Math.round((auditChecks.filter(c => c.pass).length / auditChecks.length) * 100);
+  const { configuredCount, completionPercent, visibleSections, totalSections, auditChecks, auditScore } = useMemo(() => {
+    const cc = designSections.filter(s => {
+      const val = settings[s.settingsKey];
+      return val && Object.keys(val).length > 0;
+    }).length;
+    const checks = getAuditChecks(settings, homepageSections, isAr);
+    return {
+      configuredCount: cc,
+      completionPercent: Math.round((cc / designSections.length) * 100),
+      visibleSections: homepageSections.filter((s: any) => s.is_visible).length,
+      totalSections: homepageSections.length,
+      auditChecks: checks,
+      auditScore: Math.round((checks.filter(c => c.pass).length / checks.length) * 100),
+    };
+  }, [settings, homepageSections, isAr]);
 
   // Export design tokens
   const exportDesignTokens = () => {
