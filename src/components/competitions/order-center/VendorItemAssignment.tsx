@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,7 +30,7 @@ interface Props {
   onToggleSelect?: (id: string) => void;
 }
 
-export function VendorItemAssignment({ grouped, companies, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
+export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped, companies, onAssign, isOrganizer, isAr, language, selectedIds, onToggleSelect }: Props) {
   return (
     <div className="space-y-4">
       {!grouped.length ? (
@@ -114,4 +115,4 @@ export function VendorItemAssignment({ grouped, companies, onAssign, isOrganizer
       )}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ interface Props {
   showCategory?: boolean;
 }
 
-export function OrderSearchFilter({
+export const OrderSearchFilter = memo(function OrderSearchFilter({
   searchQuery,
   onSearchChange,
   statusFilter = "all",
@@ -133,4 +134,4 @@ export function OrderSearchFilter({
       )}
     </div>
   );
-}
+});

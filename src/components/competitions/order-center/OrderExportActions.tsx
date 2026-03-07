@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Download, FileText, Table } from "lucide-react";
@@ -16,7 +17,7 @@ interface Props {
   label?: string;
 }
 
-export function OrderExportActions({ data, filename, columns, label }: Props) {
+export const OrderExportActions = memo(function OrderExportActions({ data, filename, columns, label }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -57,4 +58,4 @@ export function OrderExportActions({ data, filename, columns, label }: Props) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

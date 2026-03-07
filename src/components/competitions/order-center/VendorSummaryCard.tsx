@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Star, Building2 } from "lucide-react";
@@ -14,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function VendorSummaryCard({ vendorSummary, isAr }: Props) {
+export const VendorSummaryCard = memo(function VendorSummaryCard({ vendorSummary, isAr }: Props) {
   if (vendorSummary.length === 0) return null;
 
   return (
@@ -49,4 +50,4 @@ export function VendorSummaryCard({ vendorSummary, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,7 @@ interface Props {
   onAction?: () => void;
 }
 
-export function OrderEmptyState({ type, actionLabel, actionLabelAr, onAction }: Props) {
+export const OrderEmptyState = memo(function OrderEmptyState({ type, actionLabel, actionLabelAr, onAction }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = EMPTY_STATE_CONFIG[type];
@@ -66,4 +67,4 @@ export function OrderEmptyState({ type, actionLabel, actionLabelAr, onAction }: 
       </CardContent>
     </Card>
   );
-}
+});

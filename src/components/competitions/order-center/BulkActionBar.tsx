@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-export function BulkActionBar({
+export const BulkActionBar = memo(function BulkActionBar({
   selectedCount,
   onClearSelection,
   onBulkStatusChange,
@@ -78,4 +78,4 @@ export function BulkActionBar({
       </div>
     </div>
   );
-}
+});
