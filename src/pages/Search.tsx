@@ -94,9 +94,23 @@ export default function Search() {
 
   const handleSearch = (value: string) => {
     updateFilter("query", value);
+    setShowSuggestions(value.length >= 1);
     if (value.trim().length >= 2) {
       addRecentSearch(value.trim());
       setRecentSearches(getRecentSearches());
+    }
+  };
+
+  const handleSuggestionSelect = (term: string) => {
+    updateFilter("query", term);
+    setShowSuggestions(false);
+    addRecentSearch(term);
+    setRecentSearches(getRecentSearches());
+  };
+
+  const handleSaveSearch = () => {
+    if (filters.query.trim()) {
+      addSavedSearch(filters.query.trim());
     }
   };
 
