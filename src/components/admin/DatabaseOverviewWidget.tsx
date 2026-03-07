@@ -74,4 +74,4 @@ export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

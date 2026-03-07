@@ -136,4 +136,4 @@ export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker
       </CardContent>
     </Card>
   );
-}
+});

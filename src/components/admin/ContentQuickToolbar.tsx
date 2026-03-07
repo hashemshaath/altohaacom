@@ -68,4 +68,4 @@ export const ContentQuickToolbar = memo(function ContentQuickToolbar() {
       ))}
     </div>
   );
-}
+});
