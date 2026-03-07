@@ -625,7 +625,7 @@ export default function OrganizerDetail() {
                               <Card className="hover:shadow-md transition-all border-border/40 hover:border-primary/30 rounded-2xl">
                                 <CardContent className="p-3 flex items-center gap-4">
                                   {ex.cover_image_url && (
-                                    <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" />
+                                    <img src={ex.cover_image_url} alt="" className="h-16 w-24 rounded-xl object-cover shrink-0" loading="lazy" />
                                   )}
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
