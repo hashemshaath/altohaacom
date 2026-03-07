@@ -43,7 +43,7 @@ export function SystemHealthBar() {
       };
     },
     staleTime: 1000 * 30,
-    refetchInterval: 1000 * 60,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;
