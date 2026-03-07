@@ -62,6 +62,7 @@ const statusLabelsEn: Record<CompetitionStatus, string> = {
 const SearchQueryContext = createContext("");
 function useSearchQuery() { return useContext(SearchQueryContext); }
 
+export default function Search() {
   const { t, language } = useLanguage();
   const isAr = language === "ar";
   const [searchParams, setSearchParams] = useSearchParams();
