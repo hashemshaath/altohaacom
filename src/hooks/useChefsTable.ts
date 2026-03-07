@@ -258,7 +258,7 @@ export function useChefsTableMedia(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_media" as any)
-        .select("*")
+        .select("id, session_id, evaluation_id, uploaded_by, media_type, media_url, thumbnail_url, title, title_ar, description, description_ar, sort_order, is_featured, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
       if (error) throw error;
