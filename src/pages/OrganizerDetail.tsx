@@ -941,7 +941,7 @@ export default function OrganizerDetail() {
                     <Card key={i} className="border-border/40 rounded-2xl">
                       <CardContent className="p-4 flex items-center gap-3">
                         {sponsor.logo ? (
-                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" />
+                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" loading="lazy" />
                         ) : (
                           <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                             <Award className="h-5 w-5 text-primary" />
