@@ -65,3 +65,6 @@ verify_jwt = false
 
 [functions.smart-import]
 verify_jwt = false
+
+[functions.smart-recommendations]
+verify_jwt = false
