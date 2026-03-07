@@ -84,7 +84,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_wallet_transactions")
-        .select("*")
+        .select("id, user_id, type, amount, balance_after, description, description_ar, reference_id, reference_type, created_by, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data || [];
