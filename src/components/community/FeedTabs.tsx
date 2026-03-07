@@ -11,7 +11,7 @@ interface FeedTabsProps {
   isLoggedIn: boolean;
 }
 
-export function FeedTabs({ active, onChange, isLoggedIn }: FeedTabsProps) {
+export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }: FeedTabsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
