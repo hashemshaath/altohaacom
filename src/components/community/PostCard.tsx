@@ -44,7 +44,7 @@ interface PostCardProps {
   formatDate: (dateStr: string) => string;
 }
 
-export function PostCard({
+export const PostCard = memo(function PostCard({
   post,
   isEditing,
   onEdit,
