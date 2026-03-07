@@ -157,6 +157,9 @@ export default function Search() {
   if (filters.type === "all" || filters.type === "recipes") {
     results.recipes.forEach((r) => allItems.push({ type: "recipe", data: r }));
   }
+  if (filters.type === "all" || filters.type === "exhibitions") {
+    results.exhibitions.forEach((e) => allItems.push({ type: "exhibition", data: e }));
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
