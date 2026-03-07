@@ -242,7 +242,7 @@ export function useMyMentorApplication() {
       if (!user?.id) return null;
       const { data, error } = await supabase
         .from("mentor_applications")
-        .select("*")
+        .select("id, user_id, program_id, expertise, bio, bio_ar, years_experience, status, reviewed_by, reviewed_at, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(1)
