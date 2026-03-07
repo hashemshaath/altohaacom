@@ -32,7 +32,7 @@ export function ExhibitionDiscountCodes({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_discount_codes")
-        .select("*")
+        .select("id, code, discount_type, discount_value, max_uses, used_count, is_active, valid_from, valid_until, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       return data || [];

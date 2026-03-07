@@ -62,7 +62,7 @@ export function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_volunteer_tasks")
-        .select("*")
+        .select("id, title, title_ar, description, status, priority, volunteer_id, due_date, completed_at, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       return data || [];

@@ -28,7 +28,7 @@ export function ExhibitionBoothRequests({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_booth_requests")
-        .select("*")
+        .select("id, company_name, company_name_ar, contact_name, contact_email, contact_phone, status, preferred_size, preferred_category, preferred_hall, special_requirements, admin_notes, booth_id, user_id, created_at, reviewed_at")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
