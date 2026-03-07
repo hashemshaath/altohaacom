@@ -45,7 +45,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("user_id, full_name, avatar_url, username, email, phone, country_code, bio, specialization, account_status, wallet_balance, loyalty_points, created_at, updated_at")
         .eq("user_id", userId!)
         .single();
       if (error) throw error;
