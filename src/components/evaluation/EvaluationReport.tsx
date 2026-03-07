@@ -158,7 +158,7 @@ export function EvaluationReport({ session, evaluations, media, invitationCount,
         <Card className="overflow-hidden border-primary/20">
           {session.cover_image_url && (
             <div className="aspect-[4/1] overflow-hidden">
-              <img src={session.cover_image_url} alt="" className="h-full w-full object-cover" />
+              <img src={session.cover_image_url} alt="" className="h-full w-full object-cover" loading="lazy" />
             </div>
           )}
           <CardContent className="p-6 md:p-8">
