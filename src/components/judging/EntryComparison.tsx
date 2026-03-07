@@ -51,7 +51,7 @@ export function EntryComparison({ competitionId }: EntryComparisonProps) {
     queryFn: async () => {
       const { data } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order, created_at")
         .eq("competition_id", competitionId)
         .order("sort_order");
       return data || [];
