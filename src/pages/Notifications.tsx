@@ -239,7 +239,7 @@ export default function Notifications() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {[
               { label: isAr ? "الإجمالي" : "Total", value: notifications.length, color: "primary", icon: Bell },
               { label: isAr ? "غير مقروء" : "Unread", value: unreadCount, color: "chart-4", icon: Sparkles },
