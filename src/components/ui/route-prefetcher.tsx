@@ -8,7 +8,8 @@ const routeLoaders = [
   () => import("@/pages/Competitions"),
   () => import("@/pages/Exhibitions"),
   () => import("@/pages/Community"),
-  () => import("@/pages/Messages"),
+  () => import("@/pages/Recipes"),
+  () => import("@/pages/News"),
 ];
 
 export function RoutePrefetcher() {

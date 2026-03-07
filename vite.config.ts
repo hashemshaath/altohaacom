@@ -175,6 +175,9 @@ export default defineConfig(({ mode }) => ({
     cssMinify: true,
     sourcemap: false,
     chunkSizeWarningLimit: 800,
+    modulePreload: {
+      polyfill: true,
+    },
     rollupOptions: {
       output: {
         manualChunks: {
@@ -192,6 +195,7 @@ export default defineConfig(({ mode }) => ({
           "vendor-pdf": ["pdfjs-dist"],
           "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
           "vendor-heavy": ["mammoth", "html2canvas"],
+          "vendor-embla": ["embla-carousel-react"],
         },
       },
     },
