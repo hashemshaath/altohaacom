@@ -85,7 +85,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   return (
     <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
       {/* Cover Image */}
-      <div className="relative h-40 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
+      <div className="relative h-32 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
         {/* Ambient blurs */}
         <div className="pointer-events-none absolute -top-24 end-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[120px] animate-pulse" />
         <div className="pointer-events-none absolute -bottom-20 start-1/4 h-56 w-56 rounded-full bg-accent/8 blur-[100px] animate-pulse [animation-delay:2s]" />
