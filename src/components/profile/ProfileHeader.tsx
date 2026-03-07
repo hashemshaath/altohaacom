@@ -201,7 +201,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         </div>
 
         {/* Quick stats bar */}
-        <div className="mt-6 flex items-center gap-1.5 flex-wrap rounded-2xl bg-muted/8 border border-border/15 p-1.5">
+        <div className="mt-4 sm:mt-6 flex items-center gap-1 sm:gap-1.5 flex-wrap rounded-2xl bg-muted/8 border border-border/15 p-1 sm:p-1.5">
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 hover:shadow-sm cursor-default">

@@ -72,7 +72,7 @@ export default function Messages() {
 
       {/* Chat Interface - full height on mobile */}
       <div className="container py-0 md:py-6">
-        <Card className="mx-auto overflow-hidden rounded-none md:rounded-2xl border-0 md:border border-border/30 bg-card/80 backdrop-blur-sm shadow-none md:shadow-2xl md:shadow-primary/5" style={{ height: "calc(100dvh - 120px)", minHeight: 400 }}>
+        <Card className="mx-auto overflow-hidden rounded-none md:rounded-2xl border-0 md:border border-border/30 bg-card/80 backdrop-blur-sm shadow-none md:shadow-2xl md:shadow-primary/5" style={{ height: "calc(100dvh - 110px)", minHeight: 400 }}>
           <div className="flex h-full">
             <ConversationList
               isAr={data.isAr}
