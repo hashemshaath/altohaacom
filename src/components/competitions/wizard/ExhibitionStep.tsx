@@ -289,7 +289,7 @@ export function ExhibitionStep({
                       }`}
                     >
                       {ent.logo_url ? (
-                        <img src={ent.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" />
+                        <img src={ent.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" loading="lazy" />
                       ) : (
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted shrink-0">
                           <Building2 className="h-4 w-4 text-muted-foreground" />
