@@ -26,7 +26,7 @@ function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
   );
 }
 
-export function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps) {
+export const ProfileOverviewTab = memo(function ProfileOverviewTab({ profile, userId }: ProfileOverviewTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
