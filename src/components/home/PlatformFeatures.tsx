@@ -14,7 +14,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 
-export function PlatformFeatures() {
+export const PlatformFeatures = memo(function PlatformFeatures() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
