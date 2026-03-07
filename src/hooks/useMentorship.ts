@@ -223,7 +223,7 @@ export function useMentorshipGoals(matchId: string | undefined) {
       if (!matchId) return [];
       const { data, error } = await supabase
         .from("mentorship_goals")
-        .select("*")
+        .select("id, match_id, title, title_ar, description, target_date, status, progress, completed_at, created_by, created_at")
         .eq("match_id", matchId)
         .order("created_at", { ascending: true });
       if (error) throw error;
