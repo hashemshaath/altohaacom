@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Wallet, Star, ArrowRight, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function WalletBalanceWidget() {
+export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

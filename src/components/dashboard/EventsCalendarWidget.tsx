@@ -32,7 +32,7 @@ interface CalendarEvent {
   urgent: boolean;
 }
 
-export function EventsCalendarWidget() {
+export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";

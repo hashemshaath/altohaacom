@@ -25,7 +25,7 @@ const typeColors: Record<string, string> = {
   info: "text-accent-foreground",
 };
 
-export function NotificationsSummaryWidget() {
+export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidget() {
   const { notifications, unreadCount, markAsRead, loading } = useNotifications();
   const { language } = useLanguage();
   const navigate = useNavigate();

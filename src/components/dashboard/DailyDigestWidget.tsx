@@ -10,7 +10,7 @@ import { Sparkles, Trophy, Users, MessageSquare, Bell, TrendingUp, Calendar } fr
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function DailyDigestWidget() {
+export const DailyDigestWidget = memo(function DailyDigestWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";

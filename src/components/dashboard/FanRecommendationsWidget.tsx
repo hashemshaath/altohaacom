@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function FanRecommendationsWidget() {
+export const FanRecommendationsWidget = memo(function FanRecommendationsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

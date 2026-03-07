@@ -10,7 +10,7 @@ import { Trophy, Calendar, MapPin, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
-export function UpcomingCompetitionsWidget() {
+export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidget() {
   const { language, t } = useLanguage();
   const isAr = language === "ar";
 

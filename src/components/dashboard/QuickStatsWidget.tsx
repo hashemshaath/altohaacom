@@ -33,7 +33,7 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
   );
 }
 
-export function QuickStatsWidget() {
+export const QuickStatsWidget = memo(function QuickStatsWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

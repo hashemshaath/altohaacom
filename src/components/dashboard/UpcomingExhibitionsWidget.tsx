@@ -10,7 +10,7 @@ import { Landmark, Calendar, MapPin, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format, isFuture } from "date-fns";
 
-export function UpcomingExhibitionsWidget() {
+export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
