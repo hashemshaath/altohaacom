@@ -123,7 +123,7 @@ export default function ContentMediaDashboard() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           {a.featured_image_url && (
-                            <img src={a.featured_image_url} alt="" className="h-10 w-14 rounded object-cover" />
+                            <img src={a.featured_image_url} alt="" className="h-10 w-14 rounded object-cover" loading="lazy" />
                           )}
                           <div>
                             <p className="text-sm font-medium line-clamp-1">{isAr && a.title_ar ? a.title_ar : a.title}</p>
