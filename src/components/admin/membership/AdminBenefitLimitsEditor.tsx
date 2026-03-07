@@ -42,7 +42,7 @@ export default function AdminBenefitLimitsEditor() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_benefit_limits")
-        .select("*")
+        .select("id, tier, benefit_code, benefit_name, benefit_name_ar, monthly_limit, is_active, sort_order, category, icon_name")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as LimitRow[];

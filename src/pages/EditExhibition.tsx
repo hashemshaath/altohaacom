@@ -36,7 +36,7 @@ export default function EditExhibition() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibitions")
-        .select("*")
+        .select("id, title, title_ar, slug, description, description_ar, type, status, cover_image_url, start_date, end_date, registration_deadline, venue_name, venue_name_ar, venue_address, venue_address_ar, city, city_ar, country, country_ar, latitude, longitude, organizer_id, max_capacity, ticket_price, currency, is_free, contact_email, contact_phone, website_url, tags, created_at, updated_at")
         .eq("slug", slug!)
         .single();
       if (error) throw error;

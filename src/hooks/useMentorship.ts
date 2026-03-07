@@ -457,7 +457,7 @@ export function useAllMenteeEnrollments() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mentee_enrollments")
-        .select("*")
+        .select("id, program_id, user_id, status, goals_description, experience_level, preferred_language, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       const userIds = (data || []).map(e => e.user_id);

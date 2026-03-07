@@ -55,7 +55,7 @@ export default function EstablishmentReviews({ establishmentId }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("establishment_reviews")
-        .select("*")
+        .select("id, rating, title, content, status, created_at")
         .eq("establishment_id", establishmentId)
         .eq("user_id", user!.id)
         .maybeSingle();
