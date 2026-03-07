@@ -184,7 +184,7 @@ export function useTastingScores(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_scores" as any)
-        .select("*")
+        .select("id, session_id, entry_id, criterion_id, judge_id, score, stars, passed, note, note_ar, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as TastingScore[];
