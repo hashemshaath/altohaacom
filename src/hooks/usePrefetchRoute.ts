@@ -16,6 +16,10 @@ const routeModules: Record<string, () => Promise<any>> = {
   "/masterclasses": () => import("@/pages/Masterclasses"),
   "/exhibitions": () => import("@/pages/Exhibitions"),
   "/dashboard": () => import("@/pages/Dashboard"),
+  "/news": () => import("@/pages/News"),
+  "/organizers": () => import("@/pages/Organizers"),
+  "/rankings": () => import("@/pages/Rankings"),
+  "/events-calendar": () => import("@/pages/EventsCalendar"),
 };
 
 export function usePrefetchRoute() {
