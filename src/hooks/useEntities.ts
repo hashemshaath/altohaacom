@@ -119,7 +119,7 @@ export function useEntityDegrees(entityId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("entity_degrees")
-        .select("*")
+        .select("id, entity_id, user_id, degree_name, degree_name_ar, graduation_date, status, created_at")
         .eq("entity_id", entityId!)
         .order("graduation_date", { ascending: false });
       if (error) throw error;
