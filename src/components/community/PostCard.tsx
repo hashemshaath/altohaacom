@@ -68,7 +68,7 @@ export function PostCard({
     <article
       className={cn(
         "transition-all duration-200 animate-in fade-in-50",
-        !isEditing && "px-3 sm:px-4 py-3 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20",
+        !isEditing && "px-3 sm:px-4 py-2.5 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20 touch-manipulation",
         post.is_pinned && "bg-primary/5 border-s-primary/40"
       )}
     >
