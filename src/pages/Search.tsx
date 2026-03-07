@@ -667,6 +667,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Member Row ──────────────── */
 function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const sq = useSearchQuery();
   const displayName = isAr
     ? data.display_name_ar || data.full_name_ar || data.display_name || data.full_name || data.username || "?"
     : data.display_name || data.full_name || data.display_name_ar || data.full_name_ar || data.username || "?";
