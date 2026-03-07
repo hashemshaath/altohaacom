@@ -337,14 +337,12 @@ export function CommunityFeed() {
     }
   }, [user]);
 
-  const handleDelete = async (postId: string) => {
+  const handleDelete = useCallback(async (postId: string) => {
     if (!user) return;
     const deletedPost = posts.find((p) => p.id === postId);
-    // Optimistic remove
     setPosts((prev) => prev.filter((p) => p.id !== postId));
     const { error } = await supabase.from("posts").delete().eq("id", postId).eq("author_id", user.id);
     if (error) {
-      // Rollback
       if (deletedPost) setPosts((prev) => [...prev, deletedPost].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
       return;
     }
@@ -362,21 +360,21 @@ export function CommunityFeed() {
       }).then(() => {});
     }
     toast({ title: isAr ? "تم حذف المنشور" : "Post deleted" });
-  };
+  }, [user, posts, isAr, toast]);
 
-  const handleEditSaved = (postId: string, newContent: string) => {
+  const handleEditSaved = useCallback((postId: string, newContent: string) => {
     setPosts((prev) =>
       prev.map((p) => p.id === postId ? { ...p, content: newContent, edited_at: new Date().toISOString() } : p)
     );
-  };
+  }, []);
 
-  const handleLoadNewPosts = () => {
+  const handleLoadNewPosts = useCallback(() => {
     setNewPostsCount(0);
     fetchPosts(0, false);
     feedTopRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, [fetchPosts]);
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = useCallback((dateStr: string) => {
     const date = new Date(dateStr);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -388,7 +386,7 @@ export function CommunityFeed() {
     if (diffHours < 24) return toEnglishDigits(`${diffHours}`) + (isAr ? "س" : "h");
     if (diffDays < 7) return toEnglishDigits(`${diffDays}`) + (isAr ? "ي" : "d");
     return toEnglishDigits(date.toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }));
-  };
+  }, [isAr]);
 
   if (loading) {
     return (
