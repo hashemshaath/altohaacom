@@ -39,7 +39,7 @@ interface Props {
   size?: "sm" | "xs";
 }
 
-export function NotificationPriorityBadge({ priority, isAr, showLabel = false, size = "xs" }: Props) {
+export const NotificationPriorityBadge = memo(function NotificationPriorityBadge({ priority, isAr, showLabel = false, size = "xs" }: Props) {
   const p = (priority as Priority) || "normal";
   if (p === "normal" && !showLabel) return null;
 
