@@ -1,6 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, BookOpen, MessageSquare, Image, TrendingUp, Eye, Star, Clock } from "lucide-react";
@@ -54,7 +55,7 @@ export function ContentLiveStatsWidget() {
 
       return { totalArticles, publishedArticles, totalViews, totalPosts, totalRecipes, publishedRecipes, totalSaves, totalReplies, trendData, typeData };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

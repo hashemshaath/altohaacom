@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Badge } from "@/components/ui/badge";
 import { Activity, UserPlus, MessageSquare, AlertTriangle, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -42,7 +43,7 @@ export function SystemHealthBar() {
       };
     },
     staleTime: 1000 * 30,
-    refetchInterval: 1000 * 60,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

@@ -1,6 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, FileText, Send, CheckCircle, Clock, Users, LayoutTemplate, TrendingUp } from "lucide-react";
@@ -68,7 +69,7 @@ export function CertificatesLiveWidget() {
         issuanceRate: totalCerts > 0 ? Math.round((issued / totalCerts) * 100) : 0,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

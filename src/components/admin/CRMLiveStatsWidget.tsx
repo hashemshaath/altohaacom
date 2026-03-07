@@ -1,6 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Target, Users, TrendingUp, UserCheck, Ticket, MessageSquare, Clock, CheckCircle2 } from "lucide-react";
@@ -78,7 +79,7 @@ export function CRMLiveStatsWidget() {
         conversionRate: leads.length > 0 ? Math.round((leads.filter(l => l.status === "converted" || l.status === "won").length / leads.length) * 100) : 0,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;
