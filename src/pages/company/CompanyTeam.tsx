@@ -53,7 +53,7 @@ export default function CompanyTeam() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_contacts")
-        .select("*")
+        .select("id, company_id, user_id, name, name_ar, title, title_ar, email, phone, mobile, whatsapp, department, role, is_primary, can_login, avatar_url, invitation_status, invitation_token, invited_at, invited_by, accepted_at, created_at, updated_at")
         .eq("company_id", companyId)
         .order("is_primary", { ascending: false });
       if (error) throw error;
@@ -69,7 +69,7 @@ export default function CompanyTeam() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_employee_invites")
-        .select("*")
+        .select("id, company_id, email, role, department, title, title_ar, message, message_ar, status, token, invited_by, expires_at, accepted_at, accepted_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;

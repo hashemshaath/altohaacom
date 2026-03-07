@@ -133,7 +133,7 @@ export default function CRMDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("support_tickets")
-        .select("*")
+        .select("id, ticket_number, subject, subject_ar, category, priority, status, user_id, assigned_to, created_at, updated_at")
         .order("created_at", { ascending: false })
         .limit(6);
       return data || [];
@@ -159,7 +159,7 @@ export default function CRMDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("chat_sessions")
-        .select("*")
+        .select("id, user_id, agent_id, status, subject, subject_ar, started_at, ended_at, rating, feedback, created_at")
         .in("status", ["waiting", "active"])
         .order("created_at", { ascending: false })
         .limit(5);
@@ -185,7 +185,7 @@ export default function CRMDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("leads")
-        .select("*")
+        .select("id, contact_name, email, phone, company_name, type, source, status, message, notes, assigned_to, metadata, created_at, updated_at")
         .order("created_at", { ascending: false })
         .limit(5);
       return data || [];

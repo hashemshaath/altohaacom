@@ -42,7 +42,7 @@ export function CompanyClassificationsPanel({ companyId }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("company_classifications")
-        .select("*")
+        .select("id, name, name_ar, description, color, icon, is_active, is_system, sort_order, created_by, created_at")
         .eq("is_active", true)
         .order("sort_order");
       if (error) throw error;

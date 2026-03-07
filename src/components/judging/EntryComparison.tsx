@@ -51,7 +51,7 @@ export function EntryComparison({ competitionId }: EntryComparisonProps) {
     queryFn: async () => {
       const { data } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order, created_at")
         .eq("competition_id", competitionId)
         .order("sort_order");
       return data || [];
@@ -66,7 +66,7 @@ export function EntryComparison({ competitionId }: EntryComparisonProps) {
 
       const { data: scores } = await supabase
         .from("competition_scores")
-        .select("*")
+        .select("id, criteria_id, registration_id, judge_id, score, notes, detailed_feedback, flag_status, flag_reason, scored_at")
         .in("registration_id", [leftId, rightId]);
 
       if (!scores) return null;
