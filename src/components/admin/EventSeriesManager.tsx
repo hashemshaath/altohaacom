@@ -321,7 +321,7 @@ export function EventSeriesManager({ onCreateEdition }: Props) {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {s.logo_url ? (
-                            <img src={s.logo_url} alt="" className="h-8 w-8 rounded object-contain bg-muted p-0.5" />
+                            <img src={s.logo_url} alt="" className="h-8 w-8 rounded object-contain bg-muted p-0.5" loading="lazy" />
                           ) : (
                             <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 shrink-0">
                               <Icon className="h-4 w-4 text-primary" />
