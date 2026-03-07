@@ -188,7 +188,10 @@ export default function CompanyCommunications() {
     });
   };
 
-  const unreadCount = messages.filter((m) => m.direction === "incoming" && m.status === "unread").length;
+  const { unreadCount, sentCount } = useMemo(() => ({
+    unreadCount: messages.filter((m) => m.direction === "incoming" && m.status === "unread").length,
+    sentCount: messages.filter((m) => m.direction === "outgoing").length,
+  }), [messages]);
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
