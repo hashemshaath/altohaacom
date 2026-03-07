@@ -25,7 +25,7 @@ export default function Rankings() {
     queryFn: async () => {
       let query = supabase
         .from("chef_rankings")
-        .select("*")
+        .select("id, user_id, rank, previous_rank, score, country_code, specialty, ranking_period, competition_count, gold_medals, silver_medals, bronze_medals")
         .eq("ranking_period", period)
         .order("rank", { ascending: true })
         .limit(100);
