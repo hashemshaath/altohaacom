@@ -28,6 +28,7 @@ import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from 
 import { ar } from "date-fns/locale";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 interface ExhibitionRow {
