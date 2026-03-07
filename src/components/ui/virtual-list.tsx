@@ -84,3 +84,41 @@ export function VirtualList<T>({
     </div>
   );
 }
+
+/**
+ * Hook for progressive loading of large datasets.
+ * Shows initial batch immediately, loads more on scroll.
+ */
+export function useProgressiveLoad<T>(items: T[], initialCount = 20, batchSize = 15) {
+  const [count, setCount] = useState(initialCount);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setCount(initialCount);
+  }, [items.length, initialCount]);
+
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el || count >= items.length) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCount((prev) => Math.min(prev + batchSize, items.length));
+        }
+      },
+      { rootMargin: "300px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [count, items.length, batchSize]);
+
+  return {
+    visibleItems: items.slice(0, count),
+    hasMore: count < items.length,
+    loadMoreRef,
+    total: items.length,
+    loaded: Math.min(count, items.length),
+  };
+}
