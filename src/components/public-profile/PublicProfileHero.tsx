@@ -85,7 +85,7 @@ export function PublicProfileHero({
   return (
     <section className="relative overflow-hidden">
       {/* Cover */}
-      <div className="h-44 sm:h-56 md:h-72 relative overflow-hidden">
+      <div className="h-36 sm:h-56 md:h-72 relative overflow-hidden">
         {profile.cover_image_url ? (
           <img src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105" />
         ) : (
