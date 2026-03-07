@@ -22,6 +22,8 @@ import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { EventComments } from "@/components/fan/EventComments";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { useSwipeTabs } from "@/hooks/useSwipeTabs";
 
 // Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
@@ -64,6 +66,7 @@ const ExhibitionInteractiveBoothManager = lazy(() => import("@/components/exhibi
 const ExhibitionSponsorshipHub = lazy(() => import("@/components/exhibitions/detail/ExhibitionSponsorshipHub"));
 const ExhibitionAttendeeSchedule = lazy(() => import("@/components/exhibitions/detail/ExhibitionAttendeeSchedule"));
 const OrganizerAdvancedReports = lazy(() => import("@/components/exhibitions/detail/OrganizerAdvancedReports"));
+const RelatedExhibitions = lazy(() => import("@/components/exhibitions/detail/RelatedExhibitions").then(m => ({ default: m.RelatedExhibitions })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -369,6 +372,13 @@ export default function ExhibitionDetail() {
       />
 
       <main className="container flex-1 py-4 pb-20 lg:pb-8 md:py-8">
+        {/* Breadcrumbs */}
+        <div className="mb-3">
+          <Breadcrumbs items={[
+            { label: "Exhibitions", labelAr: "المعارض", href: "/exhibitions" },
+            { label: title },
+          ]} />
+        </div>
         {/* Payment Callback */}
         {hasPaymentCallback && (
           <Suspense fallback={null}>
@@ -617,6 +627,17 @@ export default function ExhibitionDetail() {
             />
           </Suspense>
         </div>
+
+        {/* Related Exhibitions */}
+        <Suspense fallback={null}>
+          <RelatedExhibitions
+            exhibitionId={exhibition.id}
+            country={exhibition.country}
+            type={exhibition.type}
+            seriesId={(exhibition as any).series_id}
+            isAr={isAr}
+          />
+        </Suspense>
       </main>
 
       {/* Sticky mobile action bar */}

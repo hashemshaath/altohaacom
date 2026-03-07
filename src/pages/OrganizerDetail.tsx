@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { OrganizerAnalyticsTab } from "@/components/organizers/OrganizerAnalyticsTab";
 import { OrganizerRatingSummary } from "@/components/organizers/OrganizerRatingSummary";
 import { SEOHead } from "@/components/SEOHead";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -291,6 +292,13 @@ export default function OrganizerDetail() {
       <Header />
 
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container max-w-6xl pt-3">
+          <Breadcrumbs items={[
+            { label: "Organizers", labelAr: "المنظمون", href: "/organizers" },
+            { label: orgName },
+          ]} />
+        </div>
         {/* ═══════ Hero Section ═══════ */}
         <div className="relative">
           {coverImage ? (
