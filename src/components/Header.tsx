@@ -70,11 +70,12 @@ export function Header() {
     <header
       role="banner"
       className={cn(
-        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 will-change-[background-color,box-shadow]",
+        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 will-change-[background-color,box-shadow,transform]",
         headerCfg.stickyHeader === false && "relative",
         scrolled
           ? "bg-card/80 backdrop-blur-xl border-border/50 shadow-lg shadow-foreground/[0.03]"
-          : "bg-card/60 backdrop-blur-md border-border/20 shadow-none"
+          : "bg-card/60 backdrop-blur-md border-border/20 shadow-none",
+        !headerVisible && "md:translate-y-0 -translate-y-full"
       )}
     >
       <nav className="container flex h-14 items-center gap-2 sm:gap-2.5" aria-label="Main navigation">
