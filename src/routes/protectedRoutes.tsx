@@ -38,6 +38,7 @@ const MembershipGift = lazy(() => import("@/pages/MembershipGift"));
 const MembershipReferral = lazy(() => import("@/pages/MembershipReferral"));
 const MembershipGiftsHistory = lazy(() => import("@/pages/MembershipGiftsHistory"));
 const OrganizerPortal = lazy(() => import("@/pages/OrganizerPortal"));
+const ForYou = lazy(() => import("@/pages/ForYou"));
 
 export const protectedRoutes = (
   <>
@@ -75,5 +76,6 @@ export const protectedRoutes = (
     <Route path="/membership/gift" element={<ProtectedRoute><MembershipGift /></ProtectedRoute>} />
     <Route path="/membership/referral" element={<ProtectedRoute><MembershipReferral /></ProtectedRoute>} />
     <Route path="/membership/gifts" element={<ProtectedRoute><MembershipGiftsHistory /></ProtectedRoute>} />
+    <Route path="/for-you" element={<ProtectedRoute><ForYou /></ProtectedRoute>} />
   </>
 );

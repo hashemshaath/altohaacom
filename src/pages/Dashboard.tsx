@@ -58,6 +58,7 @@ const ProfileSummaryCard = lazy(() => import("@/components/dashboard/ProfileSumm
 const RecentOrdersWidget = lazy(() => import("@/components/dashboard/RecentOrdersWidget").then(m => ({ default: m.RecentOrdersWidget })));
 const RecentChatsWidget = lazy(() => import("@/components/dashboard/RecentChatsWidget").then(m => ({ default: m.RecentChatsWidget })));
 const AchievementsChallengesWidget = lazy(() => import("@/components/dashboard/AchievementsChallengesWidget").then(m => ({ default: m.AchievementsChallengesWidget })));
+const SmartRecommendationsWidget = lazy(() => import("@/components/community/SmartRecommendations").then(m => ({ default: m.SmartRecommendations })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -105,6 +106,7 @@ export default function Dashboard() {
     : (isAr ? "إليك ملخص نشاطك ومسابقاتك القادمة" : "Your culinary milestones await below.");
 
   const sections = isFan ? [
+    { icon: Sparkles, title: isAr ? "مقترح لك" : "For You", href: "/for-you", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
     { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
     { icon: Trophy, title: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
     { icon: Landmark, title: isAr ? "المعارض" : "Exhibits", href: "/exhibitions", color: "text-chart-5", bg: "bg-chart-5/10", ring: "ring-chart-5/15", glow: "group-hover:shadow-chart-5/10" },
@@ -113,6 +115,7 @@ export default function Dashboard() {
     { icon: ShoppingBag, title: isAr ? "المتجر" : "Shop", href: "/shop", color: "text-primary", bg: "bg-primary/8", ring: "ring-primary/10", glow: "group-hover:shadow-primary/10" },
     { icon: MessageSquare, title: isAr ? "الرسائل" : "Messages", href: "/messages", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
   ] : [
+    { icon: Sparkles, title: isAr ? "مقترح لك" : "For You", href: "/for-you", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
     { icon: Trophy, title: isAr ? "المسابقات" : "Compete", href: "/competitions", color: "text-primary", bg: "bg-primary/10", ring: "ring-primary/15", glow: "group-hover:shadow-primary/10" },
     { icon: Users, title: isAr ? "المجتمع" : "Community", href: "/community", color: "text-chart-2", bg: "bg-chart-2/10", ring: "ring-chart-2/15", glow: "group-hover:shadow-chart-2/10" },
     { icon: GraduationCap, title: isAr ? "الدورات" : "Courses", href: "/masterclasses", color: "text-chart-3", bg: "bg-chart-3/10", ring: "ring-chart-3/15", glow: "group-hover:shadow-chart-3/10" },
@@ -188,6 +191,8 @@ export default function Dashboard() {
           {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
           {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
 
+          {/* AI Recommendations */}
+          {user && <W><SmartRecommendationsWidget /></W>}
 
           {/* Pro extras */}
           {user && !isFan && <W><ActivityHeatmapWidget /></W>}
