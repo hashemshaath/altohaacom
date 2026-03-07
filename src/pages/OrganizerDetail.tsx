@@ -29,6 +29,7 @@ import { ar } from "date-fns/locale";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSwipeTabs } from "@/hooks/useSwipeTabs";
 import { toast } from "sonner";
 
 interface ExhibitionRow {
@@ -44,6 +45,7 @@ export default function OrganizerDetail() {
   const [copied, setCopied] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [activeTab, setActiveTab] = useState("exhibitions");
   const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
@@ -224,6 +226,14 @@ export default function OrganizerDetail() {
       orgDescription, orgGallery, orgKeyContacts,
     };
   }, [exhibitions, isAr, org, decodedName, useOrgRecord, orgRecord]);
+
+  const availableTabs = useMemo(() => [
+    "exhibitions", "profile", "stats",
+    ...(computed?.allSponsors?.length ? ["partners"] : []),
+    ...(articles.length > 0 ? ["news"] : []),
+  ], [computed?.allSponsors?.length, articles.length]);
+
+  const { swipeHandlers } = useSwipeTabs({ tabs: availableTabs, currentTab: activeTab, onTabChange: setActiveTab });
 
   if (isLoading) {
     return (
@@ -533,7 +543,7 @@ export default function OrganizerDetail() {
           {/* Rating Summary */}
           <OrganizerRatingSummary exhibitionIds={exhibitions.map((e: ExhibitionRow) => e.id)} isAr={isAr} />
 
-          <Tabs defaultValue="exhibitions" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
               <TabsTrigger value="exhibitions" className="gap-1.5">
                 <Landmark className="h-3.5 w-3.5" />
@@ -564,6 +574,7 @@ export default function OrganizerDetail() {
               )}
             </TabsList>
 
+            <div {...swipeHandlers} className="touch-pan-y">
             {/* ═══════ Exhibitions Tab ═══════ */}
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
               <div className="flex items-center justify-between">
@@ -974,6 +985,7 @@ export default function OrganizerDetail() {
                 </div>
               </TabsContent>
             )}
+            </div>
           </Tabs>
         </div>
       </main>

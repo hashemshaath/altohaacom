@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { useScrolled } from "@/hooks/useScrolled";
+import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
@@ -55,6 +56,7 @@ export function Header() {
   const isJudge = userRoles.includes("judge");
   const isAr = language === "ar";
   const scrolled = useScrolled();
+  const { visible: headerVisible } = useScrollDirection(12);
   const siteSettings = useSiteSettingsContext();
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
@@ -68,11 +70,12 @@ export function Header() {
     <header
       role="banner"
       className={cn(
-        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 will-change-[background-color,box-shadow]",
+        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 will-change-[background-color,box-shadow,transform]",
         headerCfg.stickyHeader === false && "relative",
         scrolled
           ? "bg-card/80 backdrop-blur-xl border-border/50 shadow-lg shadow-foreground/[0.03]"
-          : "bg-card/60 backdrop-blur-md border-border/20 shadow-none"
+          : "bg-card/60 backdrop-blur-md border-border/20 shadow-none",
+        !headerVisible && "md:translate-y-0 -translate-y-full"
       )}
     >
       <nav className="container flex h-14 items-center gap-2 sm:gap-2.5" aria-label="Main navigation">
