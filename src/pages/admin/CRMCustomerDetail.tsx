@@ -70,7 +70,7 @@ export default function CRMCustomerDetail() {
     queryFn: async (): Promise<any[]> => {
       const result = await (supabase as any)
         .from("shop_orders")
-        .select("*")
+        .select("id, order_number, user_id, status, total_amount, currency, payment_status, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return result.data || [];
