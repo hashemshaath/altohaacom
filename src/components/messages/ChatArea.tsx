@@ -367,6 +367,11 @@ export function ChatArea({
                         <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
+                        {isMine && (
+                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-destructive/10" title={isAr ? "حذف" : "Delete"} onClick={() => handleDeleteMessage(msg.id)}>
+                            <Trash2 className="h-3 w-3 text-destructive/70" />
+                          </Button>
+                        )}
                       </div>
 
                       <div className={`rounded-2xl px-4 py-3 transition-all duration-200 hover:shadow-md ${
