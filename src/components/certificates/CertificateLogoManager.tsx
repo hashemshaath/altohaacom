@@ -97,7 +97,7 @@ export function CertificateLogoManager({ logos, onChange }: CertificateLogoManag
                   className="relative group border rounded p-1.5 hover:border-primary transition-colors cursor-pointer"
                   title={language === "ar" && lib.name_ar ? lib.name_ar : lib.name}
                 >
-                  <img src={lib.logo_url} alt={lib.name} className="w-full h-10 object-contain" />
+                  <img src={lib.logo_url} alt={lib.name} className="w-full h-10 object-contain" loading="lazy" />
                   <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Select onValueChange={pos => addFromLibrary(lib, pos as LogoItem["position"])}>
                       <SelectTrigger className="h-6 text-[9px] w-full border-0 bg-transparent">
