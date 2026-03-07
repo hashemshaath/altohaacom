@@ -38,6 +38,8 @@ import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
 import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
 import type { Database } from "@/integrations/supabase/types";
 
+const AISearchPanel = lazy(() => import("@/components/search/AISearchPanel").then(m => ({ default: m.AISearchPanel })));
+
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 const statusLabelsEn: Record<CompetitionStatus, string> = {
