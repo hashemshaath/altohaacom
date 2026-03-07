@@ -106,7 +106,7 @@ export function useMentorshipPrograms(statusFilter?: string) {
     queryFn: async () => {
       let q = supabase
         .from("mentorship_programs")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, category, duration_weeks, max_matches, status, requirements, requirements_ar, cover_image_url, country_code, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (statusFilter) q = q.eq("status", statusFilter);
       const { data, error } = await q;
