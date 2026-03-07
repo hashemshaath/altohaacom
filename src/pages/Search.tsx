@@ -698,7 +698,7 @@ function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
           </div>
           <div className="flex items-center gap-1.5">
             <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
-              {displayName}
+              <HighlightText text={displayName} query={sq} />
             </h3>
             {data.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
           </div>
