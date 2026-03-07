@@ -37,7 +37,7 @@ export function ChefsTableChefRegistrations() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chef_evaluation_registrations" as any)
-        .select("*")
+        .select("id, chef_id, session_id, specialties, availability_start, availability_end, preferred_city, experience_years, motivation, status, matched_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       

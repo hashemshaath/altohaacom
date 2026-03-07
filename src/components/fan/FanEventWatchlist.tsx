@@ -27,7 +27,7 @@ export function FanEventWatchlist() {
       if (!user) return [];
       const { data } = await supabase
         .from("event_watchlist")
-        .select("*")
+        .select("id, user_id, event_id, event_type, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (!data || data.length === 0) return [];

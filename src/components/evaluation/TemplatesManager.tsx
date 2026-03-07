@@ -66,7 +66,7 @@ function useEvaluationTemplates(domainId?: string) {
     queryFn: async () => {
       let query = supabase
         .from("evaluation_templates" as any)
-        .select("*")
+        .select("id, domain_id, name, name_ar, description, description_ar, template_type, product_category, criteria_snapshot, is_default, is_active, created_at")
         .order("created_at", { ascending: false });
       if (domainId) query = query.eq("domain_id", domainId);
       const { data, error } = await query;

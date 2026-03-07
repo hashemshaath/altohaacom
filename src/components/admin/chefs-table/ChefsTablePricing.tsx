@@ -32,7 +32,7 @@ function useEvaluationPricing() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_pricing" as any)
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, base_fee, per_chef_fee, currency, product_category, is_active")
         .order("created_at", { ascending: true });
       if (error) throw error;
       return (data || []) as unknown as PricingPlan[];

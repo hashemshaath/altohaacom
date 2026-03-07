@@ -61,7 +61,7 @@ function useEvaluationInvitations() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_invitations" as any)
-        .select("*")
+        .select("id, session_id, domain_slug, chef_id, invited_by, status, product_name, product_name_ar, product_description, evaluation_date, evaluation_location, expected_duration_minutes, offered_amount, currency, response_deadline, decline_reason, notes, responded_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as Invitation[];
