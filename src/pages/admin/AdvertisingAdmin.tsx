@@ -523,7 +523,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                     <Card key={cr.id} className="overflow-hidden">
                       {cr.image_url && (
                         <div className="aspect-video bg-muted">
-                          <img src={cr.image_url} alt={cr.title || "Ad"} className="h-full w-full object-cover" />
+                          <img src={cr.image_url} alt={cr.title || "Ad"} className="h-full w-full object-cover" loading="lazy" />
                         </div>
                       )}
                       <CardContent className="p-4">

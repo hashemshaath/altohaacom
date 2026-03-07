@@ -92,7 +92,7 @@ export function AdPopup() {
         </Button>
         {creative.image_url && (
           <div className="cursor-pointer" onClick={handleClick}>
-            <img src={creative.image_url} alt={creative.title || "Ad"} className="w-full object-cover max-h-[300px]" />
+            <img src={creative.image_url} alt={creative.title || "Ad"} className="w-full object-cover max-h-[300px]" loading="lazy" />
           </div>
         )}
         <div className="p-5">

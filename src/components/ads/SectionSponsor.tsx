@@ -42,7 +42,7 @@ export function SectionSponsor({ sectionType, sectionId }: SectionSponsorProps) 
     <div className="flex items-center gap-2 text-xs text-muted-foreground">
       <span>{isAr ? sponsorship.label_ar : sponsorship.label}</span>
       {company?.logo_url && (
-        <img src={company.logo_url} alt={isAr ? company.name_ar : company.name} className="h-5 w-auto" />
+        <img src={company.logo_url} alt={isAr ? company.name_ar : company.name} className="h-5 w-auto" loading="lazy" />
       )}
       <span className="font-medium">{isAr ? company?.name_ar : company?.name}</span>
     </div>
