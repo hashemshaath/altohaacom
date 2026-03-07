@@ -189,6 +189,8 @@ export default function Dashboard() {
           {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
           {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
 
+          {/* AI Recommendations */}
+          {user && <W><SmartRecommendationsWidget /></W>}
 
           {/* Pro extras */}
           {user && !isFan && <W><ActivityHeatmapWidget /></W>}
