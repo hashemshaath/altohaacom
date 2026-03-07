@@ -105,7 +105,7 @@ export default function AdvertiseWithUs() {
       if (!company?.id) return [];
       const { data } = await supabase
         .from("ad_requests")
-        .select("*")
+        .select("id, company_id, title, title_ar, description, description_ar, request_type, status, budget, currency, desired_start_date, desired_end_date, desired_placements, materials_urls, package_id, admin_notes, reviewed_by, reviewed_at, created_by, created_at, updated_at")
         .eq("company_id", company.id)
         .order("created_at", { ascending: false });
       return data || [];

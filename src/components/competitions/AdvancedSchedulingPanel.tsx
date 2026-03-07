@@ -61,7 +61,7 @@ export function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }
     queryFn: async () => {
       const { data } = await supabase
         .from("kitchen_stations")
-        .select("*")
+        .select("id, competition_id, station_number, station_name, station_name_ar, status, equipment_list, assigned_registration_id, assigned_slot_id, created_at")
         .eq("competition_id", competitionId)
         .order("station_number", { ascending: true });
       return data || [];

@@ -64,7 +64,7 @@ export default function CompanyBranches() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_branches")
-        .select("*")
+        .select("id, company_id, name, name_ar, address, address_ar, city, country, postal_code, phone, email, is_headquarters, is_active, manager_name, manager_email, manager_phone, working_hours, created_at")
         .eq("company_id", companyId)
         .order("is_headquarters", { ascending: false });
       if (error) throw error;

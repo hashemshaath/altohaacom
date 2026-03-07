@@ -46,7 +46,7 @@ export function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_schedule_items")
-        .select("*")
+        .select("id, exhibition_id, title, title_ar, description, description_ar, speaker_name, speaker_name_ar, speaker_image_url, location, location_ar, category, start_time, end_time, max_attendees, is_featured, sort_order, created_by, created_at, updated_at")
         .eq("exhibition_id", exhibitionId)
         .order("start_time", { ascending: true });
       if (error) throw error;

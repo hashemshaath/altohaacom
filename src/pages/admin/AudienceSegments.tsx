@@ -107,7 +107,7 @@ export default function AudienceSegments() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("audience_segments")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, filters, estimated_reach, is_active, last_used_at, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Segment[];
