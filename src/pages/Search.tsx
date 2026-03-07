@@ -175,23 +175,44 @@ export default function Search() {
               <div className="relative flex-1">
                 <SearchIcon className="absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground/60" />
                 <Input
-                  placeholder={isAr ? "ابحث عن مسابقات، طهاة، مقالات..." : "Search competitions, chefs, articles..."}
+                  placeholder={isAr ? "ابحث عن مسابقات، طهاة، مقالات، معارض..." : "Search competitions, chefs, articles, exhibitions..."}
                   value={filters.query}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="ps-11 h-11 rounded-full border-border/80 bg-muted/30 text-base shadow-sm focus-visible:bg-background focus-visible:shadow-md"
+                  onFocus={() => setShowSuggestions(true)}
+                  className="ps-11 pe-20 h-11 rounded-full border-border/80 bg-muted/30 text-base shadow-sm focus-visible:bg-background focus-visible:shadow-md"
                   autoFocus
                 />
-                {filters.query && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    type="button"
-                    className="absolute end-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full"
-                    onClick={() => handleSearch("")}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
+                <div className="absolute end-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  {filters.query && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        type="button"
+                        className="h-7 w-7 rounded-full"
+                        onClick={handleSaveSearch}
+                        title={isAr ? "حفظ البحث" : "Save search"}
+                      >
+                        <Bookmark className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        type="button"
+                        className="h-7 w-7 rounded-full"
+                        onClick={() => handleSearch("")}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+                <SearchSuggestions
+                  query={filters.query}
+                  isOpen={showSuggestions}
+                  onSelect={handleSuggestionSelect}
+                  onClose={() => setShowSuggestions(false)}
+                />
               </div>
               <Button
                 variant="outline"
