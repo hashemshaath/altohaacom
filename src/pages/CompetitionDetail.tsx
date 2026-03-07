@@ -98,23 +98,23 @@ function Section({
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className={`overflow-hidden rounded-2xl border transition-all duration-300 ${accent ? "border-primary/15 bg-primary/[0.02]" : "border-border/40 bg-card"} ${open ? "shadow-sm" : "shadow-none"}`}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-start hover:bg-muted/20 transition-colors group">
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
               <span className="text-primary">{icon}</span>
             </div>
             <div>
-              <h3 className="font-semibold text-[15px] tracking-tight">{title}</h3>
+              <h3 className="font-semibold text-sm sm:text-[15px] tracking-tight">{title}</h3>
               {badge && <div className="mt-0.5">{badge}</div>}
             </div>
           </div>
           <ChevronDown className={`h-4 w-4 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-          <div className="mx-5 mb-0.5">
+          <div className="mx-4 sm:mx-5 mb-0.5">
             <Separator className="opacity-30" />
           </div>
-          <div className="p-5 sm:p-6">{children}</div>
+          <div className="p-4 sm:p-6">{children}</div>
         </CollapsibleContent>
       </div>
     </Collapsible>
