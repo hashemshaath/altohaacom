@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -75,11 +75,11 @@ export function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMes
     },
   });
 
-  const filtered = contacts.filter((c: any) => {
+  const filtered = useMemo(() => contacts.filter((c: any) => {
     if (!search) return true;
     const name = (c.full_name || c.username || "").toLowerCase();
     return name.includes(search.toLowerCase());
-  });
+  }), [contacts, search]);
 
   return (
     <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) { setSearch(""); setSent(new Set()); } }}>
