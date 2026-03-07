@@ -111,12 +111,12 @@ export function SupplierAnalyticsDashboard() {
   }, [products, reviews, inquiries, profileViews, wishlists]);
 
   const statCards = [
-    { icon: Eye, label: isAr ? "المشاهدات" : "Views", value: totalViews, sub: isAr ? `${recentViews} آخر 30 يوم` : `${recentViews} last 30 days`, color: "text-primary" },
-    { icon: Package, label: isAr ? "المنتجات" : "Products", value: totalProducts, sub: isAr ? `${activeProducts} نشط` : `${activeProducts} active`, color: "text-chart-2" },
-    { icon: Star, label: isAr ? "التقييم" : "Rating", value: avgRating, sub: isAr ? `${totalReviews} تقييم` : `${totalReviews} reviews`, color: "text-chart-4" },
-    { icon: Heart, label: isAr ? "المفضلة" : "Saved", value: totalWishlists, sub: isAr ? "مرة حفظ" : "times saved", color: "text-destructive" },
-    { icon: MessageSquare, label: isAr ? "الاستفسارات" : "Inquiries", value: totalInquiries, sub: isAr ? `${unreadInquiries} غير مقروء` : `${unreadInquiries} unread`, color: "text-chart-5" },
-    { icon: TrendingUp, label: isAr ? "آخر 30 يوم" : "Last 30 Days", value: recentReviews + recentInquiries + recentViews, sub: isAr ? `${recentViews} مشاهدة · ${recentReviews} تقييم · ${recentInquiries} استفسار` : `${recentViews} views · ${recentReviews} reviews · ${recentInquiries} inquiries`, color: "text-chart-1" },
+    { icon: Eye, label: isAr ? "المشاهدات" : "Views", value: stats.totalViews, sub: isAr ? `${stats.recentViews} آخر 30 يوم` : `${stats.recentViews} last 30 days`, color: "text-primary" },
+    { icon: Package, label: isAr ? "المنتجات" : "Products", value: stats.totalProducts, sub: isAr ? `${stats.activeProducts} نشط` : `${stats.activeProducts} active`, color: "text-chart-2" },
+    { icon: Star, label: isAr ? "التقييم" : "Rating", value: stats.avgRating, sub: isAr ? `${stats.totalReviews} تقييم` : `${stats.totalReviews} reviews`, color: "text-chart-4" },
+    { icon: Heart, label: isAr ? "المفضلة" : "Saved", value: stats.totalWishlists, sub: isAr ? "مرة حفظ" : "times saved", color: "text-destructive" },
+    { icon: MessageSquare, label: isAr ? "الاستفسارات" : "Inquiries", value: stats.totalInquiries, sub: isAr ? `${stats.unreadInquiries} غير مقروء` : `${stats.unreadInquiries} unread`, color: "text-chart-5" },
+    { icon: TrendingUp, label: isAr ? "آخر 30 يوم" : "Last 30 Days", value: stats.recentReviews + stats.recentInquiries + stats.recentViews, sub: isAr ? `${stats.recentViews} مشاهدة · ${stats.recentReviews} تقييم · ${stats.recentInquiries} استفسار` : `${stats.recentViews} views · ${stats.recentReviews} reviews · ${stats.recentInquiries} inquiries`, color: "text-chart-1" },
   ];
 
   const exportCSV = () => {
