@@ -20,7 +20,7 @@ const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG",
 
 type FilterTab = "saudi" | "middle-east" | "global";
 
-export function RegionalEvents() {
+export const RegionalEvents = memo(function RegionalEvents() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState<FilterTab>("middle-east");
