@@ -432,7 +432,7 @@ export function useAllMentorshipMatches() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mentorship_matches")
-        .select("*")
+        .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch profiles
