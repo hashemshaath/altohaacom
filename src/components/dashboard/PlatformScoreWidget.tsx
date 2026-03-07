@@ -29,7 +29,7 @@ export function PlatformScoreWidget() {
       const [posts, reactions, follows, regs, views, prevPosts, prevReactions] = await Promise.allSettled([
         supabase.from("posts").select("id", { count: "exact", head: true }).eq("author_id", user.id).gte("created_at", thirtyDaysAgo),
         supabase.from("post_reactions").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", thirtyDaysAgo),
-        supabase.from("follows").select("id", { count: "exact", head: true }).eq("following_id", user.id).gte("created_at", thirtyDaysAgo),
+        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("following_id", user.id).gte("created_at", thirtyDaysAgo),
         supabase.from("competition_registrations").select("id", { count: "exact", head: true }).eq("participant_id", user.id).gte("registered_at", thirtyDaysAgo),
         supabase.from("profile_views").select("id", { count: "exact", head: true }).eq("profile_user_id", user.id).gte("viewed_at", thirtyDaysAgo),
         supabase.from("posts").select("id", { count: "exact", head: true }).eq("author_id", user.id).gte("created_at", prevThirtyDays).lt("created_at", thirtyDaysAgo),
