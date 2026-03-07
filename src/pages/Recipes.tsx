@@ -108,7 +108,7 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
       </Card>
     </Link>
   );
-}
+});
 
 export default function Recipes() {
   const { language } = useLanguage();
