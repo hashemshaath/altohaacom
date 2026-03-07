@@ -22,7 +22,7 @@ interface ProfileHeaderProps {
   onProfileUpdate: () => void;
 }
 
-export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: ProfileHeaderProps) {
+export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userId, onProfileUpdate }: ProfileHeaderProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
