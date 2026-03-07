@@ -38,7 +38,7 @@ export default function ShopMyProducts() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("shop_products")
-        .select("*")
+        .select("id, seller_id, title, title_ar, description, description_ar, product_type, category, price, currency, stock_quantity, image_url, is_active, created_at, updated_at")
         .eq("seller_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;

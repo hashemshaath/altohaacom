@@ -59,7 +59,7 @@ export function AdminCatalogManager() {
     queryFn: async () => {
       let q = supabase
         .from("requirement_items")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, category, subcategory, unit, default_quantity, estimated_cost, brand, is_active, image_url, tags")
         .order("category")
         .order("name")
         .limit(500);

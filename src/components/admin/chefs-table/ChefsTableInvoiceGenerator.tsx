@@ -30,7 +30,7 @@ export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_pricing" as any)
-        .select("*")
+        .select("id, name, name_ar, base_fee, per_chef_fee, currency, product_category, is_active")
         .eq("is_active", true);
       if (error) throw error;
       return (data || []) as unknown as PricingPlan[];

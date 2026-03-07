@@ -105,7 +105,7 @@ function useChefTravelRecords(chefId?: string) {
     queryFn: async () => {
       let query = supabase
         .from("chef_travel_records" as any)
-        .select("*")
+        .select("id, chef_id, session_id, destination_country_code, destination_city, travel_date, return_date, flight_cost, hotel_cost, hotel_name, hotel_nights, local_transport_cost, visa_cost, daily_allowance_total, other_costs, total_cost, currency, visa_number, visa_issued_date, visa_expiry_date, visa_type, notes, notes_ar, created_at")
         .order("travel_date", { ascending: false });
       if (chefId) query = query.eq("chef_id", chefId);
       const { data, error } = await query;
