@@ -47,6 +47,7 @@ export default function Competitions() {
   const [activeTab, setActiveTab] = useState<TabFilter>("all");
   const [countryFilter, setCountryFilter] = useState("all");
   const [sortBy, setSortBy] = useState<SortOption>("date");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { data: allCountries = [] } = useAllCountries();
   useAdTracking();
 
