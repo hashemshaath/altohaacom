@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -115,7 +115,11 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
     expired: "bg-muted text-muted-foreground",
   };
 
-  const totalSpent = sponsorships.reduce((sum: number, s: any) => sum + Number(s.sponsorship_packages?.price || 0), 0);
+  const { totalSpent, activeCount, pendingInvitations } = useMemo(() => ({
+    totalSpent: sponsorships.reduce((sum: number, s: any) => sum + Number(s.sponsorship_packages?.price || 0), 0),
+    activeCount: sponsorships.filter((s: any) => s.status === "active").length,
+    pendingInvitations: invitations.filter((i: any) => i.status === "pending").length,
+  }), [sponsorships, invitations]);
 
   return (
     <div className="space-y-6">
@@ -129,13 +133,13 @@ export function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
         </Card>
         <Card>
           <CardContent className="pt-4 text-center">
-            <AnimatedCounter value={sponsorships.filter((s: any) => s.status === "active").length} className="text-2xl text-chart-5" />
+            <AnimatedCounter value={activeCount} className="text-2xl text-chart-5" />
             <p className="text-sm text-muted-foreground">{isAr ? "نشطة" : "Active"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 text-center">
-            <AnimatedCounter value={invitations.filter((i: any) => i.status === "pending").length} className="text-2xl text-chart-4" />
+            <AnimatedCounter value={pendingInvitations} className="text-2xl text-chart-4" />
             <p className="text-sm text-muted-foreground">{isAr ? "دعوات معلقة" : "Pending Invitations"}</p>
           </CardContent>
         </Card>

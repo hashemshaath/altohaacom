@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -188,7 +188,10 @@ export default function CompanyCommunications() {
     });
   };
 
-  const unreadCount = messages.filter((m) => m.direction === "incoming" && m.status === "unread").length;
+  const { unreadCount, sentCount } = useMemo(() => ({
+    unreadCount: messages.filter((m) => m.direction === "incoming" && m.status === "unread").length,
+    sentCount: messages.filter((m) => m.direction === "outgoing").length,
+  }), [messages]);
 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
@@ -277,7 +280,7 @@ export default function CompanyCommunications() {
                   {language === "ar" ? "مُرسلة" : "Sent"}
                 </p>
                 <p className="text-xl font-bold">
-                  {messages.filter((m) => m.direction === "outgoing").length}
+                  {sentCount}
                 </p>
               </div>
             </div>
