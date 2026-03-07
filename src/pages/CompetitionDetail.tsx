@@ -573,7 +573,7 @@ export default function CompetitionDetail() {
           </div>
         )}
 
-        <div className="container py-8 sm:py-10">
+        <div className="container py-5 pb-20 sm:py-8 sm:pb-10 lg:pb-10">
           {/* ─── Registration banners ─── */}
           {canRegister && !showRegistrationForm && (
             <div className="mb-8 rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] via-transparent to-accent/[0.04] p-5 sm:p-6">
