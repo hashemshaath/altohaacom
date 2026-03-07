@@ -820,9 +820,9 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Exhibition Row ──────────────── */
 function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
-function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
+  const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
   const location = [venue, data.city, data.country].filter(Boolean).join(" · ");
   return (
@@ -835,8 +835,8 @@ function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
           <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
             <Ticket className="h-3 w-3" /><span>{isAr ? "معرض" : "Exhibition"}</span>
           </div>
-          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">{title}</h3>
-          {desc && <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">{desc}</p>}
+          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1"><HighlightText text={title} query={sq} /></h3>
+          {desc && <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed"><HighlightText text={desc} query={sq} /></p>}
           <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/80">
             {data.start_date && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{format(new Date(data.start_date), "MMM d, yyyy")}</span>}
             {location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span className="truncate max-w-[200px]">{location}</span></span>}
