@@ -32,10 +32,13 @@ import {
   Building2,
   UtensilsCrossed,
   Star,
+  Ticket,
+  Bookmark,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
-import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
+import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
+import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 import type { Database } from "@/integrations/supabase/types";
 
 const AISearchPanel = lazy(() => import("@/components/search/AISearchPanel").then(m => ({ default: m.AISearchPanel })));
