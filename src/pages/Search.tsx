@@ -440,6 +440,19 @@ export default function Search() {
                         <RecipeRow key={r.id} data={r} isAr={isAr} />
                       ))}
                     </ResultSection>
+                   )}
+                  {results.exhibitions.length > 0 && (
+                    <ResultSection
+                      icon={<Ticket className="h-4 w-4" />}
+                      title={isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
+                      count={results.exhibitions.length}
+                      onViewAll={() => updateFilter("type", "exhibitions")}
+                      isAr={isAr}
+                    >
+                      {results.exhibitions.slice(0, 5).map((e) => (
+                        <ExhibitionRow key={e.id} data={e} isAr={isAr} />
+                      ))}
+                    </ResultSection>
                   )}
                 </>
               )}
@@ -448,6 +461,10 @@ export default function Search() {
               {filters.type === "competitions" &&
                 results.competitions.map((c) => (
                   <CompetitionRow key={c.id} data={c} isAr={isAr} getStatusLabel={getStatusLabel} />
+                ))}
+              {filters.type === "exhibitions" &&
+                results.exhibitions.map((e) => (
+                  <ExhibitionRow key={e.id} data={e} isAr={isAr} />
                 ))}
               {filters.type === "articles" &&
                 results.articles.map((a) => (
