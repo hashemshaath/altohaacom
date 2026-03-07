@@ -100,20 +100,26 @@ export default function MembershipPlans() {
   });
 
   // Build a lookup: featureId -> { basic, professional, enterprise }
-  const tierLookup = new Map<string, Record<string, boolean>>();
-  for (const m of mappings) {
-    if (!tierLookup.has(m.feature_id)) {
-      tierLookup.set(m.feature_id, { basic: false, professional: false, enterprise: false });
+  const tierLookup = useMemo(() => {
+    const lookup = new Map<string, Record<string, boolean>>();
+    for (const m of mappings) {
+      if (!lookup.has(m.feature_id)) {
+        lookup.set(m.feature_id, { basic: false, professional: false, enterprise: false });
+      }
+      lookup.get(m.feature_id)![m.tier] = m.is_enabled;
     }
-    tierLookup.get(m.feature_id)![m.tier] = m.is_enabled;
-  }
+    return lookup;
+  }, [mappings]);
 
   // Group features by category
-  const categories = new Map<string, typeof features>();
-  for (const f of features) {
-    if (!categories.has(f.category)) categories.set(f.category, []);
-    categories.get(f.category)!.push(f);
-  }
+  const categories = useMemo(() => {
+    const cats = new Map<string, typeof features>();
+    for (const f of features) {
+      if (!cats.has(f.category)) cats.set(f.category, []);
+      cats.get(f.category)!.push(f);
+    }
+    return cats;
+  }, [features]);
 
   const handleUpgrade = (tier: string) => {
     if (!user) {
