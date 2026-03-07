@@ -63,7 +63,7 @@ export function EntityEventsTab({ entityId }: Props) {
         return (
           <Card key={event.id} className="overflow-hidden transition-all hover:shadow-md">
             {event.image_url && (
-              <img src={event.image_url} alt={title} className="h-32 w-full object-cover" />
+              <img src={event.image_url} alt={title} className="h-32 w-full object-cover" loading="lazy" />
             )}
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between gap-2">

@@ -156,7 +156,7 @@ export function EntityLeadershipPanel({ entityId }: Props) {
               <Card key={pos.id} className={`transition-all hover:shadow-sm ${!pos.is_active ? "opacity-50" : ""}`}>
                 <CardContent className="flex items-center gap-3 p-3">
                   {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover" />
+                    <img src={profile.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover" loading="lazy" />
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                       <User className="h-5 w-5 text-primary" />

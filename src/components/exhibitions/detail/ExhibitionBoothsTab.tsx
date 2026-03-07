@@ -182,7 +182,7 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
                 {/* Logo / Placeholder */}
                 {booth.logo_url ? (
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-border/50 bg-card p-1.5">
-                    <img src={booth.logo_url} alt={booth.name} className="h-full w-full object-contain" />
+                    <img src={booth.logo_url} alt={booth.name} className="h-full w-full object-contain" loading="lazy" />
                   </div>
                 ) : (
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/50 shrink-0">

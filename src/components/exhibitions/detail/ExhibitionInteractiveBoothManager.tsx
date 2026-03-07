@@ -185,7 +185,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  {selectedBooth.logo_url && <img src={selectedBooth.logo_url} className="h-8 w-8 rounded object-contain" />}
+                  {selectedBooth.logo_url && <img src={selectedBooth.logo_url} className="h-8 w-8 rounded object-contain" loading="lazy" />}
                   {selectedBooth.booth_number} — {isAr && selectedBooth.name_ar ? selectedBooth.name_ar : selectedBooth.name}
                 </DialogTitle>
               </DialogHeader>

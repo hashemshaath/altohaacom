@@ -81,7 +81,7 @@ export function MasterclassProgressWidget() {
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted">
                     {mc.cover_image_url ? (
-                      <img src={mc.cover_image_url} alt="" className="h-full w-full object-cover" />
+                      <img src={mc.cover_image_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                     ) : (
                       <BookOpen className="h-4 w-4 text-muted-foreground/30" />
                     )}

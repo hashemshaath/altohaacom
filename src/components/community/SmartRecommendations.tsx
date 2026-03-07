@@ -137,7 +137,7 @@ export function SmartRecommendations() {
             <TabsContent value="articles" className="mt-2 space-y-1.5">
               {data?.articles?.length ? data.articles.map((a: any) => (
                 <Link key={a.id} to={`/news/${a.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
-                  {a.featured_image_url && <img src={a.featured_image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  {a.featured_image_url && <img src={a.featured_image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? a.title_ar || a.title : a.title}</p>
                     <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">{a.type}</Badge>
