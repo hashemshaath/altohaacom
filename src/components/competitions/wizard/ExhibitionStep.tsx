@@ -225,7 +225,7 @@ export function ExhibitionStep({
                     >
                       <div className="flex gap-3">
                         {exh.cover_image_url && (
-                          <img src={exh.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                          <img src={exh.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" loading="lazy" />
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
