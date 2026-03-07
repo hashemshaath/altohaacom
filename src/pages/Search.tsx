@@ -32,10 +32,13 @@ import {
   Building2,
   UtensilsCrossed,
   Star,
+  Ticket,
+  Bookmark,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
-import { getRecentSearches, addRecentSearch, clearRecentSearches } from "@/lib/recentSearches";
+import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
+import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 import type { Database } from "@/integrations/supabase/types";
 
 const AISearchPanel = lazy(() => import("@/components/search/AISearchPanel").then(m => ({ default: m.AISearchPanel })));
@@ -60,6 +63,7 @@ export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const {
     filters,
     updateFilter,
@@ -90,9 +94,23 @@ export default function Search() {
 
   const handleSearch = (value: string) => {
     updateFilter("query", value);
+    setShowSuggestions(value.length >= 1);
     if (value.trim().length >= 2) {
       addRecentSearch(value.trim());
       setRecentSearches(getRecentSearches());
+    }
+  };
+
+  const handleSuggestionSelect = (term: string) => {
+    updateFilter("query", term);
+    setShowSuggestions(false);
+    addRecentSearch(term);
+    setRecentSearches(getRecentSearches());
+  };
+
+  const handleSaveSearch = () => {
+    if (filters.query.trim()) {
+      addSavedSearch(filters.query.trim());
     }
   };
 
@@ -139,6 +157,9 @@ export default function Search() {
   if (filters.type === "all" || filters.type === "recipes") {
     results.recipes.forEach((r) => allItems.push({ type: "recipe", data: r }));
   }
+  if (filters.type === "all" || filters.type === "exhibitions") {
+    results.exhibitions.forEach((e) => allItems.push({ type: "exhibition", data: e }));
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -157,23 +178,44 @@ export default function Search() {
               <div className="relative flex-1">
                 <SearchIcon className="absolute start-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground/60" />
                 <Input
-                  placeholder={isAr ? "ابحث عن مسابقات، طهاة، مقالات..." : "Search competitions, chefs, articles..."}
+                  placeholder={isAr ? "ابحث عن مسابقات، طهاة، مقالات، معارض..." : "Search competitions, chefs, articles, exhibitions..."}
                   value={filters.query}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="ps-11 h-11 rounded-full border-border/80 bg-muted/30 text-base shadow-sm focus-visible:bg-background focus-visible:shadow-md"
+                  onFocus={() => setShowSuggestions(true)}
+                  className="ps-11 pe-20 h-11 rounded-full border-border/80 bg-muted/30 text-base shadow-sm focus-visible:bg-background focus-visible:shadow-md"
                   autoFocus
                 />
-                {filters.query && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    type="button"
-                    className="absolute end-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full"
-                    onClick={() => handleSearch("")}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
+                <div className="absolute end-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  {filters.query && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        type="button"
+                        className="h-7 w-7 rounded-full"
+                        onClick={handleSaveSearch}
+                        title={isAr ? "حفظ البحث" : "Save search"}
+                      >
+                        <Bookmark className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        type="button"
+                        className="h-7 w-7 rounded-full"
+                        onClick={() => handleSearch("")}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+                <SearchSuggestions
+                  query={filters.query}
+                  isOpen={showSuggestions}
+                  onSelect={handleSuggestionSelect}
+                  onClose={() => setShowSuggestions(false)}
+                />
               </div>
               <Button
                 variant="outline"
@@ -196,6 +238,7 @@ export default function Search() {
                  {[
                    { value: "all", icon: SearchIcon, label: isAr ? "الكل" : "All", count: totalResults },
                    { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions", count: results.competitions.length },
+                   { value: "exhibitions", icon: Ticket, label: isAr ? "المعارض" : "Exhibitions", count: results.exhibitions.length },
                    { value: "articles", icon: FileText, label: isAr ? "المقالات" : "Articles", count: results.articles.length },
                    { value: "members", icon: User, label: isAr ? "الأعضاء" : "Members", count: results.members.length },
                    { value: "entities", icon: Building2, label: isAr ? "الجهات" : "Organizations", count: results.entities.length },
@@ -397,6 +440,19 @@ export default function Search() {
                         <RecipeRow key={r.id} data={r} isAr={isAr} />
                       ))}
                     </ResultSection>
+                   )}
+                  {results.exhibitions.length > 0 && (
+                    <ResultSection
+                      icon={<Ticket className="h-4 w-4" />}
+                      title={isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
+                      count={results.exhibitions.length}
+                      onViewAll={() => updateFilter("type", "exhibitions")}
+                      isAr={isAr}
+                    >
+                      {results.exhibitions.slice(0, 5).map((e) => (
+                        <ExhibitionRow key={e.id} data={e} isAr={isAr} />
+                      ))}
+                    </ResultSection>
                   )}
                 </>
               )}
@@ -405,6 +461,10 @@ export default function Search() {
               {filters.type === "competitions" &&
                 results.competitions.map((c) => (
                   <CompetitionRow key={c.id} data={c} isAr={isAr} getStatusLabel={getStatusLabel} />
+                ))}
+              {filters.type === "exhibitions" &&
+                results.exhibitions.map((e) => (
+                  <ExhibitionRow key={e.id} data={e} isAr={isAr} />
                 ))}
               {filters.type === "articles" &&
                 results.articles.map((a) => (
@@ -733,6 +793,34 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
                 {data.average_rating.toFixed(1)}
               </span>
             )}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* ──────────────── Exhibition Row ──────────────── */
+function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const title = isAr && data.title_ar ? data.title_ar : data.title;
+  const desc = isAr && data.description_ar ? data.description_ar : data.description;
+  const venue = isAr && data.venue_ar ? data.venue_ar : data.venue;
+  const location = [venue, data.city, data.country].filter(Boolean).join(" · ");
+  return (
+    <Link to={`/exhibitions/${data.slug || data.id}`} className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-chart-5/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+          {data.cover_image_url ? <img src={data.cover_image_url} alt="" className="w-full h-full object-cover" /> : <Ticket className="h-4 w-4 text-chart-5/60" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+            <Ticket className="h-3 w-3" /><span>{isAr ? "معرض" : "Exhibition"}</span>
+          </div>
+          <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">{title}</h3>
+          {desc && <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">{desc}</p>}
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/80">
+            {data.start_date && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{format(new Date(data.start_date), "MMM d, yyyy")}</span>}
+            {location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span className="truncate max-w-[200px]">{location}</span></span>}
           </div>
         </div>
       </div>

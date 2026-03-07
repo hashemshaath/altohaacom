@@ -7,13 +7,15 @@ type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
 export interface SearchFilters {
   query: string;
-  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities" | "recipes";
+  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities" | "recipes" | "exhibitions";
   competitionStatus?: CompetitionStatus | "all";
   isVirtual?: boolean | null;
   articleType?: "news" | "blog" | "exhibition" | "all";
   articleStatus?: "published" | "draft" | "all";
   memberRole?: string | "all";
   experienceLevel?: "beginner" | "amateur" | "professional" | "all";
+  country?: string | "all";
+  cuisineType?: string | "all";
 }
 
 export interface CompetitionResult {
@@ -109,6 +111,24 @@ export interface RecipeResult {
   _relevance?: number;
 }
 
+export interface ExhibitionResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  cover_image_url: string | null;
+  slug: string;
+  start_date: string | null;
+  end_date: string | null;
+  venue: string | null;
+  venue_ar: string | null;
+  city: string | null;
+  country: string | null;
+  status: string;
+  _relevance?: number;
+}
+
 export interface SearchResults {
   competitions: CompetitionResult[];
   articles: ArticleResult[];
@@ -116,6 +136,7 @@ export interface SearchResults {
   posts: PostResult[];
   entities: EntityResult[];
   recipes: RecipeResult[];
+  exhibitions: ExhibitionResult[];
 }
 
 const DEFAULT_FILTERS: SearchFilters = {
@@ -127,6 +148,8 @@ const DEFAULT_FILTERS: SearchFilters = {
   articleStatus: "published",
   memberRole: "all",
   experienceLevel: "all",
+  country: "all",
+  cuisineType: "all",
 };
 
 /** Split query into searchable words (>=2 chars) */
@@ -486,6 +509,31 @@ export function useGlobalSearch() {
     staleTime: 1000 * 60 * 2,
   });
 
+  // Search exhibitions
+  const { data: exhibitionsData, isLoading: exhibitionsLoading } = useQuery({
+    queryKey: ["search-exhibitions", debouncedQuery],
+    queryFn: async () => {
+      if (!debouncedQuery || searchWords.length === 0) return [];
+      const cols = ["title", "title_ar", "description", "description_ar", "venue", "venue_ar", "city", "country"];
+      const { data, error } = await supabase
+        .from("exhibitions")
+        .select("id, title, title_ar, description, description_ar, cover_image_url, slug, start_date, end_date, venue, venue_ar, city, country, status")
+        .or(buildFlexibleFilter(searchWords, cols))
+        .order("start_date", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      if (!data) return [];
+      return sortByRelevance(
+        data.map((r: any) => ({
+          ...r,
+          _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.description, r.description_ar, r.venue, r.city, r.country),
+        }))
+      ) as ExhibitionResult[];
+    },
+    enabled: !!debouncedQuery && searchWords.length > 0,
+    staleTime: 1000 * 60 * 2,
+  });
+
   const results: SearchResults = {
     competitions: competitionsData || [],
     articles: articlesData || [],
@@ -493,10 +541,11 @@ export function useGlobalSearch() {
     posts: postsData || [],
     entities: entitiesData || [],
     recipes: recipesData || [],
+    exhibitions: exhibitionsData || [],
   };
 
-  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length + results.recipes.length;
-  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading || recipesLoading;
+  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length + results.recipes.length + results.exhibitions.length;
+  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading || recipesLoading || exhibitionsLoading;
 
   return {
     filters,
