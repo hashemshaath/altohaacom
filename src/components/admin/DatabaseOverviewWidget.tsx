@@ -12,7 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
  * Shows database table row counts for key tables — 
  * helps admins monitor data growth at a glance.
  */
-export function DatabaseOverviewWidget() {
+export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
