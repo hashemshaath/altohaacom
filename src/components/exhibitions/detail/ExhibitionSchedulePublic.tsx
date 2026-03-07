@@ -39,13 +39,13 @@ export function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isA
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_schedule_items")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, start_time, end_time, location, location_ar, category, speaker_name, speaker_name_ar, max_attendees, is_featured")
         .eq("exhibition_id", exhibitionId)
         .order("start_time", { ascending: true });
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: myRegistrations = [] } = useQuery({

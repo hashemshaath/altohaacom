@@ -33,12 +33,13 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_booths")
-        .select("*")
+        .select("id, booth_number, name, name_ar, description, description_ar, category, hall, hall_ar, size, size_sqm, price, currency, status, booking_status, logo_url, website_url, is_featured, company_id, contact_name, floor_level")
         .eq("exhibition_id", exhibitionId)
         .order("booth_number", { ascending: true });
       if (error) throw error;
       return data || [];
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const categories = useMemo(() => [...new Set(booths.map((b) => b.category || "general"))], [booths]);

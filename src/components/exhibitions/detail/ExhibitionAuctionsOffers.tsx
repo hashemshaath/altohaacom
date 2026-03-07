@@ -32,7 +32,7 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_auctions")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, image_url, starting_price, current_price, min_increment, currency, starts_at, ends_at, status, winner_id")
         .eq("exhibition_id", exhibitionId)
         .order("ends_at", { ascending: true });
       return data || [];
@@ -44,7 +44,7 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_offers")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, image_url, original_price, offer_price, discount_percent, currency, starts_at, ends_at, is_active, quantity_claimed, quantity_available")
         .eq("exhibition_id", exhibitionId)
         .eq("is_active", true)
         .order("ends_at", { ascending: true });

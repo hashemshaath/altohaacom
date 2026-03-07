@@ -34,13 +34,14 @@ export function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: 
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_agenda_items")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, day_date, start_time, end_time, location, location_ar, category, speaker_name, speaker_name_ar, is_highlighted, sort_order")
         .eq("exhibition_id", exhibitionId)
         .order("day_date", { ascending: true })
         .order("start_time", { ascending: true });
       if (error) throw error;
       return data || [];
     },
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: favorites = [] } = useQuery({

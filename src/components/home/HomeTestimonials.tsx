@@ -26,7 +26,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
     queryFn: async () => {
       const { data } = await (supabase as any)
         .from("testimonials")
-        .select("*")
+        .select("id, name, name_ar, role, role_ar, content, content_ar, avatar_url, rating, sort_order")
         .eq("is_active", true)
         .order("sort_order", { ascending: true })
         .limit(itemCount);

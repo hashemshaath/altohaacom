@@ -23,7 +23,7 @@ export function SponsorCarousel() {
       const [hRes, cRes] = await Promise.all([
         supabase
           .from("homepage_sponsors")
-          .select("*")
+          .select("id, name, name_ar, logo_url, website_url, tier, sort_order")
           .eq("is_active", true)
           .order("sort_order"),
         supabase

@@ -33,7 +33,7 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
     try {
       const { data, error } = await supabase
         .from("shop_discount_codes")
-        .select("*")
+        .select("id, code, discount_type, discount_value, min_order_amount, max_uses, used_count, valid_until, is_active")
         .eq("code", cart.discountCode.trim().toUpperCase())
         .eq("is_active", true)
         .single();
