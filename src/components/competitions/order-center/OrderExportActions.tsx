@@ -17,7 +17,7 @@ interface Props {
   label?: string;
 }
 
-export function OrderExportActions({ data, filename, columns, label }: Props) {
+export const OrderExportActions = memo(function OrderExportActions({ data, filename, columns, label }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
