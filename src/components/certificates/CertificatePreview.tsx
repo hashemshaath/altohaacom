@@ -75,7 +75,7 @@ export function CertificatePreview({ design, zoom, previewData }: CertificatePre
         {logos.map(logo => (
           <div key={logo.id} style={{ width: s(logo.width), height: s(logo.height) }} className="flex items-center justify-center">
             {logo.url ? (
-              <img src={logo.url} alt="" className="max-w-full max-h-full object-contain" />
+              <img src={logo.url} alt="" className="max-w-full max-h-full object-contain" loading="lazy" />
             ) : (
               <div className="w-full h-full bg-muted/20 rounded flex items-center justify-center">
                 <Image className="text-muted-foreground/30" style={{ width: "40%", height: "40%" }} />
