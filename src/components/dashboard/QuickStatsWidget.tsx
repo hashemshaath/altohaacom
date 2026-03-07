@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,7 +33,7 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
   );
 }
 
-export function QuickStatsWidget() {
+export const QuickStatsWidget = memo(function QuickStatsWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -121,4 +122,4 @@ export function QuickStatsWidget() {
       />
     </div>
   );
-}
+});

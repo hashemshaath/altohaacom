@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,7 @@ import { Trophy, Calendar, MapPin, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
-export function UpcomingCompetitionsWidget() {
+export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidget() {
   const { language, t } = useLanguage();
   const isAr = language === "ar";
 
@@ -128,4 +129,4 @@ export function UpcomingCompetitionsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

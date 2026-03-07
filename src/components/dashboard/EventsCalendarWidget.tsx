@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,7 +32,7 @@ interface CalendarEvent {
   urgent: boolean;
 }
 
-export function EventsCalendarWidget() {
+export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -261,4 +261,4 @@ export function EventsCalendarWidget() {
       </CardContent>
     </Card>
   );
-}
+});

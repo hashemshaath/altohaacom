@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,7 +24,7 @@ interface LiveCompetition {
   user_registered: boolean;
 }
 
-export function LiveCompetitionsWidget() {
+export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -160,4 +161,4 @@ export function LiveCompetitionsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

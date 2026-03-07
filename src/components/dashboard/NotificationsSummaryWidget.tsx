@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +25,7 @@ const typeColors: Record<string, string> = {
   info: "text-accent-foreground",
 };
 
-export function NotificationsSummaryWidget() {
+export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidget() {
   const { notifications, unreadCount, markAsRead, loading } = useNotifications();
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -126,4 +127,4 @@ export function NotificationsSummaryWidget() {
       </CardContent>
     </Card>
   );
-}
+});

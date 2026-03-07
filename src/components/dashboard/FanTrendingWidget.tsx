@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TrendingUp, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function FanTrendingWidget() {
+export const FanTrendingWidget = memo(function FanTrendingWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -72,4 +73,4 @@ export function FanTrendingWidget() {
       </CardContent>
     </Card>
   );
-}
+});
