@@ -187,7 +187,7 @@ export default function Exhibitions() {
                   {isAr ? "فعاليات الطهي العالمية" : "Global Culinary Events"}
                 </span>
               </div>
-              <h1 className="font-serif text-3xl font-bold tracking-tight md:text-5xl bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text">
+              <h1 className="font-serif text-2xl font-bold tracking-tight md:text-5xl bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text">
                 {isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
               </h1>
               <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-lg">

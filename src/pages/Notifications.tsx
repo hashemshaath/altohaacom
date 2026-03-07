@@ -246,13 +246,13 @@ export default function Notifications() {
               { label: isAr ? "مقروء" : "Read", value: notifications.length - unreadCount, color: "chart-5", icon: Check },
             ].map(s => (
               <Card key={s.label} className="rounded-2xl border-border/50 bg-card/80 backdrop-blur-sm overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-${s.color}/10 group-hover:scale-110 transition-transform duration-300`}>
-                    <s.icon className={`h-4.5 w-4.5 text-${s.color}`} />
+                <CardContent className="p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+                  <div className={`flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-${s.color}/10 group-hover:scale-110 transition-transform duration-300`}>
+                    <s.icon className={`h-3.5 w-3.5 sm:h-4.5 sm:w-4.5 text-${s.color}`} />
                   </div>
                   <div>
-                    <p className="text-[11px] text-muted-foreground font-medium">{s.label}</p>
-                    <AnimatedCounter value={typeof s.value === 'number' ? s.value : 0} className="text-xl font-bold" />
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium">{s.label}</p>
+                    <AnimatedCounter value={typeof s.value === 'number' ? s.value : 0} className="text-lg sm:text-xl font-bold" />
                   </div>
                 </CardContent>
               </Card>
