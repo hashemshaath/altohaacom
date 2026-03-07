@@ -19,7 +19,7 @@ interface Props {
   showCategory?: boolean;
 }
 
-export function OrderSearchFilter({
+export const OrderSearchFilter = memo(function OrderSearchFilter({
   searchQuery,
   onSearchChange,
   statusFilter = "all",
