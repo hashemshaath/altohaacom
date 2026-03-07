@@ -71,8 +71,8 @@ export default function Messages() {
       </section>
 
       {/* Chat Interface */}
-      <div className="container py-4 md:py-6">
-        <Card className="mx-auto overflow-hidden rounded-2xl border-border/30 bg-card/80 backdrop-blur-sm shadow-2xl shadow-primary/5" style={{ height: "calc(100vh - 220px)", minHeight: 500 }}>
+      <div className="container py-0 md:py-6">
+        <Card className="mx-auto overflow-hidden rounded-none md:rounded-2xl border-0 md:border border-border/30 bg-card/80 backdrop-blur-sm shadow-none md:shadow-2xl md:shadow-primary/5" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
           <div className="flex h-full">
             <ConversationList
               isAr={data.isAr}
