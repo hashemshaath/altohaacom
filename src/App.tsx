@@ -17,6 +17,7 @@ import { PageTransition } from "@/components/mobile/PageTransition";
 import { ResourceHints } from "@/components/performance/ResourceHints";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
+import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useEnhancedSEO } from "@/hooks/useEnhancedSEO";
 import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
 
