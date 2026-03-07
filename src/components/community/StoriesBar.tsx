@@ -32,7 +32,7 @@ interface GroupedStories {
   hasViewed: boolean;
 }
 
-export function StoriesBar() {
+export const StoriesBar = memo(function StoriesBar() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
