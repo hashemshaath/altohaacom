@@ -13,7 +13,7 @@ export function usePermissions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("permissions")
-        .select("*")
+        .select("id, code, name, name_ar, description, description_ar, category, created_at")
         .order("category")
         .order("code");
       if (error) throw error;
@@ -141,7 +141,7 @@ export function useUserTitles(userId?: string) {
       if (!userId) return [];
       const { data, error } = await supabase
         .from("user_titles")
-        .select("*")
+        .select("id, user_id, title, title_ar, title_type, issuing_body, issuing_body_ar, issued_date, expiry_date, is_verified, verified_by, verified_at, establishment_id, sort_order, created_at, updated_at")
         .eq("user_id", userId)
         .order("sort_order");
       if (error) throw error;

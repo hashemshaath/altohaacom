@@ -182,7 +182,7 @@ export default function LeadManagement() {
       if (!selectedLead?.id) return [];
       const { data } = await supabase
         .from("admin_actions")
-        .select("*")
+        .select("id, admin_id, action_type, target_user_id, details, created_at")
         .eq("action_type", "update_lead")
         .order("created_at", { ascending: false })
         .limit(50);

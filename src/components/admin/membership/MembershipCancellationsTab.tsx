@@ -58,7 +58,7 @@ export default function MembershipCancellationsTab() {
     queryFn: async () => {
       let query = supabase
         .from("membership_cancellation_requests")
-        .select("*")
+        .select("id, user_id, current_tier, reason, reason_ar, feedback, status, admin_notes, retention_offer, retention_offer_ar, reviewed_by, reviewed_at, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
       const { data, error } = await query;
