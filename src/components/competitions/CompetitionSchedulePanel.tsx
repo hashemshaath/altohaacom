@@ -43,7 +43,7 @@ export function CompetitionSchedulePanel({ competitionId, isOrganizer }: Props) 
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_schedule_slots")
-        .select("*")
+        .select("id, competition_id, title, title_ar, slot_type, start_time, end_time, station_number, location, location_ar, notes, sort_order")
         .eq("competition_id", competitionId)
         .order("start_time");
       if (error) throw error;

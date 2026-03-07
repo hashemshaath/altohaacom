@@ -40,7 +40,7 @@ function useMergeAuditLog() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("admin_actions")
-        .select("*")
+        .select("id, admin_id, action_type, details, created_at")
         .eq("action_type", "entity_merge")
         .order("created_at", { ascending: false })
         .limit(50);

@@ -27,7 +27,7 @@ export default function JudgeProfileForm({ userId, isAdmin }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judge_profiles")
-        .select("*")
+        .select("id, user_id, judge_title, judge_title_ar, judge_category, judge_level, nationality, second_nationality, country_of_residence, full_name_ar, date_of_birth, gender, marital_status, spouse_name, spouse_name_ar, spouse_phone, emergency_contact_name, emergency_contact_phone, blood_type, passport_number, passport_country, passport_issue_date, passport_expiry_date, national_id, current_position, current_employer, years_of_experience, culinary_specialties, certifications, languages_spoken, education, education_ar, dietary_restrictions, allergies, medical_notes, shirt_size, preferred_airline, frequent_flyer_number, travel_notes, notes, internal_notes")
         .eq("user_id", userId)
         .maybeSingle();
       if (error) throw error;

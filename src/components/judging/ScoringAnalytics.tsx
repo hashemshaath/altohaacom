@@ -35,7 +35,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
 
       const { data: scores } = await supabase
         .from("competition_scores")
-        .select("*")
+        .select("id, registration_id, criteria_id, judge_id, score")
         .in("registration_id", regIds);
 
       if (!criteria || !scores) return null;

@@ -37,7 +37,7 @@ export function ExhibitionMediaUploader({ exhibitionId, coverImageUrl, onCoverCh
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_media")
-        .select("*")
+        .select("id, exhibition_id, file_url, file_type, title, category, sort_order")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order");
       if (error) throw error;
