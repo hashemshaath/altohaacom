@@ -130,26 +130,26 @@ export default function EventsCalendar() {
         <section className="relative border-b overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-primary/3 to-accent/5" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_60%)]" />
-          <div className="container relative py-8 md:py-12">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20 shadow-lg shadow-primary/10">
-                  <CalendarDays className="h-7 w-7 text-primary" />
+          <div className="container relative py-4 sm:py-8 md:py-12">
+            <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="flex h-11 w-11 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20 shadow-lg shadow-primary/10 shrink-0">
+                  <CalendarDays className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
                 </div>
                 <div>
-                  <div className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-3 py-1">
+                  <div className="mb-1 sm:mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-2.5 py-0.5 sm:px-3 sm:py-1">
                     <Sparkles className="h-3 w-3 text-primary" />
-                    <span className="text-[11px] font-semibold text-primary">
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-primary">
                       {isAr ? "تقويم تفاعلي" : "Interactive Calendar"}
                     </span>
                   </div>
-                  <h1 className="font-serif text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
-                    {isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
+                  <h1 className="font-serif text-xl sm:text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
+                    {isAr ? "تقويم الفعاليات" : "Events Calendar"}
                   </h1>
-                  <p className="mt-1 max-w-lg text-sm text-muted-foreground leading-relaxed">
+                  <p className="mt-1 max-w-lg text-xs sm:text-sm text-muted-foreground leading-relaxed hidden sm:block">
                     {isAr
-                      ? "اكتشف المسابقات والمعارض والفعاليات الطهوية من جميع أنحاء العالم في مكان واحد"
-                      : "Discover competitions, exhibitions & culinary events from around the world in one place"}
+                      ? "اكتشف المسابقات والمعارض والفعاليات الطهوية من جميع أنحاء العالم"
+                      : "Discover competitions, exhibitions & culinary events from around the world"}
                   </p>
                 </div>
               </div>

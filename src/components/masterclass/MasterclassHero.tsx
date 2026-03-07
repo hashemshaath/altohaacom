@@ -18,19 +18,19 @@ export function MasterclassHero({ totalCount, filteredCount, totalEnrollments }:
       <div className="absolute inset-0 bg-gradient-to-br from-primary/12 via-background to-chart-4/6" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.10),transparent_70%)]" />
 
-      <div className="container relative py-10 md:py-14">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
+      <div className="container relative py-5 sm:py-10 md:py-14">
+        <div className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl space-y-2 sm:space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 sm:px-3.5 sm:py-1.5 ring-1 ring-primary/20">
               <GraduationCap className="h-3.5 w-3.5 text-primary" />
               <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
                 {isAr ? "التعلم المهني" : "Professional Learning"}
               </span>
             </div>
-            <h1 className="font-serif text-4xl font-bold tracking-tight md:text-5xl">
+            <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight md:text-5xl">
               {isAr ? "الدورات التعليمية" : "Masterclasses"}
             </h1>
-            <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
+            <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed md:text-base hidden sm:block">
               {isAr
                 ? "تعلم من أفضل الطهاة والخبراء في عالم الطهي العالمي"
                 : "Master the art of culinary excellence with world-renowned chefs and industry experts."}

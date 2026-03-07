@@ -167,7 +167,7 @@ export default function Dashboard() {
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
-      <div className="grid gap-4 md:gap-6 lg:grid-cols-12">
+      <div className="grid gap-4 md:gap-6 lg:grid-cols-12 pb-20 sm:pb-0">
         {/* Left Column - Profile & Identity (sticky on desktop) */}
         <aside className="lg:col-span-3 space-y-4">
           <div className="lg:sticky lg:top-20 space-y-4">
@@ -242,35 +242,35 @@ const WelcomeBanner = memo(function WelcomeBanner({
   avatarUrl?: string | null; firstName: string;
 }) {
   return (
-    <div className="relative mb-6 overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/8 via-background to-accent/8 p-5 sm:p-6 md:p-8 shadow-lg">
+    <div className="relative mb-5 sm:mb-6 overflow-hidden rounded-2xl sm:rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/8 via-background to-accent/8 p-4 sm:p-6 md:p-8 shadow-lg">
       {/* Decorative orbs */}
       <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px] animate-pulse" />
       <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:2s]" />
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
 
-      <div className="relative flex items-start gap-4">
+      <div className="relative flex items-start gap-3 sm:gap-4">
         {/* Avatar */}
         <Link to="/profile" className="shrink-0 hidden sm:block">
-          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow p-[2px] shadow-xl transition-all hover:scale-105 hover:shadow-primary/20">
+          <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow p-[2px] shadow-xl transition-all hover:scale-105 hover:shadow-primary/20">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="h-full w-full rounded-[14px] object-cover bg-card" />
             ) : (
               <div className="h-full w-full rounded-[14px] bg-primary/10 flex items-center justify-center">
-                <LayoutDashboard className="h-7 w-7 text-primary" />
+                <LayoutDashboard className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
               </div>
             )}
           </div>
         </Link>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-2 sm:gap-3">
             <div>
-              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
                 {greeting} 👋
                 <ActivityPulse status="live" label={isAr ? "متصل" : "Online"} />
               </h1>
-              <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground/80">{subtitle}</p>
+              <p className="mt-1 text-[10px] sm:text-xs sm:mt-1.5 text-muted-foreground/80">{subtitle}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
