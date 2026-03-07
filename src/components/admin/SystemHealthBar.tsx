@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
  * A compact real-time activity bar for the admin dashboard.
  * Shows today's key metrics at a glance with pulse indicators.
  */
-export function SystemHealthBar() {
+export const SystemHealthBar = memo(function SystemHealthBar() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -104,4 +105,4 @@ export function SystemHealthBar() {
       ))}
     </div>
   );
-}
+});

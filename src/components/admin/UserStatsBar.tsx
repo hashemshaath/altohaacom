@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function UserStatsBar() {
+export const UserStatsBar = memo(function UserStatsBar() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -65,4 +66,4 @@ export function UserStatsBar() {
       ))}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
  * Shows database table row counts for key tables — 
  * helps admins monitor data growth at a glance.
  */
-export function DatabaseOverviewWidget() {
+export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -73,4 +74,4 @@ export function DatabaseOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});
