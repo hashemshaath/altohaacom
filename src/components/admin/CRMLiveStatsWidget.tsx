@@ -79,7 +79,7 @@ export function CRMLiveStatsWidget() {
         conversionRate: leads.length > 0 ? Math.round((leads.filter(l => l.status === "converted" || l.status === "won").length / leads.length) * 100) : 0,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

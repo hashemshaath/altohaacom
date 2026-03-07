@@ -71,7 +71,7 @@ export function OrdersLiveStatsWidget() {
         avgOrderValue: totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;
