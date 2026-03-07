@@ -120,7 +120,7 @@ export default function ForYou() {
             <CardContent className="p-0">
               {r.image_url && (
                 <div className="h-32 overflow-hidden">
-                  <img src={r.image_url} alt="" className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                  <img src={r.image_url} alt="" className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
                 </div>
               )}
               <div className="p-3 space-y-1.5">
