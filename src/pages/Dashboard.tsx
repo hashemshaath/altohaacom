@@ -59,6 +59,8 @@ const RecentOrdersWidget = lazy(() => import("@/components/dashboard/RecentOrder
 const RecentChatsWidget = lazy(() => import("@/components/dashboard/RecentChatsWidget").then(m => ({ default: m.RecentChatsWidget })));
 const AchievementsChallengesWidget = lazy(() => import("@/components/dashboard/AchievementsChallengesWidget").then(m => ({ default: m.AchievementsChallengesWidget })));
 const SmartRecommendationsWidget = lazy(() => import("@/components/community/SmartRecommendations").then(m => ({ default: m.SmartRecommendations })));
+const PlatformScoreWidget = lazy(() => import("@/components/dashboard/PlatformScoreWidget").then(m => ({ default: m.PlatformScoreWidget })));
+const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendChart").then(m => ({ default: m.WeeklyTrendChart })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
@@ -177,6 +179,7 @@ export default function Dashboard() {
           <div className="lg:sticky lg:top-20 space-y-4">
             {user && <ProfileCompletionCard />}
             {user && <W><ProfileSummaryCard /></W>}
+            {user && <W><PlatformScoreWidget /></W>}
             {user && <W><WalletBalanceWidget /></W>}
             {user && <W><StreakWidget /></W>}
             {user && <W><QuickActionsWidget /></W>}
@@ -194,7 +197,7 @@ export default function Dashboard() {
           {/* AI Recommendations */}
           {user && <W><SmartRecommendationsWidget /></W>}
 
-          {/* Pro extras */}
+          {user && !isFan && <W><WeeklyTrendChart /></W>}
           {user && !isFan && <W><ActivityHeatmapWidget /></W>}
           {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
           {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
