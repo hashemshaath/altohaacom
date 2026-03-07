@@ -91,7 +91,7 @@ export default function LocalizationAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("translation_keys")
-        .select("*")
+        .select("id, key, namespace, en, ar, context, is_verified, auto_translated, updated_by, created_at, updated_at")
         .order("namespace")
         .order("key");
       if (error) throw error;
