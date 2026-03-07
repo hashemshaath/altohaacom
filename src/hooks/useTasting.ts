@@ -122,7 +122,7 @@ export function useTastingSessions() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_sessions" as any)
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, competition_id, organizer_id, eval_method, status, max_score, session_date, session_end, venue, venue_ar, city, country, country_code, cover_image_url, notes, is_blind_tasting, allow_notes, evaluation_category, evaluation_type, round, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as TastingSession[];
