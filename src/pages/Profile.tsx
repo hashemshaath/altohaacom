@@ -122,9 +122,9 @@ export default function Profile() {
         <ProfileHeader profile={profile} roles={roles} userId={user.id} onProfileUpdate={refetchProfile} />
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4 sm:mt-6">
         {/* Tab Navigation */}
-        <div className="sticky top-12 z-30 -mx-4 border-y border-border/20 bg-background/90 px-3 py-2 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-3 md:bg-card/60 shadow-sm">
+        <div className="sticky top-12 z-30 -mx-4 border-y border-border/20 bg-background/90 px-2 sm:px-3 py-1.5 sm:py-2 backdrop-blur-xl md:rounded-2xl md:border md:border-border/30 md:mx-0 md:px-3 md:bg-card/60 shadow-sm">
           <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none snap-x snap-mandatory" dir={isAr ? "rtl" : "ltr"}>
             {tabs.map((tab) => {
               const locked = !isTabAllowed(tab.id);
@@ -133,7 +133,7 @@ export default function Profile() {
                   <Link
                     key={tab.id}
                     to={(tab as any).href}
-                    className="group relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/50 text-muted-foreground"
+                    className="group relative flex items-center gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-[10px] sm:text-[11px] font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/50 text-muted-foreground touch-manipulation active:scale-95"
                   >
                     <tab.icon className="h-3.5 w-3.5 shrink-0" />
                     <span>{tab.label}</span>
@@ -145,7 +145,7 @@ export default function Profile() {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className={`group relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-[11px] font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 active:scale-95 ${locked ? "opacity-50" : ""}`}
+                  className={`group relative flex items-center gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-[10px] sm:text-[11px] font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 active:scale-95 touch-manipulation ${locked ? "opacity-50" : ""}`}
                 >
                   <tab.icon className="h-3.5 w-3.5 shrink-0" />
                   <span>{tab.label}</span>

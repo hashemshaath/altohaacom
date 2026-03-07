@@ -85,7 +85,7 @@ export function PublicProfileHero({
   return (
     <section className="relative overflow-hidden">
       {/* Cover */}
-      <div className="h-44 sm:h-56 md:h-72 relative overflow-hidden">
+      <div className="h-36 sm:h-56 md:h-72 relative overflow-hidden">
         {profile.cover_image_url ? (
           <img src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105" />
         ) : (
@@ -101,16 +101,16 @@ export function PublicProfileHero({
       </div>
 
       {/* Profile Card */}
-      <div className="relative z-20 -mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="relative z-20 -mt-16 sm:-mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Card className="border-border/25 shadow-lg shadow-primary/5 rounded-2xl backdrop-blur-xl bg-card/90 overflow-visible">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-          <CardContent className="p-4 sm:p-5 md:p-6">
+          <CardContent className="p-3 sm:p-5 md:p-6">
             <div className="flex flex-col items-center md:flex-row md:items-start gap-4 md:gap-5">
               {/* Avatar */}
-              <div className="-mt-20 md:-mt-24 shrink-0 relative group z-10">
+              <div className="-mt-16 sm:-mt-20 md:-mt-24 shrink-0 relative group z-10">
                 <div className="relative">
                   <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/40 via-primary/20 to-chart-3/30 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative h-24 w-24 sm:h-28 sm:w-28 md:h-36 md:w-36 rounded-2xl ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
+                  <div className="relative h-20 w-20 sm:h-28 sm:w-28 md:h-36 md:w-36 rounded-2xl ring-3 sm:ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
                     {profile.avatar_url ? (
                       <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                     ) : (
@@ -131,7 +131,7 @@ export function PublicProfileHero({
               <div className="flex-1 min-w-0 text-center md:text-start space-y-1.5 md:pt-2">
                 {/* Name row */}
                 <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
-                  <h1 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight">{displayName}</h1>
+                  <h1 className="font-serif text-base sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight">{displayName}</h1>
                   {profile.is_verified && <BadgeCheck className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />}
                   {profile.account_type === "fan" && (
                     <Badge variant="secondary" className="text-[10px] gap-1 h-5">

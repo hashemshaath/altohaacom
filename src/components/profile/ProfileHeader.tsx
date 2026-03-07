@@ -85,7 +85,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
   return (
     <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
       {/* Cover Image */}
-      <div className="relative h-52 sm:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
+      <div className="relative h-40 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
         {/* Ambient blurs */}
         <div className="pointer-events-none absolute -top-24 end-1/4 h-72 w-72 rounded-full bg-primary/8 blur-[120px] animate-pulse" />
         <div className="pointer-events-none absolute -bottom-20 start-1/4 h-56 w-56 rounded-full bg-accent/8 blur-[100px] animate-pulse [animation-delay:2s]" />
@@ -119,14 +119,14 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
       </div>
 
       {/* Profile Info */}
-      <div className="relative px-5 pb-7 sm:px-8">
+      <div className="relative px-4 pb-5 sm:px-8 sm:pb-7">
         {/* Avatar */}
-        <div className="relative -mt-18 sm:-mt-22 mb-5">
+        <div className="relative -mt-14 sm:-mt-22 mb-4 sm:mb-5">
           <div className="relative inline-block">
-            <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
+            <div className="relative h-24 w-24 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
               <Avatar className="h-full w-full rounded-[calc(1.5rem-2px)] ring-4 ring-card shadow-inner overflow-hidden bg-card">
                 <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-                <AvatarFallback className="text-5xl font-black bg-primary/10 text-primary">
+                <AvatarFallback className="text-3xl sm:text-5xl font-black bg-primary/10 text-primary">
                   {(profile?.full_name || "U")[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
@@ -137,7 +137,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading}
-              className="absolute -bottom-1 -end-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all hover:scale-110 active:scale-95 ring-4 ring-card"
+              className="absolute -bottom-1 -end-1 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all hover:scale-110 active:scale-95 ring-3 sm:ring-4 ring-card touch-manipulation"
             >
               <Camera className="h-4 w-4" />
             </button>
@@ -148,7 +148,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2.5">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className={`text-2xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground break-words ${language !== "ar" ? "font-serif" : ""}`}>
+              <h1 className={`text-xl font-black sm:text-3xl lg:text-4xl tracking-tight text-foreground break-words ${language !== "ar" ? "font-serif" : ""}`}>
                 {isAr ? (profile?.display_name_ar || profile?.full_name_ar || profile?.full_name) : (profile?.display_name || profile?.full_name)}
               </h1>
               <FeatureGate feature="feature_verification_badge">
