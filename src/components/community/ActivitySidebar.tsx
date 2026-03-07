@@ -24,7 +24,7 @@ const ICON_MAP: Record<string, { icon: any; color: string; bg: string }> = {
   bookmark: { icon: Bookmark, color: "text-chart-4", bg: "bg-chart-4/10" },
 };
 
-export function ActivitySidebar() {
+export const ActivitySidebar = memo(function ActivitySidebar() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
