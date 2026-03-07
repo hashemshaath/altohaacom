@@ -109,7 +109,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
     queryFn: async () => {
       let query = supabase
         .from("evaluation_criteria_categories" as any)
-        .select("*")
+        .select("id, domain_id, name, name_ar, description, description_ar, product_category, sort_order, is_active, created_at")
         .eq("is_active", true)
         .order("sort_order");
       if (domainId) query = query.eq("domain_id", domainId);
