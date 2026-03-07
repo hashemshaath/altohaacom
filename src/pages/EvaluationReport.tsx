@@ -47,7 +47,7 @@ export default function EvaluationReport() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_sessions" as any)
-        .select("*")
+        .select("id, session_date, venue, venue_ar, city, country, organizer_id, domain_slug, product_name, product_name_ar, product_category, brand_name, brand_name_ar, manufacturer, manufacturer_ar, report_token, report_published, status, created_at")
         .eq("report_token", token)
         .eq("report_published", true)
         .single();
