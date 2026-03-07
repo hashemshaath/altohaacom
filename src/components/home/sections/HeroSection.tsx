@@ -159,7 +159,7 @@ export function HeroSection() {
             className="max-w-2xl space-y-5"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
