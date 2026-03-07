@@ -234,7 +234,7 @@ export function CertificatePreview({ design, zoom, previewData }: CertificatePre
               {design.signatures.map(sig => (
                 <div key={sig.id} className="text-center" style={{ width: s(design.signatureLineWidth) }}>
                   {sig.signatureUrl ? (
-                    <img src={sig.signatureUrl} alt="" className="mx-auto mb-1" style={{ height: s(30), objectFit: "contain" }} />
+                    <img src={sig.signatureUrl} alt="" className="mx-auto mb-1" style={{ height: s(30), objectFit: "contain" }} loading="lazy" />
                   ) : (
                     <div style={{ height: s(20) }} />
                   )}
