@@ -43,14 +43,14 @@ export default function Establishments() {
 
   const [form, setForm] = useState({ name: "", name_ar: "", type: "restaurant", description: "", city: "", country_code: "", phone: "", email: "", website: "", cuisine_type: "" });
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     createMutation.mutate(form, {
       onSuccess: () => {
         setDialogOpen(false);
         setForm({ name: "", name_ar: "", type: "restaurant", description: "", city: "", country_code: "", phone: "", email: "", website: "", cuisine_type: "" });
       },
     });
-  };
+  }, [createMutation, form]);
 
   return (
     <PageShell

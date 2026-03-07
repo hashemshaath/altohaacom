@@ -115,7 +115,7 @@ export default function Entities() {
     },
   });
 
-  const filtered = entities?.filter(e => {
+  const filtered = useMemo(() => entities?.filter(e => {
     const name = isAr && e.name_ar ? e.name_ar : e.name;
     const matchesSearch = (name + (e.abbreviation || "")).toLowerCase().includes(search.toLowerCase());
     const matchesType = typeFilter === "all" || e.type === typeFilter;
@@ -129,7 +129,7 @@ export default function Entities() {
     if (activeTab === "private") matchesTab = e.type === "private_association" || e.type === "culinary_association";
 
     return matchesSearch && matchesType && matchesScope && matchesTab;
-  });
+  }), [entities, search, typeFilter, scopeFilter, activeTab, isAr]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
