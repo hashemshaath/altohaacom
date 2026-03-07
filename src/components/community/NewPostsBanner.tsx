@@ -8,7 +8,7 @@ interface NewPostsBannerProps {
   onClick: () => void;
 }
 
-export function NewPostsBanner({ count, onClick }: NewPostsBannerProps) {
+export const NewPostsBanner = memo(function NewPostsBanner({ count, onClick }: NewPostsBannerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
