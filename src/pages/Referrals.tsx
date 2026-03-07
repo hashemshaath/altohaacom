@@ -41,23 +41,21 @@ export default function Referrals() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const referralLink = referralCode?.code
+  const referralLink = useMemo(() => referralCode?.code
     ? `${window.location.origin}/auth?ref=${referralCode.code}`
-    : "";
-
-  // Share functions moved to ReferralShareSheet component
+    : "", [referralCode?.code]);
 
   const totalConversions = stats?.conversionsCount || 0;
-  const achievedMilestoneIds = new Set(userMilestones?.map((m) => m.milestone_id) || []);
-  const nextMilestone = milestones?.find((m) => m.required_referrals > totalConversions);
+  const achievedMilestoneIds = useMemo(() => new Set(userMilestones?.map((m) => m.milestone_id) || []), [userMilestones]);
+  const nextMilestone = useMemo(() => milestones?.find((m) => m.required_referrals > totalConversions), [milestones, totalConversions]);
   const progressToNext = nextMilestone ? (totalConversions / nextMilestone.required_referrals) * 100 : 100;
 
-  const statCards = [
+  const statCards = useMemo(() => [
     { icon: Send, label: isAr ? "دعوات مرسلة" : "Invites Sent", value: stats?.invitationsCount || 0, color: "text-chart-4", bg: "bg-chart-4/10" },
     { icon: Users, label: isAr ? "تحويلات" : "Conversions", value: totalConversions, color: "text-chart-2", bg: "bg-chart-2/10" },
     { icon: TrendingUp, label: isAr ? "نقرات" : "Clicks", value: stats?.codeStats?.total_clicks || 0, color: "text-chart-3", bg: "bg-chart-3/10" },
     { icon: Star, label: isAr ? "نقاط مكتسبة" : "Points Earned", value: stats?.codeStats?.total_points_earned || 0, color: "text-primary", bg: "bg-primary/10" },
-  ];
+  ], [isAr, stats, totalConversions]);
 
   if (!user) return null;
 

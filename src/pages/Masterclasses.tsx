@@ -53,16 +53,16 @@ export default function Masterclasses() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const countryCodes = Array.from(
+  const countryCodes = useMemo(() => Array.from(
     new Set(masterclasses.map((mc: any) => mc.country_code).filter(Boolean) as string[])
-  ).sort();
+  ).sort(), [masterclasses]);
 
-  const getCountryName = (code: string) => {
+  const getCountryName = useCallback((code: string) => {
     const c = allCountries.find((ct) => ct.code === code);
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
-  };
+  }, [allCountries, isAr]);
 
-  const filtered = masterclasses.filter((mc: any) => {
+  const filtered = useMemo(() => masterclasses.filter((mc: any) => {
     const matchesSearch =
       !search ||
       mc.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -72,13 +72,13 @@ export default function Masterclasses() {
     const matchesCategory = categoryFilter === "all" || mc.category === categoryFilter;
     const matchesCountry = countryFilter === "all" || mc.country_code === countryFilter;
     return matchesSearch && matchesLevel && matchesCategory && matchesCountry;
-  });
+  }), [masterclasses, search, levelFilter, categoryFilter, countryFilter]);
 
-  const categories = [...new Set(masterclasses.map((mc: any) => mc.category))];
+  const categories = useMemo(() => [...new Set(masterclasses.map((mc: any) => mc.category))], [masterclasses]);
 
-  const totalEnrollments = masterclasses.reduce(
+  const totalEnrollments = useMemo(() => masterclasses.reduce(
     (sum: number, mc: any) => sum + (mc.masterclass_enrollments?.length || 0), 0
-  );
+  ), [masterclasses]);
 
   return (
     <PageShell
