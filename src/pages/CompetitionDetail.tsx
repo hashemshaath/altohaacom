@@ -364,7 +364,7 @@ export default function CompetitionDetail() {
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
         <section className="relative overflow-hidden">
-          <div className="relative h-48 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-44 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
               <img
                 src={competition.cover_image_url}
