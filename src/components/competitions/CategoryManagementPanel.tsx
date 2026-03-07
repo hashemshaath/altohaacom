@@ -226,7 +226,7 @@ export function CategoryManagementPanel({ competitionId, isOrganizer, competitio
 
         <Card className="overflow-hidden">
           {cat.cover_image_url && (
-            <img src={cat.cover_image_url} alt={cat.name} className="h-40 w-full object-cover" />
+            <img src={cat.cover_image_url} alt={cat.name} className="h-40 w-full object-cover" loading="lazy" />
           )}
           <CardHeader>
             <div className="flex items-start justify-between">
