@@ -107,10 +107,10 @@ export function PublicProfileHero({
           <CardContent className="p-3 sm:p-5 md:p-6">
             <div className="flex flex-col items-center md:flex-row md:items-start gap-4 md:gap-5">
               {/* Avatar */}
-              <div className="-mt-20 md:-mt-24 shrink-0 relative group z-10">
+              <div className="-mt-16 sm:-mt-20 md:-mt-24 shrink-0 relative group z-10">
                 <div className="relative">
                   <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/40 via-primary/20 to-chart-3/30 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="relative h-24 w-24 sm:h-28 sm:w-28 md:h-36 md:w-36 rounded-2xl ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
+                  <div className="relative h-20 w-20 sm:h-28 sm:w-28 md:h-36 md:w-36 rounded-2xl ring-3 sm:ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
                     {profile.avatar_url ? (
                       <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                     ) : (
