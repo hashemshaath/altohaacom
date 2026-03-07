@@ -55,7 +55,7 @@ export function ContentLiveStatsWidget() {
 
       return { totalArticles, publishedArticles, totalViews, totalPosts, totalRecipes, publishedRecipes, totalSaves, totalReplies, trendData, typeData };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

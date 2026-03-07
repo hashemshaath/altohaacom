@@ -81,7 +81,7 @@ export function ExhibitionLiveStatsWidget() {
         } : null,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

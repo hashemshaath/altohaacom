@@ -85,7 +85,7 @@ export function CompanyLiveStatsWidget() {
         verificationRate: totalCompanies > 0 ? Math.round((verifiedCompanies / totalCompanies) * 100) : 0,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

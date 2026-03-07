@@ -86,7 +86,7 @@ export function LoyaltyLiveStatsWidget() {
         tierDist,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

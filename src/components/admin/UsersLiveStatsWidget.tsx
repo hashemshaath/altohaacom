@@ -76,7 +76,7 @@ export function UsersLiveStatsWidget() {
         uniqueRoles: Object.keys(roleMap).length,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;

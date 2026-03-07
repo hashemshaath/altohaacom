@@ -69,7 +69,7 @@ export function CertificatesLiveWidget() {
         issuanceRate: totalCerts > 0 ? Math.round((issued / totalCerts) * 100) : 0,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: useVisibleRefetchInterval(60000),
   });
 
   if (!data) return null;
