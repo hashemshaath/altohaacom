@@ -198,7 +198,7 @@ export function useCostApprovalLog(estimateId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cost_approval_log" as any)
-        .select("*")
+        .select("id, estimate_id, action, performed_by, comments, comments_ar, previous_status, new_status, created_at")
         .eq("estimate_id", estimateId!)
         .order("created_at", { ascending: false });
       if (error) throw error;
