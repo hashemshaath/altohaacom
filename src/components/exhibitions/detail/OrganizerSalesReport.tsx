@@ -26,7 +26,7 @@ export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Pr
     queryFn: async () => {
       const { data: tickets, error } = await supabase
         .from("exhibition_tickets")
-        .select("id, ticket_number, status, payment_status, attendee_name, attendee_email, attendee_phone, checked_in_at, created_at, ticket_price")
+        .select("id, ticket_number, status, attendee_name, attendee_email, attendee_phone, checked_in_at, created_at, price_paid, ticket_type")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
