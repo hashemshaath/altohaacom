@@ -23,32 +23,32 @@ export default function Messages() {
 
   return (
     <PageShell title="Messages" footer={false} padding="none" container={false}>
-      {/* Professional Header */}
-      <section className="border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/2 to-background">
-        <div className="container py-3 md:py-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3.5">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm shadow-primary/10 ring-1 ring-primary/10">
-                <MessageSquare className="h-5 w-5 text-primary" />
+      {/* Compact Header - hidden on mobile when chat is open */}
+      <section className={`border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/2 to-background ${data.selectedPartner || data.activeGroupId ? "hidden md:block" : ""}`}>
+        <div className="container py-2 md:py-6">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 sm:gap-3.5">
+              <div className="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm shadow-primary/10 ring-1 ring-primary/10">
+                <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               <div>
-                <h1 className="text-lg font-bold tracking-tight md:text-xl">
+                <h1 className="text-base font-bold tracking-tight md:text-xl">
                   {t("Messages", "الرسائل")}
                 </h1>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">
                   {t("Connect with your peers and community", "تواصل مع زملائك ومجتمعك")}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {data.counts.unread > 0 && (
-                <Badge className="gap-1.5 text-xs px-3 py-1.5 rounded-xl animate-pulse shadow-sm shadow-primary/15">
+                <Badge className="gap-1 text-[10px] sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl animate-pulse shadow-sm shadow-primary/15">
                   <Bell className="h-3 w-3" />
-                  {data.counts.unread} {t("unread", "غير مقروءة")}
+                  {data.counts.unread}
                 </Badge>
               )}
-              <div className="flex items-center gap-1 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm p-1">
+              <div className="hidden sm:flex items-center gap-1 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm p-1">
                 <Badge variant="secondary" className="text-[10px] gap-1 cursor-default rounded-xl">
                   <MessageSquare className="h-3 w-3" />
                   {data.counts.all}
@@ -60,7 +60,7 @@ export default function Messages() {
                   </Badge>
                 )}
               </div>
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-muted" asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl hover:bg-muted" asChild>
                 <Link to="/notification-preferences">
                   <Settings className="h-4 w-4 text-muted-foreground" />
                 </Link>
@@ -70,9 +70,9 @@ export default function Messages() {
         </div>
       </section>
 
-      {/* Chat Interface */}
+      {/* Chat Interface - full height on mobile */}
       <div className="container py-0 md:py-6">
-        <Card className="mx-auto overflow-hidden rounded-none md:rounded-2xl border-0 md:border border-border/30 bg-card/80 backdrop-blur-sm shadow-none md:shadow-2xl md:shadow-primary/5" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
+        <Card className="mx-auto overflow-hidden rounded-none md:rounded-2xl border-0 md:border border-border/30 bg-card/80 backdrop-blur-sm shadow-none md:shadow-2xl md:shadow-primary/5" style={{ height: "calc(100dvh - 120px)", minHeight: 400 }}>
           <div className="flex h-full">
             <ConversationList
               isAr={data.isAr}

@@ -61,10 +61,10 @@ export function ConversationList({
 
   return (
     <div className={`w-full border-e border-border/30 md:w-80 flex flex-col bg-card/50 ${hidden ? "hidden md:flex" : ""}`}>
-      <div className="border-b border-border/30 p-4 space-y-3 bg-gradient-to-b from-primary/5 to-transparent">
+      <div className="border-b border-border/30 p-3 sm:p-4 space-y-2.5 sm:space-y-3 bg-gradient-to-b from-primary/5 to-transparent">
         <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-2.5 font-black text-sm tracking-tight">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-inner ring-1 ring-primary/10">
+          <h2 className="flex items-center gap-2 sm:gap-2.5 font-black text-sm tracking-tight">
+            <div className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-inner ring-1 ring-primary/10">
               <MessageSquare className="h-4 w-4 text-primary" />
             </div>
             {isAr ? "الرسائل" : "Messages"}
@@ -76,24 +76,24 @@ export function ConversationList({
             {onlineCount > 0 && (
               <Badge variant="outline" className="text-[9px] gap-1 h-6 border-primary/20 text-primary rounded-xl">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                {onlineCount} {isAr ? "متصل" : "online"}
+                {onlineCount}
               </Badge>
             )}
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={onNewGroup} title={isAr ? "مجموعة جديدة" : "New Group"}>
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all touch-manipulation" onClick={onNewGroup} title={isAr ? "مجموعة جديدة" : "New Group"}>
               <Users className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all" onClick={onNewConversation}>
+            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all touch-manipulation" onClick={onNewConversation}>
               <Plus className="h-4 w-4" />
             </Button>
           </div>
         </div>
         <div className="relative">
-          <Search className="absolute start-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
+          <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
           <Input
-            placeholder={isAr ? "بحث في المحادثات..." : "Search conversations..."}
+            placeholder={isAr ? "بحث..." : "Search..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="ps-9 h-9 text-xs border-border/30 bg-muted/20 rounded-xl transition-all focus:bg-background focus:ring-primary/20"
+            className="ps-8 h-9 text-sm border-border/30 bg-muted/20 rounded-xl transition-all focus:bg-background focus:ring-primary/20"
           />
         </div>
         <MessageCategoryFilter active={categoryFilter} onChange={setCategoryFilter} counts={counts} />

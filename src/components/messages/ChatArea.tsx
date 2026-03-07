@@ -211,8 +211,8 @@ export function ChatArea({
   return (
     <>
       {/* Chat Header */}
-      <div className="border-b border-border/30 p-3 flex items-center gap-3 bg-card/80 backdrop-blur-sm">
-        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl" onClick={onBack}>
+      <div className="border-b border-border/30 p-2.5 sm:p-3 flex items-center gap-2.5 sm:gap-3 bg-card/80 backdrop-blur-sm">
+        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl touch-manipulation active:scale-90" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div className="relative">
@@ -454,14 +454,16 @@ export function ChatArea({
       <ReplyPreview replyToMessage={replyTo} onClear={() => setReplyTo(null)} />
 
       {/* Message Input */}
-      <form onSubmit={handleSendWithReply} className="border-t border-border/30 bg-card/80 backdrop-blur-sm p-3">
-        <div className="flex gap-2 items-end">
-          <div className="flex items-center gap-0.5 rounded-xl border border-border/20 bg-muted/10 p-1">
+      <form onSubmit={handleSendWithReply} className="border-t border-border/30 bg-card/80 backdrop-blur-sm p-2 sm:p-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 0.5rem)" }}>
+        <div className="flex gap-1.5 sm:gap-2 items-end">
+          <div className="flex items-center gap-0.5 rounded-xl border border-border/20 bg-muted/10 p-0.5 sm:p-1">
             <EmojiPicker onEmojiSelect={(emoji) => setNewMessage(newMessage + emoji)} />
-            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-xl hover:bg-primary/5 hover:text-primary transition-colors" type="button" onClick={() => fileInputRef.current?.click()}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 rounded-xl hover:bg-primary/5 hover:text-primary transition-colors touch-manipulation" type="button" onClick={() => fileInputRef.current?.click()}>
               <Paperclip className="h-4 w-4" />
             </Button>
-            <LocationShareButton isAr={isAr} onShare={handleShareLocation} disabled={sendMessage.isPending} />
+            <span className="hidden sm:inline-flex">
+              <LocationShareButton isAr={isAr} onShare={handleShareLocation} disabled={sendMessage.isPending} />
+            </span>
             <VoiceMessageRecorder
               disabled={sendMessage.isPending || uploading}
               onSend={async (blob, dur) => {
@@ -485,12 +487,12 @@ export function ChatArea({
             value={newMessage}
             onChange={handleInputChange}
             placeholder={isAr ? "اكتب رسالة..." : "Type a message..."}
-            className="flex-1 h-10 text-sm rounded-xl border-border/30 bg-muted/10 focus:bg-background focus:ring-primary/20 transition-colors"
+            className="flex-1 h-11 text-base sm:text-sm rounded-xl border-border/30 bg-muted/10 focus:bg-background focus:ring-primary/20 transition-colors"
           />
           <Button
             type="submit"
             size="icon"
-            className="h-10 w-10 rounded-xl shrink-0 shadow-sm shadow-primary/15"
+            className="h-11 w-11 sm:h-10 sm:w-10 rounded-xl shrink-0 shadow-sm shadow-primary/15 touch-manipulation active:scale-90"
             disabled={(!newMessage.trim() && pendingFiles.length === 0) || sendMessage.isPending || uploading}
           >
             <Send className="h-4 w-4" />
