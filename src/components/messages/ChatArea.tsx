@@ -232,11 +232,13 @@ export function ChatArea({
             {getDisplayName(selectedPartner, isAr, "Unknown")}
           </p>
           <p className="text-[11px] text-muted-foreground">
-            {partnerTyping
-              ? isAr ? "يكتب..." : "typing..."
-              : isOnline(selectedPartner.user_id)
-              ? isAr ? "متصل" : "online"
-              : selectedPartner.username ? `@${selectedPartner.username}` : ""}
+            <LastSeenLabel
+              userId={selectedPartner.user_id}
+              isOnline={isOnline(selectedPartner.user_id)}
+              isTyping={partnerTyping}
+              isAr={isAr}
+              username={selectedPartner.username}
+            />
           </p>
         </div>
         <DropdownMenu>
