@@ -627,6 +627,17 @@ export default function ExhibitionDetail() {
             />
           </Suspense>
         </div>
+
+        {/* Related Exhibitions */}
+        <Suspense fallback={null}>
+          <RelatedExhibitions
+            exhibitionId={exhibition.id}
+            country={exhibition.country}
+            type={exhibition.type}
+            seriesId={(exhibition as any).series_id}
+            isAr={isAr}
+          />
+        </Suspense>
       </main>
 
       {/* Sticky mobile action bar */}
