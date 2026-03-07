@@ -62,7 +62,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
     queryFn: async () => {
       const { data, error } = await supabase
         .from("requirement_templates" as any)
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, category, items, is_public, usage_count, created_by, created_at")
         .or(`created_by.eq.${user!.id},is_public.eq.true`)
         .order("usage_count", { ascending: false });
       if (error) throw error;

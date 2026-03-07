@@ -28,7 +28,7 @@ serve(async (req) => {
     // Find matching active lifecycle triggers
     const { data: triggers } = await supabase
       .from("lifecycle_triggers")
-      .select("*")
+      .select("id, name, name_ar, trigger_event, action_type, channels, delay_minutes, template_slug, notification_title, notification_title_ar, notification_body, notification_body_ar, is_active")
       .eq("trigger_event", trigger_event)
       .eq("is_active", true);
 

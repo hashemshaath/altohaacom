@@ -61,7 +61,7 @@ serve(async (req) => {
     // Fetch the earning rule
     const { data: rule, error: ruleError } = await supabase
       .from("points_earning_rules")
-      .select("*")
+      .select("id, action_type, points, max_per_day, is_active, description")
       .eq("action_type", actionType)
       .eq("is_active", true)
       .single();

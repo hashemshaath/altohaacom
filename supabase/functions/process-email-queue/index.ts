@@ -30,7 +30,7 @@ serve(async (req) => {
     // Fetch pending email queue items
     const { data: queueItems, error: fetchError } = await supabase
       .from("notification_queue")
-      .select("*")
+      .select("id, user_id, channel, title, title_ar, body, body_ar, metadata, status, created_at")
       .eq("channel", "email")
       .eq("status", "pending")
       .order("created_at", { ascending: true })
