@@ -91,7 +91,7 @@ export default function LiveChatAdmin() {
       if (!selectedSessionId) return [];
       const { data, error } = await supabase
         .from("chat_session_messages")
-        .select("*")
+        .select("id, session_id, sender_id, message, message_type, created_at")
         .eq("session_id", selectedSessionId)
         .order("created_at", { ascending: true });
       if (error) throw error;

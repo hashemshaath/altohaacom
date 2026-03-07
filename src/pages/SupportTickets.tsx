@@ -137,7 +137,7 @@ export default function SupportTickets() {
       if (!selectedTicket) return [];
       const { data, error } = await supabase
         .from("support_ticket_messages")
-        .select("*")
+        .select("id, ticket_id, sender_id, message, message_ar, is_internal_note, attachments, created_at")
         .eq("ticket_id", selectedTicket.id)
         .eq("is_internal_note", false)
         .order("created_at", { ascending: true });
