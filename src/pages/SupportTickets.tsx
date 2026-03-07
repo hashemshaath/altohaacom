@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { TicketSatisfactionRating } from "@/components/support/TicketSatisfactionRating";
 import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
