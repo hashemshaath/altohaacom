@@ -42,7 +42,7 @@ export function EventComments({ eventType, eventId }: EventCommentsProps) {
       const commentIds = data.map(c => c.id);
       const { data: replies } = await supabase
         .from("event_comments")
-        .select("*")
+        .select("id, content, user_id, event_type, event_id, parent_id, likes_count, is_flagged, is_hidden, created_at")
         .in("parent_id", commentIds)
         .order("created_at", { ascending: true });
 

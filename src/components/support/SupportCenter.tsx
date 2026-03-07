@@ -67,7 +67,7 @@ export function SupportCenter() {
     queryFn: async () => {
       const { data } = await (supabase
         .from("support_ticket_replies" as any)
-        .select("*")
+        .select("id, ticket_id, sender_id, message, message_ar, is_internal, created_at")
         .eq("ticket_id", selectedTicket!.id)
         .order("created_at", { ascending: true }) as any);
       return data || [];

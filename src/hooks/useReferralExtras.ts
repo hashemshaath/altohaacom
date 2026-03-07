@@ -60,7 +60,7 @@ export function useReferralTiers() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_tier_bonuses")
-        .select("*")
+        .select("id, label, label_ar, min_referrals, max_referrals, bonus_points")
         .order("min_referrals");
       if (error) throw error;
       return data || [];

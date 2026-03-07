@@ -102,7 +102,7 @@ export default function CompanySponsorships() {
     queryFn: async () => {
       const { data } = await supabase
         .from("sponsorship_packages")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, tier, price, currency, benefits, logo_placement, logo_on_certificates, max_sponsors, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
       return data || [];

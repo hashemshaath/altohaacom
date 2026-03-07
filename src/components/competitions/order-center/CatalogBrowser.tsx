@@ -34,7 +34,7 @@ export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       let q = supabase
         .from("requirement_items")
-        .select("*")
+        .select("id, name, name_ar, category, subcategory, description, description_ar, unit, brand, brand_ar, size, size_ar, material, material_ar, image_url, estimated_cost, currency, default_quantity, alternatives, tags, is_active")
         .eq("is_active", true)
         .order("category")
         .order("name")
