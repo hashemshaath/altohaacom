@@ -128,23 +128,24 @@ export default function ShopProduct() {
       <SEOHead title={title} description={description || `${title} on Altoha Shop`} ogImage={product.image_url || undefined} />
       <Header />
 
-      <main className="container flex-1 py-6 md:py-8">
-        <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2">
+      <main className="container flex-1 py-4 md:py-8 pb-24 sm:pb-8">
+        <Button variant="ghost" size="sm" asChild className="mb-3 sm:mb-4 -ms-2 touch-manipulation">
           <Link to="/shop">
             <ArrowLeft className="me-1.5 h-4 w-4" />
             {isAr ? "المتجر" : "Shop"}
           </Link>
         </Button>
 
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-5 sm:gap-8 lg:grid-cols-2">
           {/* Images */}
-          <div className="space-y-3">
-            <div className="aspect-square overflow-hidden rounded-xl bg-muted ring-1 ring-border/50">
+          <div className="space-y-2.5 sm:space-y-3">
+            <div className="aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-muted ring-1 ring-border/50">
               {allImages.length > 0 ? (
                 <img
                   src={allImages[selectedImage]}
                   alt={title}
                   className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  fetchPriority="high"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -153,12 +154,12 @@ export default function ShopProduct() {
               )}
             </div>
             {allImages.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto">
+              <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
                 {allImages.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200 ${
+                    className={`h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 touch-manipulation active:scale-95 ${
                       i === selectedImage ? "border-primary ring-2 ring-primary/20 scale-105" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
@@ -180,19 +181,19 @@ export default function ShopProduct() {
                    (isAr ? "خدمة" : "Service")}
                 </Badge>
               </div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">{title}</h1>
+              <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{title}</h1>
             </div>
 
-            <p className="text-3xl font-bold text-primary">
+            <p className="text-2xl sm:text-3xl font-bold text-primary">
               SAR <AnimatedCounter value={Math.round(Number(product.price))} className="inline" format />
             </p>
 
             {description && (
-              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{description}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{description}</p>
             )}
 
             {product.product_type === "physical" && (
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
                 <Package className="h-4 w-4 text-muted-foreground" />
                 <span className={isOutOfStock ? "text-destructive" : "text-muted-foreground"}>
                   {isOutOfStock
@@ -203,17 +204,17 @@ export default function ShopProduct() {
             )}
 
             {/* Quantity + Add to Cart */}
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-2.5 sm:gap-3 pt-2">
               <div className="flex items-center rounded-xl border">
-                <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1}>
+                <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-10 sm:w-10 touch-manipulation" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1}>
                   <Minus className="h-4 w-4" />
                 </Button>
                 <span className="w-10 text-center font-medium">{qty}</span>
-                <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQty(Math.min(maxQty, qty + 1))} disabled={qty >= maxQty}>
+                <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-10 sm:w-10 touch-manipulation" onClick={() => setQty(Math.min(maxQty, qty + 1))} disabled={qty >= maxQty}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <Button className="flex-1 transition-transform duration-200 active:scale-95" size="lg" disabled={isOutOfStock} onClick={handleAddToCart}>
+              <Button className="flex-1 h-11 sm:h-10 transition-transform duration-200 active:scale-95 touch-manipulation rounded-xl" size="lg" disabled={isOutOfStock} onClick={handleAddToCart}>
                 <ShoppingCart className="me-2 h-5 w-5" />
                 {isAr ? "أضف إلى السلة" : "Add to Cart"}
               </Button>

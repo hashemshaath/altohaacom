@@ -364,7 +364,7 @@ export default function CompetitionDetail() {
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
         <section className="relative overflow-hidden">
-          <div className="relative h-48 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-44 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
               <img
                 src={competition.cover_image_url}
@@ -422,7 +422,7 @@ export default function CompetitionDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="font-serif text-xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
+                <h1 className="font-serif text-lg font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
                   {title}
                 </h1>
 
@@ -451,8 +451,8 @@ export default function CompetitionDetail() {
 
         {/* ─── Info Bar + Actions ─── */}
         <div className="border-y border-border/30 bg-card/60 backdrop-blur-md">
-          <div className="container py-4">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="container py-3 sm:py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-5">
                 {[
                   { label: isAr ? "الفئات" : "Categories", value: categories?.length || 0 },
