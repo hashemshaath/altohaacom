@@ -179,6 +179,7 @@ export default function Dashboard() {
           <div className="lg:sticky lg:top-20 space-y-4">
             {user && <ProfileCompletionCard />}
             {user && <W><ProfileSummaryCard /></W>}
+            {user && <W><PlatformScoreWidget /></W>}
             {user && <W><WalletBalanceWidget /></W>}
             {user && <W><StreakWidget /></W>}
             {user && <W><QuickActionsWidget /></W>}
