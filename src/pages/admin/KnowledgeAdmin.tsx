@@ -92,7 +92,7 @@ export default function KnowledgeAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reference_gallery")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, image_url, rating, competition_category, category, category_id, score_range_min, score_range_max, tags, is_active, sort_order, added_by, uploaded_by_name, created_at")
         .order("sort_order");
       if (error) throw error;
       return data;
