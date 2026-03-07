@@ -582,12 +582,12 @@ function CompetitionRow({
           </div>
           {/* Title */}
           <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
-            <HighlightText text={title} query={filters?.query || ""} />
+            {title}
           </h3>
           {/* Snippet */}
           {desc && (
             <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
-              <HighlightText text={desc} query={filters?.query || ""} />
+              {desc}
             </p>
           )}
           {/* Meta row */}
