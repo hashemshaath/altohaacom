@@ -18,14 +18,14 @@ export default function ChefsTable() {
   const [statusFilter, setStatusFilter] = useState("all");
   const { data: sessions, isLoading } = useChefsTableSessions();
 
-  const filtered = sessions?.filter(s => {
+  const filtered = useMemo(() => sessions?.filter(s => {
     const q = search.toLowerCase();
     const matchSearch = s.title.toLowerCase().includes(q) || s.product_name.toLowerCase().includes(q);
     const matchStatus = statusFilter === "all" || s.status === statusFilter;
     return matchSearch && matchStatus;
-  });
+  }), [sessions, search, statusFilter]);
 
-  const publishedSessions = filtered?.filter(s => s.is_published || s.organizer_id === user?.id);
+  const publishedSessions = useMemo(() => filtered?.filter(s => s.is_published || s.organizer_id === user?.id), [filtered, user?.id]);
 
   return (
     <PageShell
