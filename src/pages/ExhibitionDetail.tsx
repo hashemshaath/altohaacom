@@ -368,7 +368,7 @@ export default function ExhibitionDetail() {
         linkedCompetitionsCount={linkedCompetitions?.length || 0} isAr={isAr}
       />
 
-      <main className="container flex-1 py-6 pb-20 lg:pb-8 md:py-8">
+      <main className="container flex-1 py-4 pb-20 lg:pb-8 md:py-8">
         {/* Payment Callback */}
         {hasPaymentCallback && (
           <Suspense fallback={null}>
