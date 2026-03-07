@@ -57,6 +57,7 @@ const ActivityHeatmapWidget = lazy(() => import("@/components/dashboard/Activity
 const ProfileSummaryCard = lazy(() => import("@/components/dashboard/ProfileSummaryCard").then(m => ({ default: m.ProfileSummaryCard })));
 const RecentOrdersWidget = lazy(() => import("@/components/dashboard/RecentOrdersWidget").then(m => ({ default: m.RecentOrdersWidget })));
 const RecentChatsWidget = lazy(() => import("@/components/dashboard/RecentChatsWidget").then(m => ({ default: m.RecentChatsWidget })));
+const AchievementsChallengesWidget = lazy(() => import("@/components/dashboard/AchievementsChallengesWidget").then(m => ({ default: m.AchievementsChallengesWidget })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;

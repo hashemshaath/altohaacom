@@ -21,6 +21,8 @@ import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useEnhancedSEO } from "@/hooks/useEnhancedSEO";
 import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
 
+const AchievementCelebration = lazy(() => import("@/components/achievements/AchievementCelebration").then(m => ({ default: m.AchievementCelebration })));
+
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
 import { adminRoutes } from "@/routes/adminRoutes";
