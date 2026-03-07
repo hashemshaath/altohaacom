@@ -34,7 +34,7 @@ export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
 
       const { data: competitions } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, status, competition_start, venue, cover_image_url, type")
+        .select("id, title, title_ar, status, competition_start, venue, cover_image_url")
         .in("id", compIds)
         .order("competition_start", { ascending: false });
 
