@@ -62,7 +62,7 @@ export default function EvaluationReport() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_evaluations" as any)
-        .select("*")
+        .select("id, session_id, chef_id, overall_score, criteria_scores, strengths, weaknesses, recommendations, status, allow_publish, created_at")
         .eq("session_id", session.id)
         .eq("status", "submitted")
         .eq("allow_publish", true);

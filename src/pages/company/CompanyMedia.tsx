@@ -71,7 +71,7 @@ export default function CompanyMedia() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_media")
-        .select("*")
+        .select("id, company_id, filename, file_url, file_type, file_size, category, title, title_ar, description, is_public, uploaded_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;

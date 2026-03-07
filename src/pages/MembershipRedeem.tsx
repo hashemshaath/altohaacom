@@ -42,7 +42,7 @@ export default function MembershipRedeem() {
       if (!code || code.length < 5) return null;
       const { data, error } = await supabase
         .from("membership_gifts")
-        .select("*")
+        .select("id, gift_code, tier, status, sender_id, recipient_id, recipient_email, message, redeemed_at, expires_at, created_at")
         .eq("gift_code", code.toUpperCase())
         .maybeSingle();
       if (error) throw error;
