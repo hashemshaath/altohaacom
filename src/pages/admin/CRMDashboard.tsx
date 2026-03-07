@@ -133,7 +133,7 @@ export default function CRMDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("support_tickets")
-        .select("*")
+        .select("id, ticket_number, subject, subject_ar, category, priority, status, user_id, assigned_to, created_at, updated_at")
         .order("created_at", { ascending: false })
         .limit(6);
       return data || [];
