@@ -59,7 +59,7 @@ export default function JudgesAdmin() {
       // Get judge extended profiles
       const { data: judgeProfiles, error: jpErr } = await supabase
         .from("judge_profiles")
-        .select("*")
+        .select("id, user_id, judge_level, judge_category, judge_title, judge_title_ar, culinary_specialties, certifications, years_of_experience, country_of_residence, nationality, current_employer, current_position, languages_spoken, profile_photo_url, created_at, updated_at")
         .in("user_id", judgeUserIds);
       if (jpErr) throw jpErr;
 

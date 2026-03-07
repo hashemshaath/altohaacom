@@ -148,7 +148,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_custom_fields")
-        .select("*")
+        .select("id, user_id, field_name, field_type, field_value, created_at, updated_at")
         .eq("user_id", userId!)
         .order("field_name");
       return data || [];

@@ -53,7 +53,7 @@ export default function CompanyStatements() {
       if (!companyId) return [];
       const { data, error } = await supabase
         .from("company_transactions")
-        .select("*")
+        .select("id, company_id, type, amount, balance_after, description, description_ar, reference_id, reference_type, transaction_date, currency, created_at")
         .eq("company_id", companyId)
         .gte("transaction_date", startDate.toISOString())
         .lte("transaction_date", endDate.toISOString())
