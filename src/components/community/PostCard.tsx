@@ -175,7 +175,7 @@ export function PostCard({
 
             {/* Content */}
             <div
-              className="mt-2 text-[14px] sm:text-[14.5px] leading-[1.65] whitespace-pre-wrap break-words text-foreground/90"
+              className="mt-1.5 sm:mt-2 text-[13.5px] sm:text-[14.5px] leading-[1.6] whitespace-pre-wrap break-words text-foreground/90"
               onClick={() => onOpenThread(post.id)}
             >
               <MentionText content={post.content} />

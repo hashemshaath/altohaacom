@@ -87,7 +87,7 @@ export default function Community() {
         </div>
       </section>
 
-      <main className="container flex-1">
+      <main className="container flex-1 px-0 sm:px-4">
         <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-3">
           <CommunityLeftSidebar
             activeTab={activeTab}
