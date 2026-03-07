@@ -186,8 +186,10 @@ export function ReadinessChecklist({ competitionId }: Props) {
     ];
   }, [items, lists, sponsorships, judges, participants]);
 
-  const completeCount = checklistItems.filter(i => i.status === "complete").length;
-  const readinessScore = checklistItems.length > 0 ? Math.round((completeCount / checklistItems.length) * 100) : 0;
+  const { completeCount, readinessScore } = useMemo(() => {
+    const cc = checklistItems.filter(i => i.status === "complete").length;
+    return { completeCount: cc, readinessScore: checklistItems.length > 0 ? Math.round((cc / checklistItems.length) * 100) : 0 };
+  }, [checklistItems]);
 
   const STATUS_ICON = {
     complete: <CheckCircle2 className="h-5 w-5 text-chart-5" />,

@@ -180,15 +180,17 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
     return <OrderEmptyState type="checklist" />;
   }
 
-  const total = allItems.length;
-  const delivered = allItems.filter(i => i.status === "delivered").length;
-  const overdue = allItems.filter(i => i.deadline && isPast(new Date(i.deadline)) && i.status !== "delivered").length;
-  const progress = total > 0 ? Math.round((delivered / total) * 100) : 0;
-
-  const grouped = lists?.map(list => ({
-    ...list,
-    items: filteredItems.filter(i => i.list_id === list.id),
-  })).filter(g => g.items.length > 0) || [];
+  const { total, delivered, overdue, progress, grouped } = useMemo(() => {
+    const t = allItems.length;
+    const d = allItems.filter(i => i.status === "delivered").length;
+    const o = allItems.filter(i => i.deadline && isPast(new Date(i.deadline)) && i.status !== "delivered").length;
+    const p = t > 0 ? Math.round((d / t) * 100) : 0;
+    const g = lists?.map(list => ({
+      ...list,
+      items: filteredItems.filter(i => i.list_id === list.id),
+    })).filter(g => g.items.length > 0) || [];
+    return { total: t, delivered: d, overdue: o, progress: p, grouped: g };
+  }, [allItems, filteredItems, lists]);
 
   return (
     <div className="space-y-4">
