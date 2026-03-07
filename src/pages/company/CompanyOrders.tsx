@@ -38,7 +38,7 @@ export default function CompanyOrders() {
       if (!companyId) return [];
       let query = supabase
         .from("company_orders")
-        .select("*")
+        .select("id, company_id, order_number, title, title_ar, description, description_ar, direction, category, status, items, subtotal, discount_amount, tax_amount, total_amount, currency, delivery_date, due_date, order_date, notes, internal_notes, branch_id, competition_id, driver_id, created_by, approved_by, approved_at, rejected_by, rejected_at, rejection_reason, completed_at, created_at, updated_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
 

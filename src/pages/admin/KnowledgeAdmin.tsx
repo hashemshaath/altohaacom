@@ -104,7 +104,7 @@ export default function KnowledgeAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judging_rubric_templates")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, competition_type, category_type, criteria, is_active, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
