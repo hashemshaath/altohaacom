@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
+import { NotificationPriorityBadge, inferPriority } from "./NotificationPriorityBadge";
+import { NotificationActionButtons } from "./NotificationActionButtons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
