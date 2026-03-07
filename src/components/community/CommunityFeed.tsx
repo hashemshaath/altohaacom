@@ -282,9 +282,8 @@ export function CommunityFeed() {
   }, [hasMore, loading, loadingMore, posts.length, fetchPosts]);
 
   // Optimistic like
-  const handleLike = async (postId: string, isLiked: boolean) => {
+  const handleLike = useCallback(async (postId: string, isLiked: boolean) => {
     if (!user) return;
-    // Optimistic update
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId ? { ...p, is_liked: !isLiked, likes_count: isLiked ? p.likes_count - 1 : p.likes_count + 1 } : p
@@ -294,14 +293,13 @@ export function CommunityFeed() {
       ? await supabase.from("post_likes").delete().eq("post_id", postId).eq("user_id", user.id)
       : await supabase.from("post_likes").insert({ post_id: postId, user_id: user.id });
     if (error) {
-      // Rollback
       setPosts((prev) =>
         prev.map((p) =>
           p.id === postId ? { ...p, is_liked: isLiked, likes_count: isLiked ? p.likes_count + 1 : p.likes_count - 1 } : p
         )
       );
     }
-  };
+  }, [user]);
 
   // Optimistic bookmark
   const handleBookmark = async (postId: string, isBookmarked: boolean) => {
