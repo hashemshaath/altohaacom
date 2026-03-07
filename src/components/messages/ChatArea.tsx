@@ -1,4 +1,5 @@
 import { RefObject, useState, useCallback, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,9 @@ import { ForwardMessageDialog } from "@/components/messages/ForwardMessageDialog
 import { PinnedMessagesBar } from "@/components/messages/PinnedMessagesBar";
 import { LocationShareButton, LocationBubble } from "@/components/messages/LocationShareButton";
 import { MediaPreviewOverlay } from "@/components/messages/MediaPreviewOverlay";
+import { QuickReplySuggestions } from "@/components/messages/QuickReplySuggestions";
+import { UnreadDivider } from "@/components/messages/UnreadDivider";
+import { LastSeenLabel } from "@/components/messages/LastSeenLabel";
 import {
   Send, ArrowLeft, MoreVertical, Search, CheckSquare,
   Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare,
@@ -128,11 +132,39 @@ export function ChatArea({
   setIsApprovalOpen, onBack, sendMessage, toggleStarMutation,
 }: ChatAreaProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [replyTo, setReplyTo] = useState<{ id: string; content: string; senderName: string } | null>(null);
   const [forwardMsg, setForwardMsg] = useState<Message | null>(null);
   const [mediaPreview, setMediaPreview] = useState<{ urls: string[]; index: number } | null>(null);
 
   const pinnedMessages = useMemo(() => (messages || []).filter((m) => (m as any).is_pinned), [messages]);
+
+  // Compute unread divider position
+  const firstUnreadIdx = useMemo(() => {
+    if (!messages || !user) return -1;
+    return messages.findIndex((m) => m.receiver_id === user.id && !m.is_read);
+  }, [messages, user]);
+
+  const unreadCount = useMemo(() => {
+    if (!messages || !user) return 0;
+    return messages.filter((m) => m.receiver_id === user.id && !m.is_read).length;
+  }, [messages, user]);
+
+  // Last received message for quick reply context
+  const lastReceivedMsg = useMemo(() => {
+    if (!messages || !user) return null;
+    const received = messages.filter((m) => m.sender_id !== user.id);
+    return received.length > 0 ? received[received.length - 1] : null;
+  }, [messages, user]);
+
+  const handleDeleteMessage = useCallback(async (msgId: string) => {
+    const { error } = await supabase.from("messages").delete().eq("id", msgId);
+    if (!error) {
+      toast({ title: isAr ? "تم حذف الرسالة" : "Message deleted" });
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    }
+  }, [isAr, toast, queryClient]);
 
   const handlePin = useCallback(async (msgId: string, pin: boolean) => {
     await supabase.from("messages").update({ is_pinned: pin } as any).eq("id", msgId);
@@ -229,11 +261,13 @@ export function ChatArea({
             {getDisplayName(selectedPartner, isAr, "Unknown")}
           </p>
           <p className="text-[11px] text-muted-foreground">
-            {partnerTyping
-              ? isAr ? "يكتب..." : "typing..."
-              : isOnline(selectedPartner.user_id)
-              ? isAr ? "متصل" : "online"
-              : selectedPartner.username ? `@${selectedPartner.username}` : ""}
+            <LastSeenLabel
+              userId={selectedPartner.user_id}
+              isOnline={isOnline(selectedPartner.user_id)}
+              isTyping={partnerTyping}
+              isAr={isAr}
+              username={selectedPartner.username}
+            />
           </p>
         </div>
         <DropdownMenu>
@@ -307,6 +341,10 @@ export function ChatArea({
 
               return (
                 <div key={msg.id}>
+                  {/* Unread Divider */}
+                  {idx === firstUnreadIdx && unreadCount > 0 && (
+                    <UnreadDivider isAr={isAr} count={unreadCount} />
+                  )}
                   {/* Date Separator */}
                   {showDate && (
                     <div className="flex items-center gap-3 py-4">
@@ -333,6 +371,11 @@ export function ChatArea({
                         <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
+                        {isMine && (
+                          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-destructive/10" title={isAr ? "حذف" : "Delete"} onClick={() => handleDeleteMessage(msg.id)}>
+                            <Trash2 className="h-3 w-3 text-destructive/70" />
+                          </Button>
+                        )}
                       </div>
 
                       <div className={`rounded-2xl px-4 py-3 transition-all duration-200 hover:shadow-md ${
@@ -452,6 +495,19 @@ export function ChatArea({
 
       {/* Reply Preview */}
       <ReplyPreview replyToMessage={replyTo} onClear={() => setReplyTo(null)} />
+
+      {/* Quick Reply Suggestions */}
+      {!newMessage.trim() && !replyTo && !pendingFiles.length && (
+        <div className="border-t border-border/20 bg-muted/5 px-3 py-1.5">
+          <QuickReplySuggestions
+            lastMessage={lastReceivedMsg}
+            isAr={isAr}
+            onSelect={(text) => {
+              sendMessage.mutate({ content: text, message_type: "text" });
+            }}
+          />
+        </div>
+      )}
 
       {/* Message Input */}
       <form onSubmit={handleSendWithReply} className="border-t border-border/30 bg-card/80 backdrop-blur-sm p-2 sm:p-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 0.5rem)" }}>
