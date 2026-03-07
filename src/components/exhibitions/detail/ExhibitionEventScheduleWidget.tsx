@@ -18,7 +18,7 @@ export function ExhibitionEventScheduleWidget({ exhibitionId, isAr }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_schedule_items")
-        .select("*")
+        .select("id, title, title_ar, start_time, end_time, location, location_ar, category, speaker_name")
         .eq("exhibition_id", exhibitionId)
         .gte("start_time", new Date().toISOString())
         .order("start_time", { ascending: true })

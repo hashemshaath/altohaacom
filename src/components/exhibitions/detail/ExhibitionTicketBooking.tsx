@@ -38,7 +38,7 @@ export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree,
       if (!user) return null;
       const { data } = await supabase
         .from("exhibition_tickets")
-        .select("*")
+        .select("id, ticket_number, qr_code, status, attendee_name, created_at")
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id)
         .eq("status", "confirmed")

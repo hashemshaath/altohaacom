@@ -31,7 +31,7 @@ export function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
       if (!user) return [];
       const { data } = await supabase
         .from("exhibition_loyalty_actions")
-        .select("*")
+        .select("id, action_type, points_earned, created_at")
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id);
       return data || [];

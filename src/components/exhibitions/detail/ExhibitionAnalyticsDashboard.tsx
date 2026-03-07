@@ -28,7 +28,7 @@ export function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("exhibition_analytics_events")
-        .select("*")
+        .select("id, event_type, created_at")
         .eq("exhibition_id", exhibitionId)
         .gte("created_at", sinceDate)
         .order("created_at", { ascending: true });

@@ -27,7 +27,7 @@ export function ExhibitionTicketCheckin({ exhibitionId, isAr }: Props) {
       // Search by ticket number or QR code
       const { data, error } = await supabase
         .from("exhibition_tickets")
-        .select("*")
+        .select("id, ticket_number, qr_code, status, checked_in_at, attendee_name, attendee_email, user_id")
         .eq("exhibition_id", exhibitionId)
         .or(`ticket_number.eq.${trimmed},qr_code.eq.${trimmed}`)
         .maybeSingle();

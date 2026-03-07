@@ -42,7 +42,7 @@ export function ExhibitionExhibitorRegistration({ exhibitionId, isAr }: Props) {
       if (!user) return null;
       const { data } = await supabase
         .from("exhibition_booth_requests")
-        .select("*")
+        .select("id, status, company_name, contact_name, admin_notes, created_at, reviewed_at")
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id)
         .maybeSingle();
