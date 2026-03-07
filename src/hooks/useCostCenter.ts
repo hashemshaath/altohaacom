@@ -182,7 +182,7 @@ export function useCostEstimateItems(estimateId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cost_estimate_items" as any)
-        .select("*")
+        .select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at")
         .eq("estimate_id", estimateId!)
         .order("sort_order");
       if (error) throw error;
