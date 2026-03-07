@@ -282,13 +282,6 @@ export default function OrganizerDetail() {
   const contactPhone = orgRecord?.phone || org?.organizer_phone;
   const contactWebsite = orgRecord?.website || org?.organizer_website;
 
-  const availableTabs = useMemo(() => [
-    "exhibitions", "profile", "stats",
-    ...(allSponsors.length > 0 ? ["partners"] : []),
-    ...(articles.length > 0 ? ["news"] : []),
-  ], [allSponsors.length, articles.length]);
-
-  const { swipeHandlers } = useSwipeTabs({ tabs: availableTabs, currentTab: activeTab, onTabChange: setActiveTab });
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
