@@ -63,6 +63,7 @@ export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const {
     filters,
     updateFilter,
