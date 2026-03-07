@@ -337,6 +337,10 @@ export function ChatArea({
 
               return (
                 <div key={msg.id}>
+                  {/* Unread Divider */}
+                  {idx === firstUnreadIdx && unreadCount > 0 && (
+                    <UnreadDivider isAr={isAr} count={unreadCount} />
+                  )}
                   {/* Date Separator */}
                   {showDate && (
                     <div className="flex items-center gap-3 py-4">
