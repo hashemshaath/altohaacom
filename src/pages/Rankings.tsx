@@ -46,7 +46,7 @@ export default function Rankings() {
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
       return data.map(r => ({ ...r, profile: profileMap.get(r.user_id) }));
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: 1000 * 60 * 10,
   });
 
   const { data: countries } = useQuery({

@@ -82,7 +82,7 @@ function useSessionInteractions(sessionId: string | null) {
       if (!sessionId) return [];
       const { data } = await supabase
         .from("exhibition_session_interactions")
-        .select("*")
+        .select("id, user_id, interaction_type, content, emoji, created_at")
         .eq("session_id", sessionId)
         .order("created_at", { ascending: true })
         .limit(100);
