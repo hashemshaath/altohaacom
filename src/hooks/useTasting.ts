@@ -199,7 +199,7 @@ export function useCriteriaPresets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_criteria_presets" as any)
-        .select("*");
+        .select("id, preset_name, preset_name_ar, category, criteria, is_system");
       if (error) throw error;
       return (data || []) as unknown as CriteriaPreset[];
     },
