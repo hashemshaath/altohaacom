@@ -119,11 +119,11 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
       </div>
 
       {/* Profile Info */}
-      <div className="relative px-4 pb-5 sm:px-8 sm:pb-7">
+      <div className="relative px-3 pb-4 sm:px-8 sm:pb-7">
         {/* Avatar */}
-        <div className="relative -mt-14 sm:-mt-22 mb-4 sm:mb-5">
+        <div className="relative -mt-12 sm:-mt-22 mb-3 sm:mb-5">
           <div className="relative inline-block">
-            <div className="relative h-24 w-24 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
+            <div className="relative h-20 w-20 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
               <Avatar className="h-full w-full rounded-[calc(1.5rem-2px)] ring-4 ring-card shadow-inner overflow-hidden bg-card">
                 <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
                 <AvatarFallback className="text-3xl sm:text-5xl font-black bg-primary/10 text-primary">
