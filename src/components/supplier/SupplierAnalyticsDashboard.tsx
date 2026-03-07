@@ -177,7 +177,7 @@ export function SupplierAnalyticsDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {ratingDist.map(({ star, count, pct }) => (
+            {stats.ratingDist.map(({ star, count, pct }) => (
               <div key={star} className="flex items-center gap-3 text-sm">
                 <span className="w-4 font-medium">{star}</span>
                 <Star className="h-3.5 w-3.5 fill-chart-4 text-chart-4" />
