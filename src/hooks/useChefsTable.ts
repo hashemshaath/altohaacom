@@ -198,7 +198,7 @@ export function useChefsTableSession(id: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_sessions" as any)
-        .select("*")
+        .select("id, request_id, company_id, session_number, title, title_ar, description, description_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, chef_selection_method, max_chefs, sample_delivery_address, sample_delivery_notes, notes, notes_ar, is_published, published_at, created_at, updated_at")
         .eq("id", id!)
         .single();
       if (error) throw error;
