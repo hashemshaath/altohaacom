@@ -29,6 +29,7 @@ import { ar } from "date-fns/locale";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSwipeTabs } from "@/hooks/useSwipeTabs";
 import { toast } from "sonner";
 
 interface ExhibitionRow {
