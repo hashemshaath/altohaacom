@@ -275,7 +275,7 @@ export function PostCard({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-8 gap-1.5 rounded-xl px-3 text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90",
+                    "h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[11px] sm:text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90 touch-manipulation",
                     post.is_reposted ? "text-chart-3" : "text-muted-foreground"
                   )}
                   onClick={() => onRepost(post.id, post.is_reposted)}

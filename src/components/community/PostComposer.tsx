@@ -325,8 +325,8 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
               placeholder={getPlaceholder()}
               value={content}
               onChange={(e) => setContent(e.target.value.slice(0, MAX_CHARS + 50))}
-              className="resize-none border-0 bg-transparent px-0 py-1 text-base shadow-none placeholder:text-muted-foreground/60 focus-visible:ring-0"
-              rows={compact ? 1 : 3}
+              className="resize-none border-0 bg-transparent px-0 py-1 text-base shadow-none placeholder:text-muted-foreground/60 focus-visible:ring-0 min-h-[44px]"
+              rows={compact ? 1 : 2}
               autoFocus={autoFocus}
             />
             <MentionAutocomplete
