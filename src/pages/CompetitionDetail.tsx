@@ -451,8 +451,8 @@ export default function CompetitionDetail() {
 
         {/* ─── Info Bar + Actions ─── */}
         <div className="border-y border-border/30 bg-card/60 backdrop-blur-md">
-          <div className="container py-4">
-            <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="container py-3 sm:py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-5">
                 {[
                   { label: isAr ? "الفئات" : "Categories", value: categories?.length || 0 },

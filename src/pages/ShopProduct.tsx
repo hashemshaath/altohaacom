@@ -181,19 +181,19 @@ export default function ShopProduct() {
                    (isAr ? "خدمة" : "Service")}
                 </Badge>
               </div>
-              <h1 className="font-serif text-2xl font-bold md:text-3xl">{title}</h1>
+              <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{title}</h1>
             </div>
 
-            <p className="text-3xl font-bold text-primary">
+            <p className="text-2xl sm:text-3xl font-bold text-primary">
               SAR <AnimatedCounter value={Math.round(Number(product.price))} className="inline" format />
             </p>
 
             {description && (
-              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{description}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{description}</p>
             )}
 
             {product.product_type === "physical" && (
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
                 <Package className="h-4 w-4 text-muted-foreground" />
                 <span className={isOutOfStock ? "text-destructive" : "text-muted-foreground"}>
                   {isOutOfStock
@@ -204,17 +204,17 @@ export default function ShopProduct() {
             )}
 
             {/* Quantity + Add to Cart */}
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-2.5 sm:gap-3 pt-2">
               <div className="flex items-center rounded-xl border">
-                <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1}>
+                <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-10 sm:w-10 touch-manipulation" onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1}>
                   <Minus className="h-4 w-4" />
                 </Button>
                 <span className="w-10 text-center font-medium">{qty}</span>
-                <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQty(Math.min(maxQty, qty + 1))} disabled={qty >= maxQty}>
+                <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-10 sm:w-10 touch-manipulation" onClick={() => setQty(Math.min(maxQty, qty + 1))} disabled={qty >= maxQty}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <Button className="flex-1 transition-transform duration-200 active:scale-95" size="lg" disabled={isOutOfStock} onClick={handleAddToCart}>
+              <Button className="flex-1 h-11 sm:h-10 transition-transform duration-200 active:scale-95 touch-manipulation rounded-xl" size="lg" disabled={isOutOfStock} onClick={handleAddToCart}>
                 <ShoppingCart className="me-2 h-5 w-5" />
                 {isAr ? "أضف إلى السلة" : "Add to Cart"}
               </Button>

@@ -74,7 +74,7 @@ export default function Community() {
                 </span>
                 <ActivityPulse status="live" size="sm" />
               </div>
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
+              <h1 className="font-serif text-xl sm:text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.75rem]">
                 {isAr ? "المجتمع" : "Community"}
               </h1>
               <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed md:text-base max-w-lg hidden sm:block">
