@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 const NOTIFICATION_ICONS: Record<string, string> = {
   follow: "👤",
@@ -42,22 +41,14 @@ function playNotificationSound() {
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.3);
   } catch {
-    // Silently fail — user hasn't interacted yet or AudioContext unavailable
-  }
-}
-
-/** Trigger haptic feedback on supported devices */
-function triggerHaptic() {
-  try {
-    if ("vibrate" in navigator) navigator.vibrate(50);
-  } catch {
-    // Not supported
+    // Silently fail
   }
 }
 
 /**
- * Subscribes to realtime notification inserts for the current user
- * and shows a sonner toast with sound + haptic for each new notification.
+ * Subscribes to realtime notification inserts for the current user.
+ * NOTE: Toast display is handled by useNotifications to avoid duplicate toasts.
+ * This hook only handles sound, haptic, and query invalidation.
  */
 export function useRealtimeNotifications() {
   const { user } = useAuth();
@@ -68,7 +59,7 @@ export function useRealtimeNotifications() {
     if (!user) return;
 
     const channel = supabase
-      .channel(`notifications-${user.id}`)
+      .channel(`rt-notif-${user.id}`)
       .on(
         "postgres_changes",
         {
@@ -77,32 +68,14 @@ export function useRealtimeNotifications() {
           table: "notifications",
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          const notification = payload.new as any;
-          const icon = NOTIFICATION_ICONS[notification.type] || "🔔";
-          const title = notification.title || notification.title_ar || "New notification";
-
+        () => {
           // Debounce rapid-fire notifications (300ms)
           const now = Date.now();
           if (now - lastNotifTime.current > 300) {
             playNotificationSound();
-            triggerHaptic();
+            try { if ("vibrate" in navigator) navigator.vibrate(50); } catch {}
             lastNotifTime.current = now;
           }
-
-          toast(title, {
-            description: notification.body || notification.body_ar,
-            icon,
-            action: notification.link
-              ? {
-                  label: "View",
-                  onClick: () => {
-                    window.location.href = notification.link;
-                  },
-                }
-              : undefined,
-            duration: 5000,
-          });
 
           // Invalidate notification queries to update bell count
           queryClient.invalidateQueries({ queryKey: ["notifications"] });
