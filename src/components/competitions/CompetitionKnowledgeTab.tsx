@@ -86,7 +86,7 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order")
         .eq("competition_id", competitionId)
         .order("sort_order");
       if (error) throw error;

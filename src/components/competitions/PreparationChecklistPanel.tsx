@@ -61,7 +61,7 @@ export function PreparationChecklistPanel({ competitionId }: Props) {
       if (!user) return null;
       const { data, error } = await supabase
         .from("preparation_checklists")
-        .select("*")
+        .select("id, competition_id, user_id, items, progress_percentage, created_at, updated_at")
         .eq("competition_id", competitionId)
         .eq("user_id", user.id)
         .maybeSingle();

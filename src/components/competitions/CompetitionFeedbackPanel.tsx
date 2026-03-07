@@ -29,7 +29,7 @@ export function CompetitionFeedbackPanel({ competitionId }: Props) {
       if (!user) return [];
       const { data, error } = await supabase
         .from("competition_feedback")
-        .select("*")
+        .select("id, competition_id, registration_id, judge_id, category, comment, comment_ar, score_breakdown, is_visible, released_at, created_at")
         .eq("competition_id", competitionId)
         .eq("is_visible", true);
       if (error) throw error;

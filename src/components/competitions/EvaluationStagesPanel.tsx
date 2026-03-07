@@ -39,7 +39,7 @@ export function EvaluationStagesPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_stages")
-        .select("*")
+        .select("id, competition_id, name, name_ar, stage_type, weight_percentage, sort_order, is_active, created_at")
         .eq("competition_id", competitionId)
         .order("sort_order");
       if (error) throw error;
