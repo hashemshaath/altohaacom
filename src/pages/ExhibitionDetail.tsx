@@ -368,7 +368,7 @@ export default function ExhibitionDetail() {
         linkedCompetitionsCount={linkedCompetitions?.length || 0} isAr={isAr}
       />
 
-      <main className="container flex-1 py-6 pb-20 lg:pb-8 md:py-8">
+      <main className="container flex-1 py-4 pb-20 lg:pb-8 md:py-8">
         {/* Payment Callback */}
         {hasPaymentCallback && (
           <Suspense fallback={null}>
@@ -380,11 +380,11 @@ export default function ExhibitionDetail() {
           </Suspense>
         )}
         {/* Quick Stats Bar */}
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />
         </div>
         {/* Interactive Stats Bar */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <ExhibitionInteractiveStats
             viewCount={exhibition.view_count || 0}
             followerCount={followerCount || 0}

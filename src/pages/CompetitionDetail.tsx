@@ -98,23 +98,23 @@ function Section({
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className={`overflow-hidden rounded-2xl border transition-all duration-300 ${accent ? "border-primary/15 bg-primary/[0.02]" : "border-border/40 bg-card"} ${open ? "shadow-sm" : "shadow-none"}`}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-5 py-4 text-start hover:bg-muted/20 transition-colors group">
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
               <span className="text-primary">{icon}</span>
             </div>
             <div>
-              <h3 className="font-semibold text-[15px] tracking-tight">{title}</h3>
+              <h3 className="font-semibold text-sm sm:text-[15px] tracking-tight">{title}</h3>
               {badge && <div className="mt-0.5">{badge}</div>}
             </div>
           </div>
           <ChevronDown className={`h-4 w-4 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-          <div className="mx-5 mb-0.5">
+          <div className="mx-4 sm:mx-5 mb-0.5">
             <Separator className="opacity-30" />
           </div>
-          <div className="p-5 sm:p-6">{children}</div>
+          <div className="p-4 sm:p-6">{children}</div>
         </CollapsibleContent>
       </div>
     </Collapsible>
@@ -364,7 +364,7 @@ export default function CompetitionDetail() {
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
         <section className="relative overflow-hidden">
-          <div className="relative h-56 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-48 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
               <img
                 src={competition.cover_image_url}
@@ -376,7 +376,7 @@ export default function CompetitionDetail() {
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-muted/30 to-background">
-                <Trophy className="h-40 w-40 text-primary/[0.06]" />
+                <Trophy className="h-28 w-28 sm:h-40 sm:w-40 text-primary/[0.06]" />
               </div>
             )}
             {/* Cinematic gradient overlay */}
@@ -387,7 +387,7 @@ export default function CompetitionDetail() {
           {/* Hero content bar — below image overlay */}
           <div className="absolute inset-x-0 bottom-0">
              <div className="container pb-5 sm:pb-8 md:pb-10">
-               <div className="max-w-4xl space-y-2.5 sm:space-y-4 animate-fade-in">
+                <div className="max-w-4xl space-y-2 sm:space-y-4 animate-fade-in">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -422,12 +422,12 @@ export default function CompetitionDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="font-serif text-2xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
+                <h1 className="font-serif text-xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
                   {title}
                 </h1>
 
                 {/* Meta info */}
-                <div className="flex items-center gap-4 sm:gap-6 text-sm text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-primary" />
                     <span className="font-medium">{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
@@ -537,13 +537,13 @@ export default function CompetitionDetail() {
         {/* ─── Navigation Pills ─── */}
         <div className="sticky top-14 z-30 border-b border-border/30 bg-background/95 backdrop-blur-xl">
           <div className="container">
-            <div className="flex gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x">
+            <div className="flex gap-0.5 sm:gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x scroll-smooth">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(item.id); }}
                   className={`
-                    snap-start inline-flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation
+                    snap-start inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
                     ${activeSection === item.id
                       ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                       : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
@@ -573,7 +573,7 @@ export default function CompetitionDetail() {
           </div>
         )}
 
-        <div className="container py-8 sm:py-10">
+        <div className="container py-5 pb-20 sm:py-8 sm:pb-10 lg:pb-10">
           {/* ─── Registration banners ─── */}
           {canRegister && !showRegistrationForm && (
             <div className="mb-8 rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] via-transparent to-accent/[0.04] p-5 sm:p-6">

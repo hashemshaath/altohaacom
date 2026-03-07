@@ -66,7 +66,7 @@ export function ExhibitionHero({
       {/* Cover Image — only when visible */}
       {isVisible && (
       <div className="relative w-full overflow-hidden" style={{ maxHeight: height ? `${height}px` : "360px" }}>
-        <div className="aspect-[21/9] w-full">
+        <div className="aspect-[21/9] sm:aspect-[21/9] w-full">
           {exhibition.cover_image_url ? (
             <img
               src={exhibition.cover_image_url}
@@ -122,7 +122,7 @@ export function ExhibitionHero({
 
       {/* Content bar — below the image */}
       <div className="border-b border-border/50 bg-card">
-        <div className="container py-4 sm:py-5 space-y-3">
+        <div className="container py-3 sm:py-5 space-y-2 sm:space-y-3">
           {/* Title row */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div className="space-y-2 min-w-0 flex-1">
@@ -143,7 +143,7 @@ export function ExhibitionHero({
               </div>
 
               {/* Title — clean, no year duplication, mobile-friendly size */}
-              <h1 className={`text-xl font-bold leading-tight tracking-tight sm:text-2xl md:text-3xl text-foreground ${isAr ? "" : "font-serif"}`}>
+              <h1 className={`text-lg font-bold leading-tight tracking-tight sm:text-2xl md:text-3xl text-foreground ${isAr ? "" : "font-serif"}`}>
                 {title}
               </h1>
 
