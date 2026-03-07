@@ -150,12 +150,12 @@ export function useNotifications() {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  // Real-time subscription
+  // Real-time subscription — only handles data sync (toast/sound is in useRealtimeNotifications)
   useEffect(() => {
     if (!user) return;
 
     const channel = supabase
-      .channel("notifications")
+      .channel("notif-data-sync")
       .on(
         "postgres_changes",
         {
@@ -168,37 +168,6 @@ export function useNotifications() {
           const newNotification = payload.new as Notification;
           setNotifications(prev => [newNotification, ...prev]);
           setUnreadCount(prev => prev + 1);
-          
-          // Play notification sound if enabled
-          const soundOn = localStorage.getItem(SOUND_KEY) !== "false";
-          const dnd = localStorage.getItem(DND_KEY) === "true";
-          
-          if (soundOn && !dnd) {
-            try {
-              const audio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbsGczGiCGr9H/cj0YKXOS0O2IVzMjVo6+5qVoTCtZhLjf0mpJLFeNwuenn11FIVaLvd/fczYbREhKZqG6yLFiQjJakrjU3qxlTjhJXI++1cJ4UjRAQE2GsNHhm2RAJ0CDqbzd4qtjSTpaj77JwnhQK0BCSoCqzuOhdEYzW5K84eKzb007VZC+1cF2TipCRUyAqM7nimVBOF6UvNjdt2xLO1eSwdjDd08xR0JIf6TJ4YhgPTdjl7vR26llOEhprsHKt2ZKL0RFRnieyN6FXUA7a5u6zNSgXjJNdbW9wq5gRCpESUB2m8Xdg1pBO3Kfu8fKl1YrRXy5t7ioV0AiQU0+dJjC2oFXQz58o7vCxI1NK0OBuLGtnlM6H0FQQXKWP9Z/VEQ+gae7vsC9hUcmQYi2rKiUTTQaQlNAdZc/1X1TRj+Ep7q6urdFxUZCoLWopI5ENhZDV0F4mUDTfFVHQoiovLO2s0M/P0GotKejikE0EURbQ3uaQdF7V0lFjqu8r7KvP0s4PK20paCHPzETR19Ff5xC0HxZSkeMrb2rr6k7UTQ5sLSkn4U+MBRIZ0eBnUTPfFtMSo+vvaiqpDlVMTm0taOfhD0vFUlsSISeRc99XU5Mka+9pKehN1kxOba2oZ2CPi4YS3FJhqBH0H5fUE2UsL2iqJw1XjE7uLahn4E+LhpNc0uIoknQf2FSUJW0vaOqmTNiMj26t6GcgD8uHE91TIqlStF+Y1RSlra8oauXMmYzP7y4oZt/QS8eTndOi6dL0YBkVlOYt7yhq5UxajNA");
-              audio.volume = 0.3;
-              audio.play().catch(() => {});
-            } catch (_) {}
-          }
-          
-          // Show rich toast alert if not DND
-          if (!dnd) {
-            const typeEmoji = newNotification.type === "success" ? "✅" :
-              newNotification.type === "warning" ? "⚠️" :
-              newNotification.type === "error" ? "❌" : "🔔";
-            
-            sonnerToast(newNotification.title || "New Notification", {
-              description: newNotification.body || undefined,
-              icon: typeEmoji,
-              duration: 5000,
-              action: newNotification.link ? {
-                label: "View",
-                onClick: () => {
-                  window.location.href = newNotification.link!;
-                },
-              } : undefined,
-            });
-          }
         }
       )
       .on(
@@ -211,13 +180,10 @@ export function useNotifications() {
         },
         (payload) => {
           const updated = payload.new as Notification;
-          setNotifications(prev =>
-            prev.map(n => (n.id === updated.id ? updated : n))
-          );
-          // Recalculate unread count
           setNotifications(prev => {
-            setUnreadCount(prev.filter(n => !n.is_read).length);
-            return prev;
+            const next = prev.map(n => (n.id === updated.id ? updated : n));
+            setUnreadCount(next.filter(n => !n.is_read).length);
+            return next;
           });
         }
       )
