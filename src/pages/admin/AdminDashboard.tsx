@@ -349,7 +349,7 @@ export default function AdminDashboard() {
       <AdminMobileNavGrid />
 
       {/* Quick Actions & Shortcuts */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2.5 sm:gap-3">
         <div className="lg:col-span-3">
           <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
         </div>
