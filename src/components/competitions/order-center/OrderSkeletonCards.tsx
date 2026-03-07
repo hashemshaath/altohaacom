@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /** Skeleton for metric cards grid (4 cards) */
-export function MetricCardsSkeleton() {
+export const MetricCardsSkeleton = memo(function MetricCardsSkeleton() {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
       {Array.from({ length: 4 }).map((_, i) => (
