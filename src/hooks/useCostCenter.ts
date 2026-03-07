@@ -375,7 +375,7 @@ export function useDuplicateCostEstimate() {
   return useMutation({
     mutationFn: async (sourceId: string) => {
       const { data: source, error: srcErr } = await supabase
-        .from("cost_estimates" as any).select("*").eq("id", sourceId).single();
+        .from("cost_estimates" as any).select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at").eq("id", sourceId).single();
       if (srcErr) throw srcErr;
       const src = source as unknown as CostEstimate;
 
