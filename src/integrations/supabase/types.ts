@@ -15318,6 +15318,7 @@ export type Database = {
           is_read: boolean | null
           link: string | null
           metadata: Json | null
+          priority: string
           read_at: string | null
           status: Database["public"]["Enums"]["notification_status"] | null
           title: string
@@ -15334,6 +15335,7 @@ export type Database = {
           is_read?: boolean | null
           link?: string | null
           metadata?: Json | null
+          priority?: string
           read_at?: string | null
           status?: Database["public"]["Enums"]["notification_status"] | null
           title: string
@@ -15350,6 +15352,7 @@ export type Database = {
           is_read?: boolean | null
           link?: string | null
           metadata?: Json | null
+          priority?: string
           read_at?: string | null
           status?: Database["public"]["Enums"]["notification_status"] | null
           title?: string

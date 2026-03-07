@@ -52,6 +52,7 @@ const FanEventWatchlist = lazy(() => import("@/components/fan/FanEventWatchlist"
 
 // Enhancement widgets
 const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
+const NotificationDigest = lazy(() => import("@/components/notifications/NotificationDigest").then(m => ({ default: m.NotificationDigest })));
 const MessageSearchWidget = lazy(() => import("@/components/messages/MessageSearchWidget").then(m => ({ default: m.MessageSearchWidget })));
 const ActivityHeatmapWidget = lazy(() => import("@/components/dashboard/ActivityHeatmapWidget").then(m => ({ default: m.ActivityHeatmapWidget })));
 const ProfileSummaryCard = lazy(() => import("@/components/dashboard/ProfileSummaryCard").then(m => ({ default: m.ProfileSummaryCard })));
@@ -210,6 +211,7 @@ export default function Dashboard() {
         {/* Right Column - Activity & Social */}
         <aside className="lg:col-span-3 space-y-4">
           <div className="lg:sticky lg:top-20 space-y-4">
+            {user && <W><NotificationDigest /></W>}
             {user && <W><NotificationGroupWidget /></W>}
             {user && <W><RecentChatsWidget /></W>}
             {user && <W><GoalsMilestonesWidget /></W>}

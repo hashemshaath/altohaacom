@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Users, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
+import { NotificationPriorityBadge, inferPriority } from "./NotificationPriorityBadge";
+import { NotificationActionButtons } from "./NotificationActionButtons";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -330,14 +332,18 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                     </span>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className={cn("text-sm leading-snug", !notification.is_read && "font-semibold")}>
-                      {getTitle(notification)}
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <p className={cn("text-sm leading-snug flex-1", !notification.is_read && "font-semibold")}>
+                        {getTitle(notification)}
+                      </p>
+                      <NotificationPriorityBadge priority={inferPriority(notification)} isAr={isAr} />
+                    </div>
                     {getBody(notification) && (
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                         {getBody(notification)}
                       </p>
                     )}
+                    <NotificationActionButtons notification={notification} onMarkRead={markAsRead} />
                     <p className="text-[10px] text-muted-foreground/70 mt-1">
                       {formatRelativeTime(notification.created_at, isAr)}
                     </p>
