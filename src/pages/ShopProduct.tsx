@@ -128,23 +128,24 @@ export default function ShopProduct() {
       <SEOHead title={title} description={description || `${title} on Altoha Shop`} ogImage={product.image_url || undefined} />
       <Header />
 
-      <main className="container flex-1 py-6 md:py-8">
-        <Button variant="ghost" size="sm" asChild className="mb-4 -ms-2">
+      <main className="container flex-1 py-4 md:py-8 pb-24 sm:pb-8">
+        <Button variant="ghost" size="sm" asChild className="mb-3 sm:mb-4 -ms-2 touch-manipulation">
           <Link to="/shop">
             <ArrowLeft className="me-1.5 h-4 w-4" />
             {isAr ? "المتجر" : "Shop"}
           </Link>
         </Button>
 
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-5 sm:gap-8 lg:grid-cols-2">
           {/* Images */}
-          <div className="space-y-3">
-            <div className="aspect-square overflow-hidden rounded-xl bg-muted ring-1 ring-border/50">
+          <div className="space-y-2.5 sm:space-y-3">
+            <div className="aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-muted ring-1 ring-border/50">
               {allImages.length > 0 ? (
                 <img
                   src={allImages[selectedImage]}
                   alt={title}
                   className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  fetchPriority="high"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -153,12 +154,12 @@ export default function ShopProduct() {
               )}
             </div>
             {allImages.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto">
+              <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
                 {allImages.map((img, i) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200 ${
+                    className={`h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-lg sm:rounded-xl border-2 transition-all duration-200 touch-manipulation active:scale-95 ${
                       i === selectedImage ? "border-primary ring-2 ring-primary/20 scale-105" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
