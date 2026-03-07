@@ -565,6 +565,7 @@ export default function CompetitionDetail() {
         {/* ─── Inline Registration ─── */}
         {showRegistrationForm && (
           <div className="container py-6">
+            <Suspense fallback={<div className="flex justify-center py-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
             <RegistrationForm
               competitionId={competition.id}
               competitionTitle={title}
@@ -572,6 +573,7 @@ export default function CompetitionDetail() {
               onCancel={() => setShowRegistrationForm(false)}
               onSuccess={() => setShowRegistrationForm(false)}
             />
+            </Suspense>
           </div>
         )}
 
