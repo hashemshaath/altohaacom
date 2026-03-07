@@ -59,7 +59,7 @@ export const NotificationPriorityBadge = memo(function NotificationPriorityBadge
       {showLabel && <span>{isAr ? config.ar : config.en}</span>}
     </Badge>
   );
-}
+});
 
 /** Derive priority from notification type for older notifications without explicit priority */
 export function inferPriority(notification: { type?: string | null; priority?: string | null }): string {

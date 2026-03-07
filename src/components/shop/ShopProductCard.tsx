@@ -120,4 +120,4 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
       </CardContent>
     </Card>
   );
-}
+});

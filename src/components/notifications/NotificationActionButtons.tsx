@@ -72,4 +72,4 @@ export const NotificationActionButtons = memo(function NotificationActionButtons
       })}
     </div>
   );
-}
+});

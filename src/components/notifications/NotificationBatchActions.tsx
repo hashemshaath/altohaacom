@@ -59,4 +59,4 @@ export const NotificationBatchActions = memo(function NotificationBatchActions({
       </div>
     </div>
   );
-}
+});

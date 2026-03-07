@@ -90,4 +90,4 @@ export const ShopFilters = memo(function ShopFilters({
       </div>
     </div>
   );
-}
+});

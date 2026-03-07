@@ -105,4 +105,4 @@ export const SwipeableNotificationCard = memo(function SwipeableNotificationCard
       </div>
     </div>
   );
-}
+});
