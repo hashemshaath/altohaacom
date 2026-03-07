@@ -131,7 +131,7 @@ export function PublicProfileHero({
               <div className="flex-1 min-w-0 text-center md:text-start space-y-1.5 md:pt-2">
                 {/* Name row */}
                 <div className="flex items-center gap-2 flex-wrap justify-center md:justify-start">
-                  <h1 className="font-serif text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight">{displayName}</h1>
+                  <h1 className="font-serif text-base sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight">{displayName}</h1>
                   {profile.is_verified && <BadgeCheck className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />}
                   {profile.account_type === "fan" && (
                     <Badge variant="secondary" className="text-[10px] gap-1 h-5">
