@@ -99,9 +99,11 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
     return now >= start && now <= end;
   };
 
-  const liveAuctions = auctions.filter(isLive);
-  const upcomingAuctions = auctions.filter(a => new Date(a.starts_at).getTime() > now);
-  const activeOffers = offers.filter(o => new Date(o.ends_at).getTime() > now);
+  const { liveAuctions, upcomingAuctions, activeOffers } = useMemo(() => ({
+    liveAuctions: auctions.filter(isLive),
+    upcomingAuctions: auctions.filter(a => new Date(a.starts_at).getTime() > now),
+    activeOffers: offers.filter(o => new Date(o.ends_at).getTime() > now),
+  }), [auctions, offers, now]);
 
   return (
     <div className="space-y-6">

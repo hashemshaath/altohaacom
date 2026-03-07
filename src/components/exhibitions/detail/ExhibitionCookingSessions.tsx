@@ -355,9 +355,11 @@ export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
     );
   }
 
-  const liveSessions = sessions.filter((s: any) => s.status === "live");
-  const upcomingSessions = sessions.filter((s: any) => s.status === "scheduled");
-  const pastSessions = sessions.filter((s: any) => s.status === "completed");
+  const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
+    liveSessions: sessions.filter((s: any) => s.status === "live"),
+    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
+    pastSessions: sessions.filter((s: any) => s.status === "completed"),
+  }), [sessions]);
 
   return (
     <div className="space-y-6">

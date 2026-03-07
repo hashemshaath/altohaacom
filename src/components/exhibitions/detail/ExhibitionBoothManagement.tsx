@@ -54,13 +54,13 @@ export function ExhibitionBoothManagement({ exhibitionId, isAr }: Props) {
     },
   });
 
-  const filtered = booths.filter((b: any) => {
+  const filtered = useMemo(() => booths.filter((b: any) => {
     if (!search) return true;
     const q = search.toLowerCase();
     return b.booth_number.toLowerCase().includes(q) ||
       b.name.toLowerCase().includes(q) ||
       b.contact_name?.toLowerCase().includes(q);
-  });
+  }), [booths, search]);
 
   const statusIcon = (status: string) => {
     switch (status) {
