@@ -240,7 +240,7 @@ export default function Recipes() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {[1, 2, 3, 4, 5, 6].map(i => (
                 <Card key={i} className="overflow-hidden">
                   <Skeleton className="aspect-video w-full" />
