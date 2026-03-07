@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Bell, MessageSquare, Trophy, Users, Calendar, ShoppingBag, Heart, Settings2, Save } from "lucide-react";
+import { Bell, MessageSquare, Trophy, Users, Calendar, ShoppingBag, Heart, Settings2, Save, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
-const STORAGE_KEY = "altoha_notification_prefs";
 
 interface NotifPrefs {
   push_enabled: boolean;
@@ -54,14 +54,39 @@ const CATEGORY_CONFIG = [
 export function NotificationPreferences() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { user } = useAuth();
   const [prefs, setPrefs] = useState<NotifPrefs>(DEFAULT_PREFS);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
+  // Load from database
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setPrefs({ ...DEFAULT_PREFS, ...JSON.parse(saved) });
-    } catch {}
-  }, []);
+    if (!user) { setLoading(false); return; }
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from("notification_preferences")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (data) {
+          setPrefs({
+            push_enabled: data.push_enabled ?? true,
+            sound_enabled: data.sound_enabled ?? true,
+            vibration_enabled: data.vibration_enabled ?? true,
+            quiet_hours_enabled: data.quiet_hours_enabled ?? false,
+            quiet_start: data.quiet_start?.slice(0, 5) || "22:00",
+            quiet_end: data.quiet_end?.slice(0, 5) || "07:00",
+            categories: (data.categories as Record<string, boolean>) || DEFAULT_PREFS.categories,
+          });
+        }
+      } catch (e) {
+        console.error("Failed to load notification prefs:", e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [user?.id]);
 
   const update = (key: keyof NotifPrefs, value: any) => {
     setPrefs(prev => ({ ...prev, [key]: value }));
@@ -71,10 +96,53 @@ export function NotificationPreferences() {
     setPrefs(prev => ({ ...prev, categories: { ...prev.categories, [key]: value } }));
   };
 
-  const save = () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-    toast({ title: isAr ? "تم حفظ التفضيلات" : "Preferences saved" });
+  const save = async () => {
+    if (!user) {
+      // Fallback to localStorage for non-authenticated users
+      localStorage.setItem("altoha_notification_prefs", JSON.stringify(prefs));
+      toast({ title: isAr ? "تم حفظ التفضيلات" : "Preferences saved" });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload = {
+        user_id: user.id,
+        push_enabled: prefs.push_enabled,
+        sound_enabled: prefs.sound_enabled,
+        vibration_enabled: prefs.vibration_enabled,
+        quiet_hours_enabled: prefs.quiet_hours_enabled,
+        quiet_start: prefs.quiet_start,
+        quiet_end: prefs.quiet_end,
+        categories: prefs.categories,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error } = await supabase
+        .from("notification_preferences")
+        .upsert(payload, { onConflict: "user_id" });
+
+      if (error) throw error;
+
+      // Also sync to localStorage for offline/realtime hooks
+      localStorage.setItem("altoha_notification_sound", String(prefs.sound_enabled));
+
+      toast({ title: isAr ? "تم حفظ التفضيلات ✅" : "Preferences saved ✅" });
+    } catch (e) {
+      console.error("Failed to save prefs:", e);
+      toast({ title: isAr ? "فشل الحفظ" : "Save failed", variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -155,8 +223,8 @@ export function NotificationPreferences() {
         </CardContent>
       </Card>
 
-      <Button onClick={save} className="w-full gap-2">
-        <Save className="h-4 w-4" />
+      <Button onClick={save} className="w-full gap-2" disabled={saving}>
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
         {isAr ? "حفظ التفضيلات" : "Save Preferences"}
       </Button>
     </div>
