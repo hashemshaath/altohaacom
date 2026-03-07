@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -186,17 +186,17 @@ export default function LiveChatAdmin() {
     },
   });
 
-  const waitingCount = sessions.filter(s => s.status === "waiting").length;
-  const activeCount = sessions.filter(s => s.status === "active").length;
-
-  const avgWaitMins = (() => {
+  const { waitingCount, activeCount, avgWaitMins } = useMemo(() => {
+    const wc = sessions.filter(s => s.status === "waiting").length;
+    const ac = sessions.filter(s => s.status === "active").length;
     const waiting = sessions.filter(s => s.status === "waiting");
-    if (waiting.length === 0) return 0;
-    const total = waiting.reduce((sum, s) => sum + differenceInMinutes(new Date(), new Date(s.created_at)), 0);
-    return Math.round(total / waiting.length);
-  })();
+    const avg = waiting.length === 0 ? 0 : Math.round(
+      waiting.reduce((sum, s) => sum + differenceInMinutes(new Date(), new Date(s.created_at)), 0) / waiting.length
+    );
+    return { waitingCount: wc, activeCount: ac, avgWaitMins: avg };
+  }, [sessions]);
 
-  const filteredSessions = sessions.filter(s => {
+  const filteredSessions = useMemo(() => sessions.filter(s => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     const profile = profileMap.get(s.user_id);
@@ -205,7 +205,7 @@ export default function LiveChatAdmin() {
       profile?.username?.toLowerCase().includes(q) ||
       s.subject?.toLowerCase().includes(q)
     );
-  });
+  }), [sessions, searchQuery, profileMap]);
 
   // On mobile, show either sessions list or chat area
   const showChatOnMobile = !!selectedSessionId;

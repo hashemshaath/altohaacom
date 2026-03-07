@@ -138,14 +138,15 @@ export default function CompanyAnalytics() {
   const isLoading = ordersLoading || txnLoading || invLoading;
 
   // KPIs
-  const totalOrderValue = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
-  const completedOrders = orders.filter(o => o.status === "completed").length;
-  const pendingOrders = orders.filter(o => o.status === "pending").length;
-  const totalInvoiced = invoices.reduce((s, i) => s + (i.amount || 0), 0);
-  const paidInvoices = invoices.filter(i => i.status === "paid");
-  const totalPaid = paidInvoices.reduce((s, i) => s + (i.amount || 0), 0);
-  const outstanding = totalInvoiced - totalPaid;
-  const totalPayments = transactions.filter(t => t.type === "payment").reduce((s, t) => s + (t.amount || 0), 0);
+  const { totalOrderValue, completedOrders, pendingOrders, totalInvoiced, totalPaid, outstanding, totalPayments } = useMemo(() => {
+    const tov = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
+    const completed = orders.filter(o => o.status === "completed").length;
+    const pending = orders.filter(o => o.status === "pending").length;
+    const tInv = invoices.reduce((s, i) => s + (i.amount || 0), 0);
+    const paid = invoices.filter(i => i.status === "paid").reduce((s, i) => s + (i.amount || 0), 0);
+    const payments = transactions.filter(t => t.type === "payment").reduce((s, t) => s + (t.amount || 0), 0);
+    return { totalOrderValue: tov, completedOrders: completed, pendingOrders: pending, totalInvoiced: tInv, totalPaid: paid, outstanding: tInv - paid, totalPayments: payments };
+  }, [orders, invoices, transactions]);
 
   // Monthly order trends
   const monthlyData = useMemo(() => {

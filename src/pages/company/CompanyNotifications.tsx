@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -102,11 +102,12 @@ export default function CompanyNotifications() {
     return () => { supabase.removeChannel(channel); };
   }, [user?.id, queryClient]);
 
-  const filtered = notifications
+  const filtered = useMemo(() => notifications
     .filter(n => activeTab === "all" || getCategory(n.type) === activeTab)
-    .filter(n => readFilter === "all" || (readFilter === "unread" && !n.is_read) || (readFilter === "read" && n.is_read));
+    .filter(n => readFilter === "all" || (readFilter === "unread" && !n.is_read) || (readFilter === "read" && n.is_read)),
+  [notifications, activeTab, readFilter]);
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = useMemo(() => notifications.filter(n => !n.is_read).length, [notifications]);
 
   const markAsRead = async (id: string) => {
     await supabase.from("notifications").update({ is_read: true, read_at: new Date().toISOString() }).eq("id", id);
