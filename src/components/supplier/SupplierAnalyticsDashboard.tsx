@@ -201,19 +201,19 @@ export function SupplierAnalyticsDashboard() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">{isAr ? "إجمالي المنتجات" : "Total Products"}</span>
-              <span className="text-sm font-semibold">{totalProducts}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{isAr ? "نشط" : "Active"}</span>
-              <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs">{activeProducts}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{isAr ? "متوفر" : "In Stock"}</span>
-              <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs">{inStockProducts}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{isAr ? "نفد المخزون" : "Out of Stock"}</span>
-              <Badge variant="destructive" className="text-xs">{totalProducts - inStockProducts}</Badge>
+               <span className="text-sm font-semibold">{stats.totalProducts}</span>
+             </div>
+             <div className="flex items-center justify-between">
+               <span className="text-sm text-muted-foreground">{isAr ? "نشط" : "Active"}</span>
+               <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs">{stats.activeProducts}</Badge>
+             </div>
+             <div className="flex items-center justify-between">
+               <span className="text-sm text-muted-foreground">{isAr ? "متوفر" : "In Stock"}</span>
+               <Badge className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs">{stats.inStockProducts}</Badge>
+             </div>
+             <div className="flex items-center justify-between">
+               <span className="text-sm text-muted-foreground">{isAr ? "نفد المخزون" : "Out of Stock"}</span>
+               <Badge variant="destructive" className="text-xs">{stats.totalProducts - stats.inStockProducts}</Badge>
             </div>
           </CardContent>
         </Card>

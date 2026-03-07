@@ -20,7 +20,7 @@ export function ExhibitionCompetitionsTab({ competitions, isAr }: Props) {
       upcomingCompetitions: competitions.filter((c) => isFuture(new Date(c.competition_start))),
       pastCompetitions: competitions.filter((c) => isPast(new Date(c.competition_end))),
     };
-  }, [competitions]);
+  const now = useMemo(() => new Date(), []);
 
   return (
     <div className="space-y-6">
