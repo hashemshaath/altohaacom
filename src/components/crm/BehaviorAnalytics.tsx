@@ -354,7 +354,7 @@ function LifecycleTriggersList() {
     queryFn: async () => {
       const { data } = await supabase
         .from("lifecycle_triggers")
-        .select("*")
+        .select("id, name, name_ar, trigger_event, channels, delay_minutes, is_active, created_at")
         .order("created_at", { ascending: true })
         .limit(10);
       return data || [];

@@ -41,7 +41,7 @@ export function ExhibitionDocumentsPanel({ exhibitionId }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_documents")
-        .select("*")
+        .select("id, exhibition_id, title, title_ar, file_url, file_type, file_size, category, uploaded_by, feed_to_ai, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;

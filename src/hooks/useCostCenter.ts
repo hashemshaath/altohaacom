@@ -145,7 +145,7 @@ export function useCostEstimates(filters?: { moduleType?: string; status?: strin
     queryFn: async () => {
       let query = supabase
         .from("cost_estimates" as any)
-        .select("*")
+        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (filters?.moduleType && filters.moduleType !== "all") {
         query = query.eq("module_type", filters.moduleType);
@@ -166,7 +166,7 @@ export function useCostEstimate(id: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cost_estimates" as any)
-        .select("*")
+        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -182,7 +182,7 @@ export function useCostEstimateItems(estimateId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cost_estimate_items" as any)
-        .select("*")
+        .select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at")
         .eq("estimate_id", estimateId!)
         .order("sort_order");
       if (error) throw error;
@@ -198,7 +198,7 @@ export function useCostApprovalLog(estimateId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cost_approval_log" as any)
-        .select("*")
+        .select("id, estimate_id, action, performed_by, comments, comments_ar, previous_status, new_status, created_at")
         .eq("estimate_id", estimateId!)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -214,7 +214,7 @@ export function useCostTemplates(moduleType?: CostModuleType) {
     queryFn: async () => {
       let query = supabase
         .from("cost_templates" as any)
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, module_type, items, is_active, created_by, created_at, updated_at")
         .eq("is_active", true)
         .order("name");
       if (moduleType) {
@@ -375,12 +375,12 @@ export function useDuplicateCostEstimate() {
   return useMutation({
     mutationFn: async (sourceId: string) => {
       const { data: source, error: srcErr } = await supabase
-        .from("cost_estimates" as any).select("*").eq("id", sourceId).single();
+        .from("cost_estimates" as any).select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at").eq("id", sourceId).single();
       if (srcErr) throw srcErr;
       const src = source as unknown as CostEstimate;
 
       const { data: items, error: itemsErr } = await supabase
-        .from("cost_estimate_items" as any).select("*").eq("estimate_id", sourceId).order("sort_order");
+        .from("cost_estimate_items" as any).select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at").eq("estimate_id", sourceId).order("sort_order");
       if (itemsErr) throw itemsErr;
 
       const { id, estimate_number, created_at, updated_at, status, approved_by, approved_at, rejection_reason, invoice_id, ...rest } = src;
@@ -482,7 +482,7 @@ export function useConvertToInvoice() {
       // Get estimate with items
       const { data: estimate, error: estErr } = await supabase
         .from("cost_estimates" as any)
-        .select("*")
+        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
         .eq("id", estimateId)
         .single();
       if (estErr) throw estErr;
@@ -490,7 +490,7 @@ export function useConvertToInvoice() {
 
       const { data: items, error: itemsErr } = await supabase
         .from("cost_estimate_items" as any)
-        .select("*")
+        .select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at")
         .eq("estimate_id", estimateId)
         .order("sort_order");
       if (itemsErr) throw itemsErr;
