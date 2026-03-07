@@ -622,6 +622,7 @@ function CompetitionRow({
 
 /* ──────────────── Article Row ──────────────── */
 function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const excerpt = isAr && data.excerpt_ar ? data.excerpt_ar : data.excerpt;
 
