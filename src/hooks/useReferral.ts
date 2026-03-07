@@ -65,7 +65,7 @@ export function useReferralInvitations() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("referral_invitations")
-        .select("*")
+        .select("id, referral_code_id, referrer_id, invitee_email, invitee_phone, channel, platform, status, sent_at, clicked_at, registered_at, created_at")
         .eq("referrer_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
