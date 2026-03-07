@@ -7,7 +7,7 @@ import { SectionReveal } from "@/components/ui/section-reveal";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 
-export function PartnersLogos() {
+export const PartnersLogos = memo(function PartnersLogos() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
