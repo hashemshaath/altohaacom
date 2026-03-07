@@ -68,3 +68,6 @@ verify_jwt = false
 
 [functions.smart-recommendations]
 verify_jwt = false
+
+[functions.personal-analytics]
+verify_jwt = false
