@@ -10,7 +10,7 @@ import { Activity, Users, Trophy, FileText, MessageSquare, DollarSign, TrendingU
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function AdvancedKPIDashboard() {
+export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
