@@ -187,9 +187,9 @@ export default function Recipes() {
           </div>
         </section>
 
-        <div className="container py-4 md:py-6 space-y-8">
+        <div className="container py-3 md:py-6 space-y-6 md:space-y-8">
           {/* Sticky Filters Bar */}
-          <div className="sticky top-12 z-40 -mx-4 mb-8 border-y border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
+          <div className="sticky top-12 z-40 -mx-4 mb-4 md:mb-8 border-y border-border/40 bg-background/80 px-3 sm:px-4 py-3 md:py-4 backdrop-blur-md md:rounded-2xl md:border md:px-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">
                 <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
