@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -247,11 +247,11 @@ export default function Judging() {
     setDetailedFeedback({});
   };
 
-  const hasScored = (registrationId: string): boolean => {
+  const hasScored = useCallback((registrationId: string): boolean => {
     if (!existingScores || !criteria) return false;
     const regScores = existingScores.filter(s => s.registration_id === registrationId);
     return regScores.length >= criteria.length;
-  };
+  }, [existingScores, criteria]);
 
   const calculateTotalScore = (): number => {
     if (!criteria) return 0;

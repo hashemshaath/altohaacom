@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -217,11 +217,14 @@ export default function NotificationPreferences() {
     localStorage.setItem("altoha_dnd", String(v));
   };
 
-  const enabledCount = preferences.filter((p) => p.enabled).length;
-  const activeCategories = NOTIFICATION_CATEGORIES.length - mutedTypes.size;
-  const completionScore = Math.round(
-    ((enabledCount > 0 ? 25 : 0) + (quietEnabled ? 25 : 0) + (digestFrequency !== "realtime" ? 25 : 0) + (activeCategories > 0 ? 25 : 0))
-  );
+  const { enabledCount, activeCategories, completionScore } = useMemo(() => {
+    const enabled = preferences.filter((p) => p.enabled).length;
+    const active = NOTIFICATION_CATEGORIES.length - mutedTypes.size;
+    const score = Math.round(
+      ((enabled > 0 ? 25 : 0) + (quietEnabled ? 25 : 0) + (digestFrequency !== "realtime" ? 25 : 0) + (active > 0 ? 25 : 0))
+    );
+    return { enabledCount: enabled, activeCategories: active, completionScore: score };
+  }, [preferences, mutedTypes, quietEnabled, digestFrequency]);
 
   return (
     <PageShell

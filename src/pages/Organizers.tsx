@@ -62,13 +62,15 @@ export default function Organizers() {
     return matchSearch && matchCountry && matchCategory;
   }), [organizers, search, countryFilter, categoryFilter]);
 
-  const featured = filtered.filter((o: any) => o.is_featured);
-  const regular = filtered.filter((o: any) => !o.is_featured);
+  const featured = useMemo(() => filtered.filter((o: any) => o.is_featured), [filtered]);
+  const regular = useMemo(() => filtered.filter((o: any) => !o.is_featured), [filtered]);
 
   // Aggregate stats
-  const totalEvents = (organizers || []).reduce((s: number, o: any) => s + (o.total_exhibitions || 0), 0);
-  const totalOrgs = (organizers || []).length;
-  const totalCountries = countries.length;
+  const { totalEvents, totalOrgs, totalCountries } = useMemo(() => ({
+    totalEvents: (organizers || []).reduce((s: number, o: any) => s + (o.total_exhibitions || 0), 0),
+    totalOrgs: (organizers || []).length,
+    totalCountries: countries.length,
+  }), [organizers, countries]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
