@@ -537,13 +537,13 @@ export default function CompetitionDetail() {
         {/* ─── Navigation Pills ─── */}
         <div className="sticky top-14 z-30 border-b border-border/30 bg-background/95 backdrop-blur-xl">
           <div className="container">
-            <div className="flex gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x">
+            <div className="flex gap-0.5 sm:gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x scroll-smooth">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(item.id); }}
                   className={`
-                    snap-start inline-flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation
+                    snap-start inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
                     ${activeSection === item.id
                       ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                       : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
