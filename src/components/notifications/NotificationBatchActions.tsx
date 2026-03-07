@@ -18,7 +18,7 @@ interface NotificationBatchActionsProps {
   className?: string;
 }
 
-export function NotificationBatchActions({
+export const NotificationBatchActions = memo(function NotificationBatchActions({
   selectedCount,
   onMarkRead,
   onDelete,
