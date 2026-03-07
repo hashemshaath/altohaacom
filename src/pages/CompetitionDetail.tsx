@@ -364,7 +364,7 @@ export default function CompetitionDetail() {
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
         <section className="relative overflow-hidden">
-          <div className="relative h-56 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-48 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
               <img
                 src={competition.cover_image_url}
@@ -376,7 +376,7 @@ export default function CompetitionDetail() {
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-muted/30 to-background">
-                <Trophy className="h-40 w-40 text-primary/[0.06]" />
+                <Trophy className="h-28 w-28 sm:h-40 sm:w-40 text-primary/[0.06]" />
               </div>
             )}
             {/* Cinematic gradient overlay */}
