@@ -1,6 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, DollarSign, Clock, CheckCircle, TrendingUp, FileText, ShoppingBag, ArrowUpDown } from "lucide-react";
