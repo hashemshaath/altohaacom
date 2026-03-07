@@ -10,7 +10,7 @@ interface SwipeableNotificationCardProps {
   className?: string;
 }
 
-export function SwipeableNotificationCard({
+export const SwipeableNotificationCard = memo(function SwipeableNotificationCard({
   children,
   onMarkRead,
   onDelete,
