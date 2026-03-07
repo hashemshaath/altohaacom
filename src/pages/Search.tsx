@@ -39,6 +39,8 @@ import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
 import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
 import { SearchSuggestions } from "@/components/search/SearchSuggestions";
+import { HighlightText } from "@/components/search/HighlightText";
+import { VoiceSearchButton } from "@/components/search/VoiceSearchButton";
 import type { Database } from "@/integrations/supabase/types";
 
 const AISearchPanel = lazy(() => import("@/components/search/AISearchPanel").then(m => ({ default: m.AISearchPanel })));
