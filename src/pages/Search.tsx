@@ -59,7 +59,9 @@ const statusLabelsEn: Record<CompetitionStatus, string> = {
   cancelled: "Cancelled",
 };
 
-export default function Search() {
+const SearchQueryContext = createContext("");
+function useSearchQuery() { return useContext(SearchQueryContext); }
+
   const { t, language } = useLanguage();
   const isAr = language === "ar";
   const [searchParams, setSearchParams] = useSearchParams();
