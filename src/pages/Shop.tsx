@@ -73,7 +73,7 @@ export default function Shop() {
     return result;
   }, [products, search, categoryFilter, typeFilter, sortBy, isAr]);
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = useCallback((product: any) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
       return;
@@ -93,7 +93,7 @@ export default function Shop() {
       tax_inclusive: product.tax_inclusive || false,
     });
     toast({ title: isAr ? `تمت إضافة "${title}" إلى السلة` : `"${title}" added to cart` });
-  };
+  }, [user, isAr, cart]);
 
   return (
     <PageShell
