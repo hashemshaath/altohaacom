@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { PageShell } from "@/components/PageShell";
 import { useLanguage } from "@/i18n/LanguageContext";
