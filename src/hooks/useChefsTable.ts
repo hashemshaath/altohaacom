@@ -274,7 +274,7 @@ export function useChefsTableCriteriaPresets() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_criteria_presets" as any)
-        .select("*");
+        .select("id, preset_name, preset_name_ar, product_category, criteria, is_system, created_at");
       if (error) throw error;
       return (data || []) as unknown as ChefsTableCriteriaPreset[];
     },
