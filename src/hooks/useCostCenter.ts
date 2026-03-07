@@ -145,7 +145,7 @@ export function useCostEstimates(filters?: { moduleType?: string; status?: strin
     queryFn: async () => {
       let query = supabase
         .from("cost_estimates" as any)
-        .select("*")
+        .select("id, estimate_number, module_type, module_id, module_title, module_title_ar, company_id, title, title_ar, description, description_ar, subtotal, tax_rate, tax_amount, discount_amount, total_amount, currency, status, prepared_by, approved_by, approved_at, rejection_reason, valid_until, invoice_id, notes, notes_ar, internal_notes, version, parent_estimate_id, tags, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (filters?.moduleType && filters.moduleType !== "all") {
         query = query.eq("module_type", filters.moduleType);
