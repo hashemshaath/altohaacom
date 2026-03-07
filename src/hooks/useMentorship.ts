@@ -106,7 +106,7 @@ export function useMentorshipPrograms(statusFilter?: string) {
     queryFn: async () => {
       let q = supabase
         .from("mentorship_programs")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, category, duration_weeks, max_matches, status, requirements, requirements_ar, cover_image_url, country_code, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (statusFilter) q = q.eq("status", statusFilter);
       const { data, error } = await q;
@@ -124,7 +124,7 @@ export function useMentorshipProgram(id: string | undefined) {
       if (!id) return null;
       const { data, error } = await supabase
         .from("mentorship_programs")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, category, duration_weeks, max_matches, status, requirements, requirements_ar, cover_image_url, country_code, created_by, created_at, updated_at")
         .eq("id", id)
         .maybeSingle();
       if (error) throw error;
@@ -143,7 +143,7 @@ export function useMyMentorshipMatches() {
       if (!user?.id) return [];
       const { data, error } = await supabase
         .from("mentorship_matches")
-        .select("*")
+        .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .or(`mentor_id.eq.${user.id},mentee_id.eq.${user.id}`)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -175,7 +175,7 @@ export function useMentorshipMatchDetails(matchId: string | undefined) {
       // Try with profile joins
       const { data, error } = await supabase
         .from("mentorship_matches")
-        .select("*")
+        .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .eq("id", matchId)
         .maybeSingle();
       if (error) throw error;
@@ -205,7 +205,7 @@ export function useMentorshipSessions(matchId: string | undefined) {
       if (!matchId) return [];
       const { data, error } = await supabase
         .from("mentorship_sessions")
-        .select("*")
+        .select("id, match_id, title, title_ar, description, description_ar, scheduled_at, duration_minutes, status, meeting_url, mentor_feedback, mentee_feedback, mentor_rating, mentee_rating, created_at")
         .eq("match_id", matchId)
         .order("scheduled_at", { ascending: true });
       if (error) throw error;
@@ -223,7 +223,7 @@ export function useMentorshipGoals(matchId: string | undefined) {
       if (!matchId) return [];
       const { data, error } = await supabase
         .from("mentorship_goals")
-        .select("*")
+        .select("id, match_id, title, title_ar, description, target_date, status, progress, completed_at, created_by, created_at")
         .eq("match_id", matchId)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -242,7 +242,7 @@ export function useMyMentorApplication() {
       if (!user?.id) return null;
       const { data, error } = await supabase
         .from("mentor_applications")
-        .select("*")
+        .select("id, user_id, program_id, expertise, bio, bio_ar, years_experience, status, reviewed_by, reviewed_at, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -281,7 +281,7 @@ export function useMyEnrollment(programId: string | undefined) {
       if (!user?.id || !programId) return null;
       const { data, error } = await supabase
         .from("mentee_enrollments")
-        .select("*")
+        .select("id, program_id, user_id, status, goals_description, experience_level, preferred_language, created_at")
         .eq("program_id", programId)
         .eq("user_id", user.id)
         .maybeSingle();
@@ -408,7 +408,7 @@ export function useAllMentorApplications() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mentor_applications")
-        .select("*")
+        .select("id, user_id, program_id, expertise, bio, bio_ar, years_experience, status, reviewed_by, reviewed_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch profiles for each application
@@ -432,7 +432,7 @@ export function useAllMentorshipMatches() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mentorship_matches")
-        .select("*")
+        .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       // Fetch profiles
@@ -457,7 +457,7 @@ export function useAllMenteeEnrollments() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("mentee_enrollments")
-        .select("*")
+        .select("id, program_id, user_id, status, goals_description, experience_level, preferred_language, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       const userIds = (data || []).map(e => e.user_id);
