@@ -380,7 +380,7 @@ export default function ExhibitionDetail() {
           </Suspense>
         )}
         {/* Quick Stats Bar */}
-        <div className="mb-4">
+        <div className="mb-3 sm:mb-4">
           <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />
         </div>
         {/* Interactive Stats Bar */}
