@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-// No-op haptic stub (native haptics module removed)
-const haptic = (_type?: string) => {};
-
 interface UsePullToRefreshOptions {
   onRefresh?: () => Promise<void> | void;
   threshold?: number;
@@ -24,6 +21,8 @@ export function usePullToRefresh({
   const startY = useRef(0);
   const isPulling = useRef(false);
   const triggered = useRef(false);
+  const currentDistance = useRef(0);
+  const rafId = useRef(0);
 
   const defaultRefresh = useCallback(async () => {
     await queryClient.invalidateQueries();
@@ -51,15 +50,22 @@ export function usePullToRefresh({
         isPulling.current = false;
         setPulling(false);
         setPullDistance(0);
+        currentDistance.current = 0;
         return;
       }
       const distance = Math.min(diff * 0.45, maxPull);
-      setPullDistance(distance);
-      setPulling(true);
+      currentDistance.current = distance;
+
+      // Throttle state updates with rAF
+      cancelAnimationFrame(rafId.current);
+      rafId.current = requestAnimationFrame(() => {
+        setPullDistance(currentDistance.current);
+        setPulling(true);
+      });
 
       if (distance >= threshold && !triggered.current) {
         triggered.current = true;
-        haptic("medium");
+        try { if ("vibrate" in navigator) navigator.vibrate(15); } catch {}
       }
     },
     [disabled, refreshing, threshold, maxPull]
@@ -68,10 +74,11 @@ export function usePullToRefresh({
   const handleTouchEnd = useCallback(async () => {
     if (!isPulling.current) return;
     isPulling.current = false;
+    cancelAnimationFrame(rafId.current);
 
-    if (pullDistance >= threshold && !refreshing) {
+    if (currentDistance.current >= threshold && !refreshing) {
       setRefreshing(true);
-      haptic("success");
+      try { if ("vibrate" in navigator) navigator.vibrate([10, 30, 10]); } catch {}
       try {
         await refreshFn();
       } catch {
@@ -81,7 +88,8 @@ export function usePullToRefresh({
     }
     setPulling(false);
     setPullDistance(0);
-  }, [pullDistance, threshold, refreshing, refreshFn]);
+    currentDistance.current = 0;
+  }, [threshold, refreshing, refreshFn]);
 
   useEffect(() => {
     if (disabled) return;
@@ -92,6 +100,7 @@ export function usePullToRefresh({
       document.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
+      cancelAnimationFrame(rafId.current);
     };
   }, [disabled, handleTouchStart, handleTouchMove, handleTouchEnd]);
 

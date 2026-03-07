@@ -18,7 +18,7 @@ import {
   Camera,
   BookOpen,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 
 const navItems = [
   { to: "/", icon: Home, labelEn: "Home", labelAr: "الرئيسية", authOnly: false, exact: true },
@@ -28,8 +28,7 @@ const navItems = [
   { to: "/dashboard", icon: LayoutDashboard, labelEn: "Profile", labelAr: "ملفي", authOnly: true },
 ];
 
-// Contextual FAB actions based on current route
-function useFabActions(pathname: string, isAr: boolean) {
+function getFabActions(pathname: string) {
   if (pathname.startsWith("/competitions")) {
     return [
       { to: "/create-competition", labelEn: "New Competition", labelAr: "مسابقة جديدة", icon: Trophy },
@@ -60,7 +59,6 @@ function useFabActions(pathname: string, isAr: boolean) {
       { to: "/shop/my-products", labelEn: "My Products", labelAr: "منتجاتي", icon: ShoppingBag },
     ];
   }
-  // Default actions
   return [
     { to: "/create-competition", labelEn: "Competition", labelAr: "مسابقة", icon: Trophy },
     { to: "/search", labelEn: "Search", labelAr: "بحث", icon: Search },
@@ -68,7 +66,9 @@ function useFabActions(pathname: string, isAr: boolean) {
   ];
 }
 
-export function MobileBottomNav() {
+const hiddenPaths = ["/auth", "/admin", "/onboarding", "/install"];
+
+export const MobileBottomNav = memo(function MobileBottomNav() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
@@ -76,33 +76,57 @@ export function MobileBottomNav() {
   const location = useLocation();
   const isAr = language === "ar";
   const [fabOpen, setFabOpen] = useState(false);
-  const [prevScrollY, setPrevScrollY] = useState(0);
   const [visible, setNavVisible] = useState(true);
 
-  const fabActions = useFabActions(location.pathname, isAr);
+  // Use refs for scroll tracking to avoid re-renders on every scroll
+  const prevScrollY = useRef(0);
+  const visibleRef = useRef(true);
+  const rafId = useRef(0);
 
-  // Auto-hide nav on scroll down, show on scroll up
+  const fabActions = getFabActions(location.pathname);
+
+  // Optimized scroll handler using rAF and refs
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY < 50) {
-        setNavVisible(true);
-      } else if (currentScrollY > prevScrollY + 8) {
-        setNavVisible(false);
-        setFabOpen(false);
-      } else if (currentScrollY < prevScrollY - 8) {
-        setNavVisible(true);
-      }
-      setPrevScrollY(currentScrollY);
+      cancelAnimationFrame(rafId.current);
+      rafId.current = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const prev = prevScrollY.current;
+        let shouldBeVisible = visibleRef.current;
+
+        if (currentScrollY < 50) {
+          shouldBeVisible = true;
+        } else if (currentScrollY > prev + 8) {
+          shouldBeVisible = false;
+        } else if (currentScrollY < prev - 8) {
+          shouldBeVisible = true;
+        }
+
+        prevScrollY.current = currentScrollY;
+
+        if (shouldBeVisible !== visibleRef.current) {
+          visibleRef.current = shouldBeVisible;
+          setNavVisible(shouldBeVisible);
+          if (!shouldBeVisible) setFabOpen(false);
+        }
+      });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [prevScrollY]);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId.current);
+    };
+  }, []);
 
   // Close FAB on route change
   useEffect(() => {
     setFabOpen(false);
   }, [location.pathname]);
+
+  const toggleFab = useCallback(() => {
+    try { if ("vibrate" in navigator) navigator.vibrate(12); } catch {}
+    setFabOpen((o) => !o);
+  }, []);
 
   const visibleItems = navItems.filter((item) => {
     if (item.authOnly && !user) return false;
@@ -110,12 +134,10 @@ export function MobileBottomNav() {
     return true;
   });
 
-  const hiddenPaths = ["/auth", "/admin", "/onboarding", "/install"];
   if (hiddenPaths.some((p) => location.pathname.startsWith(p))) return null;
 
   return (
     <>
-      {/* FAB overlay backdrop */}
       {fabOpen && (
         <div
           className="fixed inset-0 z-[55] bg-background/60 backdrop-blur-sm md:hidden"
@@ -146,10 +168,9 @@ export function MobileBottomNav() {
         </div>
       )}
 
-      {/* Bottom Navigation Bar */}
       <nav
         className={cn(
-          "fixed bottom-0 inset-x-0 z-50 border-t border-border/40 bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 md:hidden shadow-[0_-4px_20px_-4px_hsl(var(--foreground)/0.08)] transition-transform duration-300",
+          "fixed bottom-0 inset-x-0 z-50 border-t border-border/40 bg-card/95 backdrop-blur-xl supports-[backdrop-filter]:bg-card/80 md:hidden shadow-[0_-4px_20px_-4px_hsl(var(--foreground)/0.08)] transition-transform duration-300 will-change-transform",
           visible ? "translate-y-0" : "translate-y-full"
         )}
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -162,10 +183,7 @@ export function MobileBottomNav() {
               return (
                 <button
                   key="fab"
-                  onClick={() => {
-                    try { if ("vibrate" in navigator) navigator.vibrate(12); } catch {}
-                    setFabOpen((o) => !o);
-                  }}
+                  onClick={toggleFab}
                   aria-expanded={fabOpen}
                   aria-label={isAr ? "قائمة الإنشاء" : "Create menu"}
                   className="flex flex-col items-center justify-center gap-0.5 flex-1 py-1 min-h-[48px] touch-manipulation"
@@ -199,7 +217,6 @@ export function MobileBottomNav() {
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
-                {/* Active pill indicator */}
                 <span
                   className={cn(
                     "absolute top-0.5 h-[3px] rounded-full bg-primary transition-all duration-300 ease-spring",
@@ -219,7 +236,6 @@ export function MobileBottomNav() {
                     )}
                     strokeWidth={isActive ? 2.5 : 2}
                   />
-                  {/* Notification badge on Dashboard/Profile tab */}
                   {item.to === "/dashboard" && unreadCount > 0 && (
                     <span className="absolute -top-0.5 -end-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground animate-scale-in">
                       {unreadCount > 9 ? "9+" : unreadCount}
@@ -241,4 +257,4 @@ export function MobileBottomNav() {
       </nav>
     </>
   );
-}
+});
