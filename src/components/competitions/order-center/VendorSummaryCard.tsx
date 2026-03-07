@@ -50,4 +50,4 @@ export const VendorSummaryCard = memo(function VendorSummaryCard({ vendorSummary
       </CardContent>
     </Card>
   );
-}
+});

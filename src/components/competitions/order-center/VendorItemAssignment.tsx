@@ -115,4 +115,4 @@ export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped
       )}
     </div>
   );
-}
+});

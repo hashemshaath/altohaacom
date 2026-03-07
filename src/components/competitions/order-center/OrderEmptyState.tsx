@@ -67,4 +67,4 @@ export const OrderEmptyState = memo(function OrderEmptyState({ type, actionLabel
       </CardContent>
     </Card>
   );
-}
+});
