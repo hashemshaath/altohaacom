@@ -292,6 +292,13 @@ export default function OrganizerDetail() {
       <Header />
 
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container max-w-6xl pt-3">
+          <Breadcrumbs items={[
+            { label: "Organizers", labelAr: "المنظمون", href: "/organizers" },
+            { label: orgName },
+          ]} />
+        </div>
         {/* ═══════ Hero Section ═══════ */}
         <div className="relative">
           {coverImage ? (
