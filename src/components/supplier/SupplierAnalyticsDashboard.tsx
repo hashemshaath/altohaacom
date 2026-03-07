@@ -82,31 +82,33 @@ export function SupplierAnalyticsDashboard() {
     enabled: !!companyId,
   });
 
-  const totalProducts = products.length;
-  const activeProducts = products.filter((p: any) => p.is_active).length;
-  const inStockProducts = products.filter((p: any) => p.in_stock).length;
-  const avgRating = reviews.length > 0
-    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
-    : "—";
-  const totalReviews = reviews.length;
-  const totalInquiries = inquiries.length;
-  const unreadInquiries = inquiries.filter((i: any) => i.status === "unread").length;
-  const totalViews = profileViews.length;
-  const totalWishlists = wishlists.length;
+  const stats = useMemo(() => {
+    const totalProducts = products.length;
+    const activeProducts = products.filter((p: any) => p.is_active).length;
+    const inStockProducts = products.filter((p: any) => p.in_stock).length;
+    const avgRating = reviews.length > 0
+      ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+      : "—";
+    const totalReviews = reviews.length;
+    const totalInquiries = inquiries.length;
+    const unreadInquiries = inquiries.filter((i: any) => i.status === "unread").length;
+    const totalViews = profileViews.length;
+    const totalWishlists = wishlists.length;
 
-  // Recent (last 30 days)
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const recentReviews = reviews.filter((r: any) => new Date(r.created_at) > thirtyDaysAgo).length;
-  const recentInquiries = inquiries.filter((i: any) => new Date(i.created_at) > thirtyDaysAgo).length;
-  const recentViews = profileViews.filter((v: any) => new Date(v.viewed_at) > thirtyDaysAgo).length;
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentReviews = reviews.filter((r: any) => new Date(r.created_at) > thirtyDaysAgo).length;
+    const recentInquiries = inquiries.filter((i: any) => new Date(i.created_at) > thirtyDaysAgo).length;
+    const recentViews = profileViews.filter((v: any) => new Date(v.viewed_at) > thirtyDaysAgo).length;
 
-  // Rating distribution
-  const ratingDist = [5, 4, 3, 2, 1].map(s => ({
-    star: s,
-    count: reviews.filter((r: any) => r.rating === s).length,
-    pct: reviews.length > 0 ? Math.round((reviews.filter((r: any) => r.rating === s).length / reviews.length) * 100) : 0,
-  }));
+    const ratingDist = [5, 4, 3, 2, 1].map(s => ({
+      star: s,
+      count: reviews.filter((r: any) => r.rating === s).length,
+      pct: reviews.length > 0 ? Math.round((reviews.filter((r: any) => r.rating === s).length / reviews.length) * 100) : 0,
+    }));
+
+    return { totalProducts, activeProducts, inStockProducts, avgRating, totalReviews, totalInquiries, unreadInquiries, totalViews, totalWishlists, recentReviews, recentInquiries, recentViews, ratingDist };
+  }, [products, reviews, inquiries, profileViews, wishlists]);
 
   const statCards = [
     { icon: Eye, label: isAr ? "المشاهدات" : "Views", value: totalViews, sub: isAr ? `${recentViews} آخر 30 يوم` : `${recentViews} last 30 days`, color: "text-primary" },

@@ -111,13 +111,13 @@ export function SupportCenter() {
     },
   });
 
-  const filteredFaq = FAQ_ITEMS.filter(f => {
+  const filteredFaq = useMemo(() => FAQ_ITEMS.filter(f => {
     if (!searchFaq) return true;
     const text = isAr ? `${f.qAr} ${f.aAr}` : `${f.q} ${f.a}`;
     return text.toLowerCase().includes(searchFaq.toLowerCase());
-  });
+  }), [searchFaq, isAr]);
 
-  const openCount = tickets.filter(t => t.status === "open" || t.status === "in_progress").length;
+  const openCount = useMemo(() => tickets.filter(t => t.status === "open" || t.status === "in_progress").length, [tickets]);
 
   return (
     <div className="space-y-4">

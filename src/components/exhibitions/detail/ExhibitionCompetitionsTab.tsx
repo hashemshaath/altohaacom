@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,12 +11,16 @@ interface Props {
 }
 
 export function ExhibitionCompetitionsTab({ competitions, isAr }: Props) {
-  const now = new Date();
-  const liveCompetitions = competitions.filter((c) =>
-    isWithinInterval(now, { start: new Date(c.competition_start), end: new Date(c.competition_end) })
-  );
-  const upcomingCompetitions = competitions.filter((c) => isFuture(new Date(c.competition_start)));
-  const pastCompetitions = competitions.filter((c) => isPast(new Date(c.competition_end)));
+  const { liveCompetitions, upcomingCompetitions, pastCompetitions } = useMemo(() => {
+    const now = new Date();
+    return {
+      liveCompetitions: competitions.filter((c) =>
+        isWithinInterval(now, { start: new Date(c.competition_start), end: new Date(c.competition_end) })
+      ),
+      upcomingCompetitions: competitions.filter((c) => isFuture(new Date(c.competition_start))),
+      pastCompetitions: competitions.filter((c) => isPast(new Date(c.competition_end))),
+    };
+  }, [competitions]);
 
   return (
     <div className="space-y-6">
