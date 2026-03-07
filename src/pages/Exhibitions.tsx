@@ -175,10 +175,10 @@ export default function Exhibitions() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-background to-accent/4" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/30 to-transparent" />
-        <div className="container relative py-6 md:py-14">
-          <div className="flex flex-col gap-5 lg:gap-8 lg:flex-row lg:items-end lg:justify-between" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
-            <div className="space-y-3 md:space-y-4 max-w-2xl flex-1">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20">
+        <div className="container relative py-4 sm:py-6 md:py-14">
+          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-8 lg:flex-row lg:items-end lg:justify-between" style={{ animation: "heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}>
+            <div className="space-y-2 sm:space-y-3 md:space-y-4 max-w-2xl flex-1">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 sm:px-3.5 sm:py-1.5 ring-1 ring-primary/20">
                 <div className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
@@ -187,10 +187,10 @@ export default function Exhibitions() {
                   {isAr ? "فعاليات الطهي العالمية" : "Global Culinary Events"}
                 </span>
               </div>
-              <h1 className="font-serif text-2xl font-bold tracking-tight md:text-5xl bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text">
+              <h1 className="font-serif text-xl sm:text-2xl font-bold tracking-tight md:text-5xl bg-gradient-to-br from-foreground via-foreground to-foreground/60 bg-clip-text">
                 {isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
               </h1>
-              <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-lg">
+              <p className="text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed max-w-lg hidden sm:block">
                 {isAr
                   ? "اكتشف أبرز المعارض والمؤتمرات العالمية في عالم الضيافة وفنون الطهي."
                   : "Discover prestigious hospitality and culinary trade shows, conferences, and festivals worldwide."}
