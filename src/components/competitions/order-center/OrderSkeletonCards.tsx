@@ -17,10 +17,10 @@ export const MetricCardsSkeleton = memo(function MetricCardsSkeleton() {
       ))}
     </div>
   );
-}
+});
 
 /** Skeleton for a single list card with items */
-export function ListCardSkeleton({ itemCount = 4 }: { itemCount?: number }) {
+export const ListCardSkeleton = memo(function ListCardSkeleton({ itemCount = 4 }: { itemCount?: number }) {
   return (
     <Card className="border-border/60 overflow-hidden">
       <CardHeader className="py-2.5 px-3 bg-muted/30 border-b">
@@ -43,10 +43,10 @@ export function ListCardSkeleton({ itemCount = 4 }: { itemCount?: number }) {
       </CardContent>
     </Card>
   );
-}
+});
 
 /** Full checklist page skeleton */
-export function ChecklistSkeleton() {
+export const ChecklistSkeleton = memo(function ChecklistSkeleton() {
   return (
     <div className="space-y-4">
       <MetricCardsSkeleton />
@@ -63,10 +63,10 @@ export function ChecklistSkeleton() {
       <ListCardSkeleton itemCount={5} />
     </div>
   );
-}
+});
 
 /** Dashboard overview skeleton */
-export function DashboardSkeleton() {
+export const DashboardSkeleton = memo(function DashboardSkeleton() {
   return (
     <div className="space-y-4">
       <MetricCardsSkeleton />
@@ -96,4 +96,4 @@ export function DashboardSkeleton() {
       </Card>
     </div>
   );
-}
+});
