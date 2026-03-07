@@ -228,7 +228,7 @@ export function useChefsTableInvitations(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_invitations" as any)
-        .select("*")
+        .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, sample_tracking_number, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as ChefsTableInvitation[];
