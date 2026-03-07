@@ -90,7 +90,7 @@ export function PostCard({
       {!isEditing && (
         <div className="flex gap-3">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
-            <Avatar className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
+            <Avatar className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
               <AvatarImage src={post.author_avatar || undefined} className="object-cover rounded-xl" />
               <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
