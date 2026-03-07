@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { useScrolled } from "@/hooks/useScrolled";
+import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
