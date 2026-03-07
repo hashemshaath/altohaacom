@@ -62,7 +62,7 @@ export default function Competitions() {
       if (error) throw error;
       return data as CompetitionWithRegs[];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: userRoles } = useQuery({

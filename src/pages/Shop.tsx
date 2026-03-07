@@ -38,7 +38,7 @@ export default function Shop() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: 1000 * 60 * 5,
   });
 
   const categories = [...new Set(products.map((p: any) => p.category))].sort();

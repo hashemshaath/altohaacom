@@ -122,7 +122,7 @@ export default function EntityDetail() {
       return count || 0;
     },
     enabled: !!entity,
-    staleTime: 1000 * 60 * 2,
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: counts } = useQuery({
