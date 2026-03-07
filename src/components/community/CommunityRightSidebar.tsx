@@ -150,6 +150,9 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
             </div>
           </div>
 
+          {/* AI Recommendations */}
+          <SmartRecommendations />
+
           {/* Upcoming Events */}
           <UpcomingEventsWidget />
 
