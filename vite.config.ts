@@ -191,6 +191,7 @@ export default defineConfig(({ mode }) => ({
           "vendor-qr": ["qrcode.react"],
           "vendor-pdf": ["pdfjs-dist"],
           "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
+          "vendor-heavy": ["mammoth", "html2canvas"],
         },
       },
     },

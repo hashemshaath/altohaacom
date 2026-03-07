@@ -66,6 +66,8 @@ const queryClient = new QueryClient({
       retry: 1,
       refetchOnWindowFocus: false,
       refetchOnReconnect: "always",
+      // Deduplicate identical queries within a 2s window
+      structuralSharing: true,
     },
     mutations: {
       retry: 0,
