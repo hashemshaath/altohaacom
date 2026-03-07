@@ -103,7 +103,7 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
           <div className="relative">
             <div className="h-20 w-20 rounded-2xl ring-2 ring-chart-4/30 overflow-hidden bg-chart-4/10 sm:h-24 sm:w-24">
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
+                <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" loading="lazy" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
                   <Crown className="h-8 w-8 text-chart-4/60" />
