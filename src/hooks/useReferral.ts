@@ -12,7 +12,7 @@ export function useReferralCode() {
       if (!user) return null;
       const { data, error } = await supabase
         .from("referral_codes")
-        .select("*")
+        .select("id, code, user_id, is_active, total_clicks, total_invites_sent, total_conversions, total_points_earned, custom_slug, created_at, updated_at")
         .eq("user_id", user.id)
         .maybeSingle();
       if (error) throw error;
