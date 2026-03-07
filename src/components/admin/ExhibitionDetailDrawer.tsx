@@ -46,7 +46,7 @@ export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: 
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibitions")
-        .select("*")
+        .select("id, title, title_ar, slug, description, description_ar, type, status, cover_image_url, start_date, end_date, registration_deadline, venue, venue_ar, city, country, map_url, is_virtual, virtual_link, organizer_id, organizer_name, organizer_email, is_free, ticket_price, max_attendees, tags, is_featured, is_cancelled, created_by, created_at, updated_at")
         .eq("id", exhibitionId!)
         .single();
       if (error) throw error;
