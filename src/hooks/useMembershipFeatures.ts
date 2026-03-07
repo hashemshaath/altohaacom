@@ -46,7 +46,7 @@ export function useFeatureTierMappings() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_feature_tiers")
-        .select("*");
+        .select("id, feature_id, tier, is_enabled");
       if (error) throw error;
       return data as FeatureTierMapping[];
     },

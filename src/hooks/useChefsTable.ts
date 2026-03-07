@@ -288,7 +288,7 @@ export function useMyChefInvitations() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_invitations" as any)
-        .select("*")
+        .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("chef_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;

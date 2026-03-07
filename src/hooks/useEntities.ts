@@ -153,7 +153,7 @@ export function useEntityEvents(entityId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("entity_events")
-        .select("*")
+        .select("id, entity_id, title, title_ar, description, description_ar, start_date, end_date, location, location_ar, status, cover_image_url, created_at")
         .eq("entity_id", entityId!)
         .order("start_date", { ascending: false });
       if (error) throw error;

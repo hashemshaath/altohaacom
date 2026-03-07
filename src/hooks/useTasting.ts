@@ -212,7 +212,7 @@ export function useTastingJudges(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("tasting_judges" as any)
-        .select("*")
+        .select("id, session_id, judge_id, assigned_at, has_completed, completed_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as TastingJudge[];

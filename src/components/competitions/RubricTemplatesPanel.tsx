@@ -51,7 +51,7 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
     queryFn: async () => {
       let query = supabase
         .from("judging_rubric_templates")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, competition_type, category_type, is_active, criteria, created_by, created_at")
         .order("created_at", { ascending: false });
 
       if (!isAdmin) {
