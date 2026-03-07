@@ -235,6 +235,7 @@ export default function Search() {
                  {[
                    { value: "all", icon: SearchIcon, label: isAr ? "الكل" : "All", count: totalResults },
                    { value: "competitions", icon: Trophy, label: isAr ? "المسابقات" : "Competitions", count: results.competitions.length },
+                   { value: "exhibitions", icon: Ticket, label: isAr ? "المعارض" : "Exhibitions", count: results.exhibitions.length },
                    { value: "articles", icon: FileText, label: isAr ? "المقالات" : "Articles", count: results.articles.length },
                    { value: "members", icon: User, label: isAr ? "الأعضاء" : "Members", count: results.members.length },
                    { value: "entities", icon: Building2, label: isAr ? "الجهات" : "Organizations", count: results.entities.length },
