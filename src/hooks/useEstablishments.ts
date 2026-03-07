@@ -9,7 +9,7 @@ export function useEstablishments(filters?: { type?: string; country?: string; s
     queryFn: async () => {
       let query = supabase
         .from("establishments")
-        .select("*")
+        .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, phone, email, website, cuisine_type, cuisine_type_ar, star_rating, logo_url, cover_image_url, is_active, is_verified, created_at")
         .eq("is_active", true)
         .order("name");
 
@@ -30,7 +30,7 @@ export function useEstablishment(id?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("establishments")
-        .select("*")
+        .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, address_ar, phone, email, website, cuisine_type, cuisine_type_ar, star_rating, logo_url, cover_image_url, is_active, is_verified, establishment_number, created_by, created_at, updated_at")
         .eq("id", id!)
         .single();
       if (error) throw error;
@@ -96,7 +96,7 @@ export function useAssociationQualifications(associationId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chef_establishment_qualifications")
-        .select("*")
+        .select("id, association_id, user_id, qualification_name, qualification_name_ar, qualification_type, issued_date, expiry_date, credential_id, description, description_ar, created_at")
         .eq("association_id", associationId!)
         .order("issued_date", { ascending: false });
       if (error) throw error;

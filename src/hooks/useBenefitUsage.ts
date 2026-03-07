@@ -34,7 +34,7 @@ export function useBenefitUsage() {
       // Get limits for this tier
       const { data: limits } = await supabase
         .from("membership_benefit_limits")
-        .select("*")
+        .select("id, benefit_code, benefit_name, benefit_name_ar, icon_name, category, monthly_limit, sort_order, is_active")
         .eq("tier", tier)
         .eq("is_active", true)
         .order("sort_order");

@@ -44,7 +44,7 @@ export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judge_documents")
-        .select("*")
+        .select("id, user_id, document_type, title, file_url, file_name, file_size, expiry_date, notes, is_verified, verified_by, verified_at, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
       if (error) throw error;

@@ -20,7 +20,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
     queryFn: async () => {
       const { data: criteria } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, name, name_ar, max_score, sort_order")
         .eq("competition_id", competitionId)
         .order("sort_order");
 
@@ -35,7 +35,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
 
       const { data: scores } = await supabase
         .from("competition_scores")
-        .select("*")
+        .select("id, registration_id, criteria_id, judge_id, score")
         .in("registration_id", regIds);
 
       if (!criteria || !scores) return null;
