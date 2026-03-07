@@ -243,7 +243,7 @@ export function useChefsTableEvaluations(sessionId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_evaluations" as any)
-        .select("*")
+        .select("id, session_id, invitation_id, chef_id, taste_score, texture_score, aroma_score, versatility_score, value_score, presentation_score, overall_score, is_recommended, recommendation_level, review_title, review_title_ar, review_text, review_text_ar, pros, pros_ar, cons, cons_ar, usage_suggestions, usage_suggestions_ar, endorsement_text, endorsement_text_ar, allow_publish, status, submitted_at, created_at, updated_at")
         .eq("session_id", sessionId!);
       if (error) throw error;
       return (data || []) as unknown as ChefsTableEvaluation[];
