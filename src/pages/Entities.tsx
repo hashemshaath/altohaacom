@@ -290,7 +290,7 @@ export default function Entities() {
                       {/* Cover / Logo Header */}
                       <div className="relative h-36 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5">
                         {entity.cover_image_url ? (
-                          <img src={entity.cover_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          <img src={entity.cover_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <Building2 className="h-12 w-12 text-primary/15" />
