@@ -113,6 +113,7 @@ function AppContent() {
       <Suspense fallback={null}><LiveChatWidget /></Suspense>
       <Suspense fallback={null}><WelcomeModal /></Suspense>
       <Suspense fallback={null}><GuidedTour /></Suspense>
+      <Suspense fallback={null}><CommandPalette /></Suspense>
       <Suspense fallback={null}>
         <MobileBottomNav />
         <ScrollProgress />
