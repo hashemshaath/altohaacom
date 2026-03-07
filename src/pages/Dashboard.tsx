@@ -59,6 +59,8 @@ const RecentOrdersWidget = lazy(() => import("@/components/dashboard/RecentOrder
 const RecentChatsWidget = lazy(() => import("@/components/dashboard/RecentChatsWidget").then(m => ({ default: m.RecentChatsWidget })));
 const AchievementsChallengesWidget = lazy(() => import("@/components/dashboard/AchievementsChallengesWidget").then(m => ({ default: m.AchievementsChallengesWidget })));
 const SmartRecommendationsWidget = lazy(() => import("@/components/community/SmartRecommendations").then(m => ({ default: m.SmartRecommendations })));
+const PlatformScoreWidget = lazy(() => import("@/components/dashboard/PlatformScoreWidget").then(m => ({ default: m.PlatformScoreWidget })));
+const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendChart").then(m => ({ default: m.WeeklyTrendChart })));
 
 function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
   return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
