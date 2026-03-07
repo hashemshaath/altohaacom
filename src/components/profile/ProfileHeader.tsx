@@ -137,7 +137,7 @@ export function ProfileHeader({ profile, roles, userId, onProfileUpdate }: Profi
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading}
-              className="absolute -bottom-1 -end-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all hover:scale-110 active:scale-95 ring-4 ring-card"
+              className="absolute -bottom-1 -end-1 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all hover:scale-110 active:scale-95 ring-3 sm:ring-4 ring-card touch-manipulation"
             >
               <Camera className="h-4 w-4" />
             </button>
