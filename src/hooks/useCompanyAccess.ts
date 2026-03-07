@@ -34,7 +34,7 @@ export function useCompanyProfile(companyId: string | null) {
 
       const { data, error } = await supabase
         .from("companies")
-        .select("*")
+        .select("id, name, name_ar, type, status, description, description_ar, logo_url, cover_image_url, email, phone, phone_secondary, fax, website, address, address_ar, street, street_ar, district, district_ar, neighborhood, neighborhood_ar, city, country, country_code, postal_code, national_address, national_address_ar, google_maps_url, latitude, longitude, registration_number, tax_number, company_number, founded_year, specializations, classifications, operating_countries, supplier_category, is_verified, verification_level, verified_at, is_pro_supplier, rating, supplier_score, total_reviews, total_orders, on_time_delivery_rate, response_time_hours, payment_terms, credit_limit, currency, tagline, tagline_ar, social_links, working_hours, featured_order, import_source, created_by, created_at, updated_at")
         .eq("id", companyId)
         .maybeSingle();
 

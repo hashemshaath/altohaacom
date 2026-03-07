@@ -80,7 +80,7 @@ export default function KnowledgeAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("knowledge_categories")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, icon, parent_id, sort_order, created_at, updated_at")
         .order("sort_order");
       if (error) throw error;
       return data;
@@ -92,7 +92,7 @@ export default function KnowledgeAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reference_gallery")
-        .select("*")
+        .select("id, title, title_ar, description, description_ar, image_url, rating, competition_category, category, category_id, score_range_min, score_range_max, tags, is_active, sort_order, added_by, uploaded_by_name, created_at")
         .order("sort_order");
       if (error) throw error;
       return data;
@@ -104,7 +104,7 @@ export default function KnowledgeAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judging_rubric_templates")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, competition_type, category_type, criteria, is_active, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;

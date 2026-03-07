@@ -48,7 +48,7 @@ export default function MyEvaluations() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("evaluation_invitations" as any)
-        .select("*")
+        .select("id, domain_slug, status, product_name, product_name_ar, product_description, product_description_ar, product_images, evaluation_date, evaluation_location, evaluation_location_ar, expected_duration_minutes, offered_amount, currency, response_deadline, notes, notes_ar, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as Invitation[];
