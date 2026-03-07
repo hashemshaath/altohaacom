@@ -45,7 +45,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("user_id, full_name, avatar_url, username, email, phone, country_code, bio, specialization, account_status, wallet_balance, loyalty_points, account_number, is_verified, gender, date_of_birth, location, preferred_language, last_login_at, created_at, updated_at")
         .eq("user_id", userId!)
         .single();
       if (error) throw error;
@@ -70,7 +70,7 @@ export default function CRMCustomerDetail() {
     queryFn: async (): Promise<any[]> => {
       const result = await (supabase as any)
         .from("shop_orders")
-        .select("*")
+        .select("id, order_number, user_id, status, total_amount, currency, payment_status, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return result.data || [];
@@ -84,7 +84,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_wallet_transactions")
-        .select("*")
+        .select("id, user_id, type, amount, balance_after, description, description_ar, reference_id, reference_type, created_by, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data || [];
@@ -98,7 +98,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_loyalty_points")
-        .select("*")
+        .select("id, user_id, type, points, description, description_ar, reference_id, reference_type, expires_at, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data || [];
@@ -112,7 +112,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_wishlist")
-        .select("*")
+        .select("id, user_id, item_id, item_type, item_name, item_name_ar, item_image_url, item_price, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data || [];
@@ -148,7 +148,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_custom_fields")
-        .select("*")
+        .select("id, user_id, field_name, field_type, field_value, created_at, updated_at")
         .eq("user_id", userId!)
         .order("field_name");
       return data || [];

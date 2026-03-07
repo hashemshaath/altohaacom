@@ -67,7 +67,7 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
     queryFn: async () => {
       const { data, error } = await supabase
         .from("invoice_settings")
-        .select("*")
+        .select("id, company_id, logo_url, logo_position, logo_size, primary_color, invoice_title, invoice_title_ar, store_name_prefix, store_name_prefix_ar, store_address, store_address_ar, contact_email, contact_phone, show_contact_info, show_store_address, show_product_image, show_product_description, show_product_barcode, show_product_stock_number, show_product_weight, show_gtin_code, show_mpn_code, show_order_note, show_invoice_barcode, show_invoice_acknowledgment, show_return_policy, return_policy_text, return_policy_text_ar, stamp_url, stamp_position, stamp_opacity, watermark_url, watermark_opacity, title_style, main_font_weight, sub_font_weight, auto_send_invoice, auto_send_statuses, issue_english_copy")
         .is("company_id", null)
         .single();
       if (error) return null;

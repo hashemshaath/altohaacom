@@ -25,7 +25,7 @@ export default function EstablishmentDetailDrawer({ entityId, open, onClose }: P
     queryFn: async () => {
       const { data, error } = await supabase
         .from("culinary_entities")
-        .select("*")
+        .select("id, name, name_ar, slug, type, scope, status, description, description_ar, logo_url, cover_image_url, gallery_urls, country, city, address, address_ar, phone, email, fax, website, social_links, founded_year, member_count, president_name, president_name_ar, secretary_name, secretary_name_ar, abbreviation, abbreviation_ar, mission, mission_ar, specializations, services, tags, affiliated_organizations, registration_number, license_number, license_expires_at, is_verified, verified_at, verification_level, is_visible, latitude, longitude, postal_code, view_count, username, entity_number, account_manager_id, internal_notes, registered_at, created_at, updated_at, created_by")
         .eq("id", entityId!)
         .single();
       if (error) throw error;

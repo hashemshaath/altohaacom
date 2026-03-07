@@ -191,7 +191,7 @@ export function useGlobalEventsCalendar(filters?: {
       // 4. Fetch admin-managed global events
       const { data: globalEvents } = await (supabase as any)
         .from("global_events")
-        .select("*")
+        .select("id, title, title_ar, type, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, is_international, is_recurring, link, cover_image_url, logo_url, organizer_name, organizer_name_ar")
         .eq("status", "active");
 
       if (globalEvents) {
