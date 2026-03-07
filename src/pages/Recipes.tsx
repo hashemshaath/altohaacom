@@ -128,19 +128,25 @@ export default function Recipes() {
     category: category !== "all" ? category : undefined,
   });
 
+  const sortedRecipes = useMemo(() => {
+    if (sortBy === "top_rated") return [...recipes].sort((a, b) => b.avg_rating - a.avg_rating);
+    if (sortBy === "quickest") return [...recipes].sort((a, b) => ((a.prep_time_minutes || 0) + (a.cook_time_minutes || 0)) - ((b.prep_time_minutes || 0) + (b.cook_time_minutes || 0)));
+    return recipes;
+  }, [recipes, sortBy]);
+
+  const jsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: isAr ? "وصفات الطهي" : "Culinary Recipes",
+    url: `${window.location.origin}/recipes`,
+    isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
+  }), [isAr]);
+
   return (
     <PageShell
       title={isAr ? "الوصفات — الطهاة" : "Recipe Database — Altoha"}
       description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
-      seoProps={{
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          name: isAr ? "وصفات الطهي" : "Culinary Recipes",
-          url: `${window.location.origin}/recipes`,
-          isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
-        },
-      }}
+      seoProps={{ jsonLd }}
       container={false}
       padding="none"
     >
