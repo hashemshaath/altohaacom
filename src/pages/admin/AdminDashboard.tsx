@@ -461,7 +461,7 @@ export default function AdminDashboard() {
             </div>
             <h3 className="text-sm font-bold">{isAr ? "اختصارات سريعة" : "Quick Workflows"}</h3>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-2.5">
             {workflowShortcuts.map((shortcut) => (
               <Link key={shortcut.label} to={shortcut.link}>
                 <div className="group flex flex-col items-center gap-2 rounded-2xl border border-border/30 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 text-center">
