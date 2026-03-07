@@ -78,7 +78,7 @@ export default function CompanyCommunications() {
       if (!companyId) return [];
       let query = supabase
         .from("company_communications")
-        .select("*")
+        .select("id, company_id, sender_id, subject, message, direction, status, priority, is_starred, is_archived, is_internal_note, tags, parent_id, response_time_minutes, created_at, updated_at")
         .eq("company_id", companyId)
         .is("parent_id", null)
         .order("created_at", { ascending: false });
