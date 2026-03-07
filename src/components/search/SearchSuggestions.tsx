@@ -46,7 +46,7 @@ export function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSu
         supabase.from("articles").select("title, title_ar").eq("status", "published").or(`title.ilike.%${escaped}%,title_ar.ilike.%${escaped}%`).limit(3),
         supabase.from("profiles").select("full_name, full_name_ar, username").eq("account_status", "active").or(`full_name.ilike.%${escaped}%,full_name_ar.ilike.%${escaped}%,username.ilike.%${escaped}%`).limit(3),
         supabase.from("recipes").select("title, title_ar").eq("is_published", true).or(`title.ilike.%${escaped}%,title_ar.ilike.%${escaped}%`).limit(3),
-        supabase.from("exhibitions").select("title, title_ar").eq("status", "published").or(`title.ilike.%${escaped}%,title_ar.ilike.%${escaped}%`).limit(2),
+        supabase.from("exhibitions").select("title, title_ar").eq("status", "published" as any).or(`title.ilike.%${escaped}%,title_ar.ilike.%${escaped}%`).limit(2),
       ]);
 
       const suggestions: Suggestion[] = [];
