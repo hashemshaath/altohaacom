@@ -227,7 +227,7 @@ export default function CompetitionDetail() {
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="flex-1">
-          <Skeleton className="h-72 w-full sm:h-80 md:h-96" />
+          <Skeleton className="h-56 w-full sm:h-80 md:h-96" />
           <div className="border-b border-border/40 px-4 py-3">
             <div className="container flex gap-2">
               {Array.from({ length: 5 }).map((_, i) => (
