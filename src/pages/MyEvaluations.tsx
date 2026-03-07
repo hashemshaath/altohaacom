@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -80,8 +80,8 @@ export default function MyEvaluations() {
     onError: () => toast.error(isAr ? "حدث خطأ" : "Action failed"),
   });
 
-  const pending = invitations?.filter(i => i.status === "pending") || [];
-  const responded = invitations?.filter(i => i.status !== "pending") || [];
+  const pending = useMemo(() => invitations?.filter(i => i.status === "pending") || [], [invitations]);
+  const responded = useMemo(() => invitations?.filter(i => i.status !== "pending") || [], [invitations]);
 
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4 space-y-8">
