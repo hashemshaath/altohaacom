@@ -147,7 +147,7 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <div className="relative min-h-[55vh] sm:min-h-[65vh] lg:min-h-[75vh]">
+      <div className="relative min-h-[45vh] sm:min-h-[55vh] lg:min-h-[75vh]">
         {slides.map((s, idx) => (
           <SlideBackground key={s.id} slide={s} isActive={idx === current} isFirst={idx === 0} />
         ))}
