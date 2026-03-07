@@ -2,6 +2,7 @@
  * Batch action toolbar for notifications page.
  * Appears when notifications are selected.
  */
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +18,7 @@ interface NotificationBatchActionsProps {
   className?: string;
 }
 
-export function NotificationBatchActions({
+export const NotificationBatchActions = memo(function NotificationBatchActions({
   selectedCount,
   onMarkRead,
   onDelete,
@@ -58,4 +59,4 @@ export function NotificationBatchActions({
       </div>
     </div>
   );
-}
+});

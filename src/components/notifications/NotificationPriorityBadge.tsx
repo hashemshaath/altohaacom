@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { AlertTriangle, ArrowUp, Minus, ArrowDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -38,7 +39,7 @@ interface Props {
   size?: "sm" | "xs";
 }
 
-export function NotificationPriorityBadge({ priority, isAr, showLabel = false, size = "xs" }: Props) {
+export const NotificationPriorityBadge = memo(function NotificationPriorityBadge({ priority, isAr, showLabel = false, size = "xs" }: Props) {
   const p = (priority as Priority) || "normal";
   if (p === "normal" && !showLabel) return null;
 
@@ -58,7 +59,7 @@ export function NotificationPriorityBadge({ priority, isAr, showLabel = false, s
       {showLabel && <span>{isAr ? config.ar : config.en}</span>}
     </Badge>
   );
-}
+});
 
 /** Derive priority from notification type for older notifications without explicit priority */
 export function inferPriority(notification: { type?: string | null; priority?: string | null }): string {

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +18,7 @@ interface ShopFiltersProps {
   onSortChange?: (value: SortOption) => void;
 }
 
-export function ShopFilters({
+export const ShopFilters = memo(function ShopFilters({
   search, onSearchChange,
   categoryFilter, onCategoryChange,
   typeFilter, onTypeChange,
@@ -89,4 +90,4 @@ export function ShopFilters({
       </div>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Check, X, Eye, ExternalLink, MessageCircle } from "lucide-react";
@@ -37,7 +38,7 @@ interface Props {
   compact?: boolean;
 }
 
-export function NotificationActionButtons({ notification, onMarkRead, compact = true }: Props) {
+export const NotificationActionButtons = memo(function NotificationActionButtons({ notification, onMarkRead, compact = true }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -71,4 +72,4 @@ export function NotificationActionButtons({ notification, onMarkRead, compact = 
       })}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, memo } from "react";
 import { Check, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ interface SwipeableNotificationCardProps {
   className?: string;
 }
 
-export function SwipeableNotificationCard({
+export const SwipeableNotificationCard = memo(function SwipeableNotificationCard({
   children,
   onMarkRead,
   onDelete,
@@ -105,4 +105,4 @@ export function SwipeableNotificationCard({
       </div>
     </div>
   );
-}
+});

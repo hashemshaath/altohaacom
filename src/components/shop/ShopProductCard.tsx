@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ interface ShopProductCardProps {
   onAddToCart: (product: any) => void;
 }
 
-export function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) {
+export const ShopProductCard = memo(function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const title = isAr && product.title_ar ? product.title_ar : product.title;
@@ -119,4 +120,4 @@ export function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) 
       </CardContent>
     </Card>
   );
-}
+});
