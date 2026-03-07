@@ -104,7 +104,7 @@ export function PublicProfileHero({
       <div className="relative z-20 -mt-16 sm:-mt-20 md:-mt-24 px-3 sm:px-4 md:px-6 max-w-[1200px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
         <Card className="border-border/25 shadow-lg shadow-primary/5 rounded-2xl backdrop-blur-xl bg-card/90 overflow-visible">
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-          <CardContent className="p-4 sm:p-5 md:p-6">
+          <CardContent className="p-3 sm:p-5 md:p-6">
             <div className="flex flex-col items-center md:flex-row md:items-start gap-4 md:gap-5">
               {/* Avatar */}
               <div className="-mt-20 md:-mt-24 shrink-0 relative group z-10">
