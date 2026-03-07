@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { OrganizerAnalyticsTab } from "@/components/organizers/OrganizerAnalyticsTab";
 import { OrganizerRatingSummary } from "@/components/organizers/OrganizerRatingSummary";
 import { SEOHead } from "@/components/SEOHead";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
