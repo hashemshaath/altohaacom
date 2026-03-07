@@ -801,7 +801,7 @@ export default function OrdersAdmin() {
                 {orderDetails.companies && (
                   <div className="flex items-center gap-3">
                     {orderDetails.companies.logo_url ? (
-                      <img src={orderDetails.companies.logo_url} alt="" className="h-12 w-12 rounded-xl object-cover" />
+                      <img src={orderDetails.companies.logo_url} alt="" className="h-12 w-12 rounded-xl object-cover" loading="lazy" />
                     ) : (
                       <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
                         <Building2 className="h-6 w-6 text-muted-foreground" />
