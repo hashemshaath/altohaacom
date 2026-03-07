@@ -380,7 +380,7 @@ export function useDuplicateCostEstimate() {
       const src = source as unknown as CostEstimate;
 
       const { data: items, error: itemsErr } = await supabase
-        .from("cost_estimate_items" as any).select("*").eq("estimate_id", sourceId).order("sort_order");
+        .from("cost_estimate_items" as any).select("id, estimate_id, category, title, title_ar, description, description_ar, quantity, unit, unit_ar, unit_price, total_price, person_id, person_role, cost_profile_id, sort_order, notes, created_at").eq("estimate_id", sourceId).order("sort_order");
       if (itemsErr) throw itemsErr;
 
       const { id, estimate_number, created_at, updated_at, status, approved_by, approved_at, rejection_reason, invoice_id, ...rest } = src;
