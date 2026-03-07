@@ -23,7 +23,7 @@ interface ShopProductCardProps {
   onAddToCart: (product: any) => void;
 }
 
-export function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) {
+export const ShopProductCard = memo(function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const title = isAr && product.title_ar ? product.title_ar : product.title;
