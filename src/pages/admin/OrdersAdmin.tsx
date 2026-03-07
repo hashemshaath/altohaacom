@@ -952,7 +952,7 @@ export default function OrdersAdmin() {
                       <div key={item.id} className="flex items-center gap-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
                           {item.shop_products?.image_url ? (
-                            <img src={item.shop_products.image_url} alt="" className="h-full w-full object-cover" />
+                            <img src={item.shop_products.image_url} alt="" className="h-full w-full object-cover" loading="lazy" />
                           ) : (
                             <div className="flex h-full items-center justify-center">
                               <ShoppingBag className="h-5 w-5 text-muted-foreground/30" />
