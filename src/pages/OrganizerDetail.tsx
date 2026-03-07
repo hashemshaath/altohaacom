@@ -985,6 +985,7 @@ export default function OrganizerDetail() {
                 </div>
               </TabsContent>
             )}
+            </div>
           </Tabs>
         </div>
       </main>
