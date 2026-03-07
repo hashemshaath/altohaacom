@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -192,7 +192,7 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
     updateWorkspace.mutate({ id: workspace.id, field: "practice_schedule", value: [...schedule, item] as unknown as Json });
   };
 
-  const completedTasks = tasks.filter(t => t.done).length;
+  const completedTasks = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
 
   return (
     <div className="space-y-4">

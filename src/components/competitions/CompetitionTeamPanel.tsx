@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -189,13 +189,13 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
     return map[role] || "secondary";
   };
 
-  const grouped = ROLES.reduce((acc, role) => {
+  const grouped = useMemo(() => ROLES.reduce((acc, role) => {
     const roleMembers = filtered.filter((m: any) => m.role === role.value);
     if (roleMembers.length > 0) acc.push({ ...role, members: roleMembers });
     return acc;
-  }, [] as any[]);
+  }, [] as any[]), [filtered]);
 
-  const checkedInCount = members.filter((m: any) => m.is_checked_in).length;
+  const checkedInCount = useMemo(() => members.filter((m: any) => m.is_checked_in).length, [members]);
 
   return (
     <div className="space-y-4">
