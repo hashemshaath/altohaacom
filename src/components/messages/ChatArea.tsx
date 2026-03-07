@@ -161,8 +161,10 @@ export function ChatArea({
     const { error } = await supabase.from("messages").delete().eq("id", msgId);
     if (!error) {
       toast({ title: isAr ? "تم حذف الرسالة" : "Message deleted" });
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
     }
-  }, [isAr, toast]);
+  }, [isAr, toast, queryClient]);
 
   const handlePin = useCallback(async (msgId: string, pin: boolean) => {
     await supabase.from("messages").update({ is_pinned: pin } as any).eq("id", msgId);
