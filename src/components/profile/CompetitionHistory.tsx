@@ -249,4 +249,4 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
       )}
     </div>
   );
-}
+});

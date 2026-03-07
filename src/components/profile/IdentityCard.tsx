@@ -257,4 +257,4 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
       </div>
     </section>
   );
-}
+});

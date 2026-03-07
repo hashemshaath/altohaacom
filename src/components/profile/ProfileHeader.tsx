@@ -257,4 +257,4 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
       </div>
     </div>
   );
-}
+});

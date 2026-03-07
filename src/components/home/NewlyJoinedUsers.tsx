@@ -152,4 +152,4 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
       </div>
     </section>
   );
-}
+});

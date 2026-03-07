@@ -103,4 +103,4 @@ export const ProfileOverviewTab = memo(function ProfileOverviewTab({ profile, us
       )}
     </StaggeredList>
   );
-}
+});

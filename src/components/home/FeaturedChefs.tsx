@@ -193,4 +193,4 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
       </div>
     </section>
   );
-}
+});

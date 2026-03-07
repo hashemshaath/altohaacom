@@ -243,4 +243,4 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       )}
     </div>
   );
-}
+});

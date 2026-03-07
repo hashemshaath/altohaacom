@@ -202,4 +202,4 @@ export const UserCompetitionStats = memo(function UserCompetitionStats({ userId 
       )}
     </StaggeredList>
   );
-}
+});

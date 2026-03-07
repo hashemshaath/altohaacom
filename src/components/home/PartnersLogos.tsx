@@ -127,4 +127,4 @@ export const PartnersLogos = memo(function PartnersLogos() {
       </div>
     </section>
   );
-}
+});

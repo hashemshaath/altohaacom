@@ -160,4 +160,4 @@ export const SponsorCarousel = memo(function SponsorCarousel() {
       </div>
     </section>
   );
-}
+});

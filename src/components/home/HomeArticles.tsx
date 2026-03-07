@@ -228,4 +228,4 @@ export const HomeArticles = memo(function HomeArticles() {
       )}
     </section>
   );
-}
+});
