@@ -214,7 +214,7 @@ export function useChefsTableRequests() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("chefs_table_requests" as any)
-        .select("*")
+        .select("id, company_id, requested_by, request_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, preferred_city, preferred_country_code, preferred_date_start, preferred_date_end, budget, currency, chef_count, status, admin_notes, reviewed_at, rejection_reason, created_at, updated_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data || []) as unknown as ChefsTableRequest[];
