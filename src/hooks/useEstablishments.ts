@@ -9,7 +9,7 @@ export function useEstablishments(filters?: { type?: string; country?: string; s
     queryFn: async () => {
       let query = supabase
         .from("establishments")
-        .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, phone, email, website, cuisine_type, star_rating, logo_url, cover_image_url, is_active, created_at")
+        .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, phone, email, website, cuisine_type, cuisine_type_ar, star_rating, logo_url, cover_image_url, is_active, is_verified, created_at")
         .eq("is_active", true)
         .order("name");
 
