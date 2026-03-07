@@ -80,7 +80,7 @@ export default function KnowledgeAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("knowledge_categories")
-        .select("*")
+        .select("id, name, name_ar, description, description_ar, icon, parent_id, sort_order, created_at, updated_at")
         .order("sort_order");
       if (error) throw error;
       return data;
