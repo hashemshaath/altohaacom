@@ -14,7 +14,7 @@ const tierStyles: Record<string, { border: string; bg: string; label: string; la
   bronze: { border: "border-chart-3/20", bg: "bg-chart-3/5", label: "Bronze", labelAr: "برونزي" },
 };
 
-export function SponsorCarousel() {
+export const SponsorCarousel = memo(function SponsorCarousel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
