@@ -13,7 +13,7 @@ import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign 
  * Compact profile completion card that encourages users
  * to finish setting up their profile.
  */
-export function ProfileCompletionCard() {
+export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
