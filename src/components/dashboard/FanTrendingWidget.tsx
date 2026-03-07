@@ -73,4 +73,4 @@ export const FanTrendingWidget = memo(function FanTrendingWidget() {
       </CardContent>
     </Card>
   );
-}
+});

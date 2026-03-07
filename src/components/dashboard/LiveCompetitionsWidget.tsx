@@ -161,4 +161,4 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

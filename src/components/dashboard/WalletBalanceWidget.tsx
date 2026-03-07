@@ -92,4 +92,4 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
       </CardContent>
     </Card>
   );
-}
+});

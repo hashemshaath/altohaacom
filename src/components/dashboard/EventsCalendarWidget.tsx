@@ -261,4 +261,4 @@ export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
       </CardContent>
     </Card>
   );
-}
+});

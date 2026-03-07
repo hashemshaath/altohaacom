@@ -122,4 +122,4 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
       </CardContent>
     </Card>
   );
-}
+});

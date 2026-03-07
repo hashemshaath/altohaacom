@@ -129,4 +129,4 @@ export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidg
       </CardContent>
     </Card>
   );
-}
+});

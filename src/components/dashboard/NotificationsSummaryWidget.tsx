@@ -127,4 +127,4 @@ export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidg
       </CardContent>
     </Card>
   );
-}
+});

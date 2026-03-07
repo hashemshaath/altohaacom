@@ -140,4 +140,4 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
       </CardContent>
     </Card>
   );
-}
+});

@@ -76,4 +76,4 @@ export const FanRecommendationsWidget = memo(function FanRecommendationsWidget()
       </CardContent>
     </Card>
   );
-}
+});
