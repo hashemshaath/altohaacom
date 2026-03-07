@@ -143,7 +143,7 @@ export function useMyMentorshipMatches() {
       if (!user?.id) return [];
       const { data, error } = await supabase
         .from("mentorship_matches")
-        .select("*")
+        .select("id, program_id, mentor_id, mentee_id, status, mentor_notes, mentee_notes, matched_at, started_at, completed_at, created_at")
         .or(`mentor_id.eq.${user.id},mentee_id.eq.${user.id}`)
         .order("created_at", { ascending: false });
       if (error) throw error;
