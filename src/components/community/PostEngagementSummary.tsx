@@ -15,7 +15,7 @@ interface Props {
  * Compact engagement metrics displayed below a post.
  * Shows view count + trending indicator when engagement is high.
  */
-export function PostEngagementSummary({ likesCount, commentsCount, repostsCount = 0, viewCount }: Props) {
+export const PostEngagementSummary = memo(function PostEngagementSummary({ likesCount, commentsCount, repostsCount = 0, viewCount }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const totalEngagement = likesCount + commentsCount * 2 + repostsCount * 3;
