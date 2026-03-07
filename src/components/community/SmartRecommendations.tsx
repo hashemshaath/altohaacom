@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight } from "lucide-react";
+import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, Landmark, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface RecommendationData {
@@ -16,6 +16,7 @@ interface RecommendationData {
   recipes: any[];
   articles: any[];
   chefs: any[];
+  exhibitions: any[];
   tip: string;
   tip_ar: string;
 }
@@ -42,10 +43,18 @@ export function SmartRecommendations() {
   return (
     <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" />
-          {isAr ? "مقترح لك بالذكاء الاصطناعي" : "AI Recommendations"}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            {isAr ? "مقترح لك بالذكاء الاصطناعي" : "AI Recommendations"}
+          </CardTitle>
+          <Link to="/for-you">
+            <Button variant="ghost" size="sm" className="text-[10px] h-6 gap-1">
+              {isAr ? "عرض الكل" : "View All"}
+              <ArrowRight className="h-2.5 w-2.5 rtl:rotate-180" />
+            </Button>
+          </Link>
+        </div>
         {data?.tip && (
           <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1">
             <Lightbulb className="h-3 w-3 text-amber-500 shrink-0" />
@@ -60,18 +69,21 @@ export function SmartRecommendations() {
           </div>
         ) : (
           <Tabs defaultValue="competitions" className="w-full">
-            <TabsList className="w-full h-8 p-0.5 grid grid-cols-4">
+            <TabsList className="w-full h-8 p-0.5 grid grid-cols-5">
               <TabsTrigger value="competitions" className="text-[10px] gap-1 px-1">
-                <Trophy className="h-3 w-3" /> {isAr ? "مسابقات" : "Comps"}
+                <Trophy className="h-3 w-3" />
+              </TabsTrigger>
+              <TabsTrigger value="exhibitions" className="text-[10px] gap-1 px-1">
+                <Landmark className="h-3 w-3" />
               </TabsTrigger>
               <TabsTrigger value="recipes" className="text-[10px] gap-1 px-1">
-                <ChefHat className="h-3 w-3" /> {isAr ? "وصفات" : "Recipes"}
+                <ChefHat className="h-3 w-3" />
               </TabsTrigger>
               <TabsTrigger value="articles" className="text-[10px] gap-1 px-1">
-                <BookOpen className="h-3 w-3" /> {isAr ? "مقالات" : "Articles"}
+                <BookOpen className="h-3 w-3" />
               </TabsTrigger>
               <TabsTrigger value="chefs" className="text-[10px] gap-1 px-1">
-                <Users className="h-3 w-3" /> {isAr ? "طهاة" : "Chefs"}
+                <Users className="h-3 w-3" />
               </TabsTrigger>
             </TabsList>
 
@@ -82,10 +94,27 @@ export function SmartRecommendations() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? c.title_ar || c.title : c.title}</p>
                     <p className="text-[10px] text-muted-foreground">{c.category} • {c.country_code}</p>
+                    {c._reason && <p className="text-[9px] text-primary/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{c._reason}</p>}
                   </div>
-                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
               )) : <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد مسابقات" : "No competitions"}</p>}
+            </TabsContent>
+
+            <TabsContent value="exhibitions" className="mt-2 space-y-1.5">
+              {data?.exhibitions?.length ? data.exhibitions.map((e: any) => (
+                <Link key={e.id} to={`/exhibitions/${e.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
+                  {e.image_url && <img src={e.image_url} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">{isAr ? e.title_ar || e.title : e.title}</p>
+                    <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <MapPin className="h-2.5 w-2.5" />{e.city || e.country_code}
+                    </p>
+                    {e._reason && <p className="text-[9px] text-chart-5/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{e._reason}</p>}
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
+                </Link>
+              )) : <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد معارض" : "No exhibitions"}</p>}
             </TabsContent>
 
             <TabsContent value="recipes" className="mt-2 space-y-1.5">
@@ -98,8 +127,9 @@ export function SmartRecommendations() {
                       <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">{r.difficulty || "easy"}</Badge>
                       {r.cuisine_type && <span className="text-[10px] text-muted-foreground">{r.cuisine_type}</span>}
                     </div>
+                    {r._reason && <p className="text-[9px] text-chart-4/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{r._reason}</p>}
                   </div>
-                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
               )) : <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد وصفات" : "No recipes"}</p>}
             </TabsContent>
@@ -111,8 +141,9 @@ export function SmartRecommendations() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? a.title_ar || a.title : a.title}</p>
                     <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">{a.type}</Badge>
+                    {a._reason && <p className="text-[9px] text-chart-2/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{a._reason}</p>}
                   </div>
-                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
               )) : <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا توجد مقالات" : "No articles"}</p>}
             </TabsContent>
@@ -127,6 +158,7 @@ export function SmartRecommendations() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? c.full_name_ar || c.full_name : c.full_name}</p>
                     <p className="text-[10px] text-muted-foreground">{c.specialization || (isAr ? "طاهي" : "Chef")}</p>
+                    {c._reason && <p className="text-[9px] text-chart-3/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{c._reason}</p>}
                   </div>
                   {c.is_verified && <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">✓</Badge>}
                 </Link>
