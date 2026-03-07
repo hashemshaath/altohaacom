@@ -65,7 +65,7 @@ export function CriteriaManagementPanel({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order, created_at")
         .eq("competition_id", competitionId)
         .order("sort_order");
       if (error) throw error;

@@ -162,7 +162,7 @@ export function useUserMilestones() {
       if (!user) return [];
       const { data, error } = await supabase
         .from("user_milestone_achievements")
-        .select("*")
+        .select("id, user_id, milestone_id, achieved_at, reward_claimed, reward_claimed_at")
         .eq("user_id", user.id);
       if (error) throw error;
       return data || [];

@@ -52,7 +52,7 @@ export function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_officials")
-        .select("*")
+        .select("id, exhibition_id, full_name, full_name_ar, role_title, role_title_ar, email, phone, avatar_url, user_id, sort_order, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order");
       if (error) throw error;

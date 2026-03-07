@@ -149,7 +149,7 @@ export function useChefScheduleSettings(chefId?: string) {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("chef_schedule_settings")
-        .select("*")
+        .select("id, chef_id, share_with_management, share_publicly, default_visibility, show_availability_on_profile, auto_sync_competitions, auto_sync_chefs_table, auto_sync_exhibitions, working_hours_start, working_hours_end, working_days, unavailable_message, unavailable_message_ar, created_at, updated_at")
         .eq("chef_id", chefId!)
         .maybeSingle();
       if (error) throw error;

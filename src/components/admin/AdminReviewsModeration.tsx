@@ -24,7 +24,7 @@ export function AdminReviewsModeration() {
     queryFn: async () => {
       let query = supabase
         .from("supplier_reviews")
-        .select("*")
+        .select("id, company_id, user_id, rating, title, comment, status, is_verified_purchase, review_number, created_at, updated_at")
         .order("created_at", { ascending: false })
         .limit(100);
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
