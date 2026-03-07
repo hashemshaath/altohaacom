@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -74,8 +75,10 @@ export function PersonalDashboard() {
 
   // Profile completion
   const completionFields = ["full_name", "bio", "avatar_url", "country", "phone", "specialization", "job_title"];
-  const completed = completionFields.filter(f => profile?.[f]).length;
-  const completionPct = Math.round((completed / completionFields.length) * 100);
+  const { completed, completionPct } = useMemo(() => {
+    const c = completionFields.filter(f => profile?.[f]).length;
+    return { completed: c, completionPct: Math.round((c / completionFields.length) * 100) };
+  }, [profile]);
 
   // Weekly goals
   const WEEKLY_GOALS = [
