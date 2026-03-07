@@ -57,7 +57,7 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("team_workspaces")
-        .select("*")
+        .select("id, competition_id, registration_id, name, name_ar, task_board, recipe_plan, practice_schedule, created_at, updated_at")
         .eq("competition_id", competitionId);
       if (error) throw error;
       return data || [];
