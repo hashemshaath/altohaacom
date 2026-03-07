@@ -60,23 +60,26 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
   }
 
   // Aggregate metrics
-  const avgConsistency = judges.reduce((s, j) => s + (j.consistency_score || 0), 0) / judges.length;
-  const avgBias = judges.reduce((s, j) => s + Math.abs(j.bias_indicator || 0), 0) / judges.length;
-  const avgCompletion = judges.reduce((s, j) => s + (j.completion_rate || 0), 0) / judges.length;
-  const totalScores = judges.reduce((s, j) => s + (j.scores_count || 0), 0);
+  const { avgConsistency, avgBias, avgCompletion, totalScores, consistencyData, scoringData } = useMemo(() => {
+    const avgC = judges.reduce((s, j) => s + (j.consistency_score || 0), 0) / judges.length;
+    const avgB = judges.reduce((s, j) => s + Math.abs(j.bias_indicator || 0), 0) / judges.length;
+    const avgCo = judges.reduce((s, j) => s + (j.completion_rate || 0), 0) / judges.length;
+    const total = judges.reduce((s, j) => s + (j.scores_count || 0), 0);
 
-  // Chart data
-  const consistencyData = judges.map(j => ({
-    name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
-    consistency: Number((j.consistency_score || 0).toFixed(1)),
-    bias: Number(Math.abs(j.bias_indicator || 0).toFixed(2)),
-  }));
+    const cData = judges.map(j => ({
+      name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
+      consistency: Number((j.consistency_score || 0).toFixed(1)),
+      bias: Number(Math.abs(j.bias_indicator || 0).toFixed(2)),
+    }));
 
-  const scoringData = judges.map(j => ({
-    name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
-    avgScore: Number((j.avg_score_given || 0).toFixed(1)),
-    stdDev: Number((j.score_std_deviation || 0).toFixed(1)),
-  }));
+    const sData = judges.map(j => ({
+      name: (profiles[j.judge_id]?.full_name || "Judge").substring(0, 12),
+      avgScore: Number((j.avg_score_given || 0).toFixed(1)),
+      stdDev: Number((j.score_std_deviation || 0).toFixed(1)),
+    }));
+
+    return { avgConsistency: avgC, avgBias: avgB, avgCompletion: avgCo, totalScores: total, consistencyData: cData, scoringData: sData };
+  }, [judges, profiles]);
 
   const getBiasLevel = (bias: number) => {
     if (bias < 0.1) return { label: isAr ? "ممتاز" : "Excellent", color: "text-chart-5", variant: "default" as const };

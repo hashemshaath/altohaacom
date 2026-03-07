@@ -49,9 +49,11 @@ export function CompanySupplierScorecard() {
     return list;
   }, [companies, search, typeFilter, sortBy]);
 
-  const avgScore = companies.length ? Math.round(companies.reduce((s, c) => s + (Number(c.supplier_score) || 0), 0) / companies.length) : 0;
-  const totalOrders = companies.reduce((s, c) => s + (c.total_orders || 0), 0);
-  const avgDelivery = companies.length ? Math.round(companies.reduce((s, c) => s + (Number(c.on_time_delivery_rate) || 0), 0) / companies.length) : 0;
+  const { avgScore, totalOrders, avgDelivery } = useMemo(() => ({
+    avgScore: companies.length ? Math.round(companies.reduce((s, c) => s + (Number(c.supplier_score) || 0), 0) / companies.length) : 0,
+    totalOrders: companies.reduce((s, c) => s + (c.total_orders || 0), 0),
+    avgDelivery: companies.length ? Math.round(companies.reduce((s, c) => s + (Number(c.on_time_delivery_rate) || 0), 0) / companies.length) : 0,
+  }), [companies]);
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-green-600";
