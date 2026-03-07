@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Globe, Users, Shield, UserCheck, Crown, Star, TrendingUp, Clock } from "lucide-react";
 
-export function UserDemographicsWidget() {
+export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
