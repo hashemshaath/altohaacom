@@ -13,7 +13,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function VendorStatsRow({ totalItems, assignedItems, unassignedItems, vendorCount, assignmentRate, isAr }: Props) {
+export const VendorStatsRow = memo(function VendorStatsRow({ totalItems, assignedItems, unassignedItems, vendorCount, assignmentRate, isAr }: Props) {
   const stats = [
     { icon: Package, value: totalItems, label: isAr ? "إجمالي العناصر" : "Total Items", color: "text-primary" },
     { icon: UserPlus, value: assignedItems, label: isAr ? "تم التعيين" : "Assigned", color: "text-chart-1" },
