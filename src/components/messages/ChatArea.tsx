@@ -132,6 +132,7 @@ export function ChatArea({
   setIsApprovalOpen, onBack, sendMessage, toggleStarMutation,
 }: ChatAreaProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [replyTo, setReplyTo] = useState<{ id: string; content: string; senderName: string } | null>(null);
   const [forwardMsg, setForwardMsg] = useState<Message | null>(null);
   const [mediaPreview, setMediaPreview] = useState<{ urls: string[]; index: number } | null>(null);
