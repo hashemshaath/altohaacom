@@ -20,7 +20,7 @@ export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
     queryFn: async () => {
       const { data: criteria } = await supabase
         .from("judging_criteria")
-        .select("*")
+        .select("id, name, name_ar, max_score, sort_order")
         .eq("competition_id", competitionId)
         .order("sort_order");
 
