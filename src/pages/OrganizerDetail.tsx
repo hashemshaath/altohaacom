@@ -227,6 +227,14 @@ export default function OrganizerDetail() {
     };
   }, [exhibitions, isAr, org, decodedName, useOrgRecord, orgRecord]);
 
+  const availableTabs = useMemo(() => [
+    "exhibitions", "profile", "stats",
+    ...(computed?.allSponsors?.length ? ["partners"] : []),
+    ...(articles.length > 0 ? ["news"] : []),
+  ], [computed?.allSponsors?.length, articles.length]);
+
+  const { swipeHandlers } = useSwipeTabs({ tabs: availableTabs, currentTab: activeTab, onTabChange: setActiveTab });
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
