@@ -18,7 +18,7 @@ interface ShopFiltersProps {
   onSortChange?: (value: SortOption) => void;
 }
 
-export function ShopFilters({
+export const ShopFilters = memo(function ShopFilters({
   search, onSearchChange,
   categoryFilter, onCategoryChange,
   typeFilter, onTypeChange,
