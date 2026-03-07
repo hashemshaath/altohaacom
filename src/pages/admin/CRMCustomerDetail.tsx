@@ -98,7 +98,7 @@ export default function CRMCustomerDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("customer_loyalty_points")
-        .select("*")
+        .select("id, user_id, type, points, description, description_ar, reference_id, reference_type, expires_at, created_at")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return data || [];
