@@ -47,7 +47,7 @@ export default function ChefPortfolio({ userId }: Props) {
     queryFn: async () => {
       const { data } = await supabase
         .from("recipes")
-        .select("*")
+        .select("id, title, title_ar, image_url, category, cuisine, difficulty, prep_time_minutes, cook_time_minutes, created_at")
         .eq("author_id", targetId!)
         .eq("is_published", true)
         .order("created_at", { ascending: false })
