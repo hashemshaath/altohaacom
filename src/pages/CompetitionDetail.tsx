@@ -427,7 +427,7 @@ export default function CompetitionDetail() {
                 </h1>
 
                 {/* Meta info */}
-                <div className="flex items-center gap-4 sm:gap-6 text-sm text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-primary" />
                     <span className="font-medium">{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
