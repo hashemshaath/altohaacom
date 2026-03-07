@@ -422,7 +422,7 @@ export default function CompetitionDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="font-serif text-xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
+                <h1 className="font-serif text-lg font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
                   {title}
                 </h1>
 
