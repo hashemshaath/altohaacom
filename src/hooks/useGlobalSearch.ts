@@ -509,6 +509,31 @@ export function useGlobalSearch() {
     staleTime: 1000 * 60 * 2,
   });
 
+  // Search exhibitions
+  const { data: exhibitionsData, isLoading: exhibitionsLoading } = useQuery({
+    queryKey: ["search-exhibitions", debouncedQuery],
+    queryFn: async () => {
+      if (!debouncedQuery || searchWords.length === 0) return [];
+      const cols = ["title", "title_ar", "description", "description_ar", "venue", "venue_ar", "city", "country"];
+      const { data, error } = await supabase
+        .from("exhibitions")
+        .select("id, title, title_ar, description, description_ar, cover_image_url, slug, start_date, end_date, venue, venue_ar, city, country, status")
+        .or(buildFlexibleFilter(searchWords, cols))
+        .order("start_date", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      if (!data) return [];
+      return sortByRelevance(
+        data.map((r: any) => ({
+          ...r,
+          _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.description, r.description_ar, r.venue, r.city, r.country),
+        }))
+      ) as ExhibitionResult[];
+    },
+    enabled: !!debouncedQuery && searchWords.length > 0,
+    staleTime: 1000 * 60 * 2,
+  });
+
   const results: SearchResults = {
     competitions: competitionsData || [],
     articles: articlesData || [],
@@ -516,10 +541,11 @@ export function useGlobalSearch() {
     posts: postsData || [],
     entities: entitiesData || [],
     recipes: recipesData || [],
+    exhibitions: exhibitionsData || [],
   };
 
-  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length + results.recipes.length;
-  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading || recipesLoading;
+  const totalResults = results.competitions.length + results.articles.length + results.members.length + results.posts.length + results.entities.length + results.recipes.length + results.exhibitions.length;
+  const isLoading = competitionsLoading || articlesLoading || membersLoading || postsLoading || entitiesLoading || recipesLoading || exhibitionsLoading;
 
   return {
     filters,
