@@ -530,6 +530,9 @@ export default function OrganizerDetail() {
 
         {/* ═══════ Main Content Tabs ═══════ */}
         <div className="container max-w-6xl pb-12 space-y-6">
+          {/* Rating Summary */}
+          <OrganizerRatingSummary exhibitionIds={exhibitions.map((e: ExhibitionRow) => e.id)} isAr={isAr} />
+
           <Tabs defaultValue="exhibitions" className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
               <TabsTrigger value="exhibitions" className="gap-1.5">
