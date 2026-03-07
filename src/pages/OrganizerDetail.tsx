@@ -566,14 +566,6 @@ export default function OrganizerDetail() {
               )}
             </TabsList>
 
-            {/* Swipeable tab content wrapper */}
-            {(() => {
-              const availableTabs = ["exhibitions", "profile", "stats", ...(allSponsors.length > 0 ? ["partners"] : []), ...(articles.length > 0 ? ["news"] : [])];
-              const { swipeHandlers } = useSwipeTabs({ tabs: availableTabs, currentTab: activeTab, onTabChange: setActiveTab });
-              return <div {...swipeHandlers} className="touch-pan-y">
-
-            })()}
-
             {/* ═══════ Exhibitions Tab ═══════ */}
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
               <div className="flex items-center justify-between">
