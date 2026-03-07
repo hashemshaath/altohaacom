@@ -183,30 +183,34 @@ export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   }
 
   const items = allItems || [];
-  const totalItems = items.length;
-  const assignedItems = items.filter(i => (i as any).assigned_vendor_id).length;
-  const unassignedItems = totalItems - assignedItems;
-  const assignmentRate = totalItems > 0 ? Math.round((assignedItems / totalItems) * 100) : 0;
 
-  // Build vendor summary
-  const vendorMap = new Map<string, { name: string; nameAr: string; count: number; delivered: number }>();
-  items.forEach(item => {
-    const vendorId = (item as any).assigned_vendor_id;
-    if (!vendorId) return;
-    const company = companies?.find(c => c.id === vendorId);
-    if (!company) return;
-    const existing = vendorMap.get(vendorId) || { name: company.name, nameAr: company.name_ar || company.name, count: 0, delivered: 0 };
-    existing.count += 1;
-    if (item.status === "delivered") existing.delivered += 1;
-    vendorMap.set(vendorId, existing);
-  });
-  const vendorSummary = Array.from(vendorMap.entries()).sort((a, b) => b[1].count - a[1].count);
+  const { totalItems, assignedItems, unassignedItems, assignmentRate, vendorSummary, grouped } = useMemo(() => {
+    const total = items.length;
+    const assigned = items.filter(i => (i as any).assigned_vendor_id).length;
+    const unassigned = total - assigned;
+    const rate = total > 0 ? Math.round((assigned / total) * 100) : 0;
 
-  const grouped = lists?.map(list => ({
-    ...list,
-    title_ar: list.title_ar || null,
-    items: filteredItems.filter(i => i.list_id === list.id),
-  })).filter(g => g.items.length > 0) || [];
+    const vendorMap = new Map<string, { name: string; nameAr: string; count: number; delivered: number }>();
+    items.forEach(item => {
+      const vendorId = (item as any).assigned_vendor_id;
+      if (!vendorId) return;
+      const company = companies?.find(c => c.id === vendorId);
+      if (!company) return;
+      const existing = vendorMap.get(vendorId) || { name: company.name, nameAr: company.name_ar || company.name, count: 0, delivered: 0 };
+      existing.count += 1;
+      if (item.status === "delivered") existing.delivered += 1;
+      vendorMap.set(vendorId, existing);
+    });
+    const summary = Array.from(vendorMap.entries()).sort((a, b) => b[1].count - a[1].count);
+
+    const grp = lists?.map(list => ({
+      ...list,
+      title_ar: list.title_ar || null,
+      items: filteredItems.filter(i => i.list_id === list.id),
+    })).filter(g => g.items.length > 0) || [];
+
+    return { totalItems: total, assignedItems: assigned, unassignedItems: unassigned, assignmentRate: rate, vendorSummary: summary, grouped: grp };
+  }, [items, companies, lists, filteredItems]);
 
   // Export data
   const exportData = items.map(item => {
