@@ -53,7 +53,7 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
     queryFn: async () => {
       let query = supabase
         .from("invoices")
-        .select("*")
+        .select("id, invoice_number, title, title_ar, amount, currency, status, due_date, paid_at, created_at, company_id, items, subtotal, tax_amount, discount_amount")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
 

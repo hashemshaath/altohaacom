@@ -74,7 +74,7 @@ export default function ChefPortfolio({ userId }: Props) {
   const { data: followers } = useQuery({
     queryKey: ["portfolio-followers", targetId],
     queryFn: async () => {
-      const { count } = await supabase.from("user_follows").select("*", { count: "exact", head: true }).eq("following_id", targetId!);
+      const { count } = await supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("following_id", targetId!);
       return count || 0;
     },
     enabled: !!targetId,

@@ -46,7 +46,7 @@ export function GroupsTab() {
   const fetchGroups = async () => {
     const { data: groupsData, error } = await supabase
       .from("groups")
-      .select("*")
+      .select("id, name, name_ar, description, description_ar, cover_image_url, is_private, category, created_by, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {

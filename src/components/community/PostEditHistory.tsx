@@ -25,7 +25,7 @@ export function PostEditHistory({ postId, onClose }: PostEditHistoryProps) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("post_edits")
-        .select("*")
+        .select("id, post_id, previous_content, edited_by, edited_at")
         .eq("post_id", postId)
         .order("edited_at", { ascending: false });
       if (error) throw error;
