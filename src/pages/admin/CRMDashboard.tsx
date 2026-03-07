@@ -159,7 +159,7 @@ export default function CRMDashboard() {
     queryFn: async () => {
       const { data } = await supabase
         .from("chat_sessions")
-        .select("*")
+        .select("id, user_id, agent_id, status, subject, subject_ar, started_at, ended_at, rating, feedback, created_at")
         .in("status", ["waiting", "active"])
         .order("created_at", { ascending: false })
         .limit(5);
