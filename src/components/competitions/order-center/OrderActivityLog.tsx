@@ -47,7 +47,7 @@ const ENTITY_COLORS: Record<string, string> = {
   vendor: "bg-chart-3/10 text-chart-3",
 };
 
-export function OrderActivityLog({ competitionId }: Props) {
+export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [filterAction, setFilterAction] = useState<string>("all");
