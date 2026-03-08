@@ -20,7 +20,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function MoyasarPaymentForm({
+export const MoyasarPaymentForm = memo(function MoyasarPaymentForm({
   exhibitionId, exhibitionTitle, ticketId, amount, currency = "SAR",
   onSuccess, onCancel, isAr,
 }: Props) {
