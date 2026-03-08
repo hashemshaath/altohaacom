@@ -46,7 +46,7 @@ const REGISTRATION_TOGGLES = [
   },
 ];
 
-export function RegistrationSettings({ settings, onSave, isPending }: Props) {
+export const RegistrationSettings = memo(function RegistrationSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
