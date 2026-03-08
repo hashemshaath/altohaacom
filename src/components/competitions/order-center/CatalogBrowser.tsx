@@ -20,7 +20,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
+export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
