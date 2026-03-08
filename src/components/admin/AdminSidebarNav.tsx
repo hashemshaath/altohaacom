@@ -14,7 +14,7 @@ interface AdminSidebarNavProps {
   onItemClick?: () => void;
 }
 
-export function AdminSidebarNav({ collapsed = false, isMobile = false, onItemClick }: AdminSidebarNavProps) {
+export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false, isMobile = false, onItemClick }: AdminSidebarNavProps) {
   const { language } = useLanguage();
   const location = useLocation();
 
