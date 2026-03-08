@@ -48,7 +48,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityMembersTab({ entityId }: Props) {
+export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: memberships, isLoading: loadingMemberships } = useEntityMemberships(entityId);
