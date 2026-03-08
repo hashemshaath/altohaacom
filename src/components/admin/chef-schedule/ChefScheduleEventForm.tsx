@@ -23,7 +23,7 @@ interface Props {
   defaultDate?: string;
 }
 
-export default function ChefScheduleEventForm({ event, onClose, defaultDate }: Props) {
+const ChefScheduleEventForm = memo(function ChefScheduleEventForm({ event, onClose, defaultDate }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const createEvent = useCreateScheduleEvent();
