@@ -59,20 +59,25 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
   };
 
   return (
-    <Card className="overflow-hidden rounded-2xl border-primary/15 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/25">
+    <Card className="overflow-hidden rounded-2xl border-primary/15 shadow-sm transition-all duration-300 hover:shadow-md hover:border-primary/25 group/card">
       <CardContent className="relative p-4 sm:p-5">
         {/* Decorative gradient */}
-        <div className="pointer-events-none absolute -end-10 -top-10 h-28 w-28 rounded-full bg-primary/8 blur-[40px]" />
+        <div className="pointer-events-none absolute -end-10 -top-10 h-28 w-28 rounded-full bg-primary/8 blur-[40px] transition-opacity group-hover/card:opacity-70" />
 
         <div className="relative">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover/card:scale-110">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
               </div>
-              <p className="text-sm font-bold">
-                {isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}
-              </p>
+              <div>
+                <p className="text-sm font-bold">
+                  {isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  {isAr ? "الملفات المكتملة تحصل على ظهور أكثر" : "Complete profiles get more visibility"}
+                </p>
+              </div>
             </div>
             <Badge variant="secondary" className="text-[10px] font-bold tabular-nums rounded-xl px-2 py-0.5">
               {data.filled}/{data.total}
@@ -86,7 +91,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
 
           <div className="flex flex-wrap gap-1.5 mb-3">
             {data.missing.slice(0, 3).map(({ key, icon: Icon }) => (
-              <span key={key} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/40 rounded-xl px-2 py-1 border border-border/20">
+              <span key={key} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground bg-muted/40 rounded-xl px-2 py-1 border border-border/20 transition-colors hover:border-primary/20 hover:text-foreground">
                 <Icon className="h-2.5 w-2.5" />
                 {isAr ? missingLabels[key]?.ar : missingLabels[key]?.en}
               </span>
