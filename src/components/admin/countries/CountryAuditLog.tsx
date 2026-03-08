@@ -33,7 +33,7 @@ const actionColors: Record<string, string> = {
   bulk_deactivated: "bg-muted text-muted-foreground",
 };
 
-export function CountryAuditLog({ countryCode }: { countryCode?: string }) {
+export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { countryCode?: string }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
