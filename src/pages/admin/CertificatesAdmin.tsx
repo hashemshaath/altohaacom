@@ -443,7 +443,7 @@ export default function CertificatesAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="w-[160px]"><SelectValue placeholder={language === "ar" ? "النوع" : "Type"} /></SelectTrigger>
+                  <SelectTrigger className="w-[160px] rounded-xl"><SelectValue placeholder={language === "ar" ? "النوع" : "Type"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
                     {certificateTypes.map(t => <SelectItem key={t.value} value={t.value}>{language === "ar" ? t.labelAr : t.label}</SelectItem>)}
