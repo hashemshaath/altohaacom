@@ -74,7 +74,7 @@ export const TranslateInlineButton = memo(function TranslateInlineButton({ text,
 
 // ── Empty & Add ──────────────────────────────────────
 
-export function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
+export const EmptyState = memo(function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
   return (
     <div className="rounded-xl border border-dashed border-border/50 p-6 text-center bg-muted/20">
       <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/40 mb-2">
