@@ -181,4 +181,4 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

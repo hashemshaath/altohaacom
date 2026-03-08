@@ -174,4 +174,4 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
       </CardContent>
     </Card>
   );
-}
+});

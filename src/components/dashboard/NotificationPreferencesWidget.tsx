@@ -141,4 +141,4 @@ export const NotificationPreferencesWidget = memo(function NotificationPreferenc
       </CardContent>
     </Card>
   );
-}
+});

@@ -221,4 +221,4 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
       </CardContent>
     </Card>
   );
-}
+});

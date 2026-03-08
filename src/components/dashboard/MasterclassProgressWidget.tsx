@@ -121,4 +121,4 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
       </CardContent>
     </Card>
   );
-}
+});

@@ -123,4 +123,4 @@ export const ReferralWidget = memo(function ReferralWidget() {
       </CardContent>
     </Card>
   );
-}
+});

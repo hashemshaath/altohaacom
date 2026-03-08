@@ -90,4 +90,4 @@ export const NotificationActivityWidget = memo(function NotificationActivityWidg
       </CardContent>
     </Card>
   );
-}
+});

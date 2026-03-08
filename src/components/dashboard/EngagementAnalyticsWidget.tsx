@@ -172,4 +172,4 @@ export const EngagementAnalyticsWidget = memo(function EngagementAnalyticsWidget
       </CardContent>
     </Card>
   );
-}
+});

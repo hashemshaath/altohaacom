@@ -144,4 +144,4 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
       </CardContent>
     </Card>
   );
-}
+});

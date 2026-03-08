@@ -110,7 +110,7 @@ export const StreakWidget = memo(function StreakWidget() {
       </CardContent>
     </Card>
   );
-}
+});
 
 function getWeekDays(activeDates: string[] = []) {
   const today = new Date();

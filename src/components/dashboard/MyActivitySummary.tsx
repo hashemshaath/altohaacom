@@ -66,4 +66,4 @@ export const MyActivitySummary = memo(function MyActivitySummary() {
       </CardContent>
     </Card>
   );
-}
+});
