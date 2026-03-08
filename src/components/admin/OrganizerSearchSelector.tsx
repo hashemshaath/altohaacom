@@ -49,7 +49,7 @@ const ENTITY_TYPES = [
 
 type SourceCategory = "all" | "entity" | "company" | "chef";
 
-export function OrganizerSearchSelector({ value, onChange, label }: OrganizerSearchSelectorProps) {
+export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ value, onChange, label }: OrganizerSearchSelectorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
