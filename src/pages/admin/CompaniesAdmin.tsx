@@ -1870,7 +1870,7 @@ export default function CompaniesAdmin() {
                 </div>
               </div>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[150px]"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
+                <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
                   {companyTypes.map(type => <SelectItem key={type.value} value={type.value}>{isAr ? type.labelAr : type.label}</SelectItem>)}
