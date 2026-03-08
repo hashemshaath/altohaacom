@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -33,7 +34,7 @@ const LANGUAGES = [
   { value: "zh", en: "Chinese", ar: "الصينية" },
 ];
 
-export function UserPersonalDetailsTab({ form, onChange, isAr }: Props) {
+export const UserPersonalDetailsTab = memo(function UserPersonalDetailsTab({ form, onChange, isAr }: Props) {
   return (
     <div className="space-y-5">
       <div className="grid gap-4 md:grid-cols-2">
@@ -88,4 +89,4 @@ export function UserPersonalDetailsTab({ form, onChange, isAr }: Props) {
       </div>
     </div>
   );
-}
+});

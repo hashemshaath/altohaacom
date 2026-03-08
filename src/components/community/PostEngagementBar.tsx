@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Eye, Clock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ interface PostEngagementBarProps {
 /**
  * Shows read time estimate + engagement rate for a post.
  */
-export function PostEngagementBar({
+export const PostEngagementBar = memo(function PostEngagementBar({
   content,
   likesCount,
   commentsCount,
@@ -53,4 +54,4 @@ export function PostEngagementBar({
       )}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -154,7 +154,7 @@ function downloadReportAsHTML(reportRef: React.RefObject<HTMLDivElement | null>,
   URL.revokeObjectURL(url);
 }
 
-export function EvaluationReportPreview({ template, onClose }: TemplatePreviewProps) {
+export const EvaluationReportPreview = memo(function EvaluationReportPreview({ template, onClose }: TemplatePreviewProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const snapshot = template.criteria_snapshot || [];
@@ -461,4 +461,4 @@ export function EvaluationReportPreview({ template, onClose }: TemplatePreviewPr
       </div>
     </div>
   );
-}
+});

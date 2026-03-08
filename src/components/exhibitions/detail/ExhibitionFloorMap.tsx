@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,7 +70,7 @@ function autoLayout(booths: Booth[]): Booth[] {
   }));
 }
 
-export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
+export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
   const [zoom, setZoom] = useState(1);
   const [selectedBooth, setSelectedBooth] = useState<Booth | null>(null);
   const [selectedHall, setSelectedHall] = useState<string | null>(null);
@@ -382,4 +382,4 @@ export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

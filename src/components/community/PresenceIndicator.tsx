@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -57,7 +57,7 @@ interface OnlineDotProps {
 /**
  * Green dot indicator showing if a user is currently online.
  */
-export function OnlineDot({ userId, className }: OnlineDotProps) {
+export const OnlineDot = memo(function OnlineDot({ userId, className }: OnlineDotProps) {
   const { isOnline } = usePresence();
 
   if (!isOnline(userId)) return null;
@@ -71,13 +71,13 @@ export function OnlineDot({ userId, className }: OnlineDotProps) {
       title="Online"
     />
   );
-}
+});
 
 interface OnlineCountBadgeProps {
   className?: string;
 }
 
-export function OnlineCountBadge({ className }: OnlineCountBadgeProps) {
+export const OnlineCountBadge = memo(function OnlineCountBadge({ className }: OnlineCountBadgeProps) {
   const { onlineCount } = usePresence();
 
   if (onlineCount <= 1) return null;
@@ -88,4 +88,4 @@ export function OnlineCountBadge({ className }: OnlineCountBadgeProps) {
       <span>{onlineCount} online</span>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -22,7 +23,7 @@ interface OrderDetailDialogProps {
   isSubmitting?: boolean;
 }
 
-export function OrderDetailDialog({ open, onOpenChange, order, language, onSubmit, isSubmitting }: OrderDetailDialogProps) {
+export const OrderDetailDialog = memo(function OrderDetailDialog({ open, onOpenChange, order, language, onSubmit, isSubmitting }: OrderDetailDialogProps) {
   if (!order) return null;
   const isAr = language === "ar";
   const items = (order.items as OrderItem[] | null) || [];
@@ -157,4 +158,4 @@ export function OrderDetailDialog({ open, onOpenChange, order, language, onSubmi
       </DialogContent>
     </Dialog>
   );
-}
+});

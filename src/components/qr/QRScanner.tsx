@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +8,7 @@ interface QRScannerProps {
   onScan: (code: string) => void;
 }
 
-export function QRScanner({ onScan }: QRScannerProps) {
+export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isScanning, setIsScanning] = useState(false);
@@ -142,4 +142,4 @@ export function QRScanner({ onScan }: QRScannerProps) {
       </CardContent>
     </Card>
   );
-}
+});

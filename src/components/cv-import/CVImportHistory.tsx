@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ interface Props {
   refreshTrigger?: number;
 }
 
-export function CVImportHistory({ isAr, refreshTrigger }: Props) {
+export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrigger }: Props) {
   const [imports, setImports] = useState<CVImportRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
@@ -262,4 +262,4 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

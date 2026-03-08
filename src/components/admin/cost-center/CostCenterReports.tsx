@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { CostEstimate, MODULE_TYPES, ESTIMATE_STATUS_CONFIG, type CostModuleType } from "@/hooks/useCostCenter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,7 @@ const PIE_COLORS = [
   "hsl(var(--muted-foreground))",
 ];
 
-export function CostCenterReports({ isAr, estimates }: Props) {
+export const CostCenterReports = memo(function CostCenterReports({ isAr, estimates }: Props) {
   const [reportModule, setReportModule] = useState("all");
   const [reportPeriod, setReportPeriod] = useState("all");
 
@@ -232,4 +232,4 @@ export function CostCenterReports({ isAr, estimates }: Props) {
       </Card>
     </div>
   );
-}
+});

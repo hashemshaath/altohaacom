@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,7 +9,7 @@ interface Props {
   query: string;
 }
 
-export function AISearchPanel({ query }: Props) {
+export const AISearchPanel = memo(function AISearchPanel({ query }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [aiResponse, setAiResponse] = useState("");
@@ -141,4 +141,4 @@ export function AISearchPanel({ query }: Props) {
       )}
     </Card>
   );
-}
+});

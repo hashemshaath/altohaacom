@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,7 +36,7 @@ const CATEGORIES = [
   { value: "other", label: "Other", label_ar: "أخرى" },
 ];
 
-export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: ReferenceGalleryPanelProps) {
+export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: ReferenceGalleryPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -312,4 +312,4 @@ export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: Refer
       )}
     </>
   );
-}
+});
