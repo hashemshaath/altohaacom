@@ -13,7 +13,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function OrganizerRatingSummary({ exhibitionIds, isAr }: Props) {
+export const OrganizerRatingSummary = memo(function OrganizerRatingSummary({ exhibitionIds, isAr }: Props) {
   const { data } = useQuery({
     queryKey: ["org-reviews-summary", exhibitionIds.join(",")],
     queryFn: async () => {
