@@ -22,7 +22,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function NotificationHub({ competitionId, language, isOrganizer }: Props) {
+export const NotificationHub = memo(function NotificationHub({ competitionId, language, isOrganizer }: Props) {
   const isAr = language === "ar";
   const { user } = useAuth();
   const queryClient = useQueryClient();
