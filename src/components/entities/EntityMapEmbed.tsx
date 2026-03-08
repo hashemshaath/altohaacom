@@ -14,7 +14,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function EntityMapEmbed({ latitude, longitude, name, address, city, country, googleMapsUrl, isAr }: Props) {
+export const EntityMapEmbed = memo(function EntityMapEmbed({ latitude, longitude, name, address, city, country, googleMapsUrl, isAr }: Props) {
   // Build embed URL from coordinates or fallback to search by name+city
   let embedUrl: string | null = null;
   
