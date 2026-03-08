@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Crown, TrendingUp, Users, Gift, Zap, Star } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function LoyaltyOverviewWidget() {
+export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
