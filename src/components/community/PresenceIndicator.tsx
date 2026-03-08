@@ -71,7 +71,7 @@ export const OnlineDot = memo(function OnlineDot({ userId, className }: OnlineDo
       title="Online"
     />
   );
-}
+});
 
 interface OnlineCountBadgeProps {
   className?: string;
