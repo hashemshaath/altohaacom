@@ -1236,16 +1236,16 @@ export default function OrdersAdmin() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="company" className="gap-1.5">
-            <Building2 className="h-4 w-4" />
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="company" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
+            <Building2 className="h-3.5 w-3.5" />
             {isAr ? "طلبات الشركات" : "Company Orders"}
-            <Badge variant="secondary" className="ms-1">{companyStats.total}</Badge>
+            <Badge variant="secondary" className="ms-1 text-[10px]">{companyStats.total}</Badge>
           </TabsTrigger>
-          <TabsTrigger value="shop" className="gap-1.5">
-            <ShoppingBag className="h-4 w-4" />
+          <TabsTrigger value="shop" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
+            <ShoppingBag className="h-3.5 w-3.5" />
             {isAr ? "طلبات المتجر" : "Shop Orders"}
-            <Badge variant="secondary" className="ms-1">{shopStats.total}</Badge>
+            <Badge variant="secondary" className="ms-1 text-[10px]">{shopStats.total}</Badge>
           </TabsTrigger>
         </TabsList>
 
