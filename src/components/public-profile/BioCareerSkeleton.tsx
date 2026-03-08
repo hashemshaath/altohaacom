@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function BioCareerSkeleton() {
+export const BioCareerSkeleton = memo(function BioCareerSkeleton() {
   return (
     <div className="space-y-4 animate-in fade-in-0 duration-300">
       {[1, 2].map(i => (
