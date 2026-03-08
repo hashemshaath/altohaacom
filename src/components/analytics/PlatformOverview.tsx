@@ -17,7 +17,7 @@ interface Props {
   dateRange?: DateRange;
 }
 
-export default function PlatformOverview({ dateRange }: Props) {
+const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
   const { language } = useLanguage();
 
   const fromISO = dateRange?.from.toISOString();
