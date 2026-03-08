@@ -134,7 +134,7 @@ export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, la
       </div>
     </div>
   );
-}
+});
 
 // ── Compact Row ──────────────────────────────────────
 
