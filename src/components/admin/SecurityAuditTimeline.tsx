@@ -29,7 +29,7 @@ const EVENT_ICONS: Record<string, typeof Shield> = {
   session_revoked: Lock,
 };
 
-export function SecurityAuditTimeline() {
+export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [severityFilter, setSeverityFilter] = useState("all");
