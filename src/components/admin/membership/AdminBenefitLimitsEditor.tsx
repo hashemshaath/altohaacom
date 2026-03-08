@@ -32,7 +32,7 @@ type LimitRow = {
   icon_name: string | null;
 };
 
-export default function AdminBenefitLimitsEditor() {
+const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
