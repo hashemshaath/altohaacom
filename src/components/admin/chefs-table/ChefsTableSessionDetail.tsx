@@ -31,7 +31,7 @@ const sessionStatusConfig: Record<string, { icon: any; color: string }> = {
   cancelled: { icon: XCircle, color: "bg-destructive/10 text-destructive border-destructive/20" },
 };
 
-export function ChefsTableSessionDetail({ session, onNavigate }: Props) {
+export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ session, onNavigate }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
