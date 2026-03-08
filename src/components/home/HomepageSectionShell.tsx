@@ -50,4 +50,4 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
       {children}
     </div>
   );
-}
+});

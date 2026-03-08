@@ -315,4 +315,4 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
       </Dialog>
     </StaggeredList>
   );
-}
+});

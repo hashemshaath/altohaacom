@@ -234,4 +234,4 @@ export const HeroSection = memo(function HeroSection() {
       </div>
     </section>
   );
-}
+});

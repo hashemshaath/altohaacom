@@ -125,4 +125,4 @@ export const AccountDeletion = memo(function AccountDeletion() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -126,4 +126,4 @@ export const AccountTypeCard = memo(function AccountTypeCard() {
       </CardContent>
     </Card>
   );
-}
+});

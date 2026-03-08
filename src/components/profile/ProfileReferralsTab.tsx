@@ -198,4 +198,4 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
       )}
     </StaggeredList>
   );
-}
+});

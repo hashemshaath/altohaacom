@@ -150,4 +150,4 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
       </HorizontalScrollRow>
     </section>
   );
-}
+});

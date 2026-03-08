@@ -160,4 +160,4 @@ export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ u
       </CardContent>
     </Card>
   );
-}
+});

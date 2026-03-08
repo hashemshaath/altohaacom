@@ -253,4 +253,4 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
       )}
     </div>
   );
-}
+});

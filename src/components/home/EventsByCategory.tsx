@@ -377,4 +377,4 @@ function renderChefsTableCard(item: any, isAr: boolean) {
       </Card>
     </Link>
   );
-}
+});
