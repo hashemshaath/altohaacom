@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,7 +14,7 @@ interface JudgeDashboardProps {
   onSelectCompetition?: (competitionId: string) => void;
 }
 
-export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
+export const JudgeDashboard = memo(function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -240,4 +241,4 @@ export function JudgeDashboard({ onSelectCompetition }: JudgeDashboardProps) {
       </Card>
     </div>
   );
-}
+});

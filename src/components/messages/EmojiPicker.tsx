@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -16,7 +16,7 @@ interface EmojiPickerProps {
   onEmojiSelect: (emoji: string) => void;
 }
 
-export function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
+export const EmojiPicker = memo(function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
   const { language } = useLanguage();
   const [open, setOpen] = useState(false);
 
@@ -46,4 +46,4 @@ export function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
       </PopoverContent>
     </Popover>
   );
-}
+});

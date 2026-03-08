@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -20,7 +21,7 @@ const SOCIAL_FIELDS = [
   { key: "website", placeholder: "Website", icon: Globe },
 ];
 
-export function SocialMediaSection({ form, update, isAr }: SocialMediaSectionProps) {
+export const SocialMediaSection = memo(function SocialMediaSection({ form, update, isAr }: SocialMediaSectionProps) {
   return (
     <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader className="pb-3 px-6 pt-5">
@@ -54,4 +55,4 @@ export function SocialMediaSection({ form, update, isAr }: SocialMediaSectionPro
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ const REGISTRATION_TOGGLES = [
   },
 ];
 
-export function RegistrationSettings({ settings, onSave, isPending }: Props) {
+export const RegistrationSettings = memo(function RegistrationSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -98,4 +98,4 @@ export function RegistrationSettings({ settings, onSave, isPending }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,7 +12,7 @@ interface CoverImageUploadProps {
   onUrlChange: (url: string | null) => void;
 }
 
-export function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadProps) {
+export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -86,4 +86,4 @@ export function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadPr
       )}
     </div>
   );
-}
+});

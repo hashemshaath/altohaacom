@@ -2,7 +2,7 @@
  * Quick action overlay for shop products on mobile.
  * Shows quantity controls and instant add-to-cart.
  */
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,7 @@ interface ProductQuickActionsProps {
   onAddToCart: (product: any, quantity: number) => void;
 }
 
-export function ProductQuickActions({ product, onAddToCart }: ProductQuickActionsProps) {
+export const ProductQuickActions = memo(function ProductQuickActions({ product, onAddToCart }: ProductQuickActionsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [quantity, setQuantity] = useState(1);
@@ -51,4 +51,4 @@ export function ProductQuickActions({ product, onAddToCart }: ProductQuickAction
       </Button>
     </div>
   );
-}
+});

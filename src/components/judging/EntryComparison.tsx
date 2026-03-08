@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +15,7 @@ interface EntryComparisonProps {
   competitionId: string;
 }
 
-export function EntryComparison({ competitionId }: EntryComparisonProps) {
+export const EntryComparison = memo(function EntryComparison({ competitionId }: EntryComparisonProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [leftId, setLeftId] = useState<string>("");
@@ -195,4 +195,4 @@ export function EntryComparison({ competitionId }: EntryComparisonProps) {
       </CardContent>
     </Card>
   );
-}
+});

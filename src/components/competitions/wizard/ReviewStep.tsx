@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +22,7 @@ function formatDate(dateStr: string) {
   }
 }
 
-export function ReviewStep({ data }: ReviewStepProps) {
+export const ReviewStep = memo(function ReviewStep({ data }: ReviewStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const totalWeight = data.criteria.reduce((sum, c) => sum + Number(c.weight), 0);
@@ -296,4 +297,4 @@ export function ReviewStep({ data }: ReviewStepProps) {
       </Card>
     </div>
   );
-}
+});

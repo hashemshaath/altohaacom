@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { Timer } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -8,7 +8,7 @@ interface CompetitionCountdownProps {
   labelAr: string;
 }
 
-export function CompetitionCountdown({ targetDate, label, labelAr }: CompetitionCountdownProps) {
+export const CompetitionCountdown = memo(function CompetitionCountdown({ targetDate, label, labelAr }: CompetitionCountdownProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -43,7 +43,7 @@ export function CompetitionCountdown({ targetDate, label, labelAr }: Competition
       </div>
     </div>
   );
-}
+});
 
 function FlipUnit({ value, label }: { value: number; label: string }) {
   const display = String(value).padStart(2, "0");

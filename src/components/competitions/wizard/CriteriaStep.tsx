@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ interface CriteriaStepProps {
   onChange: (criteria: CriteriaForm[]) => void;
 }
 
-export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
+export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -174,4 +174,4 @@ export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
       </CardContent>
     </Card>
   );
-}
+});

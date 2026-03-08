@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,7 +49,7 @@ interface Props {
   onToggleWatchlist?: () => void;
 }
 
-export function ExhibitionSidebar({
+export const ExhibitionSidebar = memo(function ExhibitionSidebar({
   exhibition, title, description, venue, organizer, organizerLogoUrl,
   isHappening, isUpcoming, hasEnded,
   isFollowing, followerCount, user, isAr, countryFlag, tags,
@@ -222,4 +222,4 @@ export function ExhibitionSidebar({
       )}
     </div>
   );
-}
+});

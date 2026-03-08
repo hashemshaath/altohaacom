@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +16,7 @@ interface SupervisingBodiesStepProps {
   onJudgesChange: (ids: string[]) => void;
 }
 
-export function SupervisingBodiesStep({
+export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
   supervisingBodyIds,
   judgeIds,
   onSupervisingChange,
@@ -248,4 +249,4 @@ export function SupervisingBodiesStep({
       </Card>
     </div>
   );
-}
+});

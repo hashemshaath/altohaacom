@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -14,7 +15,7 @@ interface Props {
 /**
  * Reusable empty state with optional CTA button.
  */
-export function GenericEmptyState({ icon: Icon, title, description, actionLabel, actionHref, onAction }: Props) {
+export const GenericEmptyState = memo(function GenericEmptyState({ icon: Icon, title, description, actionLabel, actionHref, onAction }: Props) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/60 mb-4">
@@ -33,4 +34,4 @@ export function GenericEmptyState({ icon: Icon, title, description, actionLabel,
       ) : null)}
     </div>
   );
-}
+});
