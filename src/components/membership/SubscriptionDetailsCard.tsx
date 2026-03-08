@@ -18,7 +18,7 @@ interface SubscriptionDetailsCardProps {
   profile: any;
 }
 
-export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetailsCardProps) {
+export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetailsCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
