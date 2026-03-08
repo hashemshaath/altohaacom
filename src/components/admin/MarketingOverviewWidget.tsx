@@ -166,4 +166,4 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
       </div>
     </div>
   );
-}
+});

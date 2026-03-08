@@ -129,4 +129,4 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
       </div>
     </div>
   );
-}
+});

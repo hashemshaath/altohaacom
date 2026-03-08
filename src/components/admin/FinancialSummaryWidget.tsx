@@ -117,4 +117,4 @@ export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
       </CardContent>
     </Card>
   );
-}
+});

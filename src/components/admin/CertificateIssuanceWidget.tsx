@@ -102,4 +102,4 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
       </CardContent>
     </Card>
   );
-}
+});

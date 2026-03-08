@@ -153,4 +153,4 @@ export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
       </Card>
     </div>
   );
-}
+});

@@ -178,4 +178,4 @@ export const CertificatesLiveWidget = memo(function CertificatesLiveWidget() {
       </CardContent>
     </Card>
   );
-}
+});

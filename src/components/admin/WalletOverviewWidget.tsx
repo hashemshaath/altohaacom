@@ -115,4 +115,4 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

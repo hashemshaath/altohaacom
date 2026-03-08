@@ -156,4 +156,4 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
       </CardContent>
     </Card>
   );
-}
+});

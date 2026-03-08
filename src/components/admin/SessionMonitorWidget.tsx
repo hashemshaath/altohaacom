@@ -138,4 +138,4 @@ export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
       </CardContent>
     </Card>
   );
-}
+});

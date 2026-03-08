@@ -175,4 +175,4 @@ export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
       </Card>
     </div>
   );
-}
+});

@@ -97,4 +97,4 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

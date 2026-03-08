@@ -160,4 +160,4 @@ export const ContentInsightsWidget = memo(function ContentInsightsWidget() {
       </Card>
     </div>
   );
-}
+});

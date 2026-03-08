@@ -161,4 +161,4 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

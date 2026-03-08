@@ -164,4 +164,4 @@ export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget()
       </CardContent>
     </Card>
   );
-}
+});

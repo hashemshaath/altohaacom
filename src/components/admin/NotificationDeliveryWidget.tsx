@@ -179,4 +179,4 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
       </div>
     </div>
   );
-}
+});
