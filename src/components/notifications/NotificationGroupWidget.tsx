@@ -53,7 +53,7 @@ function categorize(n: { link?: string | null; title?: string; title_ar?: string
   return "account";
 }
 
-export function NotificationGroupWidget() {
+export const NotificationGroupWidget = memo(function NotificationGroupWidget() {
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const { language } = useLanguage();
   const isAr = language === "ar";
