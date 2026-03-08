@@ -83,7 +83,7 @@ export const EmptyState = memo(function EmptyState({ icon: Icon, message }: { ic
       <p className="text-xs text-muted-foreground font-medium">{message}</p>
     </div>
   );
-}
+});
 
 export function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
