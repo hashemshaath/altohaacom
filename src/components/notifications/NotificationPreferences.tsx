@@ -280,4 +280,4 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
       </Button>
     </div>
   );
-}
+});

@@ -21,4 +21,4 @@ export const SkipToContent = memo(function SkipToContent() {
       </a>
     </>
   );
-}
+});

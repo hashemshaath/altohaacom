@@ -88,4 +88,4 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -213,4 +213,4 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
       </CardContent>
     </Card>
   );
-}
+});

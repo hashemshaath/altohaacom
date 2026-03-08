@@ -51,4 +51,4 @@ export const OfflineIndicator = memo(function OfflineIndicator() {
       )}
     </div>
   );
-}
+});

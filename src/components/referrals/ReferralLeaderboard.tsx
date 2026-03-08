@@ -100,4 +100,4 @@ export const ReferralLeaderboard = memo(function ReferralLeaderboard() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -18,4 +18,4 @@ export const OfflineBanner = memo(function OfflineBanner() {
       </div>
     </div>
   );
-}
+});
