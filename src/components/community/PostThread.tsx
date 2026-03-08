@@ -36,7 +36,7 @@ interface PostThreadProps {
   onPostUpdated: () => void;
 }
 
-export function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) {
+export const PostThread = memo(function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
