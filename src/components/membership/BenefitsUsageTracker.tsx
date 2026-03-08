@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useBenefitUsage } from "@/hooks/useBenefitUsage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
