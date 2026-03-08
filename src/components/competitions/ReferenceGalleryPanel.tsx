@@ -36,7 +36,7 @@ const CATEGORIES = [
   { value: "other", label: "Other", label_ar: "أخرى" },
 ];
 
-export function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: ReferenceGalleryPanelProps) {
+export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ competitionId, isAdmin, isJudge }: ReferenceGalleryPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
