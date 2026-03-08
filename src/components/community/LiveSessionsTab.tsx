@@ -32,7 +32,7 @@ interface LiveSession {
   is_registered: boolean;
 }
 
-export function LiveSessionsTab() {
+export const LiveSessionsTab = memo(function LiveSessionsTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
