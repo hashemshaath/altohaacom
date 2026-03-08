@@ -43,7 +43,7 @@ export const SkeletonTable = memo(function SkeletonTable({ columns = 5, rows = 8
       </TableBody>
     </Table>
   );
-}
+});
 
 export function SkeletonCards({ count = 6 }: { count?: number }) {
   return (
