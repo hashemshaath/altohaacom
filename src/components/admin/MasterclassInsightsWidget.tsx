@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { BookOpen, Users, GraduationCap, Star, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function MasterclassInsightsWidget() {
+export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
