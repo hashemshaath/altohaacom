@@ -419,7 +419,7 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
       </CardContent>
     </Card>
   );
-}
+});
 
 function DetailField({
   icon: Icon,

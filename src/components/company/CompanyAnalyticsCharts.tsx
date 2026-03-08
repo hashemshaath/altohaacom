@@ -292,7 +292,7 @@ export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ com
       </div>
     </div>
   );
-}
+});
 
 function MiniKPI({
   label, value, change, isString, isAr,

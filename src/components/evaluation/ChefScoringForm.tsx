@@ -454,7 +454,7 @@ export const ChefScoringForm = memo(function ChefScoringForm({
       </div>
     </div>
   );
-}
+});
 
 // ─── Individual Criterion Score Input ───────────
 
