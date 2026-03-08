@@ -13,7 +13,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function EntityContactCard({ email, phone, fax, address, city, country, postalCode, isAr }: Props) {
+export const EntityContactCard = memo(function EntityContactCard({ email, phone, fax, address, city, country, postalCode, isAr }: Props) {
   const hasContact = email || phone || fax || address || city || country;
   if (!hasContact) return null;
 
