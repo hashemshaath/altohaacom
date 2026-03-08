@@ -18,7 +18,7 @@ interface OrdersTableProps {
   onView: (order: CompanyOrder) => void;
 }
 
-export function OrdersTable({ orders, isLoading, language, onView }: OrdersTableProps) {
+export const OrdersTable = memo(function OrdersTable({ orders, isLoading, language, onView }: OrdersTableProps) {
   const isAr = language === "ar";
 
   return (
