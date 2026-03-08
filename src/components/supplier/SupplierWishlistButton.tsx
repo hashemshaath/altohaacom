@@ -12,7 +12,7 @@ interface Props {
   variant?: "icon" | "full";
 }
 
-export function SupplierWishlistButton({ companyId, variant = "full" }: Props) {
+export const SupplierWishlistButton = memo(function SupplierWishlistButton({ companyId, variant = "full" }: Props) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
