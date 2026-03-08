@@ -36,7 +36,7 @@ interface ChefResult {
 
 type Step = "search" | "input" | "preview";
 
-export function CVImportSection() {
+export const CVImportSection = memo(function CVImportSection() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
