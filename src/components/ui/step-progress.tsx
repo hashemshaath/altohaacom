@@ -20,7 +20,7 @@ interface StepProgressProps {
  * Visual step progress indicator for multi-step flows.
  * Shows completed, current, and upcoming steps with connecting lines.
  */
-export function StepProgress({ steps, currentStep, className, variant = "horizontal" }: StepProgressProps) {
+export const StepProgress = memo(function StepProgress({ steps, currentStep, className, variant = "horizontal" }: StepProgressProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
