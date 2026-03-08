@@ -20,7 +20,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function AdAnalyticsDashboard() {
+export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
