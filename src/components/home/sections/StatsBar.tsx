@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 
 const StatItem = forwardRef<HTMLDivElement, {
   value: number; label: string; icon: any; isVisible: boolean; delay: number;
