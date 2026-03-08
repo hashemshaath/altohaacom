@@ -21,7 +21,7 @@ interface Props {
   onChange: (v: EvaluationCategory) => void;
 }
 
-export function EvaluationCategorySelect({ value, onChange }: Props) {
+export const EvaluationCategorySelect = memo(function EvaluationCategorySelect({ value, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
