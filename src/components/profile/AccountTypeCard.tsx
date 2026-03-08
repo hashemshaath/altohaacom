@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ChefHat, Heart, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
 
-export function AccountTypeCard() {
+export const AccountTypeCard = memo(function AccountTypeCard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
