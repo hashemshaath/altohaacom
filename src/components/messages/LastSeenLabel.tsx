@@ -12,7 +12,7 @@ interface LastSeenLabelProps {
   username?: string | null;
 }
 
-export function LastSeenLabel({ userId, isOnline, isTyping, isAr, username }: LastSeenLabelProps) {
+export const LastSeenLabel = memo(function LastSeenLabel({ userId, isOnline, isTyping, isAr, username }: LastSeenLabelProps) {
   const { data: lastSeen } = useQuery({
     queryKey: ["lastSeen", userId],
     queryFn: async () => {
