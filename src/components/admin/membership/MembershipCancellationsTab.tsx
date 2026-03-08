@@ -40,7 +40,7 @@ interface CancellationRequest {
   created_at: string;
 }
 
-export default function MembershipCancellationsTab() {
+const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
