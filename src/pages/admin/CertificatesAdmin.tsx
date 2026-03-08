@@ -450,7 +450,7 @@ export default function CertificatesAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={eventFilter} onValueChange={setEventFilter}>
-                  <SelectTrigger className="w-[180px]"><SelectValue placeholder={language === "ar" ? "الحدث" : "Event"} /></SelectTrigger>
+                  <SelectTrigger className="w-[180px] rounded-xl"><SelectValue placeholder={language === "ar" ? "الحدث" : "Event"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{language === "ar" ? "كل الأحداث" : "All Events"}</SelectItem>
                     {[...new Set(certificates.map(c => c.event_name).filter(Boolean))].map(ev => (
