@@ -217,7 +217,7 @@ export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl,
 
 // ── Sortable Wrappers ──────────────────────────────────────
 
-export function SortableItem({ id, sectionKey, children }: { id: string; sectionKey: string; children: React.ReactNode }) {
+export const SortableItem = memo(function SortableItem({ id, sectionKey, children }: { id: string; sectionKey: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     data: { sectionKey },
@@ -241,11 +241,11 @@ export function SortableItem({ id, sectionKey, children }: { id: string; section
       </div>
     </div>
   );
-}
+});
 
 export const SectionDragListenersContext = createContext<Record<string, any> | null>(null);
 
-export function SortableSectionItem({ id, children }: { id: string; children: React.ReactNode }) {
+export const SortableSectionItem = memo(function SortableSectionItem({ id, children }: { id: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     data: { type: "section" },
@@ -266,7 +266,7 @@ export function SortableSectionItem({ id, children }: { id: string; children: Re
       </div>
     </SectionDragListenersContext.Provider>
   );
-}
+});
 
 export const SectionDragHandle = memo(function SectionDragHandle() {
   const listeners = useContext(SectionDragListenersContext);
