@@ -14,7 +14,7 @@ interface ImagePreviewEditorProps {
   readOnly?: boolean;
 }
 
-export function ImagePreviewEditor({ label, value, editing, fieldKey, onUpdate, aspectRatio, readOnly }: ImagePreviewEditorProps) {
+export const ImagePreviewEditor = memo(function ImagePreviewEditor({ label, value, editing, fieldKey, onUpdate, aspectRatio, readOnly }: ImagePreviewEditorProps) {
   const [url, setUrl] = useState(value || "");
   const imgClass = aspectRatio === "wide" ? "max-h-32" : "max-h-48";
 
