@@ -14,7 +14,7 @@ interface ResultRevealProps {
  * Wraps content and reveals it with a polished animation.
  * Great for scores, results, before/after, certificates.
  */
-export function ResultReveal({ children, delay = 0, className, variant = "fade-up" }: ResultRevealProps) {
+export const ResultReveal = memo(function ResultReveal({ children, delay = 0, className, variant = "fade-up" }: ResultRevealProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
