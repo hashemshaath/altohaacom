@@ -15,7 +15,7 @@ const STAGES = [
   { key: "lost", en: "Lost", ar: "خسارة", color: "bg-destructive" },
 ];
 
-export function PipelineFunnelView() {
+export const PipelineFunnelView = memo(function PipelineFunnelView() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
