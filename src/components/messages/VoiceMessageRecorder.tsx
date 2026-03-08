@@ -9,7 +9,7 @@ interface VoiceMessageRecorderProps {
   disabled?: boolean;
 }
 
-export function VoiceMessageRecorder({ onSend, disabled }: VoiceMessageRecorderProps) {
+export const VoiceMessageRecorder = memo(function VoiceMessageRecorder({ onSend, disabled }: VoiceMessageRecorderProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [recording, setRecording] = useState(false);
