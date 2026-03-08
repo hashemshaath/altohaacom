@@ -254,18 +254,23 @@ export const ExhibitionCard = memo(
             <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:px-5 py-2.5 transition-colors group-hover:bg-muted/30">
               <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
                 {isAr ? "عرض التفاصيل" : "View Details"}
-                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180" />
+                <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180" />
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
+                {exhibition.max_attendees && exhibition.max_attendees > 0 && (
+                  <span className="text-[10px] text-muted-foreground tabular-nums">
+                    {exhibition.max_attendees.toLocaleString()} {isAr ? "مقعد" : "seats"}
+                  </span>
+                )}
                 {(exhibition.view_count ?? 0) > 0 && (
-                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground tabular-nums">
                     <Eye className="h-3 w-3" />
                     <AnimatedCounter value={exhibition.view_count!} className="inline" />
                   </span>
                 )}
                 {exhibition.registration_url && (
                   <button
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all"
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();

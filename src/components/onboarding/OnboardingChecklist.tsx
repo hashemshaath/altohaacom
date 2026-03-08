@@ -104,46 +104,52 @@ export const OnboardingChecklist = memo(function OnboardingChecklist() {
   };
 
   return (
-    <Card className="border-primary/20 bg-primary/5">
+    <Card className="border-primary/20 bg-primary/5 animate-in fade-in-50 slide-in-from-top-2 duration-300">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Rocket className="h-4 w-4 text-primary" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+              <Rocket className="h-3.5 w-3.5 text-primary" />
+            </div>
             {isAr ? "ابدأ رحلتك" : "Get Started"}
           </CardTitle>
-          <Badge variant="secondary" className="text-[10px]">
+          <Badge variant="secondary" className="text-[10px] tabular-nums">
             {completed}/{total}
           </Badge>
         </div>
         <Progress value={progress} className="h-1.5 mt-2" />
       </CardHeader>
-      <CardContent className="pt-0 space-y-1">
+      <CardContent className="pt-0 space-y-0.5">
         {STEPS.map((step, idx) => {
           const done = completedSteps[idx];
           return (
             <Link
               key={step.id}
               to={step.link}
-              className={`flex items-center gap-2 rounded-xl p-2 text-xs transition-colors ${
+              className={`flex items-center gap-2.5 rounded-xl p-2.5 text-xs transition-all ${
                 done
-                  ? "text-muted-foreground line-through opacity-60"
-                  : "hover:bg-primary/10 font-medium"
+                  ? "text-muted-foreground line-through opacity-50"
+                  : "hover:bg-primary/10 font-medium group/step"
               }`}
             >
               {done ? (
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/15">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                </div>
               ) : (
-                <Circle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <div className="flex h-5 w-5 items-center justify-center rounded-full border border-border/40 group-hover/step:border-primary/40 transition-colors">
+                  <Circle className="h-3 w-3 text-muted-foreground shrink-0" />
+                </div>
               )}
               <span className="flex-1">{isAr ? step.labelAr : step.label}</span>
-              {!done && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
+              {!done && <ChevronRight className="h-3 w-3 text-muted-foreground transition-transform group-hover/step:translate-x-0.5 rtl:group-hover/step:-translate-x-0.5 rtl:rotate-180" />}
             </Link>
           );
         })}
         <Button
           variant="ghost"
           size="sm"
-          className="w-full text-[10px] text-muted-foreground mt-1"
+          className="w-full text-[10px] text-muted-foreground mt-2"
           onClick={handleDismiss}
         >
           {isAr ? "تجاهل" : "Dismiss"}
