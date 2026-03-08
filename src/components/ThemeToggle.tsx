@@ -38,4 +38,4 @@ export const ThemeToggle = memo(function ThemeToggle() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

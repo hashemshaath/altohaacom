@@ -185,4 +185,4 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
       </CardContent>
     </Card>
   );
-}
+});

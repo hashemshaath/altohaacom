@@ -254,4 +254,4 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
       </div>
     </div>
   );
-}
+});

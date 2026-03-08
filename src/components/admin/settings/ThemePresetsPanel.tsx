@@ -115,4 +115,4 @@ export const ThemePresetsPanel = memo(function ThemePresetsPanel({ settings, onS
       </CardContent>
     </Card>
   );
-}
+});

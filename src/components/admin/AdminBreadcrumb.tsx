@@ -94,4 +94,4 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
       </span>
     </nav>
   );
-}
+});

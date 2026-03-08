@@ -164,4 +164,4 @@ export const ChefsTableSessionsList = memo(function ChefsTableSessionsList({ isA
       )}
     </main>
   );
-}
+});

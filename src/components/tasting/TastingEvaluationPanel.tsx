@@ -419,4 +419,4 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
       )}
     </div>
   );
-}
+});

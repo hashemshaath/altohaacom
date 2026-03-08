@@ -312,4 +312,4 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
       </div>
     </div>
   );
-}
+});

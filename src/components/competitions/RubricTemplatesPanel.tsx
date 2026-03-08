@@ -352,4 +352,4 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
       </CardContent>
     </Card>
   );
-}
+});

@@ -176,4 +176,4 @@ export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ u
       </CardContent>
     </Card>
   );
-}
+});

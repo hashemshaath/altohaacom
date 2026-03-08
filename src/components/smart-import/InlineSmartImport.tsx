@@ -452,4 +452,4 @@ function DetailField({
       )}
     </div>
   );
-}
+});

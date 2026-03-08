@@ -334,4 +334,4 @@ export const AutoIssueCertificates = memo(function AutoIssueCertificates({ compe
       </CardContent>
     </Card>
   );
-}
+});

@@ -253,4 +253,4 @@ export const CostCenterBudgetTracking = memo(function CostCenterBudgetTracking({
       </Card>
     </div>
   );
-}
+});
