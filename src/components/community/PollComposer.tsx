@@ -9,7 +9,7 @@ interface PollComposerProps {
   onPollChange: (poll: { options: string[] } | null) => void;
 }
 
-export function PollComposer({ onPollChange }: PollComposerProps) {
+export const PollComposer = memo(function PollComposer({ onPollChange }: PollComposerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [active, setActive] = useState(false);
