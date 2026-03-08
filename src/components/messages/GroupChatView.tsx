@@ -33,7 +33,7 @@ interface GroupChatViewProps {
   onBack: () => void;
 }
 
-export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
+export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
