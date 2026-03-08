@@ -16,7 +16,7 @@ const ProfileEditForm = lazy(() => import("@/components/profile/ProfileEditForm"
 const ProfilePrivacySettings = lazy(() => import("@/components/profile/ProfilePrivacySettings").then(m => ({ default: m.ProfilePrivacySettings })));
 const UnifiedMembershipTab = lazy(() => import("@/components/membership/UnifiedMembershipTab").then(m => ({ default: m.UnifiedMembershipTab })));
 const ProfileAnalyticsDashboard = lazy(() => import("@/components/profile/ProfileAnalyticsDashboard").then(m => ({ default: m.ProfileAnalyticsDashboard })));
-const WalletDashboard = lazy(() => Promise.resolve({ default: (_props: any) => null as any }));
+const WalletDashboard = lazy(() => import("@/components/profile/ProfileWalletTab").then(m => ({ default: m.ProfileWalletTab })));
 const ProfileInvoicesTab = lazy(() => import("@/components/profile/ProfileInvoicesTab").then(m => ({ default: m.ProfileInvoicesTab })));
 const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileReferralsTab").then(m => ({ default: m.ProfileReferralsTab })));
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
