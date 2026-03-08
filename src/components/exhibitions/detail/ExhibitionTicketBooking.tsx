@@ -22,7 +22,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree, ticketPrice, hasEnded, isAr }: Props) {
+export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ exhibitionId, exhibitionTitle, isFree, ticketPrice, hasEnded, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [expanded, setExpanded] = useState(false);
