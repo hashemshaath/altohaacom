@@ -605,7 +605,7 @@ interface RegistrationDialogProps {
   categories: Category[];
 }
 
-export function RegistrationDialog({ open, onOpenChange, competitionId, competitionTitle, categories }: RegistrationDialogProps) {
+export const RegistrationDialog = memo(function RegistrationDialog({ open, onOpenChange, competitionId, competitionTitle, categories }: RegistrationDialogProps) {
   if (!open) return null;
   return (
     <RegistrationForm
