@@ -9,7 +9,7 @@ interface LocationShareButtonProps {
   disabled?: boolean;
 }
 
-export function LocationShareButton({ isAr, onShare, disabled }: LocationShareButtonProps) {
+export const LocationShareButton = memo(function LocationShareButton({ isAr, onShare, disabled }: LocationShareButtonProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
