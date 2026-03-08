@@ -335,7 +335,7 @@ export default function AuditLog() {
                   <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
                 </div>
                 <Select value={actionFilter} onValueChange={setActionFilter}>
-                  <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-40 h-8 text-xs rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
                     {uniqueAdminActionTypes.map(t => (
