@@ -27,7 +27,7 @@ const TIER_COLORS: Record<string, string> = {
   enterprise: "hsl(var(--chart-2))",
 };
 
-export default function MembershipChurnRetention() {
+const MembershipChurnRetention = memo(function MembershipChurnRetention() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
