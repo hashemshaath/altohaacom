@@ -104,7 +104,7 @@ export default function Rankings() {
             <Input placeholder={isAr ? "ابحث عن طاهٍ..." : "Search chefs..."} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="ps-9 rounded-xl" />
           </div>
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all_time">{isAr ? "كل الأوقات" : "All Time"}</SelectItem>
               <SelectItem value="yearly">{isAr ? "سنوي" : "Yearly"}</SelectItem>
