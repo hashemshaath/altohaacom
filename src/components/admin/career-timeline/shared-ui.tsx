@@ -245,7 +245,7 @@ export const SortableItem = memo(function SortableItem({ id, sectionKey, childre
 
 export const SectionDragListenersContext = createContext<Record<string, any> | null>(null);
 
-export function SortableSectionItem({ id, children }: { id: string; children: React.ReactNode }) {
+export const SortableSectionItem = memo(function SortableSectionItem({ id, children }: { id: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     data: { type: "section" },
