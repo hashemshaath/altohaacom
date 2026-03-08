@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +9,7 @@ import { Link } from "react-router-dom";
 import { AlertTriangle, ArrowRight, Flag, MessageSquare, Eye } from "lucide-react";
 import { format } from "date-fns";
 
-export function AdminModerationQueue() {
+export const AdminModerationQueue = memo(function AdminModerationQueue() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -89,4 +90,4 @@ export function AdminModerationQueue() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +9,7 @@ import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom";
 import { subDays } from "date-fns";
 
-export function SecurityAlertsBanner() {
+export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -76,4 +77,4 @@ export function SecurityAlertsBanner() {
       </CardContent>
     </Card>
   );
-}
+});

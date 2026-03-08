@@ -131,6 +131,16 @@ export default function Entities() {
     return matchesSearch && matchesType && matchesScope && matchesTab;
   }), [entities, search, typeFilter, scopeFilter, activeTab, isAr]);
 
+  const entityStats = useMemo(() => {
+    if (!entities) return { verified: 0, countries: 0, associations: 0, government: 0 };
+    return {
+      verified: entities.filter(e => e.is_verified).length,
+      countries: new Set(entities.map(e => e.country).filter(Boolean)).size,
+      associations: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length,
+      government: entities.filter(e => e.type === "government_entity").length,
+    };
+  }, [entities]);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title="Culinary Entities Directory" description="Discover culinary associations, government entities, and academies worldwide." />
@@ -185,11 +195,11 @@ export default function Entities() {
                 </Badge>
                 <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-chart-3/20 bg-chart-3/5 text-chart-3 rounded-full backdrop-blur-md">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  {entities.filter(e => e.is_verified).length} {isAr ? "موثقة" : "Verified"}
+                  {entityStats.verified} {isAr ? "موثقة" : "Verified"}
                 </Badge>
                 <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-chart-1/20 bg-chart-1/5 text-chart-1 rounded-full backdrop-blur-md">
                   <Globe className="h-3.5 w-3.5" />
-                  {new Set(entities.map(e => e.country).filter(Boolean)).size} {isAr ? "دولة" : "Countries"}
+                  {entityStats.countries} {isAr ? "دولة" : "Countries"}
                 </Badge>
               </div>
             )}
@@ -413,9 +423,9 @@ export default function Entities() {
           <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { label: isAr ? "إجمالي الجهات" : "Total Entities", value: entities.length, accent: "border-s-primary/40" },
-              { label: isAr ? "جمعيات" : "Associations", value: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length, accent: "border-s-chart-3/40" },
-              { label: isAr ? "جهات حكومية" : "Government", value: entities.filter(e => e.type === "government_entity").length, accent: "border-s-chart-4/40" },
-              { label: isAr ? "الدول" : "Countries", value: new Set(entities.map(e => e.country).filter(Boolean)).size, accent: "border-s-accent/40" },
+              { label: isAr ? "جمعيات" : "Associations", value: entityStats.associations, accent: "border-s-chart-3/40" },
+              { label: isAr ? "جهات حكومية" : "Government", value: entityStats.government, accent: "border-s-chart-4/40" },
+              { label: isAr ? "الدول" : "Countries", value: entityStats.countries, accent: "border-s-accent/40" },
             ].map((stat) => (
               <Card key={stat.label} className={`border-s-[3px] ${stat.accent} transition-all hover:shadow-sm`}>
                 <CardContent className="p-4 text-center">
