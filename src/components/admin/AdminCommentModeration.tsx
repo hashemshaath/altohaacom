@@ -212,4 +212,4 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
       </AlertDialog>
     </div>
   );
-}
+});

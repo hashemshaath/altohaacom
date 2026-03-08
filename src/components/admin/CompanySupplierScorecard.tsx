@@ -184,4 +184,4 @@ export const CompanySupplierScorecard = memo(function CompanySupplierScorecard()
       </Card>
     </div>
   );
-}
+});

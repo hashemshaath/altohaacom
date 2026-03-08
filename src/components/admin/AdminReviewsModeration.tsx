@@ -203,4 +203,4 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
       </Card>
     </div>
   );
-}
+});

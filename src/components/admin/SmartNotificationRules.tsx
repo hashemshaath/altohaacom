@@ -481,4 +481,4 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
       </Dialog>
     </div>
   );
-}
+});

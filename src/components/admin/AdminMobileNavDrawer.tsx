@@ -80,4 +80,4 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
       </SheetContent>
     </Sheet>
   );
-}
+});

@@ -108,4 +108,4 @@ export const AdminSearchCommand = memo(function AdminSearchCommand() {
       </CommandDialog>
     </>
   );
-}
+});

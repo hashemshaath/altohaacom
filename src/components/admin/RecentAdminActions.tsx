@@ -76,4 +76,4 @@ export const RecentAdminActions = memo(function RecentAdminActions() {
       </CardContent>
     </Card>
   );
-}
+});

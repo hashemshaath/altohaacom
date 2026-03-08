@@ -157,4 +157,4 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
       </CardContent>
     </Card>
   );
-}
+});
