@@ -630,6 +630,8 @@ export default function InvoicesAdmin() {
         }
       />
 
+      <FinanceQuickNav />
+
       {/* Financial Overview */}
       <FinancialOverviewCards />
 
