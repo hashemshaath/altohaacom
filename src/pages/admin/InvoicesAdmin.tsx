@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -250,9 +250,11 @@ export default function InvoicesAdmin() {
     }
   };
 
-  const subtotal = formData.items.reduce((sum, i) => sum + i.quantity * i.unit_price, 0);
-  const taxAmount = subtotal * (formData.tax_rate / 100);
-  const total = subtotal + taxAmount;
+  const { subtotal, taxAmount, total } = useMemo(() => {
+    const sub = formData.items.reduce((sum, i) => sum + i.quantity * i.unit_price, 0);
+    const tax = sub * (formData.tax_rate / 100);
+    return { subtotal: sub, taxAmount: tax, total: sub + tax };
+  }, [formData.items, formData.tax_rate]);
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, { en: string; ar: string }> = {
@@ -309,13 +311,13 @@ export default function InvoicesAdmin() {
   };
 
   // Stats
-  const stats = {
+  const stats = useMemo(() => ({
     total: invoices.length,
     pending: invoices.filter((i) => i.status === "pending" || i.status === "sent").length,
     paid: invoices.filter((i) => i.status === "paid").length,
     totalAmount: invoices.reduce((sum, i) => sum + Number(i.amount), 0),
     paidAmount: invoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + Number(i.amount), 0),
-  };
+  }), [invoices]);
 
   // ── Invoice Detail View ──
   if (selectedInvoice && invoiceDetails) {

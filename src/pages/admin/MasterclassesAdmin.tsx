@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -161,7 +161,17 @@ export default function MasterclassesAdmin() {
     return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
   };
 
-  // Show module manager for a specific masterclass
+  const masterclassStats = useMemo(() => [
+    { label: language === "ar" ? "إجمالي الدورات" : "Total Courses", value: masterclasses.length, icon: BookOpen },
+    { label: language === "ar" ? "منشورة" : "Published", value: masterclasses.filter((m: any) => m.status === "published").length, icon: Eye },
+    { label: language === "ar" ? "مسودات" : "Drafts", value: masterclasses.filter((m: any) => m.status === "draft").length, icon: EyeOff },
+    {
+      label: language === "ar" ? "إجمالي المسجلين" : "Total Enrollments",
+      value: masterclasses.reduce((sum: number, m: any) => sum + (m.masterclass_enrollments?.length || 0), 0),
+      icon: Users,
+    },
+  ], [masterclasses, language]);
+
   if (managingModulesId) {
     const mc = masterclasses.find((m: any) => m.id === managingModulesId);
     return (
@@ -298,16 +308,7 @@ export default function MasterclassesAdmin() {
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
-        {[
-          { label: language === "ar" ? "إجمالي الدورات" : "Total Courses", value: masterclasses.length, icon: BookOpen },
-          { label: language === "ar" ? "منشورة" : "Published", value: masterclasses.filter((m: any) => m.status === "published").length, icon: Eye },
-          { label: language === "ar" ? "مسودات" : "Drafts", value: masterclasses.filter((m: any) => m.status === "draft").length, icon: EyeOff },
-          {
-            label: language === "ar" ? "إجمالي المسجلين" : "Total Enrollments",
-            value: masterclasses.reduce((sum: number, m: any) => sum + (m.masterclass_enrollments?.length || 0), 0),
-            icon: Users,
-          },
-        ].map((stat, i) => (
+        {masterclassStats.map((stat, i) => (
           <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-4 p-4">
               <div className="rounded-xl bg-primary/10 p-2 transition-transform duration-300 group-hover:scale-110">

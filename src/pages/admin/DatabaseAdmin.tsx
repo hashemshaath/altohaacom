@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -85,7 +85,7 @@ export default function DatabaseAdmin() {
     });
   };
 
-  const totalRecords = tableStats?.reduce((sum, t) => sum + t.count, 0) || 0;
+  const totalRecords = useMemo(() => tableStats?.reduce((sum, t) => sum + t.count, 0) || 0, [tableStats]);
 
   return (
     <div className="space-y-6">
