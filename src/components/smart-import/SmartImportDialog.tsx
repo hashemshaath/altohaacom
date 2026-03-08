@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -169,7 +169,7 @@ interface SmartImportDialogProps {
   entityType?: "entity" | "company" | "establishment" | "competition" | "exhibition";
 }
 
-export function SmartImportDialog({
+export const SmartImportDialog = memo(function SmartImportDialog({
   open,
   onOpenChange,
   onImport,
@@ -428,7 +428,7 @@ export function SmartImportDialog({
       </DialogContent>
     </Dialog>
   );
-}
+});
 
 function DataField({ label, value, multiline }: { label: string; value?: string | null; multiline?: boolean }) {
   if (!value) return null;

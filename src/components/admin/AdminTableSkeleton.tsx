@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +10,7 @@ interface AdminTableSkeletonProps {
   className?: string;
 }
 
-export function AdminTableSkeleton({
+export const AdminTableSkeleton = memo(function AdminTableSkeleton({
   rows = 5,
   columns = 4,
   showHeader = true,
@@ -74,10 +75,10 @@ export function AdminTableSkeleton({
       </div>
     </div>
   );
-}
+});
 
 /** Compact card-based skeleton for dashboard widgets */
-export function AdminWidgetSkeleton({ rows = 3 }: { rows?: number }) {
+export const AdminWidgetSkeleton = memo(function AdminWidgetSkeleton({ rows = 3 }: { rows?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: rows }).map((_, i) => (
@@ -92,4 +93,4 @@ export function AdminWidgetSkeleton({ rows = 3 }: { rows?: number }) {
       ))}
     </div>
   );
-}
+});

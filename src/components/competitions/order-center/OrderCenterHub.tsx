@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback } from "react";
+import { useState, lazy, Suspense, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -76,7 +76,7 @@ function TabSkeleton() {
   );
 }
 
-export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
+export const OrderCenterHub = memo(function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("overview");
@@ -165,4 +165,4 @@ export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
       </div>
     </div>
   );
-}
+});

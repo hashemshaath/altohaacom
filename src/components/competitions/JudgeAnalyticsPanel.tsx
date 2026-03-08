@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -14,7 +14,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
+export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -199,4 +199,4 @@ export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
       </div>
     </div>
   );
-}
+});

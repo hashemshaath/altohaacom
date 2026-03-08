@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { CalendarCheck, CalendarX, PlayCircle, Trophy, Clock } from "lucide-react";
@@ -18,7 +19,7 @@ interface CompetitionTimelineProps {
   competitionEnd?: string | null;
 }
 
-export function CompetitionTimeline({
+export const CompetitionTimeline = memo(function CompetitionTimeline({
   registrationStart,
   registrationEnd,
   competitionStart,
@@ -125,4 +126,4 @@ export function CompetitionTimeline({
       </div>
     </div>
   );
-}
+});

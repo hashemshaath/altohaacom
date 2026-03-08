@@ -1,4 +1,4 @@
-import { useCallback, useRef, ReactNode } from "react";
+import { useCallback, useRef, memo, ReactNode } from "react";
 import { Link, LinkProps, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +50,7 @@ interface PrefetchLinkProps extends LinkProps {
   prefetchOnHover?: boolean;
 }
 
-export function PrefetchLink({
+export const PrefetchLink = memo(function PrefetchLink({
   children,
   to,
   prefetchOnHover = true,
@@ -87,7 +87,7 @@ export function PrefetchLink({
       {children}
     </Link>
   );
-}
+});
 
 /**
  * Hook to programmatically prefetch a route.

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +21,7 @@ interface Props {
   companyId: string;
 }
 
-export function CompanyClassificationsPanel({ companyId }: Props) {
+export const CompanyClassificationsPanel = memo(function CompanyClassificationsPanel({ companyId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -269,4 +269,4 @@ export function CompanyClassificationsPanel({ companyId }: Props) {
       </Card>
     </div>
   );
-}
+});

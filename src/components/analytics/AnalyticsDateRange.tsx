@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +46,7 @@ interface Props {
   onExport?: () => void;
 }
 
-export function AnalyticsDateRange({ value, onChange, onExport }: Props) {
+export const AnalyticsDateRange = memo(function AnalyticsDateRange({ value, onChange, onExport }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activePreset, setActivePreset] = useState("30d");
@@ -102,6 +102,6 @@ export function AnalyticsDateRange({ value, onChange, onExport }: Props) {
       )}
     </div>
   );
-}
+});
 
 export { getPresetRange };
