@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MessageSquare, Mail, Reply, CheckCircle, Clock, Eye } from "lucide-react";
 import { format } from "date-fns";
 
-export function SupplierInquiryInbox() {
+export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
