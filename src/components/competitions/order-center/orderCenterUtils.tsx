@@ -2,6 +2,7 @@
  * Shared utilities for Order Center components.
  * Reduces duplication across panels.
  */
+import { memo } from "react";
 
 /** Extract bilingual item name from a requirement list item */
 export function getItemDisplayName(item: any, isAr: boolean): string {
