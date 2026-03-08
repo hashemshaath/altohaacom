@@ -625,6 +625,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const excerpt = isAr && data.excerpt_ar ? data.excerpt_ar : data.excerpt;
+  const readTime = Math.max(1, Math.ceil(((excerpt || "").split(/\s+/).length * 10) / 200));
 
   return (
     <Link
@@ -632,19 +633,22 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
       className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
+        <div className="w-14 h-14 rounded-xl bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.featured_image_url ? (
             <img src={data.featured_image_url} alt="" className="w-full h-full object-cover" />
           ) : (
-            <FileText className="h-4.5 w-4.5 text-muted-foreground/50" />
+            <FileText className="h-5 w-5 text-muted-foreground/50" />
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-0.5">
             <FileText className="h-3 w-3" />
             <span>{isAr ? "مقال" : "Article"}</span>
             <span className="mx-0.5">›</span>
             <span className="capitalize">{data.type}</span>
+            <span className="mx-0.5">·</span>
+            <Clock className="h-2.5 w-2.5" />
+            <span>{readTime} {isAr ? "د" : "min"}</span>
           </div>
           <h3 className="text-base font-medium text-primary group-hover:underline line-clamp-1">
             <HighlightText text={title} query={sq} />
@@ -654,11 +658,20 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
               <HighlightText text={excerpt} query={sq} />
             </p>
           )}
-          {data.published_at && (
-            <p className="text-xs text-muted-foreground/70 mt-1.5">
-              {format(new Date(data.published_at), "MMM d, yyyy")}
-            </p>
-          )}
+          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground/70">
+            {data.published_at && (
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                {format(new Date(data.published_at), "MMM d, yyyy")}
+              </span>
+            )}
+            {data.view_count > 0 && (
+              <span className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                {data.view_count.toLocaleString()}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Link>
