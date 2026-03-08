@@ -18,7 +18,7 @@ interface SuccessCelebrationProps {
  * A celebratory feedback overlay for successful actions.
  * Use after form submissions, milestone achievements, etc.
  */
-export function SuccessCelebration({
+export const SuccessCelebration = memo(function SuccessCelebration({
   show,
   duration = 3000,
   title,
