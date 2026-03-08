@@ -12,9 +12,9 @@ import { getCountdown } from "./utils";
 import { localizeCity, localizeCountry } from "@/lib/localizeLocation";
 
 export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
-  const now = new Date();
-  const upcomingEvents = events.filter(e => new Date(e.start_date) >= now);
-  const pastEvents = events.filter(e => new Date(e.start_date) < now);
+  const now = useMemo(() => new Date(), []);
+  const upcomingEvents = useMemo(() => events.filter(e => new Date(e.start_date) >= now), [events, now]);
+  const pastEvents = useMemo(() => events.filter(e => new Date(e.start_date) < now), [events, now]);
 
   const groupedUpcoming = useMemo(() => {
     const groups: Record<string, GlobalEvent[]> = {};

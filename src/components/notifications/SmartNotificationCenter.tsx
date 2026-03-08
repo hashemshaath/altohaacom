@@ -119,18 +119,18 @@ export default function SmartNotificationCenter({ open, onClose }: Props) {
     },
   });
 
-  const filtered = notifications.filter(n => {
+  const filtered = useMemo(() => notifications.filter(n => {
     if (tab === "unread" && n.is_read) return false;
     if (categoryFilter !== "all") {
       const cat = categoryMap[n.type || "system"] || "system";
       if (cat !== categoryFilter) return false;
     }
     return true;
-  });
+  }), [notifications, tab, categoryFilter]);
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
-  const readCount = notifications.filter(n => n.is_read).length;
-  const grouped = groupByDate(filtered, isAr);
+  const unreadCount = useMemo(() => notifications.filter(n => !n.is_read).length, [notifications]);
+  const readCount = useMemo(() => notifications.filter(n => n.is_read).length, [notifications]);
+  const grouped = useMemo(() => groupByDate(filtered, isAr), [filtered, isAr]);
 
   const categoryLabels: Record<CategoryFilter, { en: string; ar: string }> = {
     all: { en: "All", ar: "الكل" },
