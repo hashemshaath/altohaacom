@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,7 +9,7 @@ interface VoiceMessagePlayerProps {
   isMine?: boolean;
 }
 
-export function VoiceMessagePlayer({ url, duration, isMine }: VoiceMessagePlayerProps) {
+export const VoiceMessagePlayer = memo(function VoiceMessagePlayer({ url, duration, isMine }: VoiceMessagePlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -105,4 +105,4 @@ export function VoiceMessagePlayer({ url, duration, isMine }: VoiceMessagePlayer
       </span>
     </div>
   );
-}
+});

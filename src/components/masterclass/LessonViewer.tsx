@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +37,7 @@ function getEmbedUrl(url: string): string | null {
   return null;
 }
 
-export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBack }: LessonViewerProps) {
+export const LessonViewer = memo(function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBack }: LessonViewerProps) {
   const { language } = useLanguage();
 
   const title = language === "ar" && lesson.title_ar ? lesson.title_ar : lesson.title;
@@ -112,4 +112,4 @@ export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBa
       )}
     </div>
   );
-}
+});

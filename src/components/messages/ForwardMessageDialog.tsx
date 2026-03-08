@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ interface ForwardMessageDialogProps {
   message: { content: string; message_type: string; attachment_urls?: string[]; attachment_names?: string[] } | null;
 }
 
-export function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMessageDialogProps) {
+export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMessageDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -146,4 +146,4 @@ export function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMes
       </DialogContent>
     </Dialog>
   );
-}
+});

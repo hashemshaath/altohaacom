@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { GraduationCap, BookOpen, Users, Sparkles } from "lucide-react";
@@ -8,7 +9,7 @@ interface MasterclassHeroProps {
   totalEnrollments: number;
 }
 
-export function MasterclassHero({ totalCount, filteredCount, totalEnrollments }: MasterclassHeroProps) {
+export const MasterclassHero = memo(function MasterclassHero({ totalCount, filteredCount, totalEnrollments }: MasterclassHeroProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -56,4 +57,4 @@ export function MasterclassHero({ totalCount, filteredCount, totalEnrollments }:
       </div>
     </section>
   );
-}
+});

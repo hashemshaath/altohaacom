@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -27,7 +27,7 @@ interface MasterclassCardProps {
   isEnrolled: boolean;
 }
 
-export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
+export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
@@ -127,4 +127,4 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
       </CardContent>
     </Card>
   );
-}
+});

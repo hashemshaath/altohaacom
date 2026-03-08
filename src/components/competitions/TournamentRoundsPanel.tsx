@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -49,7 +49,7 @@ const statusStyles: Record<string, string> = {
   completed: "bg-chart-5/10 text-chart-5",
 };
 
-export function TournamentRoundsPanel({ competitionId, isOrganizer }: Props) {
+export const TournamentRoundsPanel = memo(function TournamentRoundsPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -316,4 +316,4 @@ export function TournamentRoundsPanel({ competitionId, isOrganizer }: Props) {
       )}
     </div>
   );
-}
+});

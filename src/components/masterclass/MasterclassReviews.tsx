@@ -18,7 +18,7 @@ interface Props {
   hasCompleted: boolean;
 }
 
-export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
+export const MasterclassReviews = memo(function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -200,4 +200,4 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
       )}
     </div>
   );
-}
+});

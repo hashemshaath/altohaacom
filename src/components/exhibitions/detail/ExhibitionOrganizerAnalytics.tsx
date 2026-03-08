@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,7 +26,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
+export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data: ticketsOverTime = [] } = useQuery({
@@ -563,4 +563,4 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
       </div>
     </div>
   );
-}
+});

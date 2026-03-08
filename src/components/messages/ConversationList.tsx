@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +52,7 @@ function formatConvTime(date?: string, isAr?: boolean) {
   return format(d, "MMM d");
 }
 
-export function ConversationList({
+export const ConversationList = memo(function ConversationList({
   isAr, searchQuery, setSearchQuery, categoryFilter, setCategoryFilter, counts,
   loadingConversations, filteredConversations, chatGroups,
   selectedPartner, activeGroupId, isOnline,
@@ -210,4 +211,4 @@ export function ConversationList({
       </ScrollArea>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +23,7 @@ const CATEGORY_LABELS: Record<string, { en: string; ar: string }> = {
   packaging: { en: "Packaging", ar: "تغليف" },
 };
 
-export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
+export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedHall, setSelectedHall] = useState<string | null>(null);
@@ -257,4 +257,4 @@ export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
       )}
     </div>
   );
-}
+});

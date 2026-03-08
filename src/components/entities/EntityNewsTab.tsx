@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -14,7 +15,7 @@ interface Props {
   entityNameAr?: string | null;
 }
 
-export function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
+export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -113,4 +114,4 @@ export function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
       })}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,7 +23,7 @@ interface Props {
   masterclassId: string;
 }
 
-export function ModuleLessonManager({ masterclassId }: Props) {
+export const ModuleLessonManager = memo(function ModuleLessonManager({ masterclassId }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -316,4 +316,4 @@ export function ModuleLessonManager({ masterclassId }: Props) {
       )}
     </div>
   );
-}
+});

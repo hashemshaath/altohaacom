@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -51,7 +51,7 @@ interface AvailableJudge {
   username: string | null;
 }
 
-export function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProps) {
+export const JudgeAssignmentPanel = memo(function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -416,4 +416,4 @@ export function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProp
       </Dialog>
     </div>
   );
-}
+});

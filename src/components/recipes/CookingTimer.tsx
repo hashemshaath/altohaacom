@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ interface CookingTimerProps {
 
 type TimerPhase = "prep" | "cook";
 
-export function CookingTimer({ prepMinutes, cookMinutes, recipeName }: CookingTimerProps) {
+export const CookingTimer = memo(function CookingTimer({ prepMinutes, cookMinutes, recipeName }: CookingTimerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -152,4 +152,4 @@ export function CookingTimer({ prepMinutes, cookMinutes, recipeName }: CookingTi
       </CardContent>
     </Card>
   );
-}
+});

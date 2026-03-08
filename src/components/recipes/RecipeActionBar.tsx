@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipeSave } from "@/hooks/useRecipeSave";
@@ -23,7 +23,7 @@ interface RecipeActionBarProps {
   shareCount?: number;
 }
 
-export function RecipeActionBar({ recipeId, saveCount = 0, shareCount = 0 }: RecipeActionBarProps) {
+export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCount = 0, shareCount = 0 }: RecipeActionBarProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -126,4 +126,4 @@ export function RecipeActionBar({ recipeId, saveCount = 0, shareCount = 0 }: Rec
       </Button>
     </div>
   );
-}
+});

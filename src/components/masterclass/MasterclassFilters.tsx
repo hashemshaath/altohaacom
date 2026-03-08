@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,7 +19,7 @@ interface MasterclassFiltersProps {
   getCountryName: (code: string) => string;
 }
 
-export function MasterclassFilters({
+export const MasterclassFilters = memo(function MasterclassFilters({
   search, onSearchChange,
   levelFilter, onLevelChange,
   categoryFilter, onCategoryChange,
@@ -85,4 +86,4 @@ export function MasterclassFilters({
       </div>
     </div>
   );
-}
+});
