@@ -20,7 +20,7 @@ const statusStyles = {
  * A pulsing dot indicator to show live/recent activity status.
  * Use in dashboards, headers, and list items.
  */
-export function ActivityPulse({ status = "live", label, className, size = "sm" }: ActivityPulseProps) {
+export const ActivityPulse = memo(function ActivityPulse({ status = "live", label, className, size = "sm" }: ActivityPulseProps) {
   const s = statusStyles[status];
   const dotSize = size === "sm" ? "h-2 w-2" : "h-2.5 w-2.5";
   const ringSize = size === "sm" ? "h-2 w-2" : "h-2.5 w-2.5";
