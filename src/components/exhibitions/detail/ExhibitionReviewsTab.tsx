@@ -585,4 +585,4 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
       </div>
     </div>
   );
-}
+});

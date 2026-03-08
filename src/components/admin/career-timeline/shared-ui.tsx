@@ -213,7 +213,7 @@ export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl,
       )}
     </div>
   );
-}
+});
 
 // ── Sortable Wrappers ──────────────────────────────────────
 

@@ -63,7 +63,7 @@ interface SectionContentProps {
 }
 
 /** Renders the inner content of a career section (education, work, judging, etc.) */
-export function SectionContent(props: SectionContentProps) {
+export const SectionContent = memo(function SectionContent(props: SectionContentProps) {
   const { section, isAr } = props;
   const key = section.key;
 

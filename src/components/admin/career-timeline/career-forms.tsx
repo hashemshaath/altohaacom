@@ -473,4 +473,4 @@ export const AwardAddForm = memo(function AwardAddForm({ form, isAr, isPending, 
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.event_name.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
