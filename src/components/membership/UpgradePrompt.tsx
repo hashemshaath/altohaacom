@@ -15,7 +15,7 @@ interface UpgradePromptProps {
   className?: string;
 }
 
-export function UpgradePrompt({
+export const UpgradePrompt = memo(function UpgradePrompt({
   featureName,
   featureNameAr,
   variant = "inline",
