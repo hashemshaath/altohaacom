@@ -23,7 +23,7 @@ const WAYPOINT_ICONS: Record<string, any> = {
   exit: DoorOpen,
 };
 
-export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
+export const ExhibitionIndoorMap = memo(function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
   const [search, setSearch] = useState("");
   const [selectedFloor, setSelectedFloor] = useState("1");
   const [selectedWaypoint, setSelectedWaypoint] = useState<string | null>(null);
