@@ -16,7 +16,7 @@ interface ChefSearchSelectorProps {
   disabled?: boolean;
 }
 
-export function ChefSearchSelector({ value, valueName, onChange, onClear, placeholder, disabled }: ChefSearchSelectorProps) {
+export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valueName, onChange, onClear, placeholder, disabled }: ChefSearchSelectorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
