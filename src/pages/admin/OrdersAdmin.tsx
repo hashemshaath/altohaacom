@@ -1466,7 +1466,7 @@ export default function OrdersAdmin() {
                   </TableHeader>
                   <TableBody>
                     {shopOrders.map((order: any) => (
-                      <TableRow key={order.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedShopOrder(order.id)}>
+                      <TableRow key={order.id} className="cursor-pointer transition-colors duration-150 hover:bg-muted/40" onClick={() => setSelectedShopOrder(order.id)}>
                         <TableCell className="font-mono text-sm">{order.order_number}</TableCell>
                         <TableCell>
                           <div>
