@@ -18,7 +18,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface InvoiceItem {
   name: string;
