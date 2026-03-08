@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
 import { useLanguage } from "@/i18n/LanguageContext";
