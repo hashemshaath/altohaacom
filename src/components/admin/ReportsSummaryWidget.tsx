@@ -17,7 +17,7 @@ interface ModuleStat {
   color: string;
 }
 
-export function ReportsSummaryWidget() {
+export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
