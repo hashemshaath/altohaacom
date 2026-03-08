@@ -27,7 +27,7 @@ interface DesktopNavProps {
   isAr: boolean;
 }
 
-export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavProps) {
+export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavProps) {
   const location = useLocation();
   const isActive = (path: string) =>
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
