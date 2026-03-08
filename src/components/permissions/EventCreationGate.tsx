@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useVerificationStatus } from "@/hooks/useVerification";
