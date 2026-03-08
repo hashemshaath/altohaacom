@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useInstallPrompt } from "@/hooks/usePWA";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
