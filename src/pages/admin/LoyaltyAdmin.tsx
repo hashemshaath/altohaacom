@@ -302,11 +302,11 @@ export default function LoyaltyAdmin() {
             onExport={() => exportRedemptions(bulkRedemptions.selectedItems)}
             onStatusChange={bulkFulfill}
           />
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead className="w-10">
                       <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
                     </TableHead>
@@ -319,14 +319,14 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {redemptions.map((r: any) => (
-                    <TableRow key={r.id} className={bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}>
+                    <TableRow key={r.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}`}>
                       <TableCell>
                         <Checkbox checked={bulkRedemptions.isSelected(r.id)} onCheckedChange={() => bulkRedemptions.toggleOne(r.id)} />
                       </TableCell>
                       <TableCell className="font-mono text-xs">{r.redemption_code || "—"}</TableCell>
-                      <TableCell className="text-center font-mono">{r.points_spent}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">{r.points_spent}</TableCell>
                       <TableCell>
-                        <Badge variant={r.status === "fulfilled" ? "default" : r.status === "pending" ? "secondary" : "outline"}>
+                        <Badge variant={r.status === "fulfilled" ? "default" : r.status === "pending" ? "secondary" : "outline"} className="rounded-lg">
                           {r.status}
                         </Badge>
                       </TableCell>
@@ -335,11 +335,11 @@ export default function LoyaltyAdmin() {
                       </TableCell>
                       <TableCell>
                         {r.status === "pending" && (
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="default" className="h-7 text-xs" onClick={() => updateRedemption.mutate({ id: r.id, status: "fulfilled" })}>
+                          <div className="flex gap-1.5">
+                            <Button size="sm" variant="default" className="h-7 text-xs rounded-lg" onClick={() => updateRedemption.mutate({ id: r.id, status: "fulfilled" })}>
                               {isAr ? "تنفيذ" : "Fulfill"}
                             </Button>
-                            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => updateRedemption.mutate({ id: r.id, status: "cancelled" })}>
+                            <Button size="sm" variant="outline" className="h-7 text-xs rounded-lg" onClick={() => updateRedemption.mutate({ id: r.id, status: "cancelled" })}>
                               {isAr ? "إلغاء" : "Cancel"}
                             </Button>
                           </div>
