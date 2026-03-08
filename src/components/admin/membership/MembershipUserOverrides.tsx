@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { Search, Plus, Trash2, Shield, Clock, User, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function MembershipUserOverrides() {
+const MembershipUserOverrides = memo(function MembershipUserOverrides() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user: adminUser } = useAuth();
