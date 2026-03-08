@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -124,10 +124,12 @@ export function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibition
   };
 
   // Extract trending hashtags
-  const trendingTags = posts
-    .flatMap(p => p.hashtags || [])
-    .reduce((acc: Record<string, number>, tag: string) => { acc[tag] = (acc[tag] || 0) + 1; return acc; }, {} as Record<string, number>);
-  const topTags = Object.entries(trendingTags).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const topTags = useMemo(() => {
+    const trendingTags = posts
+      .flatMap(p => p.hashtags || [])
+      .reduce((acc: Record<string, number>, tag: string) => { acc[tag] = (acc[tag] || 0) + 1; return acc; }, {} as Record<string, number>);
+    return Object.entries(trendingTags).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  }, [posts]);
 
   const formatTime = (date: string) => {
     const diff = Date.now() - new Date(date).getTime();

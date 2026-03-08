@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -120,12 +120,12 @@ export default function JudgesAdmin() {
     filename: "judges",
   });
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: judges?.length || 0,
     international: judges?.filter(j => j.judgeProfile?.judge_level === "international").length || 0,
     national: judges?.filter(j => j.judgeProfile?.judge_level === "national").length || 0,
     withProfile: judges?.filter(j => j.judgeProfile).length || 0,
-  };
+  }), [judges]);
 
   // If a judge is selected, show their full profile management
   if (selectedJudgeId) {
