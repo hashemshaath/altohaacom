@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Coins, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function WalletAdminOverview() {
+export const WalletAdminOverview = memo(function WalletAdminOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
