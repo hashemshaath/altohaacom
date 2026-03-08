@@ -33,7 +33,7 @@ const StatItem = forwardRef<HTMLDivElement, {
   );
 });
 
-export default function StatsBar() {
+const StatsBar = memo(function StatsBar() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { ref, isVisible } = useScrollReveal({ threshold: 0.3 });

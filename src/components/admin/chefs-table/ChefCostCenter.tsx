@@ -143,7 +143,7 @@ function calcEstimatedTotal(p: Partial<ChefCostProfile>) {
 }
 
 // ─── Main Component ─────────────────────────
-export function ChefCostCenter() {
+export const ChefCostCenter = memo(function ChefCostCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();

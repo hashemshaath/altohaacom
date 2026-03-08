@@ -25,7 +25,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "المؤسسي" },
 };
 
-export default function MembershipFeatureAnalytics() {
+const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [days, setDays] = useState("30");

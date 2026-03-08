@@ -15,7 +15,7 @@ import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export default function ContentMediaDashboard() {
+const ContentMediaDashboard = memo(function ContentMediaDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [tab, setTab] = useState("articles");

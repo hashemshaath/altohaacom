@@ -59,7 +59,7 @@ const EXTEND_OPTIONS = [
   { days: 365, labelEn: "1 Year", labelAr: "سنة واحدة" },
 ];
 
-export default function MembershipMembersTab() {
+const MembershipMembersTab = memo(function MembershipMembersTab() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();

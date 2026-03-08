@@ -23,7 +23,7 @@ const BENEFITS = [
   { key: "manager", en: "Dedicated Account Manager", ar: "مدير حساب مخصص", basic: false, pro: false, ent: true },
 ];
 
-export default function MembershipBenefitsTab() {
+const MembershipBenefitsTab = memo(function MembershipBenefitsTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

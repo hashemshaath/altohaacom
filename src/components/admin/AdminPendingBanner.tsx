@@ -21,7 +21,7 @@ interface PendingItem {
   color: string;
 }
 
-export default function AdminPendingBanner() {
+const AdminPendingBanner = memo(function AdminPendingBanner() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

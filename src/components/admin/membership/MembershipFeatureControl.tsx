@@ -27,7 +27,7 @@ const CATEGORY_CONFIG: Record<string, { icon: any; label: string; labelAr: strin
   community: { icon: MessageCircle, label: "Community", labelAr: "المجتمع" },
 };
 
-export default function MembershipFeatureControl() {
+const MembershipFeatureControl = memo(function MembershipFeatureControl() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();

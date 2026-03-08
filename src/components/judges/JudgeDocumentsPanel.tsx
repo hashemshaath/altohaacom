@@ -29,7 +29,7 @@ const docTypes = [
   { value: "other", en: "Other", ar: "أخرى" },
 ];
 
-export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
+const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";

@@ -11,7 +11,7 @@ import { Brain, RefreshCw, Sparkles, TrendingUp, AlertTriangle, Lightbulb, BarCh
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 
-export default function AIInsightsPanel() {
+const AIInsightsPanel = memo(function AIInsightsPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [insights, setInsights] = useState("");
