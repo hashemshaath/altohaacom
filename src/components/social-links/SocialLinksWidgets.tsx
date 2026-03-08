@@ -139,7 +139,7 @@ export const ContactFormSection = memo(function ContactFormSection({ theme, lang
 });
 
 // ── Email Subscription ──
-export function EmailSubscriptionSection({ theme, lang, isRtl, profileUserId, pageId, extra }: {
+export const EmailSubscriptionSection = memo(function EmailSubscriptionSection({ theme, lang, isRtl, profileUserId, pageId, extra }: {
   theme: any; lang: LangCode; isRtl: boolean; profileUserId: string; pageId: string; extra: any;
 }) {
   const [subEmail, setSubEmail] = useState("");
