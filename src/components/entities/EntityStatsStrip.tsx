@@ -22,7 +22,7 @@ interface Props {
   website?: string | null;
 }
 
-export function EntityStatsStrip({
+export const EntityStatsStrip = memo(function EntityStatsStrip({
   followerCount,
   memberCount,
   competitionCount = 0,
