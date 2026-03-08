@@ -28,7 +28,7 @@ const CATEGORIES = [
   { value: "break", en: "Break", ar: "استراحة" },
 ];
 
-export function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
+export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
