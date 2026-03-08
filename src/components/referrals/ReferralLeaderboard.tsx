@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
