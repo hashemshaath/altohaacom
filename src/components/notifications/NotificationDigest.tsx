@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { inferPriority } from "./NotificationPriorityBadge";
 
-export function NotificationDigest() {
+export const NotificationDigest = memo(function NotificationDigest() {
   const { notifications, unreadCount } = useNotifications();
   const { language } = useLanguage();
   const isAr = language === "ar";
