@@ -20,7 +20,7 @@ interface CartSheetProps {
   cart: ReturnType<typeof useCart>;
 }
 
-export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
+export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
