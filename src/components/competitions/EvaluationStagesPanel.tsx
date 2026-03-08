@@ -27,7 +27,7 @@ const STAGE_TYPES = [
   { value: "presentation", en: "Presentation", ar: "عرض", icon: Presentation },
 ];
 
-export function EvaluationStagesPanel({ competitionId, isOrganizer }: Props) {
+export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
