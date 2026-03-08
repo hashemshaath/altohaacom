@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-export function VoiceSearchButton({ onResult, className }: Props) {
+export const VoiceSearchButton = memo(function VoiceSearchButton({ onResult, className }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isListening, setIsListening] = useState(false);
