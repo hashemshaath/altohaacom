@@ -22,7 +22,7 @@ interface CustomerHealth {
   trend: "up" | "down" | "stable";
 }
 
-export function CustomerHealthScores() {
+export const CustomerHealthScores = memo(function CustomerHealthScores() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
