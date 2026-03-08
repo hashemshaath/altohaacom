@@ -58,12 +58,16 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
   return (
     <div className="space-y-6">
       {/* Tier Progress Hero */}
-      <Card className="overflow-hidden">
-        <CardContent className="p-6">
+      <Card className="overflow-hidden border-border/50">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-4/5 pointer-events-none rounded-2xl" />
+        <CardContent className="p-6 relative">
           <div className="flex flex-col md:flex-row items-center gap-6">
             {/* Current Tier */}
-            <div className="text-center">
-              <span className="text-5xl">{currentTier?.icon_emoji || "⭐"}</span>
+            <div className="text-center group">
+              <div className="relative inline-block">
+                <span className="text-5xl block transition-transform group-hover:scale-110">{currentTier?.icon_emoji || "⭐"}</span>
+                <div className="absolute -inset-2 rounded-full bg-primary/5 animate-pulse -z-10" />
+              </div>
               <h2 className="text-xl font-bold mt-2">{isAr ? currentTier?.name_ar : currentTier?.name}</h2>
               <p className="text-sm text-muted-foreground">{isAr ? "مستواك الحالي" : "Your Current Tier"}</p>
             </div>
@@ -74,23 +78,23 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                 <span className="text-sm font-medium"><AnimatedCounter value={points} className="inline" /> {isAr ? "نقطة" : "points"}</span>
                 {nextTier && (
                   <span className="text-sm text-muted-foreground">
-                    <AnimatedCounter value={nextTier.min_points} className="inline" /> {isAr ? "للمستوى التالي" : "for next tier"}
+                    <AnimatedCounter value={nextTier.min_points - points} className="inline text-primary font-semibold" /> {isAr ? "نقطة للمستوى التالي" : "pts to next tier"}
                   </span>
                 )}
               </div>
               <Progress value={progress} className="h-3" />
               <div className="flex gap-1 justify-between">
                 {tiers.map((t: any) => (
-                  <div key={t.id} className="flex flex-col items-center">
-                    <span className={`text-sm ${points >= t.min_points ? "" : "opacity-40"}`}>{t.icon_emoji}</span>
-                    <span className="text-[10px] text-muted-foreground"><AnimatedCounter value={t.min_points} className="inline" /></span>
+                  <div key={t.id} className={`flex flex-col items-center transition-opacity ${points >= t.min_points ? "opacity-100" : "opacity-40"}`}>
+                    <span className="text-sm">{t.icon_emoji}</span>
+                    <span className="text-[10px] text-muted-foreground tabular-nums"><AnimatedCounter value={t.min_points} className="inline" /></span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Multiplier */}
-            <div className="text-center bg-primary/10 rounded-xl p-4">
+            <div className="text-center bg-primary/10 rounded-2xl p-4 border border-primary/10 transition-all hover:shadow-md hover:border-primary/20">
               <Sparkles className="h-5 w-5 text-primary mx-auto" />
               <p className="text-2xl font-bold text-primary">×{currentTier?.multiplier || 1}</p>
               <p className="text-xs text-muted-foreground">{isAr ? "مضاعف النقاط" : "Points Multiplier"}</p>
@@ -99,13 +103,16 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
 
           {/* Streak */}
           {loginStreak && (
-            <div className="mt-4 flex items-center gap-3 bg-muted/50 rounded-xl p-3">
-              <Flame className="h-5 w-5 text-chart-1" />
+            <div className="mt-4 flex items-center gap-3 bg-muted/50 rounded-xl p-3 border border-border/30 transition-all hover:border-chart-1/30">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-1/10">
+                <Flame className="h-5 w-5 text-chart-1" />
+              </div>
               <div>
-                <span className="font-bold text-lg">{loginStreak.current_streak}</span>
+                <span className="font-bold text-lg tabular-nums">{loginStreak.current_streak}</span>
                 <span className="text-sm text-muted-foreground ms-1">{isAr ? "يوم متتالي" : "day streak"}</span>
               </div>
-              <Badge variant="outline" className="ms-auto">
+              <Badge variant="outline" className="ms-auto gap-1">
+                <Trophy className="h-3 w-3" />
                 {isAr ? "الأعلى:" : "Best:"} {loginStreak.longest_streak}
               </Badge>
             </div>
@@ -175,25 +182,38 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
               const tierIndex = tiers.findIndex((t: any) => t.slug === r.min_tier);
               const userTierIndex = tiers.findIndex((t: any) => t.slug === currentTier?.slug);
               const tierLocked = tierIndex > userTierIndex;
+              const affordPct = Math.min(100, (points / r.points_cost) * 100);
 
               return (
-                <Card key={r.id} className={`${r.is_featured ? "border-primary/30" : ""}`}>
+                <Card key={r.id} className={`transition-all hover:shadow-md ${r.is_featured ? "border-primary/30 ring-1 ring-primary/10" : "hover:border-border/60"} ${tierLocked ? "opacity-60" : ""}`}>
                   <CardContent className="p-4 space-y-3">
                     {r.is_featured && (
                       <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">
+                        <Sparkles className="h-2.5 w-2.5 me-0.5" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
                     )}
                     <h3 className="font-semibold">{isAr ? r.name_ar : r.name}</h3>
-                    <p className="text-xs text-muted-foreground">{isAr ? r.description_ar : r.description}</p>
-                    <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground line-clamp-2">{isAr ? r.description_ar : r.description}</p>
+                    
+                    {/* Affordability progress */}
+                    {!tierLocked && !canAfford && (
+                      <div className="space-y-1">
+                        <Progress value={affordPct} className="h-1" />
+                        <p className="text-[10px] text-muted-foreground">
+                          {isAr ? `${r.points_cost - points} نقطة متبقية` : `${r.points_cost - points} pts away`}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between pt-1">
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-primary" />
-                        <span className="font-bold text-primary"><AnimatedCounter value={r.points_cost} className="inline" /></span>
+                        <span className="font-bold text-primary tabular-nums"><AnimatedCounter value={r.points_cost} className="inline" /></span>
                       </div>
                       {tierLocked ? (
-                        <Badge variant="outline" className="text-[10px]">
-                          <Lock className="h-3 w-3 me-1" />
+                        <Badge variant="outline" className="text-[10px] gap-1">
+                          <Lock className="h-3 w-3" />
                           {r.min_tier}
                         </Badge>
                       ) : (
@@ -201,7 +221,9 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                           size="sm"
                           disabled={!canAfford || redeemMutation.isPending}
                           onClick={() => handleRedeem(r)}
+                          className="gap-1"
                         >
+                          <Gift className="h-3.5 w-3.5" />
                           {isAr ? "استبدال" : "Redeem"}
                         </Button>
                       )}

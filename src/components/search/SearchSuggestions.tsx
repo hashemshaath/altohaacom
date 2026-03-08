@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Search, TrendingUp, Clock, Star, Trophy, FileText, Users, UtensilsCrossed, Ticket } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { getSavedSearches, addSavedSearch, removeSavedSearch } from "@/lib/recentSearches";
 
 interface SearchSuggestionsProps {
@@ -117,7 +118,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
   if (suggestions.length === 0) return null;
 
   return (
-    <div ref={ref} className="absolute top-full start-0 end-0 mt-1 z-50 rounded-2xl border border-border bg-popover shadow-lg overflow-hidden">
+    <div ref={ref} className="absolute top-full start-0 end-0 mt-1 z-50 rounded-2xl border border-border bg-popover shadow-lg overflow-hidden backdrop-blur-sm">
       {!hasQuery && savedSearches.length > 0 && (
         <div className="px-3 pt-3 pb-1">
           <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
@@ -129,9 +130,9 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
         <button
           key={`saved-${s.text}`}
           onClick={() => onSelect(s.text)}
-          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-accent/40 transition-colors text-start"
+          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-accent/40 active:bg-accent/60 transition-colors text-start group"
         >
-          <Star className="h-3.5 w-3.5 text-chart-4 shrink-0" />
+          <Star className="h-3.5 w-3.5 text-chart-4 shrink-0 transition-transform group-hover:scale-110" />
           <span className="flex-1 truncate">{s.text}</span>
         </button>
       ))}
@@ -147,30 +148,44 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
         <button
           key={`trend-${s.text}`}
           onClick={() => onSelect(s.text.replace("#", ""))}
-          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-accent/40 transition-colors text-start"
+          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-accent/40 active:bg-accent/60 transition-colors text-start group"
         >
-          <TrendingUp className="h-3.5 w-3.5 text-chart-2 shrink-0" />
+          <TrendingUp className="h-3.5 w-3.5 text-chart-2 shrink-0 transition-transform group-hover:scale-110" />
           <span className="flex-1 truncate">{s.text}</span>
-          <span className="text-[10px] text-muted-foreground">#{i + 1}</span>
+          <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4 tabular-nums">#{i + 1}</Badge>
         </button>
       ))}
 
+      {hasQuery && suggestions.length > 0 && (
+        <div className="px-3 pt-2.5 pb-1">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+            {isAr ? "نتائج مطابقة" : "Results"}
+          </p>
+        </div>
+      )}
       {hasQuery && suggestions.map((s, i) => {
         const Icon = s.icon || Search;
         return (
           <button
             key={`ac-${i}-${s.text}`}
             onClick={() => onSelect(s.text)}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-accent/40 transition-colors text-start"
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-accent/40 active:bg-accent/60 transition-colors text-start group"
           >
-            <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0 transition-transform group-hover:scale-110" />
             <span className="flex-1 truncate">{s.text}</span>
             {s.category && (
-              <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md">{s.category}</span>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">{s.category}</Badge>
             )}
           </button>
         );
       })}
+
+      {hasQuery && suggestions.length === 0 && (
+        <div className="px-4 py-6 text-center">
+          <Search className="h-5 w-5 mx-auto mb-2 text-muted-foreground/40" />
+          <p className="text-xs text-muted-foreground">{isAr ? "لا توجد نتائج" : "No results found"}</p>
+        </div>
+      )}
     </div>
   );
 });

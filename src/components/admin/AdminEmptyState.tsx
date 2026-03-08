@@ -34,28 +34,28 @@ export const AdminEmptyState = memo(function AdminEmptyState({
   const isAr = language === "ar";
 
   return (
-    <div className={cn("flex flex-col items-center justify-center py-16 text-center", className)}>
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-muted/60 ring-1 ring-border/30">
+    <div className={cn("flex flex-col items-center justify-center py-16 text-center animate-in fade-in-50 duration-300", className)}>
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-muted/60 ring-1 ring-border/30 transition-all hover:ring-border/50 hover:shadow-sm">
         <Icon className="h-7 w-7 text-muted-foreground/50" />
       </div>
       <h3 className="text-sm font-semibold text-foreground">
         {isAr && titleAr ? titleAr : title}
       </h3>
       {(description || descriptionAr) && (
-        <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+        <p className="mt-1.5 max-w-xs text-xs text-muted-foreground leading-relaxed">
           {isAr && descriptionAr ? descriptionAr : description}
         </p>
       )}
       {(actionLabel || actionLabelAr) && (
         actionLink ? (
-          <Button asChild variant="outline" size="sm" className="mt-4 gap-1.5 rounded-xl">
+          <Button asChild variant="outline" size="sm" className="mt-5 gap-1.5 rounded-xl">
             <Link to={actionLink}>
               <Plus className="h-3.5 w-3.5" />
               {isAr && actionLabelAr ? actionLabelAr : actionLabel}
             </Link>
           </Button>
         ) : onAction ? (
-          <Button variant="outline" size="sm" className="mt-4 gap-1.5 rounded-xl" onClick={onAction}>
+          <Button variant="outline" size="sm" className="mt-5 gap-1.5 rounded-xl" onClick={onAction}>
             <Plus className="h-3.5 w-3.5" />
             {isAr && actionLabelAr ? actionLabelAr : actionLabel}
           </Button>
