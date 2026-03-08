@@ -1,6 +1,5 @@
-import { type ReactNode, memo } from "react";
+import { type ReactNode, memo, useRef, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { useSectionConfig } from "./SectionKeyContext";
 
 const SPACING_MAP: Record<string, string> = {
@@ -17,22 +16,55 @@ const CONTAINER_MAP: Record<string, string> = {
   full: "max-w-full px-0",
 };
 
-const ANIMATION_MAP: Record<string, string> = {
+const ANIMATION_CLASS: Record<string, string> = {
   none: "",
-  fade: "animate-in fade-in duration-700",
-  "slide-up": "animate-in slide-in-from-bottom-4 duration-700",
-  "slide-left": "animate-in slide-in-from-left-4 duration-700",
-  scale: "animate-in zoom-in-95 duration-500",
-  blur: "animate-in fade-in duration-700",
+  fade: "translate-y-0 opacity-100",
+  "slide-up": "translate-y-0 opacity-100",
+  "slide-left": "translate-x-0 opacity-100",
+  scale: "scale-100 opacity-100",
+  blur: "blur-0 opacity-100",
+};
+
+const ANIMATION_INITIAL: Record<string, string> = {
+  none: "",
+  fade: "opacity-0",
+  "slide-up": "opacity-0 translate-y-6",
+  "slide-left": "opacity-0 -translate-x-6",
+  scale: "opacity-0 scale-95",
+  blur: "opacity-0 blur-sm",
 };
 
 /**
  * Shell wrapper that applies universal DB config (spacing, bg_color, css_class, 
  * container_width, animation) to any homepage section component.
- * Components inside only handle their own content rendering.
+ * Uses IntersectionObserver for scroll-triggered animations.
  */
 export const HomepageSectionShell = memo(function HomepageSectionShell({ children }: { children: ReactNode }) {
   const config = useSectionConfig();
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const animation = config?.animation || "none";
+  const hasAnimation = animation !== "none";
+
+  useEffect(() => {
+    if (!hasAnimation || !ref.current) {
+      setIsVisible(true);
+      return;
+    }
+    const el = ref.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.unobserve(el);
+  }, [hasAnimation]);
 
   // If no config, render children with sensible default spacing
   if (!config) {
@@ -40,11 +72,16 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
   }
 
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
-  const animation = ANIMATION_MAP[config.animation] || "";
 
   return (
     <div
-      className={cn(spacing, animation, config.css_class)}
+      ref={ref}
+      className={cn(
+        spacing,
+        config.css_class,
+        hasAnimation && "transition-all duration-700 ease-out",
+        hasAnimation && (isVisible ? ANIMATION_CLASS[animation] : ANIMATION_INITIAL[animation])
+      )}
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
       {children}

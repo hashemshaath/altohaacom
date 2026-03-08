@@ -67,20 +67,56 @@ const SECTION_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
   ad_banner_bottom: HomepageAdBanner,
 };
 
-// ── Section loading skeleton ──
-const SectionSkeleton = () => (
-  <div className="container py-5 md:py-8">
-    <div className="space-y-3">
+// ── Section loading skeletons (varied) ──
+const skeletonVariants = [
+  // Card grid
+  () => (
+    <div className="container py-5 md:py-8 space-y-3">
       <Skeleton className="h-4 w-28 rounded-lg" />
       <Skeleton className="h-5 w-48 rounded-xl" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="rounded-2xl border border-border/20 overflow-hidden">
+            <Skeleton className="aspect-[4/3] w-full rounded-none" />
+            <div className="p-2.5 space-y-1.5">
+              <Skeleton className="h-3 w-3/4 rounded-lg" />
+              <Skeleton className="h-2 w-1/2 rounded-lg" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+  // Horizontal scroll
+  () => (
+    <div className="container py-5 md:py-8 space-y-3">
+      <Skeleton className="h-4 w-32 rounded-lg" />
+      <Skeleton className="h-5 w-52 rounded-xl" />
       <div className="flex gap-3 mt-3 overflow-hidden">
         {[1, 2, 3].map(i => (
           <Skeleton key={i} className="aspect-[4/3] w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] shrink-0 rounded-2xl" />
         ))}
       </div>
     </div>
-  </div>
-);
+  ),
+  // Stats bar
+  () => (
+    <div className="container py-4 md:py-6">
+      <div className="flex gap-3 overflow-hidden">
+        {[1, 2, 3, 4].map(i => (
+          <Skeleton key={i} className="h-16 flex-1 min-w-[120px] rounded-2xl" />
+        ))}
+      </div>
+    </div>
+  ),
+];
+
+let skeletonIdx = 0;
+const SectionSkeleton = () => {
+  const Variant = skeletonVariants[skeletonIdx % skeletonVariants.length];
+  skeletonIdx++;
+  return <Variant />;
+};
 
 // ── Default section order (used when DB has no data) ──
 const DEFAULT_SECTION_KEYS = [

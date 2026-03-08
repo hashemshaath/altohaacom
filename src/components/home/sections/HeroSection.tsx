@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback, useRef, memo, forwardRef } from "reac
 import { cn } from "@/lib/utils";
 
 const SLIDE_DURATION = 6000;
+const SWIPE_THRESHOLD = 50;
 
 interface HeroSlide {
   id: string;
@@ -58,13 +59,43 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
   );
 }));
 
+/* ── Touch swipe hook ── */
+function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const touchEnd = useRef<{ x: number; y: number } | null>(null);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchEnd.current = null;
+    touchStart.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    touchEnd.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+  }, []);
+
+  const onTouchEnd = useCallback(() => {
+    if (!touchStart.current || !touchEnd.current) return;
+    const dx = touchStart.current.x - touchEnd.current.x;
+    const dy = Math.abs(touchStart.current.y - touchEnd.current.y);
+    // Only horizontal swipes (ignore vertical scrolling)
+    if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > dy) {
+      if (dx > 0) onSwipeLeft();
+      else onSwipeRight();
+    }
+  }, [onSwipeLeft, onSwipeRight]);
+
+  return { onTouchStart, onTouchMove, onTouchEnd };
+}
+
 export const HeroSection = memo(function HeroSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const rafRef = useRef<number>(0);
   const startRef = useRef(0);
+  const pausedAtRef = useRef(0);
 
   const { data: slides = [] } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides"],
@@ -95,11 +126,28 @@ export const HeroSection = memo(function HeroSection() {
     [current, slides.length, goTo]
   );
 
+  // Touch swipe (RTL-aware)
+  const swipeHandlers = useSwipe(
+    isAr ? prev : next,
+    isAr ? next : prev
+  );
+
+  // Auto-advance with pause support
   useEffect(() => {
     if (slides.length <= 1) return;
     startRef.current = performance.now();
 
     const tick = (now: number) => {
+      if (isPaused) {
+        pausedAtRef.current = now;
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      // Adjust start time if resuming from pause
+      if (pausedAtRef.current > 0) {
+        startRef.current += now - pausedAtRef.current;
+        pausedAtRef.current = 0;
+      }
       const pct = Math.min(((now - startRef.current) / SLIDE_DURATION) * 100, 100);
       setProgress(pct);
       if (pct >= 100) {
@@ -112,19 +160,29 @@ export const HeroSection = memo(function HeroSection() {
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [slides.length, current]);
+  }, [slides.length, current, isPaused]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [prev, next]);
 
   /* ── Empty state ── */
   if (!slides.length) {
     return (
-      <section className="relative flex min-h-[60vh] items-center justify-center bg-muted/30 overflow-hidden">
+      <section className="relative flex min-h-[55vh] sm:min-h-[60vh] items-center justify-center bg-muted/30 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
         <div className="text-center space-y-6 px-4 relative">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </span>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1] font-sans">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1] font-sans">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
           <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg font-sans">
@@ -146,17 +204,23 @@ export const HeroSection = memo(function HeroSection() {
   const slide = slides[current];
 
   return (
-    <section className="relative overflow-hidden bg-background" dir={isAr ? "rtl" : "ltr"}>
-      <div className="relative min-h-[45vh] sm:min-h-[55vh] lg:min-h-[75vh]">
+    <section
+      className="relative overflow-hidden bg-background"
+      dir={isAr ? "rtl" : "ltr"}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      {...swipeHandlers}
+    >
+      <div className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[75vh]">
         {slides.map((s, idx) => (
           <SlideBackground key={s.id} slide={s} isActive={idx === current} isFirst={idx === 0} />
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full min-h-[45vh] sm:min-h-[55vh] lg:min-h-[75vh] items-end pb-16 sm:pb-24 lg:pb-28">
+        <div className="container relative flex h-full min-h-[50vh] sm:min-h-[55vh] lg:min-h-[75vh] items-end pb-14 sm:pb-24 lg:pb-28">
           <div
             key={slide.id}
-            className="max-w-2xl space-y-5"
+            className="max-w-2xl space-y-4 sm:space-y-5"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
@@ -191,25 +255,35 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         </div>
 
+        {/* Slide counter */}
+        {slides.length > 1 && (
+          <div className="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1.5 rounded-full bg-card/40 backdrop-blur-xl border border-border/20 px-2.5 py-1 text-[10px] font-mono text-foreground/70">
+            <span className="font-bold">{String(current + 1).padStart(2, "0")}</span>
+            <span className="text-muted-foreground/50">/</span>
+            <span className="text-muted-foreground/70">{String(slides.length).padStart(2, "0")}</span>
+          </div>
+        )}
+
         {/* Navigation */}
         {slides.length > 1 && (
           <>
             <button
               onClick={prev}
-              className="absolute start-2 sm:start-5 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
+              className="absolute start-2 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
               aria-label="Previous"
             >
               <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <button
               onClick={next}
-              className="absolute end-2 sm:end-5 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
+              className="absolute end-2 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
               aria-label="Next"
             >
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
             </button>
 
-            <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
+            {/* Progress dots */}
+            <div className="absolute bottom-4 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
