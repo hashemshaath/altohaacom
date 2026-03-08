@@ -40,7 +40,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityLeadershipPanel({ entityId }: Props) {
+export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entityId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
