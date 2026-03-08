@@ -459,7 +459,7 @@ export default function CertificatesAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={groupBy} onValueChange={setGroupBy}>
-                  <SelectTrigger className="w-[160px]"><SelectValue placeholder={language === "ar" ? "تجميع حسب" : "Group By"} /></SelectTrigger>
+                  <SelectTrigger className="w-[160px] rounded-xl"><SelectValue placeholder={language === "ar" ? "تجميع حسب" : "Group By"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">{language === "ar" ? "بدون تجميع" : "No Grouping"}</SelectItem>
                     <SelectItem value="event">{language === "ar" ? "الحدث" : "Event"}</SelectItem>
