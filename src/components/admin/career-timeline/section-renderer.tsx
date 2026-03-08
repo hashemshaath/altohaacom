@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { GraduationCap, Briefcase, Trophy, Medal, Award, Users, Scale, Tv, CalendarCheck, FileText } from "lucide-react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { CareerRecord, SectionConfig } from "./constants";
