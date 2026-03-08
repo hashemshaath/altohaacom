@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod, useSubmitScore } from "@/hooks/useTasting";
