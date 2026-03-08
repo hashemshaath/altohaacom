@@ -1436,7 +1436,7 @@ export default function OrdersAdmin() {
                   </div>
                 </div>
                 <Select value={shopStatusFilter} onValueChange={setShopStatusFilter}>
-                  <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[150px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الحالات" : "All"}</SelectItem>
                     <SelectItem value="pending">{isAr ? "قيد الانتظار" : "Pending"}</SelectItem>
