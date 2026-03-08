@@ -214,7 +214,7 @@ const PAIRED_PERSONAL_FIELDS: PersonalFieldDef[] = [
   ["website", "Website", "الموقع", null],
 ];
 
-export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
+export const CVPreview = memo(function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState<CVData>(initialData);
