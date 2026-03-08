@@ -50,7 +50,7 @@ interface PrefetchLinkProps extends LinkProps {
   prefetchOnHover?: boolean;
 }
 
-export function PrefetchLink({
+export const PrefetchLink = memo(function PrefetchLink({
   children,
   to,
   prefetchOnHover = true,
