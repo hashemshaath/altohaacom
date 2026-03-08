@@ -193,7 +193,7 @@ export default function AuditLog() {
         description={isAr ? "سجل جميع الإجراءات الإدارية مع التصفية والتصدير" : "Track all administrative actions with filtering & export"}
         actions={
           <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-28 h-8 text-xs">
+            <SelectTrigger className="w-28 h-8 text-xs rounded-xl">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -208,43 +208,33 @@ export default function AuditLog() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Card>
-          <CardContent className="p-4 text-center">
-            <Activity className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <AnimatedCounter value={stats.todayActions} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "إجراءات اليوم" : "Today's Actions"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <ShieldAlert className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <AnimatedCounter value={stats.todayContent} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "إجراءات المحتوى" : "Content Actions"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <BarChart3 className="mx-auto mb-1 h-5 w-5 text-chart-2" />
-            <AnimatedCounter value={stats.uniqueActionTypes} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "أنواع الإجراءات" : "Action Types"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <Trash2 className="mx-auto mb-1 h-5 w-5 text-destructive" />
-            <AnimatedCounter value={stats.deletions} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "عمليات الحذف" : "Total Deletions"}</p>
-          </CardContent>
-        </Card>
+        {[
+          { icon: Activity, value: stats.todayActions, label: isAr ? "إجراءات اليوم" : "Today's Actions", color: "text-primary", bg: "bg-primary/10" },
+          { icon: ShieldAlert, value: stats.todayContent, label: isAr ? "إجراءات المحتوى" : "Content Actions", color: "text-chart-4", bg: "bg-chart-4/10" },
+          { icon: BarChart3, value: stats.uniqueActionTypes, label: isAr ? "أنواع الإجراءات" : "Action Types", color: "text-chart-2", bg: "bg-chart-2/10" },
+          { icon: Trash2, value: stats.deletions, label: isAr ? "عمليات الحذف" : "Total Deletions", color: "text-destructive", bg: "bg-destructive/10" },
+        ].map((s, i) => (
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg} transition-transform duration-300 group-hover:scale-110`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+              </div>
+              <div>
+                <AnimatedCounter value={s.value} className="text-2xl font-bold" />
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <Tabs defaultValue="content" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="content" className="gap-1.5">
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto gap-1">
+          <TabsTrigger value="content" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <ShieldAlert className="h-3.5 w-3.5" />
             {isAr ? "سجل المحتوى" : "Content Log"} ({filteredContent.length})
           </TabsTrigger>
-          <TabsTrigger value="admin" className="gap-1.5">
+          <TabsTrigger value="admin" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <FileText className="h-3.5 w-3.5" />
             {isAr ? "إجراءات المشرفين" : "Admin Actions"} ({filteredActions.length})
           </TabsTrigger>
@@ -256,7 +246,7 @@ export default function AuditLog() {
             onClear={bulkContent.clearSelection}
             onExport={() => exportContentCSV(bulkContent.selectedItems)}
           />
-          <Card className="border-border/50">
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="flex items-center gap-2 text-sm">
@@ -270,10 +260,10 @@ export default function AuditLog() {
               <div className="flex flex-wrap gap-2 mt-2">
                 <div className="relative flex-1 min-w-[180px]">
                   <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={contentSearch} onChange={e => setContentSearch(e.target.value)} className="ps-8 h-8 text-xs" />
+                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={contentSearch} onChange={e => setContentSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
                 </div>
                 <Select value={contentActionFilter} onValueChange={setContentActionFilter}>
-                  <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
+                   <SelectTrigger className="w-40 h-8 text-xs rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
                     {uniqueContentActionTypes.map(t => (
@@ -294,7 +284,7 @@ export default function AuditLog() {
                 <ScrollArea className="max-h-[600px]">
                   <Table>
                     <TableHeader>
-                     <TableRow>
+                     <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkContent.isAllSelected} onCheckedChange={bulkContent.toggleAll} /></TableHead>
                         <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "النوع" : "Entity"}</TableHead>
@@ -305,7 +295,7 @@ export default function AuditLog() {
                     </TableHeader>
                     <TableBody>
                       {filteredContent.map(entry => (
-                        <TableRow key={entry.id} className={bulkContent.isSelected(entry.id) ? "bg-primary/5" : ""}>
+                        <TableRow key={entry.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkContent.isSelected(entry.id) ? "bg-primary/5" : ""}`}>
                           <TableCell><Checkbox checked={bulkContent.isSelected(entry.id)} onCheckedChange={() => bulkContent.toggleOne(entry.id)} /></TableCell>
                           <TableCell>{getContentActionBadge(entry.action_type)}</TableCell>
                           <TableCell className="max-w-[200px] truncate text-xs text-muted-foreground">{entry.content_snapshot || "—"}</TableCell>
@@ -331,7 +321,7 @@ export default function AuditLog() {
             onClear={bulkAdmin.clearSelection}
             onExport={() => exportAdminCSV(bulkAdmin.selectedItems)}
           />
-          <Card className="border-border/50">
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="text-sm">{isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}</CardTitle>
@@ -342,10 +332,10 @@ export default function AuditLog() {
               <div className="flex flex-wrap gap-2 mt-2">
                 <div className="relative flex-1 min-w-[180px]">
                   <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-8 h-8 text-xs" />
+                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
                 </div>
                 <Select value={actionFilter} onValueChange={setActionFilter}>
-                  <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-40 h-8 text-xs rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
                     {uniqueAdminActionTypes.map(t => (
@@ -366,7 +356,7 @@ export default function AuditLog() {
                 <ScrollArea className="max-h-[600px]">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkAdmin.isAllSelected} onCheckedChange={bulkAdmin.toggleAll} /></TableHead>
                         <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "التفاصيل" : "Details"}</TableHead>
@@ -375,7 +365,7 @@ export default function AuditLog() {
                     </TableHeader>
                     <TableBody>
                       {filteredActions.map(action => (
-                        <TableRow key={action.id} className={bulkAdmin.isSelected(action.id) ? "bg-primary/5" : ""}>
+                        <TableRow key={action.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkAdmin.isSelected(action.id) ? "bg-primary/5" : ""}`}>
                           <TableCell><Checkbox checked={bulkAdmin.isSelected(action.id)} onCheckedChange={() => bulkAdmin.toggleOne(action.id)} /></TableCell>
                           <TableCell>{getActionBadge(action.action_type)}</TableCell>
                           <TableCell className="max-w-xs truncate text-xs text-muted-foreground">

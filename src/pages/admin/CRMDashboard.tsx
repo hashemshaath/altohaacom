@@ -257,7 +257,7 @@ export default function CRMDashboard() {
         description={isAr ? "نظرة شاملة على الدعم والتواصل والاستهداف" : "Unified view of support, communication & targeting"}
         actions={
           <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-[120px] gap-1">
+             <SelectTrigger className="w-[120px] gap-1 rounded-xl">
               <Calendar className="h-3.5 w-3.5" />
               <SelectValue />
             </SelectTrigger>

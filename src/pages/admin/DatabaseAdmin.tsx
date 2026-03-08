@@ -143,7 +143,7 @@ export default function DatabaseAdmin() {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-muted/30">
                 <TableHead>{language === "ar" ? "الجدول" : "Table"}</TableHead>
                 <TableHead className="text-end">{language === "ar" ? "السجلات" : "Records"}</TableHead>
                 <TableHead className="text-end">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
@@ -151,7 +151,7 @@ export default function DatabaseAdmin() {
             </TableHeader>
             <TableBody>
               {tableStats?.map((table) => (
-                <TableRow key={table.name}>
+                <TableRow key={table.name} className="transition-colors duration-200 hover:bg-muted/40">
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
