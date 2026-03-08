@@ -25,7 +25,7 @@ interface MessageCategoryFilterProps {
   };
 }
 
-export function MessageCategoryFilter({ active, onChange, counts }: MessageCategoryFilterProps) {
+export const MessageCategoryFilter = memo(function MessageCategoryFilter({ active, onChange, counts }: MessageCategoryFilterProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
