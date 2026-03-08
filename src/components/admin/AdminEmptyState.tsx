@@ -18,7 +18,7 @@ interface AdminEmptyStateProps {
   className?: string;
 }
 
-export function AdminEmptyState({
+export const AdminEmptyState = memo(function AdminEmptyState({
   icon: Icon,
   title,
   titleAr,
