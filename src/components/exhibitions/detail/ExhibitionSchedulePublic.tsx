@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,7 +29,7 @@ const CAT_COLORS: Record<string, string> = {
   break: "bg-muted text-muted-foreground",
 };
 
-export function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isAr }: Props) {
+export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -201,4 +201,4 @@ export function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isA
       </div>
     </div>
   );
-}
+});

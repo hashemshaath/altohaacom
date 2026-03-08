@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Check, FileText, Calendar, Building, Eye } from "lucide-react";
 
@@ -8,7 +9,7 @@ const STEPS = [
   { number: 4, label: "Review", labelAr: "مراجعة", icon: Eye },
 ];
 
-export function ExhibitionStepIndicator({ currentStep }: { currentStep: number }) {
+export const ExhibitionStepIndicator = memo(function ExhibitionStepIndicator({ currentStep }: { currentStep: number }) {
   const { language } = useLanguage();
 
   return (
@@ -65,4 +66,4 @@ export function ExhibitionStepIndicator({ currentStep }: { currentStep: number }
       </div>
     </div>
   );
-}
+});

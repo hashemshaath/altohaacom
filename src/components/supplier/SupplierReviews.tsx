@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -33,7 +33,7 @@ function StarRating({ rating, onRate, interactive = false }: { rating: number; o
   );
 }
 
-export function SupplierReviews({ companyId }: Props) {
+export const SupplierReviews = memo(function SupplierReviews({ companyId }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -226,4 +226,4 @@ export function SupplierReviews({ companyId }: Props) {
       </div>
     </div>
   );
-}
+});

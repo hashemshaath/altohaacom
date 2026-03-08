@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +15,7 @@ interface AdminExportButtonProps {
   disabled?: boolean;
 }
 
-export function AdminExportButton({ onExport, isExporting, disabled }: AdminExportButtonProps) {
+export const AdminExportButton = memo(function AdminExportButton({ onExport, isExporting, disabled }: AdminExportButtonProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -38,4 +39,4 @@ export function AdminExportButton({ onExport, isExporting, disabled }: AdminExpo
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

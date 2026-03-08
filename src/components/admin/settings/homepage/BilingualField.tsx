@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ interface BilingualFieldProps {
   context?: string;
 }
 
-export function BilingualField({
+export const BilingualField = memo(function BilingualField({
   label, labelAr, valueEn, valueAr, onChangeEn, onChangeAr,
   placeholderEn, placeholderAr, multiline, rows = 2, context = "culinary platform homepage section",
 }: BilingualFieldProps) {
@@ -109,7 +109,7 @@ export function BilingualField({
       </div>
     </div>
   );
-}
+});
 
 function TranslateBtn({ loading, onClick, target }: { loading: boolean; onClick: () => void; target: string }) {
   return (

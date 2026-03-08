@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { ParticipantBadgeCard } from "./ParticipantBadgeCard";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,7 +79,7 @@ const CHANNELS = [
   { value: "sms", label: "SMS", labelAr: "رسالة نصية", icon: Phone },
 ];
 
-export function ParticipantsList({ competitionId, isOrganizer = false }: ParticipantsListProps) {
+export const ParticipantsList = memo(function ParticipantsList({ competitionId, isOrganizer = false }: ParticipantsListProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -830,4 +830,4 @@ export function ParticipantsList({ competitionId, isOrganizer = false }: Partici
       )}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, ExternalLink } from "lucide-react";
@@ -20,7 +21,7 @@ interface Props {
   socialLinks: Json;
 }
 
-export function EntitySocialLinks({ socialLinks }: Props) {
+export const EntitySocialLinks = memo(function EntitySocialLinks({ socialLinks }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -61,4 +62,4 @@ export function EntitySocialLinks({ socialLinks }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

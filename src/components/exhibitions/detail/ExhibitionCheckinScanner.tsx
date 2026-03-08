@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
+export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const t = (en: string, ar: string) => isAr ? ar : en;
@@ -218,6 +218,6 @@ export function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
       </div>
     </div>
   );
-}
+});
 
 export default ExhibitionCheckinScanner;

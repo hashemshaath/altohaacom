@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { Mic, Square, Send, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +9,7 @@ interface VoiceMessageRecorderProps {
   disabled?: boolean;
 }
 
-export function VoiceMessageRecorder({ onSend, disabled }: VoiceMessageRecorderProps) {
+export const VoiceMessageRecorder = memo(function VoiceMessageRecorder({ onSend, disabled }: VoiceMessageRecorderProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [recording, setRecording] = useState(false);
@@ -126,4 +126,4 @@ export function VoiceMessageRecorder({ onSend, disabled }: VoiceMessageRecorderP
       <Mic className="h-4 w-4 text-muted-foreground" />
     </Button>
   );
-}
+});

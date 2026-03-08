@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Check, CheckCheck, Clock } from "lucide-react";
 import {
   Tooltip,
@@ -15,7 +16,7 @@ interface MessageStatusProps {
   isPending?: boolean;
 }
 
-export function MessageStatus({ isMine, isRead, readAt, createdAt, isPending }: MessageStatusProps) {
+export const MessageStatus = memo(function MessageStatus({ isMine, isRead, readAt, createdAt, isPending }: MessageStatusProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -66,4 +67,4 @@ export function MessageStatus({ isMine, isRead, readAt, createdAt, isPending }: 
       </Tooltip>
     </TooltipProvider>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
@@ -11,7 +12,7 @@ interface LastSeenLabelProps {
   username?: string | null;
 }
 
-export function LastSeenLabel({ userId, isOnline, isTyping, isAr, username }: LastSeenLabelProps) {
+export const LastSeenLabel = memo(function LastSeenLabel({ userId, isOnline, isTyping, isAr, username }: LastSeenLabelProps) {
   const { data: lastSeen } = useQuery({
     queryKey: ["lastSeen", userId],
     queryFn: async () => {
@@ -38,4 +39,4 @@ export function LastSeenLabel({ userId, isOnline, isTyping, isAr, username }: La
   }
 
   return <span>{username ? `@${username}` : ""}</span>;
-}
+});

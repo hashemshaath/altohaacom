@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +16,7 @@ export function getPasswordStrength(password: string) {
   return Math.min(score, 4);
 }
 
-export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
+export const PasswordStrengthMeter = memo(function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -54,4 +54,4 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
       </p>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +12,7 @@ interface ParticipantStatsCardProps {
   maxParticipants: number | null;
 }
 
-export function ParticipantStatsCard({ competitionId, maxParticipants }: ParticipantStatsCardProps) {
+export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competitionId, maxParticipants }: ParticipantStatsCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -91,4 +92,4 @@ export function ParticipantStatsCard({ competitionId, maxParticipants }: Partici
       </div>
     </div>
   );
-}
+});

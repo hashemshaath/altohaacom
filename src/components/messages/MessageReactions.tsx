@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover, PopoverContent, PopoverTrigger,
@@ -16,7 +16,7 @@ interface MessageReactionsProps {
   isMine: boolean;
 }
 
-export function MessageReactions({ reactions, currentUserId, onReact, isMine }: MessageReactionsProps) {
+export const MessageReactions = memo(function MessageReactions({ reactions, currentUserId, onReact, isMine }: MessageReactionsProps) {
   const [open, setOpen] = useState(false);
   const [showExtended, setShowExtended] = useState(false);
   const [animatingEmoji, setAnimatingEmoji] = useState<string | null>(null);
@@ -111,4 +111,4 @@ export function MessageReactions({ reactions, currentUserId, onReact, isMine }: 
       </Popover>
     </div>
   );
-}
+});
