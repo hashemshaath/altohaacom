@@ -9,7 +9,7 @@ interface Props {
   query: string;
 }
 
-export function AISearchPanel({ query }: Props) {
+export const AISearchPanel = memo(function AISearchPanel({ query }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [aiResponse, setAiResponse] = useState("");
