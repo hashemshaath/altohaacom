@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 
