@@ -35,7 +35,7 @@ const PRIORITY_COLORS: Record<string, string> = {
   critical: "bg-destructive/10 text-destructive",
 };
 
-export function AIRequirementsSuggest({ competitionId, listId, listCategory, existingItemNames, onItemsAdded }: Props) {
+export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ competitionId, listId, listCategory, existingItemNames, onItemsAdded }: Props) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
