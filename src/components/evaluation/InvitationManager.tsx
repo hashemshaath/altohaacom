@@ -105,7 +105,7 @@ function useChefCandidates() {
   });
 }
 
-export function InvitationManager() {
+export const InvitationManager = memo(function InvitationManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
