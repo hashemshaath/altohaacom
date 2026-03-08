@@ -34,7 +34,7 @@ interface Props {
 
 const educationalTypes = ["culinary_academy", "university", "college", "training_center"];
 
-export function EntityOverviewCard({ entity, followerCount, counts }: Props) {
+export const EntityOverviewCard = memo(function EntityOverviewCard({ entity, followerCount, counts }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const isEdu = educationalTypes.includes(entity.type);
