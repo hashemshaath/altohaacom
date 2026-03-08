@@ -321,7 +321,7 @@ export default function AuditLog() {
             onClear={bulkAdmin.clearSelection}
             onExport={() => exportAdminCSV(bulkAdmin.selectedItems)}
           />
-          <Card className="border-border/50">
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="text-sm">{isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}</CardTitle>
