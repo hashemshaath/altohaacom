@@ -10,7 +10,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionStats({ exhibitionId, isAr }: Props) {
+export const ExhibitionStats = memo(function ExhibitionStats({ exhibitionId, isAr }: Props) {
   const { data: stats } = useQuery({
     queryKey: ["exhibition-stats", exhibitionId],
     queryFn: async () => {
