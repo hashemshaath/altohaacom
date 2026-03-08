@@ -26,7 +26,7 @@ const REJECTION_REASONS = [
   { en: "Other (specify below)", ar: "سبب آخر (حدد أدناه)" },
 ];
 
-export function AdRejectionDialog({ open, onOpenChange, onConfirm, title, isPending }: AdRejectionDialogProps) {
+export const AdRejectionDialog = memo(function AdRejectionDialog({ open, onOpenChange, onConfirm, title, isPending }: AdRejectionDialogProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selectedReason, setSelectedReason] = useState("");
