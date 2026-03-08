@@ -15,7 +15,7 @@ interface Props {
   isLoading: boolean;
 }
 
-export function AnalyticsKPICards({ data, isLoading }: Props) {
+export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoading }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
