@@ -39,7 +39,7 @@ interface CommunityRightSidebarProps {
   setRightSidebarOpen: (open: boolean) => void;
 }
 
-export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }: CommunityRightSidebarProps) {
+export const CommunityRightSidebar = memo(function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }: CommunityRightSidebarProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
