@@ -46,7 +46,7 @@ interface Poll {
   user_vote: number | null;
 }
 
-export function EventsTab() {
+export const EventsTab = memo(function EventsTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
