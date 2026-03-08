@@ -65,4 +65,4 @@ export const EntityContactCard = memo(function EntityContactCard({ email, phone,
       </CardContent>
     </Card>
   );
-}
+});

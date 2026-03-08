@@ -70,4 +70,4 @@ export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({
       )}
     </div>
   );
-}
+});

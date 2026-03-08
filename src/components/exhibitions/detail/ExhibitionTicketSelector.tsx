@@ -102,4 +102,4 @@ export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({
       </div>
     </div>
   );
-}
+});

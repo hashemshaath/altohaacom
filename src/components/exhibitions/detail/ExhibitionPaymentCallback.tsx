@@ -86,4 +86,4 @@ export const ExhibitionPaymentCallback = memo(function ExhibitionPaymentCallback
       </CardContent>
     </Card>
   );
-}
+});

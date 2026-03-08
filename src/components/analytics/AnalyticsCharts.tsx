@@ -159,4 +159,4 @@ export const TopCountriesChart = memo(function TopCountriesChart({ data }: { dat
       </CardContent>
     </Card>
   );
-}
+});
