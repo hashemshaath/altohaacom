@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -79,7 +79,10 @@ export default function CompanyInvitations() {
     expired: { color: "outline", icon: Clock, label: "Expired", labelAr: "منتهية" },
   };
 
-  const pendingCount = invitations?.filter(i => i.status === "pending").length || 0;
+  const { pendingCount, acceptedCount } = useMemo(() => ({
+    pendingCount: invitations?.filter(i => i.status === "pending").length || 0,
+    acceptedCount: invitations?.filter(i => i.status === "accepted").length || 0,
+  }), [invitations]);
 
   return (
     <div className="space-y-6">
@@ -116,7 +119,7 @@ export default function CompanyInvitations() {
           <CardContent className="flex items-center gap-3 p-4">
             <CheckCircle className="h-8 w-8 text-chart-5" />
             <div>
-              <p className="text-2xl font-bold">{invitations?.filter(i => i.status === "accepted").length || 0}</p>
+              <p className="text-2xl font-bold">{acceptedCount}</p>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "مقبولة" : "Accepted"}</p>
             </div>
           </CardContent>

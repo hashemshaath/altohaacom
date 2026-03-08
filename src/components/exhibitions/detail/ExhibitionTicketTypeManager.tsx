@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,7 +98,7 @@ export function ExhibitionTicketTypeManager({ exhibitionId, isAr }: Props) {
     setDialogOpen(true);
   };
 
-  const totalSold = types.reduce((s: number, t: any) => s + (t.sold_count || 0), 0);
+  const totalSold = useMemo(() => types.reduce((s: number, t: any) => s + (t.sold_count || 0), 0), [types]);
 
   return (
     <Card>

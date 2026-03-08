@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -204,6 +204,11 @@ export default function MasterclassDetail() {
     },
   });
 
+  const totalLessons = useMemo(() => modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0), [modules]);
+  const completedLessons = useMemo(() => lessonProgress.filter((lp) => lp.completed).length, [lessonProgress]);
+  const isCompleted = enrollment?.status === "completed";
+  const completedLessonIds = useMemo(() => new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id)), [lessonProgress]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
@@ -227,11 +232,6 @@ export default function MasterclassDetail() {
       </div>
     );
   }
-
-  const totalLessons = modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0);
-  const completedLessons = lessonProgress.filter((lp) => lp.completed).length;
-  const isCompleted = enrollment?.status === "completed";
-  const completedLessonIds = new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id));
 
   const getContentTypeIcon = (type: string) => {
     switch (type) {
