@@ -71,4 +71,4 @@ export const PublicProfileStats = memo(function PublicProfileStats({ profile, fo
       </CardContent>
     </Card>
   );
-}
+});

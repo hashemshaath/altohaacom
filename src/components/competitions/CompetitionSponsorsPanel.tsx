@@ -370,4 +370,4 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
       </CardContent>
     </Card>
   );
-}
+});

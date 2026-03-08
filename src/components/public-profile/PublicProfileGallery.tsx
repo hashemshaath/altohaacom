@@ -190,4 +190,4 @@ function GalleryThumb({ file, onClick }: { file: MediaFile; onClick: () => void 
       </div>
     </button>
   );
-}
+});

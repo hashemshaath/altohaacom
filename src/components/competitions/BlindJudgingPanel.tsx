@@ -199,4 +199,4 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
       )}
     </div>
   );
-}
+});

@@ -254,4 +254,4 @@ export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ e
       </CardContent>
     </Card>
   );
-}
+});

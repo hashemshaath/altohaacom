@@ -296,4 +296,4 @@ export const PublicProfileHero = memo(function PublicProfileHero({
       </AlertDialog>
     </section>
   );
-}
+});

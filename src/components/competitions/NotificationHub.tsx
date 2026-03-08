@@ -277,4 +277,4 @@ export const NotificationHub = memo(function NotificationHub({ competitionId, la
       </Card>
     </div>
   );
-}
+});

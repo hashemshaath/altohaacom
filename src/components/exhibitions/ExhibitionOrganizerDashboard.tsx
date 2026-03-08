@@ -290,4 +290,4 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
       </Tabs>
     </div>
   );
-}
+});

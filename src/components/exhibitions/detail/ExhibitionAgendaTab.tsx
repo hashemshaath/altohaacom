@@ -292,4 +292,4 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
       </div>
     </div>
   );
-}
+});

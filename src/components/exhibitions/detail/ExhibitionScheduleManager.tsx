@@ -231,4 +231,4 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
       </CardContent>
     </Card>
   );
-}
+});

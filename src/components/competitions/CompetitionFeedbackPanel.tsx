@@ -103,4 +103,4 @@ export const CompetitionFeedbackPanel = memo(function CompetitionFeedbackPanel({
       </div>
     </div>
   );
-}
+});

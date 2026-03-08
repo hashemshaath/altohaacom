@@ -133,4 +133,4 @@ export const EntityProgramsTab = memo(function EntityProgramsTab({ entityId }: P
       })}
     </div>
   );
-}
+});

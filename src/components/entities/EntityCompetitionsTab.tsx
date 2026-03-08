@@ -88,4 +88,4 @@ export const EntityCompetitionsTab = memo(function EntityCompetitionsTab({ entit
       })}
     </div>
   );
-}
+});

@@ -1023,4 +1023,4 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
       <MembershipHistory />
     </div>
   );
-}
+});

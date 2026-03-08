@@ -117,4 +117,4 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
       </div>
     </div>
   );
-}
+});

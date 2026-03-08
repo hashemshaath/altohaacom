@@ -581,4 +581,4 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
       </Dialog>
     </div>
   );
-}
+});

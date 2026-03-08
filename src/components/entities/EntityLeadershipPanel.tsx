@@ -281,4 +281,4 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
       )}
     </div>
   );
-}
+});
