@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 
 /**
  * Prefetches critical route chunks after initial paint.
@@ -12,7 +12,7 @@ const routeLoaders = [
   () => import("@/pages/News"),
 ];
 
-export function RoutePrefetcher() {
+export const RoutePrefetcher = memo(function RoutePrefetcher() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -32,4 +32,4 @@ export function RoutePrefetcher() {
   }, []);
 
   return null;
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,7 +18,7 @@ interface AdminTablePaginationProps {
   onPageSizeChange: (size: number) => void;
 }
 
-export function AdminTablePagination({
+export const AdminTablePagination = memo(function AdminTablePagination({
   page, totalPages, totalItems, startItem, endItem,
   pageSize, pageSizeOptions, hasNext, hasPrev,
   onPageChange, onPageSizeChange,
@@ -66,4 +67,4 @@ export function AdminTablePagination({
       </div>
     </div>
   );
-}
+});

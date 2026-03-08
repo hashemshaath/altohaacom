@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function NextEventHighlight({ exhibition, isAr }: Props) {
+export const NextEventHighlight = memo(function NextEventHighlight({ exhibition, isAr }: Props) {
   const title = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
   const start = new Date(exhibition.start_date);
@@ -67,4 +68,4 @@ export function NextEventHighlight({ exhibition, isAr }: Props) {
       </Button>
     </div>
   );
-}
+});

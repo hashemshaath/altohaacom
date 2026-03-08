@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -252,7 +253,7 @@ function MinimalTemplate({ slide }: { slide: HeroSlide }) {
 // ─────────────────────────────────────────────
 // Router
 // ─────────────────────────────────────────────
-export function HeroSlidePreview({ slide }: { slide: HeroSlide }) {
+export const HeroSlidePreview = memo(function HeroSlidePreview({ slide }: { slide: HeroSlide }) {
   switch (slide.template) {
     case "centered":  return <CenteredTemplate slide={slide} />;
     case "split":     return <SplitTemplate slide={slide} />;
@@ -260,4 +261,4 @@ export function HeroSlidePreview({ slide }: { slide: HeroSlide }) {
     case "minimal":   return <MinimalTemplate slide={slide} />;
     default:          return <ClassicTemplate slide={slide} />;
   }
-}
+});

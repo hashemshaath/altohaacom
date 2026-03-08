@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -63,7 +63,7 @@ const PRESET_COLORS = [
   { hex: "#2c2c34", label: "Gunmetal" },
 ];
 
-export function CoverSettings({ settings, onSave, isPending }: Props) {
+export const CoverSettings = memo(function CoverSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const coverCfg = settings.cover || {};
@@ -376,7 +376,7 @@ export function CoverSettings({ settings, onSave, isPending }: Props) {
       </Card>
     </div>
   );
-}
+});
 
 function hexRgba(hex: string, alpha: number): string {
   const r = parseInt(hex.slice(1, 3), 16);

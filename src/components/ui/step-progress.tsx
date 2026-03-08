@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -19,7 +20,7 @@ interface StepProgressProps {
  * Visual step progress indicator for multi-step flows.
  * Shows completed, current, and upcoming steps with connecting lines.
  */
-export function StepProgress({ steps, currentStep, className, variant = "horizontal" }: StepProgressProps) {
+export const StepProgress = memo(function StepProgress({ steps, currentStep, className, variant = "horizontal" }: StepProgressProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -91,4 +92,4 @@ export function StepProgress({ steps, currentStep, className, variant = "horizon
       })}
     </div>
   );
-}
+});

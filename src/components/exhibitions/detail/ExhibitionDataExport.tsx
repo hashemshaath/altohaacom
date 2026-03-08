@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +18,7 @@ interface Props {
 
 type ExportType = "attendees" | "booths" | "schedule" | "ticket-types" | "reviews" | "summary";
 
-export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Props) {
+export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [exporting, setExporting] = useState(false);
 
@@ -274,4 +274,4 @@ export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Pr
       </CardContent>
     </Card>
   );
-}
+});

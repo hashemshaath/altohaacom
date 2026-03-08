@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -29,7 +29,7 @@ interface CompetitionKnowledgeTabProps {
   isOrganizer: boolean;
 }
 
-export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: CompetitionKnowledgeTabProps) {
+export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ competitionId, isOrganizer }: CompetitionKnowledgeTabProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -586,4 +586,4 @@ export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: Competit
       <JudgeAIAssistant competitionId={competitionId} className="h-[600px]" />
     </div>
   );
-}
+});

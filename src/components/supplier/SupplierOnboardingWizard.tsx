@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -47,7 +47,7 @@ interface SupplierOnboardingWizardProps {
   onComplete: () => void;
 }
 
-export function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizardProps) {
+export const SupplierOnboardingWizard = memo(function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
@@ -291,4 +291,4 @@ export function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizar
       </div>
     </div>
   );
-}
+});
