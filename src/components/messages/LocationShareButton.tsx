@@ -45,7 +45,7 @@ export const LocationShareButton = memo(function LocationShareButton({ isAr, onS
 });
 
 /** Render location bubble from metadata */
-export function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: number; label: string; isMine: boolean }) {
+export const LocationBubble = memo(function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: number; label: string; isMine: boolean }) {
   const mapUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
   return (
     <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="block">
