@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, MapPin, Printer } from "lucide-react";
 
