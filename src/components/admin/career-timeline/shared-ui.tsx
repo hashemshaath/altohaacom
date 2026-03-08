@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 // ── Smart Translate Button ──────────────────────────────────────
 
-export function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
+export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
   sourceText: string; fromLang: "en" | "ar"; onTranslated: (text: string) => void; className?: string;
 }) {
   const [loading, setLoading] = useState(false);
