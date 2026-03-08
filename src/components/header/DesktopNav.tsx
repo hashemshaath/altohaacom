@@ -62,7 +62,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
         size="sm"
         asChild
         className={cn(
-          "text-muted-foreground h-9 px-3.5 text-sm font-medium hover:bg-primary/5 hover:text-foreground relative",
+          "text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl hover:bg-primary/5 hover:text-foreground relative transition-all duration-200",
           isActive("/chefs-table") && "bg-primary/10 text-primary"
         )}
       >
