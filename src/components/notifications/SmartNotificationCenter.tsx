@@ -45,7 +45,7 @@ const categoryMap: Record<string, string> = {
 
 type CategoryFilter = "all" | "social" | "events" | "system";
 
-export default function SmartNotificationCenter({ open, onClose }: Props) {
+const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
