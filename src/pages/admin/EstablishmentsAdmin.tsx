@@ -334,21 +334,21 @@ export default function EstablishmentsAdmin() {
           <p className="text-sm text-muted-foreground">{isAr ? "لا توجد جهات" : "No entities found"}</p>
         </div>
       ) : (
-        <Card>
+        <Card className="rounded-2xl border-border/40 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40px]">
+                <TableHead className="w-[40px] bg-muted/30">
                   <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                 </TableHead>
-                <TableHead className="hidden xl:table-cell">{isAr ? "الرقم" : "#"}</TableHead>
-                <TableHead>{isAr ? "الجهة" : "Entity"}</TableHead>
-                <TableHead className="hidden md:table-cell">{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead className="hidden xl:table-cell">{isAr ? "النطاق" : "Scope"}</TableHead>
-                <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                <TableHead>{isAr ? "مرئي" : "Visible"}</TableHead>
-                <TableHead className="hidden lg:table-cell">{isAr ? "المتابعون" : "Followers"}</TableHead>
-                <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
+                <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "الرقم" : "#"}</TableHead>
+                <TableHead className="bg-muted/30">{isAr ? "الجهة" : "Entity"}</TableHead>
+                <TableHead className="hidden md:table-cell bg-muted/30">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "النطاق" : "Scope"}</TableHead>
+                <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
+                <TableHead className="bg-muted/30">{isAr ? "مرئي" : "Visible"}</TableHead>
+                <TableHead className="hidden lg:table-cell bg-muted/30">{isAr ? "المتابعون" : "Followers"}</TableHead>
+                <TableHead className="text-end bg-muted/30">{isAr ? "إجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

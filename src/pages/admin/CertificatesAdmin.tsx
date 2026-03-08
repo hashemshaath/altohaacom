@@ -489,15 +489,15 @@ export default function CertificatesAdmin() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-10">
+                        <TableHead className="w-10 bg-muted/30">
                           <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                         </TableHead>
-                        <TableHead>{language === "ar" ? "رقم" : "#"}</TableHead>
-                        <TableHead>{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
-                        <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                        <TableHead>{language === "ar" ? "الحدث" : "Event"}</TableHead>
-                        <TableHead>{language === "ar" ? "كود التحقق" : "Verify Code"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "رقم" : "#"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "النوع" : "Type"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "الحدث" : "Event"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "كود التحقق" : "Verify Code"}</TableHead>
                         <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
                       </TableRow>
                     </TableHeader>

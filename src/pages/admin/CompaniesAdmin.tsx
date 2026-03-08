@@ -798,7 +798,7 @@ export default function CompaniesAdmin() {
 
         {/* Detail Tabs */}
         <Tabs value={companyDetailTab} onValueChange={setCompanyDetailTab}>
-          <TabsList className="flex-wrap h-auto gap-1">
+          <TabsList className="flex-wrap h-auto gap-1 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5">
             <TabsTrigger value="overview">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
             <TabsTrigger value="contacts">{isAr ? "جهات الاتصال" : "Contacts"}</TabsTrigger>
             <TabsTrigger value="branches">{isAr ? "الفروع" : "Branches"}</TabsTrigger>

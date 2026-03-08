@@ -393,18 +393,18 @@ export default function ArticlesAdmin() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-10">
+                <TableHead className="w-10 bg-muted/30">
                   <Checkbox
                     checked={bulk.isAllSelected}
                     onCheckedChange={bulk.toggleAll}
                   />
                 </TableHead>
-                <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
-                <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                <TableHead>{language === "ar" ? "المشاهدات" : "Views"}</TableHead>
-                <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
-                <TableHead className="w-[120px]">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
+                <TableHead className="bg-muted/30">{language === "ar" ? "العنوان" : "Title"}</TableHead>
+                <TableHead className="bg-muted/30">{language === "ar" ? "النوع" : "Type"}</TableHead>
+                <TableHead className="bg-muted/30">{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                <TableHead className="bg-muted/30">{language === "ar" ? "المشاهدات" : "Views"}</TableHead>
+                <TableHead className="bg-muted/30">{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+                <TableHead className="w-[120px] bg-muted/30">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
