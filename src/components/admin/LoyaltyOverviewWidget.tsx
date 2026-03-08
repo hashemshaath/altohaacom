@@ -122,4 +122,4 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

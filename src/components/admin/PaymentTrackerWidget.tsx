@@ -140,4 +140,4 @@ export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
       </CardContent>
     </Card>
   );
-}
+});

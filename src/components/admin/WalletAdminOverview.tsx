@@ -102,4 +102,4 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
       ))}
     </div>
   );
-}
+});

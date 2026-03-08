@@ -132,4 +132,4 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

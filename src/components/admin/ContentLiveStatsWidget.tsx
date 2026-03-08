@@ -147,4 +147,4 @@ export const ContentLiveStatsWidget = memo(function ContentLiveStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

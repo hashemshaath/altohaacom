@@ -243,4 +243,4 @@ export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
       </Card>
     </div>
   );
-}
+});

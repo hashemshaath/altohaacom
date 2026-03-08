@@ -182,4 +182,4 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
       </CardContent>
     </Card>
   );
-}
+});

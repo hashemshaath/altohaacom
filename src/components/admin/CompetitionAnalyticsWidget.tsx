@@ -160,4 +160,4 @@ export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidg
       </div>
     </div>
   );
-}
+});

@@ -119,4 +119,4 @@ export const UserActivityTimeline = memo(function UserActivityTimeline() {
       </CardContent>
     </Card>
   );
-}
+});

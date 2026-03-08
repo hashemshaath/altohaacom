@@ -101,4 +101,4 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
       </CardContent>
     </Card>
   );
-}
+});
