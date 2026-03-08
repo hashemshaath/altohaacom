@@ -230,7 +230,7 @@ const DEFAULT_SECTION_LABELS: Record<string, [string, string]> = {
   organizing: ["تنظيم الفعاليات", "Organizing Events"],
 };
 
-export function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
+export const BioCareerSections = memo(function BioCareerSections({ userId, theme, isRtl, animated }: Props) {
   const { data: records = [], isLoading: recordsLoading } = useQuery({
     queryKey: ["bio-career-records", userId],
     queryFn: async () => {
