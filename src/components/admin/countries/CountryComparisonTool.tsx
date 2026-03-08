@@ -61,7 +61,7 @@ const rows: ComparisonRow[] = [
   })),
 ];
 
-export function CountryComparisonTool({ countries }: { countries: Country[] }) {
+export const CountryComparisonTool = memo(function CountryComparisonTool({ countries }: { countries: Country[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
