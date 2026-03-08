@@ -10,7 +10,7 @@ import { Trophy, Users, Gavel, MapPin, TrendingUp, Calendar } from "lucide-react
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function CompetitionLiveStatsWidget() {
+export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
