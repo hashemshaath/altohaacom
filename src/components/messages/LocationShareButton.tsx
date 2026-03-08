@@ -42,7 +42,7 @@ export const LocationShareButton = memo(function LocationShareButton({ isAr, onS
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
     </Button>
   );
-}
+});
 
 /** Render location bubble from metadata */
 export function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: number; label: string; isMine: boolean }) {
