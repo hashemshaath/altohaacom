@@ -505,7 +505,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       )}
     </div>
   );
-}
+});
 
 function RequestCard({
   request, isAr, isOwn, isOrganizer, onDelete, onApprove, onReject, onEdit, onAddNote,
