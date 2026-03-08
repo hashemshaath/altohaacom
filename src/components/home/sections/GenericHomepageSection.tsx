@@ -1,7 +1,9 @@
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSection } from "@/hooks/useHomepageSections";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Construction } from "lucide-react";
 
 interface Props {
   sectionKey: string;
@@ -9,10 +11,9 @@ interface Props {
 
 /**
  * Generic placeholder for homepage sections that don't have a dedicated component yet.
- * Renders title/subtitle from DB config but shows a "coming soon" indicator.
- * This ensures all admin-configured sections appear in the correct order.
+ * Renders title/subtitle from DB config with a professional "coming soon" state.
  */
-const GenericHomepageSection = forwardRef<HTMLElement, Props>(function GenericHomepageSection({ sectionKey }, ref) {
+const GenericHomepageSection = memo(forwardRef<HTMLElement, Props>(function GenericHomepageSection({ sectionKey }, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const section = useHomepageSection(sectionKey);
@@ -21,12 +22,11 @@ const GenericHomepageSection = forwardRef<HTMLElement, Props>(function GenericHo
 
   const title = isAr ? section.title_ar : section.title_en;
   const subtitle = isAr ? section.subtitle_ar : section.subtitle_en;
+  const perRow = section.items_per_row || 3;
+  const count = Math.min(section.item_count || 3, perRow * 2);
 
   return (
-    <section
-      ref={ref}
-      id={sectionKey}
-    >
+    <section ref={ref} id={sectionKey}>
       <div className={cn(
         "container mx-auto px-4",
         section.container_width === "narrow" && "max-w-3xl",
@@ -41,13 +41,31 @@ const GenericHomepageSection = forwardRef<HTMLElement, Props>(function GenericHo
             )}
           </div>
         )}
-        {/* Placeholder content — will be replaced with real data rendering */}
-        <div className="text-center py-8 text-muted-foreground/40 text-xs">
+
+        {/* Skeleton grid placeholder matching section config */}
+        <div
+          className="grid gap-3"
+          style={{ gridTemplateColumns: `repeat(${Math.min(perRow, 4)}, 1fr)` }}
+        >
+          {Array.from({ length: count }).map((_, i) => (
+            <div key={i} className="rounded-2xl border border-border/30 bg-muted/20 overflow-hidden">
+              <Skeleton className="aspect-[4/3] w-full rounded-none" />
+              <div className="p-3 space-y-2">
+                <Skeleton className="h-3 w-3/4 rounded-lg" />
+                <Skeleton className="h-2.5 w-1/2 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Coming soon indicator */}
+        <div className="flex items-center justify-center gap-2 mt-4 text-muted-foreground/40 text-xs">
+          <Construction className="h-3.5 w-3.5" />
           {isAr ? "قريباً" : "Coming soon"}
         </div>
       </div>
     </section>
   );
-});
+}));
 
 export default GenericHomepageSection;
