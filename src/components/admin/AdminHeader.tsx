@@ -11,7 +11,7 @@ import { AdminMobileNavDrawer } from "./AdminMobileNavDrawer";
 import { Button } from "@/components/ui/button";
 import { Home, LogOut } from "lucide-react";
 
-export function AdminHeader() {
+export const AdminHeader = memo(function AdminHeader() {
   const { signOut } = useAuth();
   const { language } = useLanguage();
   const siteSettings = useSiteSettingsContext();
