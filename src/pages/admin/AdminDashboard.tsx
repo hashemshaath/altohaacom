@@ -346,6 +346,9 @@ export default function AdminDashboard() {
       {/* Security Alerts */}
       <SecurityAlertsBanner />
 
+      {/* Today Ticker */}
+      <AdminTodayTicker />
+
       {/* Mobile Nav Grid */}
       <AdminMobileNavGrid />
 
