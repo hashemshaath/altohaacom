@@ -23,7 +23,7 @@ interface TranslatableInputProps {
   rows?: number;
 }
 
-export function TranslatableInput({
+export const TranslatableInput = memo(function TranslatableInput({
   label, value, onChange, dir, pairedValue, onTranslated, lang, placeholder, multiline, rows = 3,
 }: TranslatableInputProps) {
   const [translating, setTranslating] = useState(false);
