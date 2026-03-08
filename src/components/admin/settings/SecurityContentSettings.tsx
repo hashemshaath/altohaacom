@@ -44,7 +44,7 @@ function ToggleRow({
   );
 }
 
-export function SecurityContentSettings({ settings, onSave, isPending }: Props) {
+export const SecurityContentSettings = memo(function SecurityContentSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
