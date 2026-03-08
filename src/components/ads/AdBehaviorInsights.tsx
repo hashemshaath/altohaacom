@@ -16,7 +16,7 @@ const COLORS = [
   "hsl(var(--chart-4))", "hsl(var(--chart-5))",
 ];
 
-export function AdBehaviorInsights() {
+export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
