@@ -11,7 +11,7 @@ interface Props {
   onDismiss: () => void;
 }
 
-export function ExhibitionPaymentCallback({ exhibitionId, isAr, onDismiss }: Props) {
+export const ExhibitionPaymentCallback = memo(function ExhibitionPaymentCallback({ exhibitionId, isAr, onDismiss }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [status, setStatus] = useState<"verifying" | "success" | "failed">("verifying");
   const t = (en: string, ar: string) => isAr ? ar : en;
