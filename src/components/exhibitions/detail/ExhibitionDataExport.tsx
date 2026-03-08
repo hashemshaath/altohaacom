@@ -18,7 +18,7 @@ interface Props {
 
 type ExportType = "attendees" | "booths" | "schedule" | "ticket-types" | "reviews" | "summary";
 
-export function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Props) {
+export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [exporting, setExporting] = useState(false);
 
