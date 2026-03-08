@@ -180,4 +180,4 @@ export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget
       </Card>
     </div>
   );
-}
+});

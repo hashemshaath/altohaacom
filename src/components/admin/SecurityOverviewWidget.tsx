@@ -121,4 +121,4 @@ export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

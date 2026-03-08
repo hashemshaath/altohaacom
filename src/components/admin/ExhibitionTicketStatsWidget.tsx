@@ -109,4 +109,4 @@ export const ExhibitionTicketStatsWidget = memo(function ExhibitionTicketStatsWi
       </CardContent>
     </Card>
   );
-}
+});

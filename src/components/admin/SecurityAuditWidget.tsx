@@ -157,4 +157,4 @@ export const SecurityAuditWidget = memo(function SecurityAuditWidget() {
       </div>
     </div>
   );
-}
+});

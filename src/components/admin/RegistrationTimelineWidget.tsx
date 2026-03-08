@@ -122,4 +122,4 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
       </CardContent>
     </Card>
   );
-}
+});

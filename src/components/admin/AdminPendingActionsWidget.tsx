@@ -146,4 +146,4 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
       </CardContent>
     </Card>
   );
-}
+});

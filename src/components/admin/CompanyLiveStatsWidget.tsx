@@ -188,4 +188,4 @@ export const CompanyLiveStatsWidget = memo(function CompanyLiveStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

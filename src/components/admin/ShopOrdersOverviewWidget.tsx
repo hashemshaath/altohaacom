@@ -109,4 +109,4 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
       </CardContent>
     </Card>
   );
-}
+});

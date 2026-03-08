@@ -129,4 +129,4 @@ export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
       </CardContent>
     </Card>
   );
-}
+});

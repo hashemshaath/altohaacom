@@ -133,4 +133,4 @@ export const ContentPipelineWidget = memo(function ContentPipelineWidget() {
       </Card>
     </div>
   );
-}
+});

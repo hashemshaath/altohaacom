@@ -172,4 +172,4 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
       </div>
     </div>
   );
-}
+});

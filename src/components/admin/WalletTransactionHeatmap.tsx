@@ -152,4 +152,4 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
       </div>
     </div>
   );
-}
+});

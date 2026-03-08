@@ -143,4 +143,4 @@ export const CompetitionPipelineTracker = memo(function CompetitionPipelineTrack
       </CardContent>
     </Card>
   );
-}
+});

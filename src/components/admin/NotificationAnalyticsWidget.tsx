@@ -112,4 +112,4 @@ export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWi
       </CardContent>
     </Card>
   );
-}
+});

@@ -115,4 +115,4 @@ export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget
       </CardContent>
     </Card>
   );
-}
+});

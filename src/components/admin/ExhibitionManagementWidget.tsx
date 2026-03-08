@@ -164,4 +164,4 @@ export const ExhibitionManagementWidget = memo(function ExhibitionManagementWidg
       </div>
     </div>
   );
-}
+});

@@ -152,4 +152,4 @@ export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWi
       </CardContent>
     </Card>
   );
-}
+});

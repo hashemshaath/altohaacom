@@ -185,4 +185,4 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
       </Card>
     </div>
   );
-}
+});

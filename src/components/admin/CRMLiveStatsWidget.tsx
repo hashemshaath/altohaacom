@@ -172,4 +172,4 @@ export const CRMLiveStatsWidget = memo(function CRMLiveStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -188,4 +188,4 @@ export const ExhibitionLiveStatsWidget = memo(function ExhibitionLiveStatsWidget
       </CardContent>
     </Card>
   );
-}
+});
