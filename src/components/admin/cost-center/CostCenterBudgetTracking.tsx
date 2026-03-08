@@ -32,7 +32,7 @@ const MODULE_ICONS: Record<string, any> = {
   event: Calendar, project: FileText, other: BarChart3,
 };
 
-export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
+export const CostCenterBudgetTracking = memo(function CostCenterBudgetTracking({ isAr, estimates }: Props) {
   const analytics = useMemo(() => {
     const approved = estimates.filter(e => e.status === "approved" || e.status === "invoiced");
     const invoiced = estimates.filter(e => e.status === "invoiced");
