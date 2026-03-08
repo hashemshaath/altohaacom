@@ -19,7 +19,7 @@ interface MasterclassFiltersProps {
   getCountryName: (code: string) => string;
 }
 
-export function MasterclassFilters({
+export const MasterclassFilters = memo(function MasterclassFilters({
   search, onSearchChange,
   levelFilter, onLevelChange,
   categoryFilter, onCategoryChange,
