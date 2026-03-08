@@ -295,7 +295,7 @@ export default function AuditLog() {
                     </TableHeader>
                     <TableBody>
                       {filteredContent.map(entry => (
-                        <TableRow key={entry.id} className={bulkContent.isSelected(entry.id) ? "bg-primary/5" : ""}>
+                        <TableRow key={entry.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkContent.isSelected(entry.id) ? "bg-primary/5" : ""}`}>
                           <TableCell><Checkbox checked={bulkContent.isSelected(entry.id)} onCheckedChange={() => bulkContent.toggleOne(entry.id)} /></TableCell>
                           <TableCell>{getContentActionBadge(entry.action_type)}</TableCell>
                           <TableCell className="max-w-[200px] truncate text-xs text-muted-foreground">{entry.content_snapshot || "—"}</TableCell>
