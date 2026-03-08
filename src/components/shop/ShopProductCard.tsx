@@ -49,7 +49,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
           )}
 
           {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           {/* Top-start badges */}
           <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">

@@ -240,7 +240,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
         {/* Certificate Preview */}
         <div>
           <p className="text-sm font-medium mb-3">{language === "ar" ? "معاينة الشهادة" : "Certificate Preview"}</p>
-          <div ref={printRef} className="overflow-auto bg-muted/30 rounded-xl p-4 flex items-center justify-center">
+          <div ref={printRef} className="overflow-auto bg-muted/30 rounded-xl p-4 flex items-center justify-center border border-border/30">
             <CertificatePreview
               design={defaultDesign}
               zoom={45}

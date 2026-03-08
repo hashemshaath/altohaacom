@@ -70,23 +70,27 @@ export const SwipeableNotificationCard = memo(function SwipeableNotificationCard
       <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
         <div
           className={cn(
-            "flex items-center gap-2 text-sm font-medium transition-opacity",
-            showMarkRead ? "opacity-100" : "opacity-0",
+            "flex items-center gap-2 text-sm font-medium transition-all duration-200",
+            showMarkRead ? "opacity-100 scale-100" : "opacity-0 scale-95",
             "text-primary"
           )}
         >
-          <Check className="h-5 w-5" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+            <Check className="h-5 w-5" />
+          </div>
           <span className="hidden sm:inline">Read</span>
         </div>
         <div
           className={cn(
-            "flex items-center gap-2 text-sm font-medium transition-opacity",
-            showDelete ? "opacity-100" : "opacity-0",
+            "flex items-center gap-2 text-sm font-medium transition-all duration-200",
+            showDelete ? "opacity-100 scale-100" : "opacity-0 scale-95",
             "text-destructive"
           )}
         >
           <span className="hidden sm:inline">Delete</span>
-          <Trash2 className="h-5 w-5" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-destructive/10">
+            <Trash2 className="h-5 w-5" />
+          </div>
         </div>
       </div>
 

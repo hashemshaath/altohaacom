@@ -253,10 +253,10 @@ export const PostCard = memo(function PostCard({
                 href={post.link_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 transition-colors shadow-sm"
+                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 hover:border-primary/20 transition-all duration-200 shadow-sm group/link"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="p-3 text-xs text-muted-foreground truncate">{post.link_url}</div>
+                <div className="p-3 text-xs text-muted-foreground truncate group-hover/link:text-primary transition-colors">{post.link_url}</div>
               </a>
             )}
 
