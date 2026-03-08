@@ -892,7 +892,7 @@ export default function CompetitionsAdmin() {
 
 // ── Judging Panel ──────────────────────────
 function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
-  const judgingComps = competitions.filter(c => ["judging", "in_progress"].includes(c.status));
+  const judgingComps = useMemo(() => competitions.filter(c => ["judging", "in_progress"].includes(c.status)), [competitions]);
 
   const { data: judgingData = [] } = useQuery({
     queryKey: ["judging-overview"],
