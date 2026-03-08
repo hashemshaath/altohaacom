@@ -201,6 +201,12 @@ export function InvitationManager() {
     };
     return <Badge variant={variants[s] || "secondary"} className="text-[10px] uppercase gap-1">{statusIcon(s)}{s}</Badge>;
   };
+  const stats = useMemo(() => ({
+    total: invitations?.length || 0,
+    pending: invitations?.filter(i => i.status === "pending").length || 0,
+    accepted: invitations?.filter(i => i.status === "accepted").length || 0,
+    declined: invitations?.filter(i => i.status === "declined").length || 0,
+  }), [invitations]);
 
   // Send invitation form
   if (showSendForm) {
