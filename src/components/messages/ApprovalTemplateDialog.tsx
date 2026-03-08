@@ -19,7 +19,7 @@ interface ApprovalTemplateDialogProps {
   isPending: boolean;
 }
 
-export function ApprovalTemplateDialog({ open, onOpenChange, onSend, isPending }: ApprovalTemplateDialogProps) {
+export const ApprovalTemplateDialog = memo(function ApprovalTemplateDialog({ open, onOpenChange, onSend, isPending }: ApprovalTemplateDialogProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [title, setTitle] = useState("");
