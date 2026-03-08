@@ -27,7 +27,7 @@ function getItemName(item: any, isAr: boolean): string {
   return isAr && item.custom_name_ar ? item.custom_name_ar : item.custom_name || "—";
 }
 
-export function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
+export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
