@@ -28,7 +28,7 @@ interface ParsedUser {
   error?: string;
 }
 
-export function BulkUserImport() {
+export const BulkUserImport = memo(function BulkUserImport() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
