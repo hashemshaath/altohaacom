@@ -68,7 +68,7 @@ function ColorSwatch({ label, labelAr, isAr, value, onChange }: {
   );
 }
 
-export function TypographySettings({ settings, onSave, isPending }: Props) {
+export const TypographySettings = memo(function TypographySettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
