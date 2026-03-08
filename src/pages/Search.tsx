@@ -34,6 +34,7 @@ import {
   Star,
   Ticket,
   Bookmark,
+  Eye,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
