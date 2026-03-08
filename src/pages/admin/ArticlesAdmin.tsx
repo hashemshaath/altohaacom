@@ -306,6 +306,12 @@ export default function ArticlesAdmin() {
       {/* Content Pipeline */}
       <ContentPipelineWidget />
 
+      {/* Editorial Calendar & Top Articles */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <EditorialCalendarWidget />
+        <ArticlePerformanceWidget />
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
