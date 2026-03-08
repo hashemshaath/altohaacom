@@ -8,7 +8,7 @@ import { useReferralLeaderboard } from "@/hooks/useReferralExtras";
 import { Trophy, Medal, Crown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-export function ReferralLeaderboard() {
+export const ReferralLeaderboard = memo(function ReferralLeaderboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
