@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionBoothNavigator({ exhibitionId, isAr }: Props) {
+export const ExhibitionBoothNavigator = memo(function ExhibitionBoothNavigator({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [search, setSearch] = useState("");
   const [filterHall, setFilterHall] = useState<string>("all");
