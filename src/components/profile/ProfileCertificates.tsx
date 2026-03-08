@@ -42,7 +42,7 @@ const typeLabels: Record<string, { en: string; ar: string }> = {
   volunteer: { en: "Volunteer", ar: "متطوع" },
 };
 
-export function ProfileCertificates({ userId, isOwner = false }: ProfileCertificatesProps) {
+export const ProfileCertificates = memo(function ProfileCertificates({ userId, isOwner = false }: ProfileCertificatesProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
