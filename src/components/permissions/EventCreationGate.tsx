@@ -15,7 +15,7 @@ interface EventCreationGateProps {
   eventType: "competition" | "exhibition";
 }
 
-export function EventCreationGate({ children, eventType }: EventCreationGateProps) {
+export const EventCreationGate = memo(function EventCreationGate({ children, eventType }: EventCreationGateProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
