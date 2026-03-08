@@ -284,4 +284,4 @@ function ShareDropdown({ isAr, title, shareUrl }: { isAr: boolean; title: string
       </DropdownMenuContent>
     </DropdownMenu>
   );
-});
+}
