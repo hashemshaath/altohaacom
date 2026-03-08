@@ -48,7 +48,7 @@ export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, f
   );
 });
 
-export function TranslateInlineButton({ text, fromLang, toLang, onTranslated, isAr }: {
+export const TranslateInlineButton = memo(function TranslateInlineButton({ text, fromLang, toLang, onTranslated, isAr }: {
   text: string; fromLang: "en" | "ar"; toLang: "en" | "ar";
   onTranslated: (v: string) => void; isAr: boolean;
 }) {
