@@ -44,7 +44,7 @@ const categoryLabels: Record<string, { en: string; ar: string }> = {
   other: { en: "Other", ar: "أخرى" },
 };
 
-export function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSearchChange, statusFilter, onStatusFilterChange, onSessionClick }: Props) {
+export const ChefsTableSessionsList = memo(function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSearchChange, statusFilter, onStatusFilterChange, onSessionClick }: Props) {
   return (
     <main className="container py-8 pb-16">
       <div className="mx-auto max-w-2xl text-center mb-10">
