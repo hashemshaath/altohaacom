@@ -32,7 +32,8 @@ import { cn } from "@/lib/utils";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { 
   Plus, Search, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
-  Calendar, Clock, Star, Download, BarChart3, TrendingUp,
+  Calendar, Clock, Star, Download, BarChart3, TrendingUp, ToggleLeft, ToggleRight,
+  Timer,
 } from "lucide-react";
 
 type ViewMode = "list" | "create" | "edit";
