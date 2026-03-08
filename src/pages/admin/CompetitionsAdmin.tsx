@@ -496,6 +496,8 @@ export default function CompetitionsAdmin() {
         }
       />
 
+      <CompetitionsQuickNav />
+
       {/* Smart Import Panel (inline) */}
       {showSmartImport && (
         <CompetitionSmartImport
