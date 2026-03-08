@@ -15,7 +15,7 @@ interface EntryComparisonProps {
   competitionId: string;
 }
 
-export function EntryComparison({ competitionId }: EntryComparisonProps) {
+export const EntryComparison = memo(function EntryComparison({ competitionId }: EntryComparisonProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [leftId, setLeftId] = useState<string>("");
