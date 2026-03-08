@@ -25,7 +25,7 @@ const SUPPLIER_CAT_LABELS: Record<string, { en: string; ar: string }> = {
   technology: { en: "Technology", ar: "تقنية" },
 };
 
-export function HomeProSuppliers() {
+export const HomeProSuppliers = memo(function HomeProSuppliers() {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
