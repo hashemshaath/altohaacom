@@ -17,7 +17,7 @@ interface ApprovalMessageProps {
   isMine: boolean;
 }
 
-export function ApprovalMessage({ messageId, senderId, receiverId, metadata, isMine }: ApprovalMessageProps) {
+export const ApprovalMessage = memo(function ApprovalMessage({ messageId, senderId, receiverId, metadata, isMine }: ApprovalMessageProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
