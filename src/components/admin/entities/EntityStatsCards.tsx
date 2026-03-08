@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Building2, CheckCircle, Clock, Eye, EyeOff, TrendingUp } from "lucide-react";
