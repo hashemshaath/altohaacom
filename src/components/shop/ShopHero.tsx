@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -13,7 +14,7 @@ interface ShopHeroProps {
   onCartOpen: () => void;
 }
 
-export function ShopHero({ productCount, cart, onCartOpen }: ShopHeroProps) {
+export const ShopHero = memo(function ShopHero({ productCount, cart, onCartOpen }: ShopHeroProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -74,4 +75,4 @@ export function ShopHero({ productCount, cart, onCartOpen }: ShopHeroProps) {
       </div>
     </section>
   );
-}
+});

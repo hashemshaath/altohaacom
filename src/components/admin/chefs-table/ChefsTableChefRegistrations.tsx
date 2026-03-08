@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -27,7 +28,7 @@ interface ChefRegistration {
   profile?: { full_name: string; specialization: string; country_code: string; avatar_url: string | null };
 }
 
-export function ChefsTableChefRegistrations() {
+export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrations() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -194,4 +195,4 @@ export function ChefsTableChefRegistrations() {
       )}
     </div>
   );
-}
+});

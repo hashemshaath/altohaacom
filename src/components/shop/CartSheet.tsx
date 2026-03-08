@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +20,7 @@ interface CartSheetProps {
   cart: ReturnType<typeof useCart>;
 }
 
-export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
+export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -306,4 +307,4 @@ export function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
       </SheetContent>
     </Sheet>
   );
-}
+});

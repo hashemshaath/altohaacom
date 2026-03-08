@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Star, ThumbsUp, Truck, Phone, TrendingUp } from "lucide-react";
@@ -24,7 +25,7 @@ const renderStars = (rating: number) => (
   </div>
 );
 
-export function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communicationAvg, valueAvg, totalCount, language }: Props) {
+export const EvaluationStats = memo(function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communicationAvg, valueAvg, totalCount, language }: Props) {
   const isAr = language === "ar";
 
   const categories = [
@@ -74,4 +75,4 @@ export function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communica
       </div>
     </>
   );
-}
+});

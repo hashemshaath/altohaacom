@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -116,7 +116,7 @@ function validateRow(values: string[], rowNumber: number): ParsedRow {
   };
 }
 
-export function CatalogBulkImport({ open, onOpenChange, companyId, language }: CatalogBulkImportProps) {
+export const CatalogBulkImport = memo(function CatalogBulkImport({ open, onOpenChange, companyId, language }: CatalogBulkImportProps) {
   const [step, setStep] = useState<"upload" | "preview" | "result">("upload");
   const [parsedRows, setParsedRows] = useState<ParsedRow[]>([]);
   const [importing, setImporting] = useState(false);
@@ -358,4 +358,4 @@ export function CatalogBulkImport({ open, onOpenChange, companyId, language }: C
       </DialogContent>
     </Dialog>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +33,7 @@ const actionColors: Record<string, string> = {
   bulk_deactivated: "bg-muted text-muted-foreground",
 };
 
-export function CountryAuditLog({ countryCode }: { countryCode?: string }) {
+export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { countryCode?: string }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
@@ -144,4 +145,4 @@ export function CountryAuditLog({ countryCode }: { countryCode?: string }) {
       </CardContent>
     </Card>
   );
-}
+});

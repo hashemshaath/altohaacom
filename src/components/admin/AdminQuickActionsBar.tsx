@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ interface QuickAction {
   badge?: number;
 }
 
-export function AdminQuickActionsBar({ pendingReports }: { pendingReports?: number }) {
+export const AdminQuickActionsBar = memo(function AdminQuickActionsBar({ pendingReports }: { pendingReports?: number }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -58,4 +59,4 @@ export function AdminQuickActionsBar({ pendingReports }: { pendingReports?: numb
       </CardContent>
     </Card>
   );
-}
+});

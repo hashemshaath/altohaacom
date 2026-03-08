@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -19,7 +19,7 @@ interface Props {
   maxLength?: number;
 }
 
-export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact, fieldType, maxLength }: Props) {
+export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact, fieldType, maxLength }: Props) {
   const { toast } = useToast();
   const [optimizing, setOptimizing] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -101,4 +101,4 @@ export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact
       )}
     </div>
   );
-}
+});

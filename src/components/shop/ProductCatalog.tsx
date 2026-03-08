@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,7 @@ interface Props {
   onAddToCart?: (product: any) => void;
 }
 
-export function ProductCatalog({ onAddToCart }: Props) {
+export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
@@ -210,4 +210,4 @@ export function ProductCatalog({ onAddToCart }: Props) {
       )}
     </div>
   );
-}
+});

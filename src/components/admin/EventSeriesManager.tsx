@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -62,7 +62,7 @@ interface Props {
   onCreateEdition?: (series: SeriesRow, year: number) => void;
 }
 
-export function EventSeriesManager({ onCreateEdition }: Props) {
+export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdition }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -384,4 +384,4 @@ export function EventSeriesManager({ onCreateEdition }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

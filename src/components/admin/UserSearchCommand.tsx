@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +17,7 @@ interface UserSearchCommandProps {
   onSelectUser?: (userId: string) => void;
 }
 
-export function UserSearchCommand({ open, onOpenChange, onSelectUser }: UserSearchCommandProps) {
+export const UserSearchCommand = memo(function UserSearchCommand({ open, onOpenChange, onSelectUser }: UserSearchCommandProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -139,4 +139,4 @@ export function UserSearchCommand({ open, onOpenChange, onSelectUser }: UserSear
       </DialogContent>
     </Dialog>
   );
-}
+});

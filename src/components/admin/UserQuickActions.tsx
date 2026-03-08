@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +26,7 @@ interface UserQuickActionsProps {
   onViewProfile: () => void;
 }
 
-export function UserQuickActions({ userId, userName, email, status, isVerified, onViewProfile }: UserQuickActionsProps) {
+export const UserQuickActions = memo(function UserQuickActions({ userId, userName, email, status, isVerified, onViewProfile }: UserQuickActionsProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -228,4 +228,4 @@ export function UserQuickActions({ userId, userName, email, status, isVerified, 
       </div>
     </TooltipProvider>
   );
-}
+});

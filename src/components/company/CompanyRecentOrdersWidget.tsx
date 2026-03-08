@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +19,7 @@ const statusStyles: Record<string, string> = {
   cancelled: "bg-muted text-muted-foreground",
 };
 
-export function CompanyRecentOrdersWidget({ companyId, language }: { companyId: string | null; language: string }) {
+export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget({ companyId, language }: { companyId: string | null; language: string }) {
   const isAr = language === "ar";
 
   const { data: orders = [] } = useQuery({
@@ -102,4 +103,4 @@ export function CompanyRecentOrdersWidget({ companyId, language }: { companyId: 
       </CardContent>
     </Card>
   );
-}
+});

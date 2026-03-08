@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +36,7 @@ interface CompanyEditPanelProps {
   companyDetails: any;
 }
 
-export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
+export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -623,4 +623,4 @@ export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanel
       </Card>
     </div>
   );
-}
+});

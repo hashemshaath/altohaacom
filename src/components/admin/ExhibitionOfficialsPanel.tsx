@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -38,7 +38,7 @@ const emptyOfficial: OfficialForm = {
   full_name: "", full_name_ar: "", role_title: "", role_title_ar: "", email: "", phone: "",
 };
 
-export function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
+export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
@@ -230,4 +230,4 @@ export function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
       )}
     </div>
   );
-}
+});
