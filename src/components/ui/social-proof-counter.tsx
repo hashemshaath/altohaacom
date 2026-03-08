@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "./animated-counter";
 import { Users, Eye, Star, Trophy } from "lucide-react";
