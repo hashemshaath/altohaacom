@@ -631,7 +631,7 @@ export default function CompetitionsAdmin() {
           )}
           {uniqueYears.length > 0 && (
             <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger className="w-28">
+              <SelectTrigger className="w-28 rounded-xl">
                 <Calendar className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "السنة" : "Year"} />
               </SelectTrigger>
