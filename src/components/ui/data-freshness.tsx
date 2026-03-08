@@ -20,7 +20,7 @@ interface DataFreshnessProps {
  * Displays when data was last refreshed with a live/stale indicator.
  * Builds trust by showing data recency.
  */
-export function DataFreshness({ lastUpdated, isRefetching, onRefresh, className }: DataFreshnessProps) {
+export const DataFreshness = memo(function DataFreshness({ lastUpdated, isRefetching, onRefresh, className }: DataFreshnessProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
