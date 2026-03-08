@@ -18,7 +18,7 @@ interface Props {
   competitionId: string;
 }
 
-export function JudgeDeliberationPanel({ competitionId }: Props) {
+export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
