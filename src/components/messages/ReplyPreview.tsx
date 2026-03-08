@@ -10,7 +10,7 @@ interface ReplyPreviewProps {
 }
 
 /** Inline preview shown above the input when replying, or inside a bubble for context */
-export function ReplyPreview({ replyToMessage, onClear, compact }: ReplyPreviewProps) {
+export const ReplyPreview = memo(function ReplyPreview({ replyToMessage, onClear, compact }: ReplyPreviewProps) {
   if (!replyToMessage) return null;
 
   if (compact) {
