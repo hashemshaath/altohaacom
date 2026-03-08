@@ -268,7 +268,7 @@ export function SortableSectionItem({ id, children }: { id: string; children: Re
   );
 }
 
-export function SectionDragHandle() {
+export const SectionDragHandle = memo(function SectionDragHandle() {
   const listeners = useContext(SectionDragListenersContext);
   return (
     <button {...(listeners || {})} className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
