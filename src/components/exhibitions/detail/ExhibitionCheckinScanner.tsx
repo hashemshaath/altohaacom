@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
+export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const t = (en: string, ar: string) => isAr ? ar : en;
