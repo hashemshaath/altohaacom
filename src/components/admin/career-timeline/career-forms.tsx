@@ -350,7 +350,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
 
 // ── Competition Event Form (manual) ──────────────────────────────────────
 
-export function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
+export const CompetitionEventForm = memo(function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
