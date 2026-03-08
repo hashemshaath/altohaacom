@@ -21,7 +21,7 @@ interface Props {
   companyId: string;
 }
 
-export function CompanyClassificationsPanel({ companyId }: Props) {
+export const CompanyClassificationsPanel = memo(function CompanyClassificationsPanel({ companyId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
