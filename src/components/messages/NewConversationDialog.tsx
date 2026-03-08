@@ -22,7 +22,7 @@ interface NewConversationDialogProps {
   onSelectUser: (user: { user_id: string; full_name: string | null; username: string | null; avatar_url: string | null }) => void;
 }
 
-export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewConversationDialogProps) {
+export const NewConversationDialog = memo(function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewConversationDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
