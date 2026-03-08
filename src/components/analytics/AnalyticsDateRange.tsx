@@ -46,7 +46,7 @@ interface Props {
   onExport?: () => void;
 }
 
-export function AnalyticsDateRange({ value, onChange, onExport }: Props) {
+export const AnalyticsDateRange = memo(function AnalyticsDateRange({ value, onChange, onExport }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activePreset, setActivePreset] = useState("30d");
