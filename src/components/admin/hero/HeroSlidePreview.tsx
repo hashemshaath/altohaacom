@@ -253,7 +253,7 @@ function MinimalTemplate({ slide }: { slide: HeroSlide }) {
 // ─────────────────────────────────────────────
 // Router
 // ─────────────────────────────────────────────
-export function HeroSlidePreview({ slide }: { slide: HeroSlide }) {
+export const HeroSlidePreview = memo(function HeroSlidePreview({ slide }: { slide: HeroSlide }) {
   switch (slide.template) {
     case "centered":  return <CenteredTemplate slide={slide} />;
     case "split":     return <SplitTemplate slide={slide} />;
