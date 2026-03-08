@@ -112,7 +112,7 @@ export default function Rankings() {
             </SelectContent>
           </Select>
           <Select value={countryFilter} onValueChange={setCountryFilter}>
-            <SelectTrigger className="w-[140px]"><SelectValue placeholder={isAr ? "الدولة" : "Country"} /></SelectTrigger>
+            <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={isAr ? "الدولة" : "Country"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
               {countries?.map(c => (

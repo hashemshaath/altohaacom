@@ -84,19 +84,19 @@ export default function Rewards() {
 
       <Tabs defaultValue="rewards" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
-          <TabsTrigger value="rewards" className="gap-1.5">
+          <TabsTrigger value="rewards" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Gift className="h-4 w-4" />
             <span className="hidden sm:inline">{isAr ? "المكافآت" : "Rewards"}</span>
           </TabsTrigger>
-          <TabsTrigger value="earn" className="gap-1.5">
+          <TabsTrigger value="earn" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Zap className="h-4 w-4" />
             <span className="hidden sm:inline">{isAr ? "اكسب" : "Earn"}</span>
           </TabsTrigger>
-          <TabsTrigger value="history" className="gap-1.5">
+          <TabsTrigger value="history" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <History className="h-4 w-4" />
             <span className="hidden sm:inline">{isAr ? "السجل" : "History"}</span>
           </TabsTrigger>
-          <TabsTrigger value="redeemed" className="gap-1.5">
+          <TabsTrigger value="redeemed" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <ShoppingBag className="h-4 w-4" />
             <span className="hidden sm:inline">{isAr ? "مستبدلة" : "Redeemed"}</span>
           </TabsTrigger>
