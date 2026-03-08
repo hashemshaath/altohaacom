@@ -34,6 +34,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin, Sparkles, Filter, Globe, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal, BarChart3, CheckCircle, XCircle, Layers, Download } from "lucide-react";
+import { CompetitionsQuickNav } from "@/components/admin/CompetitionsQuickNav";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -494,6 +495,8 @@ export default function CompetitionsAdmin() {
           </div>
         }
       />
+
+      <CompetitionsQuickNav />
 
       {/* Smart Import Panel (inline) */}
       {showSmartImport && (

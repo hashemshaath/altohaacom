@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { CommunicationsQuickNav } from "@/components/admin/CommunicationsQuickNav";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -402,6 +403,8 @@ export default function NotificationsAdmin() {
           </Button>
         }
       />
+
+      <CommunicationsQuickNav />
 
       {/* Communications Overview */}
       <CommunicationsOverviewWidget />

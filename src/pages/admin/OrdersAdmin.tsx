@@ -10,6 +10,7 @@ import { InvoiceTrackerWidget } from "@/components/admin/InvoiceTrackerWidget";
 import { FinancialSummaryWidget } from "@/components/admin/FinancialSummaryWidget";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { FinanceQuickNav } from "@/components/admin/FinanceQuickNav";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -1217,6 +1218,8 @@ export default function OrdersAdmin() {
         title={isAr ? "إدارة الطلبات" : "Order Management"}
         description={isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
       />
+
+      <FinanceQuickNav />
 
       {/* Financial Summary & Orders Live Stats */}
       <FinancialSummaryWidget />

@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
 import { FinancialOverviewCards } from "@/components/admin/FinancialOverviewCards";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { FinanceQuickNav } from "@/components/admin/FinanceQuickNav";
 import {
   FileText, Search, Plus, Eye, ChevronLeft, Save, Trash2,
   DollarSign, Clock, CheckCircle, XCircle, Send, Copy,
@@ -629,6 +630,8 @@ export default function InvoicesAdmin() {
           </Button>
         }
       />
+
+      <FinanceQuickNav />
 
       {/* Financial Overview */}
       <FinancialOverviewCards />
