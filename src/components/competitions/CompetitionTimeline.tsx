@@ -19,7 +19,7 @@ interface CompetitionTimelineProps {
   competitionEnd?: string | null;
 }
 
-export function CompetitionTimeline({
+export const CompetitionTimeline = memo(function CompetitionTimeline({
   registrationStart,
   registrationEnd,
   competitionStart,
