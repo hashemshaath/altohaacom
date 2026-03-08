@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +9,7 @@ import { Wallet, TrendingUp, TrendingDown, ArrowRightLeft, CreditCard, Banknote 
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 
-export function WalletOverviewWidget() {
+export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
