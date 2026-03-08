@@ -13,7 +13,7 @@ interface SortableTableHeadProps {
   className?: string;
 }
 
-export function SortableTableHead({
+export const SortableTableHead = memo(function SortableTableHead({
   column,
   label,
   sortColumn,
