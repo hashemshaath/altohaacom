@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
