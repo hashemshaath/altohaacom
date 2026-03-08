@@ -20,7 +20,7 @@ import {
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
-export function MarketingAnalytics() {
+export const MarketingAnalytics = memo(function MarketingAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
