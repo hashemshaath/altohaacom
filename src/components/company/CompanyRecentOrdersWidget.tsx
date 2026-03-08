@@ -19,7 +19,7 @@ const statusStyles: Record<string, string> = {
   cancelled: "bg-muted text-muted-foreground",
 };
 
-export function CompanyRecentOrdersWidget({ companyId, language }: { companyId: string | null; language: string }) {
+export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget({ companyId, language }: { companyId: string | null; language: string }) {
   const isAr = language === "ar";
 
   const { data: orders = [] } = useQuery({
