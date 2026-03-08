@@ -27,7 +27,7 @@ const SLOT_TYPES = [
   { value: "judging", en: "Judging", ar: "تحكيم", icon: Scale, color: "bg-chart-3/10 text-chart-3" },
 ];
 
-export function CompetitionSchedulePanel({ competitionId, isOrganizer }: Props) {
+export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
