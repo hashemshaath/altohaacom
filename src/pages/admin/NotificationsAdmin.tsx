@@ -404,6 +404,8 @@ export default function NotificationsAdmin() {
         }
       />
 
+      <CommunicationsQuickNav />
+
       {/* Communications Overview */}
       <CommunicationsOverviewWidget />
 

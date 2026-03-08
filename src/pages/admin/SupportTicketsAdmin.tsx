@@ -304,6 +304,8 @@ export default function SupportTicketsAdmin() {
         description={isAr ? "إدارة طلبات الدعم" : "Manage support requests"}
       />
 
+      <CommunicationsQuickNav />
+
       {/* Messaging Overview */}
       <MessagingAdminOverview />
 
