@@ -13,7 +13,7 @@ import { Download, Calendar, TrendingUp, DollarSign, BarChart3, Target } from "l
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function AdAdvancedReporting() {
+export const AdAdvancedReporting = memo(function AdAdvancedReporting() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [dateFrom, setDateFrom] = useState(format(subDays(new Date(), 30), "yyyy-MM-dd"));
