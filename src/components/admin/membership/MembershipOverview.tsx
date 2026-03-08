@@ -13,7 +13,7 @@ import { format, differenceInDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 
-export default function MembershipOverview() {
+const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
