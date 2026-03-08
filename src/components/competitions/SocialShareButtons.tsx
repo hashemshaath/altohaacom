@@ -19,7 +19,7 @@ interface SocialShareButtonsProps {
   competitionUrl: string;
 }
 
-export function SocialShareButtons({
+export const SocialShareButtons = memo(function SocialShareButtons({
   title,
   participantName,
   rank,
