@@ -423,7 +423,7 @@ export const CompetitionEventForm = memo(function CompetitionEventForm({ form, e
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
 
 // ── Award Form ──────────────────────────────────────
 
