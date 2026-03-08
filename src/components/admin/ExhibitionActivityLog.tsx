@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, CheckCircle2, Pencil, Trash2, Eye, Plus, UserCheck, Ticket } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 
-export function ExhibitionActivityLog() {
+export const ExhibitionActivityLog = memo(function ExhibitionActivityLog() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
