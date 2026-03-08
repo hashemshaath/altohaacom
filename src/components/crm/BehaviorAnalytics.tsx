@@ -385,4 +385,4 @@ function LifecycleTriggersList() {
       </div>
     </ScrollArea>
   );
-}
+});

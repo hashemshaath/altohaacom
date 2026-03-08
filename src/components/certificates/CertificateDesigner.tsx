@@ -445,4 +445,4 @@ export const CertificateDesigner = memo(function CertificateDesigner({
       </div>
     </div>
   );
-}
+});

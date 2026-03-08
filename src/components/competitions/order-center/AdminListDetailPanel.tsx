@@ -415,4 +415,4 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
       )}
     </div>
   );
-}
+});

@@ -222,4 +222,4 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
       )}
     </div>
   );
-}
+});

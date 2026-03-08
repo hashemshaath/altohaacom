@@ -300,4 +300,4 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
       </CardContent>
     </Card>
   );
-}
+});

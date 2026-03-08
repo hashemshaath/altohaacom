@@ -336,4 +336,4 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
       </div>
     </div>
   );
-}
+});

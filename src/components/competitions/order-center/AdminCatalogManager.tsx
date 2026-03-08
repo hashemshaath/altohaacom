@@ -341,4 +341,4 @@ export const AdminCatalogManager = memo(function AdminCatalogManager() {
       )}
     </div>
   );
-}
+});

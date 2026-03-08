@@ -658,4 +658,4 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
       </Dialog>
     </div>
   );
-}
+});

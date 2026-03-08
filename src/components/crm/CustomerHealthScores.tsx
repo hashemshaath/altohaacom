@@ -193,4 +193,4 @@ export const CustomerHealthScores = memo(function CustomerHealthScores() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -258,4 +258,4 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
       )}
     </div>
   );
-}
+});

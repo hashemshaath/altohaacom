@@ -141,4 +141,4 @@ export const TeamPerformanceMetrics = memo(function TeamPerformanceMetrics() {
       </CardContent>
     </Card>
   );
-}
+});

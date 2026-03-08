@@ -288,4 +288,4 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
       />
     </div>
   );
-}
+});

@@ -441,4 +441,4 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
       )}
     </div>
   );
-}
+});

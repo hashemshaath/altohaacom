@@ -357,4 +357,4 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
       />
     </div>
   );
-}
+});

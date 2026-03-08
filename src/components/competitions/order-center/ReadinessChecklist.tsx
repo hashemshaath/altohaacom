@@ -251,4 +251,4 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
       </div>
     </div>
   );
-}
+});

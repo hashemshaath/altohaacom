@@ -240,4 +240,4 @@ export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, is
       )}
     </div>
   );
-}
+});

@@ -293,4 +293,4 @@ export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrga
       </Card>
     </div>
   );
-}
+});

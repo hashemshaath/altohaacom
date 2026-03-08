@@ -227,4 +227,4 @@ export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOr
       )}
     </div>
   );
-}
+});
