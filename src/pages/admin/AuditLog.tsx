@@ -356,7 +356,7 @@ export default function AuditLog() {
                 <ScrollArea className="max-h-[600px]">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkAdmin.isAllSelected} onCheckedChange={bulkAdmin.toggleAll} /></TableHead>
                         <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "التفاصيل" : "Details"}</TableHead>
