@@ -113,6 +113,10 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
   });
 
   const workspace = workspaces?.[0]; // Use first workspace
+  const tasks: TaskItem[] = Array.isArray(workspace?.task_board) ? (workspace.task_board as any[]) : [];
+  const recipes: RecipeItem[] = Array.isArray(workspace?.recipe_plan) ? (workspace.recipe_plan as any[]) : [];
+  const schedule: ScheduleItem[] = Array.isArray(workspace?.practice_schedule) ? (workspace.practice_schedule as any[]) : [];
+  const completedTasks = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
 
   if (isLoading) {
     return <div className="space-y-4">{Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}</div>;
