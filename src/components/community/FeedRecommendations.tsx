@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, Hash, TrendingUp } from "lucide-react";
 
-export function FeedRecommendations() {
+export const FeedRecommendations = memo(function FeedRecommendations() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
