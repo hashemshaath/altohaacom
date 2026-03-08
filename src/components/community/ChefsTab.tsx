@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,7 +34,7 @@ interface ChefProfile {
 
 type SortOption = "name" | "newest" | "verified";
 
-export function ChefsTab() {
+export const ChefsTab = memo(function ChefsTab() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const isAr = language === "ar";
@@ -223,4 +223,4 @@ export function ChefsTab() {
       )}
     </div>
   );
-}
+});

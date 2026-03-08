@@ -2,7 +2,7 @@
  * Smart notification digest summary widget for the dashboard.
  * Provides an AI-style overview of recent notification activity.
  */
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { inferPriority } from "./NotificationPriorityBadge";
 
-export function NotificationDigest() {
+export const NotificationDigest = memo(function NotificationDigest() {
   const { notifications, unreadCount } = useNotifications();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -142,4 +142,4 @@ export function NotificationDigest() {
       </CardContent>
     </Card>
   );
-}
+});

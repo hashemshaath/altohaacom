@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,7 +13,7 @@ import { Heart, ChefHat, UtensilsCrossed, HeartOff, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Share2 } from "lucide-react";
 
-export function FanFavoritesTab() {
+export const FanFavoritesTab = memo(function FanFavoritesTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -158,7 +159,7 @@ export function FanFavoritesTab() {
       </Tabs>
     </div>
   );
-}
+});
 
 function EmptyState({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) {
   return (

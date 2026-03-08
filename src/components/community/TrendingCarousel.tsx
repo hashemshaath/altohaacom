@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,7 +19,7 @@ interface TrendingPost {
   comments_count: number;
 }
 
-export function TrendingCarousel() {
+export const TrendingCarousel = memo(function TrendingCarousel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -127,4 +128,4 @@ export function TrendingCarousel() {
       </div>
     </div>
   );
-}
+});

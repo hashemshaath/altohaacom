@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -50,7 +50,7 @@ export interface CommunityPost {
 
 const PAGE_SIZE = 20;
 
-export function CommunityFeed() {
+export const CommunityFeed = memo(function CommunityFeed() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -536,4 +536,4 @@ export function CommunityFeed() {
       )}
     </>
   );
-}
+});

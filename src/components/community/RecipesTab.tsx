@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +38,7 @@ const difficultyColor = (d: string) => {
   return "bg-chart-4/10 text-chart-4";
 };
 
-export function RecipesTab() {
+export const RecipesTab = memo(function RecipesTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -301,4 +301,4 @@ export function RecipesTab() {
       )}
     </div>
   );
-}
+});

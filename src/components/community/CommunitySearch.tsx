@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ interface SearchResult {
 
 type SearchFilter = "all" | "users" | "posts" | "recipes" | "groups";
 
-export function CommunitySearch() {
+export const CommunitySearch = memo(function CommunitySearch() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -239,4 +239,4 @@ export function CommunitySearch() {
       )}
     </div>
   );
-}
+});

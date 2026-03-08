@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function UpcomingEventsWidget() {
+export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -90,4 +91,4 @@ export function UpcomingEventsWidget() {
       </Link>
     </div>
   );
-}
+});

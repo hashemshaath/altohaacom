@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function PostSkeleton() {
+export const PostSkeleton = memo(function PostSkeleton() {
   return (
     <div className="px-4 py-3 animate-in fade-in-50 duration-300">
       <div className="flex gap-3">
@@ -26,7 +27,7 @@ export function PostSkeleton() {
       </div>
     </div>
   );
-}
+});
 
 export function FeedSkeletonLoader({ count = 5 }: { count?: number }) {
   return (

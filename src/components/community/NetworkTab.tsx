@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -22,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { FollowButton } from "./FollowButton";
 
-export function NetworkTab() {
+export const NetworkTab = memo(function NetworkTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -280,4 +281,4 @@ export function NetworkTab() {
       </Card>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,7 +46,7 @@ interface Poll {
   user_vote: number | null;
 }
 
-export function EventsTab() {
+export const EventsTab = memo(function EventsTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -513,4 +513,4 @@ export function EventsTab() {
       </Dialog>
     </div>
   );
-}
+});

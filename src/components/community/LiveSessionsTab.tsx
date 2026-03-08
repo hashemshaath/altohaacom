@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +32,7 @@ interface LiveSession {
   is_registered: boolean;
 }
 
-export function LiveSessionsTab() {
+export const LiveSessionsTab = memo(function LiveSessionsTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -269,4 +269,4 @@ export function LiveSessionsTab() {
       </Dialog>
     </div>
   );
-}
+});

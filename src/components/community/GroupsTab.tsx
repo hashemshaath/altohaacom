@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +26,7 @@ interface Group {
   is_member: boolean;
 }
 
-export function GroupsTab() {
+export const GroupsTab = memo(function GroupsTab() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
@@ -273,4 +273,4 @@ export function GroupsTab() {
       )}
     </div>
   );
-}
+});

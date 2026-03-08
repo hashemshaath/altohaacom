@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
-export function FanEventWatchlist() {
+export const FanEventWatchlist = memo(function FanEventWatchlist() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -131,7 +131,7 @@ export function FanEventWatchlist() {
       </CardContent>
     </Card>
   );
-}
+});
 
 /** Reusable hook to add/remove from watchlist */
 export function useEventWatchlist(eventType: "competition" | "exhibition", eventId?: string) {
