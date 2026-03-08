@@ -54,7 +54,7 @@ interface PrintableInvoiceProps {
   forceLanguage?: "en" | "ar";
 }
 
-export default function PrintableInvoice({ invoice, company, showPrintButton = true, forceLanguage }: PrintableInvoiceProps) {
+const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, showPrintButton = true, forceLanguage }: PrintableInvoiceProps) {
   const { language: contextLang } = useLanguage();
   const lang = forceLanguage || contextLang;
   const isAr = lang === "ar";
