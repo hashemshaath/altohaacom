@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdvertisingQuickNav } from "@/components/admin/AdvertisingQuickNav";
 import {
   Megaphone, BarChart3, Package, Target, FileText,
   Brain, Globe, Sparkles, FileBarChart, LayoutGrid,
