@@ -13,7 +13,7 @@ interface CollapsibleProfileSectionProps {
   isEmpty?: boolean;
 }
 
-export function CollapsibleProfileSection({
+export const CollapsibleProfileSection = memo(function CollapsibleProfileSection({
   icon: Icon,
   label,
   children,
