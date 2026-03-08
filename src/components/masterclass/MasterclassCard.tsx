@@ -27,7 +27,7 @@ interface MasterclassCardProps {
   isEnrolled: boolean;
 }
 
-export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
+export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
