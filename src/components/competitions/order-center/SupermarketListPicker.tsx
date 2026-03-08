@@ -44,7 +44,7 @@ interface SupermarketListPickerProps {
   onItemAdded?: () => void;
 }
 
-export function SupermarketListPicker({ listId, existingItemIds = [], onItemAdded }: SupermarketListPickerProps) {
+export const SupermarketListPicker = memo(function SupermarketListPicker({ listId, existingItemIds = [], onItemAdded }: SupermarketListPickerProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
