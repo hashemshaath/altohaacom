@@ -125,6 +125,8 @@ export default function SystemSettings() {
         }
       />
 
+      <SettingsQuickNav />
+
       {isLoading ? (
         <div className="space-y-4">
           <Skeleton className="h-12 w-full rounded-xl" />
