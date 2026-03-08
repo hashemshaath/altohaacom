@@ -135,7 +135,7 @@ export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }:
 }
 
 /* ─── Top Countries ─── */
-export function TopCountriesChart({ data }: { data?: { country: string; count: number }[] }) {
+export const TopCountriesChart = memo(function TopCountriesChart({ data }: { data?: { country: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
