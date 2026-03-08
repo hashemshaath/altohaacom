@@ -22,7 +22,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityDegreesTab({ entityId }: Props) {
+export const EntityDegreesTab = memo(function EntityDegreesTab({ entityId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: degrees, isLoading } = useEntityDegrees(entityId);
