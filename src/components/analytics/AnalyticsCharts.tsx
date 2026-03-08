@@ -78,7 +78,7 @@ export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Score Distribution ─── */
 export const ScoreDistributionChart = memo(function ScoreDistributionChart({ data }: { data?: { range: string; count: number }[] }) {
