@@ -19,7 +19,7 @@ interface CountrySelectorProps {
   showFlag?: boolean;
 }
 
-export function CountrySelector({ value, onChange, label, required, showFlag = true }: CountrySelectorProps) {
+export const CountrySelector = memo(function CountrySelector({ value, onChange, label, required, showFlag = true }: CountrySelectorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: countries, isLoading } = useAllCountries();
