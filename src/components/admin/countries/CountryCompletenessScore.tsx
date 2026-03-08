@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CheckCircle, AlertCircle } from "lucide-react";
