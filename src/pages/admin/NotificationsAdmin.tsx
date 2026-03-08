@@ -497,7 +497,7 @@ export default function NotificationsAdmin() {
             onExport={() => exportNotifications(bulkRecent.selectedItems)}
           />
 
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               {loadingRecent ? (
                 <div className="p-6"><Skeleton className="h-64" /></div>
