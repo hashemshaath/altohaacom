@@ -163,7 +163,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export function HeroSlideAdmin() {
+export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
