@@ -29,7 +29,7 @@ interface Props {
   exhibitions: any[];
 }
 
-export default function OrganizerAnalyticsTab({ organizerId, exhibitions }: Props) {
+const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId, exhibitions }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
