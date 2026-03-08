@@ -44,7 +44,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
+export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
