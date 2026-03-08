@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ interface TranslatableInputProps {
   rows?: number;
 }
 
-export function TranslatableInput({
+export const TranslatableInput = memo(function TranslatableInput({
   label, value, onChange, dir, pairedValue, onTranslated, lang, placeholder, multiline, rows = 3,
 }: TranslatableInputProps) {
   const [translating, setTranslating] = useState(false);
@@ -76,4 +76,4 @@ export function TranslatableInput({
       )}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,7 +33,7 @@ interface GroupChatViewProps {
   onBack: () => void;
 }
 
-export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
+export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -343,4 +343,4 @@ export function GroupChatView({ groupId, onBack }: GroupChatViewProps) {
       )}
     </div>
   );
-}
+});

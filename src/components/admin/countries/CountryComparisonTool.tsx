@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +61,7 @@ const rows: ComparisonRow[] = [
   })),
 ];
 
-export function CountryComparisonTool({ countries }: { countries: Country[] }) {
+export const CountryComparisonTool = memo(function CountryComparisonTool({ countries }: { countries: Country[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -151,4 +151,4 @@ export function CountryComparisonTool({ countries }: { countries: Country[] }) {
       </CardContent>
     </Card>
   );
-}
+});

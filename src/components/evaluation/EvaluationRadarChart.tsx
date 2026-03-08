@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -17,7 +18,7 @@ const COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function EvaluationRadarChart({ title, data, evaluatorData, isAr }: Props) {
+export const EvaluationRadarChart = memo(function EvaluationRadarChart({ title, data, evaluatorData, isAr }: Props) {
   if (!data.length) return null;
 
   // If multiple evaluators, overlay their radars
@@ -111,4 +112,4 @@ export function EvaluationRadarChart({ title, data, evaluatorData, isAr }: Props
       </CardContent>
     </Card>
   );
-}
+});

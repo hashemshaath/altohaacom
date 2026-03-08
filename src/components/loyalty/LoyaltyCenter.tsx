@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useLoyaltyTiers, useUserTier, useChallenges, useUserChallenges, useRewardsCatalog, useUserRedemptions, useRedeemLoyaltyReward, useUserBadges, useUserStreaks } from "@/hooks/useLoyalty";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +11,7 @@ import { Crown, Trophy, Gift, Flame, Star, Lock, Check, Sparkles } from "lucide-
 import { SeasonalChallenges } from "./SeasonalChallenges";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function LoyaltyCenter() {
+export const LoyaltyCenter = memo(function LoyaltyCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -273,4 +274,4 @@ export function LoyaltyCenter() {
       </Tabs>
     </div>
   );
-}
+});

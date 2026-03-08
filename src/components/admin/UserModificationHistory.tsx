@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,7 @@ const ACTION_META: Record<string, { icon: typeof Edit; labelEn: string; labelAr:
   send_invitation: { icon: User, labelEn: "Invitation Sent", labelAr: "إرسال دعوة", variant: "secondary" },
 };
 
-export function UserModificationHistory({ userId, isAr }: Props) {
+export const UserModificationHistory = memo(function UserModificationHistory({ userId, isAr }: Props) {
   const { data: history = [], isLoading } = useQuery({
     queryKey: ["userModHistory", userId],
     queryFn: async () => {
@@ -137,4 +138,4 @@ export function UserModificationHistory({ userId, isAr }: Props) {
       </div>
     </ScrollArea>
   );
-}
+});

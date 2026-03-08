@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ interface MessageCategoryFilterProps {
   };
 }
 
-export function MessageCategoryFilter({ active, onChange, counts }: MessageCategoryFilterProps) {
+export const MessageCategoryFilter = memo(function MessageCategoryFilter({ active, onChange, counts }: MessageCategoryFilterProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -61,4 +62,4 @@ export function MessageCategoryFilter({ active, onChange, counts }: MessageCateg
       })}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { useHasFeature } from "@/hooks/useMembershipFeatures";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,7 +19,7 @@ interface FeatureRouteGuardProps {
  * Route guard that blocks access to pages based on membership feature access.
  * Shows an upgrade prompt if the feature is not available.
  */
-export function FeatureRouteGuard({ feature, children, redirectTo, featureName, featureNameAr }: FeatureRouteGuardProps) {
+export const FeatureRouteGuard = memo(function FeatureRouteGuard({ feature, children, redirectTo, featureName, featureNameAr }: FeatureRouteGuardProps) {
   const { user, loading: authLoading } = useAuth();
   const { hasFeature, isLoading } = useHasFeature(feature);
 
@@ -52,4 +53,4 @@ export function FeatureRouteGuard({ feature, children, redirectTo, featureName, 
   }
 
   return <>{children}</>;
-}
+});

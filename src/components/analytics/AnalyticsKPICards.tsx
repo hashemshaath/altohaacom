@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Users, Star, ClipboardList, Globe } from "lucide-react";
@@ -15,7 +15,7 @@ interface Props {
   isLoading: boolean;
 }
 
-export function AnalyticsKPICards({ data, isLoading }: Props) {
+export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoading }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -44,4 +44,4 @@ export function AnalyticsKPICards({ data, isLoading }: Props) {
       ))}
     </div>
   );
-}
+});

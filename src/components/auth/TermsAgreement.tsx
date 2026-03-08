@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -8,7 +9,7 @@ interface TermsAgreementProps {
   error?: string;
 }
 
-export function TermsAgreement({ checked, onCheckedChange, error }: TermsAgreementProps) {
+export const TermsAgreement = memo(function TermsAgreement({ checked, onCheckedChange, error }: TermsAgreementProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -50,4 +51,4 @@ export function TermsAgreement({ checked, onCheckedChange, error }: TermsAgreeme
       {error && <p className="text-xs text-destructive ps-6">{error}</p>}
     </div>
   );
-}
+});

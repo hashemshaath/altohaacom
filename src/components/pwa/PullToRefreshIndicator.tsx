@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +9,7 @@ interface Props {
   progress: number;
 }
 
-export function PullToRefreshIndicator({ pulling, pullDistance, refreshing, progress }: Props) {
+export const PullToRefreshIndicator = memo(function PullToRefreshIndicator({ pulling, pullDistance, refreshing, progress }: Props) {
   if (!pulling && !refreshing) return null;
 
   return (
@@ -32,4 +33,4 @@ export function PullToRefreshIndicator({ pulling, pullDistance, refreshing, prog
       </div>
     </div>
   );
-}
+});

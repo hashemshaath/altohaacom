@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,7 @@ const typeLabels: Record<string, { en: string; ar: string; emoji: string }> = {
   competition_event: { en: "Competition Event", ar: "حدث تنافسي", emoji: "🏆" },
 };
 
-export function ExhibitionReviewStep({ data }: { data: ExhibitionFormData }) {
+export const ExhibitionReviewStep = memo(function ExhibitionReviewStep({ data }: { data: ExhibitionFormData }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const typeLabel = typeLabels[data.type] || { en: data.type, ar: data.type, emoji: "📋" };
@@ -192,4 +193,4 @@ export function ExhibitionReviewStep({ data }: { data: ExhibitionFormData }) {
       </Card>
     </div>
   );
-}
+});

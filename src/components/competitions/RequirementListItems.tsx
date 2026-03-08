@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -29,7 +29,7 @@ interface Props {
   listCategory?: string;
 }
 
-export function RequirementListItems({ listId, competitionId, listCategory = "general" }: Props) {
+export const RequirementListItems = memo(function RequirementListItems({ listId, competitionId, listCategory = "general" }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -194,4 +194,4 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
       )}
     </div>
   );
-}
+});

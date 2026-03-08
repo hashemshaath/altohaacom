@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,7 +37,7 @@ interface ScheduleEvent {
   status: string;
 }
 
-export function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }: Props) {
+export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }: Props) {
   const isAr = language === "ar";
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -232,7 +232,7 @@ export function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }
       )}
     </div>
   );
-}
+});
 
 function RoundStatusBadge({ status, isAr }: { status: string; isAr: boolean }) {
   const map: Record<string, { label: string; labelAr: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
