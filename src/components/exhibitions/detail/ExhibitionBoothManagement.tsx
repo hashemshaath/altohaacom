@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionBoothManagement({ exhibitionId, isAr }: Props) {
+export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
