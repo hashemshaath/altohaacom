@@ -91,7 +91,7 @@ export const AddButton = memo(function AddButton({ label, onClick }: { label: st
       <Plus className="h-3.5 w-3.5" />{label}
     </Button>
   );
-}
+});
 
 // ── Form Actions ──────────────────────────────────────
 
