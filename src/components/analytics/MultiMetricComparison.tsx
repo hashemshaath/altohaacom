@@ -31,7 +31,7 @@ const METRICS: MetricDef[] = [
   { id: "certificates", label: "Certificates", labelAr: "الشهادات", icon: FileText, color: "hsl(var(--chart-1))", table: "certificates", dateCol: "created_at" },
 ];
 
-export function MultiMetricComparison() {
+export const MultiMetricComparison = memo(function MultiMetricComparison() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selected, setSelected] = useState<string[]>(["users", "competitions", "orders"]);
