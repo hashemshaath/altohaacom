@@ -1427,11 +1427,11 @@ export default function OrdersAdmin() {
                 <div className="flex-1 min-w-[200px]">
                   <div className="relative">
                     <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
+                     <Input
                       placeholder={isAr ? "بحث برقم الطلب أو اسم المشتري..." : "Search by order # or buyer..."}
                       value={shopSearchQuery}
                       onChange={(e) => setShopSearchQuery(e.target.value)}
-                      className="ps-10"
+                      className="ps-10 rounded-xl"
                     />
                   </div>
                 </div>
