@@ -9,7 +9,7 @@ interface MasterclassHeroProps {
   totalEnrollments: number;
 }
 
-export function MasterclassHero({ totalCount, filteredCount, totalEnrollments }: MasterclassHeroProps) {
+export const MasterclassHero = memo(function MasterclassHero({ totalCount, filteredCount, totalEnrollments }: MasterclassHeroProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
