@@ -10,7 +10,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionDayIndicator({ startDate, endDate, isAr }: Props) {
+export const ExhibitionDayIndicator = memo(function ExhibitionDayIndicator({ startDate, endDate, isAr }: Props) {
   const now = new Date();
   const start = new Date(startDate);
   const end = new Date(endDate);
