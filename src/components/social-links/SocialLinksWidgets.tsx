@@ -73,7 +73,7 @@ export const VideoEmbed = memo(function VideoEmbed({ url, theme }: { url: string
 });
 
 // ── Section Divider ──
-export function SectionDivider({ color }: { color: string }) {
+export const SectionDivider = memo(function SectionDivider({ color }: { color: string }) {
   return (
     <div className="flex items-center justify-center gap-3 my-5">
       <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(to right, transparent, ${color})` }} />
