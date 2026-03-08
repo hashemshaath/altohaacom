@@ -32,7 +32,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
   const label = typeLabels[product.product_type] || typeLabels.physical;
 
   return (
-    <Card className="group flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 active:scale-[0.98] touch-manipulation">
+    <Card className="group flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 active:scale-[0.98] touch-manipulation relative">
       <Link to={`/shop/${product.id}`} className="block overflow-hidden">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.image_url ? (
@@ -44,12 +44,12 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted/20">
-              <ShoppingBag className="h-12 w-12 text-muted-foreground/20" />
+              <ShoppingBag className="h-12 w-12 text-muted-foreground/20 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
             </div>
           )}
 
           {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/5 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           {/* Top-start badges */}
           <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">

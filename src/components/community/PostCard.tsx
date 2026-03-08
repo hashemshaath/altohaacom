@@ -90,8 +90,8 @@ export const PostCard = memo(function PostCard({
 
       {!isEditing && (
         <div className="flex gap-3">
-          <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative">
-            <Avatar className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all hover:ring-primary/30 hover:scale-105 shadow-sm">
+          <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative group/avatar">
+            <Avatar className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all duration-300 group-hover/avatar:ring-primary/40 group-hover/avatar:scale-105 shadow-sm">
               <AvatarImage src={post.author_avatar || undefined} className="object-cover rounded-xl" />
               <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
@@ -253,10 +253,10 @@ export const PostCard = memo(function PostCard({
                 href={post.link_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 transition-colors shadow-sm"
+                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 hover:border-primary/20 transition-all duration-200 shadow-sm group/link"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="p-3 text-xs text-muted-foreground truncate">{post.link_url}</div>
+                <div className="p-3 text-xs text-muted-foreground truncate group-hover/link:text-primary transition-colors">{post.link_url}</div>
               </a>
             )}
 
