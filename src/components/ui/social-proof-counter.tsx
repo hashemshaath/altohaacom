@@ -34,4 +34,4 @@ export const SocialProofCounter = memo(function SocialProofCounter({ type, value
       <span className="text-muted-foreground">{label}</span>
     </div>
   );
-}
+});

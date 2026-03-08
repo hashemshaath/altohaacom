@@ -242,4 +242,4 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
       )}
     </div>
   );
-}
+});

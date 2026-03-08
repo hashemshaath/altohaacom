@@ -126,4 +126,4 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
       </DropdownMenu>
     </nav>
   );
-}
+});

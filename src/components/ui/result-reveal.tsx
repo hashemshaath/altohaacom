@@ -50,4 +50,4 @@ export const ResultReveal = memo(function ResultReveal({ children, delay = 0, cl
       {children}
     </div>
   );
-}
+});

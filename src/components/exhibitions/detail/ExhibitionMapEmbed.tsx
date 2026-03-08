@@ -107,4 +107,4 @@ export const ExhibitionMapEmbed = memo(function ExhibitionMapEmbed({ mapUrl, ven
       </CardContent>
     </Card>
   );
-}
+});

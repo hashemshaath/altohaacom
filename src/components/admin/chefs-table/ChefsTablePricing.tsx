@@ -207,4 +207,4 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
       </div>
     </div>
   );
-}
+});

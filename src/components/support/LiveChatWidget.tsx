@@ -266,4 +266,4 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
       )}
     </>
   );
-}
+});

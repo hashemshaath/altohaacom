@@ -80,4 +80,4 @@ export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onReque
       </div>
     </section>
   );
-}
+});

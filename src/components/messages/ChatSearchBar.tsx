@@ -86,4 +86,4 @@ export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight
       </Button>
     </div>
   );
-}
+});

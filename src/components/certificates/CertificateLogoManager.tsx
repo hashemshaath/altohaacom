@@ -186,4 +186,4 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
       </div>
     </div>
   );
-}
+});

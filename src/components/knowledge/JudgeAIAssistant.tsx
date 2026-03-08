@@ -152,4 +152,4 @@ export const JudgeAIAssistant = memo(function JudgeAIAssistant({ competitionId, 
       </CardContent>
     </Card>
   );
-}
+});

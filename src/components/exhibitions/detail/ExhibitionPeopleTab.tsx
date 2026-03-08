@@ -159,4 +159,4 @@ export const ExhibitionPeopleTab = memo(function ExhibitionPeopleTab({ judgeProf
       )}
     </div>
   );
-}
+});

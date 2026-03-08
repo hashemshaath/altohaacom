@@ -315,4 +315,4 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
       </Tabs>
     </div>
   );
-}
+});

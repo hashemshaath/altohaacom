@@ -42,4 +42,4 @@ export const Breadcrumbs = memo(function Breadcrumbs({ items, className }: Props
       })}
     </nav>
   );
-}
+});

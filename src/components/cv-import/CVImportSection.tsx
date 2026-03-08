@@ -496,4 +496,4 @@ export const CVImportSection = memo(function CVImportSection() {
       )}
     </div>
   );
-}
+});

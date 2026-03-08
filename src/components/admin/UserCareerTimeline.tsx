@@ -374,4 +374,4 @@ export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isA
       </div>
     </DndContext>
   );
-}
+});

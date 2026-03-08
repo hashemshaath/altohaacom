@@ -88,4 +88,4 @@ export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit
       )}
     </div>
   );
-}
+});

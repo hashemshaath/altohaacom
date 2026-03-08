@@ -253,4 +253,4 @@ export const DatesLocationStep = memo(function DatesLocationStep({ data, onChang
       </Card>
     </div>
   );
-}
+});

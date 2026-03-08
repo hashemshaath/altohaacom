@@ -363,4 +363,4 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
       })}
     </div>
   );
-}
+});
