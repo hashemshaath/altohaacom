@@ -139,7 +139,7 @@ export default function AnalyticsDashboard() {
             <Bookmark className="inline h-3 w-3 me-1" />{isAr ? "المحفوظة:" : "Saved:"}
           </span>
           {savedReports.map(report => (
-            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-colors gap-1 whitespace-nowrap" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
+            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-all duration-300 gap-1 whitespace-nowrap rounded-lg" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
               {report.name}
               <button onClick={(e) => { e.stopPropagation(); handleDeleteReport(report.id); }} className="ms-1 text-muted-foreground hover:text-destructive">×</button>
             </Badge>
@@ -163,11 +163,11 @@ export default function AnalyticsDashboard() {
       </Dialog>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div className="overflow-x-auto">
-          <TabsList className="inline-flex w-auto min-w-full flex-wrap gap-1">
+        <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
+          <TabsList className="inline-flex w-auto min-w-full flex-wrap gap-1 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
             {tabs.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 min-w-max">
-                <tab.icon className="h-4 w-4" />
+              <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 min-w-max rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
+                <tab.icon className="h-3.5 w-3.5" />
                 <span className="hidden md:inline">{tab.label}</span>
               </TabsTrigger>
             ))}

@@ -355,10 +355,12 @@ export default function CRMDashboard() {
 
       {/* Resolution Rate + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-1">
+        <Card className="lg:col-span-1 rounded-2xl border-border/40">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <PieChart className="h-4 w-4 text-primary" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15">
+                <PieChart className="h-3.5 w-3.5 text-primary" />
+              </div>
               {isAr ? "معدل الحل" : "Resolution Rate"}
             </CardTitle>
           </CardHeader>
@@ -387,10 +389,12 @@ export default function CRMDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 rounded-2xl border-border/40">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+              </div>
               {isAr ? "إجراءات سريعة" : "Quick Actions"}
             </CardTitle>
           </CardHeader>
@@ -424,33 +428,33 @@ export default function CRMDashboard() {
 
       {/* Tabbed Content */}
       <Tabs defaultValue="timeline" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="timeline" className="gap-2 text-xs">
+        <TabsList className="grid w-full grid-cols-5 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto gap-1">
+          <TabsTrigger value="timeline" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <Activity className="h-3.5 w-3.5" />
             {isAr ? "النشاط" : "Timeline"}
           </TabsTrigger>
-          <TabsTrigger value="tickets" className="gap-2 text-xs">
+          <TabsTrigger value="tickets" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <Ticket className="h-3.5 w-3.5" />
             {isAr ? "التذاكر" : "Tickets"}
             {(ticketStats?.open ?? 0) > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px]">{ticketStats?.open}</Badge>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px] rounded-lg">{ticketStats?.open}</Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="chats" className="gap-2 text-xs">
+          <TabsTrigger value="chats" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <Headphones className="h-3.5 w-3.5" />
             {isAr ? "المحادثات" : "Chats"}
             {(chatStats?.waiting ?? 0) > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px]">{chatStats?.waiting}</Badge>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px] rounded-lg">{chatStats?.waiting}</Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="leads" className="gap-2 text-xs">
+          <TabsTrigger value="leads" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <UserSearch className="h-3.5 w-3.5" />
             {isAr ? "العملاء المحتملين" : "Leads"}
             {(leadStats?.new ?? 0) > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px]">{leadStats?.new}</Badge>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[10px] rounded-lg">{leadStats?.new}</Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="behavior" className="gap-2 text-xs">
+          <TabsTrigger value="behavior" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <Activity className="h-3.5 w-3.5" />
             {isAr ? "السلوك" : "Behavior"}
           </TabsTrigger>

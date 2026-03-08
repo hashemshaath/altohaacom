@@ -308,16 +308,16 @@ const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
   return (
     <div className="mb-5 animate-fade-in">
       <Link to="/onboarding">
-        <Card className="group border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all hover:shadow-md active:scale-[0.99]">
+        <Card className="group rounded-2xl border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.99]">
           <CardContent className="flex items-center gap-3 py-3.5 px-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20 transition-transform duration-300 group-hover:scale-110">
               <AlertCircle className="h-4 w-4 text-chart-4" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
               <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setup to unlock all features"}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 rtl:rotate-180" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-300 shrink-0 rtl:rotate-180" />
           </CardContent>
         </Card>
       </Link>
@@ -381,13 +381,13 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
   return (
     <div className="grid grid-cols-3 gap-3">
       {items.map((item) => (
-        <Card key={item.label} className={`border-s-[3px] ${item.border} transition-all duration-200 hover:shadow-md active:scale-[0.97]`}>
+        <Card key={item.label} className={`border-s-[3px] ${item.border} rounded-2xl transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.97] group`}>
           <CardContent className="flex items-center gap-3 p-3 sm:p-4">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg}`}>
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} border border-border/20 transition-transform duration-300 group-hover:scale-110`}>
               <item.icon className={`h-4 w-4 ${item.color}`} />
             </div>
             <div>
-              <AnimatedCounter value={item.value} className="text-xl" />
+              <AnimatedCounter value={item.value} className="text-xl font-bold tabular-nums" />
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-tight">{item.label}</p>
             </div>
           </CardContent>
