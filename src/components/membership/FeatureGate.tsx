@@ -75,7 +75,7 @@ interface FeatureGateForUserProps {
   fallback?: React.ReactNode;
 }
 
-export function FeatureGateForUser({ feature, userId, children, fallback = null }: FeatureGateForUserProps) {
+export const FeatureGateForUser = memo(function FeatureGateForUser({ feature, userId, children, fallback = null }: FeatureGateForUserProps) {
   const { hasFeature, isLoading } = useHasFeatureForUser(feature, userId);
 
   if (isLoading) return <>{children}</>;
