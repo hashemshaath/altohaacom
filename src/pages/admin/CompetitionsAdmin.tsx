@@ -599,7 +599,7 @@ export default function CompetitionsAdmin() {
           </Select>
           {uniqueOrganizers.length > 0 && (
             <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
-              <SelectTrigger className="w-44">
+              <SelectTrigger className="w-44 rounded-xl">
                 <Users className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "المنظم" : "Organizer"} />
               </SelectTrigger>
