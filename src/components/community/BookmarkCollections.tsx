@@ -18,7 +18,7 @@ interface BookmarkCollectionsProps {
   postId: string;
 }
 
-export function BookmarkCollections({ postId }: BookmarkCollectionsProps) {
+export const BookmarkCollections = memo(function BookmarkCollections({ postId }: BookmarkCollectionsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
