@@ -185,11 +185,11 @@ export default function Entities() {
                 </Badge>
                 <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-chart-3/20 bg-chart-3/5 text-chart-3 rounded-full backdrop-blur-md">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  {entities.filter(e => e.is_verified).length} {isAr ? "موثقة" : "Verified"}
+                  {entityStats.verified} {isAr ? "موثقة" : "Verified"}
                 </Badge>
                 <Badge variant="outline" className="gap-2 px-5 py-2 text-xs font-bold border-chart-1/20 bg-chart-1/5 text-chart-1 rounded-full backdrop-blur-md">
                   <Globe className="h-3.5 w-3.5" />
-                  {new Set(entities.map(e => e.country).filter(Boolean)).size} {isAr ? "دولة" : "Countries"}
+                  {entityStats.countries} {isAr ? "دولة" : "Countries"}
                 </Badge>
               </div>
             )}
