@@ -430,7 +430,7 @@ export default function CertificatesAdmin() {
               <div className="flex flex-wrap gap-3 mb-4">
                 <div className="relative flex-1 min-w-[200px]">
                   <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10" />
+                  <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[140px]"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
