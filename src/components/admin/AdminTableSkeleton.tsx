@@ -78,7 +78,7 @@ export const AdminTableSkeleton = memo(function AdminTableSkeleton({
 });
 
 /** Compact card-based skeleton for dashboard widgets */
-export function AdminWidgetSkeleton({ rows = 3 }: { rows?: number }) {
+export const AdminWidgetSkeleton = memo(function AdminWidgetSkeleton({ rows = 3 }: { rows?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: rows }).map((_, i) => (
