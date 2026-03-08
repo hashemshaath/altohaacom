@@ -66,7 +66,7 @@ const statusLabels: Record<string, { en: string; ar: string }> = {
   waitlisted: { en: "On Waitlist", ar: "في قائمة الانتظار" },
 };
 
-export function RegistrationStatusBanner({ registration, competitionStatus }: RegistrationStatusBannerProps) {
+export const RegistrationStatusBanner = memo(function RegistrationStatusBanner({ registration, competitionStatus }: RegistrationStatusBannerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
