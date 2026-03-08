@@ -322,8 +322,8 @@ export default function ArticleDetail() {
                 <Separator className="mb-8" />
 
                 {/* Article Content */}
-                <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-serif prose-p:leading-loose prose-p:text-muted-foreground/90">
-                  <div className="whitespace-pre-wrap leading-relaxed">{content}</div>
+                <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-serif prose-p:leading-loose prose-p:text-muted-foreground/90 prose-img:rounded-2xl prose-a:text-primary prose-blockquote:border-primary/30">
+                  <ReactMarkdown>{content}</ReactMarkdown>
                 </article>
 
                 {/* Gallery */}
