@@ -39,4 +39,4 @@ export const OrderStats = memo(function OrderStats({ total, pending, completed, 
       ))}
     </div>
   );
-}
+});

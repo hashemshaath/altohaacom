@@ -440,4 +440,4 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       </div>
     </StaggeredList>
   );
-}
+});

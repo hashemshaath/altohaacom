@@ -378,4 +378,4 @@ function EmptyState({ isAr }: { isAr: boolean }) {
       <p className="text-sm text-muted-foreground">{isAr ? "لا توجد بيانات" : "No data available"}</p>
     </div>
   );
-}
+});

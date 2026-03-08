@@ -379,4 +379,4 @@ export const ExhibitionStep = memo(function ExhibitionStep({
       </CardContent>
     </Card>
   );
-}
+});

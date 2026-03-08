@@ -217,4 +217,4 @@ export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ compe
       )}
     </div>
   );
-}
+});

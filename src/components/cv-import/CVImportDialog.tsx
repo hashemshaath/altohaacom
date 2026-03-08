@@ -238,4 +238,4 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
       </DialogContent>
     </Dialog>
   );
-}
+});

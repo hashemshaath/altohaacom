@@ -74,4 +74,4 @@ export const MobileSwipeCard = memo(function MobileSwipeCard({
       </div>
     </div>
   );
-}
+});

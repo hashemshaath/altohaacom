@@ -15,4 +15,4 @@ export const UnreadDivider = memo(function UnreadDivider({ isAr, count }: Unread
       <div className="flex-1 h-px bg-primary/30" />
     </div>
   );
-}
+});

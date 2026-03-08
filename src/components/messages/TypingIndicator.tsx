@@ -29,4 +29,4 @@ export const TypingIndicator = memo(function TypingIndicator({ partnerName }: Ty
       </div>
     </div>
   );
-}
+});

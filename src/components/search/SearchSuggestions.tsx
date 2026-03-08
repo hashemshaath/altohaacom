@@ -173,4 +173,4 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
       })}
     </div>
   );
-}
+});
