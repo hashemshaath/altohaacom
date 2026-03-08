@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ interface Props {
   onChange: (updates: Partial<ExhibitionFormData>) => void;
 }
 
-export function ExhibitionDatesLocationStep({ data, onChange }: Props) {
+export const ExhibitionDatesLocationStep = memo(function ExhibitionDatesLocationStep({ data, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -195,4 +196,4 @@ export function ExhibitionDatesLocationStep({ data, onChange }: Props) {
       </Card>
     </div>
   );
-}
+});

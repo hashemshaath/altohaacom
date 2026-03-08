@@ -2,6 +2,7 @@
  * Shared utilities for Order Center components.
  * Reduces duplication across panels.
  */
+import { memo } from "react";
 
 /** Extract bilingual item name from a requirement list item */
 export function getItemDisplayName(item: any, isAr: boolean): string {
@@ -30,10 +31,10 @@ export function calcOrderStats(items: any[]) {
 }
 
 /** Standard loading spinner for Order Center panels */
-export function OrderPanelLoader() {
+export const OrderPanelLoader = memo(function OrderPanelLoader() {
   return (
     <div className="flex justify-center py-8">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
     </div>
   );
-}
+});

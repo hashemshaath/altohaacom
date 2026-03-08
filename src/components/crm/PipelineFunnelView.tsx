@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -14,7 +15,7 @@ const STAGES = [
   { key: "lost", en: "Lost", ar: "خسارة", color: "bg-destructive" },
 ];
 
-export function PipelineFunnelView() {
+export const PipelineFunnelView = memo(function PipelineFunnelView() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -96,4 +97,4 @@ export function PipelineFunnelView() {
       </CardContent>
     </Card>
   );
-}
+});

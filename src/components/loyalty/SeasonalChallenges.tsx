@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,7 +22,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   hard: "bg-destructive/10 text-destructive border-destructive/20",
 };
 
-export function SeasonalChallenges() {
+export const SeasonalChallenges = memo(function SeasonalChallenges() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -143,4 +144,4 @@ export function SeasonalChallenges() {
       </CardContent>
     </Card>
   );
-}
+});

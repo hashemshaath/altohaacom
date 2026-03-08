@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +32,7 @@ interface ExhibitionHeroProps {
   isAr: boolean;
 }
 
-export function ExhibitionHero({
+export const ExhibitionHero = memo(function ExhibitionHero({
   exhibition,
   title,
   venue,
@@ -236,7 +237,7 @@ export function ExhibitionHero({
       </div>
     </div>
   );
-}
+});
 
 /* ---------- Share dropdown (extracted to reduce repetition) ---------- */
 function ShareDropdown({ isAr, title, shareUrl }: { isAr: boolean; title: string; shareUrl: string }) {

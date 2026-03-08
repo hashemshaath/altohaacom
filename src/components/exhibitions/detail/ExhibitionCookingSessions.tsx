@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -322,7 +322,7 @@ function SessionGroup({ title, icon, sessions, profiles, myRegs, isAr, onSelect,
 }
 
 /* ---- Main Component ---- */
-export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
+export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -343,6 +343,12 @@ export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
     },
   });
 
+  const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
+    liveSessions: sessions.filter((s: any) => s.status === "live"),
+    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
+    pastSessions: sessions.filter((s: any) => s.status === "completed"),
+  }), [sessions]);
+
   const selected = sessions.find((s: any) => s.id === selectedSession);
 
   if (selectedSession && selected) {
@@ -354,12 +360,6 @@ export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
       />
     );
   }
-
-  const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
-    liveSessions: sessions.filter((s: any) => s.status === "live"),
-    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
-    pastSessions: sessions.filter((s: any) => s.status === "completed"),
-  }), [sessions]);
 
   return (
     <div className="space-y-6">
@@ -400,4 +400,4 @@ export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
       )}
     </div>
   );
-}
+});

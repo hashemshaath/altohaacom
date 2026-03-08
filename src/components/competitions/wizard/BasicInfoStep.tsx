@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,7 @@ interface BasicInfoStepProps {
   onChange: (updates: Partial<CompetitionFormData>) => void;
 }
 
-export function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
+export const BasicInfoStep = memo(function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -187,4 +188,4 @@ export function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
       </CardContent>
     </Card>
   );
-}
+});
