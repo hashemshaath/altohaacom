@@ -177,4 +177,4 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

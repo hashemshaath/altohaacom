@@ -88,4 +88,4 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
       </CardContent>
     </Card>
   );
-}
+});

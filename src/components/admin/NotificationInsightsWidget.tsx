@@ -183,4 +183,4 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
       </Card>
     </div>
   );
-}
+});

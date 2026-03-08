@@ -125,4 +125,4 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
       </CardContent>
     </Card>
   );
-}
+});

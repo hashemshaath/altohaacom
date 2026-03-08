@@ -175,4 +175,4 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -116,4 +116,4 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
       </CardContent>
     </Card>
   );
-}
+});
