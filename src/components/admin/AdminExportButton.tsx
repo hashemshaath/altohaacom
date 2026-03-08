@@ -15,7 +15,7 @@ interface AdminExportButtonProps {
   disabled?: boolean;
 }
 
-export function AdminExportButton({ onExport, isExporting, disabled }: AdminExportButtonProps) {
+export const AdminExportButton = memo(function AdminExportButton({ onExport, isExporting, disabled }: AdminExportButtonProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
