@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +18,7 @@ interface SubscriptionDetailsCardProps {
   profile: any;
 }
 
-export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetailsCardProps) {
+export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetailsCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -175,4 +176,4 @@ export function SubscriptionDetailsCard({ userId, profile }: SubscriptionDetails
       </CardContent>
     </Card>
   );
-}
+});

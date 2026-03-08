@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ChevronRight, LayoutDashboard } from "lucide-react";
@@ -59,7 +60,7 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/design/custom-css": { en: "Custom CSS", ar: "CSS مخصص" },
 };
 
-export function AdminBreadcrumb() {
+export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const location = useLocation();
@@ -93,4 +94,4 @@ export function AdminBreadcrumb() {
       </span>
     </nav>
   );
-}
+});

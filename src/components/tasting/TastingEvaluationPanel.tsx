@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod, useSubmitScore } from "@/hooks/useTasting";
@@ -40,7 +40,7 @@ const EVAL_SCALE_LABELS = [
   { value: 6, en: "Extraordinary", ar: "استثنائي" },
 ];
 
-export function TastingEvaluationPanel({ sessionId, entries, criteria, scores, evalMethod, allowNotes, isBlind }: Props) {
+export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ sessionId, entries, criteria, scores, evalMethod, allowNotes, isBlind }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -419,4 +419,4 @@ export function TastingEvaluationPanel({ sessionId, entries, criteria, scores, e
       )}
     </div>
   );
-}
+});

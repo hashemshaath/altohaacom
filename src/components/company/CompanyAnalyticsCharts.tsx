@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +26,7 @@ interface CompanyAnalyticsChartsProps {
   language: string;
 }
 
-export function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalyticsChartsProps) {
+export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalyticsChartsProps) {
   const isAr = language === "ar";
 
   const { data: monthlyOrders, isLoading: ordersLoading } = useQuery({
@@ -291,7 +292,7 @@ export function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalytics
       </div>
     </div>
   );
-}
+});
 
 function MiniKPI({
   label, value, change, isString, isAr,

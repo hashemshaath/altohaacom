@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,7 +63,7 @@ function parseCSV(text: string): ParsedRow[] {
   });
 }
 
-export function CountryCSVImport() {
+export const CountryCSVImport = memo(function CountryCSVImport() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -239,4 +239,4 @@ export function CountryCSVImport() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { CostEstimate, MODULE_TYPES, ESTIMATE_STATUS_CONFIG, type CostModuleType } from "@/hooks/useCostCenter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +32,7 @@ const MODULE_ICONS: Record<string, any> = {
   event: Calendar, project: FileText, other: BarChart3,
 };
 
-export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
+export const CostCenterBudgetTracking = memo(function CostCenterBudgetTracking({ isAr, estimates }: Props) {
   const analytics = useMemo(() => {
     const approved = estimates.filter(e => e.status === "approved" || e.status === "invoiced");
     const invoiced = estimates.filter(e => e.status === "invoiced");
@@ -253,4 +253,4 @@ export function CostCenterBudgetTracking({ isAr, estimates }: Props) {
       </Card>
     </div>
   );
-}
+});

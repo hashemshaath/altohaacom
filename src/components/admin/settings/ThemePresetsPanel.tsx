@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ interface Props {
   isPending: boolean;
 }
 
-export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
+export const ThemePresetsPanel = memo(function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -115,4 +115,4 @@ export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -14,7 +14,7 @@ interface AutoIssueCertificatesProps {
   competitionId: string;
 }
 
-export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesProps) {
+export const AutoIssueCertificates = memo(function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -334,4 +334,4 @@ export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesPr
       </CardContent>
     </Card>
   );
-}
+});

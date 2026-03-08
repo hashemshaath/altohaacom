@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -31,7 +31,7 @@ interface RubricTemplatesPanelProps {
   isAdmin?: boolean;
 }
 
-export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplatesPanelProps) {
+export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplatesPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -352,4 +352,4 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
       </CardContent>
     </Card>
   );
-}
+});

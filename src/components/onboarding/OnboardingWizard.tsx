@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -25,7 +25,7 @@ interface OnboardingWizardProps {
   onComplete?: () => void;
 }
 
-export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
+export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -312,4 +312,4 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       </div>
     </div>
   );
-}
+});

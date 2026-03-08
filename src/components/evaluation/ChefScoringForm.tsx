@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useEvaluationCriteriaByDomain, useUpsertEvaluationScore, type EvaluationCriterion, type EvaluationCriteriaCategory } from "@/hooks/useEvaluationSystem";
 import { useSubmitEvaluation, type ChefsTableEvaluation } from "@/hooks/useChefsTable";
@@ -47,7 +47,7 @@ function getScoreEmoji(score: number, max: number): string {
   return "👎";
 }
 
-export function ChefScoringForm({
+export const ChefScoringForm = memo(function ChefScoringForm({
   sessionId,
   invitationId,
   productCategory,
@@ -454,7 +454,7 @@ export function ChefScoringForm({
       </div>
     </div>
   );
-}
+});
 
 // ─── Individual Criterion Score Input ───────────
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -38,7 +38,7 @@ interface InlineSmartImportProps {
 
 type Phase = "search" | "results" | "loading-details" | "details";
 
-export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps) {
+export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -419,7 +419,7 @@ export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps)
       </CardContent>
     </Card>
   );
-}
+});
 
 function DetailField({
   icon: Icon,
