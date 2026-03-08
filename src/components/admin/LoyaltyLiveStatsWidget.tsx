@@ -111,9 +111,11 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
         {/* KPI Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
           {stats.map((s, i) => (
-            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
-              <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
-              <div className="text-lg font-bold"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></div>
+            <div key={i} className="bg-muted/50 rounded-xl p-3 text-center border border-border/30 transition-all hover:border-border/60 hover:shadow-sm group">
+              <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform group-hover:scale-110`} />
+              <div className="text-lg font-bold tabular-nums">
+                {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : <span>{s.value}</span>}
+              </div>
               <div className="text-[10px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
