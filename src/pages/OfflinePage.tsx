@@ -94,18 +94,19 @@ export default function OfflinePage() {
   ];
 
   return (
-    <div className="flex min-h-[80vh] flex-col px-4 py-8 max-w-2xl mx-auto">
+    <div className="flex min-h-[80vh] flex-col px-4 py-8 max-w-2xl mx-auto animate-in fade-in-50 duration-300">
       {/* Header */}
       <div className="text-center mb-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50 mx-auto mb-4">
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50 mx-auto mb-4">
           <WifiOff className="h-8 w-8 text-muted-foreground/60" />
+          <span className="absolute -top-1 -end-1 h-3 w-3 rounded-full bg-destructive/60 animate-pulse" />
         </div>
         <h1 className="text-xl font-bold mb-1">{isAr ? "وضع عدم الاتصال" : "Offline Mode"}</h1>
         <p className="text-muted-foreground text-sm">
           {isAr ? "تصفح المحتوى المخزن مسبقاً" : "Browse previously cached content"}
         </p>
         {stats.lastSync && (
-          <p className="text-xs text-muted-foreground/70 mt-1 flex items-center justify-center gap-1">
+          <p className="text-xs text-muted-foreground/70 mt-2 inline-flex items-center gap-1 bg-muted/30 px-2.5 py-1 rounded-xl">
             <Clock className="h-3 w-3" />
             {isAr ? "آخر مزامنة: " : "Last synced: "}
             {formatDistanceToNow(stats.lastSync, { addSuffix: true, locale: isAr ? ar : undefined })}
