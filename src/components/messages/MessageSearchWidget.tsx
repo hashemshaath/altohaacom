@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function MessageSearchWidget() {
+export const MessageSearchWidget = memo(function MessageSearchWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
