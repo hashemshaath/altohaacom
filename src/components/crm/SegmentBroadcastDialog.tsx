@@ -35,7 +35,7 @@ interface SegmentBroadcastDialogProps {
   filters: any;
 }
 
-export function SegmentBroadcastDialog({
+export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
   open,
   onOpenChange,
   segmentName,
