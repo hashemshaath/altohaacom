@@ -14,7 +14,7 @@ interface ProductQuickActionsProps {
   onAddToCart: (product: any, quantity: number) => void;
 }
 
-export function ProductQuickActions({ product, onAddToCart }: ProductQuickActionsProps) {
+export const ProductQuickActions = memo(function ProductQuickActions({ product, onAddToCart }: ProductQuickActionsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [quantity, setQuantity] = useState(1);
