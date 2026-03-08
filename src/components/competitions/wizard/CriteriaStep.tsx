@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,9 +20,10 @@ export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const totalWeight = criteria.reduce((sum, c) => sum + Number(c.weight), 0);
-  const weightPct = Math.round(totalWeight * 100);
-  const isBalanced = Math.abs(totalWeight - 1) < 0.01;
+  const { totalWeight, weightPct, isBalanced } = useMemo(() => {
+    const tw = criteria.reduce((sum, c) => sum + Number(c.weight), 0);
+    return { totalWeight: tw, weightPct: Math.round(tw * 100), isBalanced: Math.abs(tw - 1) < 0.01 };
+  }, [criteria]);
 
   const addCriteria = () => onChange([...criteria, { ...emptyCriteria }]);
 

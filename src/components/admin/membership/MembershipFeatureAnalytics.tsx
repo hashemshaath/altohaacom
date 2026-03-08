@@ -86,8 +86,8 @@ export default function MembershipFeatureAnalytics() {
     }));
   }, [featureAgg, isAr]);
 
-  const totalAccess = featureAgg.reduce((s, f) => s + f.total, 0);
-  const totalBlocked = featureAgg.reduce((s, f) => s + f.blocked, 0);
+  const totalAccess = useMemo(() => featureAgg.reduce((s, f) => s + f.total, 0), [featureAgg]);
+  const totalBlocked = useMemo(() => featureAgg.reduce((s, f) => s + f.blocked, 0), [featureAgg]);
 
   if (isLoading) {
     return (

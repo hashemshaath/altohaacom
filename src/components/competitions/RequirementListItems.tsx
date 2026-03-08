@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -68,8 +68,8 @@ export function RequirementListItems({ listId, competitionId, listCategory = "ge
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["requirement-list-items", listId] }),
   });
 
-  const totalCost = listItems?.reduce((sum, item) => sum + (Number(item.estimated_cost) || 0) * (item.quantity || 1), 0) || 0;
-  const existingItemIds = listItems?.map(item => item.item_id).filter(Boolean) as string[] || [];
+  const totalCost = useMemo(() => listItems?.reduce((sum, item) => sum + (Number(item.estimated_cost) || 0) * (item.quantity || 1), 0) || 0, [listItems]);
+  const existingItemIds = useMemo(() => listItems?.map(item => item.item_id).filter(Boolean) as string[] || [], [listItems]);
 
   return (
     <div className="space-y-4">
