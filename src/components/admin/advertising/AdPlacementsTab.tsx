@@ -25,8 +25,18 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  const sortedPlacements = useMemo(() => 
+    [...placements].sort((a, b) => {
+      if (a.is_active && !b.is_active) return -1;
+      if (!a.is_active && b.is_active) return 1;
+      if (a.is_premium && !b.is_premium) return -1;
+      if (!a.is_premium && b.is_premium) return 1;
+      return (a.sort_order || 999) - (b.sort_order || 999);
+    }), [placements]
+  );
+
   // Group placements by page_location
-  const grouped = placements.reduce((acc: Record<string, any[]>, p: any) => {
+  const grouped = sortedPlacements.reduce((acc: Record<string, any[]>, p: any) => {
     const page = p.page_location || "other";
     if (!acc[page]) acc[page] = [];
     acc[page].push(p);
