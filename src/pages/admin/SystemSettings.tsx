@@ -28,6 +28,7 @@ import {
   Palette,
 } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { SettingsQuickNav } from "@/components/admin/SettingsQuickNav";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { BrandingSettings } from "@/components/admin/settings/BrandingSettings";
 import { BrandIdentityPanel } from "@/components/admin/settings/BrandIdentityPanel";
@@ -123,6 +124,8 @@ export default function SystemSettings() {
           </div>
         }
       />
+
+      <SettingsQuickNav />
 
       {isLoading ? (
         <div className="space-y-4">

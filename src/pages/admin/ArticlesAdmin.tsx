@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { ContentQuickNav } from "@/components/admin/ContentQuickNav";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ContentStatsWidget } from "@/components/admin/ContentStatsWidget";
 import { ContentQuickToolbar } from "@/components/admin/ContentQuickToolbar";
@@ -291,6 +292,8 @@ export default function ArticlesAdmin() {
           </div>
         }
       />
+
+      <ContentQuickNav />
 
       {/* Quick Metrics */}
       <ContentQuickToolbar />
