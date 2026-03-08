@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -28,7 +28,7 @@ interface LiveScore {
   categoryName: string;
 }
 
-export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
+export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isLive, setIsLive] = useState(true);
@@ -262,4 +262,4 @@ export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
       )}
     </div>
   );
-}
+});

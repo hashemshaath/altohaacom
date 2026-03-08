@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -24,7 +25,7 @@ interface BadgeItem {
   show: boolean;
 }
 
-export function SupplierBadges({
+export const SupplierBadges = memo(function SupplierBadges({
   isVerified = false,
   reviewCount = 0,
   avgRating = 0,
@@ -117,4 +118,4 @@ export function SupplierBadges({
       </div>
     </TooltipProvider>
   );
-}
+});

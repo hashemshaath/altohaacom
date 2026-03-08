@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { X, Reply } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +10,7 @@ interface ReplyPreviewProps {
 }
 
 /** Inline preview shown above the input when replying, or inside a bubble for context */
-export function ReplyPreview({ replyToMessage, onClear, compact }: ReplyPreviewProps) {
+export const ReplyPreview = memo(function ReplyPreview({ replyToMessage, onClear, compact }: ReplyPreviewProps) {
   if (!replyToMessage) return null;
 
   if (compact) {
@@ -42,4 +43,4 @@ export function ReplyPreview({ replyToMessage, onClear, compact }: ReplyPreviewP
       </button>
     </div>
   );
-}
+});

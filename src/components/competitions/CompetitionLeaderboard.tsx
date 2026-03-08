@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -33,7 +34,7 @@ const RANK_CONFIG = [
   { icon: Award, gradient: "from-chart-5/15 to-chart-5/5", border: "border-chart-5/25", text: "text-chart-5", shadow: "shadow-chart-5/10", label: "3rd" },
 ];
 
-export function CompetitionLeaderboard({
+export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
   competitionId,
   showTopOnly = false,
 }: CompetitionLeaderboardProps) {
@@ -258,4 +259,4 @@ export function CompetitionLeaderboard({
       </CardContent>
     </Card>
   );
-}
+});

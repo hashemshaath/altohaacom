@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,7 @@ const LOYALTY_ACTIONS = [
   { type: "booth_visit", icon: MapPin, points: 15, en: "Visit 5 Booths", ar: "زيارة 5 أجنحة" },
 ] as const;
 
-export function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
+export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -165,4 +165,4 @@ export function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

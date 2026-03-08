@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function PublicProfileAbout({ profile, bio, specialization, userSpecialties, isAr }: Props) {
+export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bio, specialization, userSpecialties, isAr }: Props) {
   if (!bio && !specialization) return null;
 
   return (
@@ -64,4 +65,4 @@ export function PublicProfileAbout({ profile, bio, specialization, userSpecialti
       </CardContent>
     </Card>
   );
-}
+});

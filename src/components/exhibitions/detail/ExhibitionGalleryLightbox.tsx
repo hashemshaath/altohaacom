@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X, ZoomIn, Download } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function ExhibitionGalleryLightbox({ images, initialIndex, title, isOpen, onClose }: Props) {
+export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox({ images, initialIndex, title, isOpen, onClose }: Props) {
   const [index, setIndex] = useState(initialIndex);
 
   useEffect(() => { setIndex(initialIndex); }, [initialIndex]);
@@ -102,4 +102,4 @@ export function ExhibitionGalleryLightbox({ images, initialIndex, title, isOpen,
       )}
     </div>
   );
-}
+});

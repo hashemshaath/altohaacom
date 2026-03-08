@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +10,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionQuickStats({ exhibitionId, viewCount, isAr }: Props) {
+export const ExhibitionQuickStats = memo(function ExhibitionQuickStats({ exhibitionId, viewCount, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data } = useQuery({
@@ -55,4 +56,4 @@ export function ExhibitionQuickStats({ exhibitionId, viewCount, isAr }: Props) {
       ))}
     </div>
   );
-}
+});

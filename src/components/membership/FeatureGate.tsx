@@ -1,6 +1,6 @@
 import { useHasFeature, useHasFeatureForUser } from "@/hooks/useMembershipFeatures";
 import { UpgradePrompt } from "./UpgradePrompt";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -31,7 +31,7 @@ interface FeatureGateProps {
   upgradeVariant?: "inline" | "card" | "minimal";
 }
 
-export function FeatureGate({
+export const FeatureGate = memo(function FeatureGate({
   feature,
   children,
   fallback,
@@ -66,7 +66,7 @@ export function FeatureGate({
     return null;
   }
   return <>{children}</>;
-}
+});
 
 interface FeatureGateForUserProps {
   feature: string;
@@ -75,10 +75,10 @@ interface FeatureGateForUserProps {
   fallback?: React.ReactNode;
 }
 
-export function FeatureGateForUser({ feature, userId, children, fallback = null }: FeatureGateForUserProps) {
+export const FeatureGateForUser = memo(function FeatureGateForUser({ feature, userId, children, fallback = null }: FeatureGateForUserProps) {
   const { hasFeature, isLoading } = useHasFeatureForUser(feature, userId);
 
   if (isLoading) return <>{children}</>;
   if (!hasFeature) return <>{fallback}</>;
   return <>{children}</>;
-}
+});

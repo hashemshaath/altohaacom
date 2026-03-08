@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback, ReactNode, useMemo } from "react";
+import { useRef, useState, useEffect, useCallback, ReactNode, useMemo, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface VirtualListProps<T> {
@@ -17,7 +17,7 @@ interface VirtualListProps<T> {
  * Lightweight virtual scrolling list.
  * Only renders visible items + overscan buffer for performance with large datasets.
  */
-export function VirtualList<T>({
+export const VirtualList = memo(function VirtualList<T>({
   items,
   itemHeight,
   overscan = 5,
@@ -83,7 +83,7 @@ export function VirtualList<T>({
       </div>
     </div>
   );
-}
+}) as <T>(props: VirtualListProps<T>) => JSX.Element | null;
 
 /**
  * Hook for progressive loading of large datasets.
