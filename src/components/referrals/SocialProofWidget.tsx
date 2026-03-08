@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialProofStats } from "@/hooks/useReferralExtras";
 import { Users, TrendingUp } from "lucide-react";
