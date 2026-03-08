@@ -123,7 +123,7 @@ function renderContent(msg: Message) {
   return <p className="text-sm break-words leading-relaxed">{msg.content}</p>;
 }
 
-export function ChatArea({
+export const ChatArea = memo(function ChatArea({
   user, isAr, selectedPartner, messages, loadingMessages,
   newMessage, setNewMessage, pendingFiles, setPendingFiles, uploading,
   chatSearchOpen, setChatSearchOpen, highlightedMsgId, setHighlightedMsgId,
