@@ -23,7 +23,7 @@ const CATEGORY_LABELS: Record<string, { en: string; ar: string }> = {
   packaging: { en: "Packaging", ar: "تغليف" },
 };
 
-export function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
+export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitionId, isAr }: Props) {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedHall, setSelectedHall] = useState<string | null>(null);
