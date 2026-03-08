@@ -27,7 +27,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
         supabase.from("membership_cards").select("*", { count: "exact", head: true }).eq("card_status", "active"),
         supabase.from("membership_cards").select("tier").eq("card_status", "active"),
         supabase.from("challenges").select("*", { count: "exact", head: true }).eq("is_active", true),
-        (supabase as any).from("loyalty_rewards").select("*", { count: "exact", head: true }).eq("is_active", true),
+        supabase.from("rewards_catalog").select("*", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("points_ledger").select("points, action_type").order("created_at", { ascending: false }).limit(100),
         supabase.from("referral_codes").select("*", { count: "exact", head: true }),
       ]);
