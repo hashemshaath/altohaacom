@@ -229,12 +229,12 @@ export default function AuditLog() {
       </div>
 
       <Tabs defaultValue="content" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="content" className="gap-1.5">
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto gap-1">
+          <TabsTrigger value="content" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <ShieldAlert className="h-3.5 w-3.5" />
             {isAr ? "سجل المحتوى" : "Content Log"} ({filteredContent.length})
           </TabsTrigger>
-          <TabsTrigger value="admin" className="gap-1.5">
+          <TabsTrigger value="admin" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <FileText className="h-3.5 w-3.5" />
             {isAr ? "إجراءات المشرفين" : "Admin Actions"} ({filteredActions.length})
           </TabsTrigger>
