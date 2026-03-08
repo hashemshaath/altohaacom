@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { Send, Bot, User, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ interface AIAssistantProps {
   compact?: boolean;
 }
 
-export function AIAssistant({ className, compact = false }: AIAssistantProps) {
+export const AIAssistant = memo(function AIAssistant({ className, compact = false }: AIAssistantProps) {
   const { messages, isLoading, askQuestion, clearMessages } = useAIKnowledge();
   const { t, language } = useLanguage();
   const [input, setInput] = useState("");
@@ -161,4 +161,4 @@ export function AIAssistant({ className, compact = false }: AIAssistantProps) {
       </CardContent>
     </Card>
   );
-}
+});

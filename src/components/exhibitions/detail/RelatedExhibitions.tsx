@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
@@ -17,7 +18,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function RelatedExhibitions({ exhibitionId, country, type, seriesId, isAr }: Props) {
+export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionId, country, type, seriesId, isAr }: Props) {
   const { data: related = [] } = useQuery({
     queryKey: ["related-exhibitions", exhibitionId],
     queryFn: async () => {
@@ -131,4 +132,4 @@ export function RelatedExhibitions({ exhibitionId, country, type, seriesId, isAr
       </div>
     </section>
   );
-}
+});

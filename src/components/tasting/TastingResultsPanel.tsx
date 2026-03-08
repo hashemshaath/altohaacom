@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod } from "@/hooks/useTasting";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,7 @@ interface Props {
   evalMethod: EvalMethod;
 }
 
-export function TastingResultsPanel({ entries, criteria, scores, evalMethod }: Props) {
+export const TastingResultsPanel = memo(function TastingResultsPanel({ entries, criteria, scores, evalMethod }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -171,4 +171,4 @@ export function TastingResultsPanel({ entries, criteria, scores, evalMethod }: P
       )}
     </div>
   );
-}
+});

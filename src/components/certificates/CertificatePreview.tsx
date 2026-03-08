@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Award, Image } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import type { CertificateDesign, LogoItem } from "./types";
@@ -17,7 +18,7 @@ interface CertificatePreviewProps {
   };
 }
 
-export function CertificatePreview({ design, zoom, previewData }: CertificatePreviewProps) {
+export const CertificatePreview = memo(function CertificatePreview({ design, zoom, previewData }: CertificatePreviewProps) {
   const isRtl = design.certificateLanguage === "ar";
 
   const getDimensions = () => {
@@ -288,4 +289,4 @@ export function CertificatePreview({ design, zoom, previewData }: CertificatePre
       </div>
     </div>
   );
-}
+});

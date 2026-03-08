@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Star, TrendingUp, Award, Users } from "lucide-react";
@@ -30,7 +31,7 @@ function getScoreLabel(score: number, max: number, isAr?: boolean): string {
   return isAr ? "يحتاج تحسين" : "Needs Improvement";
 }
 
-export function EvaluationScoreCard({ overallScore, maxScore, evaluatorCount, criteriaCount, categoryScores, isAr }: Props) {
+export const EvaluationScoreCard = memo(function EvaluationScoreCard({ overallScore, maxScore, evaluatorCount, criteriaCount, categoryScores, isAr }: Props) {
   const pct = (overallScore / maxScore) * 100;
 
   return (
@@ -102,4 +103,4 @@ export function EvaluationScoreCard({ overallScore, maxScore, evaluatorCount, cr
       </div>
     </div>
   );
-}
+});

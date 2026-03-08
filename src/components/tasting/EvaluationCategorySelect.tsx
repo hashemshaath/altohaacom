@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -20,7 +21,7 @@ interface Props {
   onChange: (v: EvaluationCategory) => void;
 }
 
-export function EvaluationCategorySelect({ value, onChange }: Props) {
+export const EvaluationCategorySelect = memo(function EvaluationCategorySelect({ value, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -48,6 +49,6 @@ export function EvaluationCategorySelect({ value, onChange }: Props) {
       })}
     </RadioGroup>
   );
-}
+});
 
 export { CATEGORIES };

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { RefreshCw } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -19,7 +20,7 @@ interface DataFreshnessProps {
  * Displays when data was last refreshed with a live/stale indicator.
  * Builds trust by showing data recency.
  */
-export function DataFreshness({ lastUpdated, isRefetching, onRefresh, className }: DataFreshnessProps) {
+export const DataFreshness = memo(function DataFreshness({ lastUpdated, isRefetching, onRefresh, className }: DataFreshnessProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -49,4 +50,4 @@ export function DataFreshness({ lastUpdated, isRefetching, onRefresh, className 
       )}
     </span>
   );
-}
+});
