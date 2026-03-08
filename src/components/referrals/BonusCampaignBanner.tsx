@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { useActiveBonusCampaigns } from "@/hooks/useReferralExtras";
 import { Zap, Clock } from "lucide-react";
 
-export function BonusCampaignBanner() {
+export const BonusCampaignBanner = memo(function BonusCampaignBanner() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: campaigns } = useActiveBonusCampaigns();
