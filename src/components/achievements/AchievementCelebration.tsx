@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Trophy, Star, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
