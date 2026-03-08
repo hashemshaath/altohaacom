@@ -83,7 +83,7 @@ export default function Rewards() {
       </div>
 
       <Tabs defaultValue="rewards" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-4 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
           <TabsTrigger value="rewards" className="gap-1.5">
             <Gift className="h-4 w-4" />
             <span className="hidden sm:inline">{isAr ? "المكافآت" : "Rewards"}</span>
