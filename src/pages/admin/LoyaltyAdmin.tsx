@@ -176,11 +176,11 @@ export default function LoyaltyAdmin() {
         </TabsList>
 
         <TabsContent value="tiers">
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>{isAr ? "المستوى" : "Tier"}</TableHead>
                     <TableHead className="text-center">{isAr ? "الحد الأدنى" : "Min Points"}</TableHead>
                     <TableHead className="text-center">{isAr ? "المضاعف" : "Multiplier"}</TableHead>
@@ -189,22 +189,24 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {tiers.map((t: any) => (
-                    <TableRow key={t.id}>
+                    <TableRow key={t.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{t.icon_emoji}</span>
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 border border-border/30 text-lg transition-transform duration-300 group-hover:scale-110">
+                            {t.icon_emoji}
+                          </div>
                           <div>
                             <p className="font-medium">{isAr ? t.name_ar : t.name}</p>
-                            <p className="text-xs text-muted-foreground">{t.slug}</p>
+                            <p className="text-xs text-muted-foreground font-mono">{t.slug}</p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center font-mono">{t.min_points.toLocaleString()}</TableCell>
-                      <TableCell className="text-center font-mono">×{t.multiplier}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">{t.min_points.toLocaleString()}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">×{t.multiplier}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {(t.benefits as string[] || []).map((b: string, i: number) => (
-                            <Badge key={i} variant="outline" className="text-[10px]">{b}</Badge>
+                            <Badge key={i} variant="outline" className="text-[10px] rounded-lg">{b}</Badge>
                           ))}
                         </div>
                       </TableCell>
