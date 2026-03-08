@@ -355,8 +355,9 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {browserData.map((b, i) => {
+                {(() => {
                   const total = browserData.reduce((s, x) => s + x.value, 0);
+                  return browserData.map((b, i) => {
                   const pct = total > 0 ? Math.round((b.value / total) * 100) : 0;
                   return (
                     <div key={b.name} className="space-y-1">
