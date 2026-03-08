@@ -256,6 +256,17 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
     ];
   }, [followerTimeline, ticketsOverTime, reviewsData, boothStats, scheduleRegs, cookingSessionStats]);
 
+  const kpiStats = useMemo(() => {
+    const checkedInCount = ticketsOverTime.filter((t: any) => t.checked_in_at).length;
+    const avgRatingVal = reviewsData.length > 0 ? (reviewsData.reduce((s: number, r: any) => s + r.rating, 0) / reviewsData.length).toFixed(1) : "—";
+    return [
+      { label: t("Total Tickets", "إجمالي التذاكر"), value: ticketsOverTime.length, icon: Ticket, color: "text-primary" },
+      { label: t("Checked In", "تم الحضور"), value: checkedInCount, icon: Users, color: "text-chart-3" },
+      { label: t("Revenue", "الإيرادات"), value: revenue > 0 ? revenue : "—", icon: TrendingUp, color: "text-chart-2", suffix: revenue > 0 ? " SAR" : "" },
+      { label: t("Avg Rating", "متوسط التقييم"), value: avgRatingVal, icon: Star, color: "text-chart-4" },
+    ];
+  }, [ticketsOverTime, reviewsData, revenue, t]);
+
   if (ticketsOverTime.length === 0 && reviewsData.length === 0 && boothStats.length === 0 && followerTimeline.length === 0) {
     return (
       <Card className="border-dashed">
@@ -271,16 +282,7 @@ export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
     <div className="space-y-4">
       {/* KPI Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {useMemo(() => {
-          const checkedInCount = ticketsOverTime.filter((t: any) => t.checked_in_at).length;
-          const avgRatingVal = reviewsData.length > 0 ? (reviewsData.reduce((s: number, r: any) => s + r.rating, 0) / reviewsData.length).toFixed(1) : "—";
-          return [
-            { label: t("Total Tickets", "إجمالي التذاكر"), value: ticketsOverTime.length, icon: Ticket, color: "text-primary" },
-            { label: t("Checked In", "تم الحضور"), value: checkedInCount, icon: Users, color: "text-chart-3" },
-            { label: t("Revenue", "الإيرادات"), value: revenue > 0 ? revenue : "—", icon: TrendingUp, color: "text-chart-2", suffix: revenue > 0 ? " SAR" : "" },
-            { label: t("Avg Rating", "متوسط التقييم"), value: avgRatingVal, icon: Star, color: "text-chart-4" },
-          ];
-        }, [ticketsOverTime, reviewsData, revenue, t]).map(kpi => (
+        {kpiStats.map(kpi => (
           <Card key={kpi.label} className="border-border/40">
             <CardContent className="p-3 flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 shrink-0">
