@@ -31,7 +31,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityEventsTab({ entityId }: Props) {
+export const EntityEventsTab = memo(function EntityEventsTab({ entityId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: events, isLoading } = useEntityEvents(entityId);
