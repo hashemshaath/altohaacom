@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function PublicProfileAchievements({ userId, isAr }: Props) {
+export const PublicProfileAchievements = memo(function PublicProfileAchievements({ userId, isAr }: Props) {
   // Fetch rankings
   const { data: rankings = [] } = useQuery({
     queryKey: ["user-rankings", userId],
