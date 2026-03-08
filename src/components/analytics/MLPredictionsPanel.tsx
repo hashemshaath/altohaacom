@@ -67,7 +67,7 @@ const metricIcons: Record<string, React.ElementType> = {
   orders: Target, registrations: Users,
 };
 
-export function MLPredictionsPanel() {
+export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
