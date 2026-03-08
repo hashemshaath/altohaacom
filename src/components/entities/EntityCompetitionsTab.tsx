@@ -21,7 +21,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityCompetitionsTab({ entityId }: Props) {
+export const EntityCompetitionsTab = memo(function EntityCompetitionsTab({ entityId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: participations, isLoading } = useEntityCompetitions(entityId);
