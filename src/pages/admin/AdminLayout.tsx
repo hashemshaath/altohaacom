@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
