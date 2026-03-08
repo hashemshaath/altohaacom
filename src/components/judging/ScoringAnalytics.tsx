@@ -12,7 +12,7 @@ interface ScoringAnalyticsProps {
   competitionId: string;
 }
 
-export function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
+export const ScoringAnalytics = memo(function ScoringAnalytics({ competitionId }: ScoringAnalyticsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
