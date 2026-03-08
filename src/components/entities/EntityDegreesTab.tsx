@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useEntityDegrees } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
