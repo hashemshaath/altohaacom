@@ -24,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }: Props) {
+export const ExhibitionSocialLinks = memo(function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }: Props) {
   if (!socialLinks || typeof socialLinks !== "object" || Array.isArray(socialLinks)) {
     if (!websiteUrl) return null;
   }
