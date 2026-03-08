@@ -65,7 +65,7 @@ const benefits = [
   },
 ];
 
-export function ChefsTableBenefits({ isAr }: ChefsTableBenefitsProps) {
+export const ChefsTableBenefits = memo(function ChefsTableBenefits({ isAr }: ChefsTableBenefitsProps) {
   return (
     <section className="border-y border-border/30 bg-muted/30">
       <div className="container py-16 md:py-20">
