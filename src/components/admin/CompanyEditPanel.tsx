@@ -36,7 +36,7 @@ interface CompanyEditPanelProps {
   companyDetails: any;
 }
 
-export function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
+export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
