@@ -34,4 +34,4 @@ export const CatalogStats = memo(function CatalogStats({ total, active, inStock,
       ))}
     </div>
   );
-}
+});

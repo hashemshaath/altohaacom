@@ -81,4 +81,4 @@ export const ImageLightbox = memo(function ImageLightbox({ images, currentIndex,
       </div>
     </div>
   );
-}
+});

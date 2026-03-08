@@ -591,4 +591,4 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
       )}
     </div>
   );
-}
+});

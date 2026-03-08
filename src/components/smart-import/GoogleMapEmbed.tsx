@@ -46,4 +46,4 @@ export const GoogleMapEmbed = memo(function GoogleMapEmbed({ latitude, longitude
       />
     </div>
   );
-}
+});

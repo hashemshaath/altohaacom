@@ -71,4 +71,4 @@ export const LikeAnimation = memo(function LikeAnimation({ isLiked, count, onCli
       `}</style>
     </button>
   );
-}
+});

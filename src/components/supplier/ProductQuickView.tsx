@@ -77,4 +77,4 @@ export const ProductQuickView = memo(function ProductQuickView({ product, open, 
       </DialogContent>
     </Dialog>
   );
-}
+});

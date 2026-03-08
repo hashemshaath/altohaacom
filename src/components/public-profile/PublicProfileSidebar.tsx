@@ -121,4 +121,4 @@ export const PublicProfileSidebar = memo(function PublicProfileSidebar({ profile
       </FeatureGateForUser>
     </div>
   );
-}
+});

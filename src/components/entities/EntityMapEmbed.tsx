@@ -96,4 +96,4 @@ export const EntityMapEmbed = memo(function EntityMapEmbed({ latitude, longitude
       </CardContent>
     </Card>
   );
-}
+});

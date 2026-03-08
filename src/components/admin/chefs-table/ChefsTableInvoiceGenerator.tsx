@@ -172,4 +172,4 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
       </CardContent>
     </Card>
   );
-}
+});

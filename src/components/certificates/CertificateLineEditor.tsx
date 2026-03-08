@@ -211,4 +211,4 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
       )}
     </div>
   );
-}
+});

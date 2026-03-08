@@ -151,4 +151,4 @@ export const OnboardingChecklist = memo(function OnboardingChecklist() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -88,4 +88,4 @@ export const EntityDegreesTab = memo(function EntityDegreesTab({ entityId }: Pro
       })}
     </div>
   );
-}
+});

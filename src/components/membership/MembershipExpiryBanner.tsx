@@ -107,4 +107,4 @@ export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ cla
       </button>
     </div>
   );
-}
+});

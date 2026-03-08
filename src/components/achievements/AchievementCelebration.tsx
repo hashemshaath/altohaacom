@@ -116,4 +116,4 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
       </div>
     </div>
   );
-}
+});

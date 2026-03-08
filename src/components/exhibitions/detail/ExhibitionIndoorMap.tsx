@@ -234,4 +234,4 @@ export const ExhibitionIndoorMap = memo(function ExhibitionIndoorMap({ exhibitio
       </div>
     </div>
   );
-}
+});

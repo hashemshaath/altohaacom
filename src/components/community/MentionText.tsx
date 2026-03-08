@@ -45,4 +45,4 @@ export const MentionText = memo(function MentionText({ content, className }: Men
       })}
     </span>
   );
-}
+});

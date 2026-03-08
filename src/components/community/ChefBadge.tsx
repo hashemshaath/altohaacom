@@ -88,4 +88,4 @@ export const ChefBadge = memo(function ChefBadge({ userId, className, showToolti
       })}
     </span>
   );
-}
+});
