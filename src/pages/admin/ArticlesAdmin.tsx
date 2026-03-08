@@ -7,6 +7,7 @@ import { ContentInsightsWidget } from "@/components/admin/ContentInsightsWidget"
 import { ContentPipelineWidget } from "@/components/admin/ContentPipelineWidget";
 import { ContentLiveStatsWidget } from "@/components/admin/ContentLiveStatsWidget";
 import { ContentPerformanceWidget } from "@/components/admin/ContentPerformanceWidget";
+import { EditorialCalendarWidget, ArticlePerformanceWidget } from "@/components/admin/EditorialCalendarWidget";
 import { ArticleEditorPro } from "@/components/articles/ArticleEditorPro";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -304,6 +305,12 @@ export default function ArticlesAdmin() {
 
       {/* Content Pipeline */}
       <ContentPipelineWidget />
+
+      {/* Editorial Calendar & Top Articles */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <EditorialCalendarWidget />
+        <ArticlePerformanceWidget />
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
