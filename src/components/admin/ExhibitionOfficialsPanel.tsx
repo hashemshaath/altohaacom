@@ -38,7 +38,7 @@ const emptyOfficial: OfficialForm = {
   full_name: "", full_name_ar: "", role_title: "", role_title_ar: "", email: "", phone: "",
 };
 
-export function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
+export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({ exhibitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
