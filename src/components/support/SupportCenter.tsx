@@ -283,4 +283,4 @@ export const SupportCenter = memo(function SupportCenter() {
       </Tabs>
     </div>
   );
-}
+});

@@ -32,4 +32,4 @@ export const RoutePrefetcher = memo(function RoutePrefetcher() {
   }, []);
 
   return null;
-}
+});

@@ -376,7 +376,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
       </Card>
     </div>
   );
-}
+});
 
 function hexRgba(hex: string, alpha: number): string {
   const r = parseInt(hex.slice(1, 3), 16);

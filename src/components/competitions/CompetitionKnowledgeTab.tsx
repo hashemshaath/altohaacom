@@ -586,4 +586,4 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
       <JudgeAIAssistant competitionId={competitionId} className="h-[600px]" />
     </div>
   );
-}
+});

@@ -291,4 +291,4 @@ export const SupplierOnboardingWizard = memo(function SupplierOnboardingWizard({
       </div>
     </div>
   );
-}
+});

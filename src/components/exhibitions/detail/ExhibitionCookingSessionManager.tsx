@@ -265,4 +265,4 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
       </Card>
     </div>
   );
-}
+});

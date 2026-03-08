@@ -274,4 +274,4 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
       </CardContent>
     </Card>
   );
-}
+});

@@ -261,4 +261,4 @@ export const HeroSlidePreview = memo(function HeroSlidePreview({ slide }: { slid
     case "minimal":   return <MinimalTemplate slide={slide} />;
     default:          return <ClassicTemplate slide={slide} />;
   }
-}
+});

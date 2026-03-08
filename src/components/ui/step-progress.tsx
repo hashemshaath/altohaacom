@@ -92,4 +92,4 @@ export const StepProgress = memo(function StepProgress({ steps, currentStep, cla
       })}
     </div>
   );
-}
+});

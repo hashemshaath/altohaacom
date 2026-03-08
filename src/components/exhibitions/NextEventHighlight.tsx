@@ -68,4 +68,4 @@ export const NextEventHighlight = memo(function NextEventHighlight({ exhibition,
       </Button>
     </div>
   );
-}
+});

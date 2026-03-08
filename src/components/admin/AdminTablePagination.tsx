@@ -67,4 +67,4 @@ export const AdminTablePagination = memo(function AdminTablePagination({
       </div>
     </div>
   );
-}
+});
