@@ -37,7 +37,7 @@ function isQuestion(content: string): boolean {
   return /\?|؟/.test(content);
 }
 
-export function QuickReplySuggestions({ lastMessage, isAr, onSelect }: QuickReplySuggestionsProps) {
+export const QuickReplySuggestions = memo(function QuickReplySuggestions({ lastMessage, isAr, onSelect }: QuickReplySuggestionsProps) {
   const suggestions = useMemo(() => {
     if (!lastMessage) return isAr ? QUICK_REPLIES_AR.slice(0, 4) : QUICK_REPLIES_EN.slice(0, 4);
 
