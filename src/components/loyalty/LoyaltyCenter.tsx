@@ -241,9 +241,9 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
           {badges.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {badges.map((b: any) => (
-                <Card key={b.id} className="text-center">
+                <Card key={b.id} className="text-center group/badge transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-chart-4/30">
                   <CardContent className="p-4 space-y-2">
-                    <span className="text-3xl">{b.badge_icon}</span>
+                    <span className="text-3xl block transition-transform duration-500 group-hover/badge:scale-125 group-hover/badge:rotate-6">{b.badge_icon}</span>
                     <p className="font-medium text-sm">{isAr ? b.badge_name_ar : b.badge_name}</p>
                     <p className="text-[10px] text-muted-foreground">
                       {new Date(b.earned_at).toLocaleDateString()}
@@ -253,10 +253,11 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
               ))}
             </div>
           ) : (
-            <Card>
+            <Card className="border-dashed">
               <CardContent className="p-8 text-center text-muted-foreground">
-                <Star className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                <p>{isAr ? "لم تحصل على شارات بعد. أكمل التحديات لكسب الشارات!" : "No badges yet. Complete challenges to earn badges!"}</p>
+                <Star className="h-12 w-12 mx-auto mb-3 opacity-20 animate-pulse" />
+                <p className="font-medium">{isAr ? "لم تحصل على شارات بعد" : "No badges yet"}</p>
+                <p className="text-xs mt-1">{isAr ? "أكمل التحديات لكسب الشارات!" : "Complete challenges to earn badges!"}</p>
               </CardContent>
             </Card>
           )}
