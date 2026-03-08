@@ -19,7 +19,7 @@ interface Props {
   onImported: () => void;
 }
 
-export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImported }: Props) {
+export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImported }: Props) {
   const { toast } = useToast();
   const [step, setStep] = useState<"input" | "preview">("input");
   const [cvText, setCvText] = useState("");
