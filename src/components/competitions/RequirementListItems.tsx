@@ -29,7 +29,7 @@ interface Props {
   listCategory?: string;
 }
 
-export function RequirementListItems({ listId, competitionId, listCategory = "general" }: Props) {
+export const RequirementListItems = memo(function RequirementListItems({ listId, competitionId, listCategory = "general" }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
