@@ -12,7 +12,7 @@ interface ParticipantStatsCardProps {
   maxParticipants: number | null;
 }
 
-export function ParticipantStatsCard({ competitionId, maxParticipants }: ParticipantStatsCardProps) {
+export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competitionId, maxParticipants }: ParticipantStatsCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
