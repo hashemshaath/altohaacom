@@ -37,4 +37,4 @@ export function FeedSkeletonLoader({ count = 5 }: { count?: number }) {
       ))}
     </div>
   );
-}
+});

@@ -269,4 +269,4 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
       </Dialog>
     </div>
   );
-}
+});

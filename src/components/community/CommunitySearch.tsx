@@ -239,4 +239,4 @@ export const CommunitySearch = memo(function CommunitySearch() {
       )}
     </div>
   );
-}
+});

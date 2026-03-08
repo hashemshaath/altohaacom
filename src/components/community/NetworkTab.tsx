@@ -281,4 +281,4 @@ export const NetworkTab = memo(function NetworkTab() {
       </Card>
     </div>
   );
-}
+});

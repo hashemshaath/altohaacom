@@ -142,4 +142,4 @@ export const NotificationDigest = memo(function NotificationDigest() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -32,4 +32,4 @@ export const SocialProofWidget = memo(function SocialProofWidget() {
       )}
     </div>
   );
-}
+});

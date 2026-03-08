@@ -158,4 +158,4 @@ export const NotificationGroupWidget = memo(function NotificationGroupWidget() {
       })}
     </div>
   );
-}
+});

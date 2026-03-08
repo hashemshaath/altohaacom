@@ -223,4 +223,4 @@ export const ChefsTab = memo(function ChefsTab() {
       )}
     </div>
   );
-}
+});

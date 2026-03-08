@@ -74,4 +74,4 @@ export const FeedRecommendations = memo(function FeedRecommendations() {
       ) : null}
     </div>
   );
-}
+});

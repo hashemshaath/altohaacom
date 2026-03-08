@@ -536,4 +536,4 @@ export const CommunityFeed = memo(function CommunityFeed() {
       )}
     </>
   );
-}
+});

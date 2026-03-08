@@ -87,4 +87,4 @@ export const TierProgressCard = memo(function TierProgressCard() {
       </CardContent>
     </Card>
   );
-}
+});

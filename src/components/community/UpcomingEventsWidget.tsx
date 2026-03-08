@@ -91,4 +91,4 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
       </Link>
     </div>
   );
-}
+});

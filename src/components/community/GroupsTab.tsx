@@ -273,4 +273,4 @@ export const GroupsTab = memo(function GroupsTab() {
       )}
     </div>
   );
-}
+});

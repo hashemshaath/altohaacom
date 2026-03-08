@@ -513,4 +513,4 @@ export const EventsTab = memo(function EventsTab() {
       </Dialog>
     </div>
   );
-}
+});

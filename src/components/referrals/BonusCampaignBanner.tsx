@@ -53,4 +53,4 @@ export const BonusCampaignBanner = memo(function BonusCampaignBanner() {
       </div>
     </div>
   );
-}
+});

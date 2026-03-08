@@ -128,4 +128,4 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
       </div>
     </div>
   );
-}
+});

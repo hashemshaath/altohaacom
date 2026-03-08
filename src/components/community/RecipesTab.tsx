@@ -301,4 +301,4 @@ export const RecipesTab = memo(function RecipesTab() {
       )}
     </div>
   );
-}
+});

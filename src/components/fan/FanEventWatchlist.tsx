@@ -131,7 +131,7 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
       </CardContent>
     </Card>
   );
-}
+});
 
 /** Reusable hook to add/remove from watchlist */
 export function useEventWatchlist(eventType: "competition" | "exhibition", eventId?: string) {
