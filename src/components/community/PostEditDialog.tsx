@@ -16,7 +16,7 @@ interface PostEditDialogProps {
 
 const MAX_CHARS = 1000;
 
-export function PostEditDialog({ post, onClose, onSaved }: PostEditDialogProps) {
+export const PostEditDialog = memo(function PostEditDialog({ post, onClose, onSaved }: PostEditDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
