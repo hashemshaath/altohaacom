@@ -433,7 +433,7 @@ export default function CertificatesAdmin() {
                   <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
                     <SelectItem value="draft">{language === "ar" ? "مسودة" : "Draft"}</SelectItem>
