@@ -16,7 +16,7 @@ interface EmojiPickerProps {
   onEmojiSelect: (emoji: string) => void;
 }
 
-export function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
+export const EmojiPicker = memo(function EmojiPicker({ onEmojiSelect }: EmojiPickerProps) {
   const { language } = useLanguage();
   const [open, setOpen] = useState(false);
 
