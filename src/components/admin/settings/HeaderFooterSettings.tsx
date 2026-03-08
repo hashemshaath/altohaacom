@@ -14,7 +14,7 @@ interface Props {
   isPending: boolean;
 }
 
-export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
+export const HeaderFooterSettings = memo(function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const headerCfg = settings.header || {};
