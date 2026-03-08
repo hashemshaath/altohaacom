@@ -81,7 +81,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground h-9 px-3.5 text-sm font-medium gap-1.5 hover:bg-primary/5 hover:text-foreground group"
+            className="text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl gap-1.5 hover:bg-primary/5 hover:text-foreground group transition-all duration-200"
           >
             <Compass className="h-3.5 w-3.5" />
             {label("Explore", "اكتشف")}
