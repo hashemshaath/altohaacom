@@ -70,7 +70,7 @@ function autoLayout(booths: Booth[]): Booth[] {
   }));
 }
 
-export function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
+export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionId, isAr }: Props) {
   const [zoom, setZoom] = useState(1);
   const [selectedBooth, setSelectedBooth] = useState<Booth | null>(null);
   const [selectedHall, setSelectedHall] = useState<string | null>(null);
