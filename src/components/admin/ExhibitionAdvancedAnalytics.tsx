@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,7 +21,7 @@ const COLORS = [
   "hsl(var(--chart-5))", "hsl(var(--chart-2))", "hsl(var(--chart-1))",
 ];
 
-export function ExhibitionAdvancedAnalytics() {
+export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
