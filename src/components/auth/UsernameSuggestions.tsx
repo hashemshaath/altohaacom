@@ -24,7 +24,7 @@ function generateCandidates(base: string): string[] {
   return candidates.filter((c) => /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/.test(c));
 }
 
-export function UsernameSuggestions({ baseUsername, onSelect }: UsernameSuggestionsProps) {
+export const UsernameSuggestions = memo(function UsernameSuggestions({ baseUsername, onSelect }: UsernameSuggestionsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [suggestions, setSuggestions] = useState<string[]>([]);
