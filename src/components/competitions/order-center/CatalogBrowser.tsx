@@ -83,12 +83,12 @@ export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
   });
 
   // Group items by category
-  const grouped = items?.reduce((acc, item) => {
+  const grouped = useMemo(() => items?.reduce((acc, item) => {
     const cat = item.category || "other";
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(item);
     return acc;
-  }, {} as Record<string, typeof items>) || {};
+  }, {} as Record<string, typeof items>) || {}, [items]);
 
   return (
     <div className="space-y-4">
