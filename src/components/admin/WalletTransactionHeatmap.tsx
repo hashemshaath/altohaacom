@@ -106,10 +106,12 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
 
       {/* Top Wallets + Weekly Summary */}
       <div className="space-y-4">
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Users className="h-4 w-4 text-chart-1" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-1/10 border border-chart-1/15">
+                <Users className="h-3.5 w-3.5 text-chart-1" />
+              </div>
               {isAr ? "أعلى الأرصدة" : "Top Wallets"}
             </CardTitle>
           </CardHeader>
