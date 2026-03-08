@@ -168,11 +168,11 @@ export default function LoyaltyAdmin() {
       </div>
 
       <Tabs defaultValue="tiers">
-        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
-          <TabsTrigger value="tiers" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "المستويات" : "Tiers"}</TabsTrigger>
-          <TabsTrigger value="challenges" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "التحديات" : "Challenges"}</TabsTrigger>
-          <TabsTrigger value="rewards" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "المكافآت" : "Rewards"}</TabsTrigger>
-          <TabsTrigger value="redemptions" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "الاستبدالات" : "Redemptions"}</TabsTrigger>
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto gap-1">
+          <TabsTrigger value="tiers" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><Crown className="h-3.5 w-3.5" />{isAr ? "المستويات" : "Tiers"}</TabsTrigger>
+          <TabsTrigger value="challenges" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><Trophy className="h-3.5 w-3.5" />{isAr ? "التحديات" : "Challenges"}</TabsTrigger>
+          <TabsTrigger value="rewards" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><Gift className="h-3.5 w-3.5" />{isAr ? "المكافآت" : "Rewards"}</TabsTrigger>
+          <TabsTrigger value="redemptions" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><TrendingUp className="h-3.5 w-3.5" />{isAr ? "الاستبدالات" : "Redemptions"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tiers">
