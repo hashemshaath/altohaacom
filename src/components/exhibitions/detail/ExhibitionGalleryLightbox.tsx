@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function ExhibitionGalleryLightbox({ images, initialIndex, title, isOpen, onClose }: Props) {
+export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox({ images, initialIndex, title, isOpen, onClose }: Props) {
   const [index, setIndex] = useState(initialIndex);
 
   useEffect(() => { setIndex(initialIndex); }, [initialIndex]);
