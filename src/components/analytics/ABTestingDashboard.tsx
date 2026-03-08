@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,7 +72,7 @@ const MOCK_EXPERIMENTS: Experiment[] = [
   },
 ];
 
-export function ABTestingDashboard() {
+export const ABTestingDashboard = memo(function ABTestingDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [experiments] = useState<Experiment[]>(MOCK_EXPERIMENTS);
@@ -261,4 +261,4 @@ export function ABTestingDashboard() {
       )}
     </div>
   );
-}
+});

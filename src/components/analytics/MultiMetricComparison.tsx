@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +31,7 @@ const METRICS: MetricDef[] = [
   { id: "certificates", label: "Certificates", labelAr: "الشهادات", icon: FileText, color: "hsl(var(--chart-1))", table: "certificates", dateCol: "created_at" },
 ];
 
-export function MultiMetricComparison() {
+export const MultiMetricComparison = memo(function MultiMetricComparison() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selected, setSelected] = useState<string[]>(["users", "competitions", "orders"]);
@@ -159,4 +159,4 @@ export function MultiMetricComparison() {
       </Card>
     </div>
   );
-}
+});

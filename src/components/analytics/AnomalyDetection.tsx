@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,7 @@ interface Anomaly {
   severity: "low" | "medium" | "high";
 }
 
-export function AnomalyDetection() {
+export const AnomalyDetection = memo(function AnomalyDetection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [metric, setMetric] = useState("signups");
@@ -203,4 +203,4 @@ export function AnomalyDetection() {
       </Card>
     </div>
   );
-}
+});

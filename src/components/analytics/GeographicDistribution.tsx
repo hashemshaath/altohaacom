@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +22,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-1))",
 ];
 
-export function GeographicDistribution() {
+export const GeographicDistribution = memo(function GeographicDistribution() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -239,4 +240,4 @@ export function GeographicDistribution() {
       </Card>
     </div>
   );
-}
+});

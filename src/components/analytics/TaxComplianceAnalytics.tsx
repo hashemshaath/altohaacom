@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +24,7 @@ const KSA_VAT_RATE = 15;
 const KSA_ZAKAT_RATE = 2.5;
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
-export function TaxComplianceAnalytics() {
+export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [year, setYear] = useState(new Date().getFullYear().toString());
@@ -287,4 +287,4 @@ export function TaxComplianceAnalytics() {
       </Card>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +16,7 @@ interface FunnelStep {
   color: string;
 }
 
-export function FunnelAnalysis() {
+export const FunnelAnalysis = memo(function FunnelAnalysis() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [period, setPeriod] = useState("30d");
@@ -144,4 +144,4 @@ export function FunnelAnalysis() {
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +12,7 @@ import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 
-export function ExecutiveSummary() {
+export const ExecutiveSummary = memo(function ExecutiveSummary() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const reportRef = useRef<HTMLDivElement>(null);
@@ -240,4 +240,4 @@ export function ExecutiveSummary() {
       </div>
     </div>
   );
-}
+});

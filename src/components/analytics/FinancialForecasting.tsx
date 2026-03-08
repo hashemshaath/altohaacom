@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,7 @@ import { formatCurrency } from "@/lib/currencyFormatter";
 import { format, subMonths, eachMonthOfInterval, startOfMonth } from "date-fns";
 import { ar } from "date-fns/locale";
 
-export function FinancialForecasting() {
+export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [forecastMonths, setForecastMonths] = useState("6");
@@ -349,4 +349,4 @@ export function FinancialForecasting() {
       )}
     </div>
   );
-}
+});

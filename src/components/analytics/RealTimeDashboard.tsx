@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +16,7 @@ interface LiveMetric {
   history: number[];
 }
 
-export function RealTimeDashboard() {
+export const RealTimeDashboard = memo(function RealTimeDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isConnected, setIsConnected] = useState(false);
@@ -177,4 +177,4 @@ export function RealTimeDashboard() {
       </div>
     </div>
   );
-}
+});

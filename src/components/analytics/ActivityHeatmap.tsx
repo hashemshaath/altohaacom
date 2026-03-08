@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 type DataSource = "profiles" | "messages" | "competition_registrations" | "posts";
 
-export function ActivityHeatmap() {
+export const ActivityHeatmap = memo(function ActivityHeatmap() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [source, setSource] = useState<DataSource>("profiles");
@@ -207,4 +208,4 @@ export function ActivityHeatmap() {
       </Card>
     </div>
   );
-}
+});

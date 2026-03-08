@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +18,7 @@ import { TrendForecastChart } from "./TrendForecastChart";
 
 const COLORS = ["hsl(var(--chart-2))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))", "hsl(var(--primary))"];
 
-export function RevenueAnalytics() {
+export const RevenueAnalytics = memo(function RevenueAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -332,4 +333,4 @@ export function RevenueAnalytics() {
       </Card>
     </StaggeredList>
   );
-}
+});

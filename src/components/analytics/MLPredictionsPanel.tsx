@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,7 +67,7 @@ const metricIcons: Record<string, React.ElementType> = {
   orders: Target, registrations: Users,
 };
 
-export function MLPredictionsPanel() {
+export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -309,4 +309,4 @@ export function MLPredictionsPanel() {
       )}
     </div>
   );
-}
+});

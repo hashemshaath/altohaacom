@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +33,7 @@ const SUGGESTIONS_AR = [
   "حدد المستخدمين المعرضين لخطر المغادرة",
 ];
 
-export function AIAnalyticsChat() {
+export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [messages, setMessages] = useState<Message[]>([]);
@@ -202,4 +202,4 @@ export function AIAnalyticsChat() {
       </Card>
     </div>
   );
-}
+});

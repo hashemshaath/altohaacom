@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +22,7 @@ interface ChurnRisk {
   mitigation: string;
 }
 
-export function PredictiveChurnDashboard() {
+export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -219,4 +219,4 @@ export function PredictiveChurnDashboard() {
       )}
     </div>
   );
-}
+});

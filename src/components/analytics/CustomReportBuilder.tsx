@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -73,7 +73,7 @@ interface SavedReport {
   chartType: ChartType;
 }
 
-export function CustomReportBuilder() {
+export const CustomReportBuilder = memo(function CustomReportBuilder() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["users", "competitions"]);
@@ -392,4 +392,4 @@ export function CustomReportBuilder() {
       </div>
     </div>
   );
-}
+});
