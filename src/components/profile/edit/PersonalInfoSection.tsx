@@ -18,7 +18,7 @@ interface PersonalInfoSectionProps {
   isAr: boolean;
 }
 
-export function PersonalInfoSection({ form, update, isAr }: PersonalInfoSectionProps) {
+export const PersonalInfoSection = memo(function PersonalInfoSection({ form, update, isAr }: PersonalInfoSectionProps) {
   return (
     <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader className="pb-3 px-6 pt-5">
