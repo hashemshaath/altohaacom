@@ -8,7 +8,7 @@ interface CompetitionCountdownProps {
   labelAr: string;
 }
 
-export function CompetitionCountdown({ targetDate, label, labelAr }: CompetitionCountdownProps) {
+export const CompetitionCountdown = memo(function CompetitionCountdown({ targetDate, label, labelAr }: CompetitionCountdownProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
