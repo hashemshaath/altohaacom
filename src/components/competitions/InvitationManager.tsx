@@ -36,7 +36,7 @@ const STATUS_COLORS: Record<string, string> = {
   no_show: "bg-chart-5/20 text-chart-5",
 };
 
-export function InvitationManager({ competitionId }: InvitationManagerProps) {
+export const InvitationManager = memo(function InvitationManager({ competitionId }: InvitationManagerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
