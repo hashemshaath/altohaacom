@@ -81,7 +81,7 @@ export const SectionDivider = memo(function SectionDivider({ color }: { color: s
       <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(to left, transparent, ${color})` }} />
     </div>
   );
-}
+});
 
 // ── Contact Form ──
 export function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerName }: {
