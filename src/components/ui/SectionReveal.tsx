@@ -12,7 +12,7 @@ interface Props {
  * Lightweight scroll-reveal wrapper using IntersectionObserver.
  * Animates children into view once with a subtle translate + opacity transition.
  */
-export function SectionReveal({ children, className, delay = 0, direction = "up" }: Props) {
+export const SectionReveal = memo(function SectionReveal({ children, className, delay = 0, direction = "up" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
