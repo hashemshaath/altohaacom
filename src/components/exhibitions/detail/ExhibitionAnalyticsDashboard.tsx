@@ -15,7 +15,7 @@ interface Props {
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
-export function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
+export const ExhibitionAnalyticsDashboard = memo(function ExhibitionAnalyticsDashboard({ exhibitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [period, setPeriod] = useState("7d");
