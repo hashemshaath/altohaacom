@@ -37,7 +37,7 @@ function getEmbedUrl(url: string): string | null {
   return null;
 }
 
-export function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBack }: LessonViewerProps) {
+export const LessonViewer = memo(function LessonViewer({ lesson, isCompleted, isEnrolled, onComplete, onBack }: LessonViewerProps) {
   const { language } = useLanguage();
 
   const title = language === "ar" && lesson.title_ar ? lesson.title_ar : lesson.title;
