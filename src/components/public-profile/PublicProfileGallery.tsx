@@ -176,7 +176,7 @@ export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFi
       </Dialog>
     </>
   );
-}
+});
 
 function GalleryThumb({ file, onClick }: { file: MediaFile; onClick: () => void }) {
   return (
@@ -190,4 +190,4 @@ function GalleryThumb({ file, onClick }: { file: MediaFile; onClick: () => void 
       </div>
     </button>
   );
-});
+}
