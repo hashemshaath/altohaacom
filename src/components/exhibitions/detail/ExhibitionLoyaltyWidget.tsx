@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -78,9 +79,11 @@ export function ExhibitionLoyaltyWidget({ exhibitionId, isAr }: Props) {
     },
   });
 
-  const completedTypes = new Set(myActions.map((a: any) => a.action_type));
-  const totalEarned = myActions.reduce((s: number, a: any) => s + (a.points_earned || 0), 0);
-  const totalPossible = LOYALTY_ACTIONS.reduce((s, a) => s + a.points, 0);
+  const { completedTypes, totalEarned, totalPossible } = useMemo(() => ({
+    completedTypes: new Set(myActions.map((a: any) => a.action_type)),
+    totalEarned: myActions.reduce((s: number, a: any) => s + (a.points_earned || 0), 0),
+    totalPossible: LOYALTY_ACTIONS.reduce((s, a) => s + a.points, 0),
+  }), [myActions]);
 
   if (!user) return null;
 

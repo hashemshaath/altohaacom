@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -166,9 +166,13 @@ export default function CompanySponsorships() {
     },
   });
 
-  const alreadySponsoredIds = mySponsors.map((s: any) => s.competition_id);
-  const availableOpportunities = opportunities.filter(c => !alreadySponsoredIds.includes(c.id));
-  const pendingInvitations = invitations.filter((i: any) => i.status === "pending");
+  const { availableOpportunities, pendingInvitations } = useMemo(() => {
+    const alreadySponsoredIds = mySponsors.map((s: any) => s.competition_id);
+    return {
+      availableOpportunities: opportunities.filter(c => !alreadySponsoredIds.includes(c.id)),
+      pendingInvitations: invitations.filter((i: any) => i.status === "pending"),
+    };
+  }, [mySponsors, opportunities, invitations]);
 
   return (
     <div className="space-y-6">

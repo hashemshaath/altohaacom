@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -134,8 +134,10 @@ export default function CompanyCatalog() {
     setDialogOpen(true);
   };
 
-  const activeCount = items.filter((i) => i.is_active).length;
-  const inStockCount = items.filter((i) => i.in_stock).length;
+  const { activeCount, inStockCount } = useMemo(() => ({
+    activeCount: items.filter((i) => i.is_active).length,
+    inStockCount: items.filter((i) => i.in_stock).length,
+  }), [items]);
 
   return (
     <div className="space-y-6">
