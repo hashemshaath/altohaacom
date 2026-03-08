@@ -19,7 +19,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionMyTickets({ exhibitionId, exhibitionTitle, exhibitionDate, exhibitionVenue, isAr }: Props) {
+export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitionId, exhibitionTitle, exhibitionDate, exhibitionVenue, isAr }: Props) {
   const { user } = useAuth();
   const t = (en: string, ar: string) => isAr ? ar : en;
 
