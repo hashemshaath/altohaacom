@@ -29,7 +29,7 @@ const TEMPLATES = [
   },
 ];
 
-export function HomepageTemplateSwitcher() {
+export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const settings = useSiteSettingsContext();
