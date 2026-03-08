@@ -15,7 +15,7 @@ interface Props {
   onAddToCart?: (product: any) => void;
 }
 
-export function ProductCatalog({ onAddToCart }: Props) {
+export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
