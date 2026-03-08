@@ -16,7 +16,7 @@ interface EventCommentsProps {
   eventId: string;
 }
 
-export function EventComments({ eventType, eventId }: EventCommentsProps) {
+export const EventComments = memo(function EventComments({ eventType, eventId }: EventCommentsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
