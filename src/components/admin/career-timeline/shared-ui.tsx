@@ -138,7 +138,7 @@ export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, la
 
 // ── Compact Row ──────────────────────────────────────
 
-export function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete, draggable, moveSections, onMove }: {
+export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete, draggable, moveSections, onMove }: {
   icon: any; color: string; logoUrl?: string; title: string; subtitle: string; meta: string;
   badge?: string; badgeVariant?: "default" | "secondary" | "outline"; isCurrent?: boolean; isAr: boolean;
   onEdit?: () => void; onDelete?: () => void; draggable?: boolean;
