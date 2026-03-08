@@ -20,7 +20,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
+export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState("all");
