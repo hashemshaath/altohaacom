@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, memo, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface ResultRevealProps {
