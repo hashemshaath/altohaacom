@@ -271,4 +271,6 @@ const InteractiveDashboard = memo(function InteractiveDashboard() {
       </Card>
     </div>
   );
-}
+});
+
+export default InteractiveDashboard;

@@ -317,4 +317,6 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
       </Dialog>
     </div>
   );
-}
+});
+
+export default MembershipCancellationsTab;

@@ -266,4 +266,6 @@ const ChefScheduleEventForm = memo(function ChefScheduleEventForm({ event, onClo
       </CardContent>
     </Card>
   );
-}
+});
+
+export default ChefScheduleEventForm;

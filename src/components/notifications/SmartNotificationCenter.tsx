@@ -259,7 +259,9 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default SmartNotificationCenter;
 
 function groupByDate(notifications: any[], isAr: boolean) {
   const groups: Record<string, any[]> = {};

@@ -369,4 +369,6 @@ const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Pro
       </Button>
     </div>
   );
-}
+});
+
+export default JudgeProfileForm;

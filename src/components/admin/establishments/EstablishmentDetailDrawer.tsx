@@ -163,7 +163,9 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default EstablishmentDetailDrawer;
 
 function MiniKPI({ icon: Icon, label, value }: { icon: any; label: string; value: string | number }) {
   return (

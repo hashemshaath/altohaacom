@@ -196,4 +196,6 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
       </div>
     </div>
   );
-}
+});
+
+export default JudgeMembershipsPanel;

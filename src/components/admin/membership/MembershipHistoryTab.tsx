@@ -171,4 +171,6 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipHistoryTab;

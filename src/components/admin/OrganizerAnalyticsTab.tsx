@@ -237,4 +237,6 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
       )}
     </div>
   );
-}
+});
+
+export default OrganizerAnalyticsTab;

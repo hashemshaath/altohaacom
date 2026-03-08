@@ -227,4 +227,6 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
       )}
     </div>
   );
-}
+});
+
+export default AdminScheduleCalendar;

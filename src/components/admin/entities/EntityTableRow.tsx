@@ -211,4 +211,6 @@ const EntityTableRow = memo(function EntityTableRow({ entity, typeLabel, scopeLa
       </AlertDialog>
     </>
   );
-}
+});
+
+export default EntityTableRow;

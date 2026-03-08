@@ -214,4 +214,6 @@ const EstablishmentReviews = memo(function EstablishmentReviews({ establishmentI
       </div>
     </div>
   );
-}
+});
+
+export default EstablishmentReviews;

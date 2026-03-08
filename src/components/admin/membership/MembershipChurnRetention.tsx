@@ -588,7 +588,9 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipChurnRetention;
 
 function EmptyState({ isAr }: { isAr: boolean }) {
   return (

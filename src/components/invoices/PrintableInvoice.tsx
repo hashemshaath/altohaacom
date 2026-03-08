@@ -412,4 +412,6 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
       </div>
     </div>
   );
-}
+});
+
+export default PrintableInvoice;

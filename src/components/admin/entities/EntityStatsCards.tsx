@@ -58,4 +58,6 @@ const EntityStatsCards = memo(function EntityStatsCards({ stats, activeFilter, o
       ))}
     </div>
   );
-}
+});
+
+export default EntityStatsCards;
