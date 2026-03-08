@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 // ── Smart Translate Button ──────────────────────────────────────
 
-export function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
+export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, fromLang, onTranslated, className }: {
   sourceText: string; fromLang: "en" | "ar"; onTranslated: (text: string) => void; className?: string;
 }) {
   const [loading, setLoading] = useState(false);
@@ -46,9 +46,9 @@ export function SmartTranslateBtn({ sourceText, fromLang, onTranslated, classNam
       {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Languages className="h-3.5 w-3.5" />}
     </Button>
   );
-}
+});
 
-export function TranslateInlineButton({ text, fromLang, toLang, onTranslated, isAr }: {
+export const TranslateInlineButton = memo(function TranslateInlineButton({ text, fromLang, toLang, onTranslated, isAr }: {
   text: string; fromLang: "en" | "ar"; toLang: "en" | "ar";
   onTranslated: (v: string) => void; isAr: boolean;
 }) {
@@ -70,11 +70,11 @@ export function TranslateInlineButton({ text, fromLang, toLang, onTranslated, is
       {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3 text-primary" />}
     </Button>
   );
-}
+});
 
 // ── Empty & Add ──────────────────────────────────────
 
-export function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
+export const EmptyState = memo(function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
   return (
     <div className="rounded-xl border border-dashed border-border/50 p-6 text-center bg-muted/20">
       <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/40 mb-2">
@@ -83,19 +83,19 @@ export function EmptyState({ icon: Icon, message }: { icon: any; message: string
       <p className="text-xs text-muted-foreground font-medium">{message}</p>
     </div>
   );
-}
+});
 
-export function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
+export const AddButton = memo(function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <Button variant="outline" size="sm" className="w-full gap-2 text-xs h-9 border-dashed hover:bg-muted/50 hover:border-border/80 transition-all" onClick={onClick}>
       <Plus className="h-3.5 w-3.5" />{label}
     </Button>
   );
-}
+});
 
 // ── Form Actions ──────────────────────────────────────
 
-export function FormActions({ isAr, isPending, editingId, canSave, onSave, onCancel }: {
+export const FormActions = memo(function FormActions({ isAr, isPending, editingId, canSave, onSave, onCancel }: {
   isAr: boolean; isPending: boolean; editingId?: string | null; canSave: boolean; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -107,11 +107,11 @@ export function FormActions({ isAr, isPending, editingId, canSave, onSave, onCan
       </Button>
     </div>
   );
-}
+});
 
 // ── Bilingual Field Pair ──────────────────────────────────────
 
-export function BilingualFieldPair({ labelEn, labelAr, valueEn, valueAr, onChangeEn, onChangeAr, isAr, placeholderEn, placeholderAr, required }: {
+export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, labelAr, valueEn, valueAr, onChangeEn, onChangeAr, isAr, placeholderEn, placeholderAr, required }: {
   labelEn: string; labelAr: string; valueEn: string; valueAr: string;
   onChangeEn: (v: string) => void; onChangeAr: (v: string) => void;
   isAr: boolean; placeholderEn?: string; placeholderAr?: string; required?: boolean;
@@ -134,7 +134,7 @@ export function BilingualFieldPair({ labelEn, labelAr, valueEn, valueAr, onChang
       </div>
     </div>
   );
-}
+});
 
 // ── Compact Row ──────────────────────────────────────
 
@@ -268,11 +268,11 @@ export function SortableSectionItem({ id, children }: { id: string; children: Re
   );
 }
 
-export function SectionDragHandle() {
+export const SectionDragHandle = memo(function SectionDragHandle() {
   const listeners = useContext(SectionDragListenersContext);
   return (
     <button {...(listeners || {})} className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
       <GripVertical className="h-4 w-4" />
     </button>
   );
-}
+});

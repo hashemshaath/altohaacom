@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +11,7 @@ interface Props {
   onDismiss: () => void;
 }
 
-export function ExhibitionPaymentCallback({ exhibitionId, isAr, onDismiss }: Props) {
+export const ExhibitionPaymentCallback = memo(function ExhibitionPaymentCallback({ exhibitionId, isAr, onDismiss }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [status, setStatus] = useState<"verifying" | "success" | "failed">("verifying");
   const t = (en: string, ar: string) => isAr ? ar : en;
@@ -86,4 +86,4 @@ export function ExhibitionPaymentCallback({ exhibitionId, isAr, onDismiss }: Pro
       </CardContent>
     </Card>
   );
-}
+});

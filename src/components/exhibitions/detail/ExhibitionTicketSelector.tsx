@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,7 @@ interface Props {
   selectedTypeId?: string | null;
 }
 
-export function ExhibitionTicketSelector({ exhibitionId, isAr, onSelect, selectedTypeId }: Props) {
+export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({ exhibitionId, isAr, onSelect, selectedTypeId }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data: types = [] } = useQuery({
@@ -102,4 +102,4 @@ export function ExhibitionTicketSelector({ exhibitionId, isAr, onSelect, selecte
       </div>
     </div>
   );
-}
+});

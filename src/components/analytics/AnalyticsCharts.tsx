@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -26,7 +27,7 @@ function NoData({ isAr }: { isAr: boolean }) {
 }
 
 /* ─── Registration Trend ─── */
-export function RegistrationTrendChart({ data }: { data?: { month: string; count: number }[] }) {
+export const RegistrationTrendChart = memo(function RegistrationTrendChart({ data }: { data?: { month: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -50,10 +51,10 @@ export function RegistrationTrendChart({ data }: { data?: { month: string; count
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Competitions by Month ─── */
-export function MonthlyCompetitionsChart({ data }: { data?: { month: string; count: number }[] }) {
+export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({ data }: { data?: { month: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -77,10 +78,10 @@ export function MonthlyCompetitionsChart({ data }: { data?: { month: string; cou
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Score Distribution ─── */
-export function ScoreDistributionChart({ data }: { data?: { range: string; count: number }[] }) {
+export const ScoreDistributionChart = memo(function ScoreDistributionChart({ data }: { data?: { range: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -104,10 +105,10 @@ export function ScoreDistributionChart({ data }: { data?: { range: string; count
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Status Breakdown ─── */
-export function StatusBreakdownChart({ data }: { data?: { name: string; value: number }[] }) {
+export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }: { data?: { name: string; value: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -131,10 +132,10 @@ export function StatusBreakdownChart({ data }: { data?: { name: string; value: n
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Top Countries ─── */
-export function TopCountriesChart({ data }: { data?: { country: string; count: number }[] }) {
+export const TopCountriesChart = memo(function TopCountriesChart({ data }: { data?: { country: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -158,4 +159,4 @@ export function TopCountriesChart({ data }: { data?: { country: string; count: n
       </CardContent>
     </Card>
   );
-}
+});

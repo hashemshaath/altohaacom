@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +18,7 @@ interface SponsorBadgeProps {
   compact?: boolean;
 }
 
-export function CompetitionSponsorBadges({ competitionId, language, showLogo = true, compact = false }: SponsorBadgeProps) {
+export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({ competitionId, language, showLogo = true, compact = false }: SponsorBadgeProps) {
   const isAr = language === "ar";
 
   const { data: sponsors = [] } = useQuery({
@@ -69,4 +70,4 @@ export function CompetitionSponsorBadges({ competitionId, language, showLogo = t
       )}
     </div>
   );
-}
+});
