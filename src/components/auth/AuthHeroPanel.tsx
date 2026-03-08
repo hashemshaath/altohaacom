@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Trophy, Globe, GraduationCap, Award, CheckCircle } from "lucide-react";
 import authHeroImg from "@/assets/auth-hero.jpg";
 
