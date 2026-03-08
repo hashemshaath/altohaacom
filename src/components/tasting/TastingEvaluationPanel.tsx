@@ -40,7 +40,7 @@ const EVAL_SCALE_LABELS = [
   { value: 6, en: "Extraordinary", ar: "استثنائي" },
 ];
 
-export function TastingEvaluationPanel({ sessionId, entries, criteria, scores, evalMethod, allowNotes, isBlind }: Props) {
+export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ sessionId, entries, criteria, scores, evalMethod, allowNotes, isBlind }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
