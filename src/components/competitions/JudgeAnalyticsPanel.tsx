@@ -14,7 +14,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
+export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
