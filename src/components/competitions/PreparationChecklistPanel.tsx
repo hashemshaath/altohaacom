@@ -125,8 +125,8 @@ export function PreparationChecklistPanel({ competitionId }: Props) {
   if (!user) return null;
   if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
 
-  const completedCount = items.filter(i => i.completed).length;
-  const progress = items.length > 0 ? (completedCount / items.length) * 100 : 0;
+  const completedCount = useMemo(() => items.filter(i => i.completed).length, [items]);
+  const progress = useMemo(() => items.length > 0 ? (completedCount / items.length) * 100 : 0, [completedCount, items.length]);
 
   if (!checklist && items.length === 0) {
     return (

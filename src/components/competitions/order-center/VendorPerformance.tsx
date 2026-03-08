@@ -137,10 +137,15 @@ export function VendorPerformance({ competitionId }: Props) {
     .map(v => ({ ...v, deliveryRate: v.totalItems > 0 ? Math.round((v.delivered / v.totalItems) * 100) : 0 }))
     .sort((a, b) => b.totalItems - a.totalItems);
 
-  const totalAssigned = vendors.reduce((s, v) => s + v.totalItems, 0);
-  const totalDelivered = vendors.reduce((s, v) => s + v.delivered, 0);
-  const totalOverdue = vendors.reduce((s, v) => s + v.overdue, 0);
-  const avgRate = totalAssigned > 0 ? Math.round((totalDelivered / totalAssigned) * 100) : 0;
+  const { totalAssigned, totalDelivered, totalOverdue, avgRate } = useMemo(() => {
+    const ta = vendors.reduce((s, v) => s + v.totalItems, 0);
+    const td = vendors.reduce((s, v) => s + v.delivered, 0);
+    return {
+      totalAssigned: ta, totalDelivered: td,
+      totalOverdue: vendors.reduce((s, v) => s + v.overdue, 0),
+      avgRate: ta > 0 ? Math.round((td / ta) * 100) : 0,
+    };
+  }, [vendors]);
 
   return (
     <div className="space-y-6">

@@ -262,9 +262,11 @@ export function ItemRequestPanel({ competitionId, isOrganizer }: Props) {
     });
   };
 
-  const myRequests = requests?.filter(r => r.requester_id === user?.id) || [];
-  const otherRequests = requests?.filter(r => r.requester_id !== user?.id) || [];
-  const pendingCount = requests?.filter(r => r.status === "pending").length || 0;
+  const { myRequests, otherRequests, pendingCount } = useMemo(() => ({
+    myRequests: requests?.filter(r => r.requester_id === user?.id) || [],
+    otherRequests: requests?.filter(r => r.requester_id !== user?.id) || [],
+    pendingCount: requests?.filter(r => r.status === "pending").length || 0,
+  }), [requests, user?.id]);
 
   const handleExportCSV = () => {
     if (!requests?.length) return;
