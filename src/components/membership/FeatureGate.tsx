@@ -66,7 +66,7 @@ export const FeatureGate = memo(function FeatureGate({
     return null;
   }
   return <>{children}</>;
-}
+});
 
 interface FeatureGateForUserProps {
   feature: string;
