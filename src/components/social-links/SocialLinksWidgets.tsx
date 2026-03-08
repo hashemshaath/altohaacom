@@ -136,7 +136,7 @@ export const ContactFormSection = memo(function ContactFormSection({ theme, lang
       </button>
     </div>
   );
-}
+});
 
 // ── Email Subscription ──
 export function EmailSubscriptionSection({ theme, lang, isRtl, profileUserId, pageId, extra }: {
