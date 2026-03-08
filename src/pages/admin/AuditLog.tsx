@@ -193,7 +193,7 @@ export default function AuditLog() {
         description={isAr ? "سجل جميع الإجراءات الإدارية مع التصفية والتصدير" : "Track all administrative actions with filtering & export"}
         actions={
           <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-28 h-8 text-xs">
+            <SelectTrigger className="w-28 h-8 text-xs rounded-xl">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
