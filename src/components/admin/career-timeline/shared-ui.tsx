@@ -70,7 +70,7 @@ export const TranslateInlineButton = memo(function TranslateInlineButton({ text,
       {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3 text-primary" />}
     </Button>
   );
-}
+});
 
 // ── Empty & Add ──────────────────────────────────────
 
