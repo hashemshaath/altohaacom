@@ -15,11 +15,17 @@ export function ArticleReadingProgress() {
   }, []);
 
   return (
-    <div className="fixed top-0 inset-x-0 z-[60] h-[3px] bg-transparent pointer-events-none">
+    <div className="fixed top-0 inset-x-0 z-[60] h-[3px] bg-muted/30 pointer-events-none">
       <div
-        className="h-full bg-primary transition-[width] duration-100 ease-out"
+        className="h-full bg-gradient-to-r from-primary to-chart-2 transition-[width] duration-150 ease-out shadow-[0_0_8px_hsl(var(--primary)/0.3)]"
         style={{ width: `${progress}%` }}
       />
+      {progress > 0 && progress < 100 && (
+        <div
+          className="absolute top-0 h-full w-1 rounded-full bg-primary shadow-[0_0_6px_hsl(var(--primary)/0.5)] transition-[left] duration-150 ease-out"
+          style={{ left: `${progress}%` }}
+        />
+      )}
     </div>
   );
 }

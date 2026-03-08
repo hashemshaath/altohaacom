@@ -67,23 +67,31 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
   };
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Crown className="h-4 w-4 text-chart-4" />
-          {isAr ? "نظرة عامة على الولاء" : "Loyalty Overview"}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
+              <Crown className="h-3.5 w-3.5 text-chart-4" />
+            </div>
+            {isAr ? "نظرة عامة على الولاء" : "Loyalty Overview"}
+          </CardTitle>
+          <Badge variant="outline" className="text-[10px] gap-1">
+            <Star className="h-2.5 w-2.5 text-chart-4" />
+            {data?.referralCodes || 0} {isAr ? "رموز إحالة" : "referrals"}
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-2">
           {[
-            { icon: Users, label: isAr ? "أعضاء نشطين" : "Active Members", value: data?.totalMembers, color: "text-primary" },
-            { icon: Zap, label: isAr ? "تحديات نشطة" : "Active Challenges", value: data?.activeChallenges, color: "text-chart-2" },
-            { icon: Gift, label: isAr ? "مكافآت متاحة" : "Active Rewards", value: data?.totalRewards, color: "text-chart-3" },
+            { icon: Users, label: isAr ? "أعضاء نشطين" : "Active Members", value: data?.totalMembers, color: "text-primary", bg: "bg-primary/5 border-primary/10" },
+            { icon: Zap, label: isAr ? "تحديات نشطة" : "Active Challenges", value: data?.activeChallenges, color: "text-chart-2", bg: "bg-chart-2/5 border-chart-2/10" },
+            { icon: Gift, label: isAr ? "مكافآت متاحة" : "Active Rewards", value: data?.totalRewards, color: "text-chart-3", bg: "bg-chart-3/5 border-chart-3/10" },
           ].map((m, i) => (
-            <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
+            <div key={i} className={`text-center p-2.5 rounded-xl border transition-colors hover:bg-muted/40 ${m.bg}`}>
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
-              <p className="text-sm font-bold">{m.value}</p>
+              <p className="text-sm font-bold tabular-nums"><AnimatedCounter value={m.value || 0} /></p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
             </div>
           ))}
@@ -108,15 +116,25 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
 
         {/* Points Flow */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="text-center p-2 rounded-xl bg-chart-2/5 border border-chart-2/10">
-            <TrendingUp className="h-3 w-3 mx-auto mb-0.5 text-chart-2" />
+          <div className="text-center p-2.5 rounded-xl bg-chart-2/5 border border-chart-2/10 transition-all hover:shadow-sm">
+            <TrendingUp className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2" />
             <AnimatedCounter value={data?.totalAwarded || 0} className="text-sm font-bold text-chart-2" />
             <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط ممنوحة" : "Points Awarded"}</p>
+            {data?.totalAwarded && data.totalAwarded > 0 && (
+              <div className="mt-1 h-1 rounded-full bg-chart-2/10 overflow-hidden">
+                <div className="h-full rounded-full bg-chart-2/40 transition-all" style={{ width: `${Math.min(100, (data.totalAwarded / (data.totalAwarded + (data?.totalRedeemed || 1))) * 100)}%` }} />
+              </div>
+            )}
           </div>
-          <div className="text-center p-2 rounded-xl bg-chart-4/5 border border-chart-4/10">
-            <Gift className="h-3 w-3 mx-auto mb-0.5 text-chart-4" />
+          <div className="text-center p-2.5 rounded-xl bg-chart-4/5 border border-chart-4/10 transition-all hover:shadow-sm">
+            <Gift className="h-3.5 w-3.5 mx-auto mb-1 text-chart-4" />
             <AnimatedCounter value={data?.totalRedeemed || 0} className="text-sm font-bold text-chart-4" />
             <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط مستبدلة" : "Points Redeemed"}</p>
+            {data?.totalRedeemed && data.totalRedeemed > 0 && (
+              <div className="mt-1 h-1 rounded-full bg-chart-4/10 overflow-hidden">
+                <div className="h-full rounded-full bg-chart-4/40 transition-all" style={{ width: `${Math.min(100, (data.totalRedeemed / (data.totalAwarded || 1)) * 100)}%` }} />
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
