@@ -24,7 +24,7 @@ interface CreateGroupDialogProps {
   onCreated: (groupId: string) => void;
 }
 
-export function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroupDialogProps) {
+export const CreateGroupDialog = memo(function CreateGroupDialog({ open, onOpenChange, onCreated }: CreateGroupDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
