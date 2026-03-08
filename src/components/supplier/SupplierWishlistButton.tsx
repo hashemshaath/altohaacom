@@ -90,4 +90,4 @@ export const SupplierWishlistButton = memo(function SupplierWishlistButton({ com
       {isWishlisted ? (isAr ? "في المفضلة" : "Saved") : (isAr ? "إضافة للمفضلة" : "Save")}
     </Button>
   );
-}
+});

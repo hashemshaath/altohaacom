@@ -84,4 +84,4 @@ export const BadgeCard = memo(function BadgeCard({ badge, competitionTitle, earn
       </CardContent>
     </Card>
   );
-}
+});

@@ -222,4 +222,4 @@ export const ExhibitionOrganizerQuickActions = memo(function ExhibitionOrganizer
       </CardContent>
     </Card>
   );
-}
+});

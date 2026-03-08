@@ -117,4 +117,4 @@ export const UserCardView = memo(function UserCardView({ users, onViewUser }: Us
       ))}
     </div>
   );
-}
+});

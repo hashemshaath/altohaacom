@@ -267,4 +267,4 @@ export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({
       )}
     </div>
   );
-}
+});

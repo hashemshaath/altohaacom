@@ -107,4 +107,4 @@ export const SocialShareButtons = memo(function SocialShareButtons({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

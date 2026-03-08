@@ -79,4 +79,4 @@ export const CollapsibleProfileSection = memo(function CollapsibleProfileSection
       </div>
     </div>
   );
-}
+});

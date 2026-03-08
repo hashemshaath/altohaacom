@@ -103,4 +103,4 @@ export const ExhibitionDayIndicator = memo(function ExhibitionDayIndicator({ sta
       </CardContent>
     </Card>
   );
-}
+});

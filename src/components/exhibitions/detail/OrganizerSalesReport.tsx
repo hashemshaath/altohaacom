@@ -146,6 +146,6 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
       </Card>
     </div>
   );
-}
+});
 
 export default OrganizerSalesReport;

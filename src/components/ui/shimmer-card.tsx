@@ -90,4 +90,4 @@ export const ShimmerGrid = memo(function ShimmerGrid({
       ))}
     </div>
   );
-}
+});

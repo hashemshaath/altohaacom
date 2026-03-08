@@ -112,4 +112,4 @@ export const ExhibitionOrganizerMessaging = memo(function ExhibitionOrganizerMes
       </CardContent>
     </Card>
   );
-}
+});

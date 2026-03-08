@@ -159,4 +159,4 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
       })}
     </div>
   );
-}
+});

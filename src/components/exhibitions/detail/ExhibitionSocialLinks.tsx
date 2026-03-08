@@ -76,4 +76,4 @@ export const ExhibitionSocialLinks = memo(function ExhibitionSocialLinks({ socia
       </CardContent>
     </Card>
   );
-}
+});

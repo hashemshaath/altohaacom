@@ -505,4 +505,4 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
       </div>
     </div>
   );
-}
+});

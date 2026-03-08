@@ -40,4 +40,4 @@ export const SupplierShareButtons = memo(function SupplierShareButtons({ company
       </Button>
     </div>
   );
-}
+});

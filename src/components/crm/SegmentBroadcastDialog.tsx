@@ -237,4 +237,4 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
       </DialogContent>
     </Dialog>
   );
-}
+});

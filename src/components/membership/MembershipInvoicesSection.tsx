@@ -108,4 +108,4 @@ export const MembershipInvoicesSection = memo(function MembershipInvoicesSection
       </CardContent>
     </Card>
   );
-}
+});
