@@ -34,7 +34,7 @@ interface ChefProfile {
 
 type SortOption = "name" | "newest" | "verified";
 
-export function ChefsTab() {
+export const ChefsTab = memo(function ChefsTab() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const isAr = language === "ar";
