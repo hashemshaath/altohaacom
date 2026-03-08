@@ -50,7 +50,7 @@ export interface CommunityPost {
 
 const PAGE_SIZE = 20;
 
-export function CommunityFeed() {
+export const CommunityFeed = memo(function CommunityFeed() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
