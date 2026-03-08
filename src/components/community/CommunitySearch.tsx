@@ -20,7 +20,7 @@ interface SearchResult {
 
 type SearchFilter = "all" | "users" | "posts" | "recipes" | "groups";
 
-export function CommunitySearch() {
+export const CommunitySearch = memo(function CommunitySearch() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
