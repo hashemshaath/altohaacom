@@ -34,7 +34,7 @@ const LANGUAGES = [
   { value: "zh", en: "Chinese", ar: "الصينية" },
 ];
 
-export function UserPersonalDetailsTab({ form, onChange, isAr }: Props) {
+export const UserPersonalDetailsTab = memo(function UserPersonalDetailsTab({ form, onChange, isAr }: Props) {
   return (
     <div className="space-y-5">
       <div className="grid gap-4 md:grid-cols-2">
