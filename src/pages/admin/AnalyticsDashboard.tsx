@@ -139,7 +139,7 @@ export default function AnalyticsDashboard() {
             <Bookmark className="inline h-3 w-3 me-1" />{isAr ? "المحفوظة:" : "Saved:"}
           </span>
           {savedReports.map(report => (
-            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-colors gap-1 whitespace-nowrap" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
+            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-all duration-300 gap-1 whitespace-nowrap rounded-lg" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
               {report.name}
               <button onClick={(e) => { e.stopPropagation(); handleDeleteReport(report.id); }} className="ms-1 text-muted-foreground hover:text-destructive">×</button>
             </Badge>
