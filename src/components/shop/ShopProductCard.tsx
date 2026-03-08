@@ -94,6 +94,13 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
               {title}
             </h3>
           </Link>
+          {product.rating_avg > 0 && (
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
+              <span className="font-bold">{product.rating_avg.toFixed(1)}</span>
+              {product.review_count > 0 && <span>({product.review_count})</span>}
+            </div>
+          )}
         </div>
 
         <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 gap-1">
