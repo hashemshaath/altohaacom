@@ -67,7 +67,7 @@ export const ShimmerCard = memo(function ShimmerCard({ variant = "default", line
       ))}
     </div>
   );
-}
+});
 
 /**
  * Grid of shimmer cards for list loading states.
