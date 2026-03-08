@@ -25,7 +25,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
+export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
