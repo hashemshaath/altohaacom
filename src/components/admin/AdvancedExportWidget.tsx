@@ -29,7 +29,7 @@ const EXPORT_MODULES: ExportModule[] = [
   { key: "invoices", label: "Invoices", labelAr: "الفواتير", icon: FileText, table: "invoices", columns: "id, invoice_number, status, amount, currency, created_at" },
 ];
 
-export function AdvancedExportWidget() {
+export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selectedModule, setSelectedModule] = useState("users");
