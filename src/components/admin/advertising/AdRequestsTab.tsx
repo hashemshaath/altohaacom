@@ -17,6 +17,16 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  const sortedRequests = useMemo(() => 
+    [...requests].sort((a, b) => {
+      const statusPriority = { pending: 0, under_review: 1, approved: 2, rejected: 3 };
+      const aPriority = statusPriority[a.status as keyof typeof statusPriority] ?? 99;
+      const bPriority = statusPriority[b.status as keyof typeof statusPriority] ?? 99;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }), [requests]
+  );
+
   if (requests.length === 0) {
     return (
       <Card className="rounded-2xl">
