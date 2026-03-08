@@ -17,7 +17,7 @@ import { differenceInDays, subDays, format } from "date-fns";
 
 type Period = "7d" | "14d" | "30d";
 
-export default function MembershipDigestPanel() {
+const MembershipDigestPanel = memo(function MembershipDigestPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [period, setPeriod] = useState<Period>("7d");
