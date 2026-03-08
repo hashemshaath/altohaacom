@@ -20,7 +20,7 @@ interface Anomaly {
   severity: "low" | "medium" | "high";
 }
 
-export function AnomalyDetection() {
+export const AnomalyDetection = memo(function AnomalyDetection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [metric, setMetric] = useState("signups");
