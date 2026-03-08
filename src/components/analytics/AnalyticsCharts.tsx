@@ -81,7 +81,7 @@ export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({
 }
 
 /* ─── Score Distribution ─── */
-export function ScoreDistributionChart({ data }: { data?: { range: string; count: number }[] }) {
+export const ScoreDistributionChart = memo(function ScoreDistributionChart({ data }: { data?: { range: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
