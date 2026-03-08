@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ORDER_STATUSES } from "./orderTypes";
 
