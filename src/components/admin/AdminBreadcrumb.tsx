@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ChevronRight, LayoutDashboard } from "lucide-react";
