@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SEOHead } from "@/components/SEOHead";
 import { useAdTracking } from "@/hooks/useAdTracking";
-import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, ArrowRight, Sparkles } from "lucide-react";
+import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -322,6 +322,12 @@ export default function News() {
 }
 
 /* ─── Featured Hero Card ─────────────────────────────────────── */
+function estimateReadTime(excerpt: string | null): number {
+  if (!excerpt) return 3;
+  const words = excerpt.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil((words * 10) / 200));
+}
+
 function FeaturedHeroCard({
   article,
   isAr,
@@ -336,6 +342,7 @@ function FeaturedHeroCard({
   const title = isAr && article.title_ar ? article.title_ar : article.title;
   const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
   const TypeIcon = TYPE_ICONS[article.type] || Newspaper;
+  const readTime = estimateReadTime(excerpt);
 
   return (
     <Link to={`/news/${article.slug}`} className="group block h-full">
@@ -358,6 +365,11 @@ function FeaturedHeroCard({
             <TypeIcon className="h-3 w-3" />
             {typeBadgeLabel(article.type)}
           </Badge>
+          {/* Reading time pill */}
+          <div className="absolute top-4 end-4 flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-1 text-[10px] text-muted-foreground">
+            <BookOpen className="h-2.5 w-2.5" />
+            {readTime} {isAr ? "د" : "min"}
+          </div>
         </div>
         <div className="absolute bottom-0 inset-x-0 p-5 md:p-6">
           <h3 className="text-xl md:text-2xl font-bold line-clamp-2 mb-2 group-hover:text-primary transition-colors">
@@ -403,6 +415,7 @@ function ArticleCard({
   const title = isAr && article.title_ar ? article.title_ar : article.title;
   const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
   const TypeIcon = TYPE_ICONS[article.type] || Newspaper;
+  const readTime = estimateReadTime(excerpt);
 
   if (compact) {
     return (
@@ -421,10 +434,15 @@ function ArticleCard({
               </div>
               <div className="flex flex-1 flex-col justify-between min-w-0">
                 <div>
-                  <Badge variant="secondary" className="text-[8px] rounded-md gap-1 mb-1.5 px-1.5 py-0">
-                    <TypeIcon className="h-2 w-2" />
-                    {typeBadgeLabel(article.type)}
-                  </Badge>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Badge variant="secondary" className="text-[8px] rounded-md gap-1 px-1.5 py-0">
+                      <TypeIcon className="h-2 w-2" />
+                      {typeBadgeLabel(article.type)}
+                    </Badge>
+                    <span className="text-[9px] text-muted-foreground/60 flex items-center gap-0.5">
+                      <BookOpen className="h-2 w-2" /> {readTime} {isAr ? "د" : "m"}
+                    </span>
+                  </div>
                   <h3 className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
                 </div>
                 <div className="flex items-center gap-3 text-[10px] text-muted-foreground mt-1">
@@ -466,6 +484,11 @@ function ArticleCard({
               <TypeIcon className="h-2.5 w-2.5" />
               {typeBadgeLabel(article.type)}
             </Badge>
+            {/* Reading time pill */}
+            <div className="absolute bottom-3 end-3 flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[10px] text-muted-foreground">
+              <BookOpen className="h-2.5 w-2.5" />
+              {readTime} {isAr ? "د" : "min"}
+            </div>
           </div>
           <CardContent className="flex flex-1 flex-col p-5">
             <h3 className="mb-2 text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">
