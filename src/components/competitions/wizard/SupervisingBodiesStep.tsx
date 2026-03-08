@@ -16,7 +16,7 @@ interface SupervisingBodiesStepProps {
   onJudgesChange: (ids: string[]) => void;
 }
 
-export function SupervisingBodiesStep({
+export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
   supervisingBodyIds,
   judgeIds,
   onSupervisingChange,
