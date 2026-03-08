@@ -196,7 +196,7 @@ export const EventsByCategory = memo(function EventsByCategory() {
       )}
     </section>
   );
-}
+});
 
 function renderFeaturedCompetition(item: any, isAr: boolean, statusBadge: (s: string) => JSX.Element) {
   const title = isAr && item.title_ar ? item.title_ar : item.title;
