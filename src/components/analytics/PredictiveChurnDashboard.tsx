@@ -22,7 +22,7 @@ interface ChurnRisk {
   mitigation: string;
 }
 
-export function PredictiveChurnDashboard() {
+export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
