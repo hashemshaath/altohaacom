@@ -58,7 +58,7 @@ const PRIVACY_SECTIONS: SectionItem[] = [
   { key: "activity_timeline", label: "Activity Timeline", labelAr: "سجل النشاط", icon: Activity, sensitive: false },
 ];
 
-export function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePrivacySettingsProps) {
+export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePrivacySettingsProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
