@@ -83,17 +83,6 @@ export function useRedeemReward() {
     mutationFn: async ({ rewardId, pointsCost }: { rewardId: string; pointsCost: number }) => {
       if (!user) throw new Error("Not authenticated");
 
-      // Check balance
-      const { data: wallet } = await supabase
-        .from("user_wallets")
-        .select("points_balance")
-        .eq("user_id", user.id)
-        .single();
-
-      if (!wallet || wallet.points_balance < pointsCost) {
-        throw new Error("Insufficient points");
-      }
-
       // Insert redemption
       const { error } = await supabase.from("points_redemptions").insert({
         user_id: user.id,
@@ -104,22 +93,16 @@ export function useRedeemReward() {
       });
       if (error) throw error;
 
-      // Deduct points via RPC
-      const newBalance = wallet.points_balance - pointsCost;
-      await supabase.from("user_wallets").update({ points_balance: newBalance }).eq("user_id", user.id);
-      await supabase.from("profiles").update({ loyalty_points: newBalance }).eq("user_id", user.id);
-
-      // Log in ledger
-      await supabase.from("points_ledger").insert({
-        user_id: user.id,
-        action_type: "redemption",
-        points: -pointsCost,
-        balance_after: newBalance,
-        description: "Reward redemption",
-        description_ar: "استبدال مكافأة",
-        reference_type: "reward",
-        reference_id: rewardId,
+      // Atomic deduction via server-side RPC
+      const { error: rpcError } = await supabase.rpc("redeem_points", {
+        p_user_id: user.id,
+        p_points: pointsCost,
+        p_description: "Reward redemption",
+        p_description_ar: "استبدال مكافأة",
+        p_reference_type: "reward",
+        p_reference_id: rewardId,
       });
+      if (rpcError) throw rpcError;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["points-balance"] });

@@ -22266,6 +22266,17 @@ export type Database = {
       notify_membership_expiry_reminders: { Args: never; Returns: undefined }
       notify_trial_expiry_reminders: { Args: never; Returns: undefined }
       notify_upcoming_exhibitions: { Args: never; Returns: undefined }
+      redeem_points: {
+        Args: {
+          p_description?: string
+          p_description_ar?: string
+          p_points: number
+          p_reference_id?: string
+          p_reference_type?: string
+          p_user_id: string
+        }
+        Returns: number
+      }
       refresh_organizer_stats: {
         Args: { p_organizer_id: string }
         Returns: undefined
@@ -22322,6 +22333,16 @@ export type Database = {
           metadata: Json
           scan_count: number
         }[]
+      }
+      wallet_credit: {
+        Args: {
+          p_amount: number
+          p_currency?: string
+          p_description?: string
+          p_description_ar?: string
+          p_user_id: string
+        }
+        Returns: number
       }
     }
     Enums: {

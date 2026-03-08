@@ -135,28 +135,15 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
         }).eq("id", card.id);
       }
 
-      // If downgrade with credit, add to wallet
+      // If downgrade with credit, add to wallet atomically via RPC
       if (isDowngrade && proratedCredit > 0) {
-        const { data: wallet } = await supabase
-          .from("user_wallets")
-          .select("id, balance")
-          .eq("user_id", userId)
-          .maybeSingle();
-        if (wallet) {
-          await supabase.from("user_wallets").update({
-            balance: (wallet.balance || 0) + proratedCredit,
-          }).eq("id", wallet.id);
-          await supabase.from("wallet_transactions").insert([{
-            wallet_id: wallet.id,
-            transaction_number: "",
-            type: "credit",
-            amount: proratedCredit,
-            currency: "SAR",
-            description: `Prorated credit from ${prevTier} → ${newTier} downgrade`,
-            description_ar: `رصيد تناسبي من تخفيض ${prevTier} → ${newTier}`,
-            status: "completed",
-          }]);
-        }
+        await supabase.rpc("wallet_credit", {
+          p_user_id: userId,
+          p_amount: proratedCredit,
+          p_currency: "SAR",
+          p_description: `Prorated credit from ${prevTier} → ${newTier} downgrade`,
+          p_description_ar: `رصيد تناسبي من تخفيض ${prevTier} → ${newTier}`,
+        });
       }
 
       return { newTier, isDowngrade, proratedCredit };
