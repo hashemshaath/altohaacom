@@ -33,7 +33,7 @@ import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton
 
 interface Props { userId: string; isAr: boolean; }
 
-export function UserCareerTimeline({ userId, isAr }: Props) {
+export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isAr }: Props) {
   const queryClient = useQueryClient();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["education", "work"]));
   const [addingSection, setAddingSection] = useState<string | null>(null);
