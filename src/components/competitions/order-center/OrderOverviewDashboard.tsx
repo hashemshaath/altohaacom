@@ -23,7 +23,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
+export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
