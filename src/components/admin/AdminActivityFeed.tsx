@@ -114,4 +114,4 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
       </CardContent>
     </Card>
   );
-}
+});

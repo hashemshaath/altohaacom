@@ -77,4 +77,4 @@ export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
       </CardContent>
     </Card>
   );
-}
+});

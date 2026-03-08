@@ -90,4 +90,4 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
       </CardContent>
     </Card>
   );
-}
+});

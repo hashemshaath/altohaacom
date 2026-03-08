@@ -413,9 +413,9 @@ export default function Entities() {
           <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               { label: isAr ? "إجمالي الجهات" : "Total Entities", value: entities.length, accent: "border-s-primary/40" },
-              { label: isAr ? "جمعيات" : "Associations", value: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length, accent: "border-s-chart-3/40" },
-              { label: isAr ? "جهات حكومية" : "Government", value: entities.filter(e => e.type === "government_entity").length, accent: "border-s-chart-4/40" },
-              { label: isAr ? "الدول" : "Countries", value: new Set(entities.map(e => e.country).filter(Boolean)).size, accent: "border-s-accent/40" },
+              { label: isAr ? "جمعيات" : "Associations", value: entityStats.associations, accent: "border-s-chart-3/40" },
+              { label: isAr ? "جهات حكومية" : "Government", value: entityStats.government, accent: "border-s-chart-4/40" },
+              { label: isAr ? "الدول" : "Countries", value: entityStats.countries, accent: "border-s-accent/40" },
             ].map((stat) => (
               <Card key={stat.label} className={`border-s-[3px] ${stat.accent} transition-all hover:shadow-sm`}>
                 <CardContent className="p-4 text-center">
