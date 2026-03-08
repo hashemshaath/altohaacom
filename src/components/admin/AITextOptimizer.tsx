@@ -19,7 +19,7 @@ interface Props {
   maxLength?: number;
 }
 
-export function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact, fieldType, maxLength }: Props) {
+export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOptimized, onTranslated, compact, fieldType, maxLength }: Props) {
   const { toast } = useToast();
   const [optimizing, setOptimizing] = useState(false);
   const [translating, setTranslating] = useState(false);
