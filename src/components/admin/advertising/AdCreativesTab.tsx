@@ -19,6 +19,14 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  const sortedCreatives = useMemo(() => 
+    [...creatives].sort((a, b) => {
+      if (a.status === 'pending' && b.status !== 'pending') return -1;
+      if (a.status !== 'pending' && b.status === 'pending') return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }), [creatives]
+  );
+
   if (creatives.length === 0) {
     return (
       <Card className="rounded-2xl">
