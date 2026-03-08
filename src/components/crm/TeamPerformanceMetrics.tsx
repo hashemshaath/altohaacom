@@ -18,7 +18,7 @@ interface AgentMetrics {
   avgResponseMinutes: number | null;
 }
 
-export function TeamPerformanceMetrics() {
+export const TeamPerformanceMetrics = memo(function TeamPerformanceMetrics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
