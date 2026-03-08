@@ -84,7 +84,7 @@ const STEPS: Step[] = [
   },
 ];
 
-export function SupplierProfileCompletion() {
+export const SupplierProfileCompletion = memo(function SupplierProfileCompletion() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
