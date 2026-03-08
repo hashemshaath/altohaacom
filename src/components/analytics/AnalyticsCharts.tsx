@@ -51,7 +51,7 @@ export const RegistrationTrendChart = memo(function RegistrationTrendChart({ dat
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Competitions by Month ─── */
 export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({ data }: { data?: { month: string; count: number }[] }) {
