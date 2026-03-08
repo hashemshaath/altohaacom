@@ -100,7 +100,7 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
                 className={`rounded-xl border p-3 transition-all duration-300 group/item ${completed ? "border-chart-2/40 bg-chart-2/5" : "border-border/40 hover:border-primary/20 hover:shadow-sm hover:-translate-y-0.5"}`}
               >
                 <div className="flex items-start gap-2.5">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-lg">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted/60 text-lg transition-transform duration-300 group-hover/item:scale-110">
                     {c.icon_emoji || <Icon className="h-4 w-4 text-chart-1" />}
                   </div>
                   <div className="min-w-0 flex-1">

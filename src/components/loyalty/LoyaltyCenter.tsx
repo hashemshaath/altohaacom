@@ -270,9 +270,9 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
             const isReached = points >= t.min_points;
 
             return (
-              <Card key={t.id} className={`${isCurrentTier ? "border-primary ring-1 ring-primary/20" : ""} ${!isReached ? "opacity-50" : ""}`}>
+              <Card key={t.id} className={`transition-all duration-300 group/tier ${isCurrentTier ? "border-primary ring-1 ring-primary/20 shadow-sm" : ""} ${!isReached ? "opacity-50" : "hover:shadow-md hover:-translate-y-0.5"}`}>
                 <CardContent className="p-4 flex items-center gap-4">
-                  <span className="text-4xl">{t.icon_emoji}</span>
+                  <span className="text-4xl transition-transform duration-300 group-hover/tier:scale-110">{t.icon_emoji}</span>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold">{isAr ? t.name_ar : t.name}</h3>
@@ -286,9 +286,13 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                     </div>
                   </div>
                   {isReached ? (
-                    <Check className="h-6 w-6 text-chart-3" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-chart-3/10">
+                      <Check className="h-5 w-5 text-chart-3" />
+                    </div>
                   ) : (
-                    <Lock className="h-6 w-6 text-muted-foreground" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
                   )}
                 </CardContent>
               </Card>

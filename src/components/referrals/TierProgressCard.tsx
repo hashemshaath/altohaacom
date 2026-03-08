@@ -45,11 +45,11 @@ export const TierProgressCard = memo(function TierProgressCard() {
             return (
               <div
                 key={tier.id}
-                className={`flex items-center gap-3 rounded-xl border p-3 transition-all ${
+                className={`flex items-center gap-3 rounded-xl border p-3 transition-all duration-300 group/tier ${
                   isActive
-                    ? "border-primary/30 bg-primary/5 shadow-sm"
+                    ? "border-primary/30 bg-primary/5 shadow-sm hover:shadow-md"
                     : isCompleted
-                    ? "border-chart-2/20 bg-chart-2/5"
+                    ? "border-chart-2/20 bg-chart-2/5 hover:border-chart-2/30"
                     : "opacity-60"
                 }`}
               >
