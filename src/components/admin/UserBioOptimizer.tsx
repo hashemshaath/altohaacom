@@ -15,7 +15,7 @@ interface Props {
   lang: "en" | "ar";
 }
 
-export function UserBioOptimizer({ bio, onBioChange, onTranslatedBioChange, lang }: Props) {
+export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChange, onTranslatedBioChange, lang }: Props) {
   const { toast } = useToast();
   const [optimizing, setOptimizing] = useState(false);
   const [translating, setTranslating] = useState(false);
