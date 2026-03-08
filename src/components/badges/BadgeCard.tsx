@@ -33,7 +33,7 @@ const BADGE_ICONS: Record<string, any> = {
   special: Sparkles,
 };
 
-export function BadgeCard({ badge, competitionTitle, earnedAt, shareToken, showShare }: BadgeCardProps) {
+export const BadgeCard = memo(function BadgeCard({ badge, competitionTitle, earnedAt, shareToken, showShare }: BadgeCardProps) {
   const { language } = useLanguage();
   const Icon = BADGE_ICONS[badge.badge_type] || Star;
   const name = language === "ar" && badge.name_ar ? badge.name_ar : badge.name;
