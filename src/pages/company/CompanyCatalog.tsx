@@ -134,8 +134,10 @@ export default function CompanyCatalog() {
     setDialogOpen(true);
   };
 
-  const activeCount = items.filter((i) => i.is_active).length;
-  const inStockCount = items.filter((i) => i.in_stock).length;
+  const { activeCount, inStockCount } = useMemo(() => ({
+    activeCount: items.filter((i) => i.is_active).length,
+    inStockCount: items.filter((i) => i.in_stock).length,
+  }), [items]);
 
   return (
     <div className="space-y-6">

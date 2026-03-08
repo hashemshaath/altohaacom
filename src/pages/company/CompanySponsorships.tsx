@@ -166,9 +166,13 @@ export default function CompanySponsorships() {
     },
   });
 
-  const alreadySponsoredIds = mySponsors.map((s: any) => s.competition_id);
-  const availableOpportunities = opportunities.filter(c => !alreadySponsoredIds.includes(c.id));
-  const pendingInvitations = invitations.filter((i: any) => i.status === "pending");
+  const { availableOpportunities, pendingInvitations } = useMemo(() => {
+    const alreadySponsoredIds = mySponsors.map((s: any) => s.competition_id);
+    return {
+      availableOpportunities: opportunities.filter(c => !alreadySponsoredIds.includes(c.id)),
+      pendingInvitations: invitations.filter((i: any) => i.status === "pending"),
+    };
+  }, [mySponsors, opportunities, invitations]);
 
   return (
     <div className="space-y-6">

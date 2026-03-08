@@ -106,9 +106,11 @@ export default function CompanyOrders() {
     },
   });
 
-  const pending = orders.filter(o => o.status === "pending").length;
-  const completed = orders.filter(o => o.status === "completed").length;
-  const rejected = orders.filter(o => o.status === "rejected").length;
+  const { pending, completed, rejected } = useMemo(() => ({
+    pending: orders.filter(o => o.status === "pending").length,
+    completed: orders.filter(o => o.status === "completed").length,
+    rejected: orders.filter(o => o.status === "rejected").length,
+  }), [orders]);
 
   return (
     <div className="space-y-6">

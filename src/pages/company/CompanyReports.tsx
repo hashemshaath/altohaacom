@@ -103,13 +103,19 @@ export default function CompanyReports() {
   const filteredTxns = filterByDate(transactions).filter(t => txnType === "all" || (t as any).type === txnType);
 
   // Summary KPIs
-  const totalOrders = filteredOrders.length;
-  const totalOrderValue = filteredOrders.reduce((s, o: any) => s + (o.total_amount || 0), 0);
-  const totalInvoiced = filteredInvoices.reduce((s, i: any) => s + (i.amount || 0), 0);
-  const totalPaid = filteredInvoices.filter((i: any) => i.status === "paid").reduce((s, i: any) => s + (i.amount || 0), 0);
-  const totalPending = totalInvoiced - totalPaid;
-  const totalCredits = filteredTxns.filter((t: any) => ["payment", "credit", "refund"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0);
-  const totalDebits = filteredTxns.filter((t: any) => ["invoice", "debit"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0);
+  const { totalOrders, totalOrderValue, totalInvoiced, totalPaid, totalPending, totalCredits, totalDebits } = useMemo(() => {
+    const tInv = filteredInvoices.reduce((s, i: any) => s + (i.amount || 0), 0);
+    const tPaid = filteredInvoices.filter((i: any) => i.status === "paid").reduce((s, i: any) => s + (i.amount || 0), 0);
+    return {
+      totalOrders: filteredOrders.length,
+      totalOrderValue: filteredOrders.reduce((s, o: any) => s + (o.total_amount || 0), 0),
+      totalInvoiced: tInv,
+      totalPaid: tPaid,
+      totalPending: tInv - tPaid,
+      totalCredits: filteredTxns.filter((t: any) => ["payment", "credit", "refund"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0),
+      totalDebits: filteredTxns.filter((t: any) => ["invoice", "debit"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0),
+    };
+  }, [filteredOrders, filteredInvoices, filteredTxns]);
 
   // Export functions
   const exportOrders = () => {

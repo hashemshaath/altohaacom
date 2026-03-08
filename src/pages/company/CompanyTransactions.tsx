@@ -64,16 +64,17 @@ export default function CompanyTransactions() {
     return matchesSearch && matchesType;
   });
 
-  const totalCredits = filtered
-    .filter((t) => ["payment", "credit", "refund"].includes(t.type))
-    .reduce((s, t) => s + (t.amount || 0), 0);
-  const totalDebits = filtered
-    .filter((t) => ["invoice", "debit"].includes(t.type))
-    .reduce((s, t) => s + (t.amount || 0), 0);
-  const reconciledCount = filtered.filter((t) => t.is_reconciled).length;
-  const pendingCount = filtered.length - reconciledCount;
-  const currency = transactions[0]?.currency || "SAR";
-  const typeOptions = [...new Set(transactions.map((t) => t.type))];
+  const { totalCredits, totalDebits, reconciledCount, pendingCount, currency, typeOptions } = useMemo(() => {
+    const credits = filtered.filter((t) => ["payment", "credit", "refund"].includes(t.type)).reduce((s, t) => s + (t.amount || 0), 0);
+    const debits = filtered.filter((t) => ["invoice", "debit"].includes(t.type)).reduce((s, t) => s + (t.amount || 0), 0);
+    const reconciled = filtered.filter((t) => t.is_reconciled).length;
+    return {
+      totalCredits: credits, totalDebits: debits,
+      reconciledCount: reconciled, pendingCount: filtered.length - reconciled,
+      currency: transactions[0]?.currency || "SAR",
+      typeOptions: [...new Set(transactions.map((t) => t.type))],
+    };
+  }, [filtered, transactions]);
 
   const exportCSV = () => {
     if (filtered.length === 0) return;
