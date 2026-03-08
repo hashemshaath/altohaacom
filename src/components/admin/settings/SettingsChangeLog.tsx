@@ -17,7 +17,7 @@ const CATEGORY_ICONS: Record<string, any> = {
   layout: Layout,
 };
 
-export function SettingsChangeLog() {
+export const SettingsChangeLog = memo(function SettingsChangeLog() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
