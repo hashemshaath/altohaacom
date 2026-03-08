@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,7 @@ import { Bell, Send, Eye, AlertTriangle, Zap, Mail, Smartphone, MessageSquare } 
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function NotificationInsightsWidget() {
+export const NotificationInsightsWidget = memo(function NotificationInsightsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -182,4 +183,4 @@ export function NotificationInsightsWidget() {
       </Card>
     </div>
   );
-}
+});

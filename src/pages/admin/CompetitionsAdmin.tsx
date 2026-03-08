@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CompetitionPipelineTracker } from "@/components/admin/CompetitionPipelineTracker";
 import { JudgingOverviewWidget } from "@/components/admin/JudgingOverviewWidget";
@@ -892,7 +892,7 @@ export default function CompetitionsAdmin() {
 
 // ── Judging Panel ──────────────────────────
 function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
-  const judgingComps = competitions.filter(c => ["judging", "in_progress"].includes(c.status));
+  const judgingComps = useMemo(() => competitions.filter(c => ["judging", "in_progress"].includes(c.status)), [competitions]);
 
   const { data: judgingData = [] } = useQuery({
     queryKey: ["judging-overview"],
@@ -971,7 +971,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
 
 // ── Results Panel ──────────────────────────
 function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
-  const completedComps = competitions.filter(c => c.status === "completed");
+  const completedComps = useMemo(() => competitions.filter(c => c.status === "completed"), [competitions]);
 
   const { data: resultsData = [] } = useQuery({
     queryKey: ["results-overview"],

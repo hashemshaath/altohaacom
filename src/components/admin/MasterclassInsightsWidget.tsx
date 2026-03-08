@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { BookOpen, Users, GraduationCap, Star, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function MasterclassInsightsWidget() {
+export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -115,4 +116,4 @@ export function MasterclassInsightsWidget() {
       </CardContent>
     </Card>
   );
-}
+});
