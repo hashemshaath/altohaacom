@@ -131,6 +131,16 @@ export default function Entities() {
     return matchesSearch && matchesType && matchesScope && matchesTab;
   }), [entities, search, typeFilter, scopeFilter, activeTab, isAr]);
 
+  const entityStats = useMemo(() => {
+    if (!entities) return { verified: 0, countries: 0, associations: 0, government: 0 };
+    return {
+      verified: entities.filter(e => e.is_verified).length,
+      countries: new Set(entities.map(e => e.country).filter(Boolean)).size,
+      associations: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length,
+      government: entities.filter(e => e.type === "government_entity").length,
+    };
+  }, [entities]);
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title="Culinary Entities Directory" description="Discover culinary associations, government entities, and academies worldwide." />
