@@ -15,7 +15,7 @@ interface CookingTimerProps {
 
 type TimerPhase = "prep" | "cook";
 
-export function CookingTimer({ prepMinutes, cookMinutes, recipeName }: CookingTimerProps) {
+export const CookingTimer = memo(function CookingTimer({ prepMinutes, cookMinutes, recipeName }: CookingTimerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
