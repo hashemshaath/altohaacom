@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -248,15 +248,18 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
                   <Input placeholder={language === "ar" ? "الوصف (اختياري)" : "Description (optional)"} value={c.description || ""} onChange={e => updateCriterion(i, { description: e.target.value })} className="text-sm" />
                 </div>
               ))}
-              {form.criteria.length > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  {language === "ar" ? "المجموع:" : "Total weight:"}{" "}
-                  {form.criteria.reduce((s, c) => s + c.weight, 0).toFixed(2)}
-                  {form.criteria.reduce((s, c) => s + c.weight, 0) !== 1 && (
-                    <span className="text-destructive ms-2">({language === "ar" ? "يجب أن يكون 1.0" : "should be 1.0"})</span>
-                  )}
-                </p>
-              )}
+              {form.criteria.length > 0 && (() => {
+                const totalWeight = form.criteria.reduce((s, c) => s + c.weight, 0);
+                return (
+                  <p className="text-xs text-muted-foreground">
+                    {language === "ar" ? "المجموع:" : "Total weight:"}{" "}
+                    {totalWeight.toFixed(2)}
+                    {totalWeight !== 1 && (
+                      <span className="text-destructive ms-2">({language === "ar" ? "يجب أن يكون 1.0" : "should be 1.0"})</span>
+                    )}
+                  </p>
+                );
+              })()}
             </div>
 
             <div className="flex items-center gap-4">

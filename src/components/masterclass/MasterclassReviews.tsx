@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -45,6 +45,7 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
   const avgRating = useMemo(() => reviews.length > 0
     ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : null, [reviews]);
+  const otherReviews = useMemo(() => reviews.filter((r: any) => r.user_id !== user?.id), [reviews, user?.id]);
 
   const submitReview = useMutation({
     mutationFn: async () => {
@@ -159,9 +160,9 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
       )}
 
       {/* All Reviews */}
-      {reviews.filter((r: any) => r.user_id !== user?.id).length > 0 && (
+      {otherReviews.length > 0 && (
         <div className="space-y-3">
-          {reviews.filter((r: any) => r.user_id !== user?.id).map((review: any) => (
+          {otherReviews.map((review: any) => (
             <Card key={review.id}>
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">

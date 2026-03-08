@@ -85,9 +85,11 @@ export function ChefScoringForm({
   const criteria: EvaluationCriterion[] = (criteriaData?.criteria || []) as EvaluationCriterion[];
 
   // Compute progress
-  const requiredCriteria = criteria.filter(c => c.is_required);
-  const filledRequired = requiredCriteria.filter(c => scores[c.id] !== undefined);
-  const progress = requiredCriteria.length > 0 ? Math.round((filledRequired.length / requiredCriteria.length) * 100) : 0;
+  const requiredCriteria = useMemo(() => criteria.filter(c => c.is_required), [criteria]);
+  const { filledRequired, progress } = useMemo(() => {
+    const filled = requiredCriteria.filter(c => scores[c.id] !== undefined);
+    return { filledRequired: filled, progress: requiredCriteria.length > 0 ? Math.round((filled.length / requiredCriteria.length) * 100) : 0 };
+  }, [requiredCriteria, scores]);
 
   // Compute overall score
   const overallScore = useMemo(() => {
