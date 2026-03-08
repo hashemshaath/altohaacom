@@ -29,7 +29,7 @@ interface TypesCategoriesStepProps {
   onCategoriesChange: (cats: CategoryForm[]) => void;
 }
 
-export function TypesCategoriesStep({
+export const TypesCategoriesStep = memo(function TypesCategoriesStep({
   selectedTypeIds,
   categories,
   onTypeChange,
