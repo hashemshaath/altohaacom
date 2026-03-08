@@ -10,7 +10,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionQuickStats({ exhibitionId, viewCount, isAr }: Props) {
+export const ExhibitionQuickStats = memo(function ExhibitionQuickStats({ exhibitionId, viewCount, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data } = useQuery({
