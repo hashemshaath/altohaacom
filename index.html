@@ -43,6 +43,27 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Altoha" />
     <meta name="twitter:image" content="/pwa-512x512.png" />
+
+    <!-- JSON-LD Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Altoha",
+      "url": "https://altoha.com",
+      "logo": "https://altoha.com/pwa-512x512.png",
+      "description": "The premier culinary community platform for chefs, judges, and food enthusiasts.",
+      "sameAs": ["https://twitter.com/Altoha"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://altoha.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/src/main.tsx" as="script" crossorigin />
   </head>
 
   <body>
