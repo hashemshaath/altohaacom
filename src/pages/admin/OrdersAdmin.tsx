@@ -1311,7 +1311,7 @@ export default function OrdersAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
                     {Object.entries(categoryLabels).map(([key, val]) => (
