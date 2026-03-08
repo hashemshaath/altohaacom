@@ -31,7 +31,7 @@ interface Props {
   competitionId: string;
 }
 
-export function SponsorshipRequestPanel({ listId, competitionId }: Props) {
+export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ listId, competitionId }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
