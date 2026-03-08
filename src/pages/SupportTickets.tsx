@@ -425,7 +425,7 @@ export default function SupportTickets() {
                         value={newReply}
                         onChange={e => setNewReply(e.target.value)}
                         placeholder={isAr ? "اكتب ردك..." : "Type your reply..."}
-                        className="flex-1"
+                        className="flex-1 rounded-xl"
                       />
                       <Button type="submit" disabled={!newReply.trim() || sendReply.isPending} size="icon">
                         <Send className="h-4 w-4" />
