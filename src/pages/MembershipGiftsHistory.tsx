@@ -147,8 +147,8 @@ export default function MembershipGiftsHistory() {
     },
   });
 
-  const sentPending = sentGifts.filter((g: any) => g.status === "pending").length;
-  const sentRedeemed = sentGifts.filter((g: any) => g.status === "redeemed").length;
+  const sentPending = useMemo(() => sentGifts.filter((g: any) => g.status === "pending").length, [sentGifts]);
+  const sentRedeemed = useMemo(() => sentGifts.filter((g: any) => g.status === "redeemed").length, [sentGifts]);
 
   return (
     <div className="container max-w-3xl py-6 sm:py-10 space-y-6" dir={isAr ? "rtl" : "ltr"}>

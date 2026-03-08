@@ -971,7 +971,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
 
 // ── Results Panel ──────────────────────────
 function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
-  const completedComps = competitions.filter(c => c.status === "completed");
+  const completedComps = useMemo(() => competitions.filter(c => c.status === "completed"), [competitions]);
 
   const { data: resultsData = [] } = useQuery({
     queryKey: ["results-overview"],

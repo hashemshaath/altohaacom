@@ -270,9 +270,9 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     { icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue", value: `${(stats?.totalRevenue || 0).toLocaleString()}`, color: "text-chart-3" },
   ];
 
-  const pendingRequests = requests.filter(r => r.status === "pending" || r.status === "under_review");
-  const pendingCampaigns = campaigns.filter(c => c.status === "pending_approval");
-  const pendingCreatives = creatives.filter(c => c.status === "pending");
+  const pendingRequests = useMemo(() => requests.filter(r => r.status === "pending" || r.status === "under_review"), [requests]);
+  const pendingCampaigns = useMemo(() => campaigns.filter(c => c.status === "pending_approval"), [campaigns]);
+  const pendingCreatives = useMemo(() => creatives.filter(c => c.status === "pending"), [creatives]);
 
   const bulkCampaigns = useAdminBulkActions(campaigns);
 
