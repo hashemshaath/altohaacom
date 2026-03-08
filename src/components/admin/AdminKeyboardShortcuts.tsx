@@ -101,7 +101,7 @@ export const AdminKeyboardShortcuts = memo(function AdminKeyboardShortcuts() {
       </Dialog>
     </>
   );
-}
+});
 
 /** Small widget card showing shortcut hints */
 export function ShortcutHintsCard() {
