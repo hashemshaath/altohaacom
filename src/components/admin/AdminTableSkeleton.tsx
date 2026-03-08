@@ -10,7 +10,7 @@ interface AdminTableSkeletonProps {
   className?: string;
 }
 
-export function AdminTableSkeleton({
+export const AdminTableSkeleton = memo(function AdminTableSkeleton({
   rows = 5,
   columns = 4,
   showHeader = true,
