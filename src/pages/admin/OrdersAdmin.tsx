@@ -1418,7 +1418,7 @@ export default function OrdersAdmin() {
             <StatCard value={shopStats.delivered} label={isAr ? "تم التوصيل" : "Delivered"} color="text-chart-5" />
           </div>
 
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader>
               <CardTitle>{isAr ? "طلبات المتجر" : "Shop Orders"}</CardTitle>
             </CardHeader>
