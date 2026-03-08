@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -64,7 +64,7 @@ const STATUS_BADGE: Record<string, { className: string; icon: React.ElementType 
   withdrawn: { className: "bg-muted text-muted-foreground", icon: XCircle },
 };
 
-export function RegistrationApprovalPanel({ competitionId }: RegistrationApprovalPanelProps) {
+export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel({ competitionId }: RegistrationApprovalPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -581,4 +581,4 @@ export function RegistrationApprovalPanel({ competitionId }: RegistrationApprova
       </Dialog>
     </div>
   );
-}
+});

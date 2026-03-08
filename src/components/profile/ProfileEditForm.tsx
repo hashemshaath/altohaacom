@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -20,7 +20,7 @@ interface ProfileEditFormProps {
   onSaved: () => void;
 }
 
-export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormProps) {
+export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const { isFan } = useAccountType();
@@ -140,4 +140,4 @@ export function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormPro
       </div>
     </div>
   );
-}
+});

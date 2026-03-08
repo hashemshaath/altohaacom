@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -19,7 +19,7 @@ interface Props {
   blindCodePrefix?: string;
 }
 
-export function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnabled = false, blindCodePrefix = "ENTRY" }: Props) {
+export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnabled = false, blindCodePrefix = "ENTRY" }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -199,4 +199,4 @@ export function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnab
       )}
     </div>
   );
-}
+});

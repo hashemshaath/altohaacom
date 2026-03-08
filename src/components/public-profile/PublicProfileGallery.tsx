@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ function groupMediaFiles(files: MediaFile[]) {
   return { groups: validGroups, ungrouped };
 }
 
-export function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryProps) {
+export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryProps) {
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "grouped">("grid");
 
@@ -176,7 +176,7 @@ export function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryP
       </Dialog>
     </>
   );
-}
+});
 
 function GalleryThumb({ file, onClick }: { file: MediaFile; onClick: () => void }) {
   return (

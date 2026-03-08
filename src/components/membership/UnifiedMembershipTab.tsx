@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,7 +41,7 @@ interface UnifiedMembershipTabProps {
   onMembershipChange?: () => void;
 }
 
-export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: UnifiedMembershipTabProps) {
+export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile, userId, onMembershipChange }: UnifiedMembershipTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: verificationStatus } = useVerificationStatus();
@@ -1022,4 +1023,4 @@ export function UnifiedMembershipTab({ profile, userId, onMembershipChange }: Un
       <MembershipHistory />
     </div>
   );
-}
+});

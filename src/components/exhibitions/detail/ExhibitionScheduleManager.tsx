@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,7 +28,7 @@ const CATEGORIES = [
   { value: "break", en: "Break", ar: "استراحة" },
 ];
 
-export function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
+export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -231,4 +231,4 @@ export function ExhibitionScheduleManager({ exhibitionId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

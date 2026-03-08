@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -19,7 +20,7 @@ interface Props {
   onFollowClick: (type: "followers" | "following") => void;
 }
 
-export function PublicProfileStats({ profile, followStats, socialLinks, isAr, isVisible, onFollowClick }: Props) {
+export const PublicProfileStats = memo(function PublicProfileStats({ profile, followStats, socialLinks, isAr, isVisible, onFollowClick }: Props) {
   const stats = [
     { value: followStats?.followers || 0, label: isAr ? "متابعون" : "Followers", onClick: () => onFollowClick("followers"), icon: Users },
     { value: followStats?.following || 0, label: isAr ? "يتابع" : "Following", onClick: () => onFollowClick("following"), icon: UserCheck },
@@ -70,4 +71,4 @@ export function PublicProfileStats({ profile, followStats, socialLinks, isAr, is
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useBenefitUsage } from "@/hooks/useBenefitUsage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +15,7 @@ const ICON_MAP: Record<string, any> = {
   FileText, Camera, MessageSquare, Trophy, Video, Link, Zap, ChefHat,
 };
 
-export function BenefitsUsageTracker() {
+export const BenefitsUsageTracker = memo(function BenefitsUsageTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: benefits, isLoading } = useBenefitUsage();
@@ -123,4 +124,4 @@ export function BenefitsUsageTracker() {
       </CardContent>
     </Card>
   );
-}
+});

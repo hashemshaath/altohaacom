@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,7 +25,7 @@ const CATEGORY_CONFIG: Record<string, { en: string; ar: string; dot: string }> =
   break: { en: "Break", ar: "استراحة", dot: "bg-muted-foreground" },
 };
 
-export function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: Props) {
+export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -292,4 +292,4 @@ export function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: 
       </div>
     </div>
   );
-}
+});

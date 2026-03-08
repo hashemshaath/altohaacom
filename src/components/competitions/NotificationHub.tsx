@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,7 +22,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function NotificationHub({ competitionId, language, isOrganizer }: Props) {
+export const NotificationHub = memo(function NotificationHub({ competitionId, language, isOrganizer }: Props) {
   const isAr = language === "ar";
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -277,4 +277,4 @@ export function NotificationHub({ competitionId, language, isOrganizer }: Props)
       </Card>
     </div>
   );
-}
+});

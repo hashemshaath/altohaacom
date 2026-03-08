@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ interface PublicProfileHeroProps {
   userSpecialties?: any[];
 }
 
-export function PublicProfileHero({
+export const PublicProfileHero = memo(function PublicProfileHero({
   profile, displayName, currentWork, roles, roleLabels, userAwards,
   isAr, isOwnProfile, isFollowing, pendingRequest, followPrivacy, toggleFollow, user, getCountryName,
   userSpecialties = [],
@@ -296,4 +296,4 @@ export function PublicProfileHero({
       </AlertDialog>
     </section>
   );
-}
+});
