@@ -12,7 +12,7 @@ interface ProfessionalInfoSectionProps {
   isAr: boolean;
 }
 
-export function ProfessionalInfoSection({ form, update, isAr }: ProfessionalInfoSectionProps) {
+export const ProfessionalInfoSection = memo(function ProfessionalInfoSection({ form, update, isAr }: ProfessionalInfoSectionProps) {
   return (
     <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300">
       <CardHeader className="pb-3 px-6 pt-5">
