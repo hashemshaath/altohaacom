@@ -32,7 +32,7 @@ interface EntitySelectorProps {
   label?: string;
 }
 
-export function EntitySelector({ value, entityName, onChange, label }: EntitySelectorProps) {
+export const EntitySelector = memo(function EntitySelector({ value, entityName, onChange, label }: EntitySelectorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
