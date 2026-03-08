@@ -234,7 +234,7 @@ export default function MediaAdmin() {
             </div>
             <div className="flex gap-2">
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-32 h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-32 h-9 text-xs rounded-xl"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
                   <SelectItem value="images">{language === "ar" ? "صور" : "Images"}</SelectItem>
