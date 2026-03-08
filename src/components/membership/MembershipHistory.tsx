@@ -34,7 +34,7 @@ function getActionInfo(reason: string | null, prevTier: string | null, newTier: 
   return { icon: History, color: "text-muted-foreground", type: "change" };
 }
 
-export function MembershipHistory() {
+export const MembershipHistory = memo(function MembershipHistory() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
