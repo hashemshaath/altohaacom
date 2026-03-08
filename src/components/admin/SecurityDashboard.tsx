@@ -301,7 +301,7 @@ const SecurityDashboard = memo(function SecurityDashboard() {
       </Tabs>
     </div>
   );
-}
+});
 
 // ── Sessions Panel ──────────────────────────────────────
 function SessionsPanel() {
