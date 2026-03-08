@@ -162,9 +162,16 @@ export const CompetitionCard = memo(
 
             {/* Content Section */}
             <CardContent className="flex flex-1 flex-col p-3 sm:p-4">
-              <h3 className="mb-1.5 flex-1 line-clamp-2 text-sm sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
+              <h3 className="mb-1 flex-1 line-clamp-2 text-sm sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
                 {title}
               </h3>
+              {/* Registration urgency */}
+              {derived.status === "registration_closing_soon" && derived.daysLeft && derived.daysLeft <= 7 && (
+                <p className="text-[9px] font-bold text-destructive mb-1.5 flex items-center gap-1 animate-pulse">
+                  <Flame className="h-2.5 w-2.5" />
+                  {isAr ? `آخر ${derived.daysLeft} أيام للتسجيل!` : `Only ${derived.daysLeft} days to register!`}
+                </p>
+              )}
 
               {/* Capacity Bar */}
               {maxP && maxP > 0 && (

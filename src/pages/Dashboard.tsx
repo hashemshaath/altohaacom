@@ -97,13 +97,16 @@ export default function Dashboard() {
     }
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const hour = new Date().getHours();
+  const timeGreeting = isAr
+    ? (hour < 12 ? "صباح الخير" : hour < 18 ? "مساء الخير" : "مساء النور")
+    : (hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening");
+
   const firstName = isAr
     ? (profile?.full_name_ar?.split(" ")[0] || profile?.full_name?.split(" ")[0] || "")
     : (profile?.full_name?.split(" ")[0] || "");
 
-  const greeting = isAr
-    ? `مرحباً${firstName ? ` ${firstName}` : ""}`
-    : `Welcome back${firstName ? `, ${firstName}` : ""}`;
+  const greeting = `${timeGreeting}${firstName ? (isAr ? ` ${firstName}` : `, ${firstName}`) : ""}`;
   const subtitle = isFan
     ? (isAr ? "تابع آخر أخبار الطهاة والمسابقات والمعارض" : "Stay updated on chefs, competitions & exhibitions")
     : (isAr ? "إليك ملخص نشاطك ومسابقاتك القادمة" : "Your culinary milestones await below.");
