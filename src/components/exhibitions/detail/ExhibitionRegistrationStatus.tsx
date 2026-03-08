@@ -18,7 +18,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionRegistrationStatus({
+export const ExhibitionRegistrationStatus = memo(function ExhibitionRegistrationStatus({
   registrationDeadline,
   registrationUrl,
   maxAttendees,
