@@ -20,7 +20,7 @@ import { formatCurrency } from "@/lib/currencyFormatter";
 import { format, subMonths, eachMonthOfInterval, startOfMonth } from "date-fns";
 import { ar } from "date-fns/locale";
 
-export function FinancialForecasting() {
+export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [forecastMonths, setForecastMonths] = useState("6");
