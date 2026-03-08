@@ -344,7 +344,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
       </div>
     </div>
   );
-}
+});
 
 function LifecycleTriggersList() {
   const { language } = useLanguage();
