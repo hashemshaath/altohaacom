@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +18,7 @@ const ROLE_COLORS = [
   "hsl(var(--destructive))",
 ];
 
-export function UserAnalyticsWidget() {
+export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,7 +11,7 @@ import { FileText, Clock, CheckCircle2, Archive, Eye, TrendingUp } from "lucide-
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function ContentPipelineWidget() {
+export const ContentPipelineWidget = memo(function ContentPipelineWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,7 @@ import { Landmark, Ticket, Users, MapPin, Calendar, Building } from "lucide-reac
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInDays } from "date-fns";
 
-export function ExhibitionAnalyticsWidget() {
+export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

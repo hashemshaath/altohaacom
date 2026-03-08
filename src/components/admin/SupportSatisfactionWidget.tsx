@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, L
 import { SmilePlus, Clock, Timer, Users, TrendingDown, Zap } from "lucide-react";
 import { format, subDays, differenceInMinutes } from "date-fns";
 
-export function SupportSatisfactionWidget() {
+export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

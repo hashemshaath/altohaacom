@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +10,7 @@ import { Trophy, Users, Gavel, CheckCircle, Clock, TrendingUp } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function CompetitionPipelineTracker() {
+export const CompetitionPipelineTracker = memo(function CompetitionPipelineTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

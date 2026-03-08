@@ -22,7 +22,7 @@ interface PendingItem {
   urgent?: boolean;
 }
 
-export function AdminPendingActionsWidget() {
+export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
