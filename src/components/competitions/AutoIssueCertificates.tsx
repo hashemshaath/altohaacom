@@ -14,7 +14,7 @@ interface AutoIssueCertificatesProps {
   competitionId: string;
 }
 
-export function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesProps) {
+export const AutoIssueCertificates = memo(function AutoIssueCertificates({ competitionId }: AutoIssueCertificatesProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
