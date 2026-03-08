@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useEntityPrograms, useEnrollInProgram, useMyEnrollments } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
