@@ -14,7 +14,7 @@ interface JudgeAIAssistantProps {
   className?: string;
 }
 
-export function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantProps) {
+export const JudgeAIAssistant = memo(function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantProps) {
   const { messages, isLoading, askQuestion, clearMessages } = useJudgeAI(competitionId);
   const { language } = useLanguage();
   const [input, setInput] = useState("");
