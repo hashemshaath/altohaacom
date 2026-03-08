@@ -12,7 +12,7 @@ interface Props {
   entityName: string;
 }
 
-export function EntityNotificationsCard({ entityId, entityName }: Props) {
+export const EntityNotificationsCard = memo(function EntityNotificationsCard({ entityId, entityName }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
