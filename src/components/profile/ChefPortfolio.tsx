@@ -15,7 +15,7 @@ interface Props {
   userId?: string;
 }
 
-export default function ChefPortfolio({ userId }: Props) {
+const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
