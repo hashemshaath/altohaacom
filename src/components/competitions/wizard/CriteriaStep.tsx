@@ -16,7 +16,7 @@ interface CriteriaStepProps {
   onChange: (criteria: CriteriaForm[]) => void;
 }
 
-export function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
+export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: CriteriaStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
