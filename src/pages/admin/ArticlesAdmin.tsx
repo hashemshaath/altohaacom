@@ -429,7 +429,9 @@ export default function ArticlesAdmin() {
                   </TableCell>
                 </TableRow>
               ) : (
-                articles?.map((article) => (
+                articles?.map((article) => {
+                  const isScheduled = article.status === "published" && article.published_at && new Date(article.published_at) > new Date();
+                  return (
                   <TableRow key={article.id} className={cn("hover:bg-accent/30 transition-colors group", bulk.isSelected(article.id) && "bg-primary/5")}>
                     <TableCell>
                       <Checkbox
@@ -451,35 +453,63 @@ export default function ArticlesAdmin() {
                           </div>
                         )}
                         <div>
-                          <p className="font-medium line-clamp-1">
-                            {language === "ar" && article.title_ar ? article.title_ar : article.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground">/{article.slug}</p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-medium line-clamp-1">
+                              {language === "ar" && article.title_ar ? article.title_ar : article.title}
+                            </p>
+                            {article.is_featured && <Star className="h-3 w-3 text-chart-1 fill-chart-1 shrink-0" />}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs text-muted-foreground">/{article.slug}</p>
+                            {isScheduled && (
+                              <Badge variant="outline" className="text-[8px] gap-0.5 px-1 py-0 text-chart-4 border-chart-4/30">
+                                <Timer className="h-2 w-2" />
+                                {language === "ar" ? "مجدول" : "Scheduled"}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>{getTypeBadge(article.type)}</TableCell>
                     <TableCell>{getStatusBadge(article.status || "draft")}</TableCell>
-                    <TableCell>{article.view_count || 0}</TableCell>
+                    <TableCell>
+                      <span className="font-mono text-xs">{(article.view_count || 0).toLocaleString()}</span>
+                    </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {format(new Date(article.created_at), "MMM d, yyyy")}
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        {/* Quick publish toggle */}
                         <Button
                           variant="ghost"
                           size="sm"
-                          asChild
+                          title={article.status === "published" ? "Unpublish" : "Publish now"}
+                          onClick={() => {
+                            const newStatus = article.status === "published" ? "draft" : "published";
+                            updateMutation.mutate({
+                              id: article.id,
+                              data: {
+                                status: newStatus,
+                                ...(newStatus === "published" && !article.published_at ? { published_at: new Date().toISOString() } : {}),
+                              } as any,
+                            });
+                          }}
+                          className="text-muted-foreground hover:text-foreground"
                         >
+                          {article.status === "published" ? (
+                            <ToggleRight className="h-4 w-4 text-chart-2" />
+                          ) : (
+                            <ToggleLeft className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <Button variant="ghost" size="sm" asChild>
                           <a href={`/news/${article.slug}`} target="_blank" rel="noopener noreferrer">
                             <Eye className="h-4 w-4" />
                           </a>
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(article)}
-                        >
+                        <Button variant="ghost" size="sm" onClick={() => handleEdit(article)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
@@ -496,7 +526,8 @@ export default function ArticlesAdmin() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
+                  );
+                })
               )}
             </TableBody>
           </Table>
