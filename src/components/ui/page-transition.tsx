@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, memo } from "react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -7,7 +7,7 @@ interface PageTransitionProps {
   className?: string;
 }
 
-export function PageTransition({ children, className }: PageTransitionProps) {
+export const PageTransition = memo(function PageTransition({ children, className }: PageTransitionProps) {
   const location = useLocation();
   const [visible, setVisible] = useState(true);
 
