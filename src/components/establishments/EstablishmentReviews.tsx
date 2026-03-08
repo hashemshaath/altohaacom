@@ -20,7 +20,7 @@ interface Props {
   establishmentId: string;
 }
 
-export default function EstablishmentReviews({ establishmentId }: Props) {
+const EstablishmentReviews = memo(function EstablishmentReviews({ establishmentId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
