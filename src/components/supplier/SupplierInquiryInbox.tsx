@@ -73,7 +73,7 @@ export function SupplierInquiryInbox() {
   });
 
   const selected = inquiries.find((i: any) => i.id === selectedId) as any;
-  const unreadCount = inquiries.filter((i: any) => i.status === "unread").length;
+  const unreadCount = useMemo(() => inquiries.filter((i: any) => i.status === "unread").length, [inquiries]);
 
   const handleSelect = (inquiry: any) => {
     setSelectedId(inquiry.id);

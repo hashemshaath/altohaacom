@@ -36,10 +36,9 @@ export function MasterclassCard({ mc, isEnrolled }: MasterclassCardProps) {
   const moduleCount = mc.masterclass_modules?.length || 0;
   const enrollmentCount = mc.masterclass_enrollments?.length || 0;
   const reviews = mc.masterclass_reviews || [];
-  const avgRating = reviews.length > 0
+  const avgRating = useMemo(() => reviews.length > 0
     ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length)
-    : null;
-
+    : null, [reviews]);
   return (
     <Card
       className="group flex h-full flex-col overflow-hidden cursor-pointer border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card"
