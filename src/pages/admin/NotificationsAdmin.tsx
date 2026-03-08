@@ -454,10 +454,10 @@ export default function NotificationsAdmin() {
             <div className="relative flex-1 min-w-[180px] max-w-sm">
               <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input value={recentSearch} onChange={(e) => setRecentSearch(e.target.value)}
-                placeholder={isAr ? "بحث..." : "Search..."} className="ps-10" />
+                placeholder={isAr ? "بحث..." : "Search..."} className="ps-10 rounded-xl" />
             </div>
             <Select value={recentTypeFilter} onValueChange={setRecentTypeFilter}>
-              <SelectTrigger className="w-[120px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[120px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
                 <SelectItem value="info">Info</SelectItem>
@@ -467,7 +467,7 @@ export default function NotificationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={recentChannelFilter} onValueChange={setRecentChannelFilter}>
-              <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[130px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل القنوات" : "All Channels"}</SelectItem>
                 <SelectItem value="in_app">In-App</SelectItem>
@@ -477,7 +477,7 @@ export default function NotificationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={recentStatusFilter} onValueChange={setRecentStatusFilter}>
-              <SelectTrigger className="w-[120px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[120px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل الحالات" : "All Status"}</SelectItem>
                 <SelectItem value="sent">Sent</SelectItem>
@@ -497,7 +497,7 @@ export default function NotificationsAdmin() {
             onExport={() => exportNotifications(bulkRecent.selectedItems)}
           />
 
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               {loadingRecent ? (
                 <div className="p-6"><Skeleton className="h-64" /></div>
@@ -505,22 +505,22 @@ export default function NotificationsAdmin() {
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="bg-muted/30 hover:bg-muted/30">
                         <TableHead className="w-8">
                           <Checkbox checked={bulkRecent.isAllSelected} onCheckedChange={bulkRecent.toggleAll} />
                         </TableHead>
                         <TableHead className="w-8"></TableHead>
-                        <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
-                        <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                        <TableHead>{isAr ? "القناة" : "Channel"}</TableHead>
-                        <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                        <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "العنوان" : "Title"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "النوع" : "Type"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "القناة" : "Channel"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredRecent.map((notif: any) => (
                         <>
-                          <TableRow key={notif.id} className={`cursor-pointer ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
+                          <TableRow key={notif.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
                             <TableCell onClick={e => e.stopPropagation()}>
                               <Checkbox checked={bulkRecent.isSelected(notif.id)} onCheckedChange={() => bulkRecent.toggleOne(notif.id)} />
                             </TableCell>

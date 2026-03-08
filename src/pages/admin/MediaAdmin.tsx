@@ -228,13 +228,13 @@ export default function MediaAdmin() {
                   placeholder={language === "ar" ? "بحث في الملفات..." : "Search files..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="ps-9"
+                  className="ps-9 rounded-xl"
                 />
               </div>
             </div>
             <div className="flex gap-2">
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-32 h-9 text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-32 h-9 text-xs rounded-xl"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
                   <SelectItem value="images">{language === "ar" ? "صور" : "Images"}</SelectItem>
@@ -242,10 +242,10 @@ export default function MediaAdmin() {
                   <SelectItem value="documents">{language === "ar" ? "مستندات" : "Documents"}</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")}>
+              <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("grid")}>
                 <Grid className="h-4 w-4" />
               </Button>
-              <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")}>
+              <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("list")}>
                 <List className="h-4 w-4" />
               </Button>
             </div>

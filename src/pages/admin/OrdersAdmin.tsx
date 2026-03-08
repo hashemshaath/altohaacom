@@ -1236,16 +1236,16 @@ export default function OrdersAdmin() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="company" className="gap-1.5">
-            <Building2 className="h-4 w-4" />
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsTrigger value="company" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
+            <Building2 className="h-3.5 w-3.5" />
             {isAr ? "طلبات الشركات" : "Company Orders"}
-            <Badge variant="secondary" className="ms-1">{companyStats.total}</Badge>
+            <Badge variant="secondary" className="ms-1 text-[10px]">{companyStats.total}</Badge>
           </TabsTrigger>
-          <TabsTrigger value="shop" className="gap-1.5">
-            <ShoppingBag className="h-4 w-4" />
+          <TabsTrigger value="shop" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
+            <ShoppingBag className="h-3.5 w-3.5" />
             {isAr ? "طلبات المتجر" : "Shop Orders"}
-            <Badge variant="secondary" className="ms-1">{shopStats.total}</Badge>
+            <Badge variant="secondary" className="ms-1 text-[10px]">{shopStats.total}</Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -1260,7 +1260,7 @@ export default function OrdersAdmin() {
             <StatCard value={companyStats.outgoing} label={isAr ? "صادر" : "Outgoing"} color="text-chart-2" />
           </div>
 
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{isAr ? "جميع الطلبات" : "All Orders"}</CardTitle>
@@ -1281,16 +1281,16 @@ export default function OrdersAdmin() {
                 <div className="flex-1 min-w-[200px]">
                   <div className="relative">
                     <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
+                     <Input
                       placeholder={isAr ? "بحث برقم الطلب أو العنوان..." : "Search by order number or title..."}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="ps-10"
+                      className="ps-10 rounded-xl"
                     />
                   </div>
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                     <SelectItem value="draft">{isAr ? "مسودة" : "Draft"}</SelectItem>
@@ -1303,7 +1303,7 @@ export default function OrdersAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={directionFilter} onValueChange={setDirectionFilter}>
-                  <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[130px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                     <SelectItem value="incoming">{isAr ? "وارد" : "Incoming"}</SelectItem>
@@ -1311,7 +1311,7 @@ export default function OrdersAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
                     {Object.entries(categoryLabels).map(([key, val]) => (
@@ -1332,24 +1332,24 @@ export default function OrdersAdmin() {
               <ScrollArea className="h-[500px]">
                 <Table>
                   <TableHeader>
-                    <TableRow>
+                   <TableRow className="bg-muted/30 hover:bg-muted/30">
                       <TableHead className="w-10">
                         <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                       </TableHead>
-                      <TableHead>{isAr ? "رقم الطلب" : "Order #"}</TableHead>
-                      <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
-                      <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
-                      <TableHead>{isAr ? "الاتجاه" : "Dir"}</TableHead>
-                      <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                      <TableHead>{isAr ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "رقم الطلب" : "Order #"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الشركة" : "Company"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "العنوان" : "Title"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الاتجاه" : "Dir"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الفئة" : "Category"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
                       <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {orders.map((order: any) => (
-                      <TableRow key={order.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
+                      <TableRow key={order.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
                         <TableCell onClick={(e) => e.stopPropagation()}>
                           <Checkbox checked={bulk.isSelected(order.id)} onCheckedChange={() => bulk.toggleOne(order.id)} />
                         </TableCell>
@@ -1373,7 +1373,7 @@ export default function OrdersAdmin() {
                           )}
                         </TableCell>
                         <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
-                        <TableCell className="font-medium">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
+                        <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
                         <TableCell>
                           <Badge className={statusColors[order.status] || "bg-muted text-muted-foreground"}>
                             {getStatusLabel(order.status)}
@@ -1418,7 +1418,7 @@ export default function OrdersAdmin() {
             <StatCard value={shopStats.delivered} label={isAr ? "تم التوصيل" : "Delivered"} color="text-chart-5" />
           </div>
 
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader>
               <CardTitle>{isAr ? "طلبات المتجر" : "Shop Orders"}</CardTitle>
             </CardHeader>
@@ -1427,16 +1427,16 @@ export default function OrdersAdmin() {
                 <div className="flex-1 min-w-[200px]">
                   <div className="relative">
                     <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
+                     <Input
                       placeholder={isAr ? "بحث برقم الطلب أو اسم المشتري..." : "Search by order # or buyer..."}
                       value={shopSearchQuery}
                       onChange={(e) => setShopSearchQuery(e.target.value)}
-                      className="ps-10"
+                      className="ps-10 rounded-xl"
                     />
                   </div>
                 </div>
                 <Select value={shopStatusFilter} onValueChange={setShopStatusFilter}>
-                  <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[150px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الحالات" : "All"}</SelectItem>
                     <SelectItem value="pending">{isAr ? "قيد الانتظار" : "Pending"}</SelectItem>
@@ -1453,20 +1453,20 @@ export default function OrdersAdmin() {
               <ScrollArea className="h-[500px]">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>{isAr ? "رقم الطلب" : "Order #"}</TableHead>
-                      <TableHead>{isAr ? "المشتري" : "Buyer"}</TableHead>
-                      <TableHead>{isAr ? "المنتجات" : "Products"}</TableHead>
-                      <TableHead>{isAr ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead>{isAr ? "الدفع" : "Payment"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                   <TableRow className="bg-muted/30 hover:bg-muted/30">
+                      <TableHead className="font-semibold">{isAr ? "رقم الطلب" : "Order #"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المشتري" : "Buyer"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المنتجات" : "Products"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الدفع" : "Payment"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
                       <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {shopOrders.map((order: any) => (
-                      <TableRow key={order.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedShopOrder(order.id)}>
+                      <TableRow key={order.id} className="cursor-pointer transition-colors duration-150 hover:bg-muted/40" onClick={() => setSelectedShopOrder(order.id)}>
                         <TableCell className="font-mono text-sm">{order.order_number}</TableCell>
                         <TableCell>
                           <div>
@@ -1475,7 +1475,7 @@ export default function OrdersAdmin() {
                           </div>
                         </TableCell>
                         <TableCell>{order.shop_order_items?.length || 0} {isAr ? "منتج" : "items"}</TableCell>
-                        <TableCell className="font-medium">{order.currency} {Number(order.total_amount).toFixed(2)}</TableCell>
+                        <TableCell className="font-medium tabular-nums">{order.currency} {Number(order.total_amount).toFixed(2)}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-xs">{getStatusLabel(order.payment_status || "pending")}</Badge>
                         </TableCell>
@@ -1518,11 +1518,11 @@ export default function OrdersAdmin() {
 
 function StatCard({ value, label, color }: { value: number; label: string; color?: string }) {
   return (
-    <Card>
-      <CardContent className="pt-4">
+    <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+      <CardContent className="pt-4 pb-3">
         <div className="text-center">
-          <p className={`text-2xl font-bold ${color || ""}`}>{value}</p>
-          <p className="text-sm text-muted-foreground">{label}</p>
+          <AnimatedCounter value={value} className={`text-2xl font-bold tabular-nums ${color || ""}`} />
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
         </div>
       </CardContent>
     </Card>

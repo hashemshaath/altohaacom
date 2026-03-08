@@ -584,7 +584,7 @@ export default function CompetitionsAdmin() {
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-40 rounded-xl">
               <Filter className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
               <SelectValue placeholder={isAr ? "الحالة" : "Status"} />
             </SelectTrigger>
@@ -599,7 +599,7 @@ export default function CompetitionsAdmin() {
           </Select>
           {uniqueOrganizers.length > 0 && (
             <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
-              <SelectTrigger className="w-44">
+              <SelectTrigger className="w-44 rounded-xl">
                 <Users className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "المنظم" : "Organizer"} />
               </SelectTrigger>
@@ -615,7 +615,7 @@ export default function CompetitionsAdmin() {
           )}
           {uniqueExhibitions.length > 0 && (
             <Select value={exhibitionFilter} onValueChange={setExhibitionFilter}>
-              <SelectTrigger className="w-44">
+              <SelectTrigger className="w-44 rounded-xl">
                 <Building2 className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} />
               </SelectTrigger>
@@ -631,7 +631,7 @@ export default function CompetitionsAdmin() {
           )}
           {uniqueYears.length > 0 && (
             <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger className="w-28">
+              <SelectTrigger className="w-28 rounded-xl">
                 <Calendar className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "السنة" : "Year"} />
               </SelectTrigger>
@@ -645,7 +645,7 @@ export default function CompetitionsAdmin() {
           )}
           {seriesList && seriesList.length > 0 && (
             <Select value={seriesFilter} onValueChange={setSeriesFilter}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 rounded-xl">
                 <Layers className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "السلسلة" : "Series"} />
               </SelectTrigger>
