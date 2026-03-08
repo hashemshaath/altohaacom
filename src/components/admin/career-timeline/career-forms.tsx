@@ -282,7 +282,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
 
 // ── Competition Add Form ──────────────────────────────────────
 
-export function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
+export const CompetitionAddForm = memo(function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
   careerForm, onUpdateCareer, isPendingManual, onSaveManual, onCancel }: {
   competitions: any[]; selectedId: string; onSelect: (id: string) => void;
   isAr: boolean; isPendingLink: boolean; onSaveLink: () => void;
