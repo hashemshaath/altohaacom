@@ -23,7 +23,7 @@ interface OrderDetailDialogProps {
   isSubmitting?: boolean;
 }
 
-export function OrderDetailDialog({ open, onOpenChange, order, language, onSubmit, isSubmitting }: OrderDetailDialogProps) {
+export const OrderDetailDialog = memo(function OrderDetailDialog({ open, onOpenChange, order, language, onSubmit, isSubmitting }: OrderDetailDialogProps) {
   if (!order) return null;
   const isAr = language === "ar";
   const items = (order.items as OrderItem[] | null) || [];
