@@ -14,7 +14,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionInviteLink({ exhibitionId, exhibitionSlug, isAr }: Props) {
+export const ExhibitionInviteLink = memo(function ExhibitionInviteLink({ exhibitionId, exhibitionSlug, isAr }: Props) {
   const { user } = useAuth();
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
