@@ -19,7 +19,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function ExhibitionSurveyManager({ exhibitionId, isAr, isOrganizer }: Props) {
+export const ExhibitionSurveyManager = memo(function ExhibitionSurveyManager({ exhibitionId, isAr, isOrganizer }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
