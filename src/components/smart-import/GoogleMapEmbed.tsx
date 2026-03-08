@@ -10,7 +10,7 @@ interface GoogleMapEmbedProps {
   className?: string;
 }
 
-export function GoogleMapEmbed({ latitude, longitude, name, searchQuery, location, className = "" }: GoogleMapEmbedProps) {
+export const GoogleMapEmbed = memo(function GoogleMapEmbed({ latitude, longitude, name, searchQuery, location, className = "" }: GoogleMapEmbedProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
