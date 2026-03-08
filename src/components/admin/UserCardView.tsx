@@ -107,7 +107,7 @@ export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) 
 interface UserCardViewProps {
   users: UserCardProps["user"][];
   onViewUser: (userId: string) => void;
-}
+});
 
 export function UserCardView({ users, onViewUser }: UserCardViewProps) {
   return (
