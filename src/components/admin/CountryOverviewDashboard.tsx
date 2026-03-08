@@ -21,7 +21,7 @@ interface CountryStats {
   certificates: number;
 }
 
-export function CountryOverviewDashboard() {
+export const CountryOverviewDashboard = memo(function CountryOverviewDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
