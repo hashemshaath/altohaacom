@@ -17,7 +17,7 @@ interface UserSearchCommandProps {
   onSelectUser?: (userId: string) => void;
 }
 
-export function UserSearchCommand({ open, onOpenChange, onSelectUser }: UserSearchCommandProps) {
+export const UserSearchCommand = memo(function UserSearchCommand({ open, onOpenChange, onSelectUser }: UserSearchCommandProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
