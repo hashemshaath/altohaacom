@@ -219,11 +219,11 @@ export default function LoyaltyAdmin() {
         </TabsContent>
 
         <TabsContent value="challenges">
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>{isAr ? "التحدي" : "Challenge"}</TableHead>
                     <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
                     <TableHead className="text-center">{isAr ? "الهدف" : "Target"}</TableHead>
@@ -234,18 +234,20 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {challenges.map((c: any) => (
-                    <TableRow key={c.id}>
+                    <TableRow key={c.id} className="transition-colors duration-200 hover:bg-muted/40 group">
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{c.icon_emoji}</span>
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 border border-border/30 text-lg transition-transform duration-300 group-hover:scale-110">
+                            {c.icon_emoji}
+                          </div>
                           <span className="font-medium text-sm">{isAr ? c.title_ar : c.title}</span>
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] uppercase">{c.category}</Badge></TableCell>
-                      <TableCell className="text-center font-mono">{c.target_count}</TableCell>
-                      <TableCell className="text-center font-mono text-primary font-bold">{c.reward_points}</TableCell>
+                      <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{c.category}</Badge></TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">{c.target_count}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{c.reward_points}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className={difficultyColors[c.difficulty] || ""}>{c.difficulty}</Badge>
+                        <Badge variant="outline" className={`rounded-lg ${difficultyColors[c.difficulty] || ""}`}>{c.difficulty}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
                         <Switch checked={c.is_active} onCheckedChange={v => updateChallenge.mutate({ id: c.id, updates: { is_active: v } })} />
