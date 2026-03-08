@@ -29,7 +29,7 @@ const STEPS: Step[] = [
 
 const STORAGE_KEY = "altoha_onboarding_dismissed";
 
-export function OnboardingChecklist() {
+export const OnboardingChecklist = memo(function OnboardingChecklist() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
