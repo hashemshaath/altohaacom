@@ -14,7 +14,7 @@ interface AIAssistantProps {
   compact?: boolean;
 }
 
-export function AIAssistant({ className, compact = false }: AIAssistantProps) {
+export const AIAssistant = memo(function AIAssistant({ className, compact = false }: AIAssistantProps) {
   const { messages, isLoading, askQuestion, clearMessages } = useAIKnowledge();
   const { t, language } = useLanguage();
   const [input, setInput] = useState("");
