@@ -42,7 +42,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
           size="sm"
           asChild
           className={cn(
-            "text-muted-foreground h-9 px-3.5 text-sm font-medium transition-all duration-200 hover:bg-primary/5 hover:text-foreground relative",
+            "text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl transition-all duration-200 hover:bg-primary/5 hover:text-foreground relative",
             isActive(link.to) &&
               "bg-primary/10 text-primary shadow-sm shadow-primary/5"
           )}
@@ -62,7 +62,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
         size="sm"
         asChild
         className={cn(
-          "text-muted-foreground h-9 px-3.5 text-sm font-medium hover:bg-primary/5 hover:text-foreground relative",
+          "text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl hover:bg-primary/5 hover:text-foreground relative transition-all duration-200",
           isActive("/chefs-table") && "bg-primary/10 text-primary"
         )}
       >
@@ -81,7 +81,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground h-9 px-3.5 text-sm font-medium gap-1.5 hover:bg-primary/5 hover:text-foreground group"
+            className="text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl gap-1.5 hover:bg-primary/5 hover:text-foreground group transition-all duration-200"
           >
             <Compass className="h-3.5 w-3.5" />
             {label("Explore", "اكتشف")}
@@ -90,7 +90,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="center" 
-          className="w-[420px] p-3 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2"
+          className="w-[420px] p-3 rounded-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2"
           sideOffset={8}
         >
           <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 px-1 pb-2">
