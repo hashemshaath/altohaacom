@@ -10,7 +10,7 @@ interface AdVerticalProps {
   className?: string;
 }
 
-export function AdVertical({ placementSlug = "sidebar-vertical", className }: AdVerticalProps) {
+export const AdVertical = memo(function AdVertical({ placementSlug = "sidebar-vertical", className }: AdVerticalProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const impressionLogged = useRef(false);
