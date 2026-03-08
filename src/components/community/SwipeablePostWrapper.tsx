@@ -11,7 +11,7 @@ interface SwipeablePostWrapperProps {
   className?: string;
 }
 
-export function SwipeablePostWrapper({
+export const SwipeablePostWrapper = memo(function SwipeablePostWrapper({
   children,
   onSwipeLeft,
   onSwipeRight,
