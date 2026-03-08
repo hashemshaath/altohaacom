@@ -34,7 +34,7 @@ const DEFAULT_PREFS: NotifPrefs = {
 
 const STORAGE_KEY = (exhibitionId: string) => `altoha_exhibition_notif_prefs_${exhibitionId}`;
 
-export function ExhibitionNotificationPreferences({ exhibitionId, isAr }: Props) {
+export const ExhibitionNotificationPreferences = memo(function ExhibitionNotificationPreferences({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const [prefs, setPrefs] = useState<NotifPrefs>(DEFAULT_PREFS);
