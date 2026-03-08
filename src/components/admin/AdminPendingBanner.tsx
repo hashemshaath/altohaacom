@@ -9,6 +9,7 @@ import {
   ChefHat, FileText, CreditCard, Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { memo } from "react";
 
 interface PendingItem {
   key: string;
