@@ -35,7 +35,7 @@ const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
   enterprise: { en: "Enterprise", ar: "مؤسسات", color: "bg-chart-4/15 text-chart-4" },
 };
 
-export function UserDropdown() {
+export const UserDropdown = memo(function UserDropdown() {
   const { user, signOut } = useAuth();
   const { t, language } = useLanguage();
   const { data: isAdmin } = useIsAdmin();
