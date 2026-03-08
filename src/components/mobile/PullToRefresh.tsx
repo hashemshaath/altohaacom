@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
