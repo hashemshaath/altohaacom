@@ -15,7 +15,7 @@ interface Props {
   isPending: boolean;
 }
 
-export function LayoutSEOSettings({ settings, onSave, isPending }: Props) {
+export const LayoutSEOSettings = memo(function LayoutSEOSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const layoutCfg = settings.layout || {};
