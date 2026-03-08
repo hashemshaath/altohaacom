@@ -31,7 +31,7 @@ interface FeatureGateProps {
   upgradeVariant?: "inline" | "card" | "minimal";
 }
 
-export function FeatureGate({
+export const FeatureGate = memo(function FeatureGate({
   feature,
   children,
   fallback,
