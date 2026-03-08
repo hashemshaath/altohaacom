@@ -315,4 +315,4 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
       </Card>
     </div>
   );
-}
+});

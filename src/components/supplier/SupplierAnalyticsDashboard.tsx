@@ -220,4 +220,4 @@ export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboa
       </div>
     </div>
   );
-}
+});

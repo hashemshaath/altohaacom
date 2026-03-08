@@ -237,4 +237,4 @@ export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
       </div>
     </div>
   );
-}
+});

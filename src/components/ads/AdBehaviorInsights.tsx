@@ -178,4 +178,4 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
       </Card>
     </div>
   );
-}
+});

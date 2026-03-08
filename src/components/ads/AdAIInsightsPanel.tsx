@@ -146,4 +146,4 @@ export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
       </div>
     </div>
   );
-}
+});

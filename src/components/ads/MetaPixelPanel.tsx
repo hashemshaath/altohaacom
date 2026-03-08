@@ -197,4 +197,4 @@ export const MetaPixelPanel = memo(function MetaPixelPanel() {
       </div>
     </div>
   );
-}
+});

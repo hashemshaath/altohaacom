@@ -57,4 +57,4 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
       </div>
     </div>
   );
-}
+});

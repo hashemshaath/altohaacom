@@ -29,4 +29,4 @@ export const BioCareerSkeleton = memo(function BioCareerSkeleton() {
       ))}
     </div>
   );
-}
+});

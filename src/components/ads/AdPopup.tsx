@@ -104,4 +104,4 @@ export const AdPopup = memo(function AdPopup() {
       </div>
     </div>
   );
-}
+});

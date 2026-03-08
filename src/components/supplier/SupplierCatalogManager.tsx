@@ -294,4 +294,4 @@ export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
       )}
     </div>
   );
-}
+});

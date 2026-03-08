@@ -209,4 +209,4 @@ export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
       </div>
     </div>
   );
-}
+});

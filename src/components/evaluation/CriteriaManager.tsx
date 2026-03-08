@@ -397,4 +397,4 @@ export const CriteriaManager = memo(function CriteriaManager() {
       </Tabs>
     </div>
   );
-}
+});

@@ -436,4 +436,4 @@ export const InvitationManager = memo(function InvitationManager() {
       )}
     </div>
   );
-}
+});

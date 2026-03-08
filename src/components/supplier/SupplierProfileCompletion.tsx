@@ -156,4 +156,4 @@ export const SupplierProfileCompletion = memo(function SupplierProfileCompletion
       </CardContent>
     </Card>
   );
-}
+});

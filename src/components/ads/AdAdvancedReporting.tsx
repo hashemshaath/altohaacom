@@ -203,4 +203,4 @@ export const AdAdvancedReporting = memo(function AdAdvancedReporting() {
       </Card>
     </div>
   );
-}
+});

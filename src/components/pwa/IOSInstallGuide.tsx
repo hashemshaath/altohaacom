@@ -98,4 +98,4 @@ export const IOSInstallGuide = memo(function IOSInstallGuide() {
       </div>
     </div>
   );
-}
+});

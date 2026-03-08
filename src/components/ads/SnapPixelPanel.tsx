@@ -184,4 +184,4 @@ export const SnapPixelPanel = memo(function SnapPixelPanel() {
       </div>
     </div>
   );
-}
+});

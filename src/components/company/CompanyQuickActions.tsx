@@ -46,4 +46,4 @@ export const CompanyQuickActions = memo(function CompanyQuickActions() {
       })}
     </div>
   );
-}
+});
