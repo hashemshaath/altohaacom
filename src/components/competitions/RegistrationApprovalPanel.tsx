@@ -64,7 +64,7 @@ const STATUS_BADGE: Record<string, { className: string; icon: React.ElementType 
   withdrawn: { className: "bg-muted text-muted-foreground", icon: XCircle },
 };
 
-export function RegistrationApprovalPanel({ competitionId }: RegistrationApprovalPanelProps) {
+export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel({ competitionId }: RegistrationApprovalPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
