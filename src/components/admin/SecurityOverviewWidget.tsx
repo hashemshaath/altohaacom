@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { ShieldCheck, AlertTriangle, Users, Lock, Activity, Ban } from "lucide-react";
 import { subDays, subHours } from "date-fns";
 
-export function SecurityOverviewWidget() {
+export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -120,4 +121,4 @@ export function SecurityOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

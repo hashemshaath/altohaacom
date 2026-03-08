@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,7 @@ import { format, subDays, differenceInDays } from "date-fns";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function RegistrationTimelineWidget() {
+export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -121,4 +122,4 @@ export function RegistrationTimelineWidget() {
       </CardContent>
     </Card>
   );
-}
+});

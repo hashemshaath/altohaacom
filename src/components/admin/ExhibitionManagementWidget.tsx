@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,7 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import { Landmark, Ticket, Users, MapPin, Calendar, TrendingUp } from "lucide-react";
 import { subDays, format, differenceInDays } from "date-fns";
 
-export function ExhibitionManagementWidget() {
+export const ExhibitionManagementWidget = memo(function ExhibitionManagementWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -163,4 +164,4 @@ export function ExhibitionManagementWidget() {
       </div>
     </div>
   );
-}
+});

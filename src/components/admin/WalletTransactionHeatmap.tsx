@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, Wallet, TrendingUp, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function WalletTransactionHeatmap() {
+export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -151,4 +152,4 @@ export function WalletTransactionHeatmap() {
       </div>
     </div>
   );
-}
+});

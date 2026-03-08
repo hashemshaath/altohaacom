@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Bell, Send, Eye, AlertCircle, TrendingUp, Zap } from "lucide-react";
 
-export function NotificationAnalyticsWidget() {
+export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -111,4 +112,4 @@ export function NotificationAnalyticsWidget() {
       </CardContent>
     </Card>
   );
-}
+});
