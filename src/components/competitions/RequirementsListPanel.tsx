@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -43,7 +43,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
+export const RequirementsListPanel = memo(function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -266,4 +266,4 @@ export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
       )}
     </div>
   );
-}
+});

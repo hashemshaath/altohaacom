@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X, Download } from "lucide-react";
@@ -10,7 +10,7 @@ interface MediaPreviewOverlayProps {
   initialIndex?: number;
 }
 
-export function MediaPreviewOverlay({ open, onOpenChange, urls, initialIndex = 0 }: MediaPreviewOverlayProps) {
+export const MediaPreviewOverlay = memo(function MediaPreviewOverlay({ open, onOpenChange, urls, initialIndex = 0 }: MediaPreviewOverlayProps) {
   const [index, setIndex] = useState(initialIndex);
 
   if (!urls.length) return null;
@@ -73,4 +73,4 @@ export function MediaPreviewOverlay({ open, onOpenChange, urls, initialIndex = 0
       </DialogContent>
     </Dialog>
   );
-}
+});

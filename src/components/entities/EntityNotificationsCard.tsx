@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +12,7 @@ interface Props {
   entityName: string;
 }
 
-export function EntityNotificationsCard({ entityId, entityName }: Props) {
+export const EntityNotificationsCard = memo(function EntityNotificationsCard({ entityId, entityName }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -119,4 +120,4 @@ export function EntityNotificationsCard({ entityId, entityName }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

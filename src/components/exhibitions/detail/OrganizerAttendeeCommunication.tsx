@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function OrganizerAttendeeCommunication({ exhibitionId, isAr }: Props) {
+export const OrganizerAttendeeCommunication = memo(function OrganizerAttendeeCommunication({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [title, setTitle] = useState("");
@@ -127,6 +127,6 @@ export function OrganizerAttendeeCommunication({ exhibitionId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});
 
 export default OrganizerAttendeeCommunication;

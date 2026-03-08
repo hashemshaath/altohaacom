@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface Tab {
@@ -19,7 +19,7 @@ interface MobileTabScrollerProps {
  * A horizontally scrollable tab bar optimized for mobile.
  * Automatically scrolls the active tab into view.
  */
-export function MobileTabScroller({ tabs, value, onChange, className }: MobileTabScrollerProps) {
+export const MobileTabScroller = memo(function MobileTabScroller({ tabs, value, onChange, className }: MobileTabScrollerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
   const [isScrollable, setIsScrollable] = useState(false);
@@ -96,4 +96,4 @@ export function MobileTabScroller({ tabs, value, onChange, className }: MobileTa
       </div>
     </div>
   );
-}
+});

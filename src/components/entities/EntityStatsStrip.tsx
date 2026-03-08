@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Users, Trophy, BookOpen, Calendar, Eye, Globe, Briefcase } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -21,7 +22,7 @@ interface Props {
   website?: string | null;
 }
 
-export function EntityStatsStrip({
+export const EntityStatsStrip = memo(function EntityStatsStrip({
   followerCount,
   memberCount,
   competitionCount = 0,
@@ -68,4 +69,4 @@ export function EntityStatsStrip({
       })}
     </div>
   );
-}
+});

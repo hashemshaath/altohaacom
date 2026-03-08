@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, type LucideIcon } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
@@ -13,7 +14,7 @@ interface SparklineCardProps {
   borderColor?: string;
 }
 
-export function SparklineCard({ icon: Icon, label, value, trend, sparkData, color = "primary", borderColor }: SparklineCardProps) {
+export const SparklineCard = memo(function SparklineCard({ icon: Icon, label, value, trend, sparkData, color = "primary", borderColor }: SparklineCardProps) {
   const TrendIcon = !trend ? Minus : trend > 0 ? TrendingUp : TrendingDown;
   const trendColor = !trend ? "text-muted-foreground" : trend > 0 ? "text-chart-2" : "text-destructive";
 
@@ -53,4 +54,4 @@ export function SparklineCard({ icon: Icon, label, value, trend, sparkData, colo
       </CardContent>
     </Card>
   );
-}
+});

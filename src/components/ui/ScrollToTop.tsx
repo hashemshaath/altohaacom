@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
  * Floating scroll-to-top button that appears after scrolling down.
  */
-export function ScrollToTop() {
+export const ScrollToTop = memo(function ScrollToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -41,4 +41,4 @@ export function ScrollToTop() {
       <ArrowUp className="h-4 w-4" />
     </Button>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -40,7 +40,7 @@ const ENTITY_LABELS: Record<EntityType, { en: string; ar: string }> = {
   organizer: { en: "Organizers", ar: "المنظمين" },
 };
 
-export function BulkImportPanel({ entityType, onImportComplete, competitionNumber }: BulkImportPanelProps) {
+export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImportComplete, competitionNumber }: BulkImportPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -683,4 +683,4 @@ export function BulkImportPanel({ entityType, onImportComplete, competitionNumbe
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +12,7 @@ interface MessageButtonProps {
   className?: string;
 }
 
-export function MessageButton({ userId, variant = "outline", size = "sm", className }: MessageButtonProps) {
+export const MessageButton = memo(function MessageButton({ userId, variant = "outline", size = "sm", className }: MessageButtonProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
 
@@ -28,4 +29,4 @@ export function MessageButton({ userId, variant = "outline", size = "sm", classN
       </Link>
     </Button>
   );
-}
+});

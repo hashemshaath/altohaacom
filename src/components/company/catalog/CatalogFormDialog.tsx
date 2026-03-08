@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +26,7 @@ interface CatalogFormDialogProps {
   companyId: string;
 }
 
-export function CatalogFormDialog({
+export const CatalogFormDialog = memo(function CatalogFormDialog({
   open, onOpenChange, form, setForm, editingItem, onSave, isPending, language, companyId,
 }: CatalogFormDialogProps) {
   return (
@@ -149,4 +150,4 @@ export function CatalogFormDialog({
       </DialogContent>
     </Dialog>
   );
-}
+});

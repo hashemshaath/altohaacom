@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +15,7 @@ interface Props {
   lang: "en" | "ar";
 }
 
-export function UserBioOptimizer({ bio, onBioChange, onTranslatedBioChange, lang }: Props) {
+export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChange, onTranslatedBioChange, lang }: Props) {
   const { toast } = useToast();
   const [optimizing, setOptimizing] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -120,4 +120,4 @@ export function UserBioOptimizer({ bio, onBioChange, onTranslatedBioChange, lang
       </p>
     </div>
   );
-}
+});

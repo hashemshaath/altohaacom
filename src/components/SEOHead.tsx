@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 
 interface SEOHeadProps {
@@ -20,7 +20,7 @@ interface SEOHeadProps {
   author?: string;
 }
 
-export function SEOHead({
+export const SEOHead = memo(function SEOHead({
   title,
   description,
   ogImage,
@@ -146,4 +146,4 @@ export function SEOHead({
   }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex, lang, keywords, publishedTime, modifiedTime, author, siteName, seoCfg]);
 
   return null;
-}
+});

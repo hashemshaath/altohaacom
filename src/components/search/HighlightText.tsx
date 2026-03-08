@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 
 interface Props {
   text: string;
@@ -10,7 +10,7 @@ interface Props {
  * Highlights matching search terms within text.
  * Splits query into words and wraps matches in <mark>.
  */
-export function HighlightText({ text, query, className }: Props) {
+export const HighlightText = memo(function HighlightText({ text, query, className }: Props) {
   const parts = useMemo(() => {
     if (!query || query.length < 2 || !text) return [{ text, highlight: false }];
     
@@ -50,4 +50,4 @@ export function HighlightText({ text, query, className }: Props) {
       )}
     </span>
   );
-}
+});

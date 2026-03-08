@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { CostEstimate, ESTIMATE_STATUS_CONFIG, MODULE_TYPES } from "@/hooks/useCostCenter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +20,7 @@ interface Props {
   onCreateNew: () => void;
 }
 
-export function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateNew }: Props) {
+export const CostCenterOverview = memo(function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateNew }: Props) {
   return (
     <div className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
@@ -109,4 +110,4 @@ export function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateN
       </Card>
     </div>
   );
-}
+});
