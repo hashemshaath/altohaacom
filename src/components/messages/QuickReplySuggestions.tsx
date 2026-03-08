@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
 import type { Message } from "@/hooks/useMessagesData";
