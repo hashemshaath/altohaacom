@@ -29,7 +29,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function SuggestionPanel({ competitionId, isOrganizer }: Props) {
+export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
