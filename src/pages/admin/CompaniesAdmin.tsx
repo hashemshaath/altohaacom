@@ -798,7 +798,7 @@ export default function CompaniesAdmin() {
 
         {/* Detail Tabs */}
         <Tabs value={companyDetailTab} onValueChange={setCompanyDetailTab}>
-          <TabsList className="flex-wrap h-auto gap-1">
+          <TabsList className="flex-wrap h-auto gap-1 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5">
             <TabsTrigger value="overview">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
             <TabsTrigger value="contacts">{isAr ? "جهات الاتصال" : "Contacts"}</TabsTrigger>
             <TabsTrigger value="branches">{isAr ? "الفروع" : "Branches"}</TabsTrigger>
@@ -1860,24 +1860,24 @@ export default function CompaniesAdmin() {
         {showBulkImport && <BulkImportPanel entityType="company" />}
 
         {/* Company List */}
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-4 mb-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10" />
+                  <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
                 </div>
               </div>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[150px]"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
+                <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
                   {companyTypes.map(type => <SelectItem key={type.value} value={type.value}>{isAr ? type.labelAr : type.label}</SelectItem>)}
                 </SelectContent>
               </Select>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[150px]"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+                <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                   <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
@@ -1900,21 +1900,21 @@ export default function CompaniesAdmin() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-10">
+                    <TableHead className="w-10 bg-muted/30">
                       <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                     </TableHead>
-                    <SortableTableHead column="name" label={isAr ? "الشركة" : "Company"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <TableHead>{isAr ? "الاتصال" : "Contact"}</TableHead>
-                    <SortableTableHead column="country" label={isAr ? "الموقع" : "Location"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <TableHead></TableHead>
+                    <SortableTableHead className="bg-muted/30" column="name" label={isAr ? "الشركة" : "Company"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead className="bg-muted/30" column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <TableHead className="bg-muted/30">{isAr ? "الاتصال" : "Contact"}</TableHead>
+                    <SortableTableHead className="bg-muted/30" column="country" label={isAr ? "الموقع" : "Location"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead className="bg-muted/30" column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead className="bg-muted/30" column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <TableHead className="bg-muted/30"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {companyPagination.paginated.map(company => (
-                    <TableRow key={company.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(company.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedCompany(company.id)}>
+                    <TableRow key={company.id} className={`cursor-pointer hover:bg-accent/30 transition-colors ${bulk.isSelected(company.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedCompany(company.id)}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={bulk.isSelected(company.id)} onCheckedChange={() => bulk.toggleOne(company.id)} />
                       </TableCell>

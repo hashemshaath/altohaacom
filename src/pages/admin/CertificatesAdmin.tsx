@@ -430,10 +430,10 @@ export default function CertificatesAdmin() {
               <div className="flex flex-wrap gap-3 mb-4">
                 <div className="relative flex-1 min-w-[200px]">
                   <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10" />
+                  <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
                     <SelectItem value="draft">{language === "ar" ? "مسودة" : "Draft"}</SelectItem>
@@ -443,14 +443,14 @@ export default function CertificatesAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="w-[160px]"><SelectValue placeholder={language === "ar" ? "النوع" : "Type"} /></SelectTrigger>
+                  <SelectTrigger className="w-[160px] rounded-xl"><SelectValue placeholder={language === "ar" ? "النوع" : "Type"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{language === "ar" ? "الكل" : "All"}</SelectItem>
                     {certificateTypes.map(t => <SelectItem key={t.value} value={t.value}>{language === "ar" ? t.labelAr : t.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <Select value={eventFilter} onValueChange={setEventFilter}>
-                  <SelectTrigger className="w-[180px]"><SelectValue placeholder={language === "ar" ? "الحدث" : "Event"} /></SelectTrigger>
+                  <SelectTrigger className="w-[180px] rounded-xl"><SelectValue placeholder={language === "ar" ? "الحدث" : "Event"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{language === "ar" ? "كل الأحداث" : "All Events"}</SelectItem>
                     {[...new Set(certificates.map(c => c.event_name).filter(Boolean))].map(ev => (
@@ -459,7 +459,7 @@ export default function CertificatesAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={groupBy} onValueChange={setGroupBy}>
-                  <SelectTrigger className="w-[160px]"><SelectValue placeholder={language === "ar" ? "تجميع حسب" : "Group By"} /></SelectTrigger>
+                  <SelectTrigger className="w-[160px] rounded-xl"><SelectValue placeholder={language === "ar" ? "تجميع حسب" : "Group By"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">{language === "ar" ? "بدون تجميع" : "No Grouping"}</SelectItem>
                     <SelectItem value="event">{language === "ar" ? "الحدث" : "Event"}</SelectItem>
@@ -489,15 +489,15 @@ export default function CertificatesAdmin() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-10">
+                        <TableHead className="w-10 bg-muted/30">
                           <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                         </TableHead>
-                        <TableHead>{language === "ar" ? "رقم" : "#"}</TableHead>
-                        <TableHead>{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
-                        <TableHead>{language === "ar" ? "النوع" : "Type"}</TableHead>
-                        <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                        <TableHead>{language === "ar" ? "الحدث" : "Event"}</TableHead>
-                        <TableHead>{language === "ar" ? "كود التحقق" : "Verify Code"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "رقم" : "#"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "النوع" : "Type"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "الحالة" : "Status"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "الحدث" : "Event"}</TableHead>
+                        <TableHead className="bg-muted/30">{language === "ar" ? "كود التحقق" : "Verify Code"}</TableHead>
                         <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
                       </TableRow>
                     </TableHeader>

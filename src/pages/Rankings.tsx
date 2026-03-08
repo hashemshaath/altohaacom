@@ -101,10 +101,10 @@ export default function Rankings() {
         <div className="container py-3 flex flex-wrap gap-2 items-center">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder={isAr ? "ابحث عن طاهٍ..." : "Search chefs..."} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="ps-9" />
+            <Input placeholder={isAr ? "ابحث عن طاهٍ..." : "Search chefs..."} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="ps-9 rounded-xl" />
           </div>
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all_time">{isAr ? "كل الأوقات" : "All Time"}</SelectItem>
               <SelectItem value="yearly">{isAr ? "سنوي" : "Yearly"}</SelectItem>
@@ -112,7 +112,7 @@ export default function Rankings() {
             </SelectContent>
           </Select>
           <Select value={countryFilter} onValueChange={setCountryFilter}>
-            <SelectTrigger className="w-[140px]"><SelectValue placeholder={isAr ? "الدولة" : "Country"} /></SelectTrigger>
+            <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={isAr ? "الدولة" : "Country"} /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{isAr ? "جميع الدول" : "All Countries"}</SelectItem>
               {countries?.map(c => (

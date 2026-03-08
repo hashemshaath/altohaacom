@@ -600,19 +600,19 @@ export default function SupportTicketsAdmin() {
 
                   {/* Desktop table */}
                   <div className="hidden sm:block overflow-x-auto">
-                    <Table>
+                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-10">
+                          <TableHead className="w-10 bg-muted/30">
                             <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                           </TableHead>
-                          <TableHead>{isAr ? "الرقم" : "Ticket #"}</TableHead>
-                          <TableHead>{isAr ? "الموضوع" : "Subject"}</TableHead>
-                          <TableHead>{isAr ? "المستخدم" : "User"}</TableHead>
-                          <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                          <TableHead>{isAr ? "الأولوية" : "Priority"}</TableHead>
-                          <TableHead>SLA</TableHead>
-                          <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                          <TableHead className="bg-muted/30">{isAr ? "الرقم" : "Ticket #"}</TableHead>
+                          <TableHead className="bg-muted/30">{isAr ? "الموضوع" : "Subject"}</TableHead>
+                          <TableHead className="bg-muted/30">{isAr ? "المستخدم" : "User"}</TableHead>
+                          <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
+                          <TableHead className="bg-muted/30">{isAr ? "الأولوية" : "Priority"}</TableHead>
+                          <TableHead className="bg-muted/30">SLA</TableHead>
+                          <TableHead className="bg-muted/30">{isAr ? "التاريخ" : "Date"}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

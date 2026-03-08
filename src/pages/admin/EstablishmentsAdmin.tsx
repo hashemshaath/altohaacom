@@ -258,17 +258,17 @@ export default function EstablishmentsAdmin() {
       <EntityStatsCards stats={stats} activeFilter={statusFilter} onFilterChange={f => setStatusFilter(f || "all")} />
 
       {/* Toolbar */}
-      <Card className="border-border/50">
+      <Card className="rounded-2xl border-border/40">
         <CardContent className="p-3 flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder={isAr ? "بحث بالاسم أو الرقم..." : "Search by name or number..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9 h-9" />
+            <Input placeholder={isAr ? "بحث بالاسم أو الرقم..." : "Search by name or number..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9 h-9 rounded-xl" />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[180px] h-9">
+            <SelectTrigger className="w-[180px] h-9 rounded-xl">
               <SelectValue placeholder={isAr ? "النوع" : "Type"} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-xl">
               <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
               {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
             </SelectContent>
@@ -334,21 +334,21 @@ export default function EstablishmentsAdmin() {
           <p className="text-sm text-muted-foreground">{isAr ? "لا توجد جهات" : "No entities found"}</p>
         </div>
       ) : (
-        <Card>
+        <Card className="rounded-2xl border-border/40 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40px]">
+                <TableHead className="w-[40px] bg-muted/30">
                   <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                 </TableHead>
-                <TableHead className="hidden xl:table-cell">{isAr ? "الرقم" : "#"}</TableHead>
-                <TableHead>{isAr ? "الجهة" : "Entity"}</TableHead>
-                <TableHead className="hidden md:table-cell">{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead className="hidden xl:table-cell">{isAr ? "النطاق" : "Scope"}</TableHead>
-                <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                <TableHead>{isAr ? "مرئي" : "Visible"}</TableHead>
-                <TableHead className="hidden lg:table-cell">{isAr ? "المتابعون" : "Followers"}</TableHead>
-                <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
+                <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "الرقم" : "#"}</TableHead>
+                <TableHead className="bg-muted/30">{isAr ? "الجهة" : "Entity"}</TableHead>
+                <TableHead className="hidden md:table-cell bg-muted/30">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "النطاق" : "Scope"}</TableHead>
+                <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
+                <TableHead className="bg-muted/30">{isAr ? "مرئي" : "Visible"}</TableHead>
+                <TableHead className="hidden lg:table-cell bg-muted/30">{isAr ? "المتابعون" : "Followers"}</TableHead>
+                <TableHead className="text-end bg-muted/30">{isAr ? "إجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -903,7 +903,7 @@ export default function UserManagement() {
           </CardHeader>
           <CardContent>
             <Tabs value={editTab} onValueChange={setEditTab}>
-              <TabsList className="mb-4 flex-wrap">
+              <TabsList className="mb-4 flex-wrap rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
                 <TabsTrigger value="profile"><Edit className="me-1 h-3.5 w-3.5" />{isAr ? "الملف الشخصي" : "Profile"}</TabsTrigger>
                 <TabsTrigger value="personal"><UserCircle className="me-1 h-3.5 w-3.5" />{isAr ? "البيانات الشخصية" : "Personal"}</TabsTrigger>
                 <TabsTrigger value="roles"><Users className="me-1 h-3.5 w-3.5" />{isAr ? "الأدوار والحالة" : "Roles & Status"}</TabsTrigger>
