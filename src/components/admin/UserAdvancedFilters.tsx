@@ -33,7 +33,7 @@ const INITIAL_FILTERS: FilterValues = {
   experienceLevel: "all",
 };
 
-export function UserAdvancedFilters({ filters, onChange, onReset }: UserAdvancedFiltersProps) {
+export const UserAdvancedFilters = memo(function UserAdvancedFilters({ filters, onChange, onReset }: UserAdvancedFiltersProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [open, setOpen] = useState(false);
