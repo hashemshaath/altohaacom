@@ -1303,7 +1303,7 @@ export default function OrdersAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={directionFilter} onValueChange={setDirectionFilter}>
-                  <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[130px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                     <SelectItem value="incoming">{isAr ? "وارد" : "Incoming"}</SelectItem>
