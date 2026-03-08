@@ -6,6 +6,7 @@ import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 import { cn } from "@/lib/utils";
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
 import { Button } from "@/components/ui/button";
 import { Building, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeft } from "lucide-react";
