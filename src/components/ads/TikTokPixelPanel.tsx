@@ -57,7 +57,7 @@ const tiktokIntegrations = [
   },
 ];
 
-export function TikTokPixelPanel() {
+export const TikTokPixelPanel = memo(function TikTokPixelPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
