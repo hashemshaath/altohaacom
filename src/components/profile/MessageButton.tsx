@@ -12,7 +12,7 @@ interface MessageButtonProps {
   className?: string;
 }
 
-export function MessageButton({ userId, variant = "outline", size = "sm", className }: MessageButtonProps) {
+export const MessageButton = memo(function MessageButton({ userId, variant = "outline", size = "sm", className }: MessageButtonProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
 
