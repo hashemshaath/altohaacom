@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback, ReactNode, useMemo } from "react";
+import { useRef, useState, useEffect, useCallback, ReactNode, useMemo, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface VirtualListProps<T> {
