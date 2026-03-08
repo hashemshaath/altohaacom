@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
  * Route guard that blocks fan accounts from accessing professional-only routes.
  * Redirects fans to the dashboard with a message.
  */
-export function FanRouteGuard({ children }: { children: React.ReactNode }) {
+export const FanRouteGuard = memo(function FanRouteGuard({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth();
   const { isFan, isLoading } = useAccountType();
 
