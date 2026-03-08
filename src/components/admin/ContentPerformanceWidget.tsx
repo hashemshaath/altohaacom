@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { FileText, Eye, Star, TrendingUp, BookOpen, Landmark, GraduationCap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function ContentPerformanceWidget() {
+export const ContentPerformanceWidget = memo(function ContentPerformanceWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
