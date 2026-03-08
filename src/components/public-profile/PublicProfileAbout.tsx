@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function PublicProfileAbout({ profile, bio, specialization, userSpecialties, isAr }: Props) {
+export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bio, specialization, userSpecialties, isAr }: Props) {
   if (!bio && !specialization) return null;
 
   return (
