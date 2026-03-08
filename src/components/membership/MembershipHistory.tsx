@@ -150,4 +150,4 @@ export const MembershipHistory = memo(function MembershipHistory() {
       </CardContent>
     </Card>
   );
-}
+});

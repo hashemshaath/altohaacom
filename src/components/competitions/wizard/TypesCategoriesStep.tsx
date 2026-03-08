@@ -295,4 +295,4 @@ export const TypesCategoriesStep = memo(function TypesCategoriesStep({
       </Card>
     </div>
   );
-}
+});

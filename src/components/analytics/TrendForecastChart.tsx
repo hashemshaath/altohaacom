@@ -236,4 +236,4 @@ export const TrendForecastChart = memo(function TrendForecastChart({
       </CardContent>
     </Card>
   );
-}
+});

@@ -70,4 +70,4 @@ export const StepIndicator = memo(function StepIndicator({ currentStep, totalSte
       </div>
     </div>
   );
-}
+});

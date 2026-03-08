@@ -75,4 +75,4 @@ export const BulkActionBar = memo(function BulkActionBar({
       </Button>
     </div>
   );
-}
+});

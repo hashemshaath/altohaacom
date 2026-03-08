@@ -33,4 +33,4 @@ export const ConfidenceBadge = memo(function ConfidenceBadge({ level, label, cla
       {label || c.defaultLabel}
     </Badge>
   );
-}
+});

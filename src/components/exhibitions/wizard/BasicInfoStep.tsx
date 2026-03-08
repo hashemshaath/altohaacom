@@ -185,4 +185,4 @@ export const ExhibitionBasicInfoStep = memo(function ExhibitionBasicInfoStep({ d
       </Card>
     </div>
   );
-}
+});

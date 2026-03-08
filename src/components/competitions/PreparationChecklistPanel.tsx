@@ -213,4 +213,4 @@ export const PreparationChecklistPanel = memo(function PreparationChecklistPanel
       </div>
     </div>
   );
-}
+});

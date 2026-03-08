@@ -98,4 +98,4 @@ export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ tit
       </CardContent>
     </Card>
   );
-}
+});

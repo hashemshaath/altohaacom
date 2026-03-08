@@ -63,4 +63,4 @@ export const LocationBubble = memo(function LocationBubble({ lat, lng, label, is
       </div>
     </a>
   );
-}
+});

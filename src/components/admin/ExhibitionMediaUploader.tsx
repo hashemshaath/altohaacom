@@ -184,4 +184,4 @@ export const ExhibitionMediaUploader = memo(function ExhibitionMediaUploader({ e
       )}
     </div>
   );
-}
+});

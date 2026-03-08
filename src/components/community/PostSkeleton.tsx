@@ -37,4 +37,4 @@ export const FeedSkeletonLoader = memo(function FeedSkeletonLoader({ count = 5 }
       ))}
     </div>
   );
-}
+});

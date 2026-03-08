@@ -88,4 +88,4 @@ export const ExhibitionNotificationPrompt = memo(function ExhibitionNotification
       </CardContent>
     </Card>
   );
-}
+});

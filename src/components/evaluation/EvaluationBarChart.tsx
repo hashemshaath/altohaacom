@@ -55,4 +55,4 @@ export const EvaluationBarChart = memo(function EvaluationBarChart({ title, data
       </CardContent>
     </Card>
   );
-}
+});

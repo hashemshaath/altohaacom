@@ -616,4 +616,4 @@ export const RegistrationDialog = memo(function RegistrationDialog({ open, onOpe
       onSuccess={() => onOpenChange(false)}
     />
   );
-}
+});

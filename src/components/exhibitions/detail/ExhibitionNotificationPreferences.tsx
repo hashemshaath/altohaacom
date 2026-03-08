@@ -109,4 +109,4 @@ export const ExhibitionNotificationPreferences = memo(function ExhibitionNotific
       </CardContent>
     </Card>
   );
-}
+});

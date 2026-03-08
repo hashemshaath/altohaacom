@@ -66,4 +66,4 @@ export const SkeletonCards = memo(function SkeletonCards({ count = 6 }: { count?
       ))}
     </div>
   );
-}
+});

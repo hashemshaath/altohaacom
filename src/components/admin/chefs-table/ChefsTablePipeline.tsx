@@ -93,4 +93,4 @@ export const ChefsTablePipeline = memo(function ChefsTablePipeline({ requests, s
       </CardContent>
     </Card>
   );
-}
+});
