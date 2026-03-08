@@ -457,7 +457,7 @@ export default function NotificationsAdmin() {
                 placeholder={isAr ? "بحث..." : "Search..."} className="ps-10 rounded-xl" />
             </div>
             <Select value={recentTypeFilter} onValueChange={setRecentTypeFilter}>
-              <SelectTrigger className="w-[120px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[120px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
                 <SelectItem value="info">Info</SelectItem>
