@@ -68,4 +68,4 @@ export const QuickReplySuggestions = memo(function QuickReplySuggestions({ lastM
       ))}
     </div>
   );
-}
+});

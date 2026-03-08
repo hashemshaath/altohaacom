@@ -93,4 +93,4 @@ export const AdminWidgetSkeleton = memo(function AdminWidgetSkeleton({ rows = 3 
       ))}
     </div>
   );
-}
+});

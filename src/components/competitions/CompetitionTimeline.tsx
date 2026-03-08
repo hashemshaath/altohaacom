@@ -126,4 +126,4 @@ export const CompetitionTimeline = memo(function CompetitionTimeline({
       </div>
     </div>
   );
-}
+});

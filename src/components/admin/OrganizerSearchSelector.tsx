@@ -478,6 +478,6 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
       )}
     </div>
   );
-}
+});
 
 export type { OrganizerValue, OrganizerType };

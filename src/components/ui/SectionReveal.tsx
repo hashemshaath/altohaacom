@@ -48,4 +48,4 @@ export const SectionReveal = memo(function SectionReveal({ children, className, 
       {children}
     </div>
   );
-}
+});

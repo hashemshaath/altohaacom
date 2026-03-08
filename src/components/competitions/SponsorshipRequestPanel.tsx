@@ -270,4 +270,4 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
       )}
     </div>
   );
-}
+});

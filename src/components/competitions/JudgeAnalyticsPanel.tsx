@@ -199,4 +199,4 @@ export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competiti
       </div>
     </div>
   );
-}
+});

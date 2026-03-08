@@ -269,4 +269,4 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
       </Card>
     </div>
   );
-}
+});

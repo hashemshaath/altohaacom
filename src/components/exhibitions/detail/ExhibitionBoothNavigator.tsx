@@ -135,4 +135,4 @@ export const ExhibitionBoothNavigator = memo(function ExhibitionBoothNavigator({
       )}
     </div>
   );
-}
+});

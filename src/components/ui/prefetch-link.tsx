@@ -87,7 +87,7 @@ export const PrefetchLink = memo(function PrefetchLink({
       {children}
     </Link>
   );
-}
+});
 
 /**
  * Hook to programmatically prefetch a route.

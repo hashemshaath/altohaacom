@@ -120,4 +120,4 @@ export const OrganizerRatingSummary = memo(function OrganizerRatingSummary({ exh
       </CardContent>
     </Card>
   );
-}
+});

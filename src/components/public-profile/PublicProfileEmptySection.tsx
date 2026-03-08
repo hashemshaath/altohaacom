@@ -29,4 +29,4 @@ export const PublicProfileEmptySection = memo(function PublicProfileEmptySection
       </Card>
     </div>
   );
-}
+});

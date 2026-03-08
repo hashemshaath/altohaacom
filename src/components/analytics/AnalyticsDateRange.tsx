@@ -102,6 +102,6 @@ export const AnalyticsDateRange = memo(function AnalyticsDateRange({ value, onCh
       )}
     </div>
   );
-}
+});
 
 export { getPresetRange };

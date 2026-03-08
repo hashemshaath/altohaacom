@@ -297,4 +297,4 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
       </Dialog>
     </div>
   );
-}
+});

@@ -78,4 +78,4 @@ export const PublicProfileComments = memo(function PublicProfileComments({ userI
       </CardContent>
     </Card>
   );
-}
+});
