@@ -43,7 +43,7 @@ const POST_TYPE_CONFIG = {
   testimonial: { icon: Quote, color: "text-chart-4", bg: "bg-chart-4/10" },
 };
 
-export function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
+export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
