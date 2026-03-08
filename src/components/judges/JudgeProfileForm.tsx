@@ -17,7 +17,7 @@ interface Props {
   isAdmin?: boolean;
 }
 
-export default function JudgeProfileForm({ userId, isAdmin }: Props) {
+const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
