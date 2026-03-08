@@ -261,11 +261,11 @@ export default function LoyaltyAdmin() {
         </TabsContent>
 
         <TabsContent value="rewards">
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>{isAr ? "المكافأة" : "Reward"}</TableHead>
                     <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
                     <TableHead className="text-center">{isAr ? "التكلفة" : "Cost"}</TableHead>
@@ -276,11 +276,11 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {rewards.map((r: any) => (
-                    <TableRow key={r.id}>
+                    <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] uppercase">{r.category}</Badge></TableCell>
-                      <TableCell className="text-center font-mono text-primary font-bold">{r.points_cost}</TableCell>
-                      <TableCell className="text-center"><Badge variant="secondary" className="text-[10px]">{r.min_tier}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
+                      <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{r.points_cost}</TableCell>
+                      <TableCell className="text-center"><Badge variant="secondary" className="text-[10px] rounded-lg">{r.min_tier}</Badge></TableCell>
                       <TableCell className="text-center">
                         <Switch checked={r.is_featured} onCheckedChange={v => updateReward.mutate({ id: r.id, updates: { is_featured: v } })} />
                       </TableCell>
