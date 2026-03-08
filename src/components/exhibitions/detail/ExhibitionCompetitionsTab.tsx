@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionCompetitionsTab({ competitions, isAr }: Props) {
+export const ExhibitionCompetitionsTab = memo(function ExhibitionCompetitionsTab({ competitions, isAr }: Props) {
   const { liveCompetitions, upcomingCompetitions, pastCompetitions } = useMemo(() => {
     const now = new Date();
     return {
