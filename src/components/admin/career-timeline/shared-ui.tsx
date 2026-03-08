@@ -217,7 +217,7 @@ export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl,
 
 // ── Sortable Wrappers ──────────────────────────────────────
 
-export function SortableItem({ id, sectionKey, children }: { id: string; sectionKey: string; children: React.ReactNode }) {
+export const SortableItem = memo(function SortableItem({ id, sectionKey, children }: { id: string; sectionKey: string; children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     data: { sectionKey },
