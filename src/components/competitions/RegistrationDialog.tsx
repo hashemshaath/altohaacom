@@ -64,7 +64,7 @@ const ORG_TYPES = [
   { value: "other", label: "Other", labelAr: "أخرى" },
 ];
 
-export function RegistrationForm({
+export const RegistrationForm = memo(function RegistrationForm({
   competitionId,
   competitionTitle,
   categories,
