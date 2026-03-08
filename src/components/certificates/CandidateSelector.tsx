@@ -34,7 +34,7 @@ interface CandidateSelectorProps {
   templates: Array<{ id: string; name: string; name_ar: string | null; type: string; is_active: boolean }>;
 }
 
-export function CandidateSelector({ competitions, templates }: CandidateSelectorProps) {
+export const CandidateSelector = memo(function CandidateSelector({ competitions, templates }: CandidateSelectorProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
