@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Award, FileCheck, Send, Clock, ShieldCheck, Download, PenTool } from "lucide-react";
 
-export function CertificateIssuanceWidget() {
+export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
