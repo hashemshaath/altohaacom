@@ -12,7 +12,7 @@ interface Props {
   onChange: (updates: Partial<ExhibitionFormData>) => void;
 }
 
-export function ExhibitionDatesLocationStep({ data, onChange }: Props) {
+export const ExhibitionDatesLocationStep = memo(function ExhibitionDatesLocationStep({ data, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
