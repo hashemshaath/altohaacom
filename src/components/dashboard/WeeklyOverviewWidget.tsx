@@ -80,4 +80,4 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

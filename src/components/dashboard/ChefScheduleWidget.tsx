@@ -100,4 +100,4 @@ export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
       </CardContent>
     </Card>
   );
-}
+});

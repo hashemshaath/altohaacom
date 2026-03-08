@@ -123,4 +123,4 @@ export const GoalsMilestonesWidget = memo(function GoalsMilestonesWidget() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -159,4 +159,4 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
       </CardContent>
     </Card>
   );
-}
+});

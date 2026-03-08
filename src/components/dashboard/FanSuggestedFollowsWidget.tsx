@@ -93,4 +93,4 @@ export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget
       </CardContent>
     </Card>
   );
-}
+});

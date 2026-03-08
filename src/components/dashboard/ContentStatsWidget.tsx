@@ -149,4 +149,4 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

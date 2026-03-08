@@ -133,4 +133,4 @@ export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
       </CardContent>
     </Card>
   );
-}
+});

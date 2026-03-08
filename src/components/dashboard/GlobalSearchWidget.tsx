@@ -143,7 +143,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
       )}
     </div>
   );
-}
+});
 
 function useDebounce(value: string, delay: number) {
   const [debounced, setDebounced] = useState(value);

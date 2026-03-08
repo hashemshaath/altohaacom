@@ -147,4 +147,4 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
       </CardContent>
     </Card>
   );
-}
+});
