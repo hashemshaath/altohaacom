@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,7 +13,7 @@ interface UserBadgesDisplayProps {
   limit?: number;
 }
 
-export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
+export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
   const { language } = useLanguage();
 
   const { data: badges, isLoading } = useQuery({
@@ -87,4 +88,4 @@ export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
       )}
     </div>
   );
-}
+});

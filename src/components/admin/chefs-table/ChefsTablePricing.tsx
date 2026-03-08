@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -40,7 +40,7 @@ function useEvaluationPricing() {
   });
 }
 
-export function ChefsTablePricing() {
+export const ChefsTablePricing = memo(function ChefsTablePricing() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -207,4 +207,4 @@ export function ChefsTablePricing() {
       </div>
     </div>
   );
-}
+});

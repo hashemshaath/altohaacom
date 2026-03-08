@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ interface ChatSearchBarProps {
   onClose: () => void;
 }
 
-export function ChatSearchBar({ messages, onHighlight, onClose }: ChatSearchBarProps) {
+export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight, onClose }: ChatSearchBarProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [query, setQuery] = useState("");
@@ -86,4 +86,4 @@ export function ChatSearchBar({ messages, onHighlight, onClose }: ChatSearchBarP
       </Button>
     </div>
   );
-}
+});

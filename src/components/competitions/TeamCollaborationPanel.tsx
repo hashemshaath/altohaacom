@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -43,7 +43,7 @@ interface ScheduleItem {
   location?: string;
 }
 
-export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
+export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -113,6 +113,10 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
   });
 
   const workspace = workspaces?.[0]; // Use first workspace
+  const tasks: TaskItem[] = Array.isArray(workspace?.task_board) ? (workspace.task_board as any[]) : [];
+  const recipes: RecipeItem[] = Array.isArray(workspace?.recipe_plan) ? (workspace.recipe_plan as any[]) : [];
+  const schedule: ScheduleItem[] = Array.isArray(workspace?.practice_schedule) ? (workspace.practice_schedule as any[]) : [];
+  const completedTasks = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
 
   if (isLoading) {
     return <div className="space-y-4">{Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}</div>;
@@ -158,41 +162,36 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
     );
   }
 
-  const tasks: TaskItem[] = Array.isArray(workspace.task_board) ? (workspace.task_board as any[]) : [];
-  const recipes: RecipeItem[] = Array.isArray(workspace.recipe_plan) ? (workspace.recipe_plan as any[]) : [];
-  const schedule: ScheduleItem[] = Array.isArray(workspace.practice_schedule) ? (workspace.practice_schedule as any[]) : [];
-
   const addTask = () => {
     const newTask: TaskItem = { id: crypto.randomUUID(), title: "", assignee: "", done: false, priority: "medium" };
-    updateWorkspace.mutate({ id: workspace.id, field: "task_board", value: [...tasks, newTask] as unknown as Json });
+    updateWorkspace.mutate({ id: workspace!.id, field: "task_board", value: [...tasks, newTask] as unknown as Json });
   };
 
   const toggleTask = (taskId: string) => {
     const updated = tasks.map(t => t.id === taskId ? { ...t, done: !t.done } : t);
-    updateWorkspace.mutate({ id: workspace.id, field: "task_board", value: updated as unknown as Json });
+    updateWorkspace.mutate({ id: workspace!.id, field: "task_board", value: updated as unknown as Json });
   };
 
   const updateTaskTitle = (taskId: string, title: string) => {
     const updated = tasks.map(t => t.id === taskId ? { ...t, title } : t);
-    updateWorkspace.mutate({ id: workspace.id, field: "task_board", value: updated as unknown as Json });
+    updateWorkspace.mutate({ id: workspace!.id, field: "task_board", value: updated as unknown as Json });
   };
 
   const addRecipe = () => {
     const newRecipe: RecipeItem = { id: crypto.randomUUID(), name: "", notes: "", ingredients: [] };
-    updateWorkspace.mutate({ id: workspace.id, field: "recipe_plan", value: [...recipes, newRecipe] as unknown as Json });
+    updateWorkspace.mutate({ id: workspace!.id, field: "recipe_plan", value: [...recipes, newRecipe] as unknown as Json });
   };
 
   const updateRecipe = (recipeId: string, field: string, value: any) => {
     const updated = recipes.map(r => r.id === recipeId ? { ...r, [field]: value } : r);
-    updateWorkspace.mutate({ id: workspace.id, field: "recipe_plan", value: updated as unknown as Json });
+    updateWorkspace.mutate({ id: workspace!.id, field: "recipe_plan", value: updated as unknown as Json });
   };
 
   const addScheduleItem = () => {
     const item: ScheduleItem = { id: crypto.randomUUID(), date: "", time: "", activity: "" };
-    updateWorkspace.mutate({ id: workspace.id, field: "practice_schedule", value: [...schedule, item] as unknown as Json });
+    updateWorkspace.mutate({ id: workspace!.id, field: "practice_schedule", value: [...schedule, item] as unknown as Json });
   };
 
-  const completedTasks = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
 
   return (
     <div className="space-y-4">
@@ -315,4 +314,4 @@ export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
       </Tabs>
     </div>
   );
-}
+});

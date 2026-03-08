@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
@@ -17,7 +18,7 @@ interface Props {
 /**
  * Simple breadcrumb navigation for nested pages.
  */
-export function Breadcrumbs({ items, className }: Props) {
+export const Breadcrumbs = memo(function Breadcrumbs({ items, className }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -41,4 +42,4 @@ export function Breadcrumbs({ items, className }: Props) {
       })}
     </nav>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +27,7 @@ const positionLabels: Record<LogoItem["position"], { en: string; ar: string }> =
   "footer-right": { en: "Footer Right", ar: "تذييل يمين" },
 };
 
-export function CertificateLogoManager({ logos, onChange }: CertificateLogoManagerProps) {
+export const CertificateLogoManager = memo(function CertificateLogoManager({ logos, onChange }: CertificateLogoManagerProps) {
   const { language } = useLanguage();
 
   // Fetch logo library from database
@@ -185,4 +186,4 @@ export function CertificateLogoManager({ logos, onChange }: CertificateLogoManag
       </div>
     </div>
   );
-}
+});

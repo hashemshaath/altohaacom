@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, ArrowRight, Sparkles } from "lucide-react";
 import { useCoverSettings } from "@/hooks/useCoverSettings";
@@ -9,7 +10,7 @@ interface ChefsTableHeroProps {
   onRequestClick: () => void;
 }
 
-export function ChefsTableHero({ isAr, user, onRequestClick }: ChefsTableHeroProps) {
+export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onRequestClick }: ChefsTableHeroProps) {
   const { gradientOverlay, isVisible } = useCoverSettings("chefs-table");
 
   if (!isVisible) return null;
@@ -79,4 +80,4 @@ export function ChefsTableHero({ isAr, user, onRequestClick }: ChefsTableHeroPro
       </div>
     </section>
   );
-}
+});

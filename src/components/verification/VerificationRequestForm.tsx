@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSubmitVerification, useMyVerificationRequests } from "@/hooks/useVerification";
@@ -38,7 +38,7 @@ const statusConfig: Record<string, { icon: typeof CheckCircle; color: string; la
   rejected: { icon: XCircle, color: "text-destructive", label: "Rejected", labelAr: "مرفوض" },
 };
 
-export function VerificationRequestForm() {
+export const VerificationRequestForm = memo(function VerificationRequestForm() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -242,4 +242,4 @@ export function VerificationRequestForm() {
       )}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "./animated-counter";
 import { Users, Eye, Star, Trophy } from "lucide-react";
@@ -20,7 +21,7 @@ const config = {
  * Compact social proof indicator with animated count.
  * Use in cards, headers, and list items to build trust.
  */
-export function SocialProofCounter({ type, value, label, className }: SocialProofCounterProps) {
+export const SocialProofCounter = memo(function SocialProofCounter({ type, value, label, className }: SocialProofCounterProps) {
   const c = config[type];
   const Icon = c.icon;
 
@@ -33,4 +34,4 @@ export function SocialProofCounter({ type, value, label, className }: SocialProo
       <span className="text-muted-foreground">{label}</span>
     </div>
   );
-}
+});

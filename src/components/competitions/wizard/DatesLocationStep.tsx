@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,7 +24,7 @@ const ENTRY_TYPES = [
   { value: "organization", labelEn: "Organization", labelAr: "منظمة / جهة", icon: Building2 },
 ];
 
-export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLocationStepProps) {
+export const DatesLocationStep = memo(function DatesLocationStep({ data, onChange, competitionNumber }: DatesLocationStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: countries } = useCountries();
@@ -252,4 +253,4 @@ export function DatesLocationStep({ data, onChange, competitionNumber }: DatesLo
       </Card>
     </div>
   );
-}
+});

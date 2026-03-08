@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton
 
 interface Props { userId: string; isAr: boolean; }
 
-export function UserCareerTimeline({ userId, isAr }: Props) {
+export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isAr }: Props) {
   const queryClient = useQueryClient();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["education", "work"]));
   const [addingSection, setAddingSection] = useState<string | null>(null);
@@ -374,4 +374,4 @@ export function UserCareerTimeline({ userId, isAr }: Props) {
       </div>
     </DndContext>
   );
-}
+});

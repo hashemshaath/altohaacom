@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { Send, Bot, User, Loader2, Trash2, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ interface JudgeAIAssistantProps {
   className?: string;
 }
 
-export function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantProps) {
+export const JudgeAIAssistant = memo(function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantProps) {
   const { messages, isLoading, askQuestion, clearMessages } = useJudgeAI(competitionId);
   const { language } = useLanguage();
   const [input, setInput] = useState("");
@@ -152,4 +152,4 @@ export function JudgeAIAssistant({ competitionId, className }: JudgeAIAssistantP
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -35,7 +35,7 @@ interface Props {
   onDeleteRequest: (type: string, id: string, name: string) => void;
 }
 
-export function EntityEventsTab({ entityId, onDeleteRequest }: Props) {
+export const EntityEventsTab = memo(function EntityEventsTab({ entityId, onDeleteRequest }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -161,4 +161,4 @@ export function EntityEventsTab({ entityId, onDeleteRequest }: Props) {
       )}
     </div>
   );
-}
+});

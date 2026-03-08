@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +27,7 @@ interface DesktopNavProps {
   isAr: boolean;
 }
 
-export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavProps) {
+export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavProps) {
   const location = useLocation();
   const isActive = (path: string) =>
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
@@ -125,4 +126,4 @@ export function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavP
       </DropdownMenu>
     </nav>
   );
-}
+});

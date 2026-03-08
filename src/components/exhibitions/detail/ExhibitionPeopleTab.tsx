@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +30,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionPeopleTab({ judgeProfiles, speakers, isAr }: Props) {
+export const ExhibitionPeopleTab = memo(function ExhibitionPeopleTab({ judgeProfiles, speakers, isAr }: Props) {
   const hasJudges = judgeProfiles && judgeProfiles.length > 0;
   const hasSpeakers = speakers.length > 0;
 
@@ -158,4 +159,4 @@ export function ExhibitionPeopleTab({ judgeProfiles, speakers, isAr }: Props) {
       )}
     </div>
   );
-}
+});

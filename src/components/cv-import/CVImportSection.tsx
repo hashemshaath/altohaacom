@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -36,7 +36,7 @@ interface ChefResult {
 
 type Step = "search" | "input" | "preview";
 
-export function CVImportSection() {
+export const CVImportSection = memo(function CVImportSection() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
@@ -496,4 +496,4 @@ export function CVImportSection() {
       )}
     </div>
   );
-}
+});
