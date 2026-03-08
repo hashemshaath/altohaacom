@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -19,7 +20,7 @@ interface FeedItem {
   color: string;
 }
 
-export function AdminActivityFeed() {
+export const AdminActivityFeed = memo(function AdminActivityFeed() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
