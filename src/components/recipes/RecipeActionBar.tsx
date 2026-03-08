@@ -23,7 +23,7 @@ interface RecipeActionBarProps {
   shareCount?: number;
 }
 
-export function RecipeActionBar({ recipeId, saveCount = 0, shareCount = 0 }: RecipeActionBarProps) {
+export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCount = 0, shareCount = 0 }: RecipeActionBarProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
