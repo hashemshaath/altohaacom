@@ -1,4 +1,4 @@
-import { useCallback, useRef, ReactNode } from "react";
+import { useCallback, useRef, memo, ReactNode } from "react";
 import { Link, LinkProps, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
