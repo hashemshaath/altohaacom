@@ -248,4 +248,4 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
       )}
     </section>
   );
-}
+});

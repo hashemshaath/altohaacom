@@ -264,4 +264,4 @@ export const ExhibitionSocialWall = memo(function ExhibitionSocialWall({ exhibit
       </div>
     </div>
   );
-}
+});

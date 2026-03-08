@@ -121,4 +121,4 @@ export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valu
       )}
     </div>
   );
-}
+});

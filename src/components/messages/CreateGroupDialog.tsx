@@ -184,4 +184,4 @@ export const CreateGroupDialog = memo(function CreateGroupDialog({ open, onOpenC
       </DialogContent>
     </Dialog>
   );
-}
+});

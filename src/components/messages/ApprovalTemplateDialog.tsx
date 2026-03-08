@@ -102,4 +102,4 @@ export const ApprovalTemplateDialog = memo(function ApprovalTemplateDialog({ ope
       </DialogContent>
     </Dialog>
   );
-}
+});

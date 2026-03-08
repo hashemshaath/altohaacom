@@ -268,4 +268,4 @@ export const ExhibitionOrganizerTicketsStep = memo(function ExhibitionOrganizerT
       </Card>
     </div>
   );
-}
+});

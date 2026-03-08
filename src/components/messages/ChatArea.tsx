@@ -585,4 +585,4 @@ export const ChatArea = memo(function ChatArea({
       />
     </>
   );
-}
+});

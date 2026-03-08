@@ -132,4 +132,4 @@ export const ApprovalMessage = memo(function ApprovalMessage({ messageId, sender
       )}
     </div>
   );
-}
+});

@@ -109,4 +109,4 @@ export const NewConversationDialog = memo(function NewConversationDialog({ open,
       </DialogContent>
     </Dialog>
   );
-}
+});

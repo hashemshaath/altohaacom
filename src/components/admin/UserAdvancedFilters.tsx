@@ -151,7 +151,7 @@ export const UserAdvancedFilters = memo(function UserAdvancedFilters({ filters, 
       </PopoverContent>
     </Popover>
   );
-}
+});
 
 export { INITIAL_FILTERS };
 export type { FilterValues };

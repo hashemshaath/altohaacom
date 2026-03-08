@@ -379,4 +379,4 @@ export const CompetitionStatusManager = memo(function CompetitionStatusManager({
       </CardContent>
     </Card>
   );
-}
+});

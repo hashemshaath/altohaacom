@@ -141,4 +141,4 @@ export const RegistrationStatusBanner = memo(function RegistrationStatusBanner({
       </CardContent>
     </Card>
   );
-}
+});

@@ -91,4 +91,4 @@ export const MembershipBadge = memo(function MembershipBadge({ tier, isAr = fals
       </TooltipContent>
     </Tooltip>
   );
-}
+});

@@ -142,4 +142,4 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
       </CardContent>
     </Card>
   );
-}
+});

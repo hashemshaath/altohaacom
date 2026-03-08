@@ -26,4 +26,4 @@ export const OrderStatusBadge = memo(function OrderStatusBadge({ status, languag
     default:
       return <Badge variant="secondary">{label}</Badge>;
   }
-}
+});

@@ -188,4 +188,4 @@ export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ compe
       </DialogContent>
     </Dialog>
   );
-}
+});

@@ -15,4 +15,4 @@ export const ProtectedRoute = memo(function ProtectedRoute({ children }: { child
 
   if (!user) return <Navigate to="/login" replace />;
   return <>{children}</>;
-}
+});

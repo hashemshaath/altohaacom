@@ -247,4 +247,4 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
       )}
     </div>
   );
-}
+});

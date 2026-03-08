@@ -92,4 +92,4 @@ export const OrdersTable = memo(function OrdersTable({ orders, isLoading, langua
       </CardContent>
     </Card>
   );
-}
+});
