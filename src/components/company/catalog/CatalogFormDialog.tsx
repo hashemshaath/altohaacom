@@ -26,7 +26,7 @@ interface CatalogFormDialogProps {
   companyId: string;
 }
 
-export function CatalogFormDialog({
+export const CatalogFormDialog = memo(function CatalogFormDialog({
   open, onOpenChange, form, setForm, editingItem, onSave, isPending, language, companyId,
 }: CatalogFormDialogProps) {
   return (
