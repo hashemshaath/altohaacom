@@ -38,7 +38,7 @@ interface InlineSmartImportProps {
 
 type Phase = "search" | "results" | "loading-details" | "details";
 
-export function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps) {
+export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onClose }: InlineSmartImportProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
