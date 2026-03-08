@@ -15,7 +15,7 @@ interface PostEngagementBarProps {
 /**
  * Shows read time estimate + engagement rate for a post.
  */
-export function PostEngagementBar({
+export const PostEngagementBar = memo(function PostEngagementBar({
   content,
   likesCount,
   commentsCount,
