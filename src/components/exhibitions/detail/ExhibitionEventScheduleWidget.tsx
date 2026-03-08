@@ -11,7 +11,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionEventScheduleWidget({ exhibitionId, isAr }: Props) {
+export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventScheduleWidget({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data: items = [] } = useQuery({
