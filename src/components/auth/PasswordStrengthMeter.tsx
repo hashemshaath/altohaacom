@@ -16,7 +16,7 @@ export function getPasswordStrength(password: string) {
   return Math.min(score, 4);
 }
 
-export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
+export const PasswordStrengthMeter = memo(function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
