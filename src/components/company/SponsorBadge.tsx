@@ -18,7 +18,7 @@ interface SponsorBadgeProps {
   compact?: boolean;
 }
 
-export function CompetitionSponsorBadges({ competitionId, language, showLogo = true, compact = false }: SponsorBadgeProps) {
+export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({ competitionId, language, showLogo = true, compact = false }: SponsorBadgeProps) {
   const isAr = language === "ar";
 
   const { data: sponsors = [] } = useQuery({
