@@ -19,7 +19,7 @@ interface ChatMessage {
   created_at: string;
 }
 
-export function LiveChatWidget() {
+export const LiveChatWidget = memo(function LiveChatWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
