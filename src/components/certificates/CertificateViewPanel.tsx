@@ -160,14 +160,16 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
   };
 
   return (
-    <Card className="border-primary/30">
+    <Card className="border-primary/30 animate-in fade-in-50 slide-in-from-top-2 duration-300">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Award className="h-5 w-5 text-primary" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+              <Award className="h-4 w-4 text-primary" />
+            </div>
             {language === "ar" ? "تفاصيل الشهادة" : "Certificate Details"}
           </CardTitle>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-colors" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
