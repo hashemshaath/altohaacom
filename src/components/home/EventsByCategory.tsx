@@ -17,7 +17,7 @@ import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { localizeLocation } from "@/lib/localizeLocation";
 
-export function EventsByCategory() {
+export const EventsByCategory = memo(function EventsByCategory() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState<"competitions" | "exhibitions" | "chefs-table">("competitions");
