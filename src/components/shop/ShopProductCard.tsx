@@ -32,7 +32,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
   const label = typeLabels[product.product_type] || typeLabels.physical;
 
   return (
-    <Card className="group flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30">
+    <Card className="group flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 active:scale-[0.98] touch-manipulation">
       <Link to={`/shop/${product.id}`} className="block overflow-hidden">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.image_url ? (
@@ -94,6 +94,13 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
               {title}
             </h3>
           </Link>
+          {product.rating_avg > 0 && (
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
+              <span className="font-bold">{product.rating_avg.toFixed(1)}</span>
+              {product.review_count > 0 && <span>({product.review_count})</span>}
+            </div>
+          )}
         </div>
 
         <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 gap-1">

@@ -75,7 +75,7 @@ export const NotificationDigest = memo(function NotificationDigest() {
   };
 
   return (
-    <Card className="border-border/40 overflow-hidden">
+    <Card className="border-border/40 overflow-hidden group/digest hover:shadow-lg transition-all duration-300">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -95,17 +95,17 @@ export const NotificationDigest = memo(function NotificationDigest() {
 
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-2 mb-3">
-          <div className="rounded-xl bg-muted/30 p-2.5 text-center">
-            <p className="text-lg font-bold"><AnimatedCounter value={digest.total24h} /></p>
+          <div className="rounded-xl bg-muted/30 p-2.5 text-center hover:bg-muted/50 transition-colors cursor-default">
+            <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={digest.total24h} /></p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "إشعار" : "Notifications"}</p>
           </div>
-          <div className="rounded-xl bg-muted/30 p-2.5 text-center">
-            <p className="text-lg font-bold text-primary"><AnimatedCounter value={unreadCount} /></p>
+          <div className="rounded-xl bg-primary/5 p-2.5 text-center hover:bg-primary/10 transition-colors cursor-default ring-1 ring-primary/10">
+            <p className="text-lg font-bold text-primary tabular-nums"><AnimatedCounter value={unreadCount} /></p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "غير مقروء" : "Unread"}</p>
           </div>
-          <div className="rounded-xl bg-muted/30 p-2.5 text-center">
+          <div className="rounded-xl bg-muted/30 p-2.5 text-center hover:bg-muted/50 transition-colors cursor-default">
             <div className="flex items-center justify-center gap-1">
-              <TrendIcon className={`h-4 w-4 ${trendColor}`} />
+              <TrendIcon className={`h-4 w-4 ${trendColor} transition-transform group-hover/digest:scale-110`} />
             </div>
             <p className="text-[9px] text-muted-foreground">
               {digest.trend === "up" ? (isAr ? "أكثر نشاطاً" : "More active") :
