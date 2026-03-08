@@ -20,7 +20,7 @@ interface ActivityItem {
   status?: string;
 }
 
-export function CompanyActivityFeed({ companyId }: { companyId: string | null }) {
+export const CompanyActivityFeed = memo(function CompanyActivityFeed({ companyId }: { companyId: string | null }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
