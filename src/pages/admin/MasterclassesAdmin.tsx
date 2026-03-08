@@ -161,7 +161,17 @@ export default function MasterclassesAdmin() {
     return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
   };
 
-  // Show module manager for a specific masterclass
+  const masterclassStats = useMemo(() => [
+    { label: language === "ar" ? "إجمالي الدورات" : "Total Courses", value: masterclasses.length, icon: BookOpen },
+    { label: language === "ar" ? "منشورة" : "Published", value: masterclasses.filter((m: any) => m.status === "published").length, icon: Eye },
+    { label: language === "ar" ? "مسودات" : "Drafts", value: masterclasses.filter((m: any) => m.status === "draft").length, icon: EyeOff },
+    {
+      label: language === "ar" ? "إجمالي المسجلين" : "Total Enrollments",
+      value: masterclasses.reduce((sum: number, m: any) => sum + (m.masterclass_enrollments?.length || 0), 0),
+      icon: Users,
+    },
+  ], [masterclasses, language]);
+
   if (managingModulesId) {
     const mc = masterclasses.find((m: any) => m.id === managingModulesId);
     return (
