@@ -1,10 +1,11 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 interface TypingIndicatorProps {
   partnerName?: string;
 }
 
-export function TypingIndicator({ partnerName }: TypingIndicatorProps) {
+export const TypingIndicator = memo(function TypingIndicator({ partnerName }: TypingIndicatorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
