@@ -834,7 +834,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       </CardContent>
     </Card>
   );
-}
+});
 
 function DetailSection({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
   return (

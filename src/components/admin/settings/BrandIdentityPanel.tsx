@@ -620,4 +620,4 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
       </div>
     </div>
   );
-}
+});

@@ -450,4 +450,4 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
       )}
     </div>
   );
-}
+});
