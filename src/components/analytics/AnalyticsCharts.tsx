@@ -54,7 +54,7 @@ export const RegistrationTrendChart = memo(function RegistrationTrendChart({ dat
 }
 
 /* ─── Competitions by Month ─── */
-export function MonthlyCompetitionsChart({ data }: { data?: { month: string; count: number }[] }) {
+export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({ data }: { data?: { month: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
