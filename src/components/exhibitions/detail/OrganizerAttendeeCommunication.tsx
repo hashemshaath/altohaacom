@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function OrganizerAttendeeCommunication({ exhibitionId, isAr }: Props) {
+export const OrganizerAttendeeCommunication = memo(function OrganizerAttendeeCommunication({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [title, setTitle] = useState("");
