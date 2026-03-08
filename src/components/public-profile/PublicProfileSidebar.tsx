@@ -19,7 +19,7 @@ interface Props {
   t: (key: string) => string;
 }
 
-export function PublicProfileSidebar({ profile, qrCode, isAr, isVisible, getCountryName, profileUrl, t }: Props) {
+export const PublicProfileSidebar = memo(function PublicProfileSidebar({ profile, qrCode, isAr, isVisible, getCountryName, profileUrl, t }: Props) {
   return (
     <div className="space-y-4">
       {/* Contact Card */}
