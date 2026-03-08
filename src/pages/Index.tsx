@@ -37,6 +37,7 @@ const HomeTestimonials = lazy(() => import("@/components/home/HomeTestimonials")
 const PlatformFeatures = lazy(() => import("@/components/home/PlatformFeatures").then(m => ({ default: m.PlatformFeatures })));
 const NewsletterSignup = lazy(() => import("@/components/home/NewsletterSignup").then(m => ({ default: m.NewsletterSignup })));
 const HomeQuickActions = lazy(() => import("@/components/home/HomeQuickActions").then(m => ({ default: m.HomeQuickActions })));
+const HomepageAdBanner = lazy(() => import("@/components/home/sections/HomepageAdBanner"));
 const GenericHomepageSection = lazy(() => import("@/components/home/sections/GenericHomepageSection"));
 
 // ── Section key → component mapping ──
@@ -60,6 +61,10 @@ const SECTION_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
   platform_features: PlatformFeatures,
   newsletter: NewsletterSignup,
   quick_actions: HomeQuickActions,
+  // Ad banner placements
+  ad_banner_top: HomepageAdBanner,
+  ad_banner_mid: HomepageAdBanner,
+  ad_banner_bottom: HomepageAdBanner,
 };
 
 // ── Section loading skeleton ──
