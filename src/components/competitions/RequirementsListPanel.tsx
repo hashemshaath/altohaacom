@@ -43,7 +43,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
+export const RequirementsListPanel = memo(function RequirementsListPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
