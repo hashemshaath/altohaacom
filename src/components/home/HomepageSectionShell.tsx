@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, memo } from "react";
 import { cn } from "@/lib/utils";
 import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { useSectionConfig } from "./SectionKeyContext";
