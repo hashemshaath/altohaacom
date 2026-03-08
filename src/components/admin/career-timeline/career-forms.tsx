@@ -216,7 +216,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
 
 // ── Membership Form ──────────────────────────────────────
 
-export function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
+export const MembershipForm = memo(function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
   form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
