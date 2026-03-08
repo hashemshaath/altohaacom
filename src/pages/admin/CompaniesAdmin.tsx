@@ -1900,16 +1900,16 @@ export default function CompaniesAdmin() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-10">
+                    <TableHead className="w-10 bg-muted/30">
                       <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                     </TableHead>
-                    <SortableTableHead column="name" label={isAr ? "الشركة" : "Company"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <TableHead>{isAr ? "الاتصال" : "Contact"}</TableHead>
-                    <SortableTableHead column="country" label={isAr ? "الموقع" : "Location"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <TableHead></TableHead>
+                    <SortableTableHead className="bg-muted/30" column="name" label={isAr ? "الشركة" : "Company"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead className="bg-muted/30" column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <TableHead className="bg-muted/30">{isAr ? "الاتصال" : "Contact"}</TableHead>
+                    <SortableTableHead className="bg-muted/30" column="country" label={isAr ? "الموقع" : "Location"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead className="bg-muted/30" column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead className="bg-muted/30" column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <TableHead className="bg-muted/30"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
