@@ -105,7 +105,7 @@ export const ScoreDistributionChart = memo(function ScoreDistributionChart({ dat
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Status Breakdown ─── */
 export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }: { data?: { name: string; value: number }[] }) {
