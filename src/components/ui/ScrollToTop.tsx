@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 /**
  * Floating scroll-to-top button that appears after scrolling down.
  */
-export function ScrollToTop() {
+export const ScrollToTop = memo(function ScrollToTop() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
