@@ -1475,7 +1475,7 @@ export default function OrdersAdmin() {
                           </div>
                         </TableCell>
                         <TableCell>{order.shop_order_items?.length || 0} {isAr ? "منتج" : "items"}</TableCell>
-                        <TableCell className="font-medium">{order.currency} {Number(order.total_amount).toFixed(2)}</TableCell>
+                        <TableCell className="font-medium tabular-nums">{order.currency} {Number(order.total_amount).toFixed(2)}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-xs">{getStatusLabel(order.payment_status || "pending")}</Badge>
                         </TableCell>
