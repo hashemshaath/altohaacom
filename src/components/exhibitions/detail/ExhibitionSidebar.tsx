@@ -49,7 +49,7 @@ interface Props {
   onToggleWatchlist?: () => void;
 }
 
-export function ExhibitionSidebar({
+export const ExhibitionSidebar = memo(function ExhibitionSidebar({
   exhibition, title, description, venue, organizer, organizerLogoUrl,
   isHappening, isUpcoming, hasEnded,
   isFollowing, followerCount, user, isAr, countryFlag, tags,
