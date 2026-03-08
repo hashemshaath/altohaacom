@@ -47,7 +47,7 @@ const CATEGORIES: Record<string, { en: string; ar: string }> = {
   custom: { en: "Custom", ar: "مخصص" },
 };
 
-export function PreparationChecklistPanel({ competitionId }: Props) {
+export const PreparationChecklistPanel = memo(function PreparationChecklistPanel({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
