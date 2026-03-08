@@ -615,7 +615,7 @@ export default function CompetitionsAdmin() {
           )}
           {uniqueExhibitions.length > 0 && (
             <Select value={exhibitionFilter} onValueChange={setExhibitionFilter}>
-              <SelectTrigger className="w-44">
+              <SelectTrigger className="w-44 rounded-xl">
                 <Building2 className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} />
               </SelectTrigger>
