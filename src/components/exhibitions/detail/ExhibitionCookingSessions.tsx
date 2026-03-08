@@ -343,6 +343,12 @@ export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions
     },
   });
 
+  const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
+    liveSessions: sessions.filter((s: any) => s.status === "live"),
+    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
+    pastSessions: sessions.filter((s: any) => s.status === "completed"),
+  }), [sessions]);
+
   const selected = sessions.find((s: any) => s.id === selectedSession);
 
   if (selectedSession && selected) {
@@ -354,12 +360,6 @@ export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions
       />
     );
   }
-
-  const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
-    liveSessions: sessions.filter((s: any) => s.status === "live"),
-    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
-    pastSessions: sessions.filter((s: any) => s.status === "completed"),
-  }), [sessions]);
 
   return (
     <div className="space-y-6">

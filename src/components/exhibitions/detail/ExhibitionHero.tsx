@@ -237,7 +237,7 @@ export const ExhibitionHero = memo(function ExhibitionHero({
       </div>
     </div>
   );
-}
+});
 
 /* ---------- Share dropdown (extracted to reduce repetition) ---------- */
 function ShareDropdown({ isAr, title, shareUrl }: { isAr: boolean; title: string; shareUrl: string }) {

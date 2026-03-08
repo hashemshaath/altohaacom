@@ -201,7 +201,7 @@ export const ExhibitionSurveyManager = memo(function ExhibitionSurveyManager({ e
       )}
     </div>
   );
-}
+});
 
 function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhibitionId }: any) {
   const t = (en: string, ar: string) => isAr ? ar : en;
