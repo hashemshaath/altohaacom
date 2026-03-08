@@ -1260,7 +1260,7 @@ export default function OrdersAdmin() {
             <StatCard value={companyStats.outgoing} label={isAr ? "صادر" : "Outgoing"} color="text-chart-2" />
           </div>
 
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{isAr ? "جميع الطلبات" : "All Orders"}</CardTitle>
