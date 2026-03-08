@@ -548,4 +548,4 @@ function CriterionScoreInput({
       )}
     </div>
   );
-});
+}
