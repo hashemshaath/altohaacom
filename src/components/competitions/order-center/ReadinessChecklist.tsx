@@ -27,7 +27,7 @@ interface ReadinessItem {
   detailAr: string;
 }
 
-export function ReadinessChecklist({ competitionId }: Props) {
+export const ReadinessChecklist = memo(function ReadinessChecklist({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
