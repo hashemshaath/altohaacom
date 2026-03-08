@@ -19,7 +19,7 @@ interface TrendingPost {
   comments_count: number;
 }
 
-export function TrendingCarousel() {
+export const TrendingCarousel = memo(function TrendingCarousel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
