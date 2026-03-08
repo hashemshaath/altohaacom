@@ -467,7 +467,7 @@ export default function NotificationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={recentChannelFilter} onValueChange={setRecentChannelFilter}>
-              <SelectTrigger className="w-[130px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[130px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل القنوات" : "All Channels"}</SelectItem>
                 <SelectItem value="in_app">In-App</SelectItem>
