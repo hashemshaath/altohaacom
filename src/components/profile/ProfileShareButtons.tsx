@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ interface ProfileShareButtonsProps {
   variant?: "icon" | "full";
 }
 
-export function ProfileShareButtons({ username, displayName, variant = "icon" }: ProfileShareButtonsProps) {
+export const ProfileShareButtons = memo(function ProfileShareButtons({ username, displayName, variant = "icon" }: ProfileShareButtonsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -87,4 +87,4 @@ export function ProfileShareButtons({ username, displayName, variant = "icon" }:
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,7 +29,7 @@ interface TypesCategoriesStepProps {
   onCategoriesChange: (cats: CategoryForm[]) => void;
 }
 
-export function TypesCategoriesStep({
+export const TypesCategoriesStep = memo(function TypesCategoriesStep({
   selectedTypeIds,
   categories,
   onTypeChange,
@@ -294,4 +295,4 @@ export function TypesCategoriesStep({
       </Card>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { X, Trash2, CheckCircle, Download } from "lucide-react";
@@ -14,7 +15,7 @@ interface BulkActionBarProps {
   className?: string;
 }
 
-export function BulkActionBar({
+export const BulkActionBar = memo(function BulkActionBar({
   count,
   onClear,
   onDelete,
@@ -74,4 +75,4 @@ export function BulkActionBar({
       </Button>
     </div>
   );
-}
+});

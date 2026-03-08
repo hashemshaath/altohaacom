@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, ShieldCheck, AlertTriangle, Info, TrendingUp } from "lucide-react";
 import { Badge } from "./badge";
@@ -22,7 +23,7 @@ const config: Record<Level, { icon: typeof CheckCircle2; colors: string; default
  * Shows data confidence or verification level.
  * Use alongside metrics, user profiles, and data tables.
  */
-export function ConfidenceBadge({ level, label, className }: ConfidenceBadgeProps) {
+export const ConfidenceBadge = memo(function ConfidenceBadge({ level, label, className }: ConfidenceBadgeProps) {
   const c = config[level];
   const Icon = c.icon;
 
@@ -32,4 +33,4 @@ export function ConfidenceBadge({ level, label, className }: ConfidenceBadgeProp
       {label || c.defaultLabel}
     </Badge>
   );
-}
+});

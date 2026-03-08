@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -16,7 +17,7 @@ const COLORS = [
   "hsl(var(--primary))",
 ];
 
-export function EvaluationBarChart({ title, data, isAr }: Props) {
+export const EvaluationBarChart = memo(function EvaluationBarChart({ title, data, isAr }: Props) {
   if (!data.length) return null;
 
   return (
@@ -54,4 +55,4 @@ export function EvaluationBarChart({ title, data, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -64,7 +64,7 @@ const ORG_TYPES = [
   { value: "other", label: "Other", labelAr: "أخرى" },
 ];
 
-export function RegistrationForm({
+export const RegistrationForm = memo(function RegistrationForm({
   competitionId,
   competitionTitle,
   categories,
@@ -594,7 +594,7 @@ export function RegistrationForm({
       </CardContent>
     </Card>
   );
-}
+});
 
 // Backwards-compatible dialog wrapper
 interface RegistrationDialogProps {
@@ -605,7 +605,7 @@ interface RegistrationDialogProps {
   categories: Category[];
 }
 
-export function RegistrationDialog({ open, onOpenChange, competitionId, competitionTitle, categories }: RegistrationDialogProps) {
+export const RegistrationDialog = memo(function RegistrationDialog({ open, onOpenChange, competitionId, competitionTitle, categories }: RegistrationDialogProps) {
   if (!open) return null;
   return (
     <RegistrationForm
@@ -616,4 +616,4 @@ export function RegistrationDialog({ open, onOpenChange, competitionId, competit
       onSuccess={() => onOpenChange(false)}
     />
   );
-}
+});

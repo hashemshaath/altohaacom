@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -47,7 +47,7 @@ const CATEGORIES: Record<string, { en: string; ar: string }> = {
   custom: { en: "Custom", ar: "مخصص" },
 };
 
-export function PreparationChecklistPanel({ competitionId }: Props) {
+export const PreparationChecklistPanel = memo(function PreparationChecklistPanel({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -213,4 +213,4 @@ export function PreparationChecklistPanel({ competitionId }: Props) {
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -9,7 +9,7 @@ interface LocationShareButtonProps {
   disabled?: boolean;
 }
 
-export function LocationShareButton({ isAr, onShare, disabled }: LocationShareButtonProps) {
+export const LocationShareButton = memo(function LocationShareButton({ isAr, onShare, disabled }: LocationShareButtonProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -42,10 +42,10 @@ export function LocationShareButton({ isAr, onShare, disabled }: LocationShareBu
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
     </Button>
   );
-}
+});
 
 /** Render location bubble from metadata */
-export function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: number; label: string; isMine: boolean }) {
+export const LocationBubble = memo(function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: number; label: string; isMine: boolean }) {
   const mapUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
   return (
     <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="block">
@@ -63,4 +63,4 @@ export function LocationBubble({ lat, lng, label, isMine }: { lat: number; lng: 
       </div>
     </a>
   );
-}
+});

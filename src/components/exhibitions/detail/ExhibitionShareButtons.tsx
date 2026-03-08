@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionShareButtons({ title, description, imageUrl, isAr }: Props) {
+export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ title, description, imageUrl, isAr }: Props) {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const url = window.location.href;
@@ -98,4 +98,4 @@ export function ExhibitionShareButtons({ title, description, imageUrl, isAr }: P
       </CardContent>
     </Card>
   );
-}
+});

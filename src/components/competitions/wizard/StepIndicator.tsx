@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Check } from "lucide-react";
 
@@ -22,7 +23,7 @@ interface StepIndicatorProps {
   totalSteps?: number;
 }
 
-export function StepIndicator({ currentStep, totalSteps = 5 }: StepIndicatorProps) {
+export const StepIndicator = memo(function StepIndicator({ currentStep, totalSteps = 5 }: StepIndicatorProps) {
   const { language } = useLanguage();
   const steps = STEPS.slice(0, totalSteps);
 
@@ -69,4 +70,4 @@ export function StepIndicator({ currentStep, totalSteps = 5 }: StepIndicatorProp
       </div>
     </div>
   );
-}
+});

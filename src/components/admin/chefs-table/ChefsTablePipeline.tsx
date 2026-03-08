@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, CheckCircle2, Calendar, ChefHat, Star, ArrowRight } from "lucide-react";
@@ -10,7 +10,7 @@ interface Props {
   sessions: ChefsTableSession[];
 }
 
-export function ChefsTablePipeline({ requests, sessions }: Props) {
+export const ChefsTablePipeline = memo(function ChefsTablePipeline({ requests, sessions }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -93,4 +93,4 @@ export function ChefsTablePipeline({ requests, sessions }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

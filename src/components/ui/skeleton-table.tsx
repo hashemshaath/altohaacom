@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -7,7 +8,7 @@ interface SkeletonTableProps {
   showAvatar?: boolean;
 }
 
-export function SkeletonTable({ columns = 5, rows = 8, showAvatar = true }: SkeletonTableProps) {
+export const SkeletonTable = memo(function SkeletonTable({ columns = 5, rows = 8, showAvatar = true }: SkeletonTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -42,9 +43,9 @@ export function SkeletonTable({ columns = 5, rows = 8, showAvatar = true }: Skel
       </TableBody>
     </Table>
   );
-}
+});
 
-export function SkeletonCards({ count = 6 }: { count?: number }) {
+export const SkeletonCards = memo(function SkeletonCards({ count = 6 }: { count?: number }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: count }).map((_, i) => (
@@ -65,4 +66,4 @@ export function SkeletonCards({ count = 6 }: { count?: number }) {
       ))}
     </div>
   );
-}
+});

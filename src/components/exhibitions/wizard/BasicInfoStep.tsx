@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,7 +23,7 @@ interface Props {
   onChange: (updates: Partial<ExhibitionFormData>) => void;
 }
 
-export function ExhibitionBasicInfoStep({ data, onChange }: Props) {
+export const ExhibitionBasicInfoStep = memo(function ExhibitionBasicInfoStep({ data, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -184,4 +185,4 @@ export function ExhibitionBasicInfoStep({ data, onChange }: Props) {
       </Card>
     </div>
   );
-}
+});
