@@ -77,7 +77,7 @@ interface OnlineCountBadgeProps {
   className?: string;
 }
 
-export function OnlineCountBadge({ className }: OnlineCountBadgeProps) {
+export const OnlineCountBadge = memo(function OnlineCountBadge({ className }: OnlineCountBadgeProps) {
   const { onlineCount } = usePresence();
 
   if (onlineCount <= 1) return null;
