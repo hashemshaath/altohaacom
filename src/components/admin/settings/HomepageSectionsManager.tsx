@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { SectionRow } from "./homepage/SectionRow";
 
-export function HomepageSectionsManager() {
+export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: sections = [], isLoading } = useHomepageSections();
