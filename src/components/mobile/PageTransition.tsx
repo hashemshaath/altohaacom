@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useRef, useEffect, type ReactNode } from "react";
+import { useRef, useEffect, memo, type ReactNode } from "react";
 
 /**
  * Lightweight mobile page transition – fades content in on route change.
