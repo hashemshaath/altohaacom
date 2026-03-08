@@ -38,7 +38,7 @@ const difficultyColor = (d: string) => {
   return "bg-chart-4/10 text-chart-4";
 };
 
-export function RecipesTab() {
+export const RecipesTab = memo(function RecipesTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
