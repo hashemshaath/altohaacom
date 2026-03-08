@@ -95,7 +95,7 @@ export const AddButton = memo(function AddButton({ label, onClick }: { label: st
 
 // ── Form Actions ──────────────────────────────────────
 
-export function FormActions({ isAr, isPending, editingId, canSave, onSave, onCancel }: {
+export const FormActions = memo(function FormActions({ isAr, isPending, editingId, canSave, onSave, onCancel }: {
   isAr: boolean; isPending: boolean; editingId?: string | null; canSave: boolean; onSave: () => void; onCancel: () => void;
 }) {
   return (
