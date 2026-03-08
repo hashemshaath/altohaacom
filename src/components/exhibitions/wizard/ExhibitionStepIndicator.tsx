@@ -9,7 +9,7 @@ const STEPS = [
   { number: 4, label: "Review", labelAr: "مراجعة", icon: Eye },
 ];
 
-export function ExhibitionStepIndicator({ currentStep }: { currentStep: number }) {
+export const ExhibitionStepIndicator = memo(function ExhibitionStepIndicator({ currentStep }: { currentStep: number }) {
   const { language } = useLanguage();
 
   return (
