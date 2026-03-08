@@ -16,7 +16,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionTicketTypeManager({ exhibitionId, isAr }: Props) {
+export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeManager({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
