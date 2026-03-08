@@ -76,7 +76,7 @@ function useEvaluationTemplates(domainId?: string) {
   });
 }
 
-export function TemplatesManager() {
+export const TemplatesManager = memo(function TemplatesManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
