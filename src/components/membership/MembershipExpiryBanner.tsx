@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-export function MembershipExpiryBanner({ className }: { className?: string }) {
+export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ className }: { className?: string }) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
