@@ -29,7 +29,7 @@ const CAT_COLORS: Record<string, string> = {
   break: "bg-muted text-muted-foreground",
 };
 
-export function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isAr }: Props) {
+export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({ exhibitionId, startDate, endDate, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
