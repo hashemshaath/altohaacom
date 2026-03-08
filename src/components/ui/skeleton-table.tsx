@@ -8,7 +8,7 @@ interface SkeletonTableProps {
   showAvatar?: boolean;
 }
 
-export function SkeletonTable({ columns = 5, rows = 8, showAvatar = true }: SkeletonTableProps) {
+export const SkeletonTable = memo(function SkeletonTable({ columns = 5, rows = 8, showAvatar = true }: SkeletonTableProps) {
   return (
     <Table>
       <TableHeader>
