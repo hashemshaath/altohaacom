@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function FinanceMembershipWidget() {
+export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
