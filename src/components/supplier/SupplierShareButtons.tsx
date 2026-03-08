@@ -9,7 +9,7 @@ interface SupplierShareButtonsProps {
   companyId: string;
 }
 
-export function SupplierShareButtons({ companyName, companyId }: SupplierShareButtonsProps) {
+export const SupplierShareButtons = memo(function SupplierShareButtons({ companyName, companyId }: SupplierShareButtonsProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
