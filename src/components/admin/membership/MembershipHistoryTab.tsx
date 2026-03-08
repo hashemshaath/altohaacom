@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,7 +26,7 @@ interface HistoryEntry {
   created_at: string;
 }
 
-export default function MembershipHistoryTab() {
+const MembershipHistoryTab = memo(function MembershipHistoryTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -170,4 +171,6 @@ export default function MembershipHistoryTab() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipHistoryTab;

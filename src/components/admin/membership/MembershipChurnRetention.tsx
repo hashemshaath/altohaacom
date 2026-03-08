@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +27,7 @@ const TIER_COLORS: Record<string, string> = {
   enterprise: "hsl(var(--chart-2))",
 };
 
-export default function MembershipChurnRetention() {
+const MembershipChurnRetention = memo(function MembershipChurnRetention() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -587,7 +588,9 @@ export default function MembershipChurnRetention() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipChurnRetention;
 
 function EmptyState({ isAr }: { isAr: boolean }) {
   return (

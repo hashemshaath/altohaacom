@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,7 @@ interface Props {
   establishmentId: string;
 }
 
-export default function EstablishmentReviews({ establishmentId }: Props) {
+const EstablishmentReviews = memo(function EstablishmentReviews({ establishmentId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -214,4 +214,6 @@ export default function EstablishmentReviews({ establishmentId }: Props) {
       </div>
     </div>
   );
-}
+});
+
+export default EstablishmentReviews;

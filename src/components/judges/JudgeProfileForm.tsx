@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +17,7 @@ interface Props {
   isAdmin?: boolean;
 }
 
-export default function JudgeProfileForm({ userId, isAdmin }: Props) {
+const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -369,4 +369,6 @@ export default function JudgeProfileForm({ userId, isAdmin }: Props) {
       </Button>
     </div>
   );
-}
+});
+
+export default JudgeProfileForm;

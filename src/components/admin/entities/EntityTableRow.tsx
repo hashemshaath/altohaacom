@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ const statusConfig: Record<string, { variant: "default" | "secondary" | "destruc
   archived: { variant: "secondary", labelEn: "Archived", labelAr: "مؤرشف" },
 };
 
-export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, onDelete, onToggleVisibility, onManage, onStatusChange, onVerifiedChange, selected, onSelect }: Props) {
+const EntityTableRow = memo(function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, onDelete, onToggleVisibility, onManage, onStatusChange, onVerifiedChange, selected, onSelect }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -211,4 +211,6 @@ export default function EntityTableRow({ entity, typeLabel, scopeLabel, onEdit, 
       </AlertDialog>
     </>
   );
-}
+});
+
+export default EntityTableRow;

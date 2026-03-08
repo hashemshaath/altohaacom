@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,7 +54,7 @@ interface PrintableInvoiceProps {
   forceLanguage?: "en" | "ar";
 }
 
-export default function PrintableInvoice({ invoice, company, showPrintButton = true, forceLanguage }: PrintableInvoiceProps) {
+const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, showPrintButton = true, forceLanguage }: PrintableInvoiceProps) {
   const { language: contextLang } = useLanguage();
   const lang = forceLanguage || contextLang;
   const isAr = lang === "ar";
@@ -412,4 +412,6 @@ export default function PrintableInvoice({ invoice, company, showPrintButton = t
       </div>
     </div>
   );
-}
+});
+
+export default PrintableInvoice;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -45,7 +45,7 @@ const categoryMap: Record<string, string> = {
 
 type CategoryFilter = "all" | "social" | "events" | "system";
 
-export default function SmartNotificationCenter({ open, onClose }: Props) {
+const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -259,7 +259,9 @@ export default function SmartNotificationCenter({ open, onClose }: Props) {
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default SmartNotificationCenter;
 
 function groupByDate(notifications: any[], isAr: boolean) {
   const groups: Record<string, any[]> = {};

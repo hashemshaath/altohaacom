@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +16,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function EstablishmentDetailDrawer({ entityId, open, onClose }: Props) {
+const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ entityId, open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -163,7 +163,9 @@ export default function EstablishmentDetailDrawer({ entityId, open, onClose }: P
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default EstablishmentDetailDrawer;
 
 function MiniKPI({ icon: Icon, label, value }: { icon: any; label: string; value: string | number }) {
   return (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +23,7 @@ interface Props {
   defaultDate?: string;
 }
 
-export default function ChefScheduleEventForm({ event, onClose, defaultDate }: Props) {
+const ChefScheduleEventForm = memo(function ChefScheduleEventForm({ event, onClose, defaultDate }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const createEvent = useCreateScheduleEvent();
@@ -266,4 +266,6 @@ export default function ChefScheduleEventForm({ event, onClose, defaultDate }: P
       </CardContent>
     </Card>
   );
-}
+});
+
+export default ChefScheduleEventForm;

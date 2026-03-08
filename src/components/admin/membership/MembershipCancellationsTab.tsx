@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -40,7 +40,7 @@ interface CancellationRequest {
   created_at: string;
 }
 
-export default function MembershipCancellationsTab() {
+const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -317,4 +317,6 @@ export default function MembershipCancellationsTab() {
       </Dialog>
     </div>
   );
-}
+});
+
+export default MembershipCancellationsTab;

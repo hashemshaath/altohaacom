@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDaysInMonth, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType } from "@/hooks/useChefSchedule";
 import {
@@ -27,7 +27,7 @@ interface Props {
   onDateClick: (date: string) => void;
 }
 
-export default function AdminScheduleCalendar({ events, profileMap, onEventClick, onDateClick }: Props) {
+const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, profileMap, onEventClick, onDateClick }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -227,4 +227,6 @@ export default function AdminScheduleCalendar({ events, profileMap, onEventClick
       )}
     </div>
   );
-}
+});
+
+export default AdminScheduleCalendar;
