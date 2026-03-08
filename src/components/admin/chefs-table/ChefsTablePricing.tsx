@@ -40,7 +40,7 @@ function useEvaluationPricing() {
   });
 }
 
-export function ChefsTablePricing() {
+export const ChefsTablePricing = memo(function ChefsTablePricing() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
