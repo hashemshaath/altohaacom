@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Flame, Star, ChevronRight, Sparkles, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function AchievementsChallengesWidget() {
+export const AchievementsChallengesWidget = memo(function AchievementsChallengesWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -173,4 +174,4 @@ export function AchievementsChallengesWidget() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ const REWARD_TIERS = [
   { target: 30, reward: 5000, label: "Gold", labelAr: "ذهبي" },
 ];
 
-export function ReferralWidget() {
+export const ReferralWidget = memo(function ReferralWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -123,4 +123,4 @@ export function ReferralWidget() {
       </CardContent>
     </Card>
   );
-}
+});

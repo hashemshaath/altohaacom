@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,7 +25,7 @@ const TYPE_ICONS: Record<string, React.ElementType> = {
   view: Eye,
 };
 
-export function EngagementAnalyticsWidget() {
+export const EngagementAnalyticsWidget = memo(function EngagementAnalyticsWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -171,4 +172,4 @@ export function EngagementAnalyticsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

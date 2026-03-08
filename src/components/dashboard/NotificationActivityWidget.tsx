@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Bell, TrendingUp } from "lucide-react";
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Cell } from "recharts";
 
-export function NotificationActivityWidget() {
+export const NotificationActivityWidget = memo(function NotificationActivityWidget() {
   const { notifications, unreadCount } = useNotifications();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -90,4 +90,4 @@ export function NotificationActivityWidget() {
       </CardContent>
     </Card>
   );
-}
+});

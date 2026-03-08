@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNotificationPrefs } from "@/hooks/useNotifications";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +22,7 @@ const CATEGORIES = [
   { key: "supplier", labelEn: "Suppliers", labelAr: "الموردين" },
 ];
 
-export function NotificationPreferencesWidget() {
+export const NotificationPreferencesWidget = memo(function NotificationPreferencesWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { soundEnabled, setSoundEnabled, dndMode, setDndMode } = useNotificationPrefs();
@@ -141,4 +141,4 @@ export function NotificationPreferencesWidget() {
       </CardContent>
     </Card>
   );
-}
+});

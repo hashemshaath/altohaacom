@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,7 +29,7 @@ const ICON_MAP = {
   general: <Activity className="h-3.5 w-3.5 text-muted-foreground" />,
 };
 
-export function RecentActivityWidget() {
+export const RecentActivityWidget = memo(function RecentActivityWidget() {
   const { user } = useAuth();
   const { language, t } = useLanguage();
   const isAr = language === "ar";
@@ -221,4 +221,4 @@ export function RecentActivityWidget() {
       </CardContent>
     </Card>
   );
-}
+});
