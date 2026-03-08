@@ -1,4 +1,4 @@
-import { RefObject, useState, useCallback, useMemo } from "react";
+import { RefObject, useState, useCallback, useMemo, memo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
