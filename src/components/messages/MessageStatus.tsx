@@ -16,7 +16,7 @@ interface MessageStatusProps {
   isPending?: boolean;
 }
 
-export function MessageStatus({ isMine, isRead, readAt, createdAt, isPending }: MessageStatusProps) {
+export const MessageStatus = memo(function MessageStatus({ isMine, isRead, readAt, createdAt, isPending }: MessageStatusProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
