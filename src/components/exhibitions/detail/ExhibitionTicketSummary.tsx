@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionTicketSummary({ exhibitionId, maxAttendees, isAr }: Props) {
+export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ exhibitionId, maxAttendees, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data } = useQuery({
