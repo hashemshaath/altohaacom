@@ -13,7 +13,7 @@ interface Props {
   isPending: boolean;
 }
 
-export function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
+export const ThemePresetsPanel = memo(function ThemePresetsPanel({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
