@@ -19,7 +19,7 @@ interface Props {
 
 type Channel = "in_app" | "email" | "sms";
 
-export function ExhibitionOrganizerMessaging({ exhibitionId, exhibitionTitle, isAr }: Props) {
+export const ExhibitionOrganizerMessaging = memo(function ExhibitionOrganizerMessaging({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user, session } = useAuth();
   const [subject, setSubject] = useState("");
