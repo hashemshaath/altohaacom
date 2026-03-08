@@ -9,7 +9,7 @@ interface PublicProfileEmptySectionProps {
   isAr: boolean;
 }
 
-export function PublicProfileEmptySection({ icon: Icon, label, description }: PublicProfileEmptySectionProps) {
+export const PublicProfileEmptySection = memo(function PublicProfileEmptySection({ icon: Icon, label, description }: PublicProfileEmptySectionProps) {
   return (
     <div>
       <div className="flex items-center gap-2.5 mb-3">
