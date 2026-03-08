@@ -323,33 +323,23 @@ export default function SupportTickets() {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mt-6">
-              <Card>
-                <CardContent className="flex items-center gap-3 py-4">
-                  <Ticket className="h-8 w-8 text-primary" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-                    <p className="text-xl font-bold"><AnimatedCounter value={tickets.length} /></p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-center gap-3 py-4">
-                  <Clock className="h-8 w-8 text-chart-4" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">{isAr ? "مفتوحة" : "Open"}</p>
-                    <p className="text-xl font-bold"><AnimatedCounter value={openCount} /></p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-center gap-3 py-4">
-                  <CheckCircle2 className="h-8 w-8 text-chart-5" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">{isAr ? "محلولة" : "Resolved"}</p>
-                    <p className="text-xl font-bold"><AnimatedCounter value={resolvedCount} /></p>
-                  </div>
-                </CardContent>
-              </Card>
+              {[
+                { icon: Ticket, label: isAr ? "الإجمالي" : "Total", value: tickets.length, color: "text-primary", bg: "bg-primary/10" },
+                { icon: Clock, label: isAr ? "مفتوحة" : "Open", value: openCount, color: "text-chart-4", bg: "bg-chart-4/10" },
+                { icon: CheckCircle2, label: isAr ? "محلولة" : "Resolved", value: resolvedCount, color: "text-chart-5", bg: "bg-chart-5/10" },
+              ].map((s) => (
+                <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+                  <CardContent className="flex items-center gap-3 py-4">
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg} transition-transform duration-300 group-hover:scale-110`}>
+                      <s.icon className={`h-5 w-5 ${s.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">{s.label}</p>
+                      <AnimatedCounter value={s.value} className="text-xl font-bold" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
@@ -362,7 +352,7 @@ export default function SupportTickets() {
                 <ArrowLeft className="h-4 w-4" />
                 {isAr ? "العودة" : "Back to Tickets"}
               </Button>
-              <Card>
+              <Card className="rounded-2xl border-border/40">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
@@ -435,7 +425,7 @@ export default function SupportTickets() {
                         value={newReply}
                         onChange={e => setNewReply(e.target.value)}
                         placeholder={isAr ? "اكتب ردك..." : "Type your reply..."}
-                        className="flex-1"
+                        className="flex-1 rounded-xl"
                       />
                       <Button type="submit" disabled={!newReply.trim() || sendReply.isPending} size="icon">
                         <Send className="h-4 w-4" />
@@ -460,15 +450,15 @@ export default function SupportTickets() {
               <div className="flex flex-wrap gap-3">
                 <div className="relative flex-1 min-w-[200px]">
                   <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
+                   <Input
                     placeholder={isAr ? "بحث في التذاكر..." : "Search tickets..."}
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="ps-10"
+                    className="ps-10 rounded-xl"
                   />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[160px]">
+                  <SelectTrigger className="w-[160px] rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -500,7 +490,7 @@ export default function SupportTickets() {
                   {filteredTickets.map(ticket => (
                     <Card
                       key={ticket.id}
-                      className="cursor-pointer transition-all hover:border-primary/30 hover:shadow-sm hover:-translate-y-0.5"
+                      className="rounded-2xl border-border/40 cursor-pointer transition-all duration-300 hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5"
                       onClick={() => setSelectedTicket(ticket)}
                     >
                       <CardContent className="flex items-center gap-4 py-4">
