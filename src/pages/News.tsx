@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SEOHead } from "@/components/SEOHead";
 import { useAdTracking } from "@/hooks/useAdTracking";
-import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, ArrowRight, Sparkles } from "lucide-react";
+import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
