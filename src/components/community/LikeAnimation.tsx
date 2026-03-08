@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { cn } from "@/lib/utils";
 import { Heart } from "lucide-react";
 
@@ -9,7 +9,7 @@ interface LikeAnimationProps {
   displayCount: string;
 }
 
-export function LikeAnimation({ isLiked, count, onClick, displayCount }: LikeAnimationProps) {
+export const LikeAnimation = memo(function LikeAnimation({ isLiked, count, onClick, displayCount }: LikeAnimationProps) {
   const [animating, setAnimating] = useState(false);
 
   const handleClick = () => {
@@ -71,4 +71,4 @@ export function LikeAnimation({ isLiked, count, onClick, displayCount }: LikeAni
       `}</style>
     </button>
   );
-}
+});

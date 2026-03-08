@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionRegistrationStatus({
+export const ExhibitionRegistrationStatus = memo(function ExhibitionRegistrationStatus({
   registrationDeadline,
   registrationUrl,
   maxAttendees,
@@ -129,4 +130,4 @@ export function ExhibitionRegistrationStatus({
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,7 +21,7 @@ const BADGE_CONFIG: Record<BadgeLevel, { icon: any; color: string; label: string
   admin: { icon: Shield, color: "text-chart-3", label: "Community Admin", labelAr: "مشرف المجتمع" },
 };
 
-export function ChefBadge({ userId, className, showTooltip = true }: ChefBadgeProps) {
+export const ChefBadge = memo(function ChefBadge({ userId, className, showTooltip = true }: ChefBadgeProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -87,4 +88,4 @@ export function ChefBadge({ userId, className, showTooltip = true }: ChefBadgePr
       })}
     </span>
   );
-}
+});

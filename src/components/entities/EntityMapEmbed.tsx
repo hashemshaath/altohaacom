@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, ExternalLink, Navigation } from "lucide-react";
@@ -13,7 +14,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function EntityMapEmbed({ latitude, longitude, name, address, city, country, googleMapsUrl, isAr }: Props) {
+export const EntityMapEmbed = memo(function EntityMapEmbed({ latitude, longitude, name, address, city, country, googleMapsUrl, isAr }: Props) {
   // Build embed URL from coordinates or fallback to search by name+city
   let embedUrl: string | null = null;
   
@@ -95,4 +96,4 @@ export function EntityMapEmbed({ latitude, longitude, name, address, city, count
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,7 +19,7 @@ interface PricingPlan {
   base_fee: number; per_chef_fee: number; currency: string; product_category: string | null;
 }
 
-export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
+export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerator({ session }: { session: any }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -171,4 +172,4 @@ export function ChefsTableInvoiceGenerator({ session }: { session: any }) {
       </CardContent>
     </Card>
   );
-}
+});

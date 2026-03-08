@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -29,7 +29,7 @@ const STEPS: Step[] = [
 
 const STORAGE_KEY = "altoha_onboarding_dismissed";
 
-export function OnboardingChecklist() {
+export const OnboardingChecklist = memo(function OnboardingChecklist() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -151,4 +151,4 @@ export function OnboardingChecklist() {
       </CardContent>
     </Card>
   );
-}
+});

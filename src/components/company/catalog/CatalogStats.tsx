@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Package } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -9,7 +10,7 @@ interface CatalogStatsProps {
   language: string;
 }
 
-export function CatalogStats({ total, active, inStock, language }: CatalogStatsProps) {
+export const CatalogStats = memo(function CatalogStats({ total, active, inStock, language }: CatalogStatsProps) {
   const stats = [
     { label: language === "ar" ? "الإجمالي" : "Total", value: total, color: "text-primary" },
     { label: language === "ar" ? "نشط" : "Active", value: active, color: "text-chart-5" },
@@ -33,4 +34,4 @@ export function CatalogStats({ total, active, inStock, language }: CatalogStatsP
       ))}
     </div>
   );
-}
+});

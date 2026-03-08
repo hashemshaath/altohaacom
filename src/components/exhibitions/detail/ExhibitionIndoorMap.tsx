@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +23,7 @@ const WAYPOINT_ICONS: Record<string, any> = {
   exit: DoorOpen,
 };
 
-export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
+export const ExhibitionIndoorMap = memo(function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
   const [search, setSearch] = useState("");
   const [selectedFloor, setSelectedFloor] = useState("1");
   const [selectedWaypoint, setSelectedWaypoint] = useState<string | null>(null);
@@ -234,4 +234,4 @@ export function ExhibitionIndoorMap({ exhibitionId, isAr }: Props) {
       </div>
     </div>
   );
-}
+});

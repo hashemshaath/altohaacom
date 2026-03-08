@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, memo } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -9,7 +9,7 @@ interface ImageLightboxProps {
   onNavigate: (index: number) => void;
 }
 
-export function ImageLightbox({ images, currentIndex, onClose, onNavigate }: ImageLightboxProps) {
+export const ImageLightbox = memo(function ImageLightbox({ images, currentIndex, onClose, onNavigate }: ImageLightboxProps) {
   const current = images[currentIndex];
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < images.length - 1;
@@ -81,4 +81,4 @@ export function ImageLightbox({ images, currentIndex, onClose, onNavigate }: Ima
       </div>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 interface GoogleMapEmbedProps {
@@ -9,7 +10,7 @@ interface GoogleMapEmbedProps {
   className?: string;
 }
 
-export function GoogleMapEmbed({ latitude, longitude, name, searchQuery, location, className = "" }: GoogleMapEmbedProps) {
+export const GoogleMapEmbed = memo(function GoogleMapEmbed({ latitude, longitude, name, searchQuery, location, className = "" }: GoogleMapEmbedProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -45,4 +46,4 @@ export function GoogleMapEmbed({ latitude, longitude, name, searchQuery, locatio
       />
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ interface ProductQuickViewProps {
   onClose: () => void;
 }
 
-export function ProductQuickView({ product, open, onClose }: ProductQuickViewProps) {
+export const ProductQuickView = memo(function ProductQuickView({ product, open, onClose }: ProductQuickViewProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -76,4 +77,4 @@ export function ProductQuickView({ product, open, onClose }: ProductQuickViewPro
       </DialogContent>
     </Dialog>
   );
-}
+});

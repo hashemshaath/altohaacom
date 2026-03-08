@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ interface CertificateLineEditorProps {
   onSelectLine: (id: string | null) => void;
 }
 
-export function CertificateLineEditor({ lines, onChange, selectedLineId, onSelectLine }: CertificateLineEditorProps) {
+export const CertificateLineEditor = memo(function CertificateLineEditor({ lines, onChange, selectedLineId, onSelectLine }: CertificateLineEditorProps) {
   const { language } = useLanguage();
 
   const addLine = () => {
@@ -210,4 +211,4 @@ export function CertificateLineEditor({ lines, onChange, selectedLineId, onSelec
       )}
     </div>
   );
-}
+});

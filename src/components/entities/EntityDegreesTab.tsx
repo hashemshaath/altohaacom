@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useEntityDegrees } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,7 +22,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityDegreesTab({ entityId }: Props) {
+export const EntityDegreesTab = memo(function EntityDegreesTab({ entityId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: degrees, isLoading } = useEntityDegrees(entityId);
@@ -87,4 +88,4 @@ export function EntityDegreesTab({ entityId }: Props) {
       })}
     </div>
   );
-}
+});
