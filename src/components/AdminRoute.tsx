@@ -8,7 +8,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
  * Only users with the "supervisor" role can access admin pages.
  * Uses server-side RPC check (is_admin) — cannot be bypassed client-side.
  */
-export function AdminRoute({ children }: { children: React.ReactNode }) {
+export const AdminRoute = memo(function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading: authLoading } = useAuth();
   const { data: isAdmin, isLoading: adminLoading } = useIsAdmin();
 
