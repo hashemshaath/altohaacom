@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, UserPlus, Loader2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { memo } from "react";
 
 interface AddGroupMembersDialogProps {
   open: boolean;
@@ -19,7 +20,7 @@ interface AddGroupMembersDialogProps {
   existingMemberIds: string[];
 }
 
-export function AddGroupMembersDialog({ open, onOpenChange, groupId, existingMemberIds }: AddGroupMembersDialogProps) {
+export const AddGroupMembersDialog = memo(function AddGroupMembersDialog({ open, onOpenChange, groupId, existingMemberIds }: AddGroupMembersDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
