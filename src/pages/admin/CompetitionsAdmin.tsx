@@ -584,7 +584,7 @@ export default function CompetitionsAdmin() {
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-40 rounded-xl">
               <Filter className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
               <SelectValue placeholder={isAr ? "الحالة" : "Status"} />
             </SelectTrigger>
