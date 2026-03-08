@@ -16,7 +16,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
+export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [bidAmounts, setBidAmounts] = useState<Record<string, string>>({});
