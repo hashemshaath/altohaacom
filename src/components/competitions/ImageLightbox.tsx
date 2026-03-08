@@ -9,7 +9,7 @@ interface ImageLightboxProps {
   onNavigate: (index: number) => void;
 }
 
-export function ImageLightbox({ images, currentIndex, onClose, onNavigate }: ImageLightboxProps) {
+export const ImageLightbox = memo(function ImageLightbox({ images, currentIndex, onClose, onNavigate }: ImageLightboxProps) {
   const current = images[currentIndex];
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < images.length - 1;
