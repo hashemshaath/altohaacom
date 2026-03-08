@@ -20,7 +20,7 @@ interface Suggestion {
   category?: string;
 }
 
-export function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSuggestionsProps) {
+export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSuggestionsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const ref = useRef<HTMLDivElement>(null);
