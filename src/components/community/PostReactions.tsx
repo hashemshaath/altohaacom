@@ -26,7 +26,7 @@ interface ReactionCount {
   hasReacted: boolean;
 }
 
-export function PostReactions({ postId }: PostReactionsProps) {
+export const PostReactions = memo(function PostReactions({ postId }: PostReactionsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
