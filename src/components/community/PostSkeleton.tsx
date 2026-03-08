@@ -29,7 +29,7 @@ export const PostSkeleton = memo(function PostSkeleton() {
   );
 });
 
-export function FeedSkeletonLoader({ count = 5 }: { count?: number }) {
+export const FeedSkeletonLoader = memo(function FeedSkeletonLoader({ count = 5 }: { count?: number }) {
   return (
     <div className="divide-y divide-border">
       {Array.from({ length: count }).map((_, i) => (
