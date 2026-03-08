@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Award, FileText, PenTool, Send, CheckCircle, XCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function CertificateWorkflowTracker() {
+export const CertificateWorkflowTracker = memo(function CertificateWorkflowTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
