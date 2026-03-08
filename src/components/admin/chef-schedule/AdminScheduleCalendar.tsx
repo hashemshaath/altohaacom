@@ -27,7 +27,7 @@ interface Props {
   onDateClick: (date: string) => void;
 }
 
-export default function AdminScheduleCalendar({ events, profileMap, onEventClick, onDateClick }: Props) {
+const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, profileMap, onEventClick, onDateClick }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [currentDate, setCurrentDate] = useState(new Date());
