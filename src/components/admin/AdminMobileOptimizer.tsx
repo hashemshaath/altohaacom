@@ -28,7 +28,7 @@ const actions: MobileAction[] = [
   { icon: Shield, labelEn: "Security", labelAr: "الأمان", link: "/admin/security", color: "text-destructive" },
 ];
 
-export function AdminMobileNavGrid() {
+export const AdminMobileNavGrid = memo(function AdminMobileNavGrid() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
