@@ -527,7 +527,9 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipAnalyticsDashboard;
 
 function KPICard({ icon: Icon, label, value, sub, color = "text-foreground" }: {
   icon: React.ElementType; label: string; value: string | number; sub: string; color?: string;
@@ -575,7 +577,3 @@ function EmptyState({ isAr }: { isAr: boolean }) {
     </div>
   );
 }
-
-});
-
-export default MembershipAnalyticsDashboard;

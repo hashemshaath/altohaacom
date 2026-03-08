@@ -280,7 +280,9 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipFeatureAnalytics;
 
 function FeatureExportButton({ featureAgg, isAr }: { featureAgg: any[]; isAr: boolean }) {
   const { exportData, isExporting } = useAdminExport();

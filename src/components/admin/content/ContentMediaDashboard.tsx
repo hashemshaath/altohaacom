@@ -218,7 +218,9 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default ContentMediaDashboard;
 
 function MiniStat({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
   return (
@@ -232,6 +234,4 @@ function MiniStat({ icon: Icon, label, value }: { icon: any; label: string; valu
       </CardContent>
     </Card>
   );
-});
-
-export default ContentMediaDashboard;
+}
