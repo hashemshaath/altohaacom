@@ -12,7 +12,7 @@ interface PinnedMessagesBarProps {
   onJumpTo: (msgId: string) => void;
 }
 
-export function PinnedMessagesBar({ pinnedMessages, isAr, onUnpin, onJumpTo }: PinnedMessagesBarProps) {
+export const PinnedMessagesBar = memo(function PinnedMessagesBar({ pinnedMessages, isAr, onUnpin, onJumpTo }: PinnedMessagesBarProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (!pinnedMessages.length) return null;
