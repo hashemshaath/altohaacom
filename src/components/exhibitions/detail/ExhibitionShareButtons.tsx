@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionShareButtons({ title, description, imageUrl, isAr }: Props) {
+export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ title, description, imageUrl, isAr }: Props) {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const url = window.location.href;
