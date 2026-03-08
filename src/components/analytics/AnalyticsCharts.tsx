@@ -108,7 +108,7 @@ export const ScoreDistributionChart = memo(function ScoreDistributionChart({ dat
 }
 
 /* ─── Status Breakdown ─── */
-export function StatusBreakdownChart({ data }: { data?: { name: string; value: number }[] }) {
+export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }: { data?: { name: string; value: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
