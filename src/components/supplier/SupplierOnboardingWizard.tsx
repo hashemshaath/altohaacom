@@ -47,7 +47,7 @@ interface SupplierOnboardingWizardProps {
   onComplete: () => void;
 }
 
-export function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizardProps) {
+export const SupplierOnboardingWizard = memo(function SupplierOnboardingWizard({ onComplete }: SupplierOnboardingWizardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
