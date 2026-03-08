@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Badge } from "@/components/ui/badge";
