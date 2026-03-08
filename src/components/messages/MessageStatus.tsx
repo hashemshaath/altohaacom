@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Check, CheckCheck, Clock } from "lucide-react";
 import {
   Tooltip,
