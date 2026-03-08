@@ -12,7 +12,7 @@ interface CoverImageUploadProps {
   onUrlChange: (url: string | null) => void;
 }
 
-export function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadProps) {
+export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onUrlChange }: CoverImageUploadProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
