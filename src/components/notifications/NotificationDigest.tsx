@@ -75,7 +75,7 @@ export const NotificationDigest = memo(function NotificationDigest() {
   };
 
   return (
-    <Card className="border-border/40 overflow-hidden">
+    <Card className="border-border/40 overflow-hidden group/digest hover:shadow-lg transition-all duration-300">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
