@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, ArrowRight, Sparkles } from "lucide-react";
 import { useCoverSettings } from "@/hooks/useCoverSettings";
