@@ -21,7 +21,7 @@ const ACTION_META: Record<string, { icon: typeof Edit; labelEn: string; labelAr:
   send_invitation: { icon: User, labelEn: "Invitation Sent", labelAr: "إرسال دعوة", variant: "secondary" },
 };
 
-export function UserModificationHistory({ userId, isAr }: Props) {
+export const UserModificationHistory = memo(function UserModificationHistory({ userId, isAr }: Props) {
   const { data: history = [], isLoading } = useQuery({
     queryKey: ["userModHistory", userId],
     queryFn: async () => {
