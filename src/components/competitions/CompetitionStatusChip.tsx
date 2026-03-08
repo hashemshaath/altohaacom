@@ -23,7 +23,7 @@ interface Props {
   size?: "sm" | "md";
 }
 
-export function CompetitionStatusChip({
+export const CompetitionStatusChip = memo(function CompetitionStatusChip({
   status,
   registrationStart,
   registrationEnd,
