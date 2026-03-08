@@ -57,7 +57,7 @@ interface OnlineDotProps {
 /**
  * Green dot indicator showing if a user is currently online.
  */
-export function OnlineDot({ userId, className }: OnlineDotProps) {
+export const OnlineDot = memo(function OnlineDot({ userId, className }: OnlineDotProps) {
   const { isOnline } = usePresence();
 
   if (!isOnline(userId)) return null;
