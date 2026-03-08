@@ -36,7 +36,7 @@ const FAQ_ITEMS = [
   { q: "How do I cancel an order?", qAr: "كيف ألغي طلباً؟", a: "Go to Orders → Select the order → Cancel. Note: some orders cannot be cancelled once shipped.", aAr: "اذهب إلى الطلبات → اختر الطلب → إلغاء. ملاحظة: بعض الطلبات لا يمكن إلغاؤها بعد الشحن." },
 ];
 
-export function SupportCenter() {
+export const SupportCenter = memo(function SupportCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
