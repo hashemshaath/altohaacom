@@ -13,7 +13,7 @@ interface Props {
   isPending: boolean;
 }
 
-export function BrandingSettings({ settings, onSave, isPending }: Props) {
+export const BrandingSettings = memo(function BrandingSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const branding = settings.branding || {};
