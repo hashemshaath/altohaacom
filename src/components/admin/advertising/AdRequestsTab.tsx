@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,16 @@ interface Props {
 export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, onReject }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const sortedRequests = useMemo(() => 
+    [...requests].sort((a, b) => {
+      const statusPriority = { pending: 0, under_review: 1, approved: 2, rejected: 3 };
+      const aPriority = statusPriority[a.status as keyof typeof statusPriority] ?? 99;
+      const bPriority = statusPriority[b.status as keyof typeof statusPriority] ?? 99;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }), [requests]
+  );
 
   if (requests.length === 0) {
     return (
@@ -55,7 +65,7 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requests.map((req: any) => (
+              {sortedRequests.map((req: any) => (
                 <TableRow key={req.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">

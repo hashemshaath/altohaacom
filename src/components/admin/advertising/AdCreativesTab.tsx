@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,14 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  const sortedCreatives = useMemo(() => 
+    [...creatives].sort((a, b) => {
+      if (a.status === 'pending' && b.status !== 'pending') return -1;
+      if (a.status !== 'pending' && b.status === 'pending') return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    }), [creatives]
+  );
+
   if (creatives.length === 0) {
     return (
       <Card className="rounded-2xl">
@@ -33,8 +41,8 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {creatives.map((cr: any) => (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {sortedCreatives.map((cr: any) => (
         <Card key={cr.id} className="rounded-2xl overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           {cr.image_url && (
             <div className="aspect-video bg-muted relative overflow-hidden">
