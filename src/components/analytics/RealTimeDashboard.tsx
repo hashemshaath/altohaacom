@@ -16,7 +16,7 @@ interface LiveMetric {
   history: number[];
 }
 
-export function RealTimeDashboard() {
+export const RealTimeDashboard = memo(function RealTimeDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isConnected, setIsConnected] = useState(false);
