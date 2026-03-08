@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ const REJECTION_REASONS = [
   { en: "Other (specify below)", ar: "سبب آخر (حدد أدناه)" },
 ];
 
-export function AdRejectionDialog({ open, onOpenChange, onConfirm, title, isPending }: AdRejectionDialogProps) {
+export const AdRejectionDialog = memo(function AdRejectionDialog({ open, onOpenChange, onConfirm, title, isPending }: AdRejectionDialogProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selectedReason, setSelectedReason] = useState("");
@@ -90,4 +90,4 @@ export function AdRejectionDialog({ open, onOpenChange, onConfirm, title, isPend
       </DialogContent>
     </Dialog>
   );
-}
+});

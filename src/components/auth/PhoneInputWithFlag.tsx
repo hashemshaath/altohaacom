@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
@@ -17,7 +17,7 @@ interface PhoneInputWithFlagProps {
   isAr: boolean;
 }
 
-export function PhoneInputWithFlag({
+export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
   phone,
   onPhoneChange,
   countryCode,
@@ -102,4 +102,4 @@ export function PhoneInputWithFlag({
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
-}
+});

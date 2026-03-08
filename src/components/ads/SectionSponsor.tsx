@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,7 +8,7 @@ interface SectionSponsorProps {
   sectionId?: string;
 }
 
-export function SectionSponsor({ sectionType, sectionId }: SectionSponsorProps) {
+export const SectionSponsor = memo(function SectionSponsor({ sectionType, sectionId }: SectionSponsorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -47,4 +48,4 @@ export function SectionSponsor({ sectionType, sectionId }: SectionSponsorProps) 
       <span className="font-medium">{isAr ? company?.name_ar : company?.name}</span>
     </div>
   );
-}
+});

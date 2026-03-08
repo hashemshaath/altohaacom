@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +26,7 @@ interface ReactionCount {
   hasReacted: boolean;
 }
 
-export function PostReactions({ postId }: PostReactionsProps) {
+export const PostReactions = memo(function PostReactions({ postId }: PostReactionsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -131,4 +131,4 @@ export function PostReactions({ postId }: PostReactionsProps) {
       )}
     </div>
   );
-}
+});

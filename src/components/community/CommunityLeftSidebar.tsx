@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +26,7 @@ interface CommunityLeftSidebarProps {
   setLeftSidebarOpen: (open: boolean) => void;
 }
 
-export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen, setLeftSidebarOpen }: CommunityLeftSidebarProps) {
+export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen, setLeftSidebarOpen }: CommunityLeftSidebarProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -171,4 +171,4 @@ export function CommunityLeftSidebar({ activeTab, setActiveTab, leftSidebarOpen,
       )}
     </aside>
   );
-}
+});

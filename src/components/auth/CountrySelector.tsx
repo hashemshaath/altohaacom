@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllCountries, type Country } from "@/hooks/useCountries";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,7 @@ interface CountrySelectorProps {
   showFlag?: boolean;
 }
 
-export function CountrySelector({ value, onChange, label, required, showFlag = true }: CountrySelectorProps) {
+export const CountrySelector = memo(function CountrySelector({ value, onChange, label, required, showFlag = true }: CountrySelectorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: countries, isLoading } = useAllCountries();
@@ -110,4 +110,4 @@ export function CountrySelector({ value, onChange, label, required, showFlag = t
       </Popover>
     </div>
   );
-}
+});

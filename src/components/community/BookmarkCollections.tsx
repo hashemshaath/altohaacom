@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +18,7 @@ interface BookmarkCollectionsProps {
   postId: string;
 }
 
-export function BookmarkCollections({ postId }: BookmarkCollectionsProps) {
+export const BookmarkCollections = memo(function BookmarkCollections({ postId }: BookmarkCollectionsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -162,4 +162,4 @@ export function BookmarkCollections({ postId }: BookmarkCollectionsProps) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ interface MentionAutocompleteProps {
   onSelect: (username: string) => void;
 }
 
-export function MentionAutocomplete({ content, textareaRef, onSelect }: MentionAutocompleteProps) {
+export const MentionAutocomplete = memo(function MentionAutocomplete({ content, textareaRef, onSelect }: MentionAutocompleteProps) {
   const [suggestions, setSuggestions] = useState<MentionSuggestion[]>([]);
   const [query, setQuery] = useState<string | null>(null);
   const [selectedIdx, setSelectedIdx] = useState(0);
@@ -119,4 +119,4 @@ export function MentionAutocomplete({ content, textareaRef, onSelect }: MentionA
       ))}
     </div>
   );
-}
+});

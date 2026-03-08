@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +17,7 @@ interface PostEditHistoryProps {
   onClose: () => void;
 }
 
-export function PostEditHistory({ postId, onClose }: PostEditHistoryProps) {
+export const PostEditHistory = memo(function PostEditHistory({ postId, onClose }: PostEditHistoryProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -78,4 +79,4 @@ export function PostEditHistory({ postId, onClose }: PostEditHistoryProps) {
       </DialogContent>
     </Dialog>
   );
-}
+});

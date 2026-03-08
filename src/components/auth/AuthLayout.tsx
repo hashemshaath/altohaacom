@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AuthHeroPanel, type AuthStage } from "./AuthHeroPanel";
@@ -10,7 +11,7 @@ interface AuthLayoutProps {
   currentStep?: number;
 }
 
-export function AuthLayout({ children, stage, isAr, showFooter = false, currentStep }: AuthLayoutProps) {
+export const AuthLayout = memo(function AuthLayout({ children, stage, isAr, showFooter = false, currentStep }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden">
       <Header />
@@ -26,4 +27,4 @@ export function AuthLayout({ children, stage, isAr, showFooter = false, currentS
       {showFooter && <Footer />}
     </div>
   );
-}
+});

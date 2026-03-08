@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -23,7 +23,7 @@ interface ForgotPasswordDialogProps {
 type RecoveryMethod = "email" | "phone";
 type Step = "method" | "input" | "sent";
 
-export function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialogProps) {
+export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialogProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -190,4 +190,4 @@ export function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialo
       </DialogContent>
     </Dialog>
   );
-}
+});

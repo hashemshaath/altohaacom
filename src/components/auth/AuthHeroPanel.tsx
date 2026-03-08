@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Trophy, Globe, GraduationCap, Award, CheckCircle } from "lucide-react";
 import authHeroImg from "@/assets/auth-hero.jpg";
 
@@ -91,7 +91,7 @@ function StepDots({ current, total }: { current: number; total: number }) {
   );
 }
 
-export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Props) {
+export const AuthHeroPanel = memo(function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Props) {
   const quoteSet = quotes[stage] || quotes.register;
   const quoteList = isAr ? quoteSet.ar : quoteSet.en;
   const randomQuote = useMemo(
@@ -178,4 +178,4 @@ export function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Prop
       </div>
     </div>
   );
-}
+});

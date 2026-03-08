@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -17,7 +17,7 @@ const TAB_FEATURE_MAP: Record<string, string> = {
   live: "feature_live_sessions",
 };
 
-export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobileTabsProps) {
+export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobileTabsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -77,4 +77,4 @@ export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobile
       </div>
     </div>
   );
-}
+});

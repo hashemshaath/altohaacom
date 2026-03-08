@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +16,7 @@ interface PostEditDialogProps {
 
 const MAX_CHARS = 1000;
 
-export function PostEditDialog({ post, onClose, onSaved }: PostEditDialogProps) {
+export const PostEditDialog = memo(function PostEditDialog({ post, onClose, onSaved }: PostEditDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -89,4 +89,4 @@ export function PostEditDialog({ post, onClose, onSaved }: PostEditDialogProps) 
       </div>
     </div>
   );
-}
+});

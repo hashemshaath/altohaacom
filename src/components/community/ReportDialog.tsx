@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,7 +28,7 @@ interface ReportDialogProps {
   onClose: () => void;
 }
 
-export function ReportDialog({ postId, onClose }: ReportDialogProps) {
+export const ReportDialog = memo(function ReportDialog({ postId, onClose }: ReportDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -111,4 +111,4 @@ export function ReportDialog({ postId, onClose }: ReportDialogProps) {
       </DialogContent>
     </Dialog>
   );
-}
+});

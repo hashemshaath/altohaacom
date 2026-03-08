@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +18,7 @@ interface PollDisplayProps {
   postId: string;
 }
 
-export function PollDisplay({ postId }: PollDisplayProps) {
+export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -160,4 +160,4 @@ export function PollDisplay({ postId }: PollDisplayProps) {
       </p>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -38,7 +39,7 @@ interface CommunityRightSidebarProps {
   setRightSidebarOpen: (open: boolean) => void;
 }
 
-export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }: CommunityRightSidebarProps) {
+export const CommunityRightSidebar = memo(function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }: CommunityRightSidebarProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -218,4 +219,4 @@ export function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }:
       )}
     </aside>
   );
-}
+});

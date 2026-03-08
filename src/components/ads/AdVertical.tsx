@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,7 +10,7 @@ interface AdVerticalProps {
   className?: string;
 }
 
-export function AdVertical({ placementSlug = "sidebar-vertical", className }: AdVerticalProps) {
+export const AdVertical = memo(function AdVertical({ placementSlug = "sidebar-vertical", className }: AdVerticalProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const impressionLogged = useRef(false);
@@ -105,4 +105,4 @@ export function AdVertical({ placementSlug = "sidebar-vertical", className }: Ad
       </span>
     </div>
   );
-}
+});
