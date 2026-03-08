@@ -23,7 +23,7 @@ interface Props {
   onChange: (updates: Partial<ExhibitionFormData>) => void;
 }
 
-export function ExhibitionBasicInfoStep({ data, onChange }: Props) {
+export const ExhibitionBasicInfoStep = memo(function ExhibitionBasicInfoStep({ data, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
