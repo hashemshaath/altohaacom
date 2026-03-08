@@ -594,7 +594,7 @@ export const RegistrationForm = memo(function RegistrationForm({
       </CardContent>
     </Card>
   );
-}
+});
 
 // Backwards-compatible dialog wrapper
 interface RegistrationDialogProps {
