@@ -30,7 +30,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, isAr }: Props) {
+export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDashboard({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data: stats } = useQuery({
