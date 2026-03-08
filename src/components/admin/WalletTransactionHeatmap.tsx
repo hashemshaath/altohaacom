@@ -133,8 +133,8 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-2xl border-border/40">
+          <CardContent className="p-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إيرادات الأسبوع" : "Weekly Credits"}</p>
               <p className="text-lg font-bold text-chart-2">+<AnimatedCounter value={Math.round(data.weekCredits * 100) / 100} /></p>

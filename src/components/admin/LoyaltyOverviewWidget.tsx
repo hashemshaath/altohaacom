@@ -90,7 +90,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
             { icon: Gift, label: isAr ? "مكافآت متاحة" : "Active Rewards", value: data?.totalRewards, color: "text-chart-3", bg: "bg-chart-3/5 border-chart-3/10" },
           ].map((m, i) => (
             <div key={i} className={`text-center p-2.5 rounded-xl border transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 group ${m.bg}`}>
-              <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
+              <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-sm font-bold tabular-nums"><AnimatedCounter value={m.value || 0} /></p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
             </div>
