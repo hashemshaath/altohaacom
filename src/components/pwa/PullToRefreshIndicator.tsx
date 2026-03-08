@@ -9,7 +9,7 @@ interface Props {
   progress: number;
 }
 
-export function PullToRefreshIndicator({ pulling, pullDistance, refreshing, progress }: Props) {
+export const PullToRefreshIndicator = memo(function PullToRefreshIndicator({ pulling, pullDistance, refreshing, progress }: Props) {
   if (!pulling && !refreshing) return null;
 
   return (
