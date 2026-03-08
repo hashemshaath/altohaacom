@@ -355,10 +355,12 @@ export default function CRMDashboard() {
 
       {/* Resolution Rate + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-1">
+        <Card className="lg:col-span-1 rounded-2xl border-border/40">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <PieChart className="h-4 w-4 text-primary" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15">
+                <PieChart className="h-3.5 w-3.5 text-primary" />
+              </div>
               {isAr ? "معدل الحل" : "Resolution Rate"}
             </CardTitle>
           </CardHeader>
