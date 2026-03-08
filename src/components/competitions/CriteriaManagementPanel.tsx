@@ -46,7 +46,7 @@ const EMPTY_FORM: CriterionForm = {
   weight: 0.2,
 };
 
-export function CriteriaManagementPanel({
+export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
   competitionId,
   isOrganizer,
 }: CriteriaManagementPanelProps) {
