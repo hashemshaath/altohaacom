@@ -13,7 +13,7 @@ interface Props {
   isAr?: boolean;
 }
 
-export function ProductImageUpload({ images, onImagesChange, userId, maxImages = 5, isAr }: Props) {
+export const ProductImageUpload = memo(function ProductImageUpload({ images, onImagesChange, userId, maxImages = 5, isAr }: Props) {
   const [uploading, setUploading] = useState(false);
 
   const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
