@@ -10,7 +10,7 @@ interface AchievementEvent {
   action?: string;
 }
 
-export function AchievementCelebration() {
+export const AchievementCelebration = memo(function AchievementCelebration() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [event, setEvent] = useState<AchievementEvent | null>(null);
