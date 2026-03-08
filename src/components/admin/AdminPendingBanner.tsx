@@ -112,4 +112,6 @@ const AdminPendingBanner = memo(function AdminPendingBanner() {
       </ScrollArea>
     </div>
   );
-}
+});
+
+export default AdminPendingBanner;

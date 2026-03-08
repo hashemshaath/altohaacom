@@ -575,3 +575,7 @@ function EmptyState({ isAr }: { isAr: boolean }) {
     </div>
   );
 }
+
+});
+
+export default MembershipAnalyticsDashboard;

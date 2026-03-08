@@ -496,4 +496,6 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
       </CardContent>
     </Card>
   );
-}
+});
+
+export default EntityFormTabs;

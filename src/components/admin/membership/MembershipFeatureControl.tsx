@@ -226,4 +226,6 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default MembershipFeatureControl;

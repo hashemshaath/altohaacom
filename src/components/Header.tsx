@@ -134,4 +134,4 @@ export const Header = memo(function Header() {
       </nav>
     </header>
   );
-}
+});

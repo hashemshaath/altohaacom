@@ -131,4 +131,6 @@ const MembershipBenefitsTab = memo(function MembershipBenefitsTab() {
       </TabsContent>
     </Tabs>
   );
-}
+});
+
+export default MembershipBenefitsTab;

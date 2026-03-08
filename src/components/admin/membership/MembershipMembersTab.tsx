@@ -818,4 +818,6 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       </Dialog>
     </div>
   );
-}
+});
+
+export default MembershipMembersTab;

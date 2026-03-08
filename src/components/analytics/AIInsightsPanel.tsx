@@ -323,4 +323,6 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default AIInsightsPanel;

@@ -224,4 +224,6 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
       </Card>
     </div>
   );
-}
+});
+
+export default JudgeDocumentsPanel;

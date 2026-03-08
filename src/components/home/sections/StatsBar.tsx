@@ -86,4 +86,6 @@ const StatsBar = memo(function StatsBar() {
       </div>
     </section>
   );
-}
+});
+
+export default StatsBar;

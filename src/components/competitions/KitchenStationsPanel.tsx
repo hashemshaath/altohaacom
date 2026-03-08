@@ -174,4 +174,4 @@ export const KitchenStationsPanel = memo(function KitchenStationsPanel({ competi
       )}
     </div>
   );
-}
+});

@@ -784,4 +784,4 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
       </Tabs>
     </div>
   );
-}
+});
