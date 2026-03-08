@@ -12,7 +12,7 @@ const routeLoaders = [
   () => import("@/pages/News"),
 ];
 
-export function RoutePrefetcher() {
+export const RoutePrefetcher = memo(function RoutePrefetcher() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
