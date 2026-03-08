@@ -11,7 +11,7 @@ interface CountUpProps {
 /**
  * Animated count-up number for dashboard stats.
  */
-export function CountUp({ end, duration = 800, prefix = "", suffix = "", className }: CountUpProps) {
+export const CountUp = memo(function CountUp({ end, duration = 800, prefix = "", suffix = "", className }: CountUpProps) {
   const [current, setCurrent] = useState(0);
   const ref = useRef<number>();
 
