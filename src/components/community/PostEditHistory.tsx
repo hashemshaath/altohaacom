@@ -17,7 +17,7 @@ interface PostEditHistoryProps {
   onClose: () => void;
 }
 
-export function PostEditHistory({ postId, onClose }: PostEditHistoryProps) {
+export const PostEditHistory = memo(function PostEditHistory({ postId, onClose }: PostEditHistoryProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
