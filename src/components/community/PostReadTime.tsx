@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Clock } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
