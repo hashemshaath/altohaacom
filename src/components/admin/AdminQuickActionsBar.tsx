@@ -18,7 +18,7 @@ interface QuickAction {
   badge?: number;
 }
 
-export function AdminQuickActionsBar({ pendingReports }: { pendingReports?: number }) {
+export const AdminQuickActionsBar = memo(function AdminQuickActionsBar({ pendingReports }: { pendingReports?: number }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
