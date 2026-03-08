@@ -187,4 +187,4 @@ export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidg
       </Card>
     </div>
   );
-}
+});

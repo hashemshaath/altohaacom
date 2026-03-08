@@ -45,6 +45,7 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
   const avgRating = useMemo(() => reviews.length > 0
     ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : null, [reviews]);
+  const otherReviews = useMemo(() => reviews.filter((r: any) => r.user_id !== user?.id), [reviews, user?.id]);
 
   const submitReview = useMutation({
     mutationFn: async () => {

@@ -249,13 +249,18 @@ export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplates
                 </div>
               ))}
               {form.criteria.length > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  {language === "ar" ? "المجموع:" : "Total weight:"}{" "}
-                  {form.criteria.reduce((s, c) => s + c.weight, 0).toFixed(2)}
-                  {form.criteria.reduce((s, c) => s + c.weight, 0) !== 1 && (
-                    <span className="text-destructive ms-2">({language === "ar" ? "يجب أن يكون 1.0" : "should be 1.0"})</span>
-                  )}
-                </p>
+                {(() => {
+                  const totalWeight = form.criteria.reduce((s, c) => s + c.weight, 0);
+                  return (
+                    <p className="text-xs text-muted-foreground">
+                      {language === "ar" ? "المجموع:" : "Total weight:"}{" "}
+                      {totalWeight.toFixed(2)}
+                      {totalWeight !== 1 && (
+                        <span className="text-destructive ms-2">({language === "ar" ? "يجب أن يكون 1.0" : "should be 1.0"})</span>
+                      )}
+                    </p>
+                  );
+                })()}
               )}
             </div>
 

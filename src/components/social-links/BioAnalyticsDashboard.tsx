@@ -391,9 +391,10 @@ export function BioAnalyticsDashboard({ pageId }: BioAnalyticsDashboardProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {browserData.map((b, i) => {
-                  const total = browserData.reduce((s, x) => s + x.value, 0);
-                  const pct = total > 0 ? Math.round((b.value / total) * 100) : 0;
+                {(() => {
+                  const browserTotal = browserData.reduce((s, x) => s + x.value, 0);
+                  return browserData.map((b, i) => {
+                  const pct = browserTotal > 0 ? Math.round((b.value / browserTotal) * 100) : 0;
                   return (
                     <div key={b.name} className="space-y-1">
                       <div className="flex items-center justify-between text-sm">
