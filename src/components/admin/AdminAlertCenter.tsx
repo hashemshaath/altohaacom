@@ -26,7 +26,7 @@ interface Alert {
   timestamp: Date;
 }
 
-export function AdminAlertCenter() {
+export const AdminAlertCenter = memo(function AdminAlertCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
