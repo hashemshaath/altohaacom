@@ -23,7 +23,7 @@ interface CertificateLineEditorProps {
   onSelectLine: (id: string | null) => void;
 }
 
-export function CertificateLineEditor({ lines, onChange, selectedLineId, onSelectLine }: CertificateLineEditorProps) {
+export const CertificateLineEditor = memo(function CertificateLineEditor({ lines, onChange, selectedLineId, onSelectLine }: CertificateLineEditorProps) {
   const { language } = useLanguage();
 
   const addLine = () => {
