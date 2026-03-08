@@ -8,7 +8,7 @@ interface QRScannerProps {
   onScan: (code: string) => void;
 }
 
-export function QRScanner({ onScan }: QRScannerProps) {
+export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isScanning, setIsScanning] = useState(false);
