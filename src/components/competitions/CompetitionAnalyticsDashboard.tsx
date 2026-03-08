@@ -345,7 +345,7 @@ export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsD
       </Tabs>
     </div>
   );
-}
+});
 
 function KPICard({ icon: Icon, label, value, loading, accent, trend, subtitle }: {
   icon: any; label: string; value: number | string; loading: boolean; accent: string; trend?: "up" | "down"; subtitle?: string;
