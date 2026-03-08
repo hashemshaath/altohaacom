@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-export function SkipToContent() {
+export const SkipToContent = memo(function SkipToContent() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -20,4 +21,4 @@ export function SkipToContent() {
       </a>
     </>
   );
-}
+});

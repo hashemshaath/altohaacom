@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +16,7 @@ const HEADING_FONT_KEY = "altoha_heading_font";
 const FONT_SIZE_KEY = "altoha_font_size";
 const COMPACT_KEY = "altoha_compact_mode";
 
-export function DashboardPersonalizationWidget() {
+export const DashboardPersonalizationWidget = memo(function DashboardPersonalizationWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -213,4 +213,4 @@ export function DashboardPersonalizationWidget() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,7 +47,7 @@ const DEFAULT_CHANNEL: ChannelPrefs = {
   digest_frequency: null,
 };
 
-export function NotificationPreferences() {
+export const NotificationPreferences = memo(function NotificationPreferences() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -280,4 +280,4 @@ export function NotificationPreferences() {
       </Button>
     </div>
   );
-}
+});

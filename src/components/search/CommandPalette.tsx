@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -31,7 +31,7 @@ const TYPE_CONFIG = {
   entity: { icon: Building2, color: "text-chart-1", bg: "bg-chart-1/10", label: "Organization", labelAr: "جهة" },
 };
 
-export function CommandPalette() {
+export const CommandPalette = memo(function CommandPalette() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -280,4 +280,4 @@ export function CommandPalette() {
       </DialogContent>
     </Dialog>
   );
-}
+});

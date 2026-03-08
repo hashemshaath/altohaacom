@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import { useReferralLeaderboard } from "@/hooks/useReferralExtras";
 import { Trophy, Medal, Crown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-export function ReferralLeaderboard() {
+export const ReferralLeaderboard = memo(function ReferralLeaderboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -99,4 +100,4 @@ export function ReferralLeaderboard() {
       </CardContent>
     </Card>
   );
-}
+});

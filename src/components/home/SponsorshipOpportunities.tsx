@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +23,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   bronze: { en: "Bronze", ar: "برونزي", color: "bg-chart-2/10 text-chart-2 border-chart-2/30" },
 };
 
-export function SponsorshipOpportunities() {
+export const SponsorshipOpportunities = memo(function SponsorshipOpportunities() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const sectionConfig = useSectionConfig();
@@ -178,4 +179,4 @@ export function SponsorshipOpportunities() {
       </div>
     </section>
   );
-}
+});

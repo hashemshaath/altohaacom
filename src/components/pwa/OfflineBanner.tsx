@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { useOnlineStatus } from "@/hooks/usePWA";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { WifiOff } from "lucide-react";
 
-export function OfflineBanner() {
+export const OfflineBanner = memo(function OfflineBanner() {
   const isOnline = useOnlineStatus();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -17,4 +18,4 @@ export function OfflineBanner() {
       </div>
     </div>
   );
-}
+});
