@@ -8,7 +8,7 @@ interface PullToRefreshProps {
   className?: string;
 }
 
-export function PullToRefresh({ onRefresh, children, className }: PullToRefreshProps) {
+export const PullToRefresh = memo(function PullToRefresh({ onRefresh, children, className }: PullToRefreshProps) {
   const [pulling, setPulling] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
