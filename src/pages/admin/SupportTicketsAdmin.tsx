@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { CommunicationsQuickNav } from "@/components/admin/CommunicationsQuickNav";
 import { TicketPerformanceWidget } from "@/components/admin/TicketPerformanceWidget";
 import { TicketEscalationWidget } from "@/components/admin/TicketEscalationWidget";
 import { SupportSatisfactionWidget } from "@/components/admin/SupportSatisfactionWidget";
