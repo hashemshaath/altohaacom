@@ -41,4 +41,4 @@ export const ScrollToTop = memo(function ScrollToTop() {
       <ArrowUp className="h-4 w-4" />
     </Button>
   );
-}
+});

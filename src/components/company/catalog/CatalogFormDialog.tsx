@@ -150,4 +150,4 @@ export const CatalogFormDialog = memo(function CatalogFormDialog({
       </DialogContent>
     </Dialog>
   );
-}
+});

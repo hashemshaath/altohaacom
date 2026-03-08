@@ -73,4 +73,4 @@ export const MediaPreviewOverlay = memo(function MediaPreviewOverlay({ open, onO
       </DialogContent>
     </Dialog>
   );
-}
+});

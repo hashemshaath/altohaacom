@@ -215,4 +215,4 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
       </div>
     </div>
   );
-}
+});

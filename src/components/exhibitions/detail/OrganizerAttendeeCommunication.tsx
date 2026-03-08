@@ -127,6 +127,6 @@ export const OrganizerAttendeeCommunication = memo(function OrganizerAttendeeCom
       </CardContent>
     </Card>
   );
-}
+});
 
 export default OrganizerAttendeeCommunication;

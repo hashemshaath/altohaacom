@@ -146,4 +146,4 @@ export const SEOHead = memo(function SEOHead({
   }, [title, description, ogImage, ogType, canonical, jsonLd, noIndex, lang, keywords, publishedTime, modifiedTime, author, siteName, seoCfg]);
 
   return null;
-}
+});

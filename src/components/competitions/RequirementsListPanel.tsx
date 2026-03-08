@@ -266,4 +266,4 @@ export const RequirementsListPanel = memo(function RequirementsListPanel({ compe
       )}
     </div>
   );
-}
+});

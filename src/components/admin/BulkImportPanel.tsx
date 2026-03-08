@@ -683,4 +683,4 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       </CardContent>
     </Card>
   );
-}
+});

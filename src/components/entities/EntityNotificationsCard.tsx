@@ -120,4 +120,4 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
       </CardContent>
     </Card>
   );
-}
+});

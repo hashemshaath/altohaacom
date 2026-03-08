@@ -54,4 +54,4 @@ export const SparklineCard = memo(function SparklineCard({ icon: Icon, label, va
       </CardContent>
     </Card>
   );
-}
+});

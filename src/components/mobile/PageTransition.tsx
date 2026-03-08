@@ -33,4 +33,4 @@ export const PageTransition = memo(function PageTransition({ children }: { child
       {children}
     </div>
   );
-}
+});

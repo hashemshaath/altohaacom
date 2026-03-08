@@ -96,4 +96,4 @@ export const MobileTabScroller = memo(function MobileTabScroller({ tabs, value, 
       </div>
     </div>
   );
-}
+});

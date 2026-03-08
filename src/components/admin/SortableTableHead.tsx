@@ -36,4 +36,4 @@ export const SortableTableHead = memo(function SortableTableHead({
       </span>
     </TableHead>
   );
-}
+});

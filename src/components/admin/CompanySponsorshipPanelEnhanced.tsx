@@ -318,4 +318,4 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
       </Card>
     </div>
   );
-}
+});

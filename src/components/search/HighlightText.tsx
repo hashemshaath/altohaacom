@@ -50,4 +50,4 @@ export const HighlightText = memo(function HighlightText({ text, query, classNam
       )}
     </span>
   );
-}
+});

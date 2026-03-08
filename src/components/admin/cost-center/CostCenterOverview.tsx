@@ -110,4 +110,4 @@ export const CostCenterOverview = memo(function CostCenterOverview({ isAr, estim
       </Card>
     </div>
   );
-}
+});

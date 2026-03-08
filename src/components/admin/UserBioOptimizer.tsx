@@ -120,4 +120,4 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
       </p>
     </div>
   );
-}
+});

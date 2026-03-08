@@ -17,4 +17,4 @@ export const PostReadTime = memo(function PostReadTime({ content }: { content: s
       {minutes} {isAr ? "د قراءة" : "min read"}
     </span>
   );
-}
+});

@@ -69,4 +69,4 @@ export const EntityStatsStrip = memo(function EntityStatsStrip({
       })}
     </div>
   );
-}
+});

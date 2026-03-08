@@ -29,4 +29,4 @@ export const MessageButton = memo(function MessageButton({ userId, variant = "ou
       </Link>
     </Button>
   );
-}
+});
