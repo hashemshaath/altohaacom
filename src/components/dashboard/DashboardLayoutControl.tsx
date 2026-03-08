@@ -82,7 +82,7 @@ export function useDashboardLayout() {
   return { widgets, toggleWidget, moveWidget, resetLayout, isVisible };
 }
 
-export function DashboardLayoutControl({ widgets, toggleWidget, resetLayout }: {
+export const DashboardLayoutControl = memo(function DashboardLayoutControl({ widgets, toggleWidget, resetLayout }: {
   widgets: WidgetConfig[];
   toggleWidget: (id: string) => void;
   resetLayout: () => void;
