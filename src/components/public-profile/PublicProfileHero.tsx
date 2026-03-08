@@ -35,7 +35,7 @@ interface PublicProfileHeroProps {
   userSpecialties?: any[];
 }
 
-export function PublicProfileHero({
+export const PublicProfileHero = memo(function PublicProfileHero({
   profile, displayName, currentWork, roles, roleLabels, userAwards,
   isAr, isOwnProfile, isFollowing, pendingRequest, followPrivacy, toggleFollow, user, getCountryName,
   userSpecialties = [],
