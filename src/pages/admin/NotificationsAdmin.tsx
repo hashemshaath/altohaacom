@@ -520,7 +520,7 @@ export default function NotificationsAdmin() {
                     <TableBody>
                       {filteredRecent.map((notif: any) => (
                         <>
-                          <TableRow key={notif.id} className={`cursor-pointer ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
+                          <TableRow key={notif.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
                             <TableCell onClick={e => e.stopPropagation()}>
                               <Checkbox checked={bulkRecent.isSelected(notif.id)} onCheckedChange={() => bulkRecent.toggleOne(notif.id)} />
                             </TableCell>

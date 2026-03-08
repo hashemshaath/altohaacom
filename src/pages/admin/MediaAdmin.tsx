@@ -242,10 +242,10 @@ export default function MediaAdmin() {
                   <SelectItem value="documents">{language === "ar" ? "مستندات" : "Documents"}</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" onClick={() => setViewMode("grid")}>
+              <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("grid")}>
                 <Grid className="h-4 w-4" />
               </Button>
-              <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" onClick={() => setViewMode("list")}>
+              <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("list")}>
                 <List className="h-4 w-4" />
               </Button>
             </div>
