@@ -18,7 +18,7 @@ interface PollDisplayProps {
   postId: string;
 }
 
-export function PollDisplay({ postId }: PollDisplayProps) {
+export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
