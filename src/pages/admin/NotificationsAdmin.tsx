@@ -505,16 +505,16 @@ export default function NotificationsAdmin() {
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="bg-muted/30 hover:bg-muted/30">
                         <TableHead className="w-8">
                           <Checkbox checked={bulkRecent.isAllSelected} onCheckedChange={bulkRecent.toggleAll} />
                         </TableHead>
                         <TableHead className="w-8"></TableHead>
-                        <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
-                        <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                        <TableHead>{isAr ? "القناة" : "Channel"}</TableHead>
-                        <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                        <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "العنوان" : "Title"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "النوع" : "Type"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "القناة" : "Channel"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                        <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
