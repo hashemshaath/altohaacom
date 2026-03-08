@@ -26,7 +26,7 @@ interface HistoryEntry {
   created_at: string;
 }
 
-export default function MembershipHistoryTab() {
+const MembershipHistoryTab = memo(function MembershipHistoryTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
