@@ -18,7 +18,7 @@ interface Props {
 /**
  * Simple breadcrumb navigation for nested pages.
  */
-export function Breadcrumbs({ items, className }: Props) {
+export const Breadcrumbs = memo(function Breadcrumbs({ items, className }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
