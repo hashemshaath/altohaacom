@@ -11,7 +11,7 @@ interface CompanyPageGuardProps {
   children: React.ReactNode;
 }
 
-export function CompanyPageGuard({ page, children }: CompanyPageGuardProps) {
+export const CompanyPageGuard = memo(function CompanyPageGuard({ page, children }: CompanyPageGuardProps) {
   const canAccess = useCanAccessPage(page);
   const { language } = useLanguage();
   const navigate = useNavigate();
