@@ -43,7 +43,7 @@ const emptyForm: CategoryFormData = {
   max_participants: null, gender: "open", participant_level: "open", status: "active", cover_image_url: "",
 };
 
-export function CategoryManagementPanel({ competitionId, isOrganizer, competitionStatus }: CategoryManagementPanelProps) {
+export const CategoryManagementPanel = memo(function CategoryManagementPanel({ competitionId, isOrganizer, competitionStatus }: CategoryManagementPanelProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
