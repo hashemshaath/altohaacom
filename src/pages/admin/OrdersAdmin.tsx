@@ -1349,7 +1349,7 @@ export default function OrdersAdmin() {
                   </TableHeader>
                   <TableBody>
                     {orders.map((order: any) => (
-                      <TableRow key={order.id} className={`cursor-pointer hover:bg-muted/50 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
+                      <TableRow key={order.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
                         <TableCell onClick={(e) => e.stopPropagation()}>
                           <Checkbox checked={bulk.isSelected(order.id)} onCheckedChange={() => bulk.toggleOne(order.id)} />
                         </TableCell>
