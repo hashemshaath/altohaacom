@@ -63,7 +63,7 @@ const PRESET_COLORS = [
   { hex: "#2c2c34", label: "Gunmetal" },
 ];
 
-export function CoverSettings({ settings, onSave, isPending }: Props) {
+export const CoverSettings = memo(function CoverSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const coverCfg = settings.cover || {};
