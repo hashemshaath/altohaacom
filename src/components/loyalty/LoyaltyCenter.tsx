@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useLoyaltyTiers, useUserTier, useChallenges, useUserChallenges, useRewardsCatalog, useUserRedemptions, useRedeemLoyaltyReward, useUserBadges, useUserStreaks } from "@/hooks/useLoyalty";
 import { Card, CardContent } from "@/components/ui/card";
