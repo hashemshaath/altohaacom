@@ -1290,7 +1290,7 @@ export default function OrdersAdmin() {
                   </div>
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                     <SelectItem value="draft">{isAr ? "مسودة" : "Draft"}</SelectItem>
