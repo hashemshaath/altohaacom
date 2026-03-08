@@ -40,7 +40,7 @@ interface Props {
   secretaryName?: string | null;
 }
 
-export function EntityLeadershipSection({ entityId, presidentName, secretaryName }: Props) {
+export const EntityLeadershipSection = memo(function EntityLeadershipSection({ entityId, presidentName, secretaryName }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
