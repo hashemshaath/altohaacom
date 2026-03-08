@@ -9,7 +9,7 @@ interface TermsAgreementProps {
   error?: string;
 }
 
-export function TermsAgreement({ checked, onCheckedChange, error }: TermsAgreementProps) {
+export const TermsAgreement = memo(function TermsAgreement({ checked, onCheckedChange, error }: TermsAgreementProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
