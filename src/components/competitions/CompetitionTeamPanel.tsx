@@ -86,7 +86,7 @@ const emptyForm: MemberForm = {
   notes: "", title: "", title_ar: "", photo_url: "",
 };
 
-export function CompetitionTeamPanel({ competitionId, isOrganizer }: CompetitionTeamPanelProps) {
+export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competitionId, isOrganizer }: CompetitionTeamPanelProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();

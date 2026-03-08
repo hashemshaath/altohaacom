@@ -178,4 +178,4 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
       </CardContent>
     </Card>
   );
-}
+});

@@ -231,4 +231,4 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
       </CardContent>
     </Card>
   );
-}
+});

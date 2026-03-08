@@ -19,4 +19,4 @@ export const LanguageSwitcher = memo(function LanguageSwitcher() {
       </span>
     </Button>
   );
-}
+});

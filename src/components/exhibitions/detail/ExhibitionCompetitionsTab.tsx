@@ -62,7 +62,7 @@ export const ExhibitionCompetitionsTab = memo(function ExhibitionCompetitionsTab
       )}
     </div>
   );
-}
+});
 
 function CompetitionSection({
   title,

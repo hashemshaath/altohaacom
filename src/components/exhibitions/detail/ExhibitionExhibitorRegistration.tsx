@@ -206,4 +206,4 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
       </CardContent>
     </Card>
   );
-}
+});

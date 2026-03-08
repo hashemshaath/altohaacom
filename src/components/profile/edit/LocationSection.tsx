@@ -63,4 +63,4 @@ export const LocationSection = memo(function LocationSection({ form, update, isA
       </CardContent>
     </Card>
   );
-}
+});

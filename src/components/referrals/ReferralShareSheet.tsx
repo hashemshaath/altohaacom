@@ -250,4 +250,4 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
       )}
     </div>
   );
-}
+});

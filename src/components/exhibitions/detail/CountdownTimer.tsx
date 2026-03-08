@@ -65,4 +65,4 @@ export const CountdownTimer = memo(function CountdownTimer({ targetDate, isAr, c
       ))}
     </div>
   );
-}
+});

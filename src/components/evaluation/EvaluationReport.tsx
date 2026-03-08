@@ -77,7 +77,7 @@ function getScoreColor(score: number): string {
   return "text-destructive";
 }
 
-export function EvaluationReport({ session, evaluations, media, invitationCount, isAr }: EvaluationReportProps) {
+export const EvaluationReport = memo(function EvaluationReport({ session, evaluations, media, invitationCount, isAr }: EvaluationReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
   const submitted = evaluations.filter(e => (e as any).status === "submitted" || e.overall_score != null);
 

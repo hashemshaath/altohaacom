@@ -64,7 +64,7 @@ interface DataDiffItem {
   newValue: string | null;
 }
 
-export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
+export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
