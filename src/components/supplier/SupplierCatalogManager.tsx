@@ -35,7 +35,7 @@ interface Product {
   image_url: string | null;
 }
 
-export function SupplierCatalogManager() {
+export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
