@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Users, Gavel, Medal, Calendar, MapPin, TrendingUp, AlertTriangle } from "lucide-react";
 
-export function CompetitionLifecycleWidget() {
+export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
