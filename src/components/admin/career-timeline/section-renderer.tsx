@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { GraduationCap, Briefcase, Trophy, Medal, Award, Users, Scale, Tv, CalendarCheck, FileText } from "lucide-react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { CareerRecord, SectionConfig } from "./constants";
@@ -63,7 +64,7 @@ interface SectionContentProps {
 }
 
 /** Renders the inner content of a career section (education, work, judging, etc.) */
-export function SectionContent(props: SectionContentProps) {
+export const SectionContent = memo(function SectionContent(props: SectionContentProps) {
   const { section, isAr } = props;
   const key = section.key;
 
@@ -71,7 +72,7 @@ export function SectionContent(props: SectionContentProps) {
   if (key === "competitions") return <CompetitionsSectionContent {...props} />;
   if (key === "awards") return <AwardsSectionContent {...props} />;
   return <GenericCareerSectionContent {...props} />;
-}
+});
 
 // ── Generic Career Section (education, work, judging, media, organizing, custom) ──
 function GenericCareerSectionContent({

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,7 @@ import {
 
 // ── Career Form (Education / Work / Judging / Media / Organizing / Custom) ──
 
-export function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
+export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
@@ -212,11 +212,11 @@ export function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave,
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
 
 // ── Membership Form ──────────────────────────────────────
 
-export function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
+export const MembershipForm = memo(function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
   form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
@@ -278,11 +278,11 @@ export function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onS
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.entity_id} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
 
 // ── Competition Add Form ──────────────────────────────────────
 
-export function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
+export const CompetitionAddForm = memo(function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
   careerForm, onUpdateCareer, isPendingManual, onSaveManual, onCancel }: {
   competitions: any[]; selectedId: string; onSelect: (id: string) => void;
   isAr: boolean; isPendingLink: boolean; onSaveLink: () => void;
@@ -346,11 +346,11 @@ export function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, i
       )}
     </div>
   );
-}
+});
 
 // ── Competition Event Form (manual) ──────────────────────────────────────
 
-export function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
+export const CompetitionEventForm = memo(function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
@@ -423,11 +423,11 @@ export function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdat
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
 
 // ── Award Form ──────────────────────────────────────
 
-export function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
+export const AwardAddForm = memo(function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
   form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
@@ -473,4 +473,4 @@ export function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSav
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.event_name.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});

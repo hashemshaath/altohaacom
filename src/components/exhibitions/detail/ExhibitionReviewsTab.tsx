@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -250,7 +250,7 @@ function ReportButton({ reviewId, isAr }: { reviewId: string; isAr: boolean }) {
   );
 }
 
-export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }: Props) {
+export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -585,4 +585,4 @@ export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }
       </div>
     </div>
   );
-}
+});
