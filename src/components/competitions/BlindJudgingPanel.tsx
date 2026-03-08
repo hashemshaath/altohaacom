@@ -19,7 +19,7 @@ interface Props {
   blindCodePrefix?: string;
 }
 
-export function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnabled = false, blindCodePrefix = "ENTRY" }: Props) {
+export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId, isOrganizer, blindJudgingEnabled = false, blindCodePrefix = "ENTRY" }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
