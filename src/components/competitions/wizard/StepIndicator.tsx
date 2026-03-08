@@ -23,7 +23,7 @@ interface StepIndicatorProps {
   totalSteps?: number;
 }
 
-export function StepIndicator({ currentStep, totalSteps = 5 }: StepIndicatorProps) {
+export const StepIndicator = memo(function StepIndicator({ currentStep, totalSteps = 5 }: StepIndicatorProps) {
   const { language } = useLanguage();
   const steps = STEPS.slice(0, totalSteps);
 
