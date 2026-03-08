@@ -182,25 +182,38 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
               const tierIndex = tiers.findIndex((t: any) => t.slug === r.min_tier);
               const userTierIndex = tiers.findIndex((t: any) => t.slug === currentTier?.slug);
               const tierLocked = tierIndex > userTierIndex;
+              const affordPct = Math.min(100, (points / r.points_cost) * 100);
 
               return (
-                <Card key={r.id} className={`${r.is_featured ? "border-primary/30" : ""}`}>
+                <Card key={r.id} className={`transition-all hover:shadow-md ${r.is_featured ? "border-primary/30 ring-1 ring-primary/10" : "hover:border-border/60"} ${tierLocked ? "opacity-60" : ""}`}>
                   <CardContent className="p-4 space-y-3">
                     {r.is_featured && (
                       <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">
+                        <Sparkles className="h-2.5 w-2.5 me-0.5" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
                     )}
                     <h3 className="font-semibold">{isAr ? r.name_ar : r.name}</h3>
-                    <p className="text-xs text-muted-foreground">{isAr ? r.description_ar : r.description}</p>
-                    <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground line-clamp-2">{isAr ? r.description_ar : r.description}</p>
+                    
+                    {/* Affordability progress */}
+                    {!tierLocked && !canAfford && (
+                      <div className="space-y-1">
+                        <Progress value={affordPct} className="h-1" />
+                        <p className="text-[10px] text-muted-foreground">
+                          {isAr ? `${r.points_cost - points} نقطة متبقية` : `${r.points_cost - points} pts away`}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between pt-1">
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-primary" />
-                        <span className="font-bold text-primary"><AnimatedCounter value={r.points_cost} className="inline" /></span>
+                        <span className="font-bold text-primary tabular-nums"><AnimatedCounter value={r.points_cost} className="inline" /></span>
                       </div>
                       {tierLocked ? (
-                        <Badge variant="outline" className="text-[10px]">
-                          <Lock className="h-3 w-3 me-1" />
+                        <Badge variant="outline" className="text-[10px] gap-1">
+                          <Lock className="h-3 w-3" />
                           {r.min_tier}
                         </Badge>
                       ) : (
@@ -208,7 +221,9 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                           size="sm"
                           disabled={!canAfford || redeemMutation.isPending}
                           onClick={() => handleRedeem(r)}
+                          className="gap-1"
                         >
+                          <Gift className="h-3.5 w-3.5" />
                           {isAr ? "استبدال" : "Redeem"}
                         </Button>
                       )}
