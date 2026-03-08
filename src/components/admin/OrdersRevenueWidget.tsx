@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +9,7 @@ import { DollarSign, ShoppingBag, TrendingUp, Package, CreditCard, ArrowUpRight,
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 
-export function OrdersRevenueWidget() {
+export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
