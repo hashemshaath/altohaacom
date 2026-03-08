@@ -1332,18 +1332,18 @@ export default function OrdersAdmin() {
               <ScrollArea className="h-[500px]">
                 <Table>
                   <TableHeader>
-                    <TableRow>
+                   <TableRow className="bg-muted/30 hover:bg-muted/30">
                       <TableHead className="w-10">
                         <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                       </TableHead>
-                      <TableHead>{isAr ? "رقم الطلب" : "Order #"}</TableHead>
-                      <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
-                      <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
-                      <TableHead>{isAr ? "الاتجاه" : "Dir"}</TableHead>
-                      <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                      <TableHead>{isAr ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "رقم الطلب" : "Order #"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الشركة" : "Company"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "العنوان" : "Title"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الاتجاه" : "Dir"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الفئة" : "Category"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
                       <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
