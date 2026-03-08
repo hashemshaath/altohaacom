@@ -87,6 +87,14 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
     return isAr ? (labels[s]?.ar || s) : (labels[s]?.en || s);
   };
 
+  // Stats
+  const { totalImports, completedImports, totalRecords, uniqueChefs } = useMemo(() => ({
+    totalImports: imports.length,
+    completedImports: imports.filter(i => i.status === "completed").length,
+    totalRecords: imports.reduce((sum, i) => sum + (i.records_created || 0), 0),
+    uniqueChefs: new Set(imports.map(i => i.chef_id)).size,
+  }), [imports]);
+
   if (loading) {
     return (
       <Card>
@@ -97,14 +105,6 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
       </Card>
     );
   }
-
-  // Stats
-  const { totalImports, completedImports, totalRecords, uniqueChefs } = useMemo(() => ({
-    totalImports: imports.length,
-    completedImports: imports.filter(i => i.status === "completed").length,
-    totalRecords: imports.reduce((sum, i) => sum + (i.records_created || 0), 0),
-    uniqueChefs: new Set(imports.map(i => i.chef_id)).size,
-  }), [imports]);
 
   if (imports.length === 0) return null;
 
