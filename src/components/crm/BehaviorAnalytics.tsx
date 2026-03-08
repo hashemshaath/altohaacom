@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function BehaviorAnalytics() {
+export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
