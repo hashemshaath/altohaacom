@@ -301,4 +301,4 @@ export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnaly
       </div>
     </div>
   );
-}
+});

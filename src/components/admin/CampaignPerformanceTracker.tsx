@@ -89,4 +89,4 @@ export const CampaignPerformanceTracker = memo(function CampaignPerformanceTrack
       </CardContent>
     </Card>
   );
-}
+});

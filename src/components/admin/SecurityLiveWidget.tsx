@@ -170,4 +170,4 @@ export const SecurityLiveWidget = memo(function SecurityLiveWidget() {
       </Card>
     </div>
   );
-}
+});

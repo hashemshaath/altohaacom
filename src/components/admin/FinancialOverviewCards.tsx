@@ -126,4 +126,4 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
       </div>
     </div>
   );
-}
+});

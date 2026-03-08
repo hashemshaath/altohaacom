@@ -129,4 +129,4 @@ export const ContentPerformanceWidget = memo(function ContentPerformanceWidget()
       </CardContent>
     </Card>
   );
-}
+});

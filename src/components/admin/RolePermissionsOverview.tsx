@@ -130,4 +130,4 @@ export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
       </CardContent>
     </Card>
   );
-}
+});

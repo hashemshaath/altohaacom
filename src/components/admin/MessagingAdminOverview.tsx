@@ -100,4 +100,4 @@ export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
       ))}
     </div>
   );
-}
+});

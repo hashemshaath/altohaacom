@@ -149,4 +149,4 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
       </CardContent>
     </Card>
   );
-}
+});

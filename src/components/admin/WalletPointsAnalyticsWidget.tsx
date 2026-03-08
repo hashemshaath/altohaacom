@@ -124,4 +124,4 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
       </CardContent>
     </Card>
   );
-}
+});

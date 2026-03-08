@@ -152,4 +152,4 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
       </CardContent>
     </Card>
   );
-}
+});

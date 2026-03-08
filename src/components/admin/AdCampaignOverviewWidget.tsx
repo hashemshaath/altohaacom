@@ -95,4 +95,4 @@ export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget()
       </CardContent>
     </Card>
   );
-}
+});

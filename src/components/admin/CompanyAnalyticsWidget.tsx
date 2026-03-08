@@ -117,4 +117,4 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
       </CardContent>
     </Card>
   );
-}
+});
