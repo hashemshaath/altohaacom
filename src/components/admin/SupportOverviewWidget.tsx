@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Ticket, Clock, CheckCircle, AlertTriangle, MessageSquare, ThumbsUp, Timer } from "lucide-react";
 
-export function SupportOverviewWidget() {
+export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
