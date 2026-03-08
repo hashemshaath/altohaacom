@@ -29,7 +29,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "المؤسسي" },
 };
 
-export function MembershipReceipt({ receiptData }: MembershipReceiptProps) {
+export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }: MembershipReceiptProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const receiptRef = useRef<HTMLDivElement>(null);
