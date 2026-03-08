@@ -11,7 +11,7 @@ interface ChatSearchBarProps {
   onClose: () => void;
 }
 
-export function ChatSearchBar({ messages, onHighlight, onClose }: ChatSearchBarProps) {
+export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight, onClose }: ChatSearchBarProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [query, setQuery] = useState("");
