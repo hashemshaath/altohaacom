@@ -231,4 +231,6 @@ const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
       </Card>
     </div>
   );
-}
+});
+
+export default AdminBenefitLimitsEditor;

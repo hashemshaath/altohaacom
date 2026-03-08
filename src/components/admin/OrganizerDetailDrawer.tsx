@@ -353,4 +353,6 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default OrganizerDetailDrawer;

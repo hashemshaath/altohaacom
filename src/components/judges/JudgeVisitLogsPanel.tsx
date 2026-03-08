@@ -257,4 +257,6 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
       </Card>
     </div>
   );
-}
+});
+
+export default JudgeVisitLogsPanel;

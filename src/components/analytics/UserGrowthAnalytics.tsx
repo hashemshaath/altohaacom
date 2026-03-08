@@ -163,4 +163,6 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
       </div>
     </div>
   );
-}
+});
+
+export default UserGrowthAnalytics;

@@ -129,4 +129,6 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
       </div>
     </div>
   );
-}
+});
+
+export default CompetitionAnalytics;

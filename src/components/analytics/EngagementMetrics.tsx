@@ -305,4 +305,6 @@ const EngagementMetrics = memo(function EngagementMetrics() {
       </div>
     </div>
   );
-}
+});
+
+export default EngagementMetrics;

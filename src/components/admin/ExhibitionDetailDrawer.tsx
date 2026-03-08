@@ -523,4 +523,6 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default ExhibitionDetailDrawer;

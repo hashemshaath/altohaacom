@@ -139,4 +139,6 @@ const FinancialReports = memo(function FinancialReports() {
       </div>
     </div>
   );
-}
+});
+
+export default FinancialReports;

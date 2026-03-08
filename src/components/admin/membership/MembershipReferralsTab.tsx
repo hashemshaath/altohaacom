@@ -361,4 +361,6 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default MembershipReferralsTab;

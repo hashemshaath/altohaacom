@@ -198,4 +198,6 @@ const MembershipOverview = memo(function MembershipOverview() {
       </div>
     </div>
   );
-}
+});
+
+export default MembershipOverview;

@@ -486,4 +486,6 @@ function PermissionsOverview() {
       )}
     </div>
   );
-}
+});
+
+export default SecurityDashboard;

@@ -215,4 +215,6 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
       </Tabs>
     </div>
   );
-}
+});
+
+export default ChefPortfolio;

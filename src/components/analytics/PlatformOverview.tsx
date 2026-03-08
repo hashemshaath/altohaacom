@@ -225,4 +225,6 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
       </div>
     </div>
   );
-}
+});
+
+export default PlatformOverview;

@@ -292,4 +292,6 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipDigestPanel;

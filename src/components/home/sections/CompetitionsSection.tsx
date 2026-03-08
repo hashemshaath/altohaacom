@@ -138,4 +138,6 @@ const CompetitionsSection = memo(function CompetitionsSection() {
       </div>
     </section>
   );
-}
+});
+
+export default CompetitionsSection;

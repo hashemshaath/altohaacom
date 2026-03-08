@@ -374,4 +374,6 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
       )}
     </div>
   );
-}
+});
+
+export default MembershipUserOverrides;
