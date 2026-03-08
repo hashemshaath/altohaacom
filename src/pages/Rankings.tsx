@@ -101,7 +101,7 @@ export default function Rankings() {
         <div className="container py-3 flex flex-wrap gap-2 items-center">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder={isAr ? "ابحث عن طاهٍ..." : "Search chefs..."} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="ps-9" />
+            <Input placeholder={isAr ? "ابحث عن طاهٍ..." : "Search chefs..."} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="ps-9 rounded-xl" />
           </div>
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
