@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DollarSign, Receipt, Package, Wallet, TrendingUp, AlertCircle, CheckCircle, Clock } from "lucide-react";
 
-export function FinancialSummaryWidget() {
+export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -116,4 +117,4 @@ export function FinancialSummaryWidget() {
       </CardContent>
     </Card>
   );
-}
+});

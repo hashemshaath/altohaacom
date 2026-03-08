@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, A
 import { format, subDays, differenceInMinutes } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function CommunicationsLiveWidget() {
+export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -163,4 +164,4 @@ export function CommunicationsLiveWidget() {
       </CardContent>
     </Card>
   );
-}
+});
