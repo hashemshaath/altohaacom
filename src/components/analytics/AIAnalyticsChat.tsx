@@ -33,7 +33,7 @@ const SUGGESTIONS_AR = [
   "حدد المستخدمين المعرضين لخطر المغادرة",
 ];
 
-export function AIAnalyticsChat() {
+export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [messages, setMessages] = useState<Message[]>([]);
