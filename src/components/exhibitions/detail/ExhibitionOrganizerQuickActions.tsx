@@ -31,7 +31,7 @@ interface Props {
 
 type Audience = "all" | "followers" | "ticket_holders" | "checked_in" | "not_checked_in";
 
-export function ExhibitionOrganizerQuickActions({
+export const ExhibitionOrganizerQuickActions = memo(function ExhibitionOrganizerQuickActions({
   exhibitionId, exhibitionTitle, isAr, followerCount, ticketCount,
 }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
