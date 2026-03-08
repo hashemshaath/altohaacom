@@ -201,4 +201,4 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
       </div>
     </div>
   );
-}
+});

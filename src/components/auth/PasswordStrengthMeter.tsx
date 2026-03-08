@@ -54,4 +54,4 @@ export const PasswordStrengthMeter = memo(function PasswordStrengthMeter({ passw
       </p>
     </div>
   );
-}
+});

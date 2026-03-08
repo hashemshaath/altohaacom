@@ -32,4 +32,4 @@ export const ShopEmptyState = memo(function ShopEmptyState({ search, onClearSear
       )}
     </div>
   );
-}
+});

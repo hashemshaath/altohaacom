@@ -830,4 +830,4 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
       )}
     </div>
   );
-}
+});

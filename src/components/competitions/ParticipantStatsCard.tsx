@@ -92,4 +92,4 @@ export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competi
       </div>
     </div>
   );
-}
+});

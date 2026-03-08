@@ -63,4 +63,4 @@ export const AdminEmptyState = memo(function AdminEmptyState({
       )}
     </div>
   );
-}
+});

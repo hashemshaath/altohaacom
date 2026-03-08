@@ -62,4 +62,4 @@ export const EntitySocialLinks = memo(function EntitySocialLinks({ socialLinks }
       </CardContent>
     </Card>
   );
-}
+});

@@ -39,4 +39,4 @@ export const LastSeenLabel = memo(function LastSeenLabel({ userId, isOnline, isT
   }
 
   return <span>{username ? `@${username}` : ""}</span>;
-}
+});

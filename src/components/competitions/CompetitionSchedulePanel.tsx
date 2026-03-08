@@ -234,4 +234,4 @@ export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({
       )}
     </div>
   );
-}
+});

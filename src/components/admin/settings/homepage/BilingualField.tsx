@@ -123,4 +123,4 @@ function TranslateBtn({ loading, onClick, target }: { loading: boolean; onClick:
       <span>← {target}</span>
     </Button>
   );
-}
+});

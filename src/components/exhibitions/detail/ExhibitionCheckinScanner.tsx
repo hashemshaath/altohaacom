@@ -218,6 +218,6 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
       </div>
     </div>
   );
-}
+});
 
 export default ExhibitionCheckinScanner;

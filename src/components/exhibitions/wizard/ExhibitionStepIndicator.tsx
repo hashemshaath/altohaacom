@@ -66,4 +66,4 @@ export const ExhibitionStepIndicator = memo(function ExhibitionStepIndicator({ c
       </div>
     </div>
   );
-}
+});

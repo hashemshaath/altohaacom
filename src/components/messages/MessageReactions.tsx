@@ -111,4 +111,4 @@ export const MessageReactions = memo(function MessageReactions({ reactions, curr
       </Popover>
     </div>
   );
-}
+});

@@ -82,4 +82,4 @@ export const UsernameSuggestions = memo(function UsernameSuggestions({ baseUsern
       </div>
     </div>
   );
-}
+});

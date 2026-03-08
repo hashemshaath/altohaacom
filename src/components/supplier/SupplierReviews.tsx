@@ -226,4 +226,4 @@ export const SupplierReviews = memo(function SupplierReviews({ companyId }: Prop
       </div>
     </div>
   );
-}
+});

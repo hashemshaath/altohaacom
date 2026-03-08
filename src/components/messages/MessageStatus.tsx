@@ -67,4 +67,4 @@ export const MessageStatus = memo(function MessageStatus({ isMine, isRead, readA
       </Tooltip>
     </TooltipProvider>
   );
-}
+});

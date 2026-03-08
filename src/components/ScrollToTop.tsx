@@ -9,4 +9,4 @@ export const ScrollToTop = memo(function ScrollToTop() {
   }, [pathname]);
 
   return null;
-}
+});
