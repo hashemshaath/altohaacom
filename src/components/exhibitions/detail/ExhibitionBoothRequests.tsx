@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { CheckCircle2, XCircle, Clock, Building, Loader2, Eye } from "lucide-react";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
