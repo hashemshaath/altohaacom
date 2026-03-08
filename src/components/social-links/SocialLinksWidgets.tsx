@@ -84,7 +84,7 @@ export const SectionDivider = memo(function SectionDivider({ color }: { color: s
 });
 
 // ── Contact Form ──
-export function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerName }: {
+export const ContactFormSection = memo(function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerName }: {
   theme: any; lang: LangCode; isRtl: boolean; profileUserId: string; ownerName: string;
 }) {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
