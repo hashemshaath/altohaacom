@@ -76,7 +76,7 @@ function TabSkeleton() {
   );
 }
 
-export function OrderCenterHub({ competitionId, isOrganizer }: Props) {
+export const OrderCenterHub = memo(function OrderCenterHub({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState("overview");
