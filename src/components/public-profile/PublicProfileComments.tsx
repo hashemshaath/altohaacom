@@ -15,7 +15,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function PublicProfileComments({ userId, isAr }: Props) {
+export const PublicProfileComments = memo(function PublicProfileComments({ userId, isAr }: Props) {
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["public-profile-comments", userId],
     queryFn: async () => {
