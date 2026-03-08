@@ -107,4 +107,4 @@ export const CountryCompletenessScore = memo(function CountryCompletenessScore({
       </div>
     </div>
   );
-}
+});

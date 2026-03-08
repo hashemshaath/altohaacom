@@ -24,4 +24,4 @@ export const AdminRoute = memo(function AdminRoute({ children }: { children: Rea
   if (!isAdmin) return <Navigate to="/dashboard" replace />;
 
   return <>{children}</>;
-}
+});

@@ -49,6 +49,6 @@ export const EvaluationCategorySelect = memo(function EvaluationCategorySelect({
       })}
     </RadioGroup>
   );
-}
+});
 
 export { CATEGORIES };

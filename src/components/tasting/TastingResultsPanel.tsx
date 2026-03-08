@@ -171,4 +171,4 @@ export const TastingResultsPanel = memo(function TastingResultsPanel({ entries, 
       )}
     </div>
   );
-}
+});

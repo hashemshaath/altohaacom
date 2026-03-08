@@ -50,4 +50,4 @@ export const DataFreshness = memo(function DataFreshness({ lastUpdated, isRefetc
       )}
     </span>
   );
-}
+});

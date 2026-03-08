@@ -79,6 +79,6 @@ export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventSchedu
       </CardContent>
     </Card>
   );
-}
+});
 
 export default ExhibitionEventScheduleWidget;

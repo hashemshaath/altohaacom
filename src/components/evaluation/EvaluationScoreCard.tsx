@@ -103,4 +103,4 @@ export const EvaluationScoreCard = memo(function EvaluationScoreCard({ overallSc
       </div>
     </div>
   );
-}
+});

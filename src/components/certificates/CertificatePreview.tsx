@@ -289,4 +289,4 @@ export const CertificatePreview = memo(function CertificatePreview({ design, zoo
       </div>
     </div>
   );
-}
+});

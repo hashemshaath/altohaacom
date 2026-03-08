@@ -97,4 +97,4 @@ export const PollComposer = memo(function PollComposer({ onPollChange }: PollCom
       )}
     </div>
   );
-}
+});

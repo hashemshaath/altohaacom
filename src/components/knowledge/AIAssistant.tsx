@@ -161,4 +161,4 @@ export const AIAssistant = memo(function AIAssistant({ className, compact = fals
       </CardContent>
     </Card>
   );
-}
+});

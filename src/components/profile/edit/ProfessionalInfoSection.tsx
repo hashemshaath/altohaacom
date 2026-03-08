@@ -76,4 +76,4 @@ export const ProfessionalInfoSection = memo(function ProfessionalInfoSection({ f
       </CardContent>
     </Card>
   );
-}
+});
