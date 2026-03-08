@@ -244,13 +244,13 @@ export default function CertificatesAdmin() {
     return language === "ar" ? m[status].ar : m[status].en;
   };
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: certificates.length,
     draft: certificates.filter(c => c.status === "draft").length,
     signed: certificates.filter(c => c.status === "signed").length,
     issued: certificates.filter(c => c.status === "issued").length,
     revoked: certificates.filter(c => c.status === "revoked").length,
-  };
+  }), [certificates]);
 
   const bulk = useAdminBulkActions(certificates);
 

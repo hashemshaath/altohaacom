@@ -73,10 +73,12 @@ export function PublicProfileAchievements({ userId, isAr }: Props) {
   if (!hasRankings && !hasAwards && !hasStats) return null;
 
   const topRanking = rankings[0];
-  const totalMedals = rankings.reduce((acc: number, r: any) => acc + (r.gold_medals || 0) + (r.silver_medals || 0) + (r.bronze_medals || 0), 0);
-  const totalGold = rankings.reduce((acc: number, r: any) => acc + (r.gold_medals || 0), 0);
-  const totalSilver = rankings.reduce((acc: number, r: any) => acc + (r.silver_medals || 0), 0);
-  const totalBronze = rankings.reduce((acc: number, r: any) => acc + (r.bronze_medals || 0), 0);
+  const { totalMedals, totalGold, totalSilver, totalBronze } = useMemo(() => {
+    const g = rankings.reduce((acc: number, r: any) => acc + (r.gold_medals || 0), 0);
+    const s = rankings.reduce((acc: number, r: any) => acc + (r.silver_medals || 0), 0);
+    const b = rankings.reduce((acc: number, r: any) => acc + (r.bronze_medals || 0), 0);
+    return { totalMedals: g + s + b, totalGold: g, totalSilver: s, totalBronze: b };
+  }, [rankings]);
 
   return (
     <div>
