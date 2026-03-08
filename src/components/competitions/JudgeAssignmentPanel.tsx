@@ -51,7 +51,7 @@ interface AvailableJudge {
   username: string | null;
 }
 
-export function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProps) {
+export const JudgeAssignmentPanel = memo(function JudgeAssignmentPanel({ competitionId }: JudgeAssignmentPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
