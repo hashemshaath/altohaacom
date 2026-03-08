@@ -19,7 +19,7 @@ interface MentionAutocompleteProps {
   onSelect: (username: string) => void;
 }
 
-export function MentionAutocomplete({ content, textareaRef, onSelect }: MentionAutocompleteProps) {
+export const MentionAutocomplete = memo(function MentionAutocomplete({ content, textareaRef, onSelect }: MentionAutocompleteProps) {
   const [suggestions, setSuggestions] = useState<MentionSuggestion[]>([]);
   const [query, setQuery] = useState<string | null>(null);
   const [selectedIdx, setSelectedIdx] = useState(0);
