@@ -11,7 +11,7 @@ import { Crown, Trophy, Gift, Flame, Star, Lock, Check, Sparkles } from "lucide-
 import { SeasonalChallenges } from "./SeasonalChallenges";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function LoyaltyCenter() {
+export const LoyaltyCenter = memo(function LoyaltyCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
