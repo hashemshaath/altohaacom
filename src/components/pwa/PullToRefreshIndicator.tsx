@@ -33,4 +33,4 @@ export const PullToRefreshIndicator = memo(function PullToRefreshIndicator({ pul
       </div>
     </div>
   );
-}
+});

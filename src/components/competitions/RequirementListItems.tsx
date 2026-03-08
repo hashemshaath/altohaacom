@@ -194,4 +194,4 @@ export const RequirementListItems = memo(function RequirementListItems({ listId,
       )}
     </div>
   );
-}
+});

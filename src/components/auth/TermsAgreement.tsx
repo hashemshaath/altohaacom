@@ -51,4 +51,4 @@ export const TermsAgreement = memo(function TermsAgreement({ checked, onCheckedC
       {error && <p className="text-xs text-destructive ps-6">{error}</p>}
     </div>
   );
-}
+});

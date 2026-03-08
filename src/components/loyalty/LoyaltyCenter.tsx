@@ -274,4 +274,4 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
       </Tabs>
     </div>
   );
-}
+});

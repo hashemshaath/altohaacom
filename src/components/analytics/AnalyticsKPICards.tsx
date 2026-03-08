@@ -44,4 +44,4 @@ export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoadi
       ))}
     </div>
   );
-}
+});

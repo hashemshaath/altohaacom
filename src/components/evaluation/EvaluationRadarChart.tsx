@@ -112,4 +112,4 @@ export const EvaluationRadarChart = memo(function EvaluationRadarChart({ title, 
       </CardContent>
     </Card>
   );
-}
+});

@@ -193,4 +193,4 @@ export const ExhibitionReviewStep = memo(function ExhibitionReviewStep({ data }:
       </Card>
     </div>
   );
-}
+});

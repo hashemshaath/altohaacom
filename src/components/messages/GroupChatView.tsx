@@ -343,4 +343,4 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
       )}
     </div>
   );
-}
+});

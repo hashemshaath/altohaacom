@@ -79,4 +79,4 @@ export const SuccessCelebration = memo(function SuccessCelebration({
       </div>
     </div>
   );
-}
+});

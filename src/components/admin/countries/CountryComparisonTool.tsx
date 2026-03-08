@@ -151,4 +151,4 @@ export const CountryComparisonTool = memo(function CountryComparisonTool({ count
       </CardContent>
     </Card>
   );
-}
+});

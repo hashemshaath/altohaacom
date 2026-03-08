@@ -76,4 +76,4 @@ export const TranslatableInput = memo(function TranslatableInput({
       )}
     </div>
   );
-}
+});

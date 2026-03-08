@@ -232,7 +232,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
       )}
     </div>
   );
-}
+});
 
 function RoundStatusBadge({ status, isAr }: { status: string; isAr: boolean }) {
   const map: Record<string, { label: string; labelAr: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {

@@ -62,4 +62,4 @@ export const MessageCategoryFilter = memo(function MessageCategoryFilter({ activ
       })}
     </div>
   );
-}
+});

@@ -53,4 +53,4 @@ export const FeatureRouteGuard = memo(function FeatureRouteGuard({ feature, chil
   }
 
   return <>{children}</>;
-}
+});
