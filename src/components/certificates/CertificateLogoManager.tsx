@@ -27,7 +27,7 @@ const positionLabels: Record<LogoItem["position"], { en: string; ar: string }> =
   "footer-right": { en: "Footer Right", ar: "تذييل يمين" },
 };
 
-export function CertificateLogoManager({ logos, onChange }: CertificateLogoManagerProps) {
+export const CertificateLogoManager = memo(function CertificateLogoManager({ logos, onChange }: CertificateLogoManagerProps) {
   const { language } = useLanguage();
 
   // Fetch logo library from database
