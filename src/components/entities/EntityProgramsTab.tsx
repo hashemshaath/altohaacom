@@ -33,7 +33,7 @@ interface Props {
   entityId: string;
 }
 
-export function EntityProgramsTab({ entityId }: Props) {
+export const EntityProgramsTab = memo(function EntityProgramsTab({ entityId }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
