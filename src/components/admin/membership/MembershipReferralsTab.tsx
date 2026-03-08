@@ -15,7 +15,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
-export default function MembershipReferralsTab() {
+const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
