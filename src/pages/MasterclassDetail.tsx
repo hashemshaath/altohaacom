@@ -204,6 +204,11 @@ export default function MasterclassDetail() {
     },
   });
 
+  const totalLessons = useMemo(() => modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0), [modules]);
+  const completedLessons = useMemo(() => lessonProgress.filter((lp) => lp.completed).length, [lessonProgress]);
+  const isCompleted = enrollment?.status === "completed";
+  const completedLessonIds = useMemo(() => new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id)), [lessonProgress]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
@@ -227,11 +232,6 @@ export default function MasterclassDetail() {
       </div>
     );
   }
-
-  const totalLessons = useMemo(() => modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0), [modules]);
-  const completedLessons = useMemo(() => lessonProgress.filter((lp) => lp.completed).length, [lessonProgress]);
-  const isCompleted = enrollment?.status === "completed";
-  const completedLessonIds = useMemo(() => new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id)), [lessonProgress]);
 
   const getContentTypeIcon = (type: string) => {
     switch (type) {

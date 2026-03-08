@@ -354,12 +354,6 @@ export function InvitationManager() {
   }
 
   // Invitations list
-  const stats = useMemo(() => ({
-    total: invitations?.length || 0,
-    pending: invitations?.filter(i => i.status === "pending").length || 0,
-    accepted: invitations?.filter(i => i.status === "accepted").length || 0,
-    declined: invitations?.filter(i => i.status === "declined").length || 0,
-  }), [invitations]);
 
   return (
     <div className="space-y-6">
