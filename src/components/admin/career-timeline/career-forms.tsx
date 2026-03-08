@@ -278,7 +278,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
       <FormActions isAr={isAr} isPending={isPending} canSave={!!form.entity_id} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
 
 // ── Competition Add Form ──────────────────────────────────────
 
