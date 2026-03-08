@@ -127,4 +127,4 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
       </CardContent>
     </Card>
   );
-}
+});

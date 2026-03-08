@@ -416,4 +416,4 @@ export const JudgeAssignmentPanel = memo(function JudgeAssignmentPanel({ competi
       </Dialog>
     </div>
   );
-}
+});

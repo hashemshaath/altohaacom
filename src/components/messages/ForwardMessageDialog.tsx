@@ -146,4 +146,4 @@ export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, o
       </DialogContent>
     </Dialog>
   );
-}
+});

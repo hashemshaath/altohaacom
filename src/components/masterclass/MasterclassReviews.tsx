@@ -200,4 +200,4 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
       )}
     </div>
   );
-}
+});

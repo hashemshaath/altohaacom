@@ -152,4 +152,4 @@ export const CookingTimer = memo(function CookingTimer({ prepMinutes, cookMinute
       </CardContent>
     </Card>
   );
-}
+});

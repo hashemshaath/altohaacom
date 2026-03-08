@@ -316,4 +316,4 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
       )}
     </div>
   );
-}
+});

@@ -112,4 +112,4 @@ export const LessonViewer = memo(function LessonViewer({ lesson, isCompleted, is
       )}
     </div>
   );
-}
+});

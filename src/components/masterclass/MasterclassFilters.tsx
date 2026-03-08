@@ -86,4 +86,4 @@ export const MasterclassFilters = memo(function MasterclassFilters({
       </div>
     </div>
   );
-}
+});

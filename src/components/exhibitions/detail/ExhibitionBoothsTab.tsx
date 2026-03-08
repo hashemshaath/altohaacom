@@ -257,4 +257,4 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
       )}
     </div>
   );
-}
+});

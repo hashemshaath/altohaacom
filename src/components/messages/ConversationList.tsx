@@ -211,4 +211,4 @@ export const ConversationList = memo(function ConversationList({
       </ScrollArea>
     </div>
   );
-}
+});

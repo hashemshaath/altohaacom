@@ -159,4 +159,4 @@ export const EntityOverviewCard = memo(function EntityOverviewCard({ entity, fol
       </CardContent>
     </Card>
   );
-}
+});

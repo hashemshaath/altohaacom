@@ -174,4 +174,4 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
       )}
     </div>
   );
-}
+});

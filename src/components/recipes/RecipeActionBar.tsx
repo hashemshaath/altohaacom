@@ -126,4 +126,4 @@ export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCou
       </Button>
     </div>
   );
-}
+});

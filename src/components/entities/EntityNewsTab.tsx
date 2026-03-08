@@ -114,4 +114,4 @@ export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName,
       })}
     </div>
   );
-}
+});

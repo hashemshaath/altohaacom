@@ -57,4 +57,4 @@ export const MasterclassHero = memo(function MasterclassHero({ totalCount, filte
       </div>
     </section>
   );
-}
+});

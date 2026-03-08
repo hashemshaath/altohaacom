@@ -105,4 +105,4 @@ export const VoiceMessagePlayer = memo(function VoiceMessagePlayer({ url, durati
       </span>
     </div>
   );
-}
+});

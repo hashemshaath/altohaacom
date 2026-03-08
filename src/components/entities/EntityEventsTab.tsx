@@ -107,4 +107,4 @@ export const EntityEventsTab = memo(function EntityEventsTab({ entityId }: Props
       })}
     </div>
   );
-}
+});

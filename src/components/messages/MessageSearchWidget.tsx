@@ -143,4 +143,4 @@ export const MessageSearchWidget = memo(function MessageSearchWidget() {
       </CardContent>
     </Card>
   );
-}
+});

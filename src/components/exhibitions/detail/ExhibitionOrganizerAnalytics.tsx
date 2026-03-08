@@ -563,4 +563,4 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       </div>
     </div>
   );
-}
+});
