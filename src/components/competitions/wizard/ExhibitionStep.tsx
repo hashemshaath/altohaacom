@@ -24,7 +24,7 @@ interface ExhibitionStepProps {
   onLinkedChefChange?: (id: string | null) => void;
 }
 
-export function ExhibitionStep({
+export const ExhibitionStep = memo(function ExhibitionStep({
   selectedId,
   onChange,
   linkType = "exhibition",
