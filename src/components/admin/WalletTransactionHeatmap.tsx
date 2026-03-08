@@ -73,16 +73,18 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Recent Transactions */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-primary" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15">
+              <Wallet className="h-3.5 w-3.5 text-primary" />
+            </div>
             {isAr ? "آخر المعاملات" : "Recent Transactions"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-3 space-y-1.5 max-h-[280px] overflow-y-auto">
+        <CardContent className="p-3 space-y-1 max-h-[280px] overflow-y-auto">
           {data.recentTxns.slice(0, 12).map((txn: any, i: number) => (
-            <div key={i} className="flex items-center justify-between py-1.5 border-b border-border/40 last:border-0">
+            <div key={i} className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0 rounded-lg px-1.5 transition-colors duration-200 hover:bg-muted/40">
               <div className="flex items-center gap-2 min-w-0">
                 {txn.type === "credit" ? (
                   <ArrowDownRight className="h-3.5 w-3.5 text-chart-2 shrink-0" />
@@ -104,10 +106,12 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
 
       {/* Top Wallets + Weekly Summary */}
       <div className="space-y-4">
-        <Card>
+        <Card className="rounded-2xl border-border/40">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Users className="h-4 w-4 text-chart-1" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-1/10 border border-chart-1/15">
+                <Users className="h-3.5 w-3.5 text-chart-1" />
+              </div>
               {isAr ? "أعلى الأرصدة" : "Top Wallets"}
             </CardTitle>
           </CardHeader>
@@ -129,8 +133,8 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-2xl border-border/40">
+          <CardContent className="p-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "إيرادات الأسبوع" : "Weekly Credits"}</p>
               <p className="text-lg font-bold text-chart-2">+<AnimatedCounter value={Math.round(data.weekCredits * 100) / 100} /></p>

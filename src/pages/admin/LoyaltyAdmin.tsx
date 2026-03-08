@@ -153,13 +153,13 @@ export default function LoyaltyAdmin() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((s, i) => (
-          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={i} className="rounded-2xl border-border/40 bg-card/80 backdrop-blur group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-muted`}>
-                <s.icon className={`h-5 w-5 ${s.color}`} />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 border border-border/30 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm`}>
+                <s.icon className={`h-5 w-5 ${s.color} transition-transform duration-300`} />
               </div>
               <div>
-                <p className="text-2xl font-bold">{s.value}</p>
+                <p className="text-2xl font-bold tabular-nums">{s.value}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
@@ -168,19 +168,19 @@ export default function LoyaltyAdmin() {
       </div>
 
       <Tabs defaultValue="tiers">
-        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
-          <TabsTrigger value="tiers" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "المستويات" : "Tiers"}</TabsTrigger>
-          <TabsTrigger value="challenges" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "التحديات" : "Challenges"}</TabsTrigger>
-          <TabsTrigger value="rewards" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "المكافآت" : "Rewards"}</TabsTrigger>
-          <TabsTrigger value="redemptions" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "الاستبدالات" : "Redemptions"}</TabsTrigger>
+        <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto gap-1">
+          <TabsTrigger value="tiers" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><Crown className="h-3.5 w-3.5" />{isAr ? "المستويات" : "Tiers"}</TabsTrigger>
+          <TabsTrigger value="challenges" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><Trophy className="h-3.5 w-3.5" />{isAr ? "التحديات" : "Challenges"}</TabsTrigger>
+          <TabsTrigger value="rewards" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><Gift className="h-3.5 w-3.5" />{isAr ? "المكافآت" : "Rewards"}</TabsTrigger>
+          <TabsTrigger value="redemptions" className="rounded-xl data-[state=active]:shadow-sm gap-1.5 transition-all duration-300"><TrendingUp className="h-3.5 w-3.5" />{isAr ? "الاستبدالات" : "Redemptions"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tiers">
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>{isAr ? "المستوى" : "Tier"}</TableHead>
                     <TableHead className="text-center">{isAr ? "الحد الأدنى" : "Min Points"}</TableHead>
                     <TableHead className="text-center">{isAr ? "المضاعف" : "Multiplier"}</TableHead>
@@ -189,22 +189,24 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {tiers.map((t: any) => (
-                    <TableRow key={t.id}>
+                    <TableRow key={t.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{t.icon_emoji}</span>
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 border border-border/30 text-lg transition-transform duration-300 group-hover:scale-110">
+                            {t.icon_emoji}
+                          </div>
                           <div>
                             <p className="font-medium">{isAr ? t.name_ar : t.name}</p>
-                            <p className="text-xs text-muted-foreground">{t.slug}</p>
+                            <p className="text-xs text-muted-foreground font-mono">{t.slug}</p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center font-mono">{t.min_points.toLocaleString()}</TableCell>
-                      <TableCell className="text-center font-mono">×{t.multiplier}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">{t.min_points.toLocaleString()}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">×{t.multiplier}</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {(t.benefits as string[] || []).map((b: string, i: number) => (
-                            <Badge key={i} variant="outline" className="text-[10px]">{b}</Badge>
+                            <Badge key={i} variant="outline" className="text-[10px] rounded-lg">{b}</Badge>
                           ))}
                         </div>
                       </TableCell>
@@ -217,11 +219,11 @@ export default function LoyaltyAdmin() {
         </TabsContent>
 
         <TabsContent value="challenges">
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>{isAr ? "التحدي" : "Challenge"}</TableHead>
                     <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
                     <TableHead className="text-center">{isAr ? "الهدف" : "Target"}</TableHead>
@@ -232,18 +234,20 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {challenges.map((c: any) => (
-                    <TableRow key={c.id}>
+                    <TableRow key={c.id} className="transition-colors duration-200 hover:bg-muted/40 group">
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{c.icon_emoji}</span>
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/60 border border-border/30 text-lg transition-transform duration-300 group-hover:scale-110">
+                            {c.icon_emoji}
+                          </div>
                           <span className="font-medium text-sm">{isAr ? c.title_ar : c.title}</span>
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] uppercase">{c.category}</Badge></TableCell>
-                      <TableCell className="text-center font-mono">{c.target_count}</TableCell>
-                      <TableCell className="text-center font-mono text-primary font-bold">{c.reward_points}</TableCell>
+                      <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{c.category}</Badge></TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">{c.target_count}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{c.reward_points}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className={difficultyColors[c.difficulty] || ""}>{c.difficulty}</Badge>
+                        <Badge variant="outline" className={`rounded-lg ${difficultyColors[c.difficulty] || ""}`}>{c.difficulty}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
                         <Switch checked={c.is_active} onCheckedChange={v => updateChallenge.mutate({ id: c.id, updates: { is_active: v } })} />
@@ -257,11 +261,11 @@ export default function LoyaltyAdmin() {
         </TabsContent>
 
         <TabsContent value="rewards">
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>{isAr ? "المكافأة" : "Reward"}</TableHead>
                     <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
                     <TableHead className="text-center">{isAr ? "التكلفة" : "Cost"}</TableHead>
@@ -272,11 +276,11 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {rewards.map((r: any) => (
-                    <TableRow key={r.id}>
+                    <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] uppercase">{r.category}</Badge></TableCell>
-                      <TableCell className="text-center font-mono text-primary font-bold">{r.points_cost}</TableCell>
-                      <TableCell className="text-center"><Badge variant="secondary" className="text-[10px]">{r.min_tier}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
+                      <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{r.points_cost}</TableCell>
+                      <TableCell className="text-center"><Badge variant="secondary" className="text-[10px] rounded-lg">{r.min_tier}</Badge></TableCell>
                       <TableCell className="text-center">
                         <Switch checked={r.is_featured} onCheckedChange={v => updateReward.mutate({ id: r.id, updates: { is_featured: v } })} />
                       </TableCell>
@@ -298,11 +302,11 @@ export default function LoyaltyAdmin() {
             onExport={() => exportRedemptions(bulkRedemptions.selectedItems)}
             onStatusChange={bulkFulfill}
           />
-          <Card>
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead className="w-10">
                       <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
                     </TableHead>
@@ -315,14 +319,14 @@ export default function LoyaltyAdmin() {
                 </TableHeader>
                 <TableBody>
                   {redemptions.map((r: any) => (
-                    <TableRow key={r.id} className={bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}>
+                    <TableRow key={r.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}`}>
                       <TableCell>
                         <Checkbox checked={bulkRedemptions.isSelected(r.id)} onCheckedChange={() => bulkRedemptions.toggleOne(r.id)} />
                       </TableCell>
                       <TableCell className="font-mono text-xs">{r.redemption_code || "—"}</TableCell>
-                      <TableCell className="text-center font-mono">{r.points_spent}</TableCell>
+                      <TableCell className="text-center font-mono tabular-nums">{r.points_spent}</TableCell>
                       <TableCell>
-                        <Badge variant={r.status === "fulfilled" ? "default" : r.status === "pending" ? "secondary" : "outline"}>
+                        <Badge variant={r.status === "fulfilled" ? "default" : r.status === "pending" ? "secondary" : "outline"} className="rounded-lg">
                           {r.status}
                         </Badge>
                       </TableCell>
@@ -331,11 +335,11 @@ export default function LoyaltyAdmin() {
                       </TableCell>
                       <TableCell>
                         {r.status === "pending" && (
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="default" className="h-7 text-xs" onClick={() => updateRedemption.mutate({ id: r.id, status: "fulfilled" })}>
+                          <div className="flex gap-1.5">
+                            <Button size="sm" variant="default" className="h-7 text-xs rounded-lg" onClick={() => updateRedemption.mutate({ id: r.id, status: "fulfilled" })}>
                               {isAr ? "تنفيذ" : "Fulfill"}
                             </Button>
-                            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => updateRedemption.mutate({ id: r.id, status: "cancelled" })}>
+                            <Button size="sm" variant="outline" className="h-7 text-xs rounded-lg" onClick={() => updateRedemption.mutate({ id: r.id, status: "cancelled" })}>
                               {isAr ? "إلغاء" : "Cancel"}
                             </Button>
                           </div>

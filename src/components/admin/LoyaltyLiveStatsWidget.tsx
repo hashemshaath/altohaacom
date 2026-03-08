@@ -100,10 +100,12 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
   ];
 
   return (
-    <Card className="mb-6">
+    <Card className="mb-6 rounded-2xl border-border/40">
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
-          <Crown className="h-4 w-4 text-chart-4" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10 border border-chart-4/15 transition-transform duration-300 hover:scale-110">
+            <Crown className="h-4 w-4 text-chart-4" />
+          </div>
           {isAr ? "إحصائيات الولاء والمكافآت المباشرة" : "Loyalty & Rewards Live Stats"}
         </CardTitle>
       </CardHeader>

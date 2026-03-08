@@ -66,14 +66,16 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
   const fmt = (n: number) => n.toLocaleString("en");
 
   return (
-    <Card>
+    <Card className="rounded-2xl border-border/40">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-primary" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15 transition-transform duration-300 hover:scale-110">
+              <Wallet className="h-3.5 w-3.5 text-primary" />
+            </div>
             {isAr ? "المحافظ والنقاط" : "Wallets & Points"}
           </CardTitle>
-          <Badge variant="outline" className="text-[9px]">{data.totalWallets} {isAr ? "محفظة" : "wallets"}</Badge>
+          <Badge variant="outline" className="text-[9px] rounded-lg">{data.totalWallets} {isAr ? "محفظة" : "wallets"}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-3 space-y-3">

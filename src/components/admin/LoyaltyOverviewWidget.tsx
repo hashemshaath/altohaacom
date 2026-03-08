@@ -67,16 +67,16 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden rounded-2xl border-border/40">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
-              <Crown className="h-3.5 w-3.5 text-chart-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10 border border-chart-4/15 transition-transform duration-300 hover:scale-110">
+              <Crown className="h-4 w-4 text-chart-4" />
             </div>
             {isAr ? "نظرة عامة على الولاء" : "Loyalty Overview"}
           </CardTitle>
-          <Badge variant="outline" className="text-[10px] gap-1">
+          <Badge variant="outline" className="text-[10px] gap-1 rounded-lg">
             <Star className="h-2.5 w-2.5 text-chart-4" />
             {data?.referralCodes || 0} {isAr ? "رموز إحالة" : "referrals"}
           </Badge>
@@ -89,8 +89,8 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
             { icon: Zap, label: isAr ? "تحديات نشطة" : "Active Challenges", value: data?.activeChallenges, color: "text-chart-2", bg: "bg-chart-2/5 border-chart-2/10" },
             { icon: Gift, label: isAr ? "مكافآت متاحة" : "Active Rewards", value: data?.totalRewards, color: "text-chart-3", bg: "bg-chart-3/5 border-chart-3/10" },
           ].map((m, i) => (
-            <div key={i} className={`text-center p-2.5 rounded-xl border transition-colors hover:bg-muted/40 ${m.bg}`}>
-              <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
+            <div key={i} className={`text-center p-2.5 rounded-xl border transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 group ${m.bg}`}>
+              <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-sm font-bold tabular-nums"><AnimatedCounter value={m.value || 0} /></p>
               <p className="text-[9px] text-muted-foreground">{m.label}</p>
             </div>
