@@ -5,7 +5,7 @@ import { useRef, useEffect, memo, type ReactNode } from "react";
  * Lightweight mobile page transition – fades content in on route change.
  * Uses CSS animations only (no extra deps).
  */
-export function PageTransition({ children }: { children: ReactNode }) {
+export const PageTransition = memo(function PageTransition({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const ref = useRef<HTMLDivElement>(null);
   const prevPath = useRef(pathname);
