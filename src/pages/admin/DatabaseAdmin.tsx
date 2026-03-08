@@ -143,7 +143,7 @@ export default function DatabaseAdmin() {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-muted/30">
                 <TableHead>{language === "ar" ? "الجدول" : "Table"}</TableHead>
                 <TableHead className="text-end">{language === "ar" ? "السجلات" : "Records"}</TableHead>
                 <TableHead className="text-end">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
