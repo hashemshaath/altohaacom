@@ -18,7 +18,7 @@ import { TrendForecastChart } from "./TrendForecastChart";
 
 const COLORS = ["hsl(var(--chart-2))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))", "hsl(var(--primary))"];
 
-export function RevenueAnalytics() {
+export const RevenueAnalytics = memo(function RevenueAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
