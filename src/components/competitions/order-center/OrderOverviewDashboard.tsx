@@ -372,7 +372,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       </div>
     </div>
   );
-}
+});
 
 function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, trendPositive, isValueString }: {
   icon: any; value: number | string; label: string; iconColor: string;
