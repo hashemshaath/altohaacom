@@ -122,11 +122,11 @@ export function PreparationChecklistPanel({ competitionId }: Props) {
     upsertChecklist.mutate(updated);
   };
 
-  if (!user) return null;
-  if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
-
   const completedCount = useMemo(() => items.filter(i => i.completed).length, [items]);
   const progress = useMemo(() => items.length > 0 ? (completedCount / items.length) * 100 : 0, [completedCount, items.length]);
+
+  if (!user) return null;
+  if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
 
   if (!checklist && items.length === 0) {
     return (
