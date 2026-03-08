@@ -20,7 +20,7 @@ const STATUS_STYLES: Record<string, { en: string; ar: string; class: string }> =
   in_progress: { en: "Live", ar: "مباشر", class: "bg-destructive/10 text-destructive border-destructive/20" },
 };
 
-export default function CompetitionsSection() {
+const CompetitionsSection = memo(function CompetitionsSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
