@@ -153,13 +153,13 @@ export default function LoyaltyAdmin() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((s, i) => (
-          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+          <Card key={i} className="rounded-2xl border-border/40 bg-card/80 backdrop-blur group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="p-4 flex items-center gap-3">
-              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 bg-muted`}>
-                <s.icon className={`h-5 w-5 ${s.color}`} />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/60 border border-border/30 transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm`}>
+                <s.icon className={`h-5 w-5 ${s.color} transition-transform duration-300`} />
               </div>
               <div>
-                <p className="text-2xl font-bold">{s.value}</p>
+                <p className="text-2xl font-bold tabular-nums">{s.value}</p>
                 <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
