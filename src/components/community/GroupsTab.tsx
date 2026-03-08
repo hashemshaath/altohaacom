@@ -26,7 +26,7 @@ interface Group {
   is_member: boolean;
 }
 
-export function GroupsTab() {
+export const GroupsTab = memo(function GroupsTab() {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const { toast } = useToast();
