@@ -24,7 +24,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Props) {
+const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId, open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
