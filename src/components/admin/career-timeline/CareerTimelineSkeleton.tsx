@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function CareerTimelineSkeleton() {
+export const CareerTimelineSkeleton = memo(function CareerTimelineSkeleton() {
   return (
     <div className="space-y-3 animate-in fade-in-0 duration-300">
       {[1, 2, 3].map(i => (
