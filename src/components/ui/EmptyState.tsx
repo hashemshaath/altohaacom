@@ -13,7 +13,7 @@ interface EmptyStateProps {
 /**
  * Reusable empty state placeholder for tables, lists, etc.
  */
-export function EmptyState({ icon: Icon, title, description, action, className }: EmptyStateProps) {
+export const EmptyState = memo(function EmptyState({ icon: Icon, title, description, action, className }: EmptyStateProps) {
   return (
     <div className={cn("flex flex-col items-center justify-center py-16 px-4 text-center", className)}>
       <div className="h-14 w-14 rounded-2xl bg-muted/60 flex items-center justify-center mb-4">
