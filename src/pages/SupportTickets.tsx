@@ -490,7 +490,7 @@ export default function SupportTickets() {
                   {filteredTickets.map(ticket => (
                     <Card
                       key={ticket.id}
-                      className="cursor-pointer transition-all hover:border-primary/30 hover:shadow-sm hover:-translate-y-0.5"
+                      className="rounded-2xl border-border/40 cursor-pointer transition-all duration-300 hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5"
                       onClick={() => setSelectedTicket(ticket)}
                     >
                       <CardContent className="flex items-center gap-4 py-4">
