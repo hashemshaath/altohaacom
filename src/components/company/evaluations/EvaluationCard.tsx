@@ -25,7 +25,7 @@ const renderStars = (rating: number) => (
   </div>
 );
 
-export function EvaluationCard({ evaluation, language, onRespond, isResponding }: Props) {
+export const EvaluationCard = memo(function EvaluationCard({ evaluation, language, onRespond, isResponding }: Props) {
   const isAr = language === "ar";
   const [showReply, setShowReply] = useState(false);
   const [response, setResponse] = useState("");
