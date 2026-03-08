@@ -44,7 +44,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
             />
           ) : (
             <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted/20">
-              <ShoppingBag className="h-12 w-12 text-muted-foreground/20" />
+              <ShoppingBag className="h-12 w-12 text-muted-foreground/20 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
             </div>
           )}
 
