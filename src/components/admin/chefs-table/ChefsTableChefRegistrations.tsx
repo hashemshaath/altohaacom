@@ -28,7 +28,7 @@ interface ChefRegistration {
   profile?: { full_name: string; specialization: string; country_code: string; avatar_url: string | null };
 }
 
-export function ChefsTableChefRegistrations() {
+export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrations() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
