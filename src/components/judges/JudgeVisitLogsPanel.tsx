@@ -44,7 +44,7 @@ const emptyForm = {
   role_played: "judge", notes: "", achievements: "",
 };
 
-export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
+const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
