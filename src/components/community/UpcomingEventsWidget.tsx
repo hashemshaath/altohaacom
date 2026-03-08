@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function UpcomingEventsWidget() {
+export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
