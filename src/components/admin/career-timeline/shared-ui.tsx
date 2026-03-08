@@ -266,7 +266,7 @@ export const SortableSectionItem = memo(function SortableSectionItem({ id, child
       </div>
     </SectionDragListenersContext.Provider>
   );
-}
+});
 
 export const SectionDragHandle = memo(function SectionDragHandle() {
   const listeners = useContext(SectionDragListenersContext);

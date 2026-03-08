@@ -43,4 +43,4 @@ export const MaintenanceGuard = memo(function MaintenanceGuard({ children }: Pro
   }
 
   return <>{children}</>;
-}
+});

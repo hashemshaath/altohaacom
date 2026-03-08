@@ -136,4 +136,4 @@ export const AddGroupMembersDialog = memo(function AddGroupMembersDialog({ open,
       </DialogContent>
     </Dialog>
   );
-}
+});

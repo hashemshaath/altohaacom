@@ -22,4 +22,4 @@ export const Toaster = memo(function Toaster() {
       <ToastViewport />
     </ToastProvider>
   );
-}
+});
