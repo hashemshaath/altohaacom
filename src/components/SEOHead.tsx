@@ -20,7 +20,7 @@ interface SEOHeadProps {
   author?: string;
 }
 
-export function SEOHead({
+export const SEOHead = memo(function SEOHead({
   title,
   description,
   ogImage,
