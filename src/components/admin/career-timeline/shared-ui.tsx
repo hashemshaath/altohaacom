@@ -85,7 +85,7 @@ export const EmptyState = memo(function EmptyState({ icon: Icon, message }: { ic
   );
 });
 
-export function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
+export const AddButton = memo(function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <Button variant="outline" size="sm" className="w-full gap-2 text-xs h-9 border-dashed hover:bg-muted/50 hover:border-border/80 transition-all" onClick={onClick}>
       <Plus className="h-3.5 w-3.5" />{label}
