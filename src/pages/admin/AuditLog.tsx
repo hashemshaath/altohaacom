@@ -246,7 +246,7 @@ export default function AuditLog() {
             onClear={bulkContent.clearSelection}
             onExport={() => exportContentCSV(bulkContent.selectedItems)}
           />
-          <Card className="border-border/50">
+          <Card className="rounded-2xl border-border/40 overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="flex items-center gap-2 text-sm">
