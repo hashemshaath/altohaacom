@@ -23,7 +23,7 @@ interface ScheduleItem {
   link?: string;
 }
 
-export function PublicProfileSchedule({ userId, isAr }: Props) {
+export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userId, isAr }: Props) {
   const { data: chefEvents = [] } = usePublicChefSchedule(userId);
 
   const { data: schedule = [] } = useQuery({
