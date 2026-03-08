@@ -34,7 +34,7 @@ const IMPORTANCE_LEVELS = [
   { value: "critical", labelEn: "Critical", labelAr: "حرج", color: "text-destructive" },
 ];
 
-export function AdminListDetailPanel({ listId, onBack }: Props) {
+export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId, onBack }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
