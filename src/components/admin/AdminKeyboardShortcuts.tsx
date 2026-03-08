@@ -19,7 +19,7 @@ const SHORTCUTS = [
   { keys: ["?"], action: "show_help", label: "Show Shortcuts", labelAr: "إظهار الاختصارات" },
 ];
 
-export function AdminKeyboardShortcuts() {
+export const AdminKeyboardShortcuts = memo(function AdminKeyboardShortcuts() {
   const navigate = useNavigate();
   const [showHelp, setShowHelp] = useState(false);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
