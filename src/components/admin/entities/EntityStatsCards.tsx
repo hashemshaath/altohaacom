@@ -19,7 +19,7 @@ interface Props {
   onFilterChange?: (filter: string) => void;
 }
 
-export default function EntityStatsCards({ stats, activeFilter, onFilterChange }: Props) {
+const EntityStatsCards = memo(function EntityStatsCards({ stats, activeFilter, onFilterChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
