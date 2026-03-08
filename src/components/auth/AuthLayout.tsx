@@ -11,7 +11,7 @@ interface AuthLayoutProps {
   currentStep?: number;
 }
 
-export function AuthLayout({ children, stage, isAr, showFooter = false, currentStep }: AuthLayoutProps) {
+export const AuthLayout = memo(function AuthLayout({ children, stage, isAr, showFooter = false, currentStep }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden">
       <Header />
