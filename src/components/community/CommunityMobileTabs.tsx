@@ -17,7 +17,7 @@ const TAB_FEATURE_MAP: Record<string, string> = {
   live: "feature_live_sessions",
 };
 
-export function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobileTabsProps) {
+export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab, setActiveTab }: CommunityMobileTabsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
