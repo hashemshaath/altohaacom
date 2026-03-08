@@ -16,7 +16,7 @@ interface TrendIndicatorProps {
  * A compact trend arrow with value, colored by direction.
  * Use alongside stats, KPIs, and metric cards.
  */
-export function TrendIndicator({ value, suffix, isPercentage = true, className, size = "sm" }: TrendIndicatorProps) {
+export const TrendIndicator = memo(function TrendIndicator({ value, suffix, isPercentage = true, className, size = "sm" }: TrendIndicatorProps) {
   const isPositive = value > 0;
   const isNeutral = value === 0;
 
