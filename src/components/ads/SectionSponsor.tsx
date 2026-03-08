@@ -8,7 +8,7 @@ interface SectionSponsorProps {
   sectionId?: string;
 }
 
-export function SectionSponsor({ sectionType, sectionId }: SectionSponsorProps) {
+export const SectionSponsor = memo(function SectionSponsor({ sectionType, sectionId }: SectionSponsorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
