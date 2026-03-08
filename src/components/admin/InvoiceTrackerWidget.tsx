@@ -18,7 +18,7 @@ const STATUS_COLORS: Record<string, string> = {
   partial: "hsl(var(--chart-4))",
 };
 
-export function InvoiceTrackerWidget() {
+export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
