@@ -79,7 +79,10 @@ export default function CompanyInvitations() {
     expired: { color: "outline", icon: Clock, label: "Expired", labelAr: "منتهية" },
   };
 
-  const pendingCount = invitations?.filter(i => i.status === "pending").length || 0;
+  const { pendingCount, acceptedCount } = useMemo(() => ({
+    pendingCount: invitations?.filter(i => i.status === "pending").length || 0,
+    acceptedCount: invitations?.filter(i => i.status === "accepted").length || 0,
+  }), [invitations]);
 
   return (
     <div className="space-y-6">
