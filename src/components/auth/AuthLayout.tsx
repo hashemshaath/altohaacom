@@ -27,4 +27,4 @@ export const AuthLayout = memo(function AuthLayout({ children, stage, isAr, show
       {showFooter && <Footer />}
     </div>
   );
-}
+});

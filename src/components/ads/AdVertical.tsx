@@ -105,4 +105,4 @@ export const AdVertical = memo(function AdVertical({ placementSlug = "sidebar-ve
       </span>
     </div>
   );
-}
+});

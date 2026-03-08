@@ -171,4 +171,4 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
       )}
     </aside>
   );
-}
+});

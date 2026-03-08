@@ -190,4 +190,4 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
       </DialogContent>
     </Dialog>
   );
-}
+});

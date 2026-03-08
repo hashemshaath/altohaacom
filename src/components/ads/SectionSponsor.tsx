@@ -48,4 +48,4 @@ export const SectionSponsor = memo(function SectionSponsor({ sectionType, sectio
       <span className="font-medium">{isAr ? company?.name_ar : company?.name}</span>
     </div>
   );
-}
+});

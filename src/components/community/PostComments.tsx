@@ -187,4 +187,4 @@ export const PostComments = memo(function PostComments({ postId, onCommentCountC
       )}
     </div>
   );
-}
+});

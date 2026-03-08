@@ -160,4 +160,4 @@ export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProp
       </p>
     </div>
   );
-}
+});

@@ -219,4 +219,4 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
       )}
     </aside>
   );
-}
+});

@@ -119,4 +119,4 @@ export const MentionAutocomplete = memo(function MentionAutocomplete({ content, 
       ))}
     </div>
   );
-}
+});

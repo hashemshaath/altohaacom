@@ -111,4 +111,4 @@ export const ReportDialog = memo(function ReportDialog({ postId, onClose }: Repo
       </DialogContent>
     </Dialog>
   );
-}
+});

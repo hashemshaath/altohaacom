@@ -77,4 +77,4 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
       </div>
     </div>
   );
-}
+});

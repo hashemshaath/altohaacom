@@ -162,4 +162,4 @@ export const BookmarkCollections = memo(function BookmarkCollections({ postId }:
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

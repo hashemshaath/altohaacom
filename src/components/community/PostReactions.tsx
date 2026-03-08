@@ -131,4 +131,4 @@ export const PostReactions = memo(function PostReactions({ postId }: PostReactio
       )}
     </div>
   );
-}
+});

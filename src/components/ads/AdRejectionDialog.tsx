@@ -90,4 +90,4 @@ export const AdRejectionDialog = memo(function AdRejectionDialog({ open, onOpenC
       </DialogContent>
     </Dialog>
   );
-}
+});

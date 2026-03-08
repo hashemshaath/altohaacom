@@ -178,4 +178,4 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({ stage, isAr, currentS
       </div>
     </div>
   );
-}
+});

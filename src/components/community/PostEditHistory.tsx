@@ -79,4 +79,4 @@ export const PostEditHistory = memo(function PostEditHistory({ postId, onClose }
       </DialogContent>
     </Dialog>
   );
-}
+});
