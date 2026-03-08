@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,7 +32,7 @@ interface EntitySelectorProps {
   label?: string;
 }
 
-export function EntitySelector({ value, entityName, onChange, label }: EntitySelectorProps) {
+export const EntitySelector = memo(function EntitySelector({ value, entityName, onChange, label }: EntitySelectorProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -380,4 +380,4 @@ export function EntitySelector({ value, entityName, onChange, label }: EntitySel
       )}
     </div>
   );
-}
+});

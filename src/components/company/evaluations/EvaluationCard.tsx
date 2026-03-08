@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ const renderStars = (rating: number) => (
   </div>
 );
 
-export function EvaluationCard({ evaluation, language, onRespond, isResponding }: Props) {
+export const EvaluationCard = memo(function EvaluationCard({ evaluation, language, onRespond, isResponding }: Props) {
   const isAr = language === "ar";
   const [showReply, setShowReply] = useState(false);
   const [response, setResponse] = useState("");
@@ -143,4 +143,4 @@ export function EvaluationCard({ evaluation, language, onRespond, isResponding }
       </CardContent>
     </Card>
   );
-}
+});

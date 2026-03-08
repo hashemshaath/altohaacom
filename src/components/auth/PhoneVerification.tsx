@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +41,7 @@ const VirtualOTPService = {
   },
 };
 
-export function PhoneVerification({ onVerified, onBack, initialPhone = "", phoneCode = "", mode = "signup" }: PhoneVerificationProps) {
+export const PhoneVerification = memo(function PhoneVerification({ onVerified, onBack, initialPhone = "", phoneCode = "", mode = "signup" }: PhoneVerificationProps) {
   const { t, language } = useLanguage();
   const { toast } = useToast();
   
@@ -280,4 +280,4 @@ export function PhoneVerification({ onVerified, onBack, initialPhone = "", phone
       )}
     </div>
   );
-}
+});

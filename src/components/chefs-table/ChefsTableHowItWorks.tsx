@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Building2, ChefHat, Package, Star, FileCheck, Megaphone } from "lucide-react";
 
 interface ChefsTableHowItWorksProps {
@@ -49,7 +50,7 @@ const steps = [
   },
 ];
 
-export function ChefsTableHowItWorks({ isAr }: ChefsTableHowItWorksProps) {
+export const ChefsTableHowItWorks = memo(function ChefsTableHowItWorks({ isAr }: ChefsTableHowItWorksProps) {
   return (
     <section className="container py-16 md:py-20">
       <div className="mx-auto max-w-2xl text-center mb-12">
@@ -88,4 +89,4 @@ export function ChefsTableHowItWorks({ isAr }: ChefsTableHowItWorksProps) {
       </div>
     </section>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -15,7 +15,7 @@ interface Props {
   sessions: ChefsTableSession[];
 }
 
-export function ChefsTableAnalytics({ requests, sessions }: Props) {
+export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests, sessions }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -203,4 +203,4 @@ export function ChefsTableAnalytics({ requests, sessions }: Props) {
       </div>
     </div>
   );
-}
+});

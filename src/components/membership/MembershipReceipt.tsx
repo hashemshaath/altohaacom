@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "المؤسسي" },
 };
 
-export function MembershipReceipt({ receiptData }: MembershipReceiptProps) {
+export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }: MembershipReceiptProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const receiptRef = useRef<HTMLDivElement>(null);
@@ -180,4 +180,4 @@ export function MembershipReceipt({ receiptData }: MembershipReceiptProps) {
       </Button>
     </div>
   );
-}
+});

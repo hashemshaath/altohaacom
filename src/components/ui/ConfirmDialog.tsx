@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -19,7 +20,7 @@ interface ConfirmDialogProps {
 /**
  * Reusable confirmation dialog for destructive or important actions.
  */
-export function ConfirmDialog({
+export const ConfirmDialog = memo(function ConfirmDialog({
   open, onOpenChange, title, description,
   confirmLabel = "Confirm", cancelLabel = "Cancel",
   variant = "default", onConfirm, loading,
@@ -44,4 +45,4 @@ export function ConfirmDialog({
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+});

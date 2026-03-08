@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -39,7 +39,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-1))",
 ];
 
-export function OrganizerAnalyticsTab({
+export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
   exhibitions, byYear, sortedYears, upcoming, active, past,
   countries, totalExhibitions, totalViews, totalTickets, totalReviews,
   editionStats, types, isAr,
@@ -360,4 +360,4 @@ export function OrganizerAnalyticsTab({
       </div>
     </div>
   );
-}
+});

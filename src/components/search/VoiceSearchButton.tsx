@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Mic, MicOff } from "lucide-react";
@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-export function VoiceSearchButton({ onResult, className }: Props) {
+export const VoiceSearchButton = memo(function VoiceSearchButton({ onResult, className }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isListening, setIsListening] = useState(false);
@@ -54,4 +54,4 @@ export function VoiceSearchButton({ onResult, className }: Props) {
       {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
     </Button>
   );
-}
+});

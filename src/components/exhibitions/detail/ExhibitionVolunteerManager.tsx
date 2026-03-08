@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +20,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
+export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState("all");
@@ -257,4 +258,4 @@ export function ExhibitionVolunteerManager({ exhibitionId, isAr }: Props) {
       </Card>
     </div>
   );
-}
+});

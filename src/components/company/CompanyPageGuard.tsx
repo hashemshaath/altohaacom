@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useCanAccessPage } from "@/hooks/useCompanyPermissions";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ShieldX } from "lucide-react";
@@ -10,7 +11,7 @@ interface CompanyPageGuardProps {
   children: React.ReactNode;
 }
 
-export function CompanyPageGuard({ page, children }: CompanyPageGuardProps) {
+export const CompanyPageGuard = memo(function CompanyPageGuard({ page, children }: CompanyPageGuardProps) {
   const canAccess = useCanAccessPage(page);
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -42,4 +43,4 @@ export function CompanyPageGuard({ page, children }: CompanyPageGuardProps) {
   }
 
   return <>{children}</>;
-}
+});

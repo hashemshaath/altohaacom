@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Image as ImageIcon } from "lucide-react";
@@ -14,7 +14,7 @@ interface ImagePreviewEditorProps {
   readOnly?: boolean;
 }
 
-export function ImagePreviewEditor({ label, value, editing, fieldKey, onUpdate, aspectRatio, readOnly }: ImagePreviewEditorProps) {
+export const ImagePreviewEditor = memo(function ImagePreviewEditor({ label, value, editing, fieldKey, onUpdate, aspectRatio, readOnly }: ImagePreviewEditorProps) {
   const [url, setUrl] = useState(value || "");
   const imgClass = aspectRatio === "wide" ? "max-h-32" : "max-h-48";
 
@@ -46,4 +46,4 @@ export function ImagePreviewEditor({ label, value, editing, fieldKey, onUpdate, 
       )}
     </div>
   );
-}
+});

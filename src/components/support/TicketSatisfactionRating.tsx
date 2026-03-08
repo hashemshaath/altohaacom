@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ interface TicketSatisfactionRatingProps {
   existingRating?: number | null;
 }
 
-export function TicketSatisfactionRating({ ticketId, ticketStatus, existingRating }: TicketSatisfactionRatingProps) {
+export const TicketSatisfactionRating = memo(function TicketSatisfactionRating({ ticketId, ticketStatus, existingRating }: TicketSatisfactionRatingProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [rating, setRating] = useState(existingRating || 0);
@@ -99,4 +99,4 @@ export function TicketSatisfactionRating({ ticketId, ticketStatus, existingRatin
       </CardContent>
     </Card>
   );
-}
+});

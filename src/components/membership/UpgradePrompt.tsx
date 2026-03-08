@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +15,7 @@ interface UpgradePromptProps {
   className?: string;
 }
 
-export function UpgradePrompt({
+export const UpgradePrompt = memo(function UpgradePrompt({
   featureName,
   featureNameAr,
   variant = "inline",
@@ -126,4 +127,4 @@ export function UpgradePrompt({
       </CardContent>
     </Card>
   );
-}
+});
