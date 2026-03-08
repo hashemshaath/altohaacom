@@ -79,7 +79,7 @@ const CHANNELS = [
   { value: "sms", label: "SMS", labelAr: "رسالة نصية", icon: Phone },
 ];
 
-export function ParticipantsList({ competitionId, isOrganizer = false }: ParticipantsListProps) {
+export const ParticipantsList = memo(function ParticipantsList({ competitionId, isOrganizer = false }: ParticipantsListProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
