@@ -36,7 +36,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: Props) {
+const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
