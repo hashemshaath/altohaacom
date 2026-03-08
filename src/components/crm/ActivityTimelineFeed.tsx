@@ -18,7 +18,7 @@ interface TimelineItem {
   status?: string;
 }
 
-export function ActivityTimelineFeed() {
+export const ActivityTimelineFeed = memo(function ActivityTimelineFeed() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
