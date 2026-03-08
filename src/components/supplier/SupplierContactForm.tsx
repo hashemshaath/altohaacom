@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +15,7 @@ interface SupplierContactFormProps {
   companyName: string;
 }
 
-export function SupplierContactForm({ companyId, companyName }: SupplierContactFormProps) {
+export const SupplierContactForm = memo(function SupplierContactForm({ companyId, companyName }: SupplierContactFormProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -107,4 +107,4 @@ export function SupplierContactForm({ companyId, companyName }: SupplierContactF
       </CardContent>
     </Card>
   );
-}
+});

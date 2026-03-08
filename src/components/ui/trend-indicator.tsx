@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 
@@ -15,7 +16,7 @@ interface TrendIndicatorProps {
  * A compact trend arrow with value, colored by direction.
  * Use alongside stats, KPIs, and metric cards.
  */
-export function TrendIndicator({ value, suffix, isPercentage = true, className, size = "sm" }: TrendIndicatorProps) {
+export const TrendIndicator = memo(function TrendIndicator({ value, suffix, isPercentage = true, className, size = "sm" }: TrendIndicatorProps) {
   const isPositive = value > 0;
   const isNeutral = value === 0;
 
@@ -36,4 +37,4 @@ export function TrendIndicator({ value, suffix, isPercentage = true, className, 
       {Math.abs(value)}{isPercentage ? "%" : ""}{suffix ? ` ${suffix}` : ""}
     </span>
   );
-}
+});

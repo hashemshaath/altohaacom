@@ -73,7 +73,7 @@ export const VideoEmbed = memo(function VideoEmbed({ url, theme }: { url: string
 });
 
 // ── Section Divider ──
-export function SectionDivider({ color }: { color: string }) {
+export const SectionDivider = memo(function SectionDivider({ color }: { color: string }) {
   return (
     <div className="flex items-center justify-center gap-3 my-5">
       <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(to right, transparent, ${color})` }} />
@@ -81,10 +81,10 @@ export function SectionDivider({ color }: { color: string }) {
       <div className="h-px flex-1 max-w-[60px]" style={{ background: `linear-gradient(to left, transparent, ${color})` }} />
     </div>
   );
-}
+});
 
 // ── Contact Form ──
-export function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerName }: {
+export const ContactFormSection = memo(function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerName }: {
   theme: any; lang: LangCode; isRtl: boolean; profileUserId: string; ownerName: string;
 }) {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -136,10 +136,10 @@ export function ContactFormSection({ theme, lang, isRtl, profileUserId, ownerNam
       </button>
     </div>
   );
-}
+});
 
 // ── Email Subscription ──
-export function EmailSubscriptionSection({ theme, lang, isRtl, profileUserId, pageId, extra }: {
+export const EmailSubscriptionSection = memo(function EmailSubscriptionSection({ theme, lang, isRtl, profileUserId, pageId, extra }: {
   theme: any; lang: LangCode; isRtl: boolean; profileUserId: string; pageId: string; extra: any;
 }) {
   const [subEmail, setSubEmail] = useState("");
@@ -196,4 +196,4 @@ export function EmailSubscriptionSection({ theme, lang, isRtl, profileUserId, pa
       </div>
     </div>
   );
-}
+});

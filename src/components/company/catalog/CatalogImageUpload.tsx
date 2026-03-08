@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ interface CatalogImageUploadProps {
   language: string;
 }
 
-export function CatalogImageUpload({ imageUrl, onImageChange, companyId, language }: CatalogImageUploadProps) {
+export const CatalogImageUpload = memo(function CatalogImageUpload({ imageUrl, onImageChange, companyId, language }: CatalogImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -96,4 +96,4 @@ export function CatalogImageUpload({ imageUrl, onImageChange, companyId, languag
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
     </div>
   );
-}
+});

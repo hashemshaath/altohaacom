@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, FileImage, FileSpreadsheet, File } from "lucide-react";
@@ -23,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionDocuments({ documents, isAr }: Props) {
+export const ExhibitionDocuments = memo(function ExhibitionDocuments({ documents, isAr }: Props) {
   if (!documents || !Array.isArray(documents)) return null;
 
   const docs = (documents as DocumentItem[]).filter((d) => d?.url);
@@ -63,4 +64,4 @@ export function ExhibitionDocuments({ documents, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

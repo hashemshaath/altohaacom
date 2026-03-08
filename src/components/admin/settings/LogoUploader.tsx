@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Upload, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ interface Props {
   folder?: string;
 }
 
-export function LogoUploader({ label, labelAr, isAr, value, onChange, bgClass = "bg-muted/20", folder = "logos" }: Props) {
+export const LogoUploader = memo(function LogoUploader({ label, labelAr, isAr, value, onChange, bgClass = "bg-muted/20", folder = "logos" }: Props) {
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -86,4 +86,4 @@ export function LogoUploader({ label, labelAr, isAr, value, onChange, bgClass = 
       </div>
     </div>
   );
-}
+});

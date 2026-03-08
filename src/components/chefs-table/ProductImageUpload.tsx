@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +13,7 @@ interface Props {
   isAr?: boolean;
 }
 
-export function ProductImageUpload({ images, onImagesChange, userId, maxImages = 5, isAr }: Props) {
+export const ProductImageUpload = memo(function ProductImageUpload({ images, onImagesChange, userId, maxImages = 5, isAr }: Props) {
   const [uploading, setUploading] = useState(false);
 
   const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,4 +125,4 @@ export function ProductImageUpload({ images, onImagesChange, userId, maxImages =
       )}
     </div>
   );
-}
+});

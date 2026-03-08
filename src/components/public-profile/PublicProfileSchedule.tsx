@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,7 +23,7 @@ interface ScheduleItem {
   link?: string;
 }
 
-export function PublicProfileSchedule({ userId, isAr }: Props) {
+export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userId, isAr }: Props) {
   const { data: chefEvents = [] } = usePublicChefSchedule(userId);
 
   const { data: schedule = [] } = useQuery({
@@ -160,4 +161,4 @@ export function PublicProfileSchedule({ userId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});
