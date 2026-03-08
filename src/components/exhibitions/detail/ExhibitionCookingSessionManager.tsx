@@ -20,7 +20,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionCookingSessionManager({ exhibitionId, isAr }: Props) {
+export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSessionManager({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
