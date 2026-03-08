@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, type LucideIcon } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
