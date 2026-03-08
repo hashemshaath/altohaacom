@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-export function ThemeToggle() {
+export const ThemeToggle = memo(function ThemeToggle() {
   const { setTheme, theme } = useTheme();
   const { t } = useLanguage();
 
