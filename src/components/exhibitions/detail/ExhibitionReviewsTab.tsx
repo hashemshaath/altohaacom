@@ -250,7 +250,7 @@ function ReportButton({ reviewId, isAr }: { reviewId: string; isAr: boolean }) {
   );
 }
 
-export function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }: Props) {
+export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibitionId, hasEnded, isAr, creatorId }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
