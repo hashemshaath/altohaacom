@@ -26,7 +26,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardProps) {
+export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: analytics, isLoading } = useProfileAnalytics(userId);
