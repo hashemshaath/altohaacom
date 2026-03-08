@@ -11,7 +11,7 @@ interface ShimmerCardProps extends React.HTMLAttributes<HTMLDivElement> {
 /**
  * Pre-built shimmer loading cards for common content patterns.
  */
-export function ShimmerCard({ variant = "default", lines = 3, className, ...props }: ShimmerCardProps) {
+export const ShimmerCard = memo(function ShimmerCard({ variant = "default", lines = 3, className, ...props }: ShimmerCardProps) {
   if (variant === "stat") {
     return (
       <div className={cn("rounded-xl border border-border/40 p-4 space-y-3", className)} {...props}>
