@@ -121,7 +121,7 @@ export const Header = memo(function Header() {
           )}
           {headerCfg.showSearch !== false && (
             <div className="hidden md:block">
-              <Button variant="ghost" size="icon" asChild className="rounded-full">
+              <Button variant="ghost" size="icon" asChild className="rounded-xl">
                 <Link to="/search"><Search className="h-4 w-4" /></Link>
               </Button>
             </div>
