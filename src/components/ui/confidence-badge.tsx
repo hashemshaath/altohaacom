@@ -23,7 +23,7 @@ const config: Record<Level, { icon: typeof CheckCircle2; colors: string; default
  * Shows data confidence or verification level.
  * Use alongside metrics, user profiles, and data tables.
  */
-export function ConfidenceBadge({ level, label, className }: ConfidenceBadgeProps) {
+export const ConfidenceBadge = memo(function ConfidenceBadge({ level, label, className }: ConfidenceBadgeProps) {
   const c = config[level];
   const Icon = c.icon;
 
