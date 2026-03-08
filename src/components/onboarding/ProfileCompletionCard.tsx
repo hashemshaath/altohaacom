@@ -18,7 +18,7 @@ const FIELDS = [
   { key: "social", labelEn: "Social", labelAr: "التواصل", icon: Globe, check: (p: any) => !!p?.instagram || !!p?.twitter || !!p?.linkedin },
 ];
 
-export function ProfileCompletionCard() {
+export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
