@@ -13,7 +13,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
-export function FanEventWatchlist() {
+export const FanEventWatchlist = memo(function FanEventWatchlist() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
