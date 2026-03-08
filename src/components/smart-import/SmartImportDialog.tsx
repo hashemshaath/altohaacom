@@ -169,7 +169,7 @@ interface SmartImportDialogProps {
   entityType?: "entity" | "company" | "establishment" | "competition" | "exhibition";
 }
 
-export function SmartImportDialog({
+export const SmartImportDialog = memo(function SmartImportDialog({
   open,
   onOpenChange,
   onImport,
