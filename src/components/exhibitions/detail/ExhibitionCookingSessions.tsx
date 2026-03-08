@@ -400,4 +400,4 @@ export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions
       )}
     </div>
   );
-}
+});

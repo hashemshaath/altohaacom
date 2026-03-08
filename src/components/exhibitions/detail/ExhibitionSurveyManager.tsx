@@ -330,4 +330,4 @@ function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhib
       </CardContent>
     </Card>
   );
-}
+});

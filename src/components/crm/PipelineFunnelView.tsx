@@ -97,4 +97,4 @@ export const PipelineFunnelView = memo(function PipelineFunnelView() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -26,4 +26,4 @@ export const EmptyState = memo(function EmptyState({ icon: Icon, title, descript
       {action && <div className="mt-4">{action}</div>}
     </div>
   );
-}
+});

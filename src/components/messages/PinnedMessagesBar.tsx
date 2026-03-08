@@ -65,4 +65,4 @@ export const PinnedMessagesBar = memo(function PinnedMessagesBar({ pinnedMessage
       )}
     </div>
   );
-}
+});

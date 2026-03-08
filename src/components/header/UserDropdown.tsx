@@ -186,4 +186,4 @@ export const UserDropdown = memo(function UserDropdown() {
       </DropdownMenu>
     </div>
   );
-}
+});

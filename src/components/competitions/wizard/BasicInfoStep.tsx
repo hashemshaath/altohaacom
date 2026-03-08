@@ -188,4 +188,4 @@ export const BasicInfoStep = memo(function BasicInfoStep({ data, onChange }: Bas
       </CardContent>
     </Card>
   );
-}
+});

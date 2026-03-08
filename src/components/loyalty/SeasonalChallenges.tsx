@@ -144,4 +144,4 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
       </CardContent>
     </Card>
   );
-}
+});

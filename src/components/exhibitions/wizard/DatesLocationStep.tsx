@@ -196,4 +196,4 @@ export const ExhibitionDatesLocationStep = memo(function ExhibitionDatesLocation
       </Card>
     </div>
   );
-}
+});
