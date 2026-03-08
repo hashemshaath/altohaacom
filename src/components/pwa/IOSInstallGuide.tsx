@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Share, Plus, X, ArrowDown } from "lucide-react";
@@ -11,7 +11,7 @@ function isInStandaloneMode() {
   return window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone;
 }
 
-export function IOSInstallGuide() {
+export const IOSInstallGuide = memo(function IOSInstallGuide() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [show, setShow] = useState(false);
@@ -98,4 +98,4 @@ export function IOSInstallGuide() {
       </div>
     </div>
   );
-}
+});

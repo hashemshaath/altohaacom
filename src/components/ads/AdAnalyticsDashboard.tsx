@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function AdAnalyticsDashboard() {
+export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -315,4 +315,4 @@ export function AdAnalyticsDashboard() {
       </Card>
     </div>
   );
-}
+});

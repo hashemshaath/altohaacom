@@ -1,9 +1,10 @@
+import { memo } from "react";
 import { useInstallPrompt } from "@/hooks/usePWA";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Download, X, Smartphone, Zap, WifiOff } from "lucide-react";
 
-export function SmartInstallBanner() {
+export const SmartInstallBanner = memo(function SmartInstallBanner() {
   const { canInstall, install, dismiss } = useInstallPrompt();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -56,4 +57,4 @@ export function SmartInstallBanner() {
       </div>
     </div>
   );
-}
+});

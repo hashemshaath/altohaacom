@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,7 +70,7 @@ const metaIntegrations = [
   },
 ];
 
-export function MetaPixelPanel() {
+export const MetaPixelPanel = memo(function MetaPixelPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
@@ -197,4 +197,4 @@ export function MetaPixelPanel() {
       </div>
     </div>
   );
-}
+});

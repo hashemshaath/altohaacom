@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -57,7 +57,7 @@ const tiktokIntegrations = [
   },
 ];
 
-export function TikTokPixelPanel() {
+export const TikTokPixelPanel = memo(function TikTokPixelPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
@@ -184,4 +184,4 @@ export function TikTokPixelPanel() {
       </div>
     </div>
   );
-}
+});

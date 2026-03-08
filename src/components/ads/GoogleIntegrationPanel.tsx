@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,7 +79,7 @@ const googleIntegrations = [
   },
 ];
 
-export function GoogleIntegrationPanel() {
+export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
@@ -237,4 +237,4 @@ export function GoogleIntegrationPanel() {
       </div>
     </div>
   );
-}
+});

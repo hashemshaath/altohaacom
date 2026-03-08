@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useQuery } from "@tanstack/react-query";
@@ -83,7 +84,7 @@ const STEPS: Step[] = [
   },
 ];
 
-export function SupplierProfileCompletion() {
+export const SupplierProfileCompletion = memo(function SupplierProfileCompletion() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
@@ -155,4 +156,4 @@ export function SupplierProfileCompletion() {
       </CardContent>
     </Card>
   );
-}
+});

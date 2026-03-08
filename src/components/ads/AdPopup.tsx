@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function AdPopup() {
+export const AdPopup = memo(function AdPopup() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [visible, setVisible] = useState(false);
@@ -104,4 +104,4 @@ export function AdPopup() {
       </div>
     </div>
   );
-}
+});

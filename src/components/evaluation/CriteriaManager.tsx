@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useEvaluationDomains,
@@ -45,7 +45,7 @@ const DOMAIN_ICONS: Record<string, React.ElementType> = {
   beverage: Coffee,
 };
 
-export function CriteriaManager() {
+export const CriteriaManager = memo(function CriteriaManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: domains, isLoading: domainsLoading } = useEvaluationDomains();
@@ -397,4 +397,4 @@ export function CriteriaManager() {
       </Tabs>
     </div>
   );
-}
+});

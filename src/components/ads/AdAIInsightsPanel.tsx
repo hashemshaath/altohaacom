@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, TrendingUp, Target, DollarSign, Clock, RefreshCw, Users, Repeat } from "lucide-react";
 
-export function AdAIInsightsPanel() {
+export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [refreshKey, setRefreshKey] = useState(0);
@@ -146,4 +146,4 @@ export function AdAIInsightsPanel() {
       </div>
     </div>
   );
-}
+});

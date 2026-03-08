@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart, Download } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function SupplierAnalyticsDashboard() {
+export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
@@ -220,4 +220,4 @@ export function SupplierAnalyticsDashboard() {
       </div>
     </div>
   );
-}
+});

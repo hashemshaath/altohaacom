@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +35,7 @@ interface Product {
   image_url: string | null;
 }
 
-export function SupplierCatalogManager() {
+export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
@@ -294,4 +294,4 @@ export function SupplierCatalogManager() {
       )}
     </div>
   );
-}
+});

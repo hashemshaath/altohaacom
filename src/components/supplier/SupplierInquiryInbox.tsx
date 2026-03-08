@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MessageSquare, Mail, Reply, CheckCircle, Clock, Eye } from "lucide-react";
 import { format } from "date-fns";
 
-export function SupplierInquiryInbox() {
+export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
@@ -209,4 +209,4 @@ export function SupplierInquiryInbox() {
       </div>
     </div>
   );
-}
+});

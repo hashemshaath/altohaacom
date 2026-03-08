@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,7 +18,7 @@ const QUICK_ACTIONS = [
   { icon: Image, labelEn: "Media", labelAr: "الوسائط", to: "/company/media", color: "bg-chart-4/10 text-chart-4" },
 ];
 
-export function CompanyQuickActions() {
+export const CompanyQuickActions = memo(function CompanyQuickActions() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -45,4 +46,4 @@ export function CompanyQuickActions() {
       })}
     </div>
   );
-}
+});

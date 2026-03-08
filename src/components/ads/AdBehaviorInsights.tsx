@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +16,7 @@ const COLORS = [
   "hsl(var(--chart-4))", "hsl(var(--chart-5))",
 ];
 
-export function AdBehaviorInsights() {
+export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -178,4 +178,4 @@ export function AdBehaviorInsights() {
       </Card>
     </div>
   );
-}
+});
