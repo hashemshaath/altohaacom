@@ -339,9 +339,11 @@ export default function CommunicationsAdmin() {
       })
     : messages;
 
-  const unreadCount = messages.filter((m) => m.direction === "outgoing" && m.status === "unread").length;
-  const urgentCount = messages.filter((m) => m.priority === "urgent" && m.status === "unread").length;
-  const starredCount = messages.filter((m) => m.is_starred).length;
+  const { unreadCount, urgentCount, starredCount } = useMemo(() => ({
+    unreadCount: messages.filter((m) => m.direction === "outgoing" && m.status === "unread").length,
+    urgentCount: messages.filter((m) => m.priority === "urgent" && m.status === "unread").length,
+    starredCount: messages.filter((m) => m.is_starred).length,
+  }), [messages]);
 
   // Analytics computations
   const analytics = useMemo(() => {

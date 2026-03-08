@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +87,14 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
     return isAr ? (labels[s]?.ar || s) : (labels[s]?.en || s);
   };
 
+  // Stats
+  const { totalImports, completedImports, totalRecords, uniqueChefs } = useMemo(() => ({
+    totalImports: imports.length,
+    completedImports: imports.filter(i => i.status === "completed").length,
+    totalRecords: imports.reduce((sum, i) => sum + (i.records_created || 0), 0),
+    uniqueChefs: new Set(imports.map(i => i.chef_id)).size,
+  }), [imports]);
+
   if (loading) {
     return (
       <Card>
@@ -99,12 +107,6 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
   }
 
   if (imports.length === 0) return null;
-
-  // Stats
-  const totalImports = imports.length;
-  const completedImports = imports.filter(i => i.status === "completed").length;
-  const totalRecords = imports.reduce((sum, i) => sum + (i.records_created || 0), 0);
-  const uniqueChefs = new Set(imports.map(i => i.chef_id)).size;
 
   // Filter
   const filtered = imports.filter(imp => {

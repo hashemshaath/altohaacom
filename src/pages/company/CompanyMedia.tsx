@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -80,16 +80,16 @@ export default function CompanyMedia() {
     enabled: !!companyId,
   });
 
-  const filtered = media.filter((item) => {
+  const filtered = useMemo(() => media.filter((item) => {
     const q = search.toLowerCase();
     const matchesSearch = !search ||
       (item.title || "").toLowerCase().includes(q) ||
       item.filename.toLowerCase().includes(q);
     const matchesCat = categoryFilter === "all" || item.category === categoryFilter;
     return matchesSearch && matchesCat;
-  });
+  }), [media, search, categoryFilter]);
 
-  const imageItems = filtered.filter((m) => m.file_type?.startsWith("image"));
+  const imageItems = useMemo(() => filtered.filter((m) => m.file_type?.startsWith("image")), [filtered]);
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || !companyId) return;
