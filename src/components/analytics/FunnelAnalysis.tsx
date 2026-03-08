@@ -16,7 +16,7 @@ interface FunnelStep {
   color: string;
 }
 
-export function FunnelAnalysis() {
+export const FunnelAnalysis = memo(function FunnelAnalysis() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [period, setPeriod] = useState("30d");
