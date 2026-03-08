@@ -82,9 +82,9 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
             {isAr ? "آخر المعاملات" : "Recent Transactions"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-3 space-y-1.5 max-h-[280px] overflow-y-auto">
+        <CardContent className="p-3 space-y-1 max-h-[280px] overflow-y-auto">
           {data.recentTxns.slice(0, 12).map((txn: any, i: number) => (
-            <div key={i} className="flex items-center justify-between py-1.5 border-b border-border/40 last:border-0">
+            <div key={i} className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0 rounded-lg px-1.5 transition-colors duration-200 hover:bg-muted/40">
               <div className="flex items-center gap-2 min-w-0">
                 {txn.type === "credit" ? (
                   <ArrowDownRight className="h-3.5 w-3.5 text-chart-2 shrink-0" />
