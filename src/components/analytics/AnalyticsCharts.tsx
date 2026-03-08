@@ -132,7 +132,7 @@ export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }:
       </CardContent>
     </Card>
   );
-}
+});
 
 /* ─── Top Countries ─── */
 export const TopCountriesChart = memo(function TopCountriesChart({ data }: { data?: { country: string; count: number }[] }) {
