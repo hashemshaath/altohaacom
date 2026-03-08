@@ -11,7 +11,7 @@ function isInStandaloneMode() {
   return window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone;
 }
 
-export function IOSInstallGuide() {
+export const IOSInstallGuide = memo(function IOSInstallGuide() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [show, setShow] = useState(false);
