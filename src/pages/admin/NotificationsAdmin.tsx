@@ -477,7 +477,7 @@ export default function NotificationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={recentStatusFilter} onValueChange={setRecentStatusFilter}>
-              <SelectTrigger className="w-[120px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[120px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل الحالات" : "All Status"}</SelectItem>
                 <SelectItem value="sent">Sent</SelectItem>
