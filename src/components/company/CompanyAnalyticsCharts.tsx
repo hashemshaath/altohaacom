@@ -26,7 +26,7 @@ interface CompanyAnalyticsChartsProps {
   language: string;
 }
 
-export function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalyticsChartsProps) {
+export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ companyId, language }: CompanyAnalyticsChartsProps) {
   const isAr = language === "ar";
 
   const { data: monthlyOrders, isLoading: ordersLoading } = useQuery({
