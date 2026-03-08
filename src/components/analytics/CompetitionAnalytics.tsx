@@ -15,7 +15,7 @@ import {
   TopCountriesChart,
 } from "./AnalyticsCharts";
 
-export default function CompetitionAnalytics() {
+const CompetitionAnalytics = memo(function CompetitionAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
