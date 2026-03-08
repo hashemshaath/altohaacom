@@ -79,7 +79,7 @@ const googleIntegrations = [
   },
 ];
 
-export function GoogleIntegrationPanel() {
+export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
