@@ -458,7 +458,7 @@ export default function SupportTickets() {
                   />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[160px]">
+                  <SelectTrigger className="w-[160px] rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
