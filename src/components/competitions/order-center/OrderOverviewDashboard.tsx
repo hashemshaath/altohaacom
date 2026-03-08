@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -93,32 +94,31 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
     staleTime: 2 * 60 * 1000,
   });
 
-  const stats = calcOrderStats(allItems || []);
-  const totalCost = allItems?.reduce((sum, i) => sum + (Number(i.estimated_cost) || 0) * (i.quantity || 1), 0) || 0;
-  const deliveredCost = allItems?.filter(i => i.status === "delivered").reduce((sum, i) => sum + (Number(i.estimated_cost) || 0) * (i.quantity || 1), 0) || 0;
-
-  const pendingQuotes = quoteRequests?.filter(q => q.status === "pending").length || 0;
-  const acceptedQuotes = quoteRequests?.filter(q => q.status === "accepted").length || 0;
-  const pendingSuggestions = suggestions?.filter(s => s.status === "pending").length || 0;
-  const pendingItemRequests = itemRequests?.filter(r => r.status === "pending").length || 0;
-  const totalItemRequests = itemRequests?.length || 0;
-
-  // Upcoming deadlines (next 7 days)
-  const upcomingDeadlines = (allItems || [])
-    .filter(i => i.deadline && i.status !== "delivered" && !isPast(new Date(i.deadline)))
-    .filter(i => differenceInDays(new Date(i.deadline!), new Date()) <= 7)
-    .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
-    .slice(0, 5);
-
-  // Overdue items
-  const overdueItems = (allItems || [])
-    .filter(i => i.deadline && isPast(new Date(i.deadline)) && i.status !== "delivered")
-    .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
-    .slice(0, 5);
-
-  const inTransit = allItems?.filter(i => i.status === "in_transit").length || 0;
-  const ordered = allItems?.filter(i => i.status === "ordered").length || 0;
-  const sourcing = allItems?.filter(i => i.status === "sourcing").length || 0;
+  const stats = useMemo(() => calcOrderStats(allItems || []), [allItems]);
+  const { totalCost, deliveredCost, pendingQuotes, acceptedQuotes, pendingSuggestions, pendingItemRequests, totalItemRequests, upcomingDeadlines, overdueItems, inTransit, ordered, sourcing } = useMemo(() => {
+    const items = allItems || [];
+    return {
+      totalCost: items.reduce((sum, i) => sum + (Number(i.estimated_cost) || 0) * (i.quantity || 1), 0),
+      deliveredCost: items.filter(i => i.status === "delivered").reduce((sum, i) => sum + (Number(i.estimated_cost) || 0) * (i.quantity || 1), 0),
+      pendingQuotes: quoteRequests?.filter(q => q.status === "pending").length || 0,
+      acceptedQuotes: quoteRequests?.filter(q => q.status === "accepted").length || 0,
+      pendingSuggestions: suggestions?.filter(s => s.status === "pending").length || 0,
+      pendingItemRequests: itemRequests?.filter(r => r.status === "pending").length || 0,
+      totalItemRequests: itemRequests?.length || 0,
+      upcomingDeadlines: items
+        .filter(i => i.deadline && i.status !== "delivered" && !isPast(new Date(i.deadline)))
+        .filter(i => differenceInDays(new Date(i.deadline!), new Date()) <= 7)
+        .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
+        .slice(0, 5),
+      overdueItems: items
+        .filter(i => i.deadline && isPast(new Date(i.deadline)) && i.status !== "delivered")
+        .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
+        .slice(0, 5),
+      inTransit: items.filter(i => i.status === "in_transit").length,
+      ordered: items.filter(i => i.status === "ordered").length,
+      sourcing: items.filter(i => i.status === "sourcing").length,
+    };
+  }, [allItems, quoteRequests, suggestions, itemRequests]);
 
   const pipeline = [
     { labelEn: "Pending", labelAr: "انتظار", count: stats.pending, color: "bg-muted text-muted-foreground" },

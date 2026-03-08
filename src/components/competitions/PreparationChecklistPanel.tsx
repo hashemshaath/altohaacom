@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -122,11 +122,11 @@ export function PreparationChecklistPanel({ competitionId }: Props) {
     upsertChecklist.mutate(updated);
   };
 
+  const completedCount = useMemo(() => items.filter(i => i.completed).length, [items]);
+  const progress = useMemo(() => items.length > 0 ? (completedCount / items.length) * 100 : 0, [completedCount, items.length]);
+
   if (!user) return null;
   if (isLoading) return <Skeleton className="h-40 w-full rounded-xl" />;
-
-  const completedCount = items.filter(i => i.completed).length;
-  const progress = items.length > 0 ? (completedCount / items.length) * 100 : 0;
 
   if (!checklist && items.length === 0) {
     return (
