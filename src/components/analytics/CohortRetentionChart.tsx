@@ -15,7 +15,7 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
 
-export function CohortRetentionChart() {
+export const CohortRetentionChart = memo(function CohortRetentionChart() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
