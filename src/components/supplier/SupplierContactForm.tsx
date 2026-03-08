@@ -15,7 +15,7 @@ interface SupplierContactFormProps {
   companyName: string;
 }
 
-export function SupplierContactForm({ companyId, companyName }: SupplierContactFormProps) {
+export const SupplierContactForm = memo(function SupplierContactForm({ companyId, companyName }: SupplierContactFormProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
