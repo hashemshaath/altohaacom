@@ -30,7 +30,7 @@ const STATUS_COLORS: Record<string, string> = {
   rejected: "bg-destructive/10 text-destructive",
 };
 
-export function CompetitionSponsorsPanel({ competitionId, isOrganizer }: CompetitionSponsorsPanelProps) {
+export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({ competitionId, isOrganizer }: CompetitionSponsorsPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
