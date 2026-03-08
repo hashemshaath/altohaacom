@@ -110,4 +110,6 @@ const ArticlesSection = memo(function ArticlesSection() {
       </div>
     </section>
   );
-}
+});
+
+export default ArticlesSection;

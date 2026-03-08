@@ -1222,4 +1222,4 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
       </div>
     </div>
   );
-}
+});
