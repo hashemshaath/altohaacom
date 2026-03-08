@@ -1518,11 +1518,11 @@ export default function OrdersAdmin() {
 
 function StatCard({ value, label, color }: { value: number; label: string; color?: string }) {
   return (
-    <Card>
-      <CardContent className="pt-4">
+    <Card className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+      <CardContent className="pt-4 pb-3">
         <div className="text-center">
-          <p className={`text-2xl font-bold ${color || ""}`}>{value}</p>
-          <p className="text-sm text-muted-foreground">{label}</p>
+          <AnimatedCounter value={value} className={`text-2xl font-bold tabular-nums ${color || ""}`} />
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
         </div>
       </CardContent>
     </Card>
