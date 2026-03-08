@@ -37,7 +37,7 @@ interface CatalogItem {
   tags: string[] | null;
 }
 
-export function AdminCatalogManager() {
+export const AdminCatalogManager = memo(function AdminCatalogManager() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
