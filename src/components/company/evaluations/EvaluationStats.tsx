@@ -25,7 +25,7 @@ const renderStars = (rating: number) => (
   </div>
 );
 
-export function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communicationAvg, valueAvg, totalCount, language }: Props) {
+export const EvaluationStats = memo(function EvaluationStats({ overallAvg, qualityAvg, deliveryAvg, communicationAvg, valueAvg, totalCount, language }: Props) {
   const isAr = language === "ar";
 
   const categories = [
