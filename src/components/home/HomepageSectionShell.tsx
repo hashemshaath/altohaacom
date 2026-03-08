@@ -31,7 +31,7 @@ const ANIMATION_MAP: Record<string, string> = {
  * container_width, animation) to any homepage section component.
  * Components inside only handle their own content rendering.
  */
-export function HomepageSectionShell({ children }: { children: ReactNode }) {
+export const HomepageSectionShell = memo(function HomepageSectionShell({ children }: { children: ReactNode }) {
   const config = useSectionConfig();
 
   // If no config, render children with sensible default spacing
