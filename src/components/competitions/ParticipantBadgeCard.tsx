@@ -55,7 +55,7 @@ const ROLE_CONFIG = {
   },
 };
 
-export function ParticipantBadgeCard({
+export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
   role,
   entityId,
   personName,
