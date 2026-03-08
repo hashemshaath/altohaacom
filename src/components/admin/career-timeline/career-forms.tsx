@@ -212,7 +212,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
       <FormActions isAr={isAr} isPending={isPending} editingId={editingId} canSave={!!form.title.trim()} onSave={onSave} onCancel={onCancel} />
     </div>
   );
-}
+});
 
 // ── Membership Form ──────────────────────────────────────
 
