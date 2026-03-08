@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionContactCard({ organizerName, organizerLogo, email, phone, website, isAr }: Props) {
+export const ExhibitionContactCard = memo(function ExhibitionContactCard({ organizerName, organizerLogo, email, phone, website, isAr }: Props) {
   if (!email && !phone && !website) return null;
 
   return (
