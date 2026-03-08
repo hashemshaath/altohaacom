@@ -25,7 +25,7 @@ const CATEGORY_CONFIG: Record<string, { en: string; ar: string; dot: string }> =
   break: { en: "Break", ar: "استراحة", dot: "bg-muted-foreground" },
 };
 
-export function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: Props) {
+export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitionId, startDate, endDate, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
