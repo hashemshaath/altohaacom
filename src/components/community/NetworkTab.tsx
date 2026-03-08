@@ -23,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { FollowButton } from "./FollowButton";
 
-export function NetworkTab() {
+export const NetworkTab = memo(function NetworkTab() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
