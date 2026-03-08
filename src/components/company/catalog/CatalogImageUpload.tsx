@@ -12,7 +12,7 @@ interface CatalogImageUploadProps {
   language: string;
 }
 
-export function CatalogImageUpload({ imageUrl, onImageChange, companyId, language }: CatalogImageUploadProps) {
+export const CatalogImageUpload = memo(function CatalogImageUpload({ imageUrl, onImageChange, companyId, language }: CatalogImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
