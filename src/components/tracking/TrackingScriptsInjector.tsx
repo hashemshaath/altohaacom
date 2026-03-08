@@ -45,7 +45,7 @@ export const TrackingScriptsInjector = memo(function TrackingScriptsInjector() {
   }, [configs]);
 
   return null;
-}
+});
 
 function injectMetaPixel(pixelId: string) {
   if (document.querySelector(`script[data-pixel="meta-${pixelId}"]`)) return;

@@ -43,7 +43,7 @@ export const CompetitionCountdown = memo(function CompetitionCountdown({ targetD
       </div>
     </div>
   );
-}
+});
 
 function FlipUnit({ value, label }: { value: number; label: string }) {
   const display = String(value).padStart(2, "0");
