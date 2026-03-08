@@ -31,7 +31,7 @@ interface RubricTemplatesPanelProps {
   isAdmin?: boolean;
 }
 
-export function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplatesPanelProps) {
+export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competitionId, isAdmin }: RubricTemplatesPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
