@@ -111,7 +111,7 @@ export const FormActions = memo(function FormActions({ isAr, isPending, editingI
 
 // ── Bilingual Field Pair ──────────────────────────────────────
 
-export function BilingualFieldPair({ labelEn, labelAr, valueEn, valueAr, onChangeEn, onChangeAr, isAr, placeholderEn, placeholderAr, required }: {
+export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, labelAr, valueEn, valueAr, onChangeEn, onChangeAr, isAr, placeholderEn, placeholderAr, required }: {
   labelEn: string; labelAr: string; valueEn: string; valueAr: string;
   onChangeEn: (v: string) => void; onChangeAr: (v: string) => void;
   isAr: boolean; placeholderEn?: string; placeholderAr?: string; required?: boolean;
