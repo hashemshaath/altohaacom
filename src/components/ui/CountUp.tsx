@@ -32,4 +32,4 @@ export const CountUp = memo(function CountUp({ end, duration = 800, prefix = "",
   }, [end, duration]);
 
   return <span className={className}>{prefix}{current.toLocaleString()}{suffix}</span>;
-}
+});

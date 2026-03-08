@@ -96,4 +96,4 @@ export const ChefsTableBenefits = memo(function ChefsTableBenefits({ isAr }: Che
       </div>
     </section>
   );
-}
+});

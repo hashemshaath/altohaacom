@@ -312,4 +312,4 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
       )}
     </>
   );
-}
+});

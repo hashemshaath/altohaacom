@@ -382,4 +382,4 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
       </CardContent>
     </Card>
   );
-}
+});

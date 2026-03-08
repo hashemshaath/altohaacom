@@ -54,4 +54,4 @@ export const PostEngagementBar = memo(function PostEngagementBar({
       )}
     </div>
   );
-}
+});

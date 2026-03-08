@@ -89,4 +89,4 @@ export const UserPersonalDetailsTab = memo(function UserPersonalDetailsTab({ for
       </div>
     </div>
   );
-}
+});

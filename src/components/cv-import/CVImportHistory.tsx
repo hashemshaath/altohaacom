@@ -262,4 +262,4 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
       </CardContent>
     </Card>
   );
-}
+});

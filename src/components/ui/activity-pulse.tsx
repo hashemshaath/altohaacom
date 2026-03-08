@@ -34,4 +34,4 @@ export const ActivityPulse = memo(function ActivityPulse({ status = "live", labe
       {label && <span className={cn("text-[10px] font-semibold", s.label)}>{label}</span>}
     </span>
   );
-}
+});

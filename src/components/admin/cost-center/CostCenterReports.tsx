@@ -232,4 +232,4 @@ export const CostCenterReports = memo(function CostCenterReports({ isAr, estimat
       </Card>
     </div>
   );
-}
+});

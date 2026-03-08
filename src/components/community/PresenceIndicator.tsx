@@ -88,4 +88,4 @@ export const OnlineCountBadge = memo(function OnlineCountBadge({ className }: On
       <span>{onlineCount} online</span>
     </div>
   );
-}
+});

@@ -182,4 +182,4 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
       </CardContent>
     </Card>
   );
-}
+});

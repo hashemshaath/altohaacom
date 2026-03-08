@@ -142,4 +142,4 @@ export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
       </CardContent>
     </Card>
   );
-}
+});

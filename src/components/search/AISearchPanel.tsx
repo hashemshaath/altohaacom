@@ -141,4 +141,4 @@ export const AISearchPanel = memo(function AISearchPanel({ query }: Props) {
       )}
     </Card>
   );
-}
+});

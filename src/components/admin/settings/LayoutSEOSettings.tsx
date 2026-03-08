@@ -120,4 +120,4 @@ export const LayoutSEOSettings = memo(function LayoutSEOSettings({ settings, onS
       </Card>
     </div>
   );
-}
+});
