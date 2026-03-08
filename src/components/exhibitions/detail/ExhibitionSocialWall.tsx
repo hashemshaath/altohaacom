@@ -17,7 +17,7 @@ interface Props {
   exhibitionHashtag?: string;
 }
 
-export function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibitionHashtag }: Props) {
+export const ExhibitionSocialWall = memo(function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibitionHashtag }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
