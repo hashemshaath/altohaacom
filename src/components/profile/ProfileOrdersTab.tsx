@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,7 +29,7 @@ const STATUS_AR: Record<string, string> = {
   refunded: "مسترد",
 };
 
-export function ProfileOrdersTab({ userId, isAr }: { userId: string; isAr: boolean }) {
+export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }: { userId: string; isAr: boolean }) {
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["profile-shop-orders", userId],
     queryFn: async () => {
@@ -96,6 +97,6 @@ export function ProfileOrdersTab({ userId, isAr }: { userId: string; isAr: boole
       ))}
     </div>
   );
-}
+});
 
 export default ProfileOrdersTab;

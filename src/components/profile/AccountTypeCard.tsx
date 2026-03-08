@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ChefHat, Heart, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
 
-export function AccountTypeCard() {
+export const AccountTypeCard = memo(function AccountTypeCard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -126,4 +126,4 @@ export function AccountTypeCard() {
       </CardContent>
     </Card>
   );
-}
+});

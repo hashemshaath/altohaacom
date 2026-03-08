@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 type ExportFormat = "json" | "csv";
 
-export function UserDataExport() {
+export const UserDataExport = memo(function UserDataExport() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -124,4 +124,4 @@ export function UserDataExport() {
       </CardContent>
     </Card>
   );
-}
+});

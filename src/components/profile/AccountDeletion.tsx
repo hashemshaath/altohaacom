@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,7 +19,7 @@ import {
 import { Trash2, AlertTriangle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export function AccountDeletion() {
+export const AccountDeletion = memo(function AccountDeletion() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -125,4 +125,4 @@ export function AccountDeletion() {
       </CardContent>
     </Card>
   );
-}
+});

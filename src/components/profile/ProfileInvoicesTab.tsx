@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,7 +41,7 @@ const statusConfig: Record<string, { color: "default" | "destructive" | "outline
   cancelled: { color: "destructive", icon: XCircle },
 };
 
-export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
+export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
@@ -315,4 +315,4 @@ export function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
       </Dialog>
     </StaggeredList>
   );
-}
+});

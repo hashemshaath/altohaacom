@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +17,7 @@ import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { localizeLocation } from "@/lib/localizeLocation";
 
-export function EventsByCategory() {
+export const EventsByCategory = memo(function EventsByCategory() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState<"competitions" | "exhibitions" | "chefs-table">("competitions");
@@ -196,7 +196,7 @@ export function EventsByCategory() {
       )}
     </section>
   );
-}
+});
 
 function renderFeaturedCompetition(item: any, isAr: boolean, statusBadge: (s: string) => JSX.Element) {
   const title = isAr && item.title_ar ? item.title_ar : item.title;

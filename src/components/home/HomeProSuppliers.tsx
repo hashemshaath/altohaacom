@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,7 +25,7 @@ const SUPPLIER_CAT_LABELS: Record<string, { en: string; ar: string }> = {
   technology: { en: "Technology", ar: "تقنية" },
 };
 
-export function HomeProSuppliers() {
+export const HomeProSuppliers = memo(function HomeProSuppliers() {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const isAr = language === "ar";
@@ -150,4 +150,4 @@ export function HomeProSuppliers() {
       </HorizontalScrollRow>
     </section>
   );
-}
+});

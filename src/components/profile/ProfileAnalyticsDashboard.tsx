@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useProfileAnalytics } from "@/hooks/useProfileViews";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +26,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardProps) {
+export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: analytics, isLoading } = useProfileAnalytics(userId);
@@ -404,4 +405,4 @@ export function ProfileAnalyticsDashboard({ userId }: ProfileAnalyticsDashboardP
       </div>
     </StaggeredList>
   );
-}
+});

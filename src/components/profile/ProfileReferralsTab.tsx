@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
-export function ProfileReferralsTab({ userId }: { userId: string }) {
+export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }: { userId: string }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -197,4 +198,4 @@ export function ProfileReferralsTab({ userId }: { userId: string }) {
       )}
     </StaggeredList>
   );
-}
+});

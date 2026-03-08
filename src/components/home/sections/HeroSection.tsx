@@ -58,7 +58,7 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
   );
 }));
 
-export function HeroSection() {
+export const HeroSection = memo(function HeroSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
@@ -234,4 +234,4 @@ export function HeroSection() {
       </div>
     </section>
   );
-}
+});
