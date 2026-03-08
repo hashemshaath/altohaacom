@@ -12,7 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
-export function ProfileReferralsTab({ userId }: { userId: string }) {
+export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }: { userId: string }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
