@@ -6,7 +6,7 @@ import { useReferralTiers } from "@/hooks/useReferralExtras";
 import { useReferralStats } from "@/hooks/useReferral";
 import { Layers, ChevronRight, Star } from "lucide-react";
 
-export function TierProgressCard() {
+export const TierProgressCard = memo(function TierProgressCard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: tiers } = useReferralTiers();
