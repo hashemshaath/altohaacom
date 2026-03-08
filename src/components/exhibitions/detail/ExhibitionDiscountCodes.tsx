@@ -17,7 +17,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionDiscountCodes({ exhibitionId, isAr }: Props) {
+export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
