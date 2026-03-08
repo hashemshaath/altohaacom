@@ -28,7 +28,7 @@ interface Props {
   language: string;
 }
 
-export function CompetitionAnalyticsDashboard({ competitionId, language }: Props) {
+export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsDashboard({ competitionId, language }: Props) {
   const isAr = language === "ar";
 
   const { data: registrationStats, isLoading: regLoading } = useQuery({
