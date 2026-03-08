@@ -26,7 +26,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
+export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAnalytics({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data: ticketsOverTime = [] } = useQuery({
