@@ -30,7 +30,7 @@ interface Props {
   refreshTrigger?: number;
 }
 
-export function CVImportHistory({ isAr, refreshTrigger }: Props) {
+export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrigger }: Props) {
   const [imports, setImports] = useState<CVImportRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
