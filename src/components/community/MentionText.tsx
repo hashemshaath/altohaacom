@@ -10,7 +10,7 @@ interface MentionTextProps {
 /**
  * Renders post content with clickable @mentions and #hashtags.
  */
-export function MentionText({ content, className }: MentionTextProps) {
+export const MentionText = memo(function MentionText({ content, className }: MentionTextProps) {
   const parts = content.split(/(@[\w\u0600-\u06FF]+|#[\w\u0600-\u06FF_]+)/g);
 
   return (
