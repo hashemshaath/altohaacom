@@ -17,7 +17,7 @@ interface ProfileShareButtonsProps {
   variant?: "icon" | "full";
 }
 
-export function ProfileShareButtons({ username, displayName, variant = "icon" }: ProfileShareButtonsProps) {
+export const ProfileShareButtons = memo(function ProfileShareButtons({ username, displayName, variant = "icon" }: ProfileShareButtonsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
