@@ -29,7 +29,7 @@ interface CompetitionKnowledgeTabProps {
   isOrganizer: boolean;
 }
 
-export function CompetitionKnowledgeTab({ competitionId, isOrganizer }: CompetitionKnowledgeTabProps) {
+export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ competitionId, isOrganizer }: CompetitionKnowledgeTabProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
