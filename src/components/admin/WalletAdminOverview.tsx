@@ -89,10 +89,10 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
       {cards.map((c) => (
-        <Card key={c.label}>
+        <Card key={c.label} className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group/card">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-2">
-              <c.icon className={`h-4 w-4 ${c.color}`} />
+              <c.icon className={`h-4 w-4 ${c.color} transition-transform group-hover/card:scale-110`} />
               <span className="text-[10px] text-muted-foreground truncate">{c.label}</span>
             </div>
             <p className="text-base font-bold truncate"><AnimatedCounter value={c.value} />{c.suffix}</p>

@@ -62,8 +62,10 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
         ) : (
           <div className="space-y-2">
             {data?.reports.map((r: any) => (
-              <div key={r.id} className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-2.5">
-                <Flag className="h-3.5 w-3.5 text-destructive shrink-0" />
+              <div key={r.id} className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-2.5 transition-all duration-200 hover:bg-destructive/10 hover:shadow-sm group/report">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-destructive/10 transition-transform group-hover/report:scale-110">
+                  <Flag className="h-3.5 w-3.5 text-destructive" />
+                </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate">{r.reason || (isAr ? "بلاغ محتوى" : "Content report")}</p>
                   <p className="text-[10px] text-muted-foreground">{format(new Date(r.created_at), "MMM d, HH:mm")}</p>
@@ -74,8 +76,10 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
               </div>
             ))}
             {data?.pendingPosts.map((p: any) => (
-              <div key={p.id} className="flex items-center gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-2.5">
-                <MessageSquare className="h-3.5 w-3.5 text-chart-4 shrink-0" />
+              <div key={p.id} className="flex items-center gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-2.5 transition-all duration-200 hover:bg-chart-4/10 hover:shadow-sm group/post">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-chart-4/10 transition-transform group-hover/post:scale-110">
+                  <MessageSquare className="h-3.5 w-3.5 text-chart-4" />
+                </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate">{(p.content || "").slice(0, 60)}</p>
                   <p className="text-[10px] text-muted-foreground">{format(new Date(p.created_at), "MMM d, HH:mm")}</p>

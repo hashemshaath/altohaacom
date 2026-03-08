@@ -160,27 +160,28 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
               {alerts.map((alert) => {
                 const config = severityConfig[alert.severity];
                 const Icon = config.icon;
-                return (
-                  <Link key={alert.id} to={alert.link || "#"}>
-                    <div className={cn(
-                      "flex items-start gap-2.5 rounded-xl border p-2.5 transition-all hover:bg-accent/30 hover:shadow-sm",
-                      config.border
-                    )}>
-                      <div className={cn("flex h-7 w-7 items-center justify-center rounded-xl shrink-0", config.bg)}>
-                        <Icon className={cn("h-3.5 w-3.5", config.color)} />
+                  return (
+                    <Link key={alert.id} to={alert.link || "#"}>
+                      <div className={cn(
+                        "flex items-start gap-2.5 rounded-xl border p-2.5 transition-all duration-200 hover:shadow-sm group/alert",
+                        config.border,
+                        `hover:${config.bg}`
+                      )}>
+                        <div className={cn("flex h-7 w-7 items-center justify-center rounded-xl shrink-0 transition-transform group-hover/alert:scale-110", config.bg)}>
+                          <Icon className={cn("h-3.5 w-3.5", config.color)} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium">
+                            {isAr ? alert.titleAr : alert.title}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                            {isAr ? alert.descriptionAr : alert.description}
+                          </p>
+                        </div>
+                        <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0 mt-1 transition-transform group-hover/alert:translate-x-0.5 rtl:group-hover/alert:-translate-x-0.5" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium">
-                          {isAr ? alert.titleAr : alert.title}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">
-                          {isAr ? alert.descriptionAr : alert.description}
-                        </p>
-                      </div>
-                      <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0 mt-1" />
-                    </div>
-                  </Link>
-                );
+                    </Link>
+                  );
               })}
             </div>
           </ScrollArea>

@@ -112,9 +112,9 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         {data.kpis.map(kpi => (
-          <Card key={kpi.label}>
+          <Card key={kpi.label} className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group/kpi">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className={`rounded-full p-2 ${kpi.bg}`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
+              <div className={`rounded-xl p-2 ${kpi.bg} transition-transform group-hover/kpi:scale-110`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
               <div className="min-w-0">
                 <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
                 <div className="flex items-baseline gap-1.5">
