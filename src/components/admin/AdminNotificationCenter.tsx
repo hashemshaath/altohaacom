@@ -58,7 +58,7 @@ export function AdminNotificationCenter() {
     },
   });
 
-  const unreadCount = notifications.filter((n: any) => !n.is_read).length;
+  const unreadCount = useMemo(() => notifications.filter((n: any) => !n.is_read).length, [notifications]);
 
   const getIcon = (type: string) => {
     const Icon = TYPE_ICONS[type] || TYPE_ICONS.default;

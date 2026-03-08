@@ -119,7 +119,7 @@ export default function CompanyInvitations() {
           <CardContent className="flex items-center gap-3 p-4">
             <CheckCircle className="h-8 w-8 text-chart-5" />
             <div>
-              <p className="text-2xl font-bold">{invitations?.filter(i => i.status === "accepted").length || 0}</p>
+              <p className="text-2xl font-bold">{acceptedCount}</p>
               <p className="text-xs text-muted-foreground">{language === "ar" ? "مقبولة" : "Accepted"}</p>
             </div>
           </CardContent>

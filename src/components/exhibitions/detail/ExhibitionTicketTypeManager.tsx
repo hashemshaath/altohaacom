@@ -98,7 +98,7 @@ export function ExhibitionTicketTypeManager({ exhibitionId, isAr }: Props) {
     setDialogOpen(true);
   };
 
-  const totalSold = types.reduce((s: number, t: any) => s + (t.sold_count || 0), 0);
+  const totalSold = useMemo(() => types.reduce((s: number, t: any) => s + (t.sold_count || 0), 0), [types]);
 
   return (
     <Card>

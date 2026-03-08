@@ -77,14 +77,14 @@ export default function CompanyInvoices() {
     }
   };
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: invoices.length,
     pending: invoices.filter((i) => ["pending", "sent"].includes(i.status || "")).length,
     paid: invoices.filter((i) => i.status === "paid").length,
     totalDue: invoices
       .filter((i) => ["pending", "sent"].includes(i.status || ""))
       .reduce((sum, i) => sum + Number(i.amount), 0),
-  };
+  }), [invoices]);
 
   if (accessLoading || isLoading) {
     return (

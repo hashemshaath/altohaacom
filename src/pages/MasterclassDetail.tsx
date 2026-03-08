@@ -228,10 +228,10 @@ export default function MasterclassDetail() {
     );
   }
 
-  const totalLessons = modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0);
-  const completedLessons = lessonProgress.filter((lp) => lp.completed).length;
+  const totalLessons = useMemo(() => modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0), [modules]);
+  const completedLessons = useMemo(() => lessonProgress.filter((lp) => lp.completed).length, [lessonProgress]);
   const isCompleted = enrollment?.status === "completed";
-  const completedLessonIds = new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id));
+  const completedLessonIds = useMemo(() => new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id)), [lessonProgress]);
 
   const getContentTypeIcon = (type: string) => {
     switch (type) {
