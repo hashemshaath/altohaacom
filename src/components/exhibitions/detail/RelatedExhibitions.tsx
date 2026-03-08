@@ -18,7 +18,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function RelatedExhibitions({ exhibitionId, country, type, seriesId, isAr }: Props) {
+export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionId, country, type, seriesId, isAr }: Props) {
   const { data: related = [] } = useQuery({
     queryKey: ["related-exhibitions", exhibitionId],
     queryFn: async () => {
