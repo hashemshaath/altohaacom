@@ -52,7 +52,7 @@ function formatConvTime(date?: string, isAr?: boolean) {
   return format(d, "MMM d");
 }
 
-export function ConversationList({
+export const ConversationList = memo(function ConversationList({
   isAr, searchQuery, setSearchQuery, categoryFilter, setCategoryFilter, counts,
   loadingConversations, filteredConversations, chatGroups,
   selectedPartner, activeGroupId, isOnline,
