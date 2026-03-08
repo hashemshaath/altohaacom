@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +15,7 @@ interface Props {
   userId?: string;
 }
 
-export default function ChefPortfolio({ userId }: Props) {
+const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -214,4 +215,6 @@ export default function ChefPortfolio({ userId }: Props) {
       </Tabs>
     </div>
   );
-}
+});
+
+export default ChefPortfolio;

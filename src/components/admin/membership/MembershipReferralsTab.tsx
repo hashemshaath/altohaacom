@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
-export default function MembershipReferralsTab() {
+const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -361,4 +361,6 @@ export default function MembershipReferralsTab() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default MembershipReferralsTab;

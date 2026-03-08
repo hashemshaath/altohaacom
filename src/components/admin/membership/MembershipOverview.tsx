@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,7 @@ import { format, differenceInDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 
-export default function MembershipOverview() {
+const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -197,4 +198,6 @@ export default function MembershipOverview() {
       </div>
     </div>
   );
-}
+});
+
+export default MembershipOverview;

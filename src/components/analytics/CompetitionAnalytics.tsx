@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,7 @@ import {
   TopCountriesChart,
 } from "./AnalyticsCharts";
 
-export default function CompetitionAnalytics() {
+const CompetitionAnalytics = memo(function CompetitionAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -129,4 +129,6 @@ export default function CompetitionAnalytics() {
       </div>
     </div>
   );
-}
+});
+
+export default CompetitionAnalytics;

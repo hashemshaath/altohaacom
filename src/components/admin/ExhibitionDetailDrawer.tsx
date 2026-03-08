@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +36,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: Props) {
+const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
@@ -522,4 +523,6 @@ export default function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: 
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default ExhibitionDetailDrawer;

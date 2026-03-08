@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,7 +58,7 @@ const SEVERITY_STYLES: Record<string, string> = {
   critical: "bg-destructive/10 text-destructive",
 };
 
-export default function SecurityDashboard() {
+const SecurityDashboard = memo(function SecurityDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
@@ -301,7 +301,7 @@ export default function SecurityDashboard() {
       </Tabs>
     </div>
   );
-}
+});
 
 // ── Sessions Panel ──────────────────────────────────────
 function SessionsPanel() {
@@ -487,3 +487,5 @@ function PermissionsOverview() {
     </div>
   );
 }
+
+export default SecurityDashboard;

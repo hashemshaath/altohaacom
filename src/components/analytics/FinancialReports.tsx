@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +10,7 @@ import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
-export default function FinancialReports() {
+const FinancialReports = memo(function FinancialReports() {
   const { language } = useLanguage();
 
   const { data, isLoading } = useQuery({
@@ -138,4 +139,6 @@ export default function FinancialReports() {
       </div>
     </div>
   );
-}
+});
+
+export default FinancialReports;

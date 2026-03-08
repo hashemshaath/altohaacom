@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +17,7 @@ interface Props {
   dateRange?: DateRange;
 }
 
-export default function PlatformOverview({ dateRange }: Props) {
+const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
   const { language } = useLanguage();
 
   const fromISO = dateRange?.from.toISOString();
@@ -224,4 +225,6 @@ export default function PlatformOverview({ dateRange }: Props) {
       </div>
     </div>
   );
-}
+});
+
+export default PlatformOverview;

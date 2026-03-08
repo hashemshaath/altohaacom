@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +24,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Props) {
+const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId, open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -352,4 +353,6 @@ export default function OrganizerDetailDrawer({ organizerId, open, onClose }: Pr
       </SheetContent>
     </Sheet>
   );
-}
+});
+
+export default OrganizerDetailDrawer;

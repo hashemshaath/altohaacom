@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Save, Infinity, RotateCcw } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { toast } from "sonner";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
@@ -32,7 +32,7 @@ type LimitRow = {
   icon_name: string | null;
 };
 
-export default function AdminBenefitLimitsEditor() {
+const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -231,4 +231,6 @@ export default function AdminBenefitLimitsEditor() {
       </Card>
     </div>
   );
-}
+});
+
+export default AdminBenefitLimitsEditor;

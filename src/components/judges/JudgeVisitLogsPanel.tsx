@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -44,7 +44,7 @@ const emptyForm = {
   role_played: "judge", notes: "", achievements: "",
 };
 
-export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
+const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -257,4 +257,6 @@ export default function JudgeVisitLogsPanel({ userId, isAdmin }: Props) {
       </Card>
     </div>
   );
-}
+});
+
+export default JudgeVisitLogsPanel;

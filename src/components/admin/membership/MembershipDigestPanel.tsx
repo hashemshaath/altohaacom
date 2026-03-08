@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +17,7 @@ import { differenceInDays, subDays, format } from "date-fns";
 
 type Period = "7d" | "14d" | "30d";
 
-export default function MembershipDigestPanel() {
+const MembershipDigestPanel = memo(function MembershipDigestPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [period, setPeriod] = useState<Period>("7d");
@@ -292,4 +292,6 @@ export default function MembershipDigestPanel() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipDigestPanel;

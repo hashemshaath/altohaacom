@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,7 +33,7 @@ import {
   Tooltip,
 } from "recharts";
 
-export default function EngagementMetrics() {
+const EngagementMetrics = memo(function EngagementMetrics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -304,4 +305,6 @@ export default function EngagementMetrics() {
       </div>
     </div>
   );
-}
+});
+
+export default EngagementMetrics;
