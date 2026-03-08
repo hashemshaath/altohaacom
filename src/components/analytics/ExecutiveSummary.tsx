@@ -12,7 +12,7 @@ import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 
-export function ExecutiveSummary() {
+export const ExecutiveSummary = memo(function ExecutiveSummary() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const reportRef = useRef<HTMLDivElement>(null);
