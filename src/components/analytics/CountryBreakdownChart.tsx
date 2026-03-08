@@ -22,7 +22,7 @@ interface CountryBreakdownChartProps {
   metric: "users" | "competitions" | "companies";
 }
 
-export function CountryBreakdownChart({ metric }: CountryBreakdownChartProps) {
+export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metric }: CountryBreakdownChartProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: countries } = useCountries();
