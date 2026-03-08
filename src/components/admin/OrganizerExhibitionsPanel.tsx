@@ -22,7 +22,7 @@ interface OrganizerExhibitionsPanelProps {
   organizerLogo?: string | null;
 }
 
-export function OrganizerExhibitionsPanel({
+export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel({
   open, onOpenChange, organizerId, organizerName, organizerLogo,
 }: OrganizerExhibitionsPanelProps) {
   const { language } = useLanguage();
