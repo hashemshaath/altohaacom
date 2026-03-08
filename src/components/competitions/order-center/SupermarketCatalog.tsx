@@ -67,7 +67,7 @@ interface CatalogItem {
   tags: string[] | null;
 }
 
-export function SupermarketCatalog() {
+export const SupermarketCatalog = memo(function SupermarketCatalog() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
