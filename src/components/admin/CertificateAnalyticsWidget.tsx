@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +12,7 @@ import { Award, FileText, CheckCircle, PenTool, Send, ShieldCheck } from "lucide
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
-export function CertificateAnalyticsWidget() {
+export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
