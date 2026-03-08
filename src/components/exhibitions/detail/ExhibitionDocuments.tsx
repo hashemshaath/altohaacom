@@ -24,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionDocuments({ documents, isAr }: Props) {
+export const ExhibitionDocuments = memo(function ExhibitionDocuments({ documents, isAr }: Props) {
   if (!documents || !Array.isArray(documents)) return null;
 
   const docs = (documents as DocumentItem[]).filter((d) => d?.url);
