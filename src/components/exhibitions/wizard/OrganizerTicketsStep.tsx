@@ -16,7 +16,7 @@ interface Props {
   onChange: (updates: Partial<ExhibitionFormData>) => void;
 }
 
-export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
+export const ExhibitionOrganizerTicketsStep = memo(function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
