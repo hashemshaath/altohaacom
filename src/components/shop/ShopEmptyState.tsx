@@ -8,7 +8,7 @@ interface ShopEmptyStateProps {
   onClearSearch: () => void;
 }
 
-export function ShopEmptyState({ search, onClearSearch }: ShopEmptyStateProps) {
+export const ShopEmptyState = memo(function ShopEmptyState({ search, onClearSearch }: ShopEmptyStateProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
