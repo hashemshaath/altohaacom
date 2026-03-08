@@ -13,7 +13,7 @@ interface UserBadgesDisplayProps {
   limit?: number;
 }
 
-export function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
+export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit }: UserBadgesDisplayProps) {
   const { language } = useLanguage();
 
   const { data: badges, isLoading } = useQuery({
