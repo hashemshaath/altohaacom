@@ -389,10 +389,12 @@ export default function CRMDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 rounded-2xl border-border/40">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Zap className="h-4 w-4 text-primary" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+              </div>
               {isAr ? "إجراءات سريعة" : "Quick Actions"}
             </CardTitle>
           </CardHeader>
