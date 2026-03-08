@@ -59,7 +59,7 @@ export function getCompleteness(country: Country) {
   return checks.map(ch => ({ ...ch, passed: ch.check(country) }));
 }
 
-export function CountryCompletenessScore({ country, isAr, compact = false }: { country: Country; isAr: boolean; compact?: boolean }) {
+export const CountryCompletenessScore = memo(function CountryCompletenessScore({ country, isAr, compact = false }: { country: Country; isAr: boolean; compact?: boolean }) {
   const { score, passed, total } = getCompletenessScore(country);
   const items = getCompleteness(country);
   const color = score >= 80 ? "text-chart-3" : score >= 50 ? "text-chart-2" : "text-destructive";
