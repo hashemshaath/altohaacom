@@ -141,4 +141,4 @@ export const CompanyActivityFeed = memo(function CompanyActivityFeed({ companyId
       </CardContent>
     </Card>
   );
-}
+});

@@ -195,4 +195,4 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
       )}
     </div>
   );
-}
+});

@@ -623,4 +623,4 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
       </Card>
     </div>
   );
-}
+});

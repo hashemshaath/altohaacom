@@ -101,4 +101,4 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
       )}
     </div>
   );
-}
+});

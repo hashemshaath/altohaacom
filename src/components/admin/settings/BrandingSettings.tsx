@@ -70,4 +70,4 @@ export const BrandingSettings = memo(function BrandingSettings({ settings, onSav
       </CardContent>
     </Card>
   );
-}
+});

@@ -59,4 +59,4 @@ export const AdminQuickActionsBar = memo(function AdminQuickActionsBar({ pending
       </CardContent>
     </Card>
   );
-}
+});

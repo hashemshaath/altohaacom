@@ -75,4 +75,4 @@ export const EvaluationStats = memo(function EvaluationStats({ overallAvg, quali
       </div>
     </>
   );
-}
+});

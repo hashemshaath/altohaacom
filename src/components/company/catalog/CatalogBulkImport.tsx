@@ -358,4 +358,4 @@ export const CatalogBulkImport = memo(function CatalogBulkImport({ open, onOpenC
       </DialogContent>
     </Dialog>
   );
-}
+});

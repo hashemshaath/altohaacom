@@ -384,4 +384,4 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
       </CardContent>
     </Card>
   );
-}
+});

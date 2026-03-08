@@ -229,4 +229,4 @@ export const TypographySettings = memo(function TypographySettings({ settings, o
       </Card>
     </div>
   );
-}
+});

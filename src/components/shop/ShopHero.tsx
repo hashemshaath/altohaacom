@@ -75,4 +75,4 @@ export const ShopHero = memo(function ShopHero({ productCount, cart, onCartOpen 
       </div>
     </section>
   );
-}
+});

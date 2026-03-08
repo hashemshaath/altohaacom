@@ -228,4 +228,4 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
       )}
     </div>
   );
-}
+});

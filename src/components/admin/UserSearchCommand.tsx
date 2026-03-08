@@ -139,4 +139,4 @@ export const UserSearchCommand = memo(function UserSearchCommand({ open, onOpenC
       </DialogContent>
     </Dialog>
   );
-}
+});

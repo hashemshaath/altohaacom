@@ -210,4 +210,4 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
       )}
     </div>
   );
-}
+});

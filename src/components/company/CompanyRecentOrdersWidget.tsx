@@ -103,4 +103,4 @@ export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget
       </CardContent>
     </Card>
   );
-}
+});

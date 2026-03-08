@@ -307,4 +307,4 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
       </SheetContent>
     </Sheet>
   );
-}
+});

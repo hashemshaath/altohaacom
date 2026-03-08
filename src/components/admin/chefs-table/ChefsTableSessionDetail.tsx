@@ -128,4 +128,4 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
       </div>
     </div>
   );
-}
+});
