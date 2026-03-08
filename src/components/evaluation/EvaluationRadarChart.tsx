@@ -18,7 +18,7 @@ const COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function EvaluationRadarChart({ title, data, evaluatorData, isAr }: Props) {
+export const EvaluationRadarChart = memo(function EvaluationRadarChart({ title, data, evaluatorData, isAr }: Props) {
   if (!data.length) return null;
 
   // If multiple evaluators, overlay their radars
