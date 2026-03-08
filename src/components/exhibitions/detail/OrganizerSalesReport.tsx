@@ -19,7 +19,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Props) {
+export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data, isLoading } = useQuery({
