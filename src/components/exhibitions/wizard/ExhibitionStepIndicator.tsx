@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Check, FileText, Calendar, Building, Eye } from "lucide-react";
 
