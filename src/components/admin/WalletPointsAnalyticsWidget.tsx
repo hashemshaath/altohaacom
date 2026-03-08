@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users, TrendingUp } from "lucide-react";
 
-export function WalletPointsAnalyticsWidget() {
+export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
