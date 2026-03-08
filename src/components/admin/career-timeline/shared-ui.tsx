@@ -241,7 +241,7 @@ export const SortableItem = memo(function SortableItem({ id, sectionKey, childre
       </div>
     </div>
   );
-}
+});
 
 export const SectionDragListenersContext = createContext<Record<string, any> | null>(null);
 
