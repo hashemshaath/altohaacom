@@ -34,7 +34,7 @@ interface KPIData {
   format?: "number" | "currency";
 }
 
-export default function InteractiveDashboard() {
+const InteractiveDashboard = memo(function InteractiveDashboard() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
