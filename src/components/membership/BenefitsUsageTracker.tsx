@@ -15,7 +15,7 @@ const ICON_MAP: Record<string, any> = {
   FileText, Camera, MessageSquare, Trophy, Video, Link, Zap, ChefHat,
 };
 
-export function BenefitsUsageTracker() {
+export const BenefitsUsageTracker = memo(function BenefitsUsageTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: benefits, isLoading } = useBenefitUsage();
