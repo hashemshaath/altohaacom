@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
@@ -6,6 +6,7 @@ import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
 import { cn } from "@/lib/utils";
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
 import { Button } from "@/components/ui/button";
 import { Building, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeft } from "lucide-react";
@@ -54,7 +55,9 @@ export default function AdminLayout() {
           <div className="container py-6">
             <AdminPendingBanner />
             <AdminBreadcrumb />
-            <Outlet />
+            <WidgetErrorBoundary name="admin-page">
+              <Outlet />
+            </WidgetErrorBoundary>
           </div>
         </main>
       </div>
