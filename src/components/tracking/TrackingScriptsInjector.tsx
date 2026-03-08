@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
  * Injects Meta Pixel, TikTok Pixel, and Snapchat Pixel scripts
  * based on marketing_tracking_config table.
  */
-export function TrackingScriptsInjector() {
+export const TrackingScriptsInjector = memo(function TrackingScriptsInjector() {
   const injected = useRef(false);
 
   const { data: configs } = useQuery({
