@@ -37,7 +37,7 @@ interface ScheduleEvent {
   status: string;
 }
 
-export function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }: Props) {
+export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ competitionId, language, isOrganizer }: Props) {
   const isAr = language === "ar";
   const { user } = useAuth();
   const queryClient = useQueryClient();
