@@ -645,7 +645,7 @@ export default function CompetitionsAdmin() {
           )}
           {seriesList && seriesList.length > 0 && (
             <Select value={seriesFilter} onValueChange={setSeriesFilter}>
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-40 rounded-xl">
                 <Layers className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
                 <SelectValue placeholder={isAr ? "السلسلة" : "Series"} />
               </SelectTrigger>
