@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { CostEstimate, ESTIMATE_STATUS_CONFIG, MODULE_TYPES } from "@/hooks/useCostCenter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
