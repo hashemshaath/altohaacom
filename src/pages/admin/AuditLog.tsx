@@ -263,7 +263,7 @@ export default function AuditLog() {
                   <Input placeholder={isAr ? "بحث..." : "Search..."} value={contentSearch} onChange={e => setContentSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
                 </div>
                 <Select value={contentActionFilter} onValueChange={setContentActionFilter}>
-                  <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
+                   <SelectTrigger className="w-40 h-8 text-xs rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
                     {uniqueContentActionTypes.map(t => (
