@@ -159,7 +159,7 @@ export const FanFavoritesTab = memo(function FanFavoritesTab() {
       </Tabs>
     </div>
   );
-}
+});
 
 function EmptyState({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) {
   return (
