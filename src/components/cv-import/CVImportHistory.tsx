@@ -98,8 +98,6 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
     );
   }
 
-  if (imports.length === 0) return null;
-
   // Stats
   const { totalImports, completedImports, totalRecords, uniqueChefs } = useMemo(() => ({
     totalImports: imports.length,
@@ -107,6 +105,8 @@ export function CVImportHistory({ isAr, refreshTrigger }: Props) {
     totalRecords: imports.reduce((sum, i) => sum + (i.records_created || 0), 0),
     uniqueChefs: new Set(imports.map(i => i.chef_id)).size,
   }), [imports]);
+
+  if (imports.length === 0) return null;
 
   // Filter
   const filtered = imports.filter(imp => {
