@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
