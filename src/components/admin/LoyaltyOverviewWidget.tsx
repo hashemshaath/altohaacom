@@ -67,16 +67,16 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden rounded-2xl border-border/40">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-4/10">
-              <Crown className="h-3.5 w-3.5 text-chart-4" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-4/10 border border-chart-4/15 transition-transform duration-300 hover:scale-110">
+              <Crown className="h-4 w-4 text-chart-4" />
             </div>
             {isAr ? "نظرة عامة على الولاء" : "Loyalty Overview"}
           </CardTitle>
-          <Badge variant="outline" className="text-[10px] gap-1">
+          <Badge variant="outline" className="text-[10px] gap-1 rounded-lg">
             <Star className="h-2.5 w-2.5 text-chart-4" />
             {data?.referralCodes || 0} {isAr ? "رموز إحالة" : "referrals"}
           </Badge>
