@@ -10,7 +10,7 @@ import { Bell, Send, Eye, AlertTriangle, Zap, Mail, Smartphone, MessageSquare } 
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function NotificationInsightsWidget() {
+export const NotificationInsightsWidget = memo(function NotificationInsightsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
