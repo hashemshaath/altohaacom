@@ -27,7 +27,7 @@ const DOC_CATEGORIES = [
   { value: "other", en: "Other", ar: "أخرى" },
 ];
 
-export function ExhibitionDocumentsPanel({ exhibitionId }: Props) {
+export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({ exhibitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
