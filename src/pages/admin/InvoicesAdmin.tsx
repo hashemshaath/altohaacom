@@ -250,9 +250,11 @@ export default function InvoicesAdmin() {
     }
   };
 
-  const subtotal = formData.items.reduce((sum, i) => sum + i.quantity * i.unit_price, 0);
-  const taxAmount = subtotal * (formData.tax_rate / 100);
-  const total = subtotal + taxAmount;
+  const { subtotal, taxAmount, total } = useMemo(() => {
+    const sub = formData.items.reduce((sum, i) => sum + i.quantity * i.unit_price, 0);
+    const tax = sub * (formData.tax_rate / 100);
+    return { subtotal: sub, taxAmount: tax, total: sub + tax };
+  }, [formData.items, formData.tax_rate]);
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, { en: string; ar: string }> = {
