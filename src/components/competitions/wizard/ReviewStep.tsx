@@ -22,7 +22,7 @@ function formatDate(dateStr: string) {
   }
 }
 
-export function ReviewStep({ data }: ReviewStepProps) {
+export const ReviewStep = memo(function ReviewStep({ data }: ReviewStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const totalWeight = data.criteria.reduce((sum, c) => sum + Number(c.weight), 0);
