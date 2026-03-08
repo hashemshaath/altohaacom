@@ -49,11 +49,14 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   if (!data) return null;
 
   return (
-    <Card className="border-border/40 overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-3">
+    <Card className="border-border/40 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group/wallet">
+      <CardContent className="p-4 relative">
+        {/* Subtle glow */}
+        <div className="pointer-events-none absolute -end-8 -top-8 h-20 w-20 rounded-full bg-primary/5 blur-[30px] transition-opacity group-hover/wallet:opacity-70" />
+
+        <div className="flex items-center justify-between mb-3 relative">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm transition-transform group-hover/wallet:scale-110">
               <Wallet className="h-4 w-4 text-primary" />
             </div>
             <span className="text-xs font-bold">{isAr ? "المحفظة" : "Wallet"}</span>
@@ -61,21 +64,21 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
           <Button variant="ghost" size="sm" className="h-7 text-[10px] gap-1 text-muted-foreground" asChild>
             <Link to="/wallet">
               {isAr ? "عرض" : "View"}
-              <ArrowRight className="h-3 w-3 rtl:rotate-180" />
+              <ArrowRight className="h-3 w-3 rtl:rotate-180 transition-transform group-hover/wallet:translate-x-0.5 rtl:group-hover/wallet:-translate-x-0.5" />
             </Link>
           </Button>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           {/* Balance */}
-          <div className="rounded-xl bg-muted/40 p-3 text-center border border-border/30 hover:bg-muted/50 transition-colors">
+          <div className="rounded-xl bg-muted/40 p-3 text-center border border-border/30 hover:bg-muted/50 transition-all hover:border-border/50">
             <p className="text-xl font-bold tabular-nums">{data.balance.toFixed(2)}</p>
             <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{data.currency}</p>
           </div>
 
           {/* Points */}
-          <div className="rounded-xl bg-chart-4/5 p-3 text-center border border-chart-4/15 hover:bg-chart-4/10 transition-colors">
-            <p className="text-xl font-bold tabular-nums text-chart-4">{data.points}</p>
+          <div className="rounded-xl bg-chart-4/5 p-3 text-center border border-chart-4/15 hover:bg-chart-4/10 transition-all hover:border-chart-4/25">
+            <p className="text-xl font-bold tabular-nums text-chart-4">{data.points.toLocaleString()}</p>
             <div className="flex items-center justify-center gap-1 mt-0.5">
               <Star className="h-2.5 w-2.5 text-chart-4" />
               <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "نقاط" : "Points"}</p>
@@ -84,9 +87,9 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
         </div>
 
         {data.weeklyPoints > 0 && (
-          <div className="mt-2 flex items-center justify-center gap-1 text-[10px] font-semibold text-chart-2">
+          <div className="mt-2.5 flex items-center justify-center gap-1.5 text-[10px] font-semibold text-chart-2 bg-chart-2/5 rounded-lg py-1.5 border border-chart-2/10">
             <TrendingUp className="h-3 w-3" />
-            +{data.weeklyPoints} {isAr ? "نقطة هذا الأسبوع" : "pts this week"}
+            +{data.weeklyPoints.toLocaleString()} {isAr ? "نقطة هذا الأسبوع" : "pts this week"}
           </div>
         )}
       </CardContent>

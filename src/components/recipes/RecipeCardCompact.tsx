@@ -40,7 +40,7 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
 
   return (
     <Link to={`/recipes/${recipe.slug || recipe.id}`}>
-      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 active:scale-[0.98]">
+      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 active:scale-[0.98] touch-manipulation">
         <div className="aspect-video overflow-hidden bg-muted relative">
           {recipe.image_url ? (
             <img
@@ -53,17 +53,18 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/5 to-chart-3/5">
-              <ChefHat className="h-10 w-10 text-primary/15" />
+              <ChefHat className="h-10 w-10 text-primary/15 transition-transform duration-500 group-hover:scale-110" />
             </div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           {recipe.difficulty && (
-            <Badge variant="outline" className={cn("absolute top-2 end-2 text-[9px]", diff.cls)}>
+            <Badge variant="outline" className={cn("absolute top-2 end-2 text-[9px] backdrop-blur-sm", diff.cls)}>
               {isAr ? diff.ar : diff.en}
             </Badge>
           )}
         </div>
         <CardContent className="p-3">
-          <h3 className="line-clamp-1 text-sm font-semibold mb-1.5">{title}</h3>
+          <h3 className="line-clamp-1 text-sm font-semibold mb-1.5 group-hover:text-primary transition-colors">{title}</h3>
           <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
             {totalTime > 0 && (
               <span className="flex items-center gap-0.5">
@@ -76,7 +77,7 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
               </span>
             )}
             {recipe.view_count != null && recipe.view_count > 0 && (
-              <span className="flex items-center gap-0.5">
+              <span className="flex items-center gap-0.5 ms-auto">
                 <Eye className="h-2.5 w-2.5" /> {recipe.view_count}
               </span>
             )}
