@@ -28,7 +28,7 @@ interface ReportDialogProps {
   onClose: () => void;
 }
 
-export function ReportDialog({ postId, onClose }: ReportDialogProps) {
+export const ReportDialog = memo(function ReportDialog({ postId, onClose }: ReportDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
