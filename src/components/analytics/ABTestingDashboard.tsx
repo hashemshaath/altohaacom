@@ -72,7 +72,7 @@ const MOCK_EXPERIMENTS: Experiment[] = [
   },
 ];
 
-export function ABTestingDashboard() {
+export const ABTestingDashboard = memo(function ABTestingDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [experiments] = useState<Experiment[]>(MOCK_EXPERIMENTS);
