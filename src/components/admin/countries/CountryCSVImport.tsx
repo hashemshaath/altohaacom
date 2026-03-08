@@ -63,7 +63,7 @@ function parseCSV(text: string): ParsedRow[] {
   });
 }
 
-export function CountryCSVImport() {
+export const CountryCSVImport = memo(function CountryCSVImport() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
