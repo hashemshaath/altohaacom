@@ -1373,7 +1373,7 @@ export default function OrdersAdmin() {
                           )}
                         </TableCell>
                         <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
-                        <TableCell className="font-medium">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
+                        <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
                         <TableCell>
                           <Badge className={statusColors[order.status] || "bg-muted text-muted-foreground"}>
                             {getStatusLabel(order.status)}
