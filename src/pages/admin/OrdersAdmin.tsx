@@ -1218,6 +1218,8 @@ export default function OrdersAdmin() {
         description={isAr ? "إدارة طلبات الشركات وطلبات المتجر" : "Manage company orders and shop orders"}
       />
 
+      <FinanceQuickNav />
+
       {/* Financial Summary & Orders Live Stats */}
       <FinancialSummaryWidget />
       <OrdersLiveStatsWidget />
