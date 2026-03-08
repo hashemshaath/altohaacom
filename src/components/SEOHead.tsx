@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 
 interface SEOHeadProps {
