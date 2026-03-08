@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -27,7 +27,7 @@ interface ReadinessItem {
   detailAr: string;
 }
 
-export function ReadinessChecklist({ competitionId }: Props) {
+export const ReadinessChecklist = memo(function ReadinessChecklist({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -251,4 +251,4 @@ export function ReadinessChecklist({ competitionId }: Props) {
       </div>
     </div>
   );
-}
+});

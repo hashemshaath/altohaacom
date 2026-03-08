@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -30,7 +30,7 @@ interface VendorMetrics {
   categories: string[];
 }
 
-export function VendorPerformance({ competitionId }: Props) {
+export const VendorPerformance = memo(function VendorPerformance({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -258,4 +258,4 @@ export function VendorPerformance({ competitionId }: Props) {
       )}
     </div>
   );
-}
+});

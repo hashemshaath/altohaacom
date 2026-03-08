@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +18,7 @@ interface AgentMetrics {
   avgResponseMinutes: number | null;
 }
 
-export function TeamPerformanceMetrics() {
+export const TeamPerformanceMetrics = memo(function TeamPerformanceMetrics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -140,4 +141,4 @@ export function TeamPerformanceMetrics() {
       </CardContent>
     </Card>
   );
-}
+});

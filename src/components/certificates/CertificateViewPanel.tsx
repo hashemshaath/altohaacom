@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -74,7 +75,7 @@ const statusColors: Record<string, string> = {
   revoked: "bg-destructive/20 text-destructive",
 };
 
-export function CertificateViewPanel({ certificate: cert, onClose }: CertificateViewPanelProps) {
+export const CertificateViewPanel = memo(function CertificateViewPanel({ certificate: cert, onClose }: CertificateViewPanelProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -299,4 +300,4 @@ export function CertificateViewPanel({ certificate: cert, onClose }: Certificate
       </CardContent>
     </Card>
   );
-}
+});

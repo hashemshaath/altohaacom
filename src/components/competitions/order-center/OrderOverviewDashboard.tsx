@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,7 +23,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
+export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -372,7 +372,7 @@ export function OrderOverviewDashboard({ competitionId, isOrganizer }: Props) {
       </div>
     </div>
   );
-}
+});
 
 function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, trendPositive, isValueString }: {
   icon: any; value: number | string; label: string; iconColor: string;

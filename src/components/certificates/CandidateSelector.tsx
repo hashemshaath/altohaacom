@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -34,7 +34,7 @@ interface CandidateSelectorProps {
   templates: Array<{ id: string; name: string; name_ar: string | null; type: string; is_active: boolean }>;
 }
 
-export function CandidateSelector({ competitions, templates }: CandidateSelectorProps) {
+export const CandidateSelector = memo(function CandidateSelector({ competitions, templates }: CandidateSelectorProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -441,4 +441,4 @@ export function CandidateSelector({ competitions, templates }: CandidateSelector
       )}
     </div>
   );
-}
+});

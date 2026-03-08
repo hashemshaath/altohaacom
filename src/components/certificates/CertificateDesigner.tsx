@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ interface CertificateDesignerProps {
   onPrint?: () => void;
 }
 
-export function CertificateDesigner({
+export const CertificateDesigner = memo(function CertificateDesigner({
   initialDesign,
   recipientName = "John Doe",
   eventName = "International Culinary Championship 2026",
@@ -445,4 +445,4 @@ export function CertificateDesigner({
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,7 +20,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
+export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -227,4 +227,4 @@ export function CatalogBrowser({ competitionId, isOrganizer }: Props) {
       )}
     </div>
   );
-}
+});

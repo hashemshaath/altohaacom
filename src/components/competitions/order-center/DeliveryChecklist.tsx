@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -33,7 +33,7 @@ function getItemName(item: any, isAr: boolean): string {
   return isAr && item.custom_name_ar ? item.custom_name_ar : item.custom_name || "—";
 }
 
-export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
+export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -357,4 +357,4 @@ export function DeliveryChecklist({ competitionId, isOrganizer }: Props) {
       />
     </div>
   );
-}
+});

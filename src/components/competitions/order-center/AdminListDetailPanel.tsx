@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,7 +34,7 @@ const IMPORTANCE_LEVELS = [
   { value: "critical", labelEn: "Critical", labelAr: "حرج", color: "text-destructive" },
 ];
 
-export function AdminListDetailPanel({ listId, onBack }: Props) {
+export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId, onBack }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -415,4 +415,4 @@ export function AdminListDetailPanel({ listId, onBack }: Props) {
       )}
     </div>
   );
-}
+});

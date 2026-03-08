@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,7 +22,7 @@ interface CustomerHealth {
   trend: "up" | "down" | "stable";
 }
 
-export function CustomerHealthScores() {
+export const CustomerHealthScores = memo(function CustomerHealthScores() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -192,4 +193,4 @@ export function CustomerHealthScores() {
       </CardContent>
     </Card>
   );
-}
+});
