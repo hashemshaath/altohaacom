@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,7 +22,7 @@ interface NewConversationDialogProps {
   onSelectUser: (user: { user_id: string; full_name: string | null; username: string | null; avatar_url: string | null }) => void;
 }
 
-export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewConversationDialogProps) {
+export const NewConversationDialog = memo(function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewConversationDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -109,4 +109,4 @@ export function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewC
       </DialogContent>
     </Dialog>
   );
-}
+});

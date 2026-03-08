@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -39,7 +40,7 @@ interface Props {
   secretaryName?: string | null;
 }
 
-export function EntityLeadershipSection({ entityId, presidentName, secretaryName }: Props) {
+export const EntityLeadershipSection = memo(function EntityLeadershipSection({ entityId, presidentName, secretaryName }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -247,4 +248,4 @@ export function EntityLeadershipSection({ entityId, presidentName, secretaryName
       )}
     </section>
   );
-}
+});

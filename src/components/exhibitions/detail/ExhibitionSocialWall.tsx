@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ interface Props {
   exhibitionHashtag?: string;
 }
 
-export function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibitionHashtag }: Props) {
+export const ExhibitionSocialWall = memo(function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibitionHashtag }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -264,4 +264,4 @@ export function ExhibitionSocialWall({ exhibitionId, exhibitionTitle, exhibition
       </div>
     </div>
   );
-}
+});

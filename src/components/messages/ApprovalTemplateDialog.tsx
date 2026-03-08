@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   Dialog,
@@ -19,7 +19,7 @@ interface ApprovalTemplateDialogProps {
   isPending: boolean;
 }
 
-export function ApprovalTemplateDialog({ open, onOpenChange, onSend, isPending }: ApprovalTemplateDialogProps) {
+export const ApprovalTemplateDialog = memo(function ApprovalTemplateDialog({ open, onOpenChange, onSend, isPending }: ApprovalTemplateDialogProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [title, setTitle] = useState("");
@@ -102,4 +102,4 @@ export function ApprovalTemplateDialog({ open, onOpenChange, onSend, isPending }
       </DialogContent>
     </Dialog>
   );
-}
+});

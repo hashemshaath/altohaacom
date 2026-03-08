@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ interface ApprovalMessageProps {
   isMine: boolean;
 }
 
-export function ApprovalMessage({ messageId, senderId, receiverId, metadata, isMine }: ApprovalMessageProps) {
+export const ApprovalMessage = memo(function ApprovalMessage({ messageId, senderId, receiverId, metadata, isMine }: ApprovalMessageProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -132,4 +132,4 @@ export function ApprovalMessage({ messageId, senderId, receiverId, metadata, isM
       )}
     </div>
   );
-}
+});

@@ -2,6 +2,7 @@
  * Shows registration status for the current user on a competition detail page.
  * Displays pending/approved/rejected state with contextual messaging.
  */
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,7 +66,7 @@ const statusLabels: Record<string, { en: string; ar: string }> = {
   waitlisted: { en: "On Waitlist", ar: "في قائمة الانتظار" },
 };
 
-export function RegistrationStatusBanner({ registration, competitionStatus }: RegistrationStatusBannerProps) {
+export const RegistrationStatusBanner = memo(function RegistrationStatusBanner({ registration, competitionStatus }: RegistrationStatusBannerProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -140,4 +141,4 @@ export function RegistrationStatusBanner({ registration, competitionStatus }: Re
       </CardContent>
     </Card>
   );
-}
+});

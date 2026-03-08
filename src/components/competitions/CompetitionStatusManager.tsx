@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -129,7 +129,7 @@ interface CompetitionStatusManagerProps {
   competitionTitle: string;
 }
 
-export function CompetitionStatusManager({
+export const CompetitionStatusManager = memo(function CompetitionStatusManager({
   competitionId,
   currentStatus,
   competitionTitle,
@@ -379,4 +379,4 @@ export function CompetitionStatusManager({
       </CardContent>
     </Card>
   );
-}
+});

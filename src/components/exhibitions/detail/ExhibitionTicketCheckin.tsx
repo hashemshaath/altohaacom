@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionTicketCheckin({ exhibitionId, isAr }: Props) {
+export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [code, setCode] = useState("");
@@ -142,4 +142,4 @@ export function ExhibitionTicketCheckin({ exhibitionId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

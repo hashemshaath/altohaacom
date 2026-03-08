@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Crown, Star, Sparkles, Shield } from "lucide-react";
@@ -46,7 +47,7 @@ const SIZE_CLASSES = {
 
 const ICON_SIZES = { sm: "h-2.5 w-2.5", md: "h-3 w-3", lg: "h-3.5 w-3.5" };
 
-export function MembershipBadge({ tier, isAr = false, size = "md", showTooltip = true }: MembershipBadgeProps) {
+export const MembershipBadge = memo(function MembershipBadge({ tier, isAr = false, size = "md", showTooltip = true }: MembershipBadgeProps) {
   if (!tier || tier === "basic") return null;
 
   const config = TIER_CONFIG[tier];
@@ -90,4 +91,4 @@ export function MembershipBadge({ tier, isAr = false, size = "md", showTooltip =
       </TooltipContent>
     </Tooltip>
   );
-}
+});

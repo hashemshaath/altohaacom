@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ const INITIAL_FILTERS: FilterValues = {
   experienceLevel: "all",
 };
 
-export function UserAdvancedFilters({ filters, onChange, onReset }: UserAdvancedFiltersProps) {
+export const UserAdvancedFilters = memo(function UserAdvancedFilters({ filters, onChange, onReset }: UserAdvancedFiltersProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [open, setOpen] = useState(false);
@@ -151,7 +151,7 @@ export function UserAdvancedFilters({ filters, onChange, onReset }: UserAdvanced
       </PopoverContent>
     </Popover>
   );
-}
+});
 
 export { INITIAL_FILTERS };
 export type { FilterValues };

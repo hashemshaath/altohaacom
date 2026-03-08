@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +16,7 @@ interface Props {
   onChange: (updates: Partial<ExhibitionFormData>) => void;
 }
 
-export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
+export const ExhibitionOrganizerTicketsStep = memo(function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -267,4 +268,4 @@ export function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
       </Card>
     </div>
   );
-}
+});

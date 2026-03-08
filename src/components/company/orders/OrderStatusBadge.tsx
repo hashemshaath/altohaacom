@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ORDER_STATUSES } from "./orderTypes";
 
@@ -6,7 +7,7 @@ interface OrderStatusBadgeProps {
   language: string;
 }
 
-export function OrderStatusBadge({ status, language }: OrderStatusBadgeProps) {
+export const OrderStatusBadge = memo(function OrderStatusBadge({ status, language }: OrderStatusBadgeProps) {
   const isAr = language === "ar";
   const statusInfo = ORDER_STATUSES.find(s => s.value === status);
   const label = statusInfo ? (isAr ? statusInfo.ar : statusInfo.en) : (isAr ? "قيد الانتظار" : "Pending");
@@ -25,4 +26,4 @@ export function OrderStatusBadge({ status, language }: OrderStatusBadgeProps) {
     default:
       return <Badge variant="secondary">{label}</Badge>;
   }
-}
+});

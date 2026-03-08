@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,7 +18,7 @@ interface OrdersTableProps {
   onView: (order: CompanyOrder) => void;
 }
 
-export function OrdersTable({ orders, isLoading, language, onView }: OrdersTableProps) {
+export const OrdersTable = memo(function OrdersTable({ orders, isLoading, language, onView }: OrdersTableProps) {
   const isAr = language === "ar";
 
   return (
@@ -91,4 +92,4 @@ export function OrdersTable({ orders, isLoading, language, onView }: OrdersTable
       </CardContent>
     </Card>
   );
-}
+});

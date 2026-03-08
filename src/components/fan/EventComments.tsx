@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +16,7 @@ interface EventCommentsProps {
   eventId: string;
 }
 
-export function EventComments({ eventType, eventId }: EventCommentsProps) {
+export const EventComments = memo(function EventComments({ eventType, eventId }: EventCommentsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -247,4 +247,4 @@ export function EventComments({ eventType, eventId }: EventCommentsProps) {
       )}
     </div>
   );
-}
+});

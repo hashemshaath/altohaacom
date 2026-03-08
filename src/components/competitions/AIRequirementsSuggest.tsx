@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -35,7 +35,7 @@ const PRIORITY_COLORS: Record<string, string> = {
   critical: "bg-destructive/10 text-destructive",
 };
 
-export function AIRequirementsSuggest({ competitionId, listId, listCategory, existingItemNames, onItemsAdded }: Props) {
+export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ competitionId, listId, listCategory, existingItemNames, onItemsAdded }: Props) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -188,4 +188,4 @@ export function AIRequirementsSuggest({ competitionId, listId, listCategory, exi
       </DialogContent>
     </Dialog>
   );
-}
+});
