@@ -25,7 +25,7 @@ interface OnboardingWizardProps {
   onComplete?: () => void;
 }
 
-export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
+export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
