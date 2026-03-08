@@ -15,7 +15,7 @@ interface Props {
   sessions: ChefsTableSession[];
 }
 
-export function ChefsTableAnalytics({ requests, sessions }: Props) {
+export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests, sessions }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
