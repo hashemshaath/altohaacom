@@ -27,7 +27,7 @@ function NoData({ isAr }: { isAr: boolean }) {
 }
 
 /* ─── Registration Trend ─── */
-export function RegistrationTrendChart({ data }: { data?: { month: string; count: number }[] }) {
+export const RegistrationTrendChart = memo(function RegistrationTrendChart({ data }: { data?: { month: string; count: number }[] }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
