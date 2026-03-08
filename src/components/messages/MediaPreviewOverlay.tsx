@@ -10,7 +10,7 @@ interface MediaPreviewOverlayProps {
   initialIndex?: number;
 }
 
-export function MediaPreviewOverlay({ open, onOpenChange, urls, initialIndex = 0 }: MediaPreviewOverlayProps) {
+export const MediaPreviewOverlay = memo(function MediaPreviewOverlay({ open, onOpenChange, urls, initialIndex = 0 }: MediaPreviewOverlayProps) {
   const [index, setIndex] = useState(initialIndex);
 
   if (!urls.length) return null;
