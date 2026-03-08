@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { MessageSquare, Bell, Ticket, Mail, Send, CheckCircle, AlertCircle, Clock, Zap, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function CommunicationsOverviewWidget() {
+export const CommunicationsOverviewWidget = memo(function CommunicationsOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
