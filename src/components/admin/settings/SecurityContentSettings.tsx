@@ -209,4 +209,4 @@ export const SecurityContentSettings = memo(function SecurityContentSettings({ s
       </Card>
     </div>
   );
-}
+});

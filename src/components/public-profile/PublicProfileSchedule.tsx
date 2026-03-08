@@ -161,4 +161,4 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
       </CardContent>
     </Card>
   );
-}
+});

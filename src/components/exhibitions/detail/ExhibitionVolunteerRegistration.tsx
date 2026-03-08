@@ -111,4 +111,4 @@ export const ExhibitionVolunteerRegistration = memo(function ExhibitionVolunteer
       </CardContent>
     </Card>
   );
-}
+});

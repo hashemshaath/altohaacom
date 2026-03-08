@@ -86,4 +86,4 @@ export const LogoUploader = memo(function LogoUploader({ label, labelAr, isAr, v
       </div>
     </div>
   );
-}
+});

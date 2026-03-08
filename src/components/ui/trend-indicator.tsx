@@ -37,4 +37,4 @@ export const TrendIndicator = memo(function TrendIndicator({ value, suffix, isPe
       {Math.abs(value)}{isPercentage ? "%" : ""}{suffix ? ` ${suffix}` : ""}
     </span>
   );
-}
+});

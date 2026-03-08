@@ -148,4 +148,4 @@ export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpe
       </SheetContent>
     </Sheet>
   );
-}
+});

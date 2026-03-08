@@ -96,4 +96,4 @@ export const CatalogImageUpload = memo(function CatalogImageUpload({ imageUrl, o
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
     </div>
   );
-}
+});

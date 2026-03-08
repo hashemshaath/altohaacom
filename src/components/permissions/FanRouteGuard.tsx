@@ -24,4 +24,4 @@ export const FanRouteGuard = memo(function FanRouteGuard({ children }: { childre
   if (isFan) return <Navigate to="/dashboard" replace />;
 
   return <>{children}</>;
-}
+});

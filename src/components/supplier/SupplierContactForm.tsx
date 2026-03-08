@@ -107,4 +107,4 @@ export const SupplierContactForm = memo(function SupplierContactForm({ companyId
       </CardContent>
     </Card>
   );
-}
+});

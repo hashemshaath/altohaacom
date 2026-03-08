@@ -125,4 +125,4 @@ export const ProductImageUpload = memo(function ProductImageUpload({ images, onI
       )}
     </div>
   );
-}
+});
