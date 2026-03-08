@@ -260,7 +260,7 @@ export default function AuditLog() {
               <div className="flex flex-wrap gap-2 mt-2">
                 <div className="relative flex-1 min-w-[180px]">
                   <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={contentSearch} onChange={e => setContentSearch(e.target.value)} className="ps-8 h-8 text-xs" />
+                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={contentSearch} onChange={e => setContentSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
                 </div>
                 <Select value={contentActionFilter} onValueChange={setContentActionFilter}>
                   <SelectTrigger className="w-40 h-8 text-xs"><SelectValue /></SelectTrigger>
