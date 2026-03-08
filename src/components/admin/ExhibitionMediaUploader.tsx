@@ -24,7 +24,7 @@ const MEDIA_CATEGORIES = [
   { value: "banner", en: "Banner", ar: "بانر" },
 ];
 
-export function ExhibitionMediaUploader({ exhibitionId, coverImageUrl, onCoverChange }: Props) {
+export const ExhibitionMediaUploader = memo(function ExhibitionMediaUploader({ exhibitionId, coverImageUrl, onCoverChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
