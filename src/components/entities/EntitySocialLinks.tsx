@@ -21,7 +21,7 @@ interface Props {
   socialLinks: Json;
 }
 
-export function EntitySocialLinks({ socialLinks }: Props) {
+export const EntitySocialLinks = memo(function EntitySocialLinks({ socialLinks }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
