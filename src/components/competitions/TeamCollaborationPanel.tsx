@@ -43,7 +43,7 @@ interface ScheduleItem {
   location?: string;
 }
 
-export function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
+export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
