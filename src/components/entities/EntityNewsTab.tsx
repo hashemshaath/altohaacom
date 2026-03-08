@@ -15,7 +15,7 @@ interface Props {
   entityNameAr?: string | null;
 }
 
-export function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
+export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName, entityNameAr }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
