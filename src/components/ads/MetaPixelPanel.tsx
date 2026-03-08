@@ -70,7 +70,7 @@ const metaIntegrations = [
   },
 ];
 
-export function MetaPixelPanel() {
+export const MetaPixelPanel = memo(function MetaPixelPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
