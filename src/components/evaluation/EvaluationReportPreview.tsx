@@ -154,7 +154,7 @@ function downloadReportAsHTML(reportRef: React.RefObject<HTMLDivElement | null>,
   URL.revokeObjectURL(url);
 }
 
-export function EvaluationReportPreview({ template, onClose }: TemplatePreviewProps) {
+export const EvaluationReportPreview = memo(function EvaluationReportPreview({ template, onClose }: TemplatePreviewProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const snapshot = template.criteria_snapshot || [];
