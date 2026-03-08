@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useAuth } from "@/contexts/AuthContext";
