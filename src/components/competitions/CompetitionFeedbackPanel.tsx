@@ -19,7 +19,7 @@ const CATEGORY_CONFIG: Record<string, { icon: React.ReactNode; color: string; en
   technique: { icon: <Star className="h-3.5 w-3.5" />, color: "bg-chart-3/10 text-chart-3", en: "Technique", ar: "التقنية" },
 };
 
-export function CompetitionFeedbackPanel({ competitionId }: Props) {
+export const CompetitionFeedbackPanel = memo(function CompetitionFeedbackPanel({ competitionId }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
