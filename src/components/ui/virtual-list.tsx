@@ -17,7 +17,7 @@ interface VirtualListProps<T> {
  * Lightweight virtual scrolling list.
  * Only renders visible items + overscan buffer for performance with large datasets.
  */
-export function VirtualList<T>({
+export const VirtualList = memo(function VirtualList<T>({
   items,
   itemHeight,
   overscan = 5,
