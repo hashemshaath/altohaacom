@@ -32,7 +32,7 @@ interface ExhibitionHeroProps {
   isAr: boolean;
 }
 
-export function ExhibitionHero({
+export const ExhibitionHero = memo(function ExhibitionHero({
   exhibition,
   title,
   venue,
