@@ -24,7 +24,7 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-export function AdminUserDetailsDrawer({ userId, open, onOpenChange }: Props) {
+export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ userId, open, onOpenChange }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
