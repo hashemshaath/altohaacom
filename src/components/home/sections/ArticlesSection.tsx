@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,7 +21,7 @@ const TYPE_MAP: Record<string, { en: string; ar: string }> = {
   event: { en: "Event", ar: "فعالية" },
 };
 
-export default function ArticlesSection() {
+const ArticlesSection = memo(function ArticlesSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
@@ -109,4 +110,6 @@ export default function ArticlesSection() {
       </div>
     </section>
   );
-}
+});
+
+export default ArticlesSection;

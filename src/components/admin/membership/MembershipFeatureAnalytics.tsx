@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { TrendingUp, Eye, ShieldX, Zap, Star, Crown } from "lucide-react";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
@@ -25,7 +25,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "المؤسسي" },
 };
 
-export default function MembershipFeatureAnalytics() {
+const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [days, setDays] = useState("30");
@@ -280,7 +280,9 @@ export default function MembershipFeatureAnalytics() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipFeatureAnalytics;
 
 function FeatureExportButton({ featureAgg, isAr }: { featureAgg: any[]; isAr: boolean }) {
   const { exportData, isExporting } = useAdminExport();

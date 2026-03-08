@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,7 +31,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "المؤسسي" },
 };
 
-export default function MembershipAnalyticsDashboard() {
+const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -526,7 +527,9 @@ export default function MembershipAnalyticsDashboard() {
       </Card>
     </div>
   );
-}
+});
+
+export default MembershipAnalyticsDashboard;
 
 function KPICard({ icon: Icon, label, value, sub, color = "text-foreground" }: {
   icon: React.ElementType; label: string; value: string | number; sub: string; color?: string;

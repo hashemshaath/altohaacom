@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,7 +101,7 @@ interface Props {
   onCancel: () => void;
 }
 
-export default function EntityFormTabs({ form, editingId, selectedManager, isSaving, onUpdate, onManagerChange, onSave, onCancel }: Props) {
+const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedManager, isSaving, onUpdate, onManagerChange, onSave, onCancel }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [translatingField, setTranslatingField] = useState<string | null>(null);
@@ -496,4 +496,6 @@ export default function EntityFormTabs({ form, editingId, selectedManager, isSav
       </CardContent>
     </Card>
   );
-}
+});
+
+export default EntityFormTabs;

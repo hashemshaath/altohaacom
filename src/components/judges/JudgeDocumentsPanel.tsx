@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -29,7 +29,7 @@ const docTypes = [
   { value: "other", en: "Other", ar: "أخرى" },
 ];
 
-export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
+const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -224,4 +224,6 @@ export default function JudgeDocumentsPanel({ userId, isAdmin }: Props) {
       </Card>
     </div>
   );
-}
+});
+
+export default JudgeDocumentsPanel;

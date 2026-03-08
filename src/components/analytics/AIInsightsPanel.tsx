@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { Brain, RefreshCw, Sparkles, TrendingUp, AlertTriangle, Lightbulb, BarCh
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 
-export default function AIInsightsPanel() {
+const AIInsightsPanel = memo(function AIInsightsPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [insights, setInsights] = useState("");
@@ -323,4 +323,6 @@ export default function AIInsightsPanel() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default AIInsightsPanel;

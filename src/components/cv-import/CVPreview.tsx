@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -214,7 +214,7 @@ const PAIRED_PERSONAL_FIELDS: PersonalFieldDef[] = [
   ["website", "Website", "الموقع", null],
 ];
 
-export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
+export const CVPreview = memo(function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const [data, setData] = useState<CVData>(initialData);
@@ -1222,4 +1222,4 @@ export function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSav
       </div>
     </div>
   );
-}
+});

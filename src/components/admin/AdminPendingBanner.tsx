@@ -9,6 +9,7 @@ import {
   ChefHat, FileText, CreditCard, Landmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { memo } from "react";
 
 interface PendingItem {
   key: string;
@@ -20,7 +21,7 @@ interface PendingItem {
   color: string;
 }
 
-export default function AdminPendingBanner() {
+const AdminPendingBanner = memo(function AdminPendingBanner() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -111,4 +112,6 @@ export default function AdminPendingBanner() {
       </ScrollArea>
     </div>
   );
-}
+});
+
+export default AdminPendingBanner;

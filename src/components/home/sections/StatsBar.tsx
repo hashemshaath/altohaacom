@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 
 const StatItem = forwardRef<HTMLDivElement, {
   value: number; label: string; icon: any; isVisible: boolean; delay: number;
@@ -33,7 +33,7 @@ const StatItem = forwardRef<HTMLDivElement, {
   );
 });
 
-export default function StatsBar() {
+const StatsBar = memo(function StatsBar() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { ref, isVisible } = useScrollReveal({ threshold: 0.3 });
@@ -86,4 +86,6 @@ export default function StatsBar() {
       </div>
     </section>
   );
-}
+});
+
+export default StatsBar;

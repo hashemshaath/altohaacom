@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -49,7 +50,7 @@ const moreLinks = [
   { to: "/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
 ];
 
-export function Header() {
+export const Header = memo(function Header() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { data: userRoles = [] } = useUserRoles();
@@ -133,4 +134,4 @@ export function Header() {
       </nav>
     </header>
   );
-}
+});

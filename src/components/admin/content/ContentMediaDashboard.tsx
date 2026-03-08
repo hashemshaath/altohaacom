@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,7 @@ import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export default function ContentMediaDashboard() {
+const ContentMediaDashboard = memo(function ContentMediaDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [tab, setTab] = useState("articles");
@@ -218,7 +218,9 @@ export default function ContentMediaDashboard() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default ContentMediaDashboard;
 
 function MiniStat({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
   return (

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table2, Settings2, UserCog, SlidersHorizontal } from "lucide-react";
@@ -22,7 +23,7 @@ const BENEFITS = [
   { key: "manager", en: "Dedicated Account Manager", ar: "مدير حساب مخصص", basic: false, pro: false, ent: true },
 ];
 
-export default function MembershipBenefitsTab() {
+const MembershipBenefitsTab = memo(function MembershipBenefitsTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -130,4 +131,6 @@ export default function MembershipBenefitsTab() {
       </TabsContent>
     </Tabs>
   );
-}
+});
+
+export default MembershipBenefitsTab;

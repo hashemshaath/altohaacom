@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,7 +59,7 @@ const EXTEND_OPTIONS = [
   { days: 365, labelEn: "1 Year", labelAr: "سنة واحدة" },
 ];
 
-export default function MembershipMembersTab() {
+const MembershipMembersTab = memo(function MembershipMembersTab() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -818,4 +818,6 @@ export default function MembershipMembersTab() {
       </Dialog>
     </div>
   );
-}
+});
+
+export default MembershipMembersTab;

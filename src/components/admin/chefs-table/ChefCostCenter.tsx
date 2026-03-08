@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -143,7 +143,7 @@ function calcEstimatedTotal(p: Partial<ChefCostProfile>) {
 }
 
 // ─── Main Component ─────────────────────────
-export function ChefCostCenter() {
+export const ChefCostCenter = memo(function ChefCostCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -784,4 +784,4 @@ export function ChefCostCenter() {
       </Tabs>
     </div>
   );
-}
+});

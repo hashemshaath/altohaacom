@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -27,7 +27,7 @@ const CATEGORY_CONFIG: Record<string, { icon: any; label: string; labelAr: strin
   community: { icon: MessageCircle, label: "Community", labelAr: "المجتمع" },
 };
 
-export default function MembershipFeatureControl() {
+const MembershipFeatureControl = memo(function MembershipFeatureControl() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -226,4 +226,6 @@ export default function MembershipFeatureControl() {
       </Tabs>
     </div>
   );
-}
+});
+
+export default MembershipFeatureControl;
