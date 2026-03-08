@@ -71,7 +71,7 @@ export const SectionContent = memo(function SectionContent(props: SectionContent
   if (key === "competitions") return <CompetitionsSectionContent {...props} />;
   if (key === "awards") return <AwardsSectionContent {...props} />;
   return <GenericCareerSectionContent {...props} />;
-}
+});
 
 // ── Generic Career Section (education, work, judging, media, organizing, custom) ──
 function GenericCareerSectionContent({
