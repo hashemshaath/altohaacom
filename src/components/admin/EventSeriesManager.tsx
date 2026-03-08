@@ -62,7 +62,7 @@ interface Props {
   onCreateEdition?: (series: SeriesRow, year: number) => void;
 }
 
-export function EventSeriesManager({ onCreateEdition }: Props) {
+export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdition }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
