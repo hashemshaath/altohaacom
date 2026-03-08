@@ -72,7 +72,7 @@ export const ShimmerCard = memo(function ShimmerCard({ variant = "default", line
 /**
  * Grid of shimmer cards for list loading states.
  */
-export function ShimmerGrid({
+export const ShimmerGrid = memo(function ShimmerGrid({
   count = 6,
   variant = "default",
   columns = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
