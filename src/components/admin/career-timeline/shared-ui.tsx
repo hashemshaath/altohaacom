@@ -107,7 +107,7 @@ export const FormActions = memo(function FormActions({ isAr, isPending, editingI
       </Button>
     </div>
   );
-}
+});
 
 // ── Bilingual Field Pair ──────────────────────────────────────
 
