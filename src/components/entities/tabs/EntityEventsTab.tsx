@@ -35,7 +35,7 @@ interface Props {
   onDeleteRequest: (type: string, id: string, name: string) => void;
 }
 
-export function EntityEventsTab({ entityId, onDeleteRequest }: Props) {
+export const EntityEventsTab = memo(function EntityEventsTab({ entityId, onDeleteRequest }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const queryClient = useQueryClient();
