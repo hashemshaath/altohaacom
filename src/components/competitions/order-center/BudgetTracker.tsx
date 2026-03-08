@@ -31,7 +31,7 @@ interface CategoryBudget {
   sponsoredCount: number;
 }
 
-export function BudgetTracker({ competitionId, isOrganizer }: Props) {
+export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   useRealtimeOrderUpdates(competitionId, true);
