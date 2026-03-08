@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreditCard, AlertTriangle, Clock, TrendingUp, Receipt } from "lucide-react";
 import { differenceInDays } from "date-fns";
 
-export function PaymentTrackerWidget() {
+export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -139,4 +140,4 @@ export function PaymentTrackerWidget() {
       </CardContent>
     </Card>
   );
-}
+});

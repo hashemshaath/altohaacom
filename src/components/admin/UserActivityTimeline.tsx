@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +19,7 @@ const ACTION_CONFIG: Record<string, { icon: typeof Activity; color: string; labe
   reset_password: { icon: KeyRound, color: "text-chart-4", label: "Password Reset", labelAr: "إعادة تعيين كلمة المرور" },
 };
 
-export function UserActivityTimeline() {
+export const UserActivityTimeline = memo(function UserActivityTimeline() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -118,4 +119,4 @@ export function UserActivityTimeline() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +12,7 @@ import { Trophy, Users, Gavel, Medal, TrendingUp, MapPin } from "lucide-react";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
-export function CompetitionAnalyticsWidget() {
+export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -159,4 +160,4 @@ export function CompetitionAnalyticsWidget() {
       </div>
     </div>
   );
-}
+});
