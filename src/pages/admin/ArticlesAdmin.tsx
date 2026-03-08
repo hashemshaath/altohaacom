@@ -7,6 +7,7 @@ import { ContentInsightsWidget } from "@/components/admin/ContentInsightsWidget"
 import { ContentPipelineWidget } from "@/components/admin/ContentPipelineWidget";
 import { ContentLiveStatsWidget } from "@/components/admin/ContentLiveStatsWidget";
 import { ContentPerformanceWidget } from "@/components/admin/ContentPerformanceWidget";
+import { EditorialCalendarWidget, ArticlePerformanceWidget } from "@/components/admin/EditorialCalendarWidget";
 import { ArticleEditorPro } from "@/components/articles/ArticleEditorPro";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
