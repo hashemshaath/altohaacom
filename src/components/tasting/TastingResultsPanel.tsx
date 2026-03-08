@@ -13,7 +13,7 @@ interface Props {
   evalMethod: EvalMethod;
 }
 
-export function TastingResultsPanel({ entries, criteria, scores, evalMethod }: Props) {
+export const TastingResultsPanel = memo(function TastingResultsPanel({ entries, criteria, scores, evalMethod }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
