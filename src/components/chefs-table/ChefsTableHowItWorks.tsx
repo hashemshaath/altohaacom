@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Building2, ChefHat, Package, Star, FileCheck, Megaphone } from "lucide-react";
 
 interface ChefsTableHowItWorksProps {
