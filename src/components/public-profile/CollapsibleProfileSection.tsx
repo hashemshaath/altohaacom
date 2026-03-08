@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ interface CollapsibleProfileSectionProps {
   isEmpty?: boolean;
 }
 
-export function CollapsibleProfileSection({
+export const CollapsibleProfileSection = memo(function CollapsibleProfileSection({
   icon: Icon,
   label,
   children,
@@ -79,4 +79,4 @@ export function CollapsibleProfileSection({
       </div>
     </div>
   );
-}
+});

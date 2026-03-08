@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,7 +19,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionMyTickets({ exhibitionId, exhibitionTitle, exhibitionDate, exhibitionVenue, isAr }: Props) {
+export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitionId, exhibitionTitle, exhibitionDate, exhibitionVenue, isAr }: Props) {
   const { user } = useAuth();
   const t = (en: string, ar: string) => isAr ? ar : en;
 
@@ -158,4 +159,4 @@ export function ExhibitionMyTickets({ exhibitionId, exhibitionTitle, exhibitionD
       })}
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +14,7 @@ interface MembershipInvoicesSectionProps {
   userId: string;
 }
 
-export function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionProps) {
+export const MembershipInvoicesSection = memo(function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -107,4 +108,4 @@ export function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionP
       </CardContent>
     </Card>
   );
-}
+});

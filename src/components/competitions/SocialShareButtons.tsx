@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,7 @@ interface SocialShareButtonsProps {
   competitionUrl: string;
 }
 
-export function SocialShareButtons({
+export const SocialShareButtons = memo(function SocialShareButtons({
   title,
   participantName,
   rank,
@@ -106,4 +107,4 @@ export function SocialShareButtons({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});

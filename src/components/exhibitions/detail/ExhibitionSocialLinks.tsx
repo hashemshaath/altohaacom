@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, ExternalLink } from "lucide-react";
@@ -23,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }: Props) {
+export const ExhibitionSocialLinks = memo(function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }: Props) {
   if (!socialLinks || typeof socialLinks !== "object" || Array.isArray(socialLinks)) {
     if (!websiteUrl) return null;
   }
@@ -75,4 +76,4 @@ export function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }: Props) 
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +25,7 @@ interface UserCardProps {
   onView: (userId: string) => void;
 }
 
-export function UserCard({ user, onView }: UserCardProps) {
+export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -101,14 +102,14 @@ export function UserCard({ user, onView }: UserCardProps) {
       </CardContent>
     </Card>
   );
-}
+});
 
 interface UserCardViewProps {
   users: UserCardProps["user"][];
   onViewUser: (userId: string) => void;
 }
 
-export function UserCardView({ users, onViewUser }: UserCardViewProps) {
+export const UserCardView = memo(function UserCardView({ users, onViewUser }: UserCardViewProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {users.map(user => (
@@ -116,4 +117,4 @@ export function UserCardView({ users, onViewUser }: UserCardViewProps) {
       ))}
     </div>
   );
-}
+});

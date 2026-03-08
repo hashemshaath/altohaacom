@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,7 +28,7 @@ interface ParsedUser {
   error?: string;
 }
 
-export function BulkUserImport() {
+export const BulkUserImport = memo(function BulkUserImport() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -304,4 +304,4 @@ export function BulkUserImport() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,7 +12,7 @@ interface Props {
   variant?: "icon" | "full";
 }
 
-export function SupplierWishlistButton({ companyId, variant = "full" }: Props) {
+export const SupplierWishlistButton = memo(function SupplierWishlistButton({ companyId, variant = "full" }: Props) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -90,4 +90,4 @@ export function SupplierWishlistButton({ companyId, variant = "full" }: Props) {
       {isWishlisted ? (isAr ? "في المفضلة" : "Saved") : (isAr ? "إضافة للمفضلة" : "Save")}
     </Button>
   );
-}
+});

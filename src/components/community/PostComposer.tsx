@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,7 +43,7 @@ const POST_TYPE_CONFIG = {
   testimonial: { icon: Quote, color: "text-chart-4", bg: "bg-chart-4/10" },
 };
 
-export function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
+export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -505,4 +505,4 @@ export function PostComposer({ onPosted, replyToPostId, placeholder, compact, au
       </div>
     </div>
   );
-}
+});

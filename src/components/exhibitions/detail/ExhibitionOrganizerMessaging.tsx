@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,7 +19,7 @@ interface Props {
 
 type Channel = "in_app" | "email" | "sms";
 
-export function ExhibitionOrganizerMessaging({ exhibitionId, exhibitionTitle, isAr }: Props) {
+export const ExhibitionOrganizerMessaging = memo(function ExhibitionOrganizerMessaging({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user, session } = useAuth();
   const [subject, setSubject] = useState("");
@@ -112,4 +112,4 @@ export function ExhibitionOrganizerMessaging({ exhibitionId, exhibitionTitle, is
       </CardContent>
     </Card>
   );
-}
+});

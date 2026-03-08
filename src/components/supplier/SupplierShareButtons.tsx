@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +9,7 @@ interface SupplierShareButtonsProps {
   companyId: string;
 }
 
-export function SupplierShareButtons({ companyName, companyId }: SupplierShareButtonsProps) {
+export const SupplierShareButtons = memo(function SupplierShareButtons({ companyName, companyId }: SupplierShareButtonsProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const isAr = language === "ar";
@@ -39,4 +40,4 @@ export function SupplierShareButtons({ companyName, companyId }: SupplierShareBu
       </Button>
     </div>
   );
-}
+});

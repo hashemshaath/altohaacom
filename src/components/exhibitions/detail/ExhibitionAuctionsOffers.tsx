@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
+export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [bidAmounts, setBidAmounts] = useState<Record<string, string>>({});
@@ -267,4 +267,4 @@ export function ExhibitionAuctionsOffers({ exhibitionId, isAr }: Props) {
       )}
     </div>
   );
-}
+});

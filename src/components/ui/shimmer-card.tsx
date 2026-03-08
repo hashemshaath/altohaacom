@@ -1,4 +1,5 @@
 import * as React from "react";
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./skeleton";
 
@@ -10,7 +11,7 @@ interface ShimmerCardProps extends React.HTMLAttributes<HTMLDivElement> {
 /**
  * Pre-built shimmer loading cards for common content patterns.
  */
-export function ShimmerCard({ variant = "default", lines = 3, className, ...props }: ShimmerCardProps) {
+export const ShimmerCard = memo(function ShimmerCard({ variant = "default", lines = 3, className, ...props }: ShimmerCardProps) {
   if (variant === "stat") {
     return (
       <div className={cn("rounded-xl border border-border/40 p-4 space-y-3", className)} {...props}>
@@ -66,12 +67,12 @@ export function ShimmerCard({ variant = "default", lines = 3, className, ...prop
       ))}
     </div>
   );
-}
+});
 
 /**
  * Grid of shimmer cards for list loading states.
  */
-export function ShimmerGrid({
+export const ShimmerGrid = memo(function ShimmerGrid({
   count = 6,
   variant = "default",
   columns = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
@@ -89,4 +90,4 @@ export function ShimmerGrid({
       ))}
     </div>
   );
-}
+});
