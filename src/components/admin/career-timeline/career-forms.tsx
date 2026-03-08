@@ -17,7 +17,7 @@ import {
 
 // ── Career Form (Education / Work / Judging / Media / Organizing / Custom) ──
 
-export function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
+export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
