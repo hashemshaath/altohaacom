@@ -26,7 +26,7 @@ interface UserQuickActionsProps {
   onViewProfile: () => void;
 }
 
-export function UserQuickActions({ userId, userName, email, status, isVerified, onViewProfile }: UserQuickActionsProps) {
+export const UserQuickActions = memo(function UserQuickActions({ userId, userName, email, status, isVerified, onViewProfile }: UserQuickActionsProps) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
