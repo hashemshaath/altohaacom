@@ -25,7 +25,7 @@ interface UserCardProps {
   onView: (userId: string) => void;
 }
 
-export function UserCard({ user, onView }: UserCardProps) {
+export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
