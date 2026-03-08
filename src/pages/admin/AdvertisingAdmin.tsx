@@ -254,21 +254,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
         }
       />
 
-      {/* Quick Links */}
-      <div className="flex flex-wrap gap-2">
-        {[
-          { to: "/admin/design/homepage", icon: Home, label: isAr ? "تصميم الرئيسية" : "Homepage Design" },
-          { to: "/admin/invoices", icon: DollarSign, label: isAr ? "الفواتير" : "Invoices" },
-          { to: "/admin/companies", icon: TrendingUp, label: isAr ? "الشركات" : "Companies" },
-        ].map(link => (
-          <Button key={link.to} size="sm" variant="ghost" className="h-7 text-[10px] rounded-xl gap-1 border border-border/40" asChild>
-            <Link to={link.to}>
-              <link.icon className="h-3 w-3" />
-              {link.label}
-            </Link>
-          </Button>
-        ))}
-      </div>
+      <AdvertisingQuickNav />
 
       {/* Overview Widget */}
       <AdCampaignOverviewWidget />
