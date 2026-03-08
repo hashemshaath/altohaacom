@@ -15,7 +15,7 @@ interface BulkActionBarProps {
   className?: string;
 }
 
-export function BulkActionBar({
+export const BulkActionBar = memo(function BulkActionBar({
   count,
   onClear,
   onDelete,
