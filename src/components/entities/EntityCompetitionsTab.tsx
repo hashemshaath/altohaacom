@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useEntityCompetitions } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
