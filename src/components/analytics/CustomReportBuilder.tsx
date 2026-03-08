@@ -73,7 +73,7 @@ interface SavedReport {
   chartType: ChartType;
 }
 
-export function CustomReportBuilder() {
+export const CustomReportBuilder = memo(function CustomReportBuilder() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["users", "competitions"]);
