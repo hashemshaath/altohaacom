@@ -22,7 +22,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-1))",
 ];
 
-export function GeographicDistribution() {
+export const GeographicDistribution = memo(function GeographicDistribution() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
