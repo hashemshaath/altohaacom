@@ -23,7 +23,7 @@ interface Props {
   masterclassId: string;
 }
 
-export function ModuleLessonManager({ masterclassId }: Props) {
+export const ModuleLessonManager = memo(function ModuleLessonManager({ masterclassId }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
