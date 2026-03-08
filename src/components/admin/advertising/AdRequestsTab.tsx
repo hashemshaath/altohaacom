@@ -65,7 +65,7 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requests.map((req: any) => (
+              {sortedRequests.map((req: any) => (
                 <TableRow key={req.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">

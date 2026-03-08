@@ -107,7 +107,7 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {placements.map((p: any) => (
+                {sortedPlacements.map((p: any) => (
                   <TableRow key={p.id} className={!p.is_active ? "opacity-50" : ""}>
                     <TableCell>
                       <div>
