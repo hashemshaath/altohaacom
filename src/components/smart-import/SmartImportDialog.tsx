@@ -428,7 +428,7 @@ export const SmartImportDialog = memo(function SmartImportDialog({
       </DialogContent>
     </Dialog>
   );
-}
+});
 
 function DataField({ label, value, multiline }: { label: string; value?: string | null; multiline?: boolean }) {
   if (!value) return null;
@@ -442,4 +442,4 @@ function DataField({ label, value, multiline }: { label: string; value?: string 
       )}
     </div>
   );
-});
+}
