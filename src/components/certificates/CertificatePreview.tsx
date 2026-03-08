@@ -18,7 +18,7 @@ interface CertificatePreviewProps {
   };
 }
 
-export function CertificatePreview({ design, zoom, previewData }: CertificatePreviewProps) {
+export const CertificatePreview = memo(function CertificatePreview({ design, zoom, previewData }: CertificatePreviewProps) {
   const isRtl = design.certificateLanguage === "ar";
 
   const getDimensions = () => {
