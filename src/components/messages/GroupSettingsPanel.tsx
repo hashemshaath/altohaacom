@@ -21,7 +21,7 @@ interface GroupSettingsPanelProps {
   onAddMembers: () => void;
 }
 
-export function GroupSettingsPanel({ open, onOpenChange, group, members, onAddMembers }: GroupSettingsPanelProps) {
+export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpenChange, group, members, onAddMembers }: GroupSettingsPanelProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
