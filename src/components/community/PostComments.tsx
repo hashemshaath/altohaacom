@@ -25,7 +25,7 @@ interface PostCommentsProps {
   onCommentCountChange?: (count: number) => void;
 }
 
-export function PostComments({ postId, onCommentCountChange }: PostCommentsProps) {
+export const PostComments = memo(function PostComments({ postId, onCommentCountChange }: PostCommentsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { toast } = useToast();
