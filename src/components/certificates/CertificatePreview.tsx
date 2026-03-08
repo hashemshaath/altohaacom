@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Award, Image } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import type { CertificateDesign, LogoItem } from "./types";
