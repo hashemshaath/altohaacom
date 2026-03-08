@@ -104,7 +104,7 @@ export const AdminKeyboardShortcuts = memo(function AdminKeyboardShortcuts() {
 });
 
 /** Small widget card showing shortcut hints */
-export function ShortcutHintsCard() {
+export const ShortcutHintsCard = memo(function ShortcutHintsCard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [showHelp, setShowHelp] = useState(false);
