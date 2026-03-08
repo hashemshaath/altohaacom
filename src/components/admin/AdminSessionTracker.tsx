@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,7 +11,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 
-export function AdminSessionTracker() {
+export const AdminSessionTracker = memo(function AdminSessionTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
