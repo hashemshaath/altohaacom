@@ -24,7 +24,7 @@ interface QuickAction {
   badgeAr?: string;
 }
 
-export function QuickActionsWidget() {
+export const QuickActionsWidget = memo(function QuickActionsWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";

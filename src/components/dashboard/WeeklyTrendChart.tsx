@@ -9,7 +9,7 @@ import { Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function WeeklyTrendChart() {
+export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

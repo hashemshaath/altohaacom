@@ -17,7 +17,7 @@ const ICONS: Record<string, any> = {
   travel: Plane, unavailable: Ban, other: MoreHorizontal,
 };
 
-export function ChefScheduleWidget() {
+export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();

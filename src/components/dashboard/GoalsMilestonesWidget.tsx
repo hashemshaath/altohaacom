@@ -17,7 +17,7 @@ interface Milestone {
   color: string;
 }
 
-export function GoalsMilestonesWidget() {
+export const GoalsMilestonesWidget = memo(function GoalsMilestonesWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

@@ -15,7 +15,7 @@ function getScoreLevel(score: number, isAr: boolean): { label: string; color: st
   return { label: isAr ? "جديد" : "Newcomer", color: "text-muted-foreground", emoji: "👋" };
 }
 
-export function PlatformScoreWidget() {
+export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

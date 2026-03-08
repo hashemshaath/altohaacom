@@ -35,7 +35,7 @@ function buildDailyCounts(rows: { created_at: string }[] | null, days: number): 
   return result;
 }
 
-export function ContentStatsWidget() {
+export const ContentStatsWidget = memo(function ContentStatsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

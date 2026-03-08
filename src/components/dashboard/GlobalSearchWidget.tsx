@@ -23,7 +23,7 @@ const typeConfig = {
   chef: { icon: Users, color: "text-chart-3", bg: "bg-chart-3/10", label: "Chef", labelAr: "طاهي" },
 };
 
-export function GlobalSearchWidget() {
+export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [query, setQuery] = useState("");

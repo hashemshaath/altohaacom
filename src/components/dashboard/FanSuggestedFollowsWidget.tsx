@@ -9,7 +9,7 @@ import { UserPlus, Users, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, memo } from "react";
 
-export function FanSuggestedFollowsWidget() {
+export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

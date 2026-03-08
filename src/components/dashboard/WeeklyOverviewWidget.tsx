@@ -15,7 +15,7 @@ interface StatItem {
   icon: React.ElementType;
 }
 
-export function WeeklyOverviewWidget() {
+export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
