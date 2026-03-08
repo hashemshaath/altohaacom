@@ -5,7 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function AdPopup() {
+export const AdPopup = memo(function AdPopup() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [visible, setVisible] = useState(false);
