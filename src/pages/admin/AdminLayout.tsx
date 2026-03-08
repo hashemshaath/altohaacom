@@ -55,7 +55,9 @@ export default function AdminLayout() {
           <div className="container py-6">
             <AdminPendingBanner />
             <AdminBreadcrumb />
-            <Outlet />
+            <WidgetErrorBoundary name="admin-page">
+              <Outlet />
+            </WidgetErrorBoundary>
           </div>
         </main>
       </div>

@@ -63,8 +63,14 @@ const SmartRecommendationsWidget = lazy(() => import("@/components/community/Sma
 const PlatformScoreWidget = lazy(() => import("@/components/dashboard/PlatformScoreWidget").then(m => ({ default: m.PlatformScoreWidget })));
 const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendChart").then(m => ({ default: m.WeeklyTrendChart })));
 
-function W({ children, lines }: { children: React.ReactNode; lines?: number }) {
-  return <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>;
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
+
+function W({ children, lines, name }: { children: React.ReactNode; lines?: number; name?: string }) {
+  return (
+    <WidgetErrorBoundary name={name}>
+      <Suspense fallback={<DashboardWidgetSkeleton lines={lines} />}>{children}</Suspense>
+    </WidgetErrorBoundary>
+  );
 }
 
 export default function Dashboard() {
