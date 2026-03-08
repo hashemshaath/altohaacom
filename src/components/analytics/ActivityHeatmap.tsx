@@ -13,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 type DataSource = "profiles" | "messages" | "competition_registrations" | "posts";
 
-export function ActivityHeatmap() {
+export const ActivityHeatmap = memo(function ActivityHeatmap() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [source, setSource] = useState<DataSource>("profiles");
