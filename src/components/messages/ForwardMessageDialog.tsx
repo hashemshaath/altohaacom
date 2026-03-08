@@ -18,7 +18,7 @@ interface ForwardMessageDialogProps {
   message: { content: string; message_type: string; attachment_urls?: string[]; attachment_names?: string[] } | null;
 }
 
-export function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMessageDialogProps) {
+export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMessageDialogProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
