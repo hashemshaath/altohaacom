@@ -16,7 +16,7 @@ interface MessageReactionsProps {
   isMine: boolean;
 }
 
-export function MessageReactions({ reactions, currentUserId, onReact, isMine }: MessageReactionsProps) {
+export const MessageReactions = memo(function MessageReactions({ reactions, currentUserId, onReact, isMine }: MessageReactionsProps) {
   const [open, setOpen] = useState(false);
   const [showExtended, setShowExtended] = useState(false);
   const [animatingEmoji, setAnimatingEmoji] = useState<string | null>(null);
