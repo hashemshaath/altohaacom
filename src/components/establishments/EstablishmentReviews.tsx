@@ -101,12 +101,15 @@ export default function EstablishmentReviews({ establishmentId }: Props) {
   });
 
   // Stats
-  const avgRating = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
-  const distribution = [5, 4, 3, 2, 1].map(star => ({
-    star,
-    count: reviews.filter(r => r.rating === star).length,
-    pct: reviews.length ? Math.round((reviews.filter(r => r.rating === star).length / reviews.length) * 100) : 0,
-  }));
+  const { avgRating, distribution } = useMemo(() => {
+    const avg = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
+    const dist = [5, 4, 3, 2, 1].map(star => ({
+      star,
+      count: reviews.filter(r => r.rating === star).length,
+      pct: reviews.length ? Math.round((reviews.filter(r => r.rating === star).length / reviews.length) * 100) : 0,
+    }));
+    return { avgRating: avg, distribution: dist };
+  }, [reviews]);
 
   return (
     <div className="space-y-6">

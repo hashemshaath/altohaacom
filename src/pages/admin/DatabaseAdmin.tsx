@@ -85,7 +85,7 @@ export default function DatabaseAdmin() {
     });
   };
 
-  const totalRecords = tableStats?.reduce((sum, t) => sum + t.count, 0) || 0;
+  const totalRecords = useMemo(() => tableStats?.reduce((sum, t) => sum + t.count, 0) || 0, [tableStats]);
 
   return (
     <div className="space-y-6">

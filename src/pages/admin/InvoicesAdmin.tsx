@@ -311,13 +311,13 @@ export default function InvoicesAdmin() {
   };
 
   // Stats
-  const stats = {
+  const stats = useMemo(() => ({
     total: invoices.length,
     pending: invoices.filter((i) => i.status === "pending" || i.status === "sent").length,
     paid: invoices.filter((i) => i.status === "paid").length,
     totalAmount: invoices.reduce((sum, i) => sum + Number(i.amount), 0),
     paidAmount: invoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + Number(i.amount), 0),
-  };
+  }), [invoices]);
 
   // ── Invoice Detail View ──
   if (selectedInvoice && invoiceDetails) {

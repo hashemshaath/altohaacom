@@ -298,7 +298,7 @@ export default function MasterclassesAdmin() {
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
-        {[
+      {useMemo(() => [
           { label: language === "ar" ? "إجمالي الدورات" : "Total Courses", value: masterclasses.length, icon: BookOpen },
           { label: language === "ar" ? "منشورة" : "Published", value: masterclasses.filter((m: any) => m.status === "published").length, icon: Eye },
           { label: language === "ar" ? "مسودات" : "Drafts", value: masterclasses.filter((m: any) => m.status === "draft").length, icon: EyeOff },
@@ -307,7 +307,7 @@ export default function MasterclassesAdmin() {
             value: masterclasses.reduce((sum: number, m: any) => sum + (m.masterclass_enrollments?.length || 0), 0),
             icon: Users,
           },
-        ].map((stat, i) => (
+        ], [masterclasses, language]).map((stat, i) => (
           <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
             <CardContent className="flex items-center gap-4 p-4">
               <div className="rounded-xl bg-primary/10 p-2 transition-transform duration-300 group-hover:scale-110">
