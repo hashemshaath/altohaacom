@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,7 +71,7 @@ const emptyRule = {
   cooldown_hours: 24,
 };
 
-export function SmartNotificationRules() {
+export const SmartNotificationRules = memo(function SmartNotificationRules() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -481,4 +481,4 @@ export function SmartNotificationRules() {
       </Dialog>
     </div>
   );
-}
+});

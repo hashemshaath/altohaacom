@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -39,7 +39,7 @@ const GROUPS: Record<string, { en: string; ar: string }> = {
   system: { en: "System", ar: "النظام" },
 };
 
-export function AdminSearchCommand() {
+export const AdminSearchCommand = memo(function AdminSearchCommand() {
   const [open, setOpen] = useState(false);
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -108,4 +108,4 @@ export function AdminSearchCommand() {
       </CommandDialog>
     </>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,7 +7,7 @@ import { Menu, Search, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { adminNavSections } from "@/config/adminNavSections";
 
-export function AdminMobileNavDrawer() {
+export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -80,4 +80,4 @@ export function AdminMobileNavDrawer() {
       </SheetContent>
     </Sheet>
   );
-}
+});

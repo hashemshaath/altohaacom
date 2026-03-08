@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Star, Search, CheckCircle, XCircle, Eye, Flag } from "lucide-react";
 
-export function AdminReviewsModeration() {
+export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -203,4 +203,4 @@ export function AdminReviewsModeration() {
       </Card>
     </div>
   );
-}
+});

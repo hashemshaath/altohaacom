@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +21,7 @@ const SUPPLIER_CATEGORIES = [
   { value: "accessories", en: "Accessories & Tools", ar: "إكسسوارات وأدوات" },
 ];
 
-export function AdminSupplierControls() {
+export const AdminSupplierControls = memo(function AdminSupplierControls() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -168,4 +168,4 @@ export function AdminSupplierControls() {
       </Card>
     </div>
   );
-}
+});

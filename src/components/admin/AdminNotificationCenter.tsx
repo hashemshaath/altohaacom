@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,7 +18,7 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
   default: Bell,
 };
 
-export function AdminNotificationCenter() {
+export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
@@ -157,4 +157,4 @@ export function AdminNotificationCenter() {
       </CardContent>
     </Card>
   );
-}
+});

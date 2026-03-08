@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ interface AdminEvent {
   color: string;
 }
 
-export function AdminRealtimeNotificationBell() {
+export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotificationBell() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [events, setEvents] = useState<AdminEvent[]>([]);
@@ -144,4 +144,4 @@ export function AdminRealtimeNotificationBell() {
       </PopoverContent>
     </Popover>
   );
-}
+});
