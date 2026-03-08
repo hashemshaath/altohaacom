@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,7 +29,7 @@ const TEMPLATES = [
   },
 ];
 
-export function HomepageTemplateSwitcher() {
+export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const settings = useSiteSettingsContext();
@@ -100,4 +101,4 @@ export function HomepageTemplateSwitcher() {
       </CardContent>
     </Card>
   );
-}
+});

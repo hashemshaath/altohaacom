@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ const actions: MobileAction[] = [
   { icon: Shield, labelEn: "Security", labelAr: "الأمان", link: "/admin/security", color: "text-destructive" },
 ];
 
-export function AdminMobileNavGrid() {
+export const AdminMobileNavGrid = memo(function AdminMobileNavGrid() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -49,4 +50,4 @@ export function AdminMobileNavGrid() {
       ))}
     </div>
   );
-}
+});

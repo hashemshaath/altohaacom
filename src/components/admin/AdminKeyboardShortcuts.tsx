@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,7 @@ const SHORTCUTS = [
   { keys: ["?"], action: "show_help", label: "Show Shortcuts", labelAr: "إظهار الاختصارات" },
 ];
 
-export function AdminKeyboardShortcuts() {
+export const AdminKeyboardShortcuts = memo(function AdminKeyboardShortcuts() {
   const navigate = useNavigate();
   const [showHelp, setShowHelp] = useState(false);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
@@ -101,10 +101,10 @@ export function AdminKeyboardShortcuts() {
       </Dialog>
     </>
   );
-}
+});
 
 /** Small widget card showing shortcut hints */
-export function ShortcutHintsCard() {
+export const ShortcutHintsCard = memo(function ShortcutHintsCard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [showHelp, setShowHelp] = useState(false);
@@ -129,4 +129,4 @@ export function ShortcutHintsCard() {
       </CardContent>
     </Card>
   );
-}
+});

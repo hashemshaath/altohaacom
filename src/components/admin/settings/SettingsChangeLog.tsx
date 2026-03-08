@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +17,7 @@ const CATEGORY_ICONS: Record<string, any> = {
   layout: Layout,
 };
 
-export function SettingsChangeLog() {
+export const SettingsChangeLog = memo(function SettingsChangeLog() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -83,4 +84,4 @@ export function SettingsChangeLog() {
       </CardContent>
     </Card>
   );
-}
+});

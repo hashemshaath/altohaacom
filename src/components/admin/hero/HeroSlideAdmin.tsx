@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -163,7 +163,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export function HeroSlideAdmin() {
+export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -1035,4 +1035,4 @@ export function HeroSlideAdmin() {
       )}
     </div>
   );
-}
+});
