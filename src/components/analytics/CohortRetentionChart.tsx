@@ -335,4 +335,4 @@ export const CohortRetentionChart = memo(function CohortRetentionChart() {
       </Card>
     </StaggeredList>
   );
-}
+});

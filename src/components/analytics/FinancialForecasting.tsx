@@ -349,4 +349,4 @@ export const FinancialForecasting = memo(function FinancialForecasting() {
       )}
     </div>
   );
-}
+});

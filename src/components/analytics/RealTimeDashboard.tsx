@@ -177,4 +177,4 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
       </div>
     </div>
   );
-}
+});

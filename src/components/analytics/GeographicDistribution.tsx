@@ -240,4 +240,4 @@ export const GeographicDistribution = memo(function GeographicDistribution() {
       </Card>
     </div>
   );
-}
+});

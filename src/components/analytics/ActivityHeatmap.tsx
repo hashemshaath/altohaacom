@@ -208,4 +208,4 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
       </Card>
     </div>
   );
-}
+});

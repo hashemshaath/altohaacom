@@ -144,4 +144,4 @@ export const FunnelAnalysis = memo(function FunnelAnalysis() {
       </div>
     </div>
   );
-}
+});

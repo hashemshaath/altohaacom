@@ -240,4 +240,4 @@ export const ExecutiveSummary = memo(function ExecutiveSummary() {
       </div>
     </div>
   );
-}
+});

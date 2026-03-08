@@ -392,4 +392,4 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
       </div>
     </div>
   );
-}
+});

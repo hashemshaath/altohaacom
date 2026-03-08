@@ -243,4 +243,4 @@ export const AnalyticsDashboard = memo(function AnalyticsDashboard() {
       </Tabs>
     </div>
   );
-}
+});

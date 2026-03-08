@@ -219,4 +219,4 @@ export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard()
       )}
     </div>
   );
-}
+});

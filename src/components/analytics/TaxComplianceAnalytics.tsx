@@ -287,4 +287,4 @@ export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
       </Card>
     </div>
   );
-}
+});

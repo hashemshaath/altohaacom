@@ -322,4 +322,4 @@ export const PersonalAnalyticsDashboard = memo(function PersonalAnalyticsDashboa
       )}
     </div>
   );
-}
+});

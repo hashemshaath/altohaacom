@@ -159,4 +159,4 @@ export const MultiMetricComparison = memo(function MultiMetricComparison() {
       </Card>
     </div>
   );
-}
+});

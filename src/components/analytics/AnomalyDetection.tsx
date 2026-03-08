@@ -203,4 +203,4 @@ export const AnomalyDetection = memo(function AnomalyDetection() {
       </Card>
     </div>
   );
-}
+});

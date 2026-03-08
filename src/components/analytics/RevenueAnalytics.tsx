@@ -333,4 +333,4 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
       </Card>
     </StaggeredList>
   );
-}
+});

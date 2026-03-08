@@ -202,4 +202,4 @@ export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
       </Card>
     </div>
   );
-}
+});

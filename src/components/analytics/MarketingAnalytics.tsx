@@ -436,4 +436,4 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
       </Card>
     </div>
   );
-}
+});
