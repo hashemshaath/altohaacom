@@ -33,7 +33,7 @@ function StarRating({ rating, onRate, interactive = false }: { rating: number; o
   );
 }
 
-export function SupplierReviews({ companyId }: Props) {
+export const SupplierReviews = memo(function SupplierReviews({ companyId }: Props) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
