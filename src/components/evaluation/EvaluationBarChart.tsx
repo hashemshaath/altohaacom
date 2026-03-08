@@ -17,7 +17,7 @@ const COLORS = [
   "hsl(var(--primary))",
 ];
 
-export function EvaluationBarChart({ title, data, isAr }: Props) {
+export const EvaluationBarChart = memo(function EvaluationBarChart({ title, data, isAr }: Props) {
   if (!data.length) return null;
 
   return (
