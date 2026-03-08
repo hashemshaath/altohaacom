@@ -27,7 +27,7 @@ const PIE_COLORS = [
   "hsl(var(--muted-foreground))",
 ];
 
-export function CostCenterReports({ isAr, estimates }: Props) {
+export const CostCenterReports = memo(function CostCenterReports({ isAr, estimates }: Props) {
   const [reportModule, setReportModule] = useState("all");
   const [reportPeriod, setReportPeriod] = useState("all");
 
