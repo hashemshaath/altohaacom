@@ -28,7 +28,7 @@ interface LiveScore {
   categoryName: string;
 }
 
-export function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
+export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [isLive, setIsLive] = useState(true);
