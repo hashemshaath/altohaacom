@@ -18,7 +18,7 @@ interface CatalogTableProps {
   onDelete: (id: string) => void;
 }
 
-export function CatalogTable({ items, isLoading, language, onEdit, onDelete }: CatalogTableProps) {
+export const CatalogTable = memo(function CatalogTable({ items, isLoading, language, onEdit, onDelete }: CatalogTableProps) {
   const getCategoryLabel = (val: string) => {
     const cat = categories.find((c) => c.value === val);
     return cat ? (language === "ar" ? cat.ar : cat.en) : val;
