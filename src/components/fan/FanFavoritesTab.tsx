@@ -171,4 +171,4 @@ function EmptyState({ icon: Icon, title, desc }: { icon: any; title: string; des
       <p className="text-xs text-muted-foreground mt-1">{desc}</p>
     </div>
   );
-});
+}
