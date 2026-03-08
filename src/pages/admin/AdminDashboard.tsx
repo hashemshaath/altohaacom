@@ -2,6 +2,7 @@ import { useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { AdminTodayTicker } from "@/components/admin/AdminTodayTicker";
 import { useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
@@ -344,6 +345,9 @@ export default function AdminDashboard() {
 
       {/* Security Alerts */}
       <SecurityAlertsBanner />
+
+      {/* Today Ticker */}
+      <AdminTodayTicker />
 
       {/* Mobile Nav Grid */}
       <AdminMobileNavGrid />
