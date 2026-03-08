@@ -58,7 +58,7 @@ const SEVERITY_STYLES: Record<string, string> = {
   critical: "bg-destructive/10 text-destructive",
 };
 
-export default function SecurityDashboard() {
+const SecurityDashboard = memo(function SecurityDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
