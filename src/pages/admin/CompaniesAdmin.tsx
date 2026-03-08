@@ -1877,7 +1877,7 @@ export default function CompaniesAdmin() {
                 </SelectContent>
               </Select>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[150px]"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+                <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                   <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
