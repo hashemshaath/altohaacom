@@ -12,7 +12,7 @@ interface ProductQuickViewProps {
   onClose: () => void;
 }
 
-export function ProductQuickView({ product, open, onClose }: ProductQuickViewProps) {
+export const ProductQuickView = memo(function ProductQuickView({ product, open, onClose }: ProductQuickViewProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
