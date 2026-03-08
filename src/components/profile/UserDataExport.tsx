@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 type ExportFormat = "json" | "csv";
 
-export function UserDataExport() {
+export const UserDataExport = memo(function UserDataExport() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
