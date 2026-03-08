@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface MobileSwipeCardProps {
@@ -10,7 +10,7 @@ interface MobileSwipeCardProps {
   className?: string;
 }
 
-export function MobileSwipeCard({
+export const MobileSwipeCard = memo(function MobileSwipeCard({
   children,
   onSwipeLeft,
   onSwipeRight,
@@ -74,4 +74,4 @@ export function MobileSwipeCard({
       </div>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +25,7 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function BioAnalyticsDashboard({ pageId }: BioAnalyticsDashboardProps) {
+export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageId }: BioAnalyticsDashboardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -439,4 +440,4 @@ export function BioAnalyticsDashboard({ pageId }: BioAnalyticsDashboardProps) {
       </div>
     </StaggeredList>
   );
-}
+});

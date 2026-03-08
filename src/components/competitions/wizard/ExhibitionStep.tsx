@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +24,7 @@ interface ExhibitionStepProps {
   onLinkedChefChange?: (id: string | null) => void;
 }
 
-export function ExhibitionStep({
+export const ExhibitionStep = memo(function ExhibitionStep({
   selectedId,
   onChange,
   linkType = "exhibition",
@@ -378,4 +379,4 @@ export function ExhibitionStep({
       </CardContent>
     </Card>
   );
-}
+});

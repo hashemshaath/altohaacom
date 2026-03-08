@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Package, Clock, CheckCircle2, XCircle } from "lucide-react";
@@ -12,7 +13,7 @@ interface OrderStatsProps {
   language: string;
 }
 
-export function OrderStats({ total, pending, completed, rejected, isLoading, language }: OrderStatsProps) {
+export const OrderStats = memo(function OrderStats({ total, pending, completed, rejected, isLoading, language }: OrderStatsProps) {
   const isAr = language === "ar";
   const stats = [
     { icon: Package, label: isAr ? "الإجمالي" : "Total", value: total, accent: "border-s-primary" },
@@ -38,4 +39,4 @@ export function OrderStats({ total, pending, completed, rejected, isLoading, lan
       ))}
     </div>
   );
-}
+});

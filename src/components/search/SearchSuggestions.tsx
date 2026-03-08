@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,7 +20,7 @@ interface Suggestion {
   category?: string;
 }
 
-export function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSuggestionsProps) {
+export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSuggestionsProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const ref = useRef<HTMLDivElement>(null);
@@ -173,4 +173,4 @@ export function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSu
       })}
     </div>
   );
-}
+});

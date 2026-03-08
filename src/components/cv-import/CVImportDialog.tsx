@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,7 +19,7 @@ interface Props {
   onImported: () => void;
 }
 
-export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImported }: Props) {
+export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImported }: Props) {
   const { toast } = useToast();
   const [step, setStep] = useState<"input" | "preview">("input");
   const [cvText, setCvText] = useState("");
@@ -238,4 +238,4 @@ export function CVImportDialog({ open, onOpenChange, targetUserId, isAr, onImpor
       </DialogContent>
     </Dialog>
   );
-}
+});

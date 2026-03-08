@@ -1,9 +1,11 @@
+import { memo } from "react";
+
 interface UnreadDividerProps {
   isAr: boolean;
   count: number;
 }
 
-export function UnreadDivider({ isAr, count }: UnreadDividerProps) {
+export const UnreadDivider = memo(function UnreadDivider({ isAr, count }: UnreadDividerProps) {
   return (
     <div className="flex items-center gap-3 py-3">
       <div className="flex-1 h-px bg-primary/30" />
@@ -13,4 +15,4 @@ export function UnreadDivider({ isAr, count }: UnreadDividerProps) {
       <div className="flex-1 h-px bg-primary/30" />
     </div>
   );
-}
+});

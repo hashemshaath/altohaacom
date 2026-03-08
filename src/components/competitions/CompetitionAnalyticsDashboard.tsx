@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,7 +28,7 @@ interface Props {
   language: string;
 }
 
-export function CompetitionAnalyticsDashboard({ competitionId, language }: Props) {
+export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsDashboard({ competitionId, language }: Props) {
   const isAr = language === "ar";
 
   const { data: registrationStats, isLoading: regLoading } = useQuery({
@@ -344,7 +345,7 @@ export function CompetitionAnalyticsDashboard({ competitionId, language }: Props
       </Tabs>
     </div>
   );
-}
+});
 
 function KPICard({ icon: Icon, label, value, loading, accent, trend, subtitle }: {
   icon: any; label: string; value: number | string; loading: boolean; accent: string; trend?: "up" | "down"; subtitle?: string;
