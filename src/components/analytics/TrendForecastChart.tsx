@@ -41,7 +41,7 @@ interface TrendForecastChartProps {
   color?: string;
 }
 
-export function TrendForecastChart({
+export const TrendForecastChart = memo(function TrendForecastChart({
   title,
   data,
   isLoading,
