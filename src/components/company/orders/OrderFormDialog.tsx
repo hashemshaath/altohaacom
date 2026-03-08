@@ -24,7 +24,7 @@ interface OrderFormDialogProps {
   language: string;
 }
 
-export function OrderFormDialog({ open, onOpenChange, form, setForm, onSave, isPending, language }: OrderFormDialogProps) {
+export const OrderFormDialog = memo(function OrderFormDialog({ open, onOpenChange, form, setForm, onSave, isPending, language }: OrderFormDialogProps) {
   const isAr = language === "ar";
 
   const updateItem = (index: number, field: keyof OrderItem, value: string | number) => {
