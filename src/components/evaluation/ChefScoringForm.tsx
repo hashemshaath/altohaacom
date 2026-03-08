@@ -47,7 +47,7 @@ function getScoreEmoji(score: number, max: number): string {
   return "👎";
 }
 
-export function ChefScoringForm({
+export const ChefScoringForm = memo(function ChefScoringForm({
   sessionId,
   invitationId,
   productCategory,
