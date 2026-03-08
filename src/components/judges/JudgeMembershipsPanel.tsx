@@ -24,7 +24,7 @@ const emptyForm = {
   joined_date: "", expiry_date: "", is_active: true, notes: "",
 };
 
-export default function JudgeMembershipsPanel({ userId, isAdmin }: Props) {
+const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAdmin }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();
