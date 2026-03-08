@@ -13,7 +13,7 @@ interface BasicInfoStepProps {
   onChange: (updates: Partial<CompetitionFormData>) => void;
 }
 
-export function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
+export const BasicInfoStep = memo(function BasicInfoStep({ data, onChange }: BasicInfoStepProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
