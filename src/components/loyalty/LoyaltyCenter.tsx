@@ -140,18 +140,18 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
             const completed = userProgress?.completed_at;
 
             return (
-              <Card key={c.id} className={completed ? "opacity-70" : ""}>
+              <Card key={c.id} className={`transition-all duration-300 group/ch ${completed ? "opacity-60 border-chart-3/20 bg-chart-3/5" : "hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20"}`}>
                 <CardContent className="p-4 flex items-center gap-4">
-                  <span className="text-3xl">{c.icon_emoji}</span>
+                  <span className="text-3xl transition-transform duration-300 group-hover/ch:scale-110">{c.icon_emoji}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm">{isAr ? c.title_ar : c.title}</h3>
                       <Badge variant="outline" className={`text-[10px] ${difficultyColors[c.difficulty] || ""}`}>{c.difficulty}</Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">{isAr ? c.description_ar : c.description}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{isAr ? c.description_ar : c.description}</p>
                     <div className="mt-2">
                       <Progress value={pct} className="h-1.5" />
-                      <p className="text-[10px] text-muted-foreground mt-1">
+                      <p className="text-[10px] text-muted-foreground mt-1 tabular-nums">
                         {userProgress?.progress || 0} / {c.target_count}
                       </p>
                     </div>
