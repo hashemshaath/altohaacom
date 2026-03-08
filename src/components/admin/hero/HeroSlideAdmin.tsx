@@ -1035,4 +1035,4 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
       )}
     </div>
   );
-}
+});

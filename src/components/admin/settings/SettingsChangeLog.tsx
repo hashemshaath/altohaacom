@@ -84,4 +84,4 @@ export const SettingsChangeLog = memo(function SettingsChangeLog() {
       </CardContent>
     </Card>
   );
-}
+});

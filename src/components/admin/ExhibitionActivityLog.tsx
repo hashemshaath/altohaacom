@@ -111,4 +111,4 @@ export const ExhibitionActivityLog = memo(function ExhibitionActivityLog() {
       </CardContent>
     </Card>
   );
-}
+});

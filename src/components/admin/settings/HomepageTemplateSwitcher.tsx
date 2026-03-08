@@ -101,4 +101,4 @@ export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher()
       </CardContent>
     </Card>
   );
-}
+});

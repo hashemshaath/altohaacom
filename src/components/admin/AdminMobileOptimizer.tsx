@@ -50,4 +50,4 @@ export const AdminMobileNavGrid = memo(function AdminMobileNavGrid() {
       ))}
     </div>
   );
-}
+});

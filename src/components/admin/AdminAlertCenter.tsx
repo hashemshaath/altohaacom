@@ -188,4 +188,4 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -264,4 +264,4 @@ export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
       )}
     </div>
   );
-}
+});

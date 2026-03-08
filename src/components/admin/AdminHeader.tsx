@@ -58,4 +58,4 @@ export const AdminHeader = memo(function AdminHeader() {
       </div>
     </header>
   );
-}
+});

@@ -129,4 +129,4 @@ export const ShortcutHintsCard = memo(function ShortcutHintsCard() {
       </CardContent>
     </Card>
   );
-}
+});
