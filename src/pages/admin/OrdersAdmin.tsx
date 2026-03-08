@@ -1453,14 +1453,14 @@ export default function OrdersAdmin() {
               <ScrollArea className="h-[500px]">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>{isAr ? "رقم الطلب" : "Order #"}</TableHead>
-                      <TableHead>{isAr ? "المشتري" : "Buyer"}</TableHead>
-                      <TableHead>{isAr ? "المنتجات" : "Products"}</TableHead>
-                      <TableHead>{isAr ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead>{isAr ? "الدفع" : "Payment"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                   <TableRow className="bg-muted/30 hover:bg-muted/30">
+                      <TableHead className="font-semibold">{isAr ? "رقم الطلب" : "Order #"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المشتري" : "Buyer"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المنتجات" : "Products"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "المبلغ" : "Amount"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الدفع" : "Payment"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
+                      <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
                       <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
