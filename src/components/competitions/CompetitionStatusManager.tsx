@@ -129,7 +129,7 @@ interface CompetitionStatusManagerProps {
   competitionTitle: string;
 }
 
-export function CompetitionStatusManager({
+export const CompetitionStatusManager = memo(function CompetitionStatusManager({
   competitionId,
   currentStatus,
   competitionTitle,
