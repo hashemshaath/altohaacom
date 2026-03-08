@@ -17,7 +17,7 @@ interface PhoneInputWithFlagProps {
   isAr: boolean;
 }
 
-export function PhoneInputWithFlag({
+export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
   phone,
   onPhoneChange,
   countryCode,
