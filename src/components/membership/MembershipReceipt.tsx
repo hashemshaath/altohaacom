@@ -180,4 +180,4 @@ export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }
       </Button>
     </div>
   );
-}
+});

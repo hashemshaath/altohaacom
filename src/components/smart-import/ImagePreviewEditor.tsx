@@ -46,4 +46,4 @@ export const ImagePreviewEditor = memo(function ImagePreviewEditor({ label, valu
       )}
     </div>
   );
-}
+});

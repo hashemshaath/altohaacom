@@ -127,4 +127,4 @@ export const UpgradePrompt = memo(function UpgradePrompt({
       </CardContent>
     </Card>
   );
-}
+});

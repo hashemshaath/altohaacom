@@ -258,4 +258,4 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
       </Card>
     </div>
   );
-}
+});

@@ -121,4 +121,4 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
       </nav>
     </ScrollArea>
   );
-}
+});

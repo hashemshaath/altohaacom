@@ -89,4 +89,4 @@ export const ChefsTableHowItWorks = memo(function ChefsTableHowItWorks({ isAr }:
       </div>
     </section>
   );
-}
+});

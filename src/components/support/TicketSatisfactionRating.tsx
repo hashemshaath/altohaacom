@@ -99,4 +99,4 @@ export const TicketSatisfactionRating = memo(function TicketSatisfactionRating({
       </CardContent>
     </Card>
   );
-}
+});

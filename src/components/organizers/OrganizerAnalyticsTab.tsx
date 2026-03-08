@@ -360,4 +360,4 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
       </div>
     </div>
   );
-}
+});

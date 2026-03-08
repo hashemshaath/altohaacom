@@ -280,4 +280,4 @@ export const PhoneVerification = memo(function PhoneVerification({ onVerified, o
       )}
     </div>
   );
-}
+});

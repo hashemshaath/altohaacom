@@ -43,4 +43,4 @@ export const CompanyPageGuard = memo(function CompanyPageGuard({ page, children 
   }
 
   return <>{children}</>;
-}
+});

@@ -143,4 +143,4 @@ export const EvaluationCard = memo(function EvaluationCard({ evaluation, languag
       </CardContent>
     </Card>
   );
-}
+});

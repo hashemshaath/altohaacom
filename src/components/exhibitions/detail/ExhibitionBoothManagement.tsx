@@ -190,4 +190,4 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
       </CardContent>
     </Card>
   );
-}
+});

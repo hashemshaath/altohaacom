@@ -65,4 +65,4 @@ export const CompetitionStatusChip = memo(function CompetitionStatusChip({
       )}
     </span>
   );
-}
+});

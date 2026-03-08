@@ -45,4 +45,4 @@ export const ConfirmDialog = memo(function ConfirmDialog({
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+});

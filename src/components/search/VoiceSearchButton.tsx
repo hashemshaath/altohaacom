@@ -54,4 +54,4 @@ export const VoiceSearchButton = memo(function VoiceSearchButton({ onResult, cla
       {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
     </Button>
   );
-}
+});

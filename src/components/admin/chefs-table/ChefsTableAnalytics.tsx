@@ -203,4 +203,4 @@ export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests,
       </div>
     </div>
   );
-}
+});

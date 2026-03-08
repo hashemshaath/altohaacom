@@ -103,4 +103,4 @@ export const CatalogTable = memo(function CatalogTable({ items, isLoading, langu
       </CardContent>
     </Card>
   );
-}
+});
