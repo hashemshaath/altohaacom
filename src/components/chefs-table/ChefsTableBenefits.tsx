@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, Shield, Users, FileText, Camera, Award, Target, Lightbulb } from "lucide-react";
 
