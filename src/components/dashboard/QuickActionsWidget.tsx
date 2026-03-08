@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -23,7 +24,7 @@ interface QuickAction {
   badgeAr?: string;
 }
 
-export function QuickActionsWidget() {
+export const QuickActionsWidget = memo(function QuickActionsWidget() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -146,4 +147,4 @@ export function QuickActionsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

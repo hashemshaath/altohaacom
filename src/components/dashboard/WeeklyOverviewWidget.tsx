@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +15,7 @@ interface StatItem {
   icon: React.ElementType;
 }
 
-export function WeeklyOverviewWidget() {
+export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -79,4 +80,4 @@ export function WeeklyOverviewWidget() {
       </CardContent>
     </Card>
   );
-}
+});

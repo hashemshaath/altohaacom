@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +9,7 @@ import { Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function WeeklyTrendChart() {
+export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -132,4 +133,4 @@ export function WeeklyTrendChart() {
       </CardContent>
     </Card>
   );
-}
+});

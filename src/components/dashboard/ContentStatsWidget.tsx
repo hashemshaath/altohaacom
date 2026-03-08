@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,7 +35,7 @@ function buildDailyCounts(rows: { created_at: string }[] | null, days: number): 
   return result;
 }
 
-export function ContentStatsWidget() {
+export const ContentStatsWidget = memo(function ContentStatsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -148,4 +149,4 @@ export function ContentStatsWidget() {
       </CardContent>
     </Card>
   );
-}
+});

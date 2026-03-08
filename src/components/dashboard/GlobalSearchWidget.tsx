@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,7 +23,7 @@ const typeConfig = {
   chef: { icon: Users, color: "text-chart-3", bg: "bg-chart-3/10", label: "Chef", labelAr: "طاهي" },
 };
 
-export function GlobalSearchWidget() {
+export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [query, setQuery] = useState("");
@@ -143,7 +143,7 @@ export function GlobalSearchWidget() {
       )}
     </div>
   );
-}
+});
 
 function useDebounce(value: string, delay: number) {
   const [debounced, setDebounced] = useState(value);

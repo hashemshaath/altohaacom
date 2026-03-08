@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChefScheduleEvents, EVENT_TYPE_CONFIG, type ScheduleEventType } from "@/hooks/useChefSchedule";
@@ -17,7 +17,7 @@ const ICONS: Record<string, any> = {
   travel: Plane, unavailable: Ban, other: MoreHorizontal,
 };
 
-export function ChefScheduleWidget() {
+export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();
@@ -100,4 +100,4 @@ export function ChefScheduleWidget() {
       </CardContent>
     </Card>
   );
-}
+});
