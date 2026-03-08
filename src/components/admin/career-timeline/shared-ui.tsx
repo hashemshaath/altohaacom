@@ -46,7 +46,7 @@ export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, f
       {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Languages className="h-3.5 w-3.5" />}
     </Button>
   );
-}
+});
 
 export function TranslateInlineButton({ text, fromLang, toLang, onTranslated, isAr }: {
   text: string; fromLang: "en" | "ar"; toLang: "en" | "ar";
