@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -41,10 +41,10 @@ export function MasterclassReviews({ masterclassId, hasCompleted }: Props) {
     },
   });
 
-  const myReview = reviews.find((r: any) => r.user_id === user?.id);
-  const avgRating = reviews.length > 0
+  const myReview = useMemo(() => reviews.find((r: any) => r.user_id === user?.id), [reviews, user?.id]);
+  const avgRating = useMemo(() => reviews.length > 0
     ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
-    : null;
+    : null, [reviews]);
 
   const submitReview = useMutation({
     mutationFn: async () => {

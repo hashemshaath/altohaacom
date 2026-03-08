@@ -114,13 +114,18 @@ export function BudgetTracker({ competitionId, isOrganizer }: Props) {
       .sort((a, b) => b.estimatedCost - a.estimatedCost);
   }, [items, lists, categoryMap]);
 
-  const totalEstimated = budgetByCategory.reduce((s, c) => s + c.estimatedCost, 0);
-  const totalItems = items?.length || 0;
-  const totalDelivered = items?.filter((i) => i.status === "delivered").length || 0;
-  const totalSponsored = items?.filter((i) => i.status === "sponsored").length || 0;
-  const sponsoredValue = sponsorships?.reduce((s, sp) => s + (Number(sp.total_estimated_cost) || 0), 0) || 0;
-  const selfFunded = totalEstimated - sponsoredValue;
-  const sponsorPercentage = totalEstimated > 0 ? Math.round((sponsoredValue / totalEstimated) * 100) : 0;
+  const { totalEstimated, totalItems, totalDelivered, totalSponsored, sponsoredValue, selfFunded, sponsorPercentage } = useMemo(() => {
+    const te = budgetByCategory.reduce((s, c) => s + c.estimatedCost, 0);
+    const ti = items?.length || 0;
+    const td = items?.filter((i) => i.status === "delivered").length || 0;
+    const ts = items?.filter((i) => i.status === "sponsored").length || 0;
+    const sv = sponsorships?.reduce((s, sp) => s + (Number(sp.total_estimated_cost) || 0), 0) || 0;
+    return {
+      totalEstimated: te, totalItems: ti, totalDelivered: td, totalSponsored: ts,
+      sponsoredValue: sv, selfFunded: te - sv,
+      sponsorPercentage: te > 0 ? Math.round((sv / te) * 100) : 0,
+    };
+  }, [budgetByCategory, items, sponsorships]);
 
   const chartColors = [
     "bg-primary", "bg-chart-1", "bg-chart-2", "bg-chart-3",

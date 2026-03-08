@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -106,14 +106,14 @@ export function SupplierReviews({ companyId }: Props) {
     onError: () => toast({ title: isAr ? "فشل الإرسال" : "Failed to submit", variant: "destructive" }),
   });
 
-  const avgRating = reviews.length > 0
+  const avgRating = useMemo(() => reviews.length > 0
     ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
-    : "0";
+    : "0", [reviews]);
 
-  const ratingDistribution = [5, 4, 3, 2, 1].map((star) => ({
+  const ratingDistribution = useMemo(() => [5, 4, 3, 2, 1].map((star) => ({
     star,
     count: reviews.filter((r: any) => r.rating === star).length,
-  }));
+  })), [reviews]);
 
   return (
     <div className="space-y-6">

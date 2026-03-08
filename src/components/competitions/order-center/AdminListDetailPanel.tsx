@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -166,11 +166,17 @@ export function AdminListDetailPanel({ listId, onBack }: Props) {
   });
 
   // Stats
-  const total = items.length;
-  const delivered = items.filter(i => i.status === "delivered").length;
-  const checked = items.filter(i => i.checked).length;
-  const progress = total > 0 ? Math.round((delivered / total) * 100) : 0;
-  const critical = items.filter(i => i.importance === "critical").length;
+  const { total, delivered, checked, progress, critical } = useMemo(() => {
+    const t = items.length;
+    const d = items.filter(i => i.status === "delivered").length;
+    return {
+      total: t,
+      delivered: d,
+      checked: items.filter(i => i.checked).length,
+      progress: t > 0 ? Math.round((d / t) * 100) : 0,
+      critical: items.filter(i => i.importance === "critical").length,
+    };
+  }, [items]);
 
   return (
     <div className="space-y-4">
