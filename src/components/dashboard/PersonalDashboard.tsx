@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Users, Trophy, ChefHat, Target, Calendar, Activity, Flame } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function PersonalDashboard() {
+export const PersonalDashboard = memo(function PersonalDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();

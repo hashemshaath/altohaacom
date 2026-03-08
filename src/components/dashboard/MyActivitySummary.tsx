@@ -8,7 +8,7 @@ import { Trophy, MessageSquare, Heart, BookOpen } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function MyActivitySummary() {
+export const MyActivitySummary = memo(function MyActivitySummary() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Trophy, Star, TrendingUp, Award, Target } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 
-export function ProgressReportWidget() {
+export const ProgressReportWidget = memo(function ProgressReportWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { user } = useAuth();

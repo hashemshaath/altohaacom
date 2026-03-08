@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * Displays the user's login streak (consecutive days with activity).
  * Calculates streak from points_ledger daily_login entries.
  */
-export function StreakWidget() {
+export const StreakWidget = memo(function StreakWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

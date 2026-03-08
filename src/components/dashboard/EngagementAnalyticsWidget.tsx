@@ -25,7 +25,7 @@ const TYPE_ICONS: Record<string, React.ElementType> = {
   view: Eye,
 };
 
-export function EngagementAnalyticsWidget() {
+export const EngagementAnalyticsWidget = memo(function EngagementAnalyticsWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";

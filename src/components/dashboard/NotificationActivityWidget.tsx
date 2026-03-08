@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Bell, TrendingUp } from "lucide-react";
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Cell } from "recharts";
 
-export function NotificationActivityWidget() {
+export const NotificationActivityWidget = memo(function NotificationActivityWidget() {
   const { notifications, unreadCount } = useNotifications();
   const { language } = useLanguage();
   const isAr = language === "ar";

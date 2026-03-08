@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { GraduationCap, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function MasterclassProgressWidget() {
+export const MasterclassProgressWidget = memo(function MasterclassProgressWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
