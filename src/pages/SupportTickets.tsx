@@ -352,7 +352,7 @@ export default function SupportTickets() {
                 <ArrowLeft className="h-4 w-4" />
                 {isAr ? "العودة" : "Back to Tickets"}
               </Button>
-              <Card>
+              <Card className="rounded-2xl border-border/40">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
