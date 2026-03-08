@@ -25,7 +25,7 @@ interface BadgeItem {
   show: boolean;
 }
 
-export function SupplierBadges({
+export const SupplierBadges = memo(function SupplierBadges({
   isVerified = false,
   reviewCount = 0,
   avgRating = 0,
