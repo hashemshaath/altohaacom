@@ -14,7 +14,7 @@ interface Props {
   folder?: string;
 }
 
-export function LogoUploader({ label, labelAr, isAr, value, onChange, bgClass = "bg-muted/20", folder = "logos" }: Props) {
+export const LogoUploader = memo(function LogoUploader({ label, labelAr, isAr, value, onChange, bgClass = "bg-muted/20", folder = "logos" }: Props) {
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
