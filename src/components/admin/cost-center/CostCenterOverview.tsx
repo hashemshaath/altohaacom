@@ -20,7 +20,7 @@ interface Props {
   onCreateNew: () => void;
 }
 
-export function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateNew }: Props) {
+export const CostCenterOverview = memo(function CostCenterOverview({ isAr, estimates, stats, onSelect, onCreateNew }: Props) {
   return (
     <div className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
