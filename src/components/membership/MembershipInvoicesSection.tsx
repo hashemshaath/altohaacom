@@ -14,7 +14,7 @@ interface MembershipInvoicesSectionProps {
   userId: string;
 }
 
-export function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionProps) {
+export const MembershipInvoicesSection = memo(function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
