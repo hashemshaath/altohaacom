@@ -228,7 +228,7 @@ export default function MediaAdmin() {
                   placeholder={language === "ar" ? "بحث في الملفات..." : "Search files..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="ps-9"
+                  className="ps-9 rounded-xl"
                 />
               </div>
             </div>
