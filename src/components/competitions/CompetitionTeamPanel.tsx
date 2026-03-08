@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -86,7 +86,7 @@ const emptyForm: MemberForm = {
   notes: "", title: "", title_ar: "", photo_url: "",
 };
 
-export function CompetitionTeamPanel({ competitionId, isOrganizer }: CompetitionTeamPanelProps) {
+export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competitionId, isOrganizer }: CompetitionTeamPanelProps) {
   const { language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -450,4 +450,4 @@ export function CompetitionTeamPanel({ competitionId, isOrganizer }: Competition
       )}
     </div>
   );
-}
+});

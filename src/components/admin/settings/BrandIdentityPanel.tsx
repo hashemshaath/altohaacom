@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -152,7 +152,7 @@ const OCCASION_PRESETS = [
   { id: "custom", nameEn: "Custom Occasion", nameAr: "مناسبة مخصصة", emoji: "✨", colors: ["200 50% 40%", "350 50% 45%", "40 60% 50%"] },
 ];
 
-export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
+export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -620,4 +620,4 @@ export function BrandIdentityPanel({ settings, onSave, isPending }: Props) {
       </div>
     </div>
   );
-}
+});

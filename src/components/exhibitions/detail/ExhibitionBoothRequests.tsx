@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { CheckCircle2, XCircle, Clock, Building, Loader2, Eye } from "lucide-react";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
   isAr: boolean;
 }
 
-export function ExhibitionBoothRequests({ exhibitionId, isAr }: Props) {
+export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -178,4 +178,4 @@ export function ExhibitionBoothRequests({ exhibitionId, isAr }: Props) {
       </CardContent>
     </Card>
   );
-}
+});

@@ -38,7 +38,7 @@ function buildDateString(year: string, month: string, day: string, precision: Da
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 60 }, (_, i) => String(currentYear - i));
 
-export function FlexibleDateInput({ value, onChange, label, isAr, disabled, className, eventMode }: FlexibleDateInputProps) {
+export const FlexibleDateInput = React.memo(function FlexibleDateInput({ value, onChange, label, isAr, disabled, className, eventMode }: FlexibleDateInputProps) {
   const { year, month, day, precision } = parseDateParts(value);
   const [currentPrecision, setCurrentPrecision] = React.useState<DatePrecision>(precision);
 
@@ -119,4 +119,4 @@ export function FlexibleDateInput({ value, onChange, label, isAr, disabled, clas
       </div>
     </div>
   );
-}
+});

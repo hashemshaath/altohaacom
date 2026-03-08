@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,7 +56,7 @@ const ROLE_CONFIG = {
   },
 };
 
-export function ParticipantBadgeCard({
+export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
   role,
   entityId,
   personName,
@@ -230,4 +231,4 @@ export function ParticipantBadgeCard({
       </CardContent>
     </Card>
   );
-}
+});

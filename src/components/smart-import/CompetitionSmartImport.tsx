@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -64,7 +64,7 @@ interface DataDiffItem {
   newValue: string | null;
 }
 
-export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
+export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartImportProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -834,7 +834,7 @@ export function CompetitionSmartImport({ onImport, onClose }: CompetitionSmartIm
       </CardContent>
     </Card>
   );
-}
+});
 
 function DetailSection({ icon: Icon, title, children }: { icon: React.ComponentType<{ className?: string }>; title: string; children: React.ReactNode }) {
   return (

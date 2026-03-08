@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -77,7 +77,7 @@ function getScoreColor(score: number): string {
   return "text-destructive";
 }
 
-export function EvaluationReport({ session, evaluations, media, invitationCount, isAr }: EvaluationReportProps) {
+export const EvaluationReport = memo(function EvaluationReport({ session, evaluations, media, invitationCount, isAr }: EvaluationReportProps) {
   const reportRef = useRef<HTMLDivElement>(null);
   const submitted = evaluations.filter(e => (e as any).status === "submitted" || e.overall_score != null);
 
@@ -434,4 +434,4 @@ export function EvaluationReport({ session, evaluations, media, invitationCount,
       </div>
     </div>
   );
-}
+});

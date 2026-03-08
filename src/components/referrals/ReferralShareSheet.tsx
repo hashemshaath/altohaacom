@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +20,7 @@ interface ReferralShareSheetProps {
   compact?: boolean;
 }
 
-export function ReferralShareSheet({ referralLink, referralCode, referralCodeId, compact }: ReferralShareSheetProps) {
+export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLink, referralCode, referralCodeId, compact }: ReferralShareSheetProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -250,4 +250,4 @@ export function ReferralShareSheet({ referralLink, referralCode, referralCodeId,
       )}
     </div>
   );
-}
+});

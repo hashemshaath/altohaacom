@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 
-export function LanguageSwitcher() {
+export const LanguageSwitcher = memo(function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
 
   return (
@@ -18,4 +19,4 @@ export function LanguageSwitcher() {
       </span>
     </Button>
   );
-}
+});
