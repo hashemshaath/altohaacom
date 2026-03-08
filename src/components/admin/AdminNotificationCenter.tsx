@@ -18,7 +18,7 @@ const TYPE_ICONS: Record<string, typeof Bell> = {
   default: Bell,
 };
 
-export function AdminNotificationCenter() {
+export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();

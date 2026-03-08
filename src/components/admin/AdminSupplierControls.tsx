@@ -21,7 +21,7 @@ const SUPPLIER_CATEGORIES = [
   { value: "accessories", en: "Accessories & Tools", ar: "إكسسوارات وأدوات" },
 ];
 
-export function AdminSupplierControls() {
+export const AdminSupplierControls = memo(function AdminSupplierControls() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();

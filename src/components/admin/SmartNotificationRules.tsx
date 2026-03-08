@@ -71,7 +71,7 @@ const emptyRule = {
   cooldown_hours: 24,
 };
 
-export function SmartNotificationRules() {
+export const SmartNotificationRules = memo(function SmartNotificationRules() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();

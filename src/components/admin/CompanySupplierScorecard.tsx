@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Building2, Search, Star, TrendingUp, Clock, Package, Filter, ArrowUpDown } from "lucide-react";
 
-export function CompanySupplierScorecard() {
+export const CompanySupplierScorecard = memo(function CompanySupplierScorecard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");

@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Star, Search, CheckCircle, XCircle, Eye, Flag } from "lucide-react";
 
-export function AdminReviewsModeration() {
+export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();

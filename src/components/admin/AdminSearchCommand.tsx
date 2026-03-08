@@ -39,7 +39,7 @@ const GROUPS: Record<string, { en: string; ar: string }> = {
   system: { en: "System", ar: "النظام" },
 };
 
-export function AdminSearchCommand() {
+export const AdminSearchCommand = memo(function AdminSearchCommand() {
   const [open, setOpen] = useState(false);
   const { language } = useLanguage();
   const isAr = language === "ar";

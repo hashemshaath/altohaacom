@@ -11,7 +11,7 @@ import { ar } from "date-fns/locale";
 /**
  * Shows recent admin actions (last 10) for audit visibility.
  */
-export function RecentAdminActions() {
+export const RecentAdminActions = memo(function RecentAdminActions() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 

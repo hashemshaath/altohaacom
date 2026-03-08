@@ -16,7 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
-export function AdminCommentModeration() {
+export const AdminCommentModeration = memo(function AdminCommentModeration() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const queryClient = useQueryClient();

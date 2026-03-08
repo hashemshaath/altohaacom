@@ -21,7 +21,7 @@ interface AdminEvent {
   color: string;
 }
 
-export function AdminRealtimeNotificationBell() {
+export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotificationBell() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [events, setEvents] = useState<AdminEvent[]>([]);
