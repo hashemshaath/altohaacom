@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialProofStats } from "@/hooks/useReferralExtras";
 import { Users, TrendingUp } from "lucide-react";
 
-export function SocialProofWidget() {
+export const SocialProofWidget = memo(function SocialProofWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: stats } = useSocialProofStats();
