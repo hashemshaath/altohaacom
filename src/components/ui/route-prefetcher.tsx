@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 
 /**
  * Prefetches critical route chunks after initial paint.
