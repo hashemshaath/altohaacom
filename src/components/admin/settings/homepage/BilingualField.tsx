@@ -22,7 +22,7 @@ interface BilingualFieldProps {
   context?: string;
 }
 
-export function BilingualField({
+export const BilingualField = memo(function BilingualField({
   label, labelAr, valueEn, valueAr, onChangeEn, onChangeAr,
   placeholderEn, placeholderAr, multiline, rows = 2, context = "culinary platform homepage section",
 }: BilingualFieldProps) {
