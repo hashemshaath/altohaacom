@@ -293,6 +293,8 @@ export default function ArticlesAdmin() {
         }
       />
 
+      <ContentQuickNav />
+
       {/* Quick Metrics */}
       <ContentQuickToolbar />
 
