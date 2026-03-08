@@ -57,7 +57,7 @@ const snapIntegrations = [
   },
 ];
 
-export function SnapPixelPanel() {
+export const SnapPixelPanel = memo(function SnapPixelPanel() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const qc = useQueryClient();
