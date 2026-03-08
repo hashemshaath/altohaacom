@@ -432,4 +432,4 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
       </Card>
     </div>
   );
-}
+});

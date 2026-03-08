@@ -221,4 +221,4 @@ export const MoyasarPaymentForm = memo(function MoyasarPaymentForm({
       </CardContent>
     </Card>
   );
-}
+});

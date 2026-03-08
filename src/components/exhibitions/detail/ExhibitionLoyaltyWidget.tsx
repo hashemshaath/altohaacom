@@ -165,4 +165,4 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
       </CardContent>
     </Card>
   );
-}
+});

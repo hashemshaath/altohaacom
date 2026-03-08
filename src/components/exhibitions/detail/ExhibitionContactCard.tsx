@@ -82,4 +82,4 @@ export const ExhibitionContactCard = memo(function ExhibitionContactCard({ organ
       </CardContent>
     </Card>
   );
-}
+});

@@ -130,4 +130,4 @@ export const EventCreationGate = memo(function EventCreationGate({ children, eve
       </Card>
     </div>
   );
-}
+});

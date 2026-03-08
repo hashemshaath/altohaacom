@@ -81,4 +81,4 @@ export const FeatureGateForUser = memo(function FeatureGateForUser({ feature, us
   if (isLoading) return <>{children}</>;
   if (!hasFeature) return <>{fallback}</>;
   return <>{children}</>;
-}
+});

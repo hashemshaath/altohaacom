@@ -98,4 +98,4 @@ export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ e
       </CardContent>
     </Card>
   );
-}
+});

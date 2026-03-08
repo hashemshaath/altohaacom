@@ -56,4 +56,4 @@ export const ExhibitionQuickStats = memo(function ExhibitionQuickStats({ exhibit
       ))}
     </div>
   );
-}
+});

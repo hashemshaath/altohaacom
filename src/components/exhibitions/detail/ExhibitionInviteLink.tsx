@@ -86,4 +86,4 @@ export const ExhibitionInviteLink = memo(function ExhibitionInviteLink({ exhibit
       </CardContent>
     </Card>
   );
-}
+});

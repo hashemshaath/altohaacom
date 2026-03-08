@@ -259,4 +259,4 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
       </CardContent>
     </Card>
   );
-}
+});

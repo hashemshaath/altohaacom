@@ -262,4 +262,4 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
       )}
     </div>
   );
-}
+});

@@ -102,4 +102,4 @@ export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox
       )}
     </div>
   );
-}
+});

@@ -65,4 +65,4 @@ export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bi
       </CardContent>
     </Card>
   );
-}
+});

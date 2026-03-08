@@ -118,4 +118,4 @@ export const SupplierBadges = memo(function SupplierBadges({
       </div>
     </TooltipProvider>
   );
-}
+});

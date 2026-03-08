@@ -83,7 +83,7 @@ export const VirtualList = memo(function VirtualList<T>({
       </div>
     </div>
   );
-}
+}) as <T>(props: VirtualListProps<T>) => JSX.Element | null;
 
 /**
  * Hook for progressive loading of large datasets.
