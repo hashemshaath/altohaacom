@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useEvaluationCriteriaByDomain, useUpsertEvaluationScore, type EvaluationCriterion, type EvaluationCriteriaCategory } from "@/hooks/useEvaluationSystem";
 import { useSubmitEvaluation, type ChefsTableEvaluation } from "@/hooks/useChefsTable";
