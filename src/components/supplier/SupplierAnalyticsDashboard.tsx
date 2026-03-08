@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart, Download } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function SupplierAnalyticsDashboard() {
+export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
