@@ -13,7 +13,7 @@ interface Props {
   selectedTypeId?: string | null;
 }
 
-export function ExhibitionTicketSelector({ exhibitionId, isAr, onSelect, selectedTypeId }: Props) {
+export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({ exhibitionId, isAr, onSelect, selectedTypeId }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
   const { data: types = [] } = useQuery({
