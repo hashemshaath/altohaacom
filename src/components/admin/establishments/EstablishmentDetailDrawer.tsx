@@ -16,7 +16,7 @@ interface Props {
   onClose: () => void;
 }
 
-export default function EstablishmentDetailDrawer({ entityId, open, onClose }: Props) {
+const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ entityId, open, onClose }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
