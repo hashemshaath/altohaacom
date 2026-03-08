@@ -346,7 +346,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
       )}
     </div>
   );
-}
+});
 
 // ── Competition Event Form (manual) ──────────────────────────────────────
 
