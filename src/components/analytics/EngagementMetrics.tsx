@@ -33,7 +33,7 @@ import {
   Tooltip,
 } from "recharts";
 
-export default function EngagementMetrics() {
+const EngagementMetrics = memo(function EngagementMetrics() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
