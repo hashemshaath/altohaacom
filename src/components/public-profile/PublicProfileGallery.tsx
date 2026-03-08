@@ -42,7 +42,7 @@ function groupMediaFiles(files: MediaFile[]) {
   return { groups: validGroups, ungrouped };
 }
 
-export function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryProps) {
+export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFiles, isAr }: PublicProfileGalleryProps) {
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "grouped">("grid");
 
