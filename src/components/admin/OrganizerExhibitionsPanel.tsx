@@ -282,4 +282,4 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
       </SheetContent>
     </Sheet>
   );
-}
+});

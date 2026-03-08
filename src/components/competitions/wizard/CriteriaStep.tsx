@@ -174,4 +174,4 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
       </CardContent>
     </Card>
   );
-}
+});

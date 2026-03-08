@@ -249,4 +249,4 @@ export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
       </Card>
     </div>
   );
-}
+});

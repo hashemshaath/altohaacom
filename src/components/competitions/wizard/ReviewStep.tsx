@@ -297,4 +297,4 @@ export const ReviewStep = memo(function ReviewStep({ data }: ReviewStepProps) {
       </Card>
     </div>
   );
-}
+});

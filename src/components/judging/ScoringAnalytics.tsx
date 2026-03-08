@@ -216,4 +216,4 @@ export const ScoringAnalytics = memo(function ScoringAnalytics({ competitionId }
       )}
     </div>
   );
-}
+});

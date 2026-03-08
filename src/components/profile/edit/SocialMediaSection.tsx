@@ -55,4 +55,4 @@ export const SocialMediaSection = memo(function SocialMediaSection({ form, updat
       </CardContent>
     </Card>
   );
-}
+});

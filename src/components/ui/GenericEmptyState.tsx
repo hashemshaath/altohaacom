@@ -34,4 +34,4 @@ export const GenericEmptyState = memo(function GenericEmptyState({ icon: Icon, t
       ) : null)}
     </div>
   );
-}
+});

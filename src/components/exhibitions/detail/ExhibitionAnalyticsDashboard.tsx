@@ -242,4 +242,4 @@ export const ExhibitionAnalyticsDashboard = memo(function ExhibitionAnalyticsDas
       </Tabs>
     </div>
   );
-}
+});

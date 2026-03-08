@@ -51,4 +51,4 @@ export const ProductQuickActions = memo(function ProductQuickActions({ product, 
       </Button>
     </div>
   );
-}
+});

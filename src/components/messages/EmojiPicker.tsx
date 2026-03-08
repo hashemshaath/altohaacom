@@ -46,4 +46,4 @@ export const EmojiPicker = memo(function EmojiPicker({ onEmojiSelect }: EmojiPic
       </PopoverContent>
     </Popover>
   );
-}
+});

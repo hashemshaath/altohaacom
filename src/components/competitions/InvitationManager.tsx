@@ -286,4 +286,4 @@ export const InvitationManager = memo(function InvitationManager({ competitionId
       </Card>
     </div>
   );
-}
+});

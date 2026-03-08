@@ -241,4 +241,4 @@ export const JudgeDashboard = memo(function JudgeDashboard({ onSelectCompetition
       </Card>
     </div>
   );
-}
+});

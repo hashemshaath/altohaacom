@@ -139,4 +139,4 @@ export const HeaderFooterSettings = memo(function HeaderFooterSettings({ setting
       </Card>
     </div>
   );
-}
+});

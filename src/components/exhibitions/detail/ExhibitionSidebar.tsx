@@ -222,4 +222,4 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
       )}
     </div>
   );
-}
+});

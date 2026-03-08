@@ -15,4 +15,4 @@ export const DashboardWidgetSkeleton = memo(function DashboardWidgetSkeleton({ l
       </CardContent>
     </Card>
   );
-}
+});

@@ -195,4 +195,4 @@ export const EntryComparison = memo(function EntryComparison({ competitionId }: 
       </CardContent>
     </Card>
   );
-}
+});

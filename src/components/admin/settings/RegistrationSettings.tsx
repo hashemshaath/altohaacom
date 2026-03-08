@@ -98,4 +98,4 @@ export const RegistrationSettings = memo(function RegistrationSettings({ setting
       </CardContent>
     </Card>
   );
-}
+});

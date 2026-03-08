@@ -86,4 +86,4 @@ export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onU
       )}
     </div>
   );
-}
+});
