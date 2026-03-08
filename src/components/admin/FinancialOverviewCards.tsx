@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -9,7 +10,7 @@ import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "luc
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function FinancialOverviewCards() {
+export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -125,4 +126,4 @@ export function FinancialOverviewCards() {
       </div>
     </div>
   );
-}
+});

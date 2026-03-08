@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -7,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Megaphone, Target, DollarSign, TrendingUp, AlertTriangle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function CampaignPerformanceTracker() {
+export const CampaignPerformanceTracker = memo(function CampaignPerformanceTracker() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -88,4 +89,4 @@ export function CampaignPerformanceTracker() {
       </CardContent>
     </Card>
   );
-}
+});

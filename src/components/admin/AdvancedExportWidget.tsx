@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,7 +29,7 @@ const EXPORT_MODULES: ExportModule[] = [
   { key: "invoices", label: "Invoices", labelAr: "الفواتير", icon: FileText, table: "invoices", columns: "id, invoice_number, status, amount, currency, created_at" },
 ];
 
-export function AdvancedExportWidget() {
+export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [selectedModule, setSelectedModule] = useState("users");
@@ -170,4 +170,4 @@ export function AdvancedExportWidget() {
       </CardContent>
     </Card>
   );
-}
+});

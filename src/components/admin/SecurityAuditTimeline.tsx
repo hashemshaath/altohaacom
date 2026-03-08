@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -29,7 +29,7 @@ const EVENT_ICONS: Record<string, typeof Shield> = {
   session_revoked: Lock,
 };
 
-export function SecurityAuditTimeline() {
+export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [severityFilter, setSeverityFilter] = useState("all");
@@ -149,4 +149,4 @@ export function SecurityAuditTimeline() {
       </CardContent>
     </Card>
   );
-}
+});

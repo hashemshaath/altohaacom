@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,7 @@ import { ShieldAlert, Users, Monitor, Ban, AlertTriangle, Activity, Clock } from
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function SecurityLiveWidget() {
+export const SecurityLiveWidget = memo(function SecurityLiveWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -169,4 +170,4 @@ export function SecurityLiveWidget() {
       </Card>
     </div>
   );
-}
+});

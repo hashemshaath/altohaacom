@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, Users, Lock, Key, AlertTriangle, CheckCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
-export function RolePermissionsOverview() {
+export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -129,4 +130,4 @@ export function RolePermissionsOverview() {
       </CardContent>
     </Card>
   );
-}
+});

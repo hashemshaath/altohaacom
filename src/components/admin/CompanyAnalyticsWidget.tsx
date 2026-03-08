@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Building2, CheckCircle, Clock, Star, TrendingUp, DollarSign } from "lucide-react";
 
-export function CompanyAnalyticsWidget() {
+export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -116,4 +117,4 @@ export function CompanyAnalyticsWidget() {
       </CardContent>
     </Card>
   );
-}
+});
