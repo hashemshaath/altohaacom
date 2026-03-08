@@ -2,7 +2,7 @@
  * Smart notification digest summary widget for the dashboard.
  * Provides an AI-style overview of recent notification activity.
  */
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Card, CardContent } from "@/components/ui/card";
