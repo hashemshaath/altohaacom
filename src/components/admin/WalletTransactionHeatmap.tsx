@@ -73,10 +73,12 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Recent Transactions */}
-      <Card>
+      <Card className="rounded-2xl border-border/40">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-primary" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10 border border-primary/15">
+              <Wallet className="h-3.5 w-3.5 text-primary" />
+            </div>
             {isAr ? "آخر المعاملات" : "Recent Transactions"}
           </CardTitle>
         </CardHeader>
