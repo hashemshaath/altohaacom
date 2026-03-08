@@ -322,7 +322,7 @@ function SessionGroup({ title, icon, sessions, profiles, myRegs, isAr, onSelect,
 }
 
 /* ---- Main Component ---- */
-export function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
+export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions({ exhibitionId, isAr }: Props) {
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const { user } = useAuth();
   const queryClient = useQueryClient();
