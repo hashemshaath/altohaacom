@@ -58,15 +58,16 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
   return (
     <div className="space-y-6">
       {/* Tier Progress Hero */}
-      <Card className="overflow-hidden border-border/50">
+      <Card className="overflow-hidden border-border/50 relative group/hero">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-4/5 pointer-events-none rounded-2xl" />
+        <div className="pointer-events-none absolute -end-12 -top-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px] transition-opacity group-hover/hero:opacity-80" />
         <CardContent className="p-6 relative">
           <div className="flex flex-col md:flex-row items-center gap-6">
             {/* Current Tier */}
-            <div className="text-center group">
+            <div className="text-center group/tier">
               <div className="relative inline-block">
-                <span className="text-5xl block transition-transform group-hover:scale-110">{currentTier?.icon_emoji || "⭐"}</span>
-                <div className="absolute -inset-2 rounded-full bg-primary/5 animate-pulse -z-10" />
+                <span className="text-5xl block transition-transform duration-500 group-hover/tier:scale-110 group-hover/tier:rotate-3">{currentTier?.icon_emoji || "⭐"}</span>
+                <div className="absolute -inset-3 rounded-full bg-primary/5 animate-pulse -z-10" />
               </div>
               <h2 className="text-xl font-bold mt-2">{isAr ? currentTier?.name_ar : currentTier?.name}</h2>
               <p className="text-sm text-muted-foreground">{isAr ? "مستواك الحالي" : "Your Current Tier"}</p>
@@ -85,7 +86,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
               <Progress value={progress} className="h-3" />
               <div className="flex gap-1 justify-between">
                 {tiers.map((t: any) => (
-                  <div key={t.id} className={`flex flex-col items-center transition-opacity ${points >= t.min_points ? "opacity-100" : "opacity-40"}`}>
+                  <div key={t.id} className={`flex flex-col items-center transition-all duration-300 ${points >= t.min_points ? "opacity-100 scale-100" : "opacity-40 scale-95"}`}>
                     <span className="text-sm">{t.icon_emoji}</span>
                     <span className="text-[10px] text-muted-foreground tabular-nums"><AnimatedCounter value={t.min_points} className="inline" /></span>
                   </div>
@@ -94,8 +95,8 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
             </div>
 
             {/* Multiplier */}
-            <div className="text-center bg-primary/10 rounded-2xl p-4 border border-primary/10 transition-all hover:shadow-md hover:border-primary/20">
-              <Sparkles className="h-5 w-5 text-primary mx-auto" />
+            <div className="text-center bg-primary/10 rounded-2xl p-4 border border-primary/10 transition-all duration-300 hover:shadow-lg hover:border-primary/25 hover:scale-105 group/mult">
+              <Sparkles className="h-5 w-5 text-primary mx-auto transition-transform group-hover/mult:rotate-12" />
               <p className="text-2xl font-bold text-primary">×{currentTier?.multiplier || 1}</p>
               <p className="text-xs text-muted-foreground">{isAr ? "مضاعف النقاط" : "Points Multiplier"}</p>
             </div>
@@ -103,8 +104,8 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
 
           {/* Streak */}
           {loginStreak && (
-            <div className="mt-4 flex items-center gap-3 bg-muted/50 rounded-xl p-3 border border-border/30 transition-all hover:border-chart-1/30">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-1/10">
+            <div className="mt-4 flex items-center gap-3 bg-muted/50 rounded-xl p-3 border border-border/30 transition-all hover:border-chart-1/30 hover:bg-chart-1/5 group/streak">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-1/10 transition-transform group-hover/streak:scale-110">
                 <Flame className="h-5 w-5 text-chart-1" />
               </div>
               <div>
