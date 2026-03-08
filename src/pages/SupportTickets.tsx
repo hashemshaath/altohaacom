@@ -323,33 +323,23 @@ export default function SupportTickets() {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mt-6">
-              <Card>
-                <CardContent className="flex items-center gap-3 py-4">
-                  <Ticket className="h-8 w-8 text-primary" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</p>
-                    <p className="text-xl font-bold"><AnimatedCounter value={tickets.length} /></p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-center gap-3 py-4">
-                  <Clock className="h-8 w-8 text-chart-4" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">{isAr ? "مفتوحة" : "Open"}</p>
-                    <p className="text-xl font-bold"><AnimatedCounter value={openCount} /></p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="flex items-center gap-3 py-4">
-                  <CheckCircle2 className="h-8 w-8 text-chart-5" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">{isAr ? "محلولة" : "Resolved"}</p>
-                    <p className="text-xl font-bold"><AnimatedCounter value={resolvedCount} /></p>
-                  </div>
-                </CardContent>
-              </Card>
+              {[
+                { icon: Ticket, label: isAr ? "الإجمالي" : "Total", value: tickets.length, color: "text-primary", bg: "bg-primary/10" },
+                { icon: Clock, label: isAr ? "مفتوحة" : "Open", value: openCount, color: "text-chart-4", bg: "bg-chart-4/10" },
+                { icon: CheckCircle2, label: isAr ? "محلولة" : "Resolved", value: resolvedCount, color: "text-chart-5", bg: "bg-chart-5/10" },
+              ].map((s) => (
+                <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+                  <CardContent className="flex items-center gap-3 py-4">
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg} transition-transform duration-300 group-hover:scale-110`}>
+                      <s.icon className={`h-5 w-5 ${s.color}`} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">{s.label}</p>
+                      <AnimatedCounter value={s.value} className="text-xl font-bold" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
