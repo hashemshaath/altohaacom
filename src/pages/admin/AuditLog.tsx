@@ -208,34 +208,24 @@ export default function AuditLog() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Card>
-          <CardContent className="p-4 text-center">
-            <Activity className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <AnimatedCounter value={stats.todayActions} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "إجراءات اليوم" : "Today's Actions"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <ShieldAlert className="mx-auto mb-1 h-5 w-5 text-chart-4" />
-            <AnimatedCounter value={stats.todayContent} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "إجراءات المحتوى" : "Content Actions"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <BarChart3 className="mx-auto mb-1 h-5 w-5 text-chart-2" />
-            <AnimatedCounter value={stats.uniqueActionTypes} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "أنواع الإجراءات" : "Action Types"}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <Trash2 className="mx-auto mb-1 h-5 w-5 text-destructive" />
-            <AnimatedCounter value={stats.deletions} className="text-2xl font-bold" />
-            <p className="text-xs text-muted-foreground">{isAr ? "عمليات الحذف" : "Total Deletions"}</p>
-          </CardContent>
-        </Card>
+        {[
+          { icon: Activity, value: stats.todayActions, label: isAr ? "إجراءات اليوم" : "Today's Actions", color: "text-primary", bg: "bg-primary/10" },
+          { icon: ShieldAlert, value: stats.todayContent, label: isAr ? "إجراءات المحتوى" : "Content Actions", color: "text-chart-4", bg: "bg-chart-4/10" },
+          { icon: BarChart3, value: stats.uniqueActionTypes, label: isAr ? "أنواع الإجراءات" : "Action Types", color: "text-chart-2", bg: "bg-chart-2/10" },
+          { icon: Trash2, value: stats.deletions, label: isAr ? "عمليات الحذف" : "Total Deletions", color: "text-destructive", bg: "bg-destructive/10" },
+        ].map((s, i) => (
+          <Card key={i} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${s.bg} transition-transform duration-300 group-hover:scale-110`}>
+                <s.icon className={`h-5 w-5 ${s.color}`} />
+              </div>
+              <div>
+                <AnimatedCounter value={s.value} className="text-2xl font-bold" />
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <Tabs defaultValue="content" className="space-y-4">
