@@ -91,6 +91,18 @@ export default function MentorshipAdmin() {
   });
   const pendingEnrollments = enrollments.filter(e => e.status === "pending");
 
+  const filteredApps = useMemo(() => {
+    const q = appSearch.toLowerCase().trim();
+    return applications.filter(app => {
+      if (appStatusFilter !== "all" && app.status !== appStatusFilter) return false;
+      if (q) {
+        const text = `${app.profile?.full_name || ""} ${app.bio || ""} ${(app.expertise || []).join(" ")}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [applications, appSearch, appStatusFilter]);
+
   const statusColors: Record<string, string> = {
     draft: "bg-muted text-muted-foreground",
     active: "bg-chart-2/10 text-chart-2",
