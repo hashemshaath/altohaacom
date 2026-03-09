@@ -238,6 +238,13 @@ export default function SupportTicketsAdmin() {
     },
   });
 
+  const filteredTickets = tickets.filter(t =>
+    !searchQuery ||
+    t.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    t.ticket_number.includes(searchQuery) ||
+    profileMap.get(t.user_id)?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const { sorted: sortedTickets, sortColumn, sortDirection, toggleSort } = useTableSort(filteredTickets, "created_at", "desc");
   const pagination = usePagination(sortedTickets, { defaultPageSize: 15 });
 
