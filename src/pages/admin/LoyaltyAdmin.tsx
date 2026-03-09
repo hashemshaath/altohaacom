@@ -237,14 +237,14 @@ export default function LoyaltyAdmin() {
           <AdminTableCard>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead>{isAr ? "التحدي" : "Challenge"}</TableHead>
-                    <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "الهدف" : "Target"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "النقاط" : "Points"}</TableHead>
-                    <TableHead>{isAr ? "الصعوبة" : "Difficulty"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
-                  </TableRow>
+                   <TableRow className="bg-muted/30">
+                     <SortableTableHead column="title" label={isAr ? "التحدي" : "Challenge"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} />
+                     <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} />
+                     <SortableTableHead column="target_count" label={isAr ? "الهدف" : "Target"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} className="text-center" />
+                     <SortableTableHead column="reward_points" label={isAr ? "النقاط" : "Points"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} className="text-center" />
+                     <SortableTableHead column="difficulty" label={isAr ? "الصعوبة" : "Difficulty"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} />
+                     <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
+                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {challenges.map((c: any) => (
