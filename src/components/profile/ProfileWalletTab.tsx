@@ -21,6 +21,8 @@ interface ProfileWalletTabProps {
 export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: ProfileWalletTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [txSearch, setTxSearch] = useState("");
+  const [txTypeFilter, setTxTypeFilter] = useState("all");
 
   const { data: wallet, isLoading: walletLoading } = useQuery({
     queryKey: ["profile-wallet", userId],
