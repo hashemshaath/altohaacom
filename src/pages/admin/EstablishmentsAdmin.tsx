@@ -389,7 +389,7 @@ export default function EstablishmentsAdmin() {
             onPageSizeChange={pagination.changePageSize}
           />
         </AdminTableCard>
-
+      )}
       {/* Detail Drawer */}
       <EstablishmentDetailDrawer
         entityId={detailId}
