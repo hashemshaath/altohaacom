@@ -1081,7 +1081,7 @@ export default function ExhibitionsAdmin() {
                     <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
                   </TableRow>
                 ))
-              ) : filteredExhibitions?.length === 0 ? (
+              ) : sortedExhibitions?.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={9} className="p-0">
                     <AdminEmptyState
