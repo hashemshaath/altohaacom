@@ -79,4 +79,4 @@ export const VirtualList = memo(function VirtualList<T>({
       </div>
     </div>
   );
-}) as <T>(props: VirtualListProps<T>) => ReturnType<typeof memo>;
+}) as <T>(props: VirtualListProps<T>) => JSX.Element;
