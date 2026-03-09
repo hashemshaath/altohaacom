@@ -477,7 +477,7 @@ export default function GlobalEventsAdmin() {
             {isLoading ? (
               <TableRow><TableCell colSpan={8} className="p-0"><AdminTableSkeleton rows={5} columns={7} showActions={false} /></TableCell></TableRow>
             ) : eventPagination.paginated.length === 0 ? (
-              <TableRow><TableCell colSpan={8} className="p-0"><AdminEmptyState icon={CalendarDays} title="No events" titleAr="لا توجد فعاليات" description="Events will appear here when created" descriptionAr="ستظهر الفعاليات هنا عند إنشائها" /></TableCell></TableRow>
+              <TableRow><TableCell colSpan={8} className="p-0"><AdminEmptyState icon={Calendar} title="No events" titleAr="لا توجد فعاليات" description="Events will appear here when created" descriptionAr="ستظهر الفعاليات هنا عند إنشائها" /></TableCell></TableRow>
             ) : (
               eventPagination.paginated.map(ev => {
                 const typeKey = ev.type as GlobalEventType;
