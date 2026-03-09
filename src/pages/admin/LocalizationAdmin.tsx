@@ -497,7 +497,7 @@ export default function LocalizationAdmin() {
               onDelete={() => bulkDeleteMutation.mutate([...bulk.selected])}
               onExport={() => exportTranslationsCSV(bulk.selectedItems)}
             />
-          </div>
+          </AdminFilterBar>
 
           {/* Table */}
           <Card>
