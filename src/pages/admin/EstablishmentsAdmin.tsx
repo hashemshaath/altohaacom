@@ -258,30 +258,28 @@ export default function EstablishmentsAdmin() {
       <EntityStatsCards stats={stats} activeFilter={statusFilter} onFilterChange={f => setStatusFilter(f || "all")} />
 
       {/* Toolbar */}
-      <Card className="rounded-2xl border-border/40">
-        <CardContent className="p-3 flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder={isAr ? "بحث بالاسم أو الرقم..." : "Search by name or number..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9 h-9 rounded-xl" />
-          </div>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[180px] h-9 rounded-xl">
-              <SelectValue placeholder={isAr ? "النوع" : "Type"} />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
-              {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Button size="sm" variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
-            <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
-          </Button>
-          <Button size="sm" className="gap-1.5" onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(!showForm); }}>
-            <Plus className="h-4 w-4" />
-            {isAr ? "إضافة جهة" : "Add Entity"}
-          </Button>
-        </CardContent>
-      </Card>
+      <AdminFilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={isAr ? "بحث بالاسم أو الرقم..." : "Search by name or number..."}
+      >
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-[180px] h-9 rounded-xl">
+            <SelectValue placeholder={isAr ? "النوع" : "Type"} />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+            {typeOptions.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Button size="sm" variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
+          <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
+        </Button>
+        <Button size="sm" className="gap-1.5" onClick={() => { setForm(emptyForm); setEditingId(null); setShowForm(!showForm); }}>
+          <Plus className="h-4 w-4" />
+          {isAr ? "إضافة جهة" : "Add Entity"}
+        </Button>
+      </AdminFilterBar>
 
       {showBulkImport && (
         <BulkImportPanel
