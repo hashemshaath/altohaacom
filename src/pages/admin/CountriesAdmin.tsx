@@ -143,7 +143,7 @@ export default function CountriesAdmin() {
     },
   });
 
-  // Client-side filtering & sorting
+  // Client-side filtering
   const filtered = useMemo(() => {
     let list = [...countries];
     if (searchQuery) {
@@ -159,20 +159,11 @@ export default function CountriesAdmin() {
     if (statusFilter === "active") list = list.filter(c => c.is_active);
     if (statusFilter === "inactive") list = list.filter(c => !c.is_active);
     if (continentFilter !== "all") list = list.filter(c => c.continent === continentFilter);
-
-    list.sort((a, b) => {
-      let cmp = 0;
-      switch (sortField) {
-        case "name": cmp = a.name.localeCompare(b.name); break;
-        case "code": cmp = a.code.localeCompare(b.code); break;
-        case "region": cmp = (a.region || "").localeCompare(b.region || ""); break;
-        case "sort_order": cmp = (a.sort_order || 0) - (b.sort_order || 0); break;
-        case "updated_at": cmp = a.updated_at.localeCompare(b.updated_at); break;
-      }
-      return sortAsc ? cmp : -cmp;
-    });
     return list;
-  }, [countries, searchQuery, regionFilter, statusFilter, continentFilter, sortField, sortAsc]);
+  }, [countries, searchQuery, regionFilter, statusFilter, continentFilter]);
+
+  const { sorted: sortedCountries, sortColumn, sortDirection, toggleSort } = useTableSort(filtered, "sort_order", "asc");
+  const countryPagination = usePagination(sortedCountries, { defaultPageSize: 15 });
 
   const bulk = useAdminBulkActions(filtered);
 
