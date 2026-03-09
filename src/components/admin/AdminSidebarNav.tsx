@@ -84,7 +84,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
           /* ── Expanded: section groups ── */
           return (
             <div key={idx}>
-              {idx > 0 && <div className="mx-3 my-2 h-px bg-border/40" />}
+              {idx > 0 && <div className="mx-3 my-2 h-px bg-sidebar-border" />}
 
               {/* Section header */}
               <button
@@ -92,8 +92,8 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                 className={cn(
                   "flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors select-none",
                   hasActiveItem
-                    ? "text-primary"
-                    : "text-muted-foreground/60 hover:text-muted-foreground"
+                    ? "text-sidebar-primary"
+                    : "text-sidebar-foreground/40 hover:text-sidebar-foreground/70"
                 )}
               >
                 <span className="truncate">{sectionLabel}</span>
