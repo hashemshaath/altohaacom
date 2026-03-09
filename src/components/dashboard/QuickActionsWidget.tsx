@@ -113,7 +113,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
   ];
 
   return (
-    <Card className="border-border/40">
+    <Card className="border-border/40 hover:shadow-md transition-shadow duration-300">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <Zap className="h-4 w-4 text-primary" />
