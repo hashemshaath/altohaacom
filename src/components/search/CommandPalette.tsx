@@ -62,6 +62,7 @@ export const CommandPalette = memo(function CommandPalette() {
     if (open) {
       setQuery("");
       setSelectedIndex(0);
+      setAiSummary(null);
       setTimeout(() => inputRef.current?.focus(), 100);
     } else {
       stopListening();
