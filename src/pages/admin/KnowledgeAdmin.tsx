@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Skeleton } from "@/components/ui/skeleton";
+import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -525,7 +526,7 @@ export default function KnowledgeAdmin() {
           />
 
           {loadingResources ? (
-            <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-20 rounded-2xl" />)}</div>
+            <AdminWidgetSkeleton rows={4} />
           ) : resources && resources.length > 0 ? (
             <div className="space-y-3">
               {resources.map(resource => (
@@ -581,16 +582,13 @@ export default function KnowledgeAdmin() {
               ))}
             </div>
           ) : (
-            <Card className="rounded-2xl border-border/40">
-              <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-                  <BookOpen className="h-8 w-8 text-muted-foreground/40" />
-                </div>
-                <p className="text-muted-foreground">
-                  {language === "ar" ? "لم تتم إضافة أي موارد بعد" : "No resources added yet"}
-                </p>
-              </CardContent>
-            </Card>
+            <AdminEmptyState
+              icon={BookOpen}
+              title="No resources added yet"
+              titleAr="لم تتم إضافة أي موارد بعد"
+              description="Add resources to build your knowledge portal"
+              descriptionAr="أضف موارد لبناء بوابة المعرفة"
+            />
           )}
         </TabsContent>
 

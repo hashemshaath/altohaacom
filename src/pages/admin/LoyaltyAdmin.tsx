@@ -1,4 +1,5 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
@@ -361,8 +362,8 @@ export default function LoyaltyAdmin() {
                   ))}
                    {rdPagination.paginated.length === 0 && (
                      <TableRow>
-                       <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                         {isAr ? "لا توجد طلبات استبدال" : "No redemptions yet"}
+                       <TableCell colSpan={6} className="p-0">
+                         <AdminEmptyState icon={Gift} title="No redemptions yet" titleAr="لا توجد طلبات استبدال" description="Reward redemptions will appear here" descriptionAr="ستظهر طلبات استبدال المكافآت هنا" />
                        </TableCell>
                      </TableRow>
                    )}

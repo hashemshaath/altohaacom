@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import {
   useMentorshipPrograms,
   useAllMentorApplications,
@@ -238,7 +239,7 @@ export default function MentorshipAdmin() {
             onExport={() => exportAppsCSV(bulkApps.selectedItems)}
           />
           {applications.length === 0 ? (
-            <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد طلبات" : "No applications"}</CardContent></Card>
+            <AdminEmptyState icon={ClipboardList} title="No applications" titleAr="لا توجد طلبات" description="Mentor applications will appear here" descriptionAr="ستظهر طلبات الإرشاد هنا عند تقديمها" />
           ) : (
             applications.map(app => (
               <Card key={app.id} className={bulkApps.isSelected(app.id) ? "ring-1 ring-primary/30" : ""}>
@@ -287,7 +288,7 @@ export default function MentorshipAdmin() {
         {/* Enrollments Tab */}
         <TabsContent value="enrollments" className="mt-4 space-y-3">
           {enrollments.length === 0 ? (
-            <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد تسجيلات" : "No enrollments"}</CardContent></Card>
+            <AdminEmptyState icon={GraduationCap} title="No enrollments" titleAr="لا توجد تسجيلات" description="Mentee enrollments will appear here" descriptionAr="ستظهر تسجيلات المتعلمين هنا" />
           ) : (
             enrollments.map(enrollment => (
               <Card key={enrollment.id}>
@@ -373,7 +374,7 @@ export default function MentorshipAdmin() {
           </div>
 
           {matches.length === 0 ? (
-            <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد مطابقات" : "No matches"}</CardContent></Card>
+            <AdminEmptyState icon={Handshake} title="No matches" titleAr="لا توجد مطابقات" description="Mentor-mentee matches will appear here" descriptionAr="ستظهر المطابقات هنا عند إنشائها" />
           ) : (
             matches.map(m => (
               <Card key={m.id}>
