@@ -61,7 +61,7 @@ export const OptimizedImage = memo(function OptimizedImage({
   const defaultSizes = sizes || (responsive ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" : undefined);
 
   return (
-    <div ref={ref} className={cn("relative overflow-hidden", aspectRatio, className)}>
+    <div ref={ref} className={cn("group/img relative overflow-hidden", aspectRatio, className)}>
       {!loaded && !error && (
         <Skeleton className="absolute inset-0 h-full w-full" />
       )}
@@ -81,7 +81,7 @@ export const OptimizedImage = memo(function OptimizedImage({
             if (fallback) (e.target as HTMLImageElement).src = fallback;
           }}
           className={cn(
-            "h-full w-full object-cover transition-all duration-500",
+            "h-full w-full object-cover transition-all duration-500 group-hover/img:scale-[1.03]",
             loaded ? "opacity-100 scale-100" : "opacity-0 scale-[1.02]",
             blurUp && !loaded && "blur-sm",
           )}
