@@ -239,7 +239,7 @@ export default function MentorshipAdmin() {
             onExport={() => exportAppsCSV(bulkApps.selectedItems)}
           />
           {applications.length === 0 ? (
-            <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد طلبات" : "No applications"}</CardContent></Card>
+            <AdminEmptyState icon={ClipboardList} title="No applications" titleAr="لا توجد طلبات" description="Mentor applications will appear here" descriptionAr="ستظهر طلبات الإرشاد هنا عند تقديمها" />
           ) : (
             applications.map(app => (
               <Card key={app.id} className={bulkApps.isSelected(app.id) ? "ring-1 ring-primary/30" : ""}>
