@@ -473,7 +473,7 @@ export default function ChefsTableAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredSessions.map(session => {
+                   {sessionPagination.paginated.map(session => {
                       const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
                       const isExpanded = expandedSessionId === session.id;
                       return (
