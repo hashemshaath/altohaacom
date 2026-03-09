@@ -75,21 +75,21 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
   if (!currentLabel) return null;
 
   return (
-    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-5" aria-label="Breadcrumb">
-      <Link to="/admin" className="flex items-center gap-1.5 rounded-xl px-2 py-1 hover:bg-muted hover:text-foreground transition-all duration-200">
-        <LayoutDashboard className="h-3 w-3" />
+    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-5 animate-in fade-in-50 slide-in-from-start-2 duration-300" aria-label="Breadcrumb">
+      <Link to="/admin" className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 hover:bg-muted hover:text-foreground transition-all duration-200 group/bc">
+        <LayoutDashboard className="h-3 w-3 group-hover/bc:text-primary transition-colors" />
         <span>{isAr ? "لوحة التحكم" : "Dashboard"}</span>
       </Link>
       {parentLabel && (
         <>
           <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
-          <Link to="/admin/design" className="rounded-xl px-2 py-1 hover:bg-muted hover:text-foreground transition-all duration-200">
+          <Link to="/admin/design" className="rounded-xl px-2.5 py-1.5 hover:bg-muted hover:text-foreground transition-all duration-200">
             {isAr ? parentLabel.ar : parentLabel.en}
           </Link>
         </>
       )}
       <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
-      <span className="rounded-xl bg-primary/8 px-2.5 py-1 text-primary font-semibold" aria-current="page">
+      <span className="rounded-xl bg-primary/10 px-3 py-1.5 text-primary font-semibold shadow-sm" aria-current="page">
         {isAr ? currentLabel.ar : currentLabel.en}
       </span>
     </nav>

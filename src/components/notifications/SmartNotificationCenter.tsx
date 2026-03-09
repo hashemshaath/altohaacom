@@ -154,13 +154,24 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
         <SheetHeader className="p-4 pb-2">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-primary" />
+              <div className="relative">
+                <Bell className="h-5 w-5 text-primary" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -end-1 h-2.5 w-2.5 rounded-full bg-destructive">
+                    <span className="absolute inset-0 rounded-full bg-destructive animate-ping opacity-75" />
+                  </span>
+                )}
+              </div>
               {isAr ? "الإشعارات" : "Notifications"}
-              {unreadCount > 0 && <Badge variant="destructive" className="text-xs animate-scale-in">{unreadCount}</Badge>}
+              {unreadCount > 0 && (
+                <Badge variant="destructive" className="text-[10px] px-1.5 py-0 min-w-[20px] justify-center animate-scale-in">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </Badge>
+              )}
             </SheetTitle>
             <div className="flex items-center gap-1">
               {readCount > 0 && (
-                <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive" onClick={() => clearAllRead.mutate()}>
+                <Button variant="ghost" size="sm" className="h-7 text-xs text-destructive hover:text-destructive" onClick={() => clearAllRead.mutate()}>
                   <Trash2 className="h-3 w-3 me-1" />
                   {isAr ? "حذف المقروء" : "Clear read"}
                 </Button>
@@ -174,6 +185,16 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
               </Button>
             </div>
           </div>
+          {/* Quick stats bar */}
+          {notifications.length > 0 && (
+            <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+              <span>{notifications.length} {isAr ? "إجمالي" : "total"}</span>
+              <span className="text-border">|</span>
+              <span className="text-primary font-medium">{unreadCount} {isAr ? "جديد" : "new"}</span>
+              <span className="text-border">|</span>
+              <span>{readCount} {isAr ? "مقروء" : "read"}</span>
+            </div>
+          )}
         </SheetHeader>
 
         <Tabs value={tab} onValueChange={setTab} className="w-full">
