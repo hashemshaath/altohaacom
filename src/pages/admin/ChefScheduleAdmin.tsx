@@ -363,6 +363,7 @@ export default function ChefScheduleAdmin() {
                 )}
               </TableBody>
             </Table>
+            <AdminTablePagination page={schedulePagination.page} totalPages={schedulePagination.totalPages} totalItems={schedulePagination.totalItems} startItem={schedulePagination.startItem} endItem={schedulePagination.endItem} pageSize={schedulePagination.pageSize} pageSizeOptions={schedulePagination.pageSizeOptions} hasNext={schedulePagination.hasNext} hasPrev={schedulePagination.hasPrev} onPageChange={schedulePagination.goTo} onPageSizeChange={schedulePagination.changePageSize} />
           </Card>
         </TabsContent>
 
