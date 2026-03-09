@@ -1,12 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-    <title>Altoha - Culinary Community Platform</title>
+    <title>Altoha — Professional Culinary Network</title>
     <meta name="description" content="The premier culinary community platform for chefs, judges, and food enthusiasts. Compete, learn, and connect with the global culinary world." />
-    <meta name="keywords" content="culinary competitions, chef community, cooking masterclass, food exhibitions, culinary arts, gastronomy, chef awards, food events, culinary platform, Altoha" />
+    <meta name="keywords" content="culinary competitions, chef community, cooking masterclass, food exhibitions, culinary arts, gastronomy, chef awards, food events, culinary platform, Altoha, مسابقات الطهي, الطهاة" />
     <meta name="author" content="Altoha" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
 
     <!-- Preconnect for Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,8 +21,14 @@
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="canonical" href="https://altoha.com/" />
 
+    <!-- Alternate language -->
+    <link rel="alternate" hreflang="en" href="https://altoha.com/?lang=en" />
+    <link rel="alternate" hreflang="ar" href="https://altoha.com/?lang=ar" />
+    <link rel="alternate" hreflang="x-default" href="https://altoha.com/" />
+
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#8B4513" />
+    <meta name="theme-color" content="#8B4513" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -35,31 +43,66 @@
     <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Altoha - Culinary Community" />
+    <meta property="og:title" content="Altoha — Professional Culinary Network" />
     <meta property="og:description" content="The premier culinary community platform for chefs, judges, and food enthusiasts." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/pwa-512x512.png" />
+    <meta property="og:url" content="https://altoha.com/" />
+    <meta property="og:site_name" content="Altoha" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ar_SA" />
+    <meta property="og:image" content="https://altoha.com/pwa-512x512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Altoha — Professional Culinary Network" />
 
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Altoha" />
-    <meta name="twitter:image" content="/pwa-512x512.png" />
+    <meta name="twitter:title" content="Altoha — Professional Culinary Network" />
+    <meta name="twitter:description" content="The premier culinary community platform for chefs, judges, and food enthusiasts." />
+    <meta name="twitter:image" content="https://altoha.com/pwa-512x512.png" />
+    <meta name="twitter:image:alt" content="Altoha — Professional Culinary Network" />
 
-    <!-- JSON-LD Organization -->
+    <!-- JSON-LD Organization + WebSite -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Altoha",
-      "url": "https://altoha.com",
-      "logo": "https://altoha.com/pwa-512x512.png",
-      "description": "The premier culinary community platform for chefs, judges, and food enthusiasts.",
-      "sameAs": ["https://twitter.com/Altoha"],
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://altoha.com/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Altoha",
+        "url": "https://altoha.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://altoha.com/pwa-512x512.png",
+          "width": 512,
+          "height": 512
+        },
+        "description": "The premier culinary community platform for chefs, judges, and food enthusiasts.",
+        "sameAs": ["https://twitter.com/Altoha"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer support",
+          "url": "https://altoha.com/contact",
+          "availableLanguage": ["English", "Arabic"]
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Altoha",
+        "alternateName": "الطهاة",
+        "url": "https://altoha.com",
+        "inLanguage": ["en", "ar"],
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://altoha.com/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
       }
-    }
+    ]
     </script>
 
     <!-- Preload critical resources -->
