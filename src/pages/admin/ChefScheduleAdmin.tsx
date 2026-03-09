@@ -32,9 +32,10 @@ import ChefScheduleEventForm from "@/components/admin/chef-schedule/ChefSchedule
 import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminScheduleCalendar";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
-import { useCSVExport } from "@/hooks/useCSVExport";
-import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { useCSVExport } from "@/hooks/useCSVExport";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
@@ -234,13 +235,13 @@ export default function ChefScheduleAdmin() {
 
         <TabsContent value="events" className="space-y-4 mt-4">
           {/* Filters */}
-          <div className="flex flex-wrap gap-2">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder={isAr ? "بحث..." : "Search..."} className="ps-9 h-9" />
-            </div>
+          <AdminFilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={isAr ? "بحث..." : "Search..."}
+          >
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[150px] h-9"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[150px] h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
                 {Object.entries(EVENT_TYPE_CONFIG).map(([k, v]) => (
@@ -249,7 +250,7 @@ export default function ChefScheduleAdmin() {
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[130px] h-9"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[130px] h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                 <SelectItem value="confirmed">{isAr ? "مؤكد" : "Confirmed"}</SelectItem>
@@ -258,7 +259,7 @@ export default function ChefScheduleAdmin() {
               </SelectContent>
             </Select>
             <Select value={visFilter} onValueChange={setVisFilter}>
-              <SelectTrigger className="w-[130px] h-9"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[130px] h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع الرؤية" : "All Visibility"}</SelectItem>
                 <SelectItem value="private">{isAr ? "خاص" : "Private"}</SelectItem>
@@ -266,7 +267,7 @@ export default function ChefScheduleAdmin() {
                 <SelectItem value="public">{isAr ? "عام" : "Public"}</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </AdminFilterBar>
 
           <BulkActionBar
             count={bulk.count}

@@ -3,6 +3,7 @@ import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -446,19 +447,13 @@ export default function LocalizationAdmin() {
 
         {/* ─── Translation Keys Tab ─── */}
         <TabsContent value="translations" className="mt-4 space-y-4">
-          {/* Toolbar */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative flex-1 min-w-[200px]">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "بحث بالمفتاح أو النص..." : "Search by key or text..."}
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="ps-9"
-              />
-            </div>
+          <AdminFilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={isAr ? "بحث بالمفتاح أو النص..." : "Search by key or text..."}
+          >
             <Select value={nsFilter} onValueChange={setNsFilter}>
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[140px] rounded-xl">
                 <Filter className="h-4 w-4 me-1" />
                 <SelectValue />
               </SelectTrigger>
@@ -470,7 +465,7 @@ export default function LocalizationAdmin() {
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[130px]">
+              <SelectTrigger className="w-[130px] rounded-xl">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -503,7 +498,7 @@ export default function LocalizationAdmin() {
               onDelete={() => bulkDeleteMutation.mutate([...bulk.selected])}
               onExport={() => exportTranslationsCSV(bulk.selectedItems)}
             />
-          </div>
+          </AdminFilterBar>
 
           {/* Table */}
           <Card>

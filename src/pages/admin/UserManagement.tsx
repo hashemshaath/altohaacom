@@ -44,6 +44,7 @@ import { AdminSessionTracker } from "@/components/admin/AdminSessionTracker";
 import { AdminNotificationCenter } from "@/components/admin/AdminNotificationCenter";
 import { SecurityAuditTimeline } from "@/components/admin/SecurityAuditTimeline";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { SkeletonTable } from "@/components/ui/skeleton-table";
 import { useTableSort } from "@/hooks/useTableSort";
 import {
@@ -829,46 +830,39 @@ export default function UserManagement() {
       </Dialog>
 
       {/* Filters */}
-      <Card className="border-border/40 rounded-2xl">
-        <CardContent className="p-3.5 flex flex-wrap gap-3 items-center">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="ps-9 h-9 text-sm rounded-xl"
-            />
-          </div>
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("allUsers")}</SelectItem>
-              {ALL_ROLES.map((role) => (
-                <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("allUsers")}</SelectItem>
-              <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-              <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
-              <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
-              <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
-            <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-              <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
-              <SelectItem value="fan">{isAr ? "متابع" : "Follower"}</SelectItem>
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
+      >
+        <Select value={roleFilter} onValueChange={setRoleFilter}>
+          <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("allUsers")}</SelectItem>
+            {ALL_ROLES.map((role) => (
+              <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("allUsers")}</SelectItem>
+            <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+            <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+            <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
+            <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
+          <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+            <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
+            <SelectItem value="fan">{isAr ? "متابع" : "Follower"}</SelectItem>
+          </SelectContent>
+        </Select>
+      </AdminFilterBar>
 
       {/* ── Inline Edit Panel ─────────────────────────── */}
       {editingUser && (
