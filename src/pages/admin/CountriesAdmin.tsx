@@ -25,6 +25,10 @@ import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import {
   Globe, Plus, Edit, Trash2, Search, CheckCircle, XCircle,
   MapPin, Star, Save, X, ChevronRight,
@@ -109,7 +113,7 @@ const featureLabels: Record<string, { en: string; ar: string; icon: typeof Zap }
 const continents = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
 const regions = ["GCC", "MENA", "Europe", "Americas", "South Asia", "Southeast Asia", "East Asia", "Oceania", "Sub-Saharan Africa"];
 
-type SortField = "name" | "code" | "region" | "sort_order" | "updated_at";
+
 
 export default function CountriesAdmin() {
   const { language } = useLanguage();
@@ -129,8 +133,6 @@ export default function CountriesAdmin() {
   
   const [deleteTarget, setDeleteTarget] = useState<Country | null>(null);
   const [detailCountry, setDetailCountry] = useState<Country | null>(null);
-  const [sortField, setSortField] = useState<SortField>("sort_order");
-  const [sortAsc, setSortAsc] = useState(true);
 
   const { data: countries = [], isLoading } = useQuery({
     queryKey: ["admin-countries"],
@@ -141,7 +143,7 @@ export default function CountriesAdmin() {
     },
   });
 
-  // Client-side filtering & sorting
+  // Client-side filtering
   const filtered = useMemo(() => {
     let list = [...countries];
     if (searchQuery) {
@@ -157,22 +159,13 @@ export default function CountriesAdmin() {
     if (statusFilter === "active") list = list.filter(c => c.is_active);
     if (statusFilter === "inactive") list = list.filter(c => !c.is_active);
     if (continentFilter !== "all") list = list.filter(c => c.continent === continentFilter);
-
-    list.sort((a, b) => {
-      let cmp = 0;
-      switch (sortField) {
-        case "name": cmp = a.name.localeCompare(b.name); break;
-        case "code": cmp = a.code.localeCompare(b.code); break;
-        case "region": cmp = (a.region || "").localeCompare(b.region || ""); break;
-        case "sort_order": cmp = (a.sort_order || 0) - (b.sort_order || 0); break;
-        case "updated_at": cmp = a.updated_at.localeCompare(b.updated_at); break;
-      }
-      return sortAsc ? cmp : -cmp;
-    });
     return list;
-  }, [countries, searchQuery, regionFilter, statusFilter, continentFilter, sortField, sortAsc]);
+  }, [countries, searchQuery, regionFilter, statusFilter, continentFilter]);
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedCountries, sortColumn, sortDirection, toggleSort } = useTableSort(filtered, "sort_order", "asc");
+  const countryPagination = usePagination(sortedCountries, { defaultPageSize: 15 });
+
+  const bulk = useAdminBulkActions(sortedCountries);
 
   const { exportCSV: exportCountriesCSV } = useCSVExport({
     columns: [
@@ -367,11 +360,6 @@ export default function CountriesAdmin() {
     setEditCountry(null);
   };
 
-  const toggleSort = (field: SortField) => {
-    if (sortField === field) setSortAsc(!sortAsc);
-    else { setSortField(field); setSortAsc(true); }
-  };
-
 
   const stats = {
     total: countries.length,
@@ -391,14 +379,6 @@ export default function CountriesAdmin() {
 
   const enabledFeatureCount = (c: Country) => Object.values(c.features || {}).filter(Boolean).length;
 
-  const SortHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <TableHead className="cursor-pointer select-none" onClick={() => toggleSort(field)}>
-      <div className="flex items-center gap-1">
-        {children}
-        {sortField === field && <ArrowUpDown className="h-3 w-3" />}
-      </div>
-    </TableHead>
-  );
 
   return (
     <div className="space-y-6">
@@ -556,9 +536,9 @@ export default function CountriesAdmin() {
                         />
                       </TableHead>
                       <TableHead className="w-[40px]"></TableHead>
-                      <SortHeader field="name">{isAr ? "الدولة" : "Country"}</SortHeader>
-                      <SortHeader field="code">{isAr ? "الرمز" : "Code"}</SortHeader>
-                      <SortHeader field="region">{isAr ? "المنطقة" : "Region"}</SortHeader>
+                      <SortableTableHead column="name" label={isAr ? "الدولة" : "Country"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                      <SortableTableHead column="code" label={isAr ? "الرمز" : "Code"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                      <SortableTableHead column="region" label={isAr ? "المنطقة" : "Region"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                       <TableHead>{isAr ? "العملة" : "Currency"}</TableHead>
                       <TableHead>{isAr ? "الميزات" : "Features"}</TableHead>
                       <TableHead>{isAr ? "الاكتمال" : "Health"}</TableHead>
@@ -567,7 +547,7 @@ export default function CountriesAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.map(c => (
+                    {countryPagination.paginated.map(c => (
                       <TableRow key={c.id} className={`${!c.is_active ? "opacity-60" : ""} ${detailCountry?.id === c.id ? "bg-primary/5" : ""}`}>
                         <TableCell>
                           <Checkbox checked={bulk.isSelected(c.id)} onCheckedChange={() => bulk.toggleOne(c.id)} />
@@ -674,6 +654,19 @@ export default function CountriesAdmin() {
                   </TableBody>
                 </Table>
               </ScrollArea>
+              <AdminTablePagination
+                page={countryPagination.page}
+                totalPages={countryPagination.totalPages}
+                totalItems={countryPagination.totalItems}
+                startItem={countryPagination.startItem}
+                endItem={countryPagination.endItem}
+                pageSize={countryPagination.pageSize}
+                pageSizeOptions={countryPagination.pageSizeOptions}
+                hasNext={countryPagination.hasNext}
+                hasPrev={countryPagination.hasPrev}
+                onPageChange={countryPagination.goTo}
+                onPageSizeChange={countryPagination.changePageSize}
+              />
             </CardContent>
           </Card>
 

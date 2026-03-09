@@ -11,6 +11,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -469,6 +473,9 @@ export default function CertificatesAdmin() {
 
               {(() => {
                 const filtered = eventFilter === "all" ? certificates : certificates.filter(c => c.event_name === eventFilter);
+                const { sorted: certSorted, sortColumn: certSortCol, sortDirection: certSortDir, toggleSort: certToggleSort } = useTableSort(filtered, "certificate_number", "desc");
+                const certPagination = usePagination(certSorted, { defaultPageSize: 15 });
+
                 const getGroupKey = (cert: Certificate): string => {
                   switch (groupBy) {
                     case "event": return cert.event_name || (language === "ar" ? "بدون حدث" : "No Event");
@@ -489,11 +496,11 @@ export default function CertificatesAdmin() {
                         <TableHead className="w-10 bg-muted/30">
                           <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                         </TableHead>
-                        <TableHead className="bg-muted/30">{language === "ar" ? "رقم" : "#"}</TableHead>
-                        <TableHead className="bg-muted/30">{language === "ar" ? "المستلم" : "Recipient"}</TableHead>
-                        <TableHead className="bg-muted/30">{language === "ar" ? "النوع" : "Type"}</TableHead>
-                        <TableHead className="bg-muted/30">{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                        <TableHead className="bg-muted/30">{language === "ar" ? "الحدث" : "Event"}</TableHead>
+                        <SortableTableHead column="certificate_number" label={language === "ar" ? "رقم" : "#"} sortColumn={certSortCol} sortDirection={certSortDir} onSort={certToggleSort} className="bg-muted/30" />
+                        <SortableTableHead column="recipient_name" label={language === "ar" ? "المستلم" : "Recipient"} sortColumn={certSortCol} sortDirection={certSortDir} onSort={certToggleSort} className="bg-muted/30" />
+                        <SortableTableHead column="type" label={language === "ar" ? "النوع" : "Type"} sortColumn={certSortCol} sortDirection={certSortDir} onSort={certToggleSort} className="bg-muted/30" />
+                        <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={certSortCol} sortDirection={certSortDir} onSort={certToggleSort} className="bg-muted/30" />
+                        <SortableTableHead column="event_name" label={language === "ar" ? "الحدث" : "Event"} sortColumn={certSortCol} sortDirection={certSortDir} onSort={certToggleSort} className="bg-muted/30" />
                         <TableHead className="bg-muted/30">{language === "ar" ? "كود التحقق" : "Verify Code"}</TableHead>
                         <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
                       </TableRow>
@@ -536,41 +543,58 @@ export default function CertificatesAdmin() {
                 );
 
                 return (
-                  <ScrollArea className="h-[500px]">
-                    {isLoading ? (
-                      <AdminTableSkeleton rows={6} columns={7} />
-                    ) : groupBy === "none" ? (
-                      <>
-                        {renderTable(filtered)}
-                        {filtered.length === 0 && (
-                          <AdminEmptyState
-                            icon={Award}
-                            title="No certificates found"
-                            titleAr="لا توجد شهادات"
-                            description="Try adjusting your filters or issue a new certificate"
-                            descriptionAr="جرب تعديل الفلاتر أو أصدر شهادة جديدة"
-                            actionLabel="Issue Certificate"
-                            actionLabelAr="إصدار شهادة"
-                            onAction={() => setActiveTab("issue")}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <div className="space-y-4">
-                        {sortedKeys.map(key => (
-                          <div key={key}>
-                            <div className="flex items-center gap-2 mb-2 px-1">
-                              <Badge variant="secondary" className="text-xs font-medium">{key}</Badge>
-                              <Badge variant="outline" className="text-[10px]">
-                                {groups[key].length} {language === "ar" ? "شهادة" : "certificates"}
-                              </Badge>
+                  <>
+                    <ScrollArea className="h-[500px]">
+                      {isLoading ? (
+                        <AdminTableSkeleton rows={6} columns={7} />
+                      ) : groupBy === "none" ? (
+                        <>
+                          {renderTable(certPagination.paginated)}
+                          {filtered.length === 0 && (
+                            <AdminEmptyState
+                              icon={Award}
+                              title="No certificates found"
+                              titleAr="لا توجد شهادات"
+                              description="Try adjusting your filters or issue a new certificate"
+                              descriptionAr="جرب تعديل الفلاتر أو أصدر شهادة جديدة"
+                              actionLabel="Issue Certificate"
+                              actionLabelAr="إصدار شهادة"
+                              onAction={() => setActiveTab("issue")}
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <div className="space-y-4">
+                          {sortedKeys.map(key => (
+                            <div key={key}>
+                              <div className="flex items-center gap-2 mb-2 px-1">
+                                <Badge variant="secondary" className="text-xs font-medium">{key}</Badge>
+                                <Badge variant="outline" className="text-[10px]">
+                                  {groups[key].length} {language === "ar" ? "شهادة" : "certificates"}
+                                </Badge>
+                              </div>
+                              {renderTable(groups[key])}
                             </div>
-                            {renderTable(groups[key])}
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
+                    </ScrollArea>
+                    {groupBy === "none" && (
+                      <AdminTablePagination
+                        page={certPagination.page}
+                        totalPages={certPagination.totalPages}
+                        totalItems={certPagination.totalItems}
+                        startItem={certPagination.startItem}
+                        endItem={certPagination.endItem}
+                        pageSize={certPagination.pageSize}
+                        pageSizeOptions={certPagination.pageSizeOptions}
+                        hasNext={certPagination.hasNext}
+                        hasPrev={certPagination.hasPrev}
+                        onPageChange={certPagination.goTo}
+                        onPageSizeChange={certPagination.changePageSize}
+                      />
                     )}
-                  </ScrollArea>
+                  </>
                 );
               })()}
             </CardContent>
