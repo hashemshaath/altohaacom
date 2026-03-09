@@ -21,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -506,19 +507,13 @@ export default function CountriesAdmin() {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filters */}
-              <div className="flex flex-wrap gap-3 mb-4">
-                <div className="relative flex-1 min-w-[200px]">
-                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={isAr ? "بحث بالاسم أو الرمز..." : "Search by name or code..."}
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    className="ps-10"
-                  />
-                </div>
+              <AdminFilterBar
+                searchValue={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder={isAr ? "بحث بالاسم أو الرمز..." : "Search by name or code..."}
+              >
                 <Select value={continentFilter} onValueChange={setContinentFilter}>
-                  <SelectTrigger className="w-[140px]">
+                  <SelectTrigger className="w-[140px] h-9 rounded-xl">
                     <Filter className="h-3.5 w-3.5 me-1.5 text-muted-foreground" />
                     <SelectValue placeholder={isAr ? "القارة" : "Continent"} />
                   </SelectTrigger>
@@ -528,14 +523,14 @@ export default function CountriesAdmin() {
                   </SelectContent>
                 </Select>
                 <Select value={regionFilter} onValueChange={setRegionFilter}>
-                  <SelectTrigger className="w-[140px]"><SelectValue placeholder={isAr ? "المنطقة" : "Region"} /></SelectTrigger>
+                  <SelectTrigger className="w-[140px] h-9 rounded-xl"><SelectValue placeholder={isAr ? "المنطقة" : "Region"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                     {regions.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[130px]"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+                  <SelectTrigger className="w-[130px] h-9 rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                     <SelectItem value="active">{isAr ? "نشطة" : "Active"}</SelectItem>
@@ -548,7 +543,7 @@ export default function CountriesAdmin() {
                     {isAr ? "مسح" : "Clear"}
                   </Button>
                 )}
-              </div>
+              </AdminFilterBar>
 
               <ScrollArea className="h-[540px]">
                 <Table>

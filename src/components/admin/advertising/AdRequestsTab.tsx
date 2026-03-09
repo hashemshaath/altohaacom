@@ -3,9 +3,9 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { CheckCircle, XCircle, FileText, Search } from "lucide-react";
 import { statusColors } from "./statusColors";
 
@@ -58,18 +58,13 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
   return (
     <div className="space-y-3">
       {/* Filters */}
-      <div className="flex gap-3 items-center">
-        <div className="relative flex-1">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={isAr ? "بحث في الطلبات..." : "Search requests..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="ps-9"
-          />
-        </div>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={isAr ? "بحث في الطلبات..." : "Search requests..."}
+      >
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] h-9 rounded-xl">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -80,7 +75,7 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
             <SelectItem value="rejected">{isAr ? "مرفوضة" : "Rejected"}</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </AdminFilterBar>
 
       <Card className="rounded-2xl">
         <CardHeader className="pb-3">
