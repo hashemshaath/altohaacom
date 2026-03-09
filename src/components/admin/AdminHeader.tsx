@@ -55,6 +55,7 @@ export const AdminHeader = memo(function AdminHeader() {
             <TooltipContent className="text-xs">{isAr ? "العودة للموقع" : "Back to site"}</TooltipContent>
           </Tooltip>
           <NotificationBell />
+          <AdminColorStyleSelector />
           <ThemeToggle />
           <LanguageSwitcher />
           <div className="mx-1 h-5 w-px bg-border" />
