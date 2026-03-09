@@ -1,4 +1,8 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -101,7 +105,19 @@ export default function LoyaltyAdmin() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["adminRedemptions"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
 
-  const bulkRedemptions = useAdminBulkActions(redemptions);
+  // Sorting & pagination for challenges
+  const { sorted: sortedChallenges, sortColumn: chSortCol, sortDirection: chSortDir, toggleSort: chToggleSort } = useTableSort(challenges);
+  const chPagination = usePagination(sortedChallenges);
+
+  // Sorting & pagination for rewards
+  const { sorted: sortedRewards, sortColumn: rwSortCol, sortDirection: rwSortDir, toggleSort: rwToggleSort } = useTableSort(rewards);
+  const rwPagination = usePagination(sortedRewards);
+
+  // Sorting & pagination for redemptions
+  const { sorted: sortedRedemptions, sortColumn: rdSortCol, sortDirection: rdSortDir, toggleSort: rdToggleSort } = useTableSort(redemptions);
+  const rdPagination = usePagination(sortedRedemptions);
+
+  const bulkRedemptions = useAdminBulkActions(rdPagination.paginated);
 
   const { exportCSV: exportRedemptions } = useCSVExport({
     columns: [
@@ -221,17 +237,17 @@ export default function LoyaltyAdmin() {
           <AdminTableCard>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead>{isAr ? "التحدي" : "Challenge"}</TableHead>
-                    <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "الهدف" : "Target"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "النقاط" : "Points"}</TableHead>
-                    <TableHead>{isAr ? "الصعوبة" : "Difficulty"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
-                  </TableRow>
+                   <TableRow className="bg-muted/30">
+                     <SortableTableHead column="title" label={isAr ? "التحدي" : "Challenge"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} />
+                     <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} />
+                     <SortableTableHead column="target_count" label={isAr ? "الهدف" : "Target"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} className="text-center" />
+                     <SortableTableHead column="reward_points" label={isAr ? "النقاط" : "Points"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} className="text-center" />
+                     <SortableTableHead column="difficulty" label={isAr ? "الصعوبة" : "Difficulty"} sortColumn={chSortCol} sortDirection={chSortDir} onSort={chToggleSort} />
+                     <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
+                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {challenges.map((c: any) => (
+                  {chPagination.paginated.map((c: any) => (
                     <TableRow key={c.id} className="transition-colors duration-200 hover:bg-muted/40 group">
                       <TableCell>
                         <div className="flex items-center gap-2.5">
@@ -253,25 +269,26 @@ export default function LoyaltyAdmin() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
-          </AdminTableCard>
+               </Table>
+               <AdminTablePagination page={chPagination.page} totalPages={chPagination.totalPages} totalItems={chPagination.totalItems} startItem={chPagination.startItem} endItem={chPagination.endItem} pageSize={chPagination.pageSize} pageSizeOptions={chPagination.pageSizeOptions} hasNext={chPagination.hasNext} hasPrev={chPagination.hasPrev} onPageChange={chPagination.goTo} onPageSizeChange={chPagination.changePageSize} />
+           </AdminTableCard>
         </TabsContent>
 
         <TabsContent value="rewards">
           <AdminTableCard>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead>{isAr ? "المكافأة" : "Reward"}</TableHead>
-                    <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "التكلفة" : "Cost"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "الحد الأدنى" : "Min Tier"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "مميز" : "Featured"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
-                  </TableRow>
+                   <TableRow className="bg-muted/30">
+                     <SortableTableHead column="name" label={isAr ? "المكافأة" : "Reward"} sortColumn={rwSortCol} sortDirection={rwSortDir} onSort={rwToggleSort} />
+                     <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={rwSortCol} sortDirection={rwSortDir} onSort={rwToggleSort} />
+                     <SortableTableHead column="points_cost" label={isAr ? "التكلفة" : "Cost"} sortColumn={rwSortCol} sortDirection={rwSortDir} onSort={rwToggleSort} className="text-center" />
+                     <TableHead className="text-center">{isAr ? "الحد الأدنى" : "Min Tier"}</TableHead>
+                     <TableHead className="text-center">{isAr ? "مميز" : "Featured"}</TableHead>
+                     <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
+                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rewards.map((r: any) => (
+                  {rwPagination.paginated.map((r: any) => (
                     <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
@@ -286,8 +303,9 @@ export default function LoyaltyAdmin() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
-          </AdminTableCard>
+               </Table>
+               <AdminTablePagination page={rwPagination.page} totalPages={rwPagination.totalPages} totalItems={rwPagination.totalItems} startItem={rwPagination.startItem} endItem={rwPagination.endItem} pageSize={rwPagination.pageSize} pageSizeOptions={rwPagination.pageSizeOptions} hasNext={rwPagination.hasNext} hasPrev={rwPagination.hasPrev} onPageChange={rwPagination.goTo} onPageSizeChange={rwPagination.changePageSize} />
+           </AdminTableCard>
         </TabsContent>
 
         <TabsContent value="redemptions">
@@ -300,19 +318,19 @@ export default function LoyaltyAdmin() {
           <AdminTableCard>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="w-10">
-                      <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
-                    </TableHead>
-                    <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "النقاط" : "Points"}</TableHead>
-                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead>{isAr ? "إجراء" : "Action"}</TableHead>
-                  </TableRow>
+                   <TableRow className="bg-muted/30">
+                     <TableHead className="w-10">
+                       <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
+                     </TableHead>
+                     <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
+                     <SortableTableHead column="points_spent" label={isAr ? "النقاط" : "Points"} sortColumn={rdSortCol} sortDirection={rdSortDir} onSort={rdToggleSort} className="text-center" />
+                     <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={rdSortCol} sortDirection={rdSortDir} onSort={rdToggleSort} />
+                     <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={rdSortCol} sortDirection={rdSortDir} onSort={rdToggleSort} />
+                     <TableHead>{isAr ? "إجراء" : "Action"}</TableHead>
+                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {redemptions.map((r: any) => (
+                  {rdPagination.paginated.map((r: any) => (
                     <TableRow key={r.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}`}>
                       <TableCell>
                         <Checkbox checked={bulkRedemptions.isSelected(r.id)} onCheckedChange={() => bulkRedemptions.toggleOne(r.id)} />
@@ -341,17 +359,18 @@ export default function LoyaltyAdmin() {
                       </TableCell>
                     </TableRow>
                   ))}
-                  {redemptions.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                        {isAr ? "لا توجد طلبات استبدال" : "No redemptions yet"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-          </AdminTableCard>
-        </TabsContent>
+                   {rdPagination.paginated.length === 0 && (
+                     <TableRow>
+                       <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                         {isAr ? "لا توجد طلبات استبدال" : "No redemptions yet"}
+                       </TableCell>
+                     </TableRow>
+                   )}
+                 </TableBody>
+               </Table>
+               <AdminTablePagination page={rdPagination.page} totalPages={rdPagination.totalPages} totalItems={rdPagination.totalItems} startItem={rdPagination.startItem} endItem={rdPagination.endItem} pageSize={rdPagination.pageSize} pageSizeOptions={rdPagination.pageSizeOptions} hasNext={rdPagination.hasNext} hasPrev={rdPagination.hasPrev} onPageChange={rdPagination.goTo} onPageSizeChange={rdPagination.changePageSize} />
+           </AdminTableCard>
+         </TabsContent>
       </Tabs>
     </div>
   );

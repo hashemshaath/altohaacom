@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
@@ -169,7 +173,9 @@ export default function ExhibitionsAdmin() {
     return matchesSearch && matchesStatus && matchesType && matchesYear && matchesCity && matchesOrganizer && matchesSeries;
   });
 
-  const bulk = useAdminBulkActions(filteredExhibitions || []);
+  const { sorted: sortedExhibitions, sortColumn, sortDirection, toggleSort } = useTableSort(filteredExhibitions || []);
+  const exPagination = usePagination(sortedExhibitions || []);
+  const bulk = useAdminBulkActions(exPagination.paginated || []);
 
   const { exportCSV: exportExhibitions } = useCSVExport({
     columns: [
@@ -1050,12 +1056,12 @@ export default function ExhibitionsAdmin() {
                 <TableHead className="w-10">
                   <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                 </TableHead>
-                <TableHead className="font-semibold">{t("Event", "الفعالية")}</TableHead>
+                <SortableTableHead column="title" label={t("Event", "الفعالية")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                 <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
-                <TableHead className="font-semibold">{t("Type", "النوع")}</TableHead>
-                <TableHead className="font-semibold">{t("Status", "الحالة")}</TableHead>
+                <SortableTableHead column="type" label={t("Type", "النوع")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                <SortableTableHead column="status" label={t("Status", "الحالة")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                 <TableHead className="font-semibold">{t("Tickets", "التذاكر")}</TableHead>
-                <TableHead className="font-semibold">{t("Date", "التاريخ")}</TableHead>
+                <SortableTableHead column="start_date" label={t("Date", "التاريخ")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                 <TableHead className="font-semibold">{t("Location", "الموقع")}</TableHead>
                 <TableHead className="text-end font-semibold">{t("Actions", "الإجراءات")}</TableHead>
               </TableRow>
@@ -1075,7 +1081,7 @@ export default function ExhibitionsAdmin() {
                     <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
                   </TableRow>
                 ))
-              ) : filteredExhibitions?.length === 0 ? (
+              ) : sortedExhibitions?.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={9} className="p-0">
                     <AdminEmptyState
@@ -1091,7 +1097,7 @@ export default function ExhibitionsAdmin() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredExhibitions?.map((ex) => {
+                exPagination.paginated?.map((ex) => {
                   const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
                   return (
                   <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 cursor-pointer ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`} onClick={() => setDrawerExhibitionId(ex.id)}>
@@ -1242,6 +1248,12 @@ export default function ExhibitionsAdmin() {
               )}
             </TableBody>
           </Table>
+          <AdminTablePagination
+            page={exPagination.page} totalPages={exPagination.totalPages} totalItems={exPagination.totalItems}
+            startItem={exPagination.startItem} endItem={exPagination.endItem} pageSize={exPagination.pageSize}
+            pageSizeOptions={exPagination.pageSizeOptions} hasNext={exPagination.hasNext} hasPrev={exPagination.hasPrev}
+            onPageChange={exPagination.goTo} onPageSizeChange={exPagination.changePageSize}
+          />
       </AdminTableCard>
       <ExhibitionDetailDrawer
         exhibitionId={drawerExhibitionId}

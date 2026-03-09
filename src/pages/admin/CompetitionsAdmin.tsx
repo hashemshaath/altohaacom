@@ -1,4 +1,8 @@
 import { useState, useCallback, useMemo } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CompetitionPipelineTracker } from "@/components/admin/CompetitionPipelineTracker";
 import { JudgingOverviewWidget } from "@/components/admin/JudgingOverviewWidget";
@@ -309,6 +313,9 @@ export default function CompetitionsAdmin() {
     completed: competitions?.filter(c => c.status === "completed").length || 0,
     draft: competitions?.filter(c => c.status === "draft").length || 0,
   };
+
+  const { sorted: sortedCompetitions, sortColumn, sortDirection, toggleSort: toggleCompSort } = useTableSort(competitions || []);
+  const compPagination = usePagination(sortedCompetitions || []);
 
   const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
   const getTypesForComp = (compId: string) => typeAssignments?.filter((t: any) => t.competition_id === compId) || [];
@@ -688,23 +695,24 @@ export default function CompetitionsAdmin() {
               </Button>
             </div>
           ) : (
+            <>
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30 hover:bg-muted/30">
                   <TableHead className="w-10">
                     <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                   </TableHead>
-                  <TableHead className="font-semibold">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                  <SortableTableHead column="title" label={isAr ? "المسابقة" : "Competition"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
                   <TableHead className="font-semibold">{isAr ? "المنظم / المعرض" : "Organizer / Exhibition"}</TableHead>
-                  <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
-                  <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
+                  <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
+                  <SortableTableHead column="competition_start" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
                   <TableHead className="font-semibold">{isAr ? "الفئات" : "Categories"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "المشاركين" : "Participants"}</TableHead>
                   <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {competitions?.map((comp) => {
+                {compPagination.paginated?.map((comp) => {
                   const counts = participantCounts?.[comp.id] || { approved: 0, pending: 0 };
                   const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
                   const categories = getCategoriesForComp(comp.id);
@@ -876,6 +884,13 @@ export default function CompetitionsAdmin() {
                 })}
               </TableBody>
             </Table>
+            <AdminTablePagination
+              page={compPagination.page} totalPages={compPagination.totalPages} totalItems={compPagination.totalItems}
+              startItem={compPagination.startItem} endItem={compPagination.endItem} pageSize={compPagination.pageSize}
+              pageSizeOptions={compPagination.pageSizeOptions} hasNext={compPagination.hasNext} hasPrev={compPagination.hasPrev}
+              onPageChange={compPagination.goTo} onPageSizeChange={compPagination.changePageSize}
+            />
+            </>
           )}
       </AdminTableCard>
         </TabsContent>
