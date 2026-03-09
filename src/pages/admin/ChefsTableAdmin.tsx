@@ -32,6 +32,10 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
 
