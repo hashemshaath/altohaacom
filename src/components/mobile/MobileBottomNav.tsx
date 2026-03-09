@@ -177,7 +177,7 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
         role="navigation"
         aria-label="Mobile navigation"
       >
-        <div className="flex items-center justify-around px-1 h-16">
+        <div className="flex items-center justify-around px-1 h-16" role="menubar">
           {visibleItems.map((item) => {
             if (item.isFab) {
               return (
