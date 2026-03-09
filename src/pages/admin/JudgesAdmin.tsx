@@ -237,8 +237,7 @@ export default function JudgesAdmin() {
       />
 
       {/* Table */}
-      <Card>
-        <CardContent className="p-0">
+      <AdminTableCard>
           <Table>
             <TableHeader>
               <TableRow>
