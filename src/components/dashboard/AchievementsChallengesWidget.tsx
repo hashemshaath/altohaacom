@@ -95,18 +95,21 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
       <CardContent className="space-y-4">
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-2">
-          <div className="text-center p-2 rounded-xl bg-muted/50">
-            <Flame className="h-3.5 w-3.5 text-chart-1 mx-auto mb-0.5" />
+          <div className="text-center p-2 rounded-xl bg-muted/50 group/stat hover:bg-chart-1/10 transition-colors">
+            <Flame className="h-3.5 w-3.5 text-chart-1 mx-auto mb-0.5 group-hover/stat:animate-pulse" />
             <p className="text-lg font-bold">{streak?.current_streak || 0}</p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "يوم متتالي" : "Day Streak"}</p>
+            {(streak?.current_streak || 0) >= 7 && (
+              <span className="text-[8px] text-chart-1 font-bold">🔥</span>
+            )}
           </div>
-          <div className="text-center p-2 rounded-xl bg-muted/50">
-            <Trophy className="h-3.5 w-3.5 text-primary mx-auto mb-0.5" />
+          <div className="text-center p-2 rounded-xl bg-muted/50 group/stat hover:bg-primary/10 transition-colors">
+            <Trophy className="h-3.5 w-3.5 text-primary mx-auto mb-0.5 group-hover/stat:scale-110 transition-transform" />
             <p className="text-lg font-bold">{completedCount}</p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "مكتمل" : "Completed"}</p>
           </div>
-          <div className="text-center p-2 rounded-xl bg-muted/50">
-            <Star className="h-3.5 w-3.5 text-chart-4 mx-auto mb-0.5" />
+          <div className="text-center p-2 rounded-xl bg-muted/50 group/stat hover:bg-chart-4/10 transition-colors">
+            <Star className="h-3.5 w-3.5 text-chart-4 mx-auto mb-0.5 group-hover/stat:rotate-12 transition-transform" />
             <p className="text-lg font-bold">{badges.length}</p>
             <p className="text-[9px] text-muted-foreground">{isAr ? "شارات" : "Badges"}</p>
           </div>
