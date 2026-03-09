@@ -82,7 +82,10 @@ export default function QRCodesAdmin() {
     );
   }) || [];
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedQR, sortColumn: qrSortCol, sortDirection: qrSortDir, toggleSort: qrToggleSort } = useTableSort(filtered, "created_at", "desc");
+  const qrPagination = usePagination(sortedQR, { defaultPageSize: 15 });
+
+  const bulk = useAdminBulkActions(sortedQR);
 
   const { exportCSV } = useCSVExport({
     columns: [
