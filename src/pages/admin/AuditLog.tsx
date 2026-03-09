@@ -366,8 +366,7 @@ export default function AuditLog() {
                   </Table>
                 </ScrollArea>
               )}
-            </CardContent>
-          </Card>
+            </AdminTableCard>
         </TabsContent>
       </Tabs>
     </div>
