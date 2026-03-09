@@ -52,7 +52,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
   if (!isLoading && topics.length === 0) return null;
 
   return (
-    <Card>
+    <Card className="border-border/40 bg-card/60 backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
