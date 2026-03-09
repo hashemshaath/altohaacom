@@ -108,7 +108,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               { label: isAr ? "متابَعون" : "Following", value: stats.following },
               { label: isAr ? "منشورات" : "Posts", value: stats.posts },
             ].map((s, i) => (
-              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 hover:border-primary/20 hover:shadow-sm transition-all duration-300 cursor-default">
+              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 hover:border-primary/20 hover:shadow-sm transition-all duration-300 cursor-defaultary/20 hover:shadow-sm transition-all duration-300 cursor-default">
                 <div className="text-sm font-bold tabular-nums">{s.value}</div>
                 <div className="text-[8px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
               </div>
@@ -126,7 +126,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
         )}
 
         <Link to="/profile">
-          <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8">
+          <Button  rounded-xl active:scale-95 transition-allvariant="outline" size="sm" className="w-full gap-1.5 text-xs h-8">
             {isAr ? "عرض الملف" : "View Profile"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />
           </Button>
