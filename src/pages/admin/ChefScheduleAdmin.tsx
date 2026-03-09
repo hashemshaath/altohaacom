@@ -34,7 +34,8 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
-import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { useCSVExport } from "@/hooks/useCSVExport";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,

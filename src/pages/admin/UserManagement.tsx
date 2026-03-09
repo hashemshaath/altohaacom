@@ -44,6 +44,7 @@ import { AdminSessionTracker } from "@/components/admin/AdminSessionTracker";
 import { AdminNotificationCenter } from "@/components/admin/AdminNotificationCenter";
 import { SecurityAuditTimeline } from "@/components/admin/SecurityAuditTimeline";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { SkeletonTable } from "@/components/ui/skeleton-table";
 import { useTableSort } from "@/hooks/useTableSort";
 import {
