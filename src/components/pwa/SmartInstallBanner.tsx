@@ -21,8 +21,8 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
     <div className="fixed bottom-20 inset-x-0 z-50 px-3 md:bottom-4 md:px-0 md:flex md:justify-center animate-in slide-in-from-bottom-4 duration-500 safe-area-bottom">
       <div className="rounded-2xl border border-primary/20 bg-card/95 p-3.5 sm:p-4 shadow-xl backdrop-blur-md md:max-w-md">
         <div className="flex items-start gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-chart-4/20">
-            <Download className="h-6 w-6 text-primary" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-chart-4/20 ring-2 ring-primary/10">
+            <Download className="h-6 w-6 text-primary animate-bounce [animation-duration:2s]" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold">
@@ -39,10 +39,10 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
 
         {/* Feature pills */}
         <div className="flex items-center gap-2 mt-3 mb-3">
-          {features.map((f) => {
+          {features.map((f, i) => {
             const Icon = f.icon;
             return (
-              <div key={f.labelEn} className="flex items-center gap-1 rounded-full bg-muted/60 px-2.5 py-1">
+              <div key={f.labelEn} className="flex items-center gap-1 rounded-full bg-muted/60 px-2.5 py-1 transition-all hover:bg-primary/10" style={{ animationDelay: `${i * 100}ms` }}>
                 <Icon className="h-3 w-3 text-primary" />
                 <span className="text-[10px] font-medium text-muted-foreground">{isAr ? f.labelAr : f.labelEn}</span>
               </div>
@@ -50,9 +50,9 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
           })}
         </div>
 
-        <Button size="sm" onClick={install} className="w-full active:scale-[0.98] transition-transform">
-          <Download className="me-2 h-4 w-4" />
-          {isAr ? "تثبيت الآن" : "Install Now"}
+        <Button size="sm" onClick={install} className="w-full active:scale-[0.98] transition-transform gap-2">
+          <Download className="h-4 w-4" />
+          {isAr ? "تثبيت الآن — مجاني" : "Install Now — Free"}
         </Button>
       </div>
     </div>
