@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 interface Props {
   children: React.ReactNode;
   name?: string;
+  /** Optional compact mode for inline widgets */
+  compact?: boolean;
 }
 
 interface State {
