@@ -45,6 +45,8 @@ export default function ContentModeration() {
   const [expandedReportId, setExpandedReportId] = useState<string | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState("reports");
+  const [reportSearch, setReportSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const { data: reports, isLoading } = useQuery({
     queryKey: ["contentReports"],
