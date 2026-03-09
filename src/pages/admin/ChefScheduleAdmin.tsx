@@ -301,14 +301,14 @@ export default function ChefScheduleAdmin() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.length === 0 ? (
+                {schedulePagination.paginated.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                       {isAr ? "لا توجد أحداث" : "No events found"}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filtered.map(ev => {
+                  schedulePagination.paginated.map(ev => {
                     const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                     const Icon = EVENT_ICONS[ev.event_type] || MoreHorizontal;
                     const VisIcon = VIS_ICONS[ev.visibility] || Lock;
