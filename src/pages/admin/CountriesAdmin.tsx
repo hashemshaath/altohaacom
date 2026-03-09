@@ -654,6 +654,19 @@ export default function CountriesAdmin() {
                   </TableBody>
                 </Table>
               </ScrollArea>
+              <AdminTablePagination
+                page={countryPagination.page}
+                totalPages={countryPagination.totalPages}
+                totalItems={countryPagination.totalItems}
+                startItem={countryPagination.startItem}
+                endItem={countryPagination.endItem}
+                pageSize={countryPagination.pageSize}
+                pageSizeOptions={countryPagination.pageSizeOptions}
+                hasNext={countryPagination.hasNext}
+                hasPrev={countryPagination.hasPrev}
+                onPageChange={countryPagination.goTo}
+                onPageSizeChange={countryPagination.changePageSize}
+              />
             </CardContent>
           </Card>
 
