@@ -24,7 +24,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
       if (!user) return null;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, avatar_url, bio, specialization, country_code, username, profile_completed")
+      .select("full_name, avatar_url, bio, specialization, country_code, username, profile_completed, job_title, social_media_links, phone")
         .eq("user_id", user.id)
         .single();
       if (!profile) return null;
