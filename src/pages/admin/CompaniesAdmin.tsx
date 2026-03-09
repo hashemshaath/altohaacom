@@ -1949,7 +1949,7 @@ export default function CompaniesAdmin() {
                           {company.neighborhood && <p className="text-xs text-muted-foreground">{company.neighborhood}</p>}
                         </div>
                       </TableCell>
-                      <TableCell><Badge className={statusColors[company.status]}>{getStatusLabel(company.status)}</Badge></TableCell>
+                      <TableCell><AdminStatusBadge status={company.status} label={getStatusLabel(company.status)} /></TableCell>
                       <TableCell>{format(new Date(company.created_at), "yyyy-MM-dd")}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
