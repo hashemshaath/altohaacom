@@ -702,8 +702,7 @@ export default function InvoicesAdmin() {
       />
 
       {/* Table */}
-      <Card>
-        <CardContent className="p-0">
+      <AdminTableCard>
           {isLoading ? (
             <div className="p-6"><Skeleton className="h-64" /></div>
           ) : invoices.length > 0 ? (
