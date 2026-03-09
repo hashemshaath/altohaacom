@@ -8,7 +8,7 @@ export interface InputProps extends React.ComponentProps<"input"> {
 }
 
 const inputBaseClasses =
-  "flex h-11 md:h-10 w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm touch-manipulation transition-all duration-200 hover:border-ring/50";
+  "flex h-11 md:h-10 w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm touch-manipulation transition-all duration-200 hover:border-ring/50 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_hsl(var(--primary)/0.06)]";
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, dir, startIcon, endIcon, ...props }, ref) => {

@@ -34,9 +34,9 @@ export const AdminEmptyState = memo(function AdminEmptyState({
   const isAr = language === "ar";
 
   return (
-    <div className={cn("flex flex-col items-center justify-center py-16 text-center animate-in fade-in-50 duration-300", className)}>
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-muted/60 ring-1 ring-border/30 transition-all hover:ring-border/50 hover:shadow-sm">
-        <Icon className="h-7 w-7 text-muted-foreground/50" />
+    <div className={cn("flex flex-col items-center justify-center py-16 text-center animate-in fade-in-50 slide-in-from-bottom-3 duration-500", className)}>
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-muted/80 to-muted/30 ring-1 ring-border/30 transition-all duration-300 hover:ring-border/50 hover:shadow-md hover:scale-105">
+        <Icon className="h-7 w-7 text-muted-foreground/50 transition-colors duration-300" />
       </div>
       <h3 className="text-sm font-semibold text-foreground">
         {isAr && titleAr ? titleAr : title}

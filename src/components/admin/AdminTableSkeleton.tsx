@@ -46,8 +46,8 @@ export const AdminTableSkeleton = memo(function AdminTableSkeleton({
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div
             key={`r-${rowIndex}`}
-            className="flex items-center gap-4 p-3 border-b border-border/20 last:border-b-0 animate-pulse"
-            style={{ animationDelay: `${rowIndex * 75}ms` }}
+            className="flex items-center gap-4 p-3 border-b border-border/20 last:border-b-0"
+            style={{ animation: `pulse 1.5s ease-in-out infinite`, animationDelay: `${rowIndex * 100}ms` }}
           >
             {/* Avatar column */}
             <Skeleton className="h-9 w-9 rounded-full shrink-0" />
