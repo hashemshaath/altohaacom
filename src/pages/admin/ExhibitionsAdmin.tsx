@@ -173,7 +173,9 @@ export default function ExhibitionsAdmin() {
     return matchesSearch && matchesStatus && matchesType && matchesYear && matchesCity && matchesOrganizer && matchesSeries;
   });
 
-  const bulk = useAdminBulkActions(filteredExhibitions || []);
+  const { sorted: sortedExhibitions, sortColumn, sortDirection, toggleSort } = useTableSort(filteredExhibitions || []);
+  const exPagination = usePagination(sortedExhibitions || []);
+  const bulk = useAdminBulkActions(exPagination.paginated || []);
 
   const { exportCSV: exportExhibitions } = useCSVExport({
     columns: [
