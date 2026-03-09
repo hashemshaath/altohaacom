@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllVerificationRequests, useReviewVerification, useRunAIVerification } from "@/hooks/useVerification";
