@@ -84,7 +84,9 @@ export default function ChefScheduleAdmin() {
     return true;
   }), [allEvents, typeFilter, statusFilter, visFilter, search]);
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedSchedule, sortColumn: schSortCol, sortDirection: schSortDir, toggleSort: schToggleSort } = useTableSort(filtered, "start_date", "desc");
+  const schedulePagination = usePagination(sortedSchedule, { defaultPageSize: 15 });
+  const bulk = useAdminBulkActions(schedulePagination.paginated);
 
   const { exportCSV: exportScheduleCSV } = useCSVExport({
     columns: [
