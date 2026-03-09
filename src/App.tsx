@@ -104,7 +104,7 @@ function AppContent() {
       <Suspense fallback={null}><AnnouncementBanner /></Suspense>
       <ErrorBoundary>
       <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
-      <main id="main-content" className="pt-14 pb-16 md:pb-0 overflow-x-hidden">
+      <div id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
       <PageTransition>
       <Routes>
         {publicRoutes}
@@ -114,7 +114,7 @@ function AppContent() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       </PageTransition>
-      </main>
+      </div>
       </Suspense>
       </ErrorBoundary>
       </MaintenanceGuard>
