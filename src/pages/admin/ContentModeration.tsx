@@ -137,6 +137,18 @@ export default function ContentModeration() {
 
   const pendingCount = reports?.filter(r => r.status === "pending").length || 0;
 
+  const filteredReports = useMemo(() => {
+    const q = reportSearch.toLowerCase().trim();
+    return (reports || []).filter(r => {
+      if (statusFilter !== "all" && r.status !== statusFilter) return false;
+      if (q) {
+        const text = `${r.content_type} ${r.reason} ${r.resolution_notes || ""}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [reports, reportSearch, statusFilter]);
+
   const toggleExpand = (reportId: string) => {
     setExpandedReportId(expandedReportId === reportId ? null : reportId);
   };
