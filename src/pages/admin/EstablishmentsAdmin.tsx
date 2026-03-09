@@ -88,8 +88,11 @@ export default function EstablishmentsAdmin() {
     });
   }, [entities, search, typeFilter, statusFilter]);
 
+  const { sorted, sortColumn, sortDirection, toggleSort } = useTableSort(filtered, "created_at", "desc");
+  const pagination = usePagination(sorted, { defaultPageSize: 15 });
+
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count, selectedItems } =
-    useAdminBulkActions(filtered || []);
+    useAdminBulkActions(sorted || []);
 
   const { exportCSV } = useCSVExport({
     columns: [
