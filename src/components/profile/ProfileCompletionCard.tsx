@@ -36,6 +36,8 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
         { key: "specialization", filled: !!profile.specialization, icon: Briefcase },
         { key: "country", filled: !!profile.country_code, icon: Globe },
         { key: "username", filled: !!profile.username, icon: AtSign },
+        { key: "job_title", filled: !!(profile as any).job_title, icon: Briefcase },
+        { key: "phone", filled: !!(profile as any).phone, icon: Phone },
       ];
       const filled = fields.filter(f => f.filled).length;
       const percent = Math.round((filled / fields.length) * 100);
