@@ -85,21 +85,21 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
         return (
           <Link key={stat.title} to={stat.link} style={getStyle(index)}>
             <Card className={cn(
-              "group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:shadow-primary/8 hover:border-primary/20",
+              "group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:shadow-primary/8 hover:border-primary/20 rounded-2xl",
               stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
             )}>
               {/* Accent top bar */}
-              <div className={cn("absolute inset-x-0 top-0 h-1 rounded-t-xl", stat.bg.replace("/10", ""))} />
+              <div className={cn("absolute inset-x-0 top-0 h-0.5 opacity-60 group-hover:h-1 group-hover:opacity-100 transition-all duration-300", stat.bg.replace("/10", ""))} />
               <CardContent className="p-4 pt-5">
-                <div className="flex items-center gap-3">
-                  <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg", stat.bg)}>
-                    <stat.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:rotate-6", stat.color)} />
+                <div className="flex items-start gap-3">
+                  <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-0", stat.bg)}>
+                    <stat.icon className={cn("h-5 w-5 transition-all duration-300 group-hover:scale-110", stat.color)} />
                   </div>
                   <div className="min-w-0 flex-1">
                     {isLoading ? (
                       <>
-                        <Skeleton className="h-7 w-14 mb-1 rounded-xl" />
-                        <Skeleton className="h-3 w-20 rounded-xl" />
+                        <Skeleton className="h-7 w-14 mb-1 rounded-lg" />
+                        <Skeleton className="h-3 w-20 rounded-lg" />
                       </>
                     ) : (
                       <>
@@ -107,7 +107,7 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                           <AnimatedStatValue value={stat.value} />
                           {sparkPoints && trend !== 0 && (
                             <Badge variant="outline" className={cn(
-                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-xl",
+                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-lg font-mono",
                               trend > 0 ? "text-chart-2 border-chart-2/30 bg-chart-2/5" : "text-destructive border-destructive/30 bg-destructive/5"
                             )}>
                               {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
@@ -121,8 +121,8 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                   </div>
                 </div>
                 {sparkPoints && sparkPoints.length > 0 && (
-                  <div className="mt-3 -mx-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                    <ResponsiveContainer width="100%" height={32}>
+                  <div className="mt-3 -mx-1 opacity-40 group-hover:opacity-100 transition-opacity duration-500">
+                    <ResponsiveContainer width="100%" height={28}>
                       <LineChart data={sparkPoints}>
                         <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
                       </LineChart>
@@ -380,28 +380,28 @@ export default function AdminDashboard() {
       {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
       <div className="grid gap-3 sm:gap-4 lg:grid-cols-3">
         {/* Today's Activity */}
-        <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1">
+        <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1 overflow-hidden">
           <CardContent className="p-4">
              <div className="flex items-center gap-2.5 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-sm shadow-primary/15">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md shadow-primary/20">
                 <Zap className="h-4 w-4 text-primary-foreground" />
               </div>
               <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
               <ActivityPulse status="live" className="ms-auto" />
             </div>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2">
               {[
                 { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary", bg: "bg-primary/10" },
                 { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2", bg: "bg-chart-2/10" },
                 { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3", bg: "bg-chart-3/10" },
                 { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground", bg: todayStats?.newReports ? "bg-destructive/10" : "bg-muted/50" },
               ].map((item, i) => (
-                <div key={i} className="group flex items-center gap-2.5 rounded-2xl border border-border/30 bg-card/80 p-3 transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5">
-                  <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110", item.bg)}>
+                <div key={i} className="group flex items-center gap-2.5 rounded-xl border border-border/20 bg-card/60 p-3 transition-all duration-300 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-border/40">
+                  <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm", item.bg)}>
                     <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
                   </div>
                   <div>
-                    <p className={`text-lg font-black leading-none ${item.color}`}><AnimatedCounter value={Number(item.value) || 0} className="inline" /></p>
+                    <p className={`text-lg font-black leading-none tabular-nums ${item.color}`}><AnimatedCounter value={Number(item.value) || 0} className="inline" /></p>
                     <p className="text-[9px] text-muted-foreground mt-1 font-medium">{item.label}</p>
                   </div>
                 </div>
@@ -414,53 +414,55 @@ export default function AdminDashboard() {
         <AdminPendingActionsWidget />
 
         {/* Account Type Breakdown */}
-        <Card className="rounded-2xl border-border/40">
+        <Card className="rounded-2xl border-border/40 overflow-hidden">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
-                <Users className="h-3.5 w-3.5 text-chart-4" />
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-4/80 to-chart-4/60 shadow-sm shadow-chart-4/15">
+                <Users className="h-4 w-4 text-primary-foreground" />
               </div>
               <h3 className="text-sm font-bold">{isAr ? "أنواع الحسابات" : "Account Types"}</h3>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-                  <ChefHat className="h-4 w-4 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">{isAr ? "محترف" : "Professional"}</p>
-                    <p className="text-sm font-black text-primary"><AnimatedCounter value={stats?.proUsers || 0} /></p>
+            <div className="space-y-3.5">
+              {[
+                { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary", bgLight: "bg-primary/10" },
+                { label: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4", bgLight: "bg-chart-4/10" },
+              ].map((type) => {
+                const pct = stats?.totalUsers ? Math.round((type.value / stats.totalUsers) * 100) : 0;
+                return (
+                  <div key={type.label} className="group flex items-center gap-3">
+                    <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105", type.bgLight)}>
+                      <type.icon className={cn("h-4.5 w-4.5", type.color)} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-xs font-medium text-muted-foreground">{type.label}</p>
+                        <div className="flex items-center gap-1.5">
+                          <span className={cn("text-sm font-black tabular-nums", type.color)}>
+                            <AnimatedCounter value={type.value} />
+                          </span>
+                          <span className="text-[10px] text-muted-foreground/60 font-mono">{pct}%</span>
+                        </div>
+                      </div>
+                      <div className="h-2 rounded-full bg-muted/80 overflow-hidden">
+                        <div
+                          className={cn("h-full rounded-full transition-all duration-700 ease-out", type.bg)}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${stats?.totalUsers ? ((stats.proUsers / stats.totalUsers) * 100) : 0}%` }} />
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-4/10">
-                  <Heart className="h-4 w-4 text-chart-4" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">{isAr ? "متابع" : "Follower"}</p>
-                    <p className="text-sm font-black text-chart-4"><AnimatedCounter value={stats?.fanUsers || 0} /></p>
-                  </div>
-                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full rounded-full bg-chart-4 transition-all" style={{ width: `${stats?.totalUsers ? ((stats.fanUsers / stats.totalUsers) * 100) : 0}%` }} />
-                  </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Workflow Shortcuts */}
-      <Card className="rounded-2xl border-border/40">
+      <Card className="rounded-2xl border-border/40 overflow-hidden">
         <CardContent className="p-4">
           <div className="flex items-center gap-2.5 mb-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/80 shadow-sm shadow-chart-3/15">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/80 shadow-md shadow-chart-3/15">
               <Zap className="h-4 w-4 text-primary-foreground" />
             </div>
             <h3 className="text-sm font-bold">{isAr ? "اختصارات سريعة" : "Quick Workflows"}</h3>
@@ -468,11 +470,11 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-2.5">
             {workflowShortcuts.map((shortcut) => (
               <Link key={shortcut.label} to={shortcut.link}>
-                <div className="group flex flex-col items-center gap-2 rounded-2xl border border-border/30 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-1 text-center">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 transition-all duration-200 group-hover:scale-110 group-hover:bg-muted">
-                    <shortcut.icon className={cn("h-4.5 w-4.5", shortcut.color)} />
+                <div className="group flex flex-col items-center gap-2.5 rounded-2xl border border-border/20 bg-gradient-to-b from-card to-muted/20 p-4 transition-all duration-300 hover:bg-accent/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/15 text-center active:scale-95">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-muted group-hover:ring-0 group-hover:shadow-md">
+                    <shortcut.icon className={cn("h-5 w-5 transition-all duration-300 group-hover:scale-110", shortcut.color)} />
                   </div>
-                  <span className="text-[10px] font-semibold text-muted-foreground leading-tight group-hover:text-foreground transition-colors">{shortcut.label}</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground leading-tight group-hover:text-foreground transition-colors duration-200">{shortcut.label}</span>
                 </div>
               </Link>
             ))}
