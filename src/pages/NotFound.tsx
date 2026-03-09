@@ -80,14 +80,14 @@ function getSuggestedLinks(pathname: string) {
   if (pathname.includes("competition") || pathname.includes("event")) {
     links.push({ to: "/competitions", labelEn: "Competitions", labelAr: "المسابقات" });
   }
-  if (pathname.includes("article") || pathname.includes("blog")) {
-    links.push({ to: "/articles", labelEn: "Articles", labelAr: "المقالات" });
+  if (pathname.includes("article") || pathname.includes("blog") || pathname.includes("news")) {
+    links.push({ to: "/news", labelEn: "News & Articles", labelAr: "الأخبار والمقالات" });
   }
   if (pathname.includes("chef") || pathname.includes("profile")) {
-    links.push({ to: "/chefs", labelEn: "Chefs", labelAr: "الطهاة" });
+    links.push({ to: "/community", labelEn: "Community", labelAr: "المجتمع" });
   }
 
-  links.push({ to: "/help-center", labelEn: "Help Center", labelAr: "مركز المساعدة" });
+  links.push({ to: "/help", labelEn: "Help Center", labelAr: "مركز المساعدة" });
   return links;
 }
 
