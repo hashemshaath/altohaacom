@@ -38,7 +38,9 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
   ].filter(s => s.href);
 
   return (
-    <footer ref={ref} id="site-footer" className="border-t border-border/40 bg-card/80 backdrop-blur-sm pb-20 md:pb-0" role="contentinfo">
+    <footer ref={ref} id="site-footer" className="border-t border-border/40 bg-card/80 backdrop-blur-sm pb-20 md:pb-0 relative overflow-hidden" role="contentinfo">
+      {/* Subtle ambient gradient */}
+      <div className="pointer-events-none absolute -top-40 start-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/3 blur-[120px]" />
       <div className="container py-8 md:py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
