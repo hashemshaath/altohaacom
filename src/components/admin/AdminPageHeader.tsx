@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react";
 import { type LucideIcon } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface AdminPageHeaderProps {
@@ -20,26 +19,24 @@ const AdminPageHeader = forwardRef<HTMLDivElement, AdminPageHeaderProps>(functio
   className,
 }, ref) {
   return (
-    <Card
+    <div
       ref={ref}
       className={cn(
-        "overflow-hidden border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5 animate-in fade-in-50 slide-in-from-bottom-2 duration-500",
+        "flex items-center justify-between py-1 animate-in fade-in-50 slide-in-from-bottom-1 duration-300",
         className
       )}
     >
-      <div className="flex items-center justify-between p-5 md:p-6">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 ring-1 ring-primary/10 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
-            <Icon className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-serif text-2xl font-bold tracking-tight">{title}</h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-all duration-200 hover:bg-primary/15">
+          <Icon className="h-5 w-5 text-primary" />
         </div>
-        {actions && <div className="hidden sm:flex items-center gap-2">{actions}</div>}
+        <div>
+          <h1 className="text-xl font-bold tracking-tight font-sans">{title}</h1>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </div>
       </div>
-    </Card>
+      {actions && <div className="hidden sm:flex items-center gap-2">{actions}</div>}
+    </div>
   );
 });
 

@@ -6,139 +6,139 @@
 
 @layer base {
   :root {
-    /* ── Luxury Culinary — Polished Gold & Bronze ── */
+    /* ── Modern Professional — Deep Indigo & Warm Slate ── */
 
-    /* Clean ivory background with warmth */
-    --background: 45 30% 98%;
-    --foreground: 20 50% 7%;
+    /* Clean warm-white background */
+    --background: 220 20% 98%;
+    --foreground: 224 30% 12%;
 
-    /* Card with subtle warmth, clear lift from bg */
-    --card: 42 28% 96%;
-    --card-foreground: 20 50% 7%;
+    /* Cards: subtle lift with cool undertone */
+    --card: 0 0% 100%;
+    --card-foreground: 224 30% 12%;
 
-    --popover: 45 30% 99%;
-    --popover-foreground: 20 50% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 30% 12%;
 
-    /* Rich Gold primary */
-    --primary: 38 78% 48%;
-    --primary-foreground: 45 30% 99%;
+    /* Deep Indigo primary — confident & modern */
+    --primary: 234 62% 52%;
+    --primary-foreground: 0 0% 100%;
 
     /* Warm neutral secondary */
-    --secondary: 40 20% 92%;
-    --secondary-foreground: 20 40% 12%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 224 20% 18%;
 
-    /* Muted — cool neutral for readability */
-    --muted: 42 12% 93%;
-    --muted-foreground: 20 12% 40%;
+    /* Muted — soft neutral */
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 10% 46%;
 
-    /* Deep Bronze accent */
-    --accent: 28 70% 28%;
-    --accent-foreground: 45 30% 98%;
+    /* Teal accent — complementary energy */
+    --accent: 172 56% 42%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 48%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Success / Info semantic colors */
-    --success: 152 60% 38%;
+    /* Semantic colors */
+    --success: 152 56% 40%;
     --success-foreground: 0 0% 100%;
     --info: 210 70% 50%;
     --info-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
-    --warning-foreground: 20 50% 7%;
+    --warning-foreground: 224 30% 12%;
 
-    --border: 38 18% 84%;
-    --input: 38 18% 84%;
-    --ring: 38 78% 48%;
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
+    --ring: 234 62% 52%;
 
     --radius: 0.625rem;
 
-    --sidebar-background: 40 24% 95%;
-    --sidebar-foreground: 20 50% 7%;
-    --sidebar-primary: 38 78% 48%;
-    --sidebar-primary-foreground: 45 30% 99%;
-    --sidebar-accent: 28 70% 28%;
-    --sidebar-accent-foreground: 45 30% 98%;
-    --sidebar-border: 38 18% 84%;
-    --sidebar-ring: 38 78% 48%;
+    --sidebar-background: 224 24% 97%;
+    --sidebar-foreground: 224 30% 12%;
+    --sidebar-primary: 234 62% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 172 56% 42%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 234 62% 52%;
 
-    /* Charts — vibrant, balanced palette */
-    --chart-1: 38 80% 46%;
-    --chart-2: 215 72% 50%;
-    --chart-3: 158 62% 36%;
-    --chart-4: 8 80% 54%;
-    --chart-5: 92 58% 40%;
+    /* Charts — vibrant, distinguishable palette */
+    --chart-1: 234 62% 52%;
+    --chart-2: 172 56% 42%;
+    --chart-3: 262 52% 55%;
+    --chart-4: 18 76% 54%;
+    --chart-5: 152 56% 40%;
 
     --font-sans: 'DM Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
 
     /* Elevation shadows */
-    --shadow-xs: 0 1px 2px 0 hsl(20 50% 7% / 0.04);
-    --shadow-sm: 0 2px 6px -1px hsl(20 50% 7% / 0.06), 0 1px 3px -1px hsl(20 50% 7% / 0.04);
-    --shadow-md: 0 6px 16px -4px hsl(20 50% 7% / 0.08), 0 2px 6px -2px hsl(20 50% 7% / 0.04);
-    --shadow-lg: 0 12px 32px -8px hsl(20 50% 7% / 0.10), 0 4px 12px -4px hsl(20 50% 7% / 0.05);
-    --shadow-glow: 0 0 24px hsl(38 78% 48% / 0.15);
+    --shadow-xs: 0 1px 2px 0 hsl(224 30% 12% / 0.03);
+    --shadow-sm: 0 1px 3px 0 hsl(224 30% 12% / 0.04), 0 1px 2px -1px hsl(224 30% 12% / 0.03);
+    --shadow-md: 0 4px 12px -2px hsl(224 30% 12% / 0.06), 0 2px 4px -2px hsl(224 30% 12% / 0.03);
+    --shadow-lg: 0 10px 24px -4px hsl(224 30% 12% / 0.08), 0 4px 8px -4px hsl(224 30% 12% / 0.03);
+    --shadow-glow: 0 0 20px hsl(234 62% 52% / 0.12);
   }
 
   .dark {
-    /* ── Dark — Polished Gold on Deep Charcoal ── */
-    --background: 20 28% 5%;
-    --foreground: 40 18% 94%;
+    /* ── Dark — Indigo on Deep Slate ── */
+    --background: 224 28% 6%;
+    --foreground: 220 14% 94%;
 
-    --card: 20 24% 9%;
-    --card-foreground: 40 18% 94%;
+    --card: 224 24% 10%;
+    --card-foreground: 220 14% 94%;
 
-    --popover: 20 24% 10%;
-    --popover-foreground: 40 18% 94%;
+    --popover: 224 24% 11%;
+    --popover-foreground: 220 14% 94%;
 
-    /* Vivid gold for dark surfaces */
-    --primary: 38 80% 54%;
-    --primary-foreground: 20 30% 4%;
+    /* Brighter indigo for dark surfaces */
+    --primary: 234 72% 62%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 20 18% 13%;
-    --secondary-foreground: 40 18% 92%;
+    --secondary: 224 18% 14%;
+    --secondary-foreground: 220 14% 92%;
 
-    --muted: 20 15% 12%;
-    --muted-foreground: 36 12% 50%;
+    --muted: 224 16% 13%;
+    --muted-foreground: 220 10% 52%;
 
-    /* Warm bronze, brighter for dark */
-    --accent: 34 58% 42%;
-    --accent-foreground: 20 30% 4%;
+    /* Teal accent — brighter for dark */
+    --accent: 172 50% 48%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 82% 50%;
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 55% 44%;
+    --success: 152 50% 46%;
     --success-foreground: 0 0% 100%;
-    --info: 210 68% 56%;
+    --info: 210 68% 58%;
     --info-foreground: 0 0% 100%;
-    --warning: 38 90% 54%;
-    --warning-foreground: 20 50% 5%;
+    --warning: 38 88% 56%;
+    --warning-foreground: 224 30% 6%;
 
-    --border: 20 16% 16%;
-    --input: 20 16% 16%;
-    --ring: 38 80% 54%;
+    --border: 224 16% 18%;
+    --input: 224 16% 18%;
+    --ring: 234 72% 62%;
 
-    --sidebar-background: 20 26% 6%;
-    --sidebar-foreground: 40 18% 94%;
-    --sidebar-primary: 38 80% 54%;
-    --sidebar-primary-foreground: 20 30% 4%;
-    --sidebar-accent: 34 58% 42%;
-    --sidebar-accent-foreground: 20 30% 4%;
-    --sidebar-border: 20 16% 16%;
-    --sidebar-ring: 38 80% 54%;
+    --sidebar-background: 224 26% 7%;
+    --sidebar-foreground: 220 14% 94%;
+    --sidebar-primary: 234 72% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 172 50% 48%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 224 16% 18%;
+    --sidebar-ring: 234 72% 62%;
 
     /* Charts — vivid for dark backgrounds */
-    --chart-1: 38 80% 56%;
-    --chart-2: 215 70% 58%;
-    --chart-3: 158 55% 48%;
-    --chart-4: 8 74% 58%;
-    --chart-5: 92 52% 50%;
+    --chart-1: 234 72% 64%;
+    --chart-2: 172 50% 50%;
+    --chart-3: 262 48% 60%;
+    --chart-4: 18 72% 58%;
+    --chart-5: 152 50% 48%;
 
-    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.20);
-    --shadow-sm: 0 2px 6px -1px hsl(0 0% 0% / 0.25), 0 1px 3px -1px hsl(0 0% 0% / 0.15);
-    --shadow-md: 0 6px 16px -4px hsl(0 0% 0% / 0.30), 0 2px 6px -2px hsl(0 0% 0% / 0.18);
-    --shadow-lg: 0 12px 32px -8px hsl(0 0% 0% / 0.35), 0 4px 12px -4px hsl(0 0% 0% / 0.20);
-    --shadow-glow: 0 0 24px hsl(38 80% 54% / 0.20);
+    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.18);
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.22), 0 1px 2px -1px hsl(0 0% 0% / 0.14);
+    --shadow-md: 0 4px 12px -2px hsl(0 0% 0% / 0.28), 0 2px 4px -2px hsl(0 0% 0% / 0.16);
+    --shadow-lg: 0 10px 24px -4px hsl(0 0% 0% / 0.32), 0 4px 8px -4px hsl(0 0% 0% / 0.18);
+    --shadow-glow: 0 0 20px hsl(234 72% 62% / 0.18);
   }
 }
 

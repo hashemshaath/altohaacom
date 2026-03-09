@@ -20,21 +20,21 @@ export const AdminHeader = memo(function AdminHeader() {
   const isAr = language === "ar";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-card/60 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-xl">
       <div className="flex h-14 items-center justify-between px-4">
         {/* Left: Logo + Admin label */}
         <div className="flex items-center gap-3">
           <AdminMobileNavDrawer />
           <Link to="/admin" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md shadow-primary/20 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/30">
-              <img src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-6 w-auto brightness-0 invert" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-sm transition-all duration-200 group-hover:scale-105">
+              <img src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-5 w-auto brightness-0 invert" />
             </div>
-            <span className={`text-lg font-bold text-foreground transition-colors group-hover:text-primary ${isAr ? "" : "font-serif"}`}>
+            <span className={`text-base font-bold text-foreground ${isAr ? "" : "font-serif"}`}>
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
             </span>
           </Link>
-          <span className="hidden rounded-xl bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary sm:inline-block">
-            {language === "ar" ? "لوحة الإدارة" : "Admin"}
+          <span className="hidden rounded-md bg-primary/8 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary sm:inline-block">
+            {language === "ar" ? "الإدارة" : "Admin"}
           </span>
           <div className="hidden sm:block ms-1">
             <AdminSearchCommand />
@@ -42,10 +42,10 @@ export const AdminHeader = memo(function AdminHeader() {
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" asChild className="rounded-xl hover:bg-muted transition-all active:scale-90">
+              <Button variant="ghost" size="icon" asChild className="rounded-lg h-8 w-8 hover:bg-muted transition-all active:scale-90">
                 <Link to="/dashboard">
                   <Home className="h-4 w-4" />
                 </Link>
@@ -56,10 +56,10 @@ export const AdminHeader = memo(function AdminHeader() {
           <NotificationBell />
           <ThemeToggle />
           <LanguageSwitcher />
-          <div className="mx-1.5 h-6 w-px bg-border/40" />
+          <div className="mx-1 h-5 w-px bg-border/50" />
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all active:scale-90">
+              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-lg h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-all active:scale-90">
                 <LogOut className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
