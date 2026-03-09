@@ -149,13 +149,22 @@ export const ContentInsightsWidget = memo(function ContentInsightsWidget() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-1.5">
-          {data.topArticles.map((a, i) => (
-            <div key={a.id} className="flex items-center gap-2 text-[10px]">
-              <span className="font-bold text-muted-foreground w-4">{i + 1}</span>
-              <span className="truncate flex-1">{a.title}</span>
-              <Badge variant="outline" className="text-[9px] h-4 shrink-0"><AnimatedCounter value={a.view_count || 0} /></Badge>
-            </div>
-          ))}
+          {data.topArticles.map((a, i) => {
+            const maxViews = data.topArticles[0]?.view_count || 1;
+            const pct = Math.round(((a.view_count || 0) / maxViews) * 100);
+            return (
+              <div key={a.id} className="space-y-0.5">
+                <div className="flex items-center gap-2 text-[10px]">
+                  <span className={`font-bold w-4 ${i === 0 ? "text-primary" : "text-muted-foreground"}`}>{i + 1}</span>
+                  <span className="truncate flex-1">{a.title}</span>
+                  <Badge variant="outline" className="text-[9px] h-4 shrink-0"><AnimatedCounter value={a.view_count || 0} /></Badge>
+                </div>
+                <div className="ms-6 h-1 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-chart-3/60 transition-all duration-500" style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
         </CardContent>
       </Card>
     </div>

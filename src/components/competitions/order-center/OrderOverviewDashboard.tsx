@@ -335,6 +335,17 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
             <span>{stats.delivered}/{stats.total} {isAr ? "مكتمل" : "complete"}</span>
             <span>{formatCurrency(deliveredCost, language as "en" | "ar")} / {formatCurrency(totalCost, language as "en" | "ar")}</span>
           </div>
+          {/* Completion estimate */}
+          {stats.total > 0 && stats.delivered < stats.total && stats.delivered > 0 && (
+            <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground bg-muted/30 rounded-lg px-2 py-1">
+              <Clock className="h-3 w-3 shrink-0" />
+              <span>
+                {isAr
+                  ? `بمعدل التسليم الحالي، متبقي ${stats.total - stats.delivered} عنصر`
+                  : `${stats.total - stats.delivered} items remaining at current pace`}
+              </span>
+            </div>
+          )}
         </CardContent>
       </Card>
 

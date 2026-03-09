@@ -51,6 +51,23 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
         </Button>
       </CardHeader>
       <CardContent>
+        {/* Summary badges */}
+        {totalItems > 0 && (
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            {(data?.totalReports || 0) > 0 && (
+              <Badge variant="destructive" className="text-[10px]">
+                <Flag className="me-1 h-3 w-3" />
+                {data.totalReports} {isAr ? "بلاغات" : "reports"}
+              </Badge>
+            )}
+            {(data?.totalPending || 0) > 0 && (
+              <Badge className="text-[10px] bg-chart-4/10 text-chart-4 hover:bg-chart-4/20 border-0">
+                <MessageSquare className="me-1 h-3 w-3" />
+                {data.totalPending} {isAr ? "منشورات معلقة" : "pending posts"}
+              </Badge>
+            )}
+          </div>
+        )}
         {totalItems === 0 ? (
           <div className="flex flex-col items-center py-8 text-center">
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-chart-2/10">

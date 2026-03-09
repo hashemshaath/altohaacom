@@ -86,20 +86,40 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
     },
   ];
 
+  const netFlow = (walletStats?.weeklyCredits || 0) - (walletStats?.weeklyDebits || 0);
+  const netFlowPositive = netFlow >= 0;
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-      {cards.map((c) => (
-        <Card key={c.label} className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group/card">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <c.icon className={`h-4 w-4 ${c.color} transition-transform group-hover/card:scale-110`} />
-              <span className="text-[10px] text-muted-foreground truncate">{c.label}</span>
-            </div>
-            <p className="text-base font-bold truncate"><AnimatedCounter value={c.value} />{c.suffix}</p>
-            <p className="text-[10px] text-muted-foreground">{c.sub}</p>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {cards.map((c) => (
+          <Card key={c.label} className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group/card">
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <c.icon className={`h-4 w-4 ${c.color} transition-transform group-hover/card:scale-110`} />
+                <span className="text-[10px] text-muted-foreground truncate">{c.label}</span>
+              </div>
+              <p className="text-base font-bold truncate"><AnimatedCounter value={c.value} />{c.suffix}</p>
+              <p className="text-[10px] text-muted-foreground">{c.sub}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      {/* Weekly net flow indicator */}
+      <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/30 px-3 py-2">
+        <Badge variant="outline" className={`text-[10px] ${netFlowPositive ? "border-chart-2/40 text-chart-2" : "border-chart-4/40 text-chart-4"}`}>
+          {netFlowPositive ? <ArrowUpRight className="me-0.5 h-3 w-3" /> : <ArrowDownRight className="me-0.5 h-3 w-3" />}
+          {netFlowPositive ? "+" : ""}{Math.round(netFlow)} SAR
+        </Badge>
+        <span className="text-[10px] text-muted-foreground">
+          {isAr ? "صافي التدفق الأسبوعي" : "Weekly net flow"}
+        </span>
+        {walletStats && walletStats.totalWallets > 0 && (
+          <span className="text-[10px] text-muted-foreground ms-auto">
+            {Math.round((walletStats.activeWallets / walletStats.totalWallets) * 100)}% {isAr ? "نشاط" : "active"}
+          </span>
+        )}
+      </div>
     </div>
   );
 });
