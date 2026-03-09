@@ -74,7 +74,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
               <Link
                 key={topic.tag}
                 to={`/community?tag=${topic.tag.replace("#", "")}`}
-                className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/40 transition-colors group"
+                className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/40 transition-all duration-200 group hover:-translate-x-0.5 rtl:hover:translate-x-0.5"
               >
                 <span className="text-xs font-bold text-muted-foreground w-5 text-center">{idx + 1}</span>
                 <div className="flex-1 min-w-0">
