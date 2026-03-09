@@ -173,6 +173,22 @@ export const CompetitionCard = memo(
                 </p>
               )}
 
+              {/* Registration stats row */}
+              {regCount > 0 && (
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Users className="h-3 w-3 text-chart-3" />
+                    <span className="font-semibold text-foreground"><AnimatedCounter value={regCount} className="inline" /></span>
+                    <span>{isAr ? "مسجل" : "registered"}</span>
+                  </div>
+                  {maxP && fillPct >= 80 && (
+                    <Badge variant="destructive" className="text-[8px] px-1.5 py-0 h-4 rounded-lg animate-pulse">
+                      {isAr ? "يمتلئ!" : "Filling up!"}
+                    </Badge>
+                  )}
+                </div>
+              )}
+
               {/* Capacity Bar */}
               {maxP && maxP > 0 && (
                 <div className="mb-3 space-y-1">

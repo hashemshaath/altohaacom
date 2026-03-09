@@ -104,8 +104,28 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
         <Card className="absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border-border/40 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
           <CardContent className="p-2">
             {results.length === 0 && !isFetching ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                {isAr ? "لا توجد نتائج" : "No results found"}
+              <div className="py-8 text-center">
+                <Search className="mx-auto h-8 w-8 text-muted-foreground/20 mb-2" />
+                <p className="text-sm font-medium text-muted-foreground">{isAr ? "لا توجد نتائج لـ" : "No results for"} "{query}"</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">
+                  {isAr ? "جرب كلمات مختلفة أو تصفح الأقسام" : "Try different keywords or browse categories"}
+                </p>
+                <div className="flex justify-center gap-2 mt-3">
+                  {[
+                    { to: "/competitions", labelEn: "Competitions", labelAr: "المسابقات", icon: Trophy },
+                    { to: "/recipes", labelEn: "Recipes", labelAr: "الوصفات", icon: UtensilsCrossed },
+                  ].map(s => (
+                    <Link
+                      key={s.to}
+                      to={s.to}
+                      onClick={() => { setFocused(false); setQuery(""); }}
+                      className="flex items-center gap-1.5 rounded-xl bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
+                    >
+                      <s.icon className="h-3 w-3" />
+                      {isAr ? s.labelAr : s.labelEn}
+                    </Link>
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="space-y-0.5">
@@ -136,6 +156,13 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
                     </Link>
                   );
                 })}
+                {results.length > 0 && (
+                  <div className="border-t border-border/30 mt-1 pt-1">
+                    <p className="text-center text-[10px] text-muted-foreground/50 py-1">
+                      {isAr ? `${results.length} نتيجة` : `${results.length} results found`}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

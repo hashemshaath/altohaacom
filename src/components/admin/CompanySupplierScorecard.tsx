@@ -56,9 +56,18 @@ export const CompanySupplierScorecard = memo(function CompanySupplierScorecard()
   }), [companies]);
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 50) return "text-yellow-600";
+    if (score >= 80) return "text-chart-5";
+    if (score >= 50) return "text-chart-4";
     return "text-destructive";
+  };
+
+  // Response time badge
+  const getResponseBadge = (hours: number | null) => {
+    if (!hours) return null;
+    if (hours <= 2) return { label: isAr ? "سريع جداً" : "Very Fast", color: "bg-chart-5/10 text-chart-5" };
+    if (hours <= 12) return { label: isAr ? "سريع" : "Fast", color: "bg-chart-2/10 text-chart-2" };
+    if (hours <= 24) return { label: isAr ? "عادي" : "Normal", color: "bg-chart-4/10 text-chart-4" };
+    return { label: isAr ? "بطيء" : "Slow", color: "bg-destructive/10 text-destructive" };
   };
 
   const getScoreBadge = (score: number) => {
