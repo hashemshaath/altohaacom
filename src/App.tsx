@@ -114,7 +114,7 @@ function AppContent() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       </PageTransition>
-      </main>
+      </div>
       </Suspense>
       </ErrorBoundary>
       </MaintenanceGuard>
