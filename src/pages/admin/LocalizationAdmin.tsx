@@ -1,4 +1,8 @@
 import { useState, useMemo } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
