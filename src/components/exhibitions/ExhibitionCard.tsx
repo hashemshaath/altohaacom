@@ -254,6 +254,12 @@ export const ExhibitionCard = memo(
                     {isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price}
                   </Badge>
                 )}
+                {(exhibition.view_count ?? 0) >= 50 && (
+                  <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-wider text-chart-4 border-chart-4/20 bg-chart-4/5 py-0.5 px-2 gap-0.5">
+                    <Eye className="h-2 w-2" />
+                    {exhibition.view_count}
+                  </Badge>
+                )}
                 {exhibition.tags && exhibition.tags.slice(0, 2).map((tag) => (
                   <Badge key={tag} variant="secondary" className="text-[9px] bg-muted/50 py-0.5 px-2">#{tag}</Badge>
                 ))}

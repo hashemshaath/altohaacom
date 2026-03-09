@@ -93,6 +93,12 @@ export const PostCard = memo(function PostCard({
         </div>
       )}
 
+      {!isEditing && isViral && !post.is_pinned && (
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4">
+          🔥 {isAr ? "منشور رائج" : "Trending post"}
+        </div>
+      )}
+
       {!isEditing && (
         <div className="flex gap-3">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative group/avatar">

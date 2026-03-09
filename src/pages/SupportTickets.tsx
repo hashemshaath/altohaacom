@@ -487,10 +487,12 @@ export default function SupportTickets() {
                 </Card>
               ) : (
                 <div className="space-y-2">
-                  {filteredTickets.map(ticket => (
+                  {filteredTickets.map(ticket => {
+                    const isUrgentOpen = ticket.priority === "urgent" && (ticket.status === "open" || ticket.status === "in_progress");
+                    return (
                     <Card
                       key={ticket.id}
-                      className="rounded-2xl border-border/40 cursor-pointer transition-all duration-300 hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5"
+                      className={`rounded-2xl border-border/40 cursor-pointer transition-all duration-300 hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 ${isUrgentOpen ? "border-s-[3px] border-s-destructive" : ""}`}
                       onClick={() => setSelectedTicket(ticket)}
                     >
                       <CardContent className="flex items-center gap-4 py-4">
@@ -503,17 +505,23 @@ export default function SupportTickets() {
                           <p className="font-medium truncate">{ticket.subject}</p>
                           <p className="text-xs text-muted-foreground truncate mt-0.5">{ticket.description}</p>
                         </div>
-                        <div className="text-end shrink-0">
+                        <div className="text-end shrink-0 flex flex-col items-end gap-1">
                           <p className="text-xs text-muted-foreground">
                             {toEnglishDigits(formatDistanceToNow(new Date(ticket.created_at), {
                               addSuffix: true,
                               locale: isAr ? ar : enUS,
                             }))}
                           </p>
+                          {ticket.status === "resolved" && (
+                            <Badge variant="outline" className="text-[8px] text-chart-5 border-chart-5/30 bg-chart-5/5">
+                              ✓ {isAr ? "تمت المعالجة" : "Resolved"}
+                            </Badge>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
