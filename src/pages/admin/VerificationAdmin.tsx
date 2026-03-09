@@ -152,16 +152,11 @@ export default function VerificationAdmin() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder={isAr ? "بحث بالاسم..." : "Search by name..."}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="ps-9"
-          />
-        </div>
+      <AdminFilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={isAr ? "بحث بالاسم..." : "Search by name..."}
+      >
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
             <TabsTrigger value="pending" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "قيد الانتظار" : "Pending"}</TabsTrigger>
@@ -171,7 +166,7 @@ export default function VerificationAdmin() {
             <TabsTrigger value="all" className="rounded-xl data-[state=active]:shadow-sm">{isAr ? "الكل" : "All"}</TabsTrigger>
           </TabsList>
         </Tabs>
-      </div>
+      </AdminFilterBar>
 
       <BulkActionBar
         count={bulk.count}
