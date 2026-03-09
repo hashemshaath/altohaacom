@@ -102,7 +102,7 @@ export const UserDropdown = memo(function UserDropdown() {
             <ChevronDown className="h-3 w-3 text-muted-foreground hidden xl:block" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64 animate-in fade-in-0 zoom-in-95 p-0">
+        <DropdownMenuContent align="end" className="w-64 animate-in fade-in-0 zoom-in-95 duration-200 p-0 rounded-2xl shadow-xl shadow-foreground/[0.06] border-border/50">
           {/* Profile header */}
           <div className="px-4 py-3 border-b border-border/50 bg-muted/30">
             <div className="flex items-center gap-3">
