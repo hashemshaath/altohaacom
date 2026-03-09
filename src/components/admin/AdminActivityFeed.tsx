@@ -30,11 +30,13 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
       const now = new Date();
       const since = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
 
-      const [users, reports, orders, actions] = await Promise.all([
+      const [users, reports, orders, actions, competitions, tickets] = await Promise.allSettled([
         supabase.from("profiles").select("user_id, full_name, display_name, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
         supabase.from("content_reports").select("id, reason, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
         supabase.from("company_orders").select("id, order_number, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
         supabase.from("admin_actions").select("id, action_type, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
+        supabase.from("competition_registrations").select("id, registration_number, registered_at").gte("registered_at", since).order("registered_at", { ascending: false }).limit(5),
+        supabase.from("support_tickets").select("id, ticket_number, subject, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
       ]);
 
       const items: FeedItem[] = [];
