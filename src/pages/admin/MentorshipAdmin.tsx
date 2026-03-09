@@ -288,7 +288,7 @@ export default function MentorshipAdmin() {
         {/* Enrollments Tab */}
         <TabsContent value="enrollments" className="mt-4 space-y-3">
           {enrollments.length === 0 ? (
-            <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد تسجيلات" : "No enrollments"}</CardContent></Card>
+            <AdminEmptyState icon={GraduationCap} title="No enrollments" titleAr="لا توجد تسجيلات" description="Mentee enrollments will appear here" descriptionAr="ستظهر تسجيلات المتعلمين هنا" />
           ) : (
             enrollments.map(enrollment => (
               <Card key={enrollment.id}>
