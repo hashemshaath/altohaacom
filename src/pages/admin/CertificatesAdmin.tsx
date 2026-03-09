@@ -423,11 +423,12 @@ export default function CertificatesAdmin() {
                 </Button>
               </BulkActionBar>
 
-              <div className="flex flex-wrap gap-3 mb-4">
-                <div className="relative flex-1 min-w-[200px]">
-                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
-                </div>
+              <AdminFilterBar
+                searchValue={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."}
+                className="border-0 shadow-none rounded-none"
+              >
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
                   <SelectContent>
@@ -464,7 +465,7 @@ export default function CertificatesAdmin() {
                     <SelectItem value="type">{language === "ar" ? "النوع" : "Type"}</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </AdminFilterBar>
 
               {(() => {
                 const filtered = eventFilter === "all" ? certificates : certificates.filter(c => c.event_name === eventFilter);
