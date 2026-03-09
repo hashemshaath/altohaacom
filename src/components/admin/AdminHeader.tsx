@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AdminColorStyleSelector } from "./AdminColorStyleSelector";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { AdminSearchCommand } from "./AdminSearchCommand";
 import { AdminMobileNavDrawer } from "./AdminMobileNavDrawer";
