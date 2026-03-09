@@ -318,16 +318,16 @@ export default function LoyaltyAdmin() {
           <AdminTableCard>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead className="w-10">
-                      <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
-                    </TableHead>
-                    <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "النقاط" : "Points"}</TableHead>
-                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead>{isAr ? "إجراء" : "Action"}</TableHead>
-                  </TableRow>
+                   <TableRow className="bg-muted/30">
+                     <TableHead className="w-10">
+                       <Checkbox checked={bulkRedemptions.isAllSelected} onCheckedChange={bulkRedemptions.toggleAll} />
+                     </TableHead>
+                     <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
+                     <SortableTableHead column="points_spent" label={isAr ? "النقاط" : "Points"} sortColumn={rdSortCol} sortDirection={rdSortDir} onSort={rdToggleSort} className="text-center" />
+                     <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={rdSortCol} sortDirection={rdSortDir} onSort={rdToggleSort} />
+                     <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={rdSortCol} sortDirection={rdSortDir} onSort={rdToggleSort} />
+                     <TableHead>{isAr ? "إجراء" : "Action"}</TableHead>
+                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {redemptions.map((r: any) => (
