@@ -1,4 +1,4 @@
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
@@ -21,17 +21,17 @@ export default function AdminLayout() {
     <div className="flex min-h-screen flex-col bg-background">
       <AdminHeader />
       <div className="flex flex-1">
-        {/* Desktop Sidebar */}
+        {/* Sidebar — white card on gray bg, unified with content */}
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-300 md:block",
+            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border bg-card transition-all duration-200 md:block",
             collapsed ? "w-[60px]" : "w-56"
           )}
         >
           <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-sidebar-border px-2.5 py-2">
+            <div className="flex items-center justify-between border-b border-border px-2.5 py-2">
               {!collapsed && (
-                <span className="px-1 text-[10px] font-semibold text-sidebar-foreground/40 uppercase tracking-widest">
+                <span className="px-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
                   {language === "ar" ? "القائمة" : "Navigation"}
                 </span>
               )}
@@ -39,7 +39,7 @@ export default function AdminLayout() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setCollapsed(!collapsed)}
-                className={cn("shrink-0 rounded-lg h-7 w-7 hover:bg-muted active:scale-90 transition-all", collapsed && "mx-auto")}
+                className={cn("shrink-0 rounded-md h-7 w-7 hover:bg-muted active:scale-95 transition-all", collapsed && "mx-auto")}
               >
                 {collapsed ? <PanelLeft className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
               </Button>
@@ -48,8 +48,8 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="min-w-0 flex-1 bg-muted/30">
+        {/* Main Content — same bg as page background */}
+        <main className="min-w-0 flex-1">
           <div className="container py-5 space-y-4">
             <AdminPendingBanner />
             <AdminBreadcrumb />

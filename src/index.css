@@ -6,141 +6,140 @@
 
 @layer base {
   :root {
-    /* ── Admin Panel — Bold Blue & Clean Grays ── */
+    /* ── Microsoft Admin Center Style — Unified Light ── */
 
-    /* Crisp white background */
-    --background: 0 0% 99%;
-    --foreground: 222 47% 11%;
+    /* Light gray background — consistent everywhere */
+    --background: 210 17% 95%;
+    --foreground: 210 24% 16%;
 
-    /* Pure white cards — maximum clarity */
+    /* White cards on gray background */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 210 24% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 210 24% 16%;
 
-    /* Strong Blue primary — bold & unmistakable */
-    --primary: 221 83% 53%;
+    /* Microsoft Blue primary — #0078D4 */
+    --primary: 206 100% 42%;
     --primary-foreground: 0 0% 100%;
 
-    /* Cool gray secondary */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 222 47% 11%;
+    /* Light gray secondary */
+    --secondary: 210 16% 93%;
+    --secondary-foreground: 210 24% 16%;
 
-    /* Muted — readable neutral */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    /* Muted */
+    --muted: 210 14% 93%;
+    --muted-foreground: 210 11% 45%;
 
-    /* Emerald accent */
-    --accent: 160 84% 39%;
+    /* Teal accent — Microsoft style */
+    --accent: 174 62% 38%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 80% 56%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Strong semantic colors */
-    --success: 142 71% 45%;
+    /* Semantic */
+    --success: 142 64% 40%;
     --success-foreground: 0 0% 100%;
-    --info: 199 89% 48%;
+    --info: 206 100% 42%;
     --info-foreground: 0 0% 100%;
-    --warning: 45 93% 47%;
-    --warning-foreground: 222 47% 11%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 210 24% 16%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 221 83% 53%;
+    --border: 210 14% 89%;
+    --input: 210 14% 89%;
+    --ring: 206 100% 42%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
-    /* Dark sidebar for strong contrast */
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 221 83% 53%;
+    /* Sidebar — same family as background, slightly lighter */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 210 24% 16%;
+    --sidebar-primary: 206 100% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 160 84% 39%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 30% 18%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-accent: 210 16% 93%;
+    --sidebar-accent-foreground: 210 24% 16%;
+    --sidebar-border: 210 14% 89%;
+    --sidebar-ring: 206 100% 42%;
 
-    /* Charts — vivid, high-contrast palette */
-    --chart-1: 221 83% 53%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 271 76% 53%;
-    --chart-4: 25 95% 53%;
-    --chart-5: 199 89% 48%;
+    /* Charts — Microsoft-inspired vivid palette */
+    --chart-1: 206 100% 42%;
+    --chart-2: 174 62% 38%;
+    --chart-3: 280 65% 50%;
+    --chart-4: 25 90% 50%;
+    --chart-5: 142 64% 40%;
 
     --font-sans: 'DM Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
 
-    /* Elevation shadows */
-    --shadow-xs: 0 1px 2px 0 hsl(222 47% 11% / 0.04);
-    --shadow-sm: 0 1px 3px 0 hsl(222 47% 11% / 0.06), 0 1px 2px -1px hsl(222 47% 11% / 0.04);
-    --shadow-md: 0 4px 12px -2px hsl(222 47% 11% / 0.08), 0 2px 4px -2px hsl(222 47% 11% / 0.04);
-    --shadow-lg: 0 10px 24px -4px hsl(222 47% 11% / 0.10), 0 4px 8px -4px hsl(222 47% 11% / 0.04);
-    --shadow-glow: 0 0 20px hsl(221 83% 53% / 0.15);
+    /* Shadows — subtle for flat design */
+    --shadow-xs: 0 1px 2px 0 hsl(210 24% 16% / 0.03);
+    --shadow-sm: 0 1px 3px 0 hsl(210 24% 16% / 0.05), 0 1px 2px -1px hsl(210 24% 16% / 0.03);
+    --shadow-md: 0 4px 8px -2px hsl(210 24% 16% / 0.06), 0 2px 4px -2px hsl(210 24% 16% / 0.03);
+    --shadow-lg: 0 8px 20px -4px hsl(210 24% 16% / 0.08), 0 4px 8px -4px hsl(210 24% 16% / 0.03);
+    --shadow-glow: 0 0 16px hsl(206 100% 42% / 0.10);
   }
 
   .dark {
-    /* ── Dark — Blue on Deep Navy ── */
-    --background: 222 47% 6%;
-    --foreground: 210 20% 96%;
+    /* ── Dark — Microsoft-style dark admin ── */
+    --background: 220 18% 10%;
+    --foreground: 210 16% 93%;
 
-    --card: 222 40% 10%;
-    --card-foreground: 210 20% 96%;
+    --card: 220 16% 14%;
+    --card-foreground: 210 16% 93%;
 
-    --popover: 222 40% 11%;
-    --popover-foreground: 210 20% 96%;
+    --popover: 220 16% 15%;
+    --popover-foreground: 210 16% 93%;
 
-    /* Brighter blue for dark surfaces */
-    --primary: 217 91% 60%;
+    /* Lighter blue for dark */
+    --primary: 206 90% 54%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 30% 14%;
-    --secondary-foreground: 210 20% 92%;
+    --secondary: 220 14% 18%;
+    --secondary-foreground: 210 16% 90%;
 
-    --muted: 222 25% 13%;
-    --muted-foreground: 215 15% 55%;
+    --muted: 220 12% 17%;
+    --muted-foreground: 210 10% 52%;
 
-    /* Emerald accent — brighter */
-    --accent: 160 70% 48%;
+    --accent: 174 50% 46%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 78% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 60% 50%;
+    --success: 142 55% 48%;
     --success-foreground: 0 0% 100%;
-    --info: 199 85% 55%;
+    --info: 206 90% 54%;
     --info-foreground: 0 0% 100%;
-    --warning: 45 90% 55%;
-    --warning-foreground: 222 47% 6%;
+    --warning: 38 88% 54%;
+    --warning-foreground: 220 18% 10%;
 
-    --border: 222 25% 18%;
-    --input: 222 25% 18%;
-    --ring: 217 91% 60%;
+    --border: 220 12% 22%;
+    --input: 220 12% 22%;
+    --ring: 206 90% 54%;
 
-    /* Dark sidebar */
-    --sidebar-background: 222 47% 5%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 217 91% 60%;
+    /* Sidebar — same tone as cards */
+    --sidebar-background: 220 16% 12%;
+    --sidebar-foreground: 210 16% 93%;
+    --sidebar-primary: 206 90% 54%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 160 70% 48%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 25% 14%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-accent: 220 14% 18%;
+    --sidebar-accent-foreground: 210 16% 90%;
+    --sidebar-border: 220 12% 22%;
+    --sidebar-ring: 206 90% 54%;
 
-    /* Charts — vivid for dark */
-    --chart-1: 217 91% 62%;
-    --chart-2: 160 70% 50%;
-    --chart-3: 271 70% 62%;
-    --chart-4: 25 90% 58%;
-    --chart-5: 199 85% 55%;
+    /* Charts */
+    --chart-1: 206 90% 58%;
+    --chart-2: 174 50% 50%;
+    --chart-3: 280 58% 58%;
+    --chart-4: 25 85% 56%;
+    --chart-5: 142 55% 50%;
 
-    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.20);
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.24), 0 1px 2px -1px hsl(0 0% 0% / 0.16);
-    --shadow-md: 0 4px 12px -2px hsl(0 0% 0% / 0.30), 0 2px 4px -2px hsl(0 0% 0% / 0.18);
-    --shadow-lg: 0 10px 24px -4px hsl(0 0% 0% / 0.35), 0 4px 8px -4px hsl(0 0% 0% / 0.20);
-    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.20);
+    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.18);
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.22), 0 1px 2px -1px hsl(0 0% 0% / 0.14);
+    --shadow-md: 0 4px 8px -2px hsl(0 0% 0% / 0.26), 0 2px 4px -2px hsl(0 0% 0% / 0.15);
+    --shadow-lg: 0 8px 20px -4px hsl(0 0% 0% / 0.30), 0 4px 8px -4px hsl(0 0% 0% / 0.18);
+    --shadow-glow: 0 0 16px hsl(206 90% 54% / 0.16);
   }
 }
 
@@ -160,7 +159,6 @@
   [dir="rtl"] {
     font-family: 'Noto Sans Arabic', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   }
-  /* Consistent heading hierarchy */
   h1 { @apply text-3xl md:text-4xl font-bold tracking-tight font-serif; }
   h2 { @apply text-2xl md:text-3xl font-bold tracking-tight font-serif; }
   h3 { @apply text-xl font-semibold tracking-tight; }
@@ -177,7 +175,6 @@
   }
 }
 
-/* Global entrance animation for hero sections */
 @keyframes heroFadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
