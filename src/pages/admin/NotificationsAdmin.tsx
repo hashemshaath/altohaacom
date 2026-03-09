@@ -455,12 +455,11 @@ export default function NotificationsAdmin() {
         {/* ═══ RECENT TAB ═══ */}
         <TabsContent value="recent" className="mt-6 space-y-4">
           {/* Filters */}
-          <div className="flex flex-wrap gap-2">
-            <div className="relative flex-1 min-w-[180px] max-w-sm">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input value={recentSearch} onChange={(e) => setRecentSearch(e.target.value)}
-                placeholder={isAr ? "بحث..." : "Search..."} className="ps-10 rounded-xl" />
-            </div>
+          <AdminFilterBar
+            searchValue={recentSearch}
+            onSearchChange={setRecentSearch}
+            searchPlaceholder={isAr ? "بحث..." : "Search..."}
+          >
             <Select value={recentTypeFilter} onValueChange={setRecentTypeFilter}>
               <SelectTrigger className="w-[120px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -491,10 +490,10 @@ export default function NotificationsAdmin() {
                 <SelectItem value="failed">Failed</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm" className="h-10" onClick={() => exportNotifications(filteredRecent)}>
+            <Button variant="outline" size="sm" className="h-9" onClick={() => exportNotifications(filteredRecent)}>
               <Download className="me-1 h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
             </Button>
-          </div>
+          </AdminFilterBar>
 
           <BulkActionBar
             count={bulkRecent.count}
