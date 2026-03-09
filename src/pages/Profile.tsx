@@ -21,7 +21,7 @@ const ProfileInvoicesTab = lazy(() => import("@/components/profile/ProfileInvoic
 const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileReferralsTab").then(m => ({ default: m.ProfileReferralsTab })));
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
 const ProfileOrdersTab = lazy(() => import("@/components/profile/ProfileOrdersTab").then(m => ({ default: m.ProfileOrdersTab })));
-const FanFavoritesTab = lazy(() => import("@/components/fan/FanFavoritesTab").then(m => ({ default: m.FanFavoritesTab })));
+
 
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -166,7 +166,7 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="favorites" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("favorites") ? (user && <FanFavoritesTab />) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
+            {isTabAllowed("favorites") ? (user && <Suspense fallback={<TabFallback />}><div className="text-center text-muted-foreground py-12">{isAr ? "قريباً" : "Coming soon"}</div></Suspense>) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
           </TabsContent>
 
 
