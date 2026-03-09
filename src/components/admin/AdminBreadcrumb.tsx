@@ -75,7 +75,7 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
   if (!currentLabel) return null;
 
   return (
-    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-5">
+    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-5" aria-label="Breadcrumb">
       <Link to="/admin" className="flex items-center gap-1.5 rounded-xl px-2 py-1 hover:bg-muted hover:text-foreground transition-all duration-200">
         <LayoutDashboard className="h-3 w-3" />
         <span>{isAr ? "لوحة التحكم" : "Dashboard"}</span>
@@ -89,7 +89,7 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
         </>
       )}
       <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
-      <span className="rounded-xl bg-primary/8 px-2.5 py-1 text-primary font-semibold">
+      <span className="rounded-xl bg-primary/8 px-2.5 py-1 text-primary font-semibold" aria-current="page">
         {isAr ? currentLabel.ar : currentLabel.en}
       </span>
     </nav>

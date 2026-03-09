@@ -84,7 +84,7 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
             )}
             {recipe.save_count != null && recipe.save_count > 0 && (
               <span className="flex items-center gap-0.5 ms-auto">
-                <Bookmark className="h-2.5 w-2.5" /> {recipe.save_count}
+                <Bookmark className={cn("h-2.5 w-2.5", recipe.save_count >= 10 && "fill-primary text-primary")} /> {recipe.save_count}
               </span>
             )}
             {(recipe.save_count == null || recipe.save_count === 0) && recipe.view_count != null && recipe.view_count > 0 && (
@@ -93,6 +93,12 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
               </span>
             )}
           </div>
+          {/* Quick prep indicator */}
+          {totalTime > 0 && totalTime <= 15 && (
+            <Badge variant="outline" className="mt-1.5 text-[8px] py-0 px-1.5 border-chart-3/30 text-chart-3">
+              ⚡ {isAr ? "سريع التحضير" : "Quick prep"}
+            </Badge>
+          )}
         </CardContent>
       </Card>
     </Link>

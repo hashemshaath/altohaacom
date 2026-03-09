@@ -142,16 +142,19 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
         <div className="space-y-2 border-t border-border/30 pt-3">
           {data.breakdown.map((item) => {
             const pct = Math.min((item.value / item.max) * 100, 100);
+            const isMaxed = pct >= 100;
             return (
               <div key={item.label} className="flex items-center gap-2">
                 <span className="text-[10px] text-muted-foreground w-20 truncate">{item.label}</span>
                 <div className="flex-1 h-1.5 bg-muted/40 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-primary/70 rounded-full transition-all duration-700"
+                    className={`h-full rounded-full transition-all duration-700 ${isMaxed ? "bg-chart-2/80" : "bg-primary/70"}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-                <span className="text-[10px] font-bold tabular-nums w-6 text-end">{item.value}</span>
+                <span className={`text-[10px] font-bold tabular-nums w-6 text-end ${isMaxed ? "text-chart-2" : ""}`}>
+                  {isMaxed ? "✓" : item.value}
+                </span>
               </div>
             );
           })}
