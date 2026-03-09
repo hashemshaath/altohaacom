@@ -577,17 +577,11 @@ export default function CompetitionsAdmin() {
       </div>
 
       {/* Filters */}
-      <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
-        <CardContent className="flex flex-wrap gap-3 p-4">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "بحث بالعنوان أو المدينة..." : "Search by title or city..."}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="ps-10 rounded-xl"
-            />
-          </div>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={isAr ? "بحث بالعنوان أو المدينة..." : "Search by title or city..."}
+      >
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-40 rounded-xl">
               <Filter className="me-1.5 h-3.5 w-3.5 text-muted-foreground" />
@@ -663,8 +657,7 @@ export default function CompetitionsAdmin() {
               </SelectContent>
             </Select>
           )}
-        </CardContent>
-      </Card>
+      </AdminFilterBar>
 
       {/* Bulk Action Bar */}
       <BulkActionBar
