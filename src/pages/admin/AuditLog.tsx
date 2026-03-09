@@ -304,8 +304,7 @@ export default function AuditLog() {
                   </Table>
                 </ScrollArea>
               )}
-            </CardContent>
-          </Card>
+            </AdminTableCard>
         </TabsContent>
 
         <TabsContent value="admin">
@@ -314,31 +313,25 @@ export default function AuditLog() {
             onClear={bulkAdmin.clearSelection}
             onExport={() => exportAdminCSV(bulkAdmin.selectedItems)}
           />
-          <Card className="rounded-2xl border-border/40 overflow-hidden">
-            <CardHeader className="pb-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <CardTitle className="text-sm">{isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}</CardTitle>
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => exportAdminCSV(filteredActions)}>
-                  <Download className="h-3.5 w-3.5" /> CSV
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <div className="relative flex-1 min-w-[180px]">
-                  <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
-                </div>
-                <Select value={actionFilter} onValueChange={setActionFilter}>
-                  <SelectTrigger className="w-40 h-8 text-xs rounded-xl"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
-                    {uniqueAdminActionTypes.map(t => (
-                      <SelectItem key={t} value={t} className="text-xs">{t.replace(/_/g, " ")}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
+          <AdminFilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={isAr ? "بحث..." : "Search..."}
+          >
+            <Select value={actionFilter} onValueChange={setActionFilter}>
+              <SelectTrigger className="w-40 h-9 text-xs rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
+                {uniqueAdminActionTypes.map(t => (
+                  <SelectItem key={t} value={t} className="text-xs">{t.replace(/_/g, " ")}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-xl" onClick={() => exportAdminCSV(filteredActions)}>
+              <Download className="h-3.5 w-3.5" /> CSV
+            </Button>
+          </AdminFilterBar>
+          <AdminTableCard title={isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}>
               {isLoading ? (
                 <div className="flex justify-center py-8">
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
