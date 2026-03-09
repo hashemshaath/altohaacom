@@ -89,7 +89,7 @@ export const SystemHealthBar = memo(function SystemHealthBar() {
           key={item.label}
           variant="outline"
           className={cn(
-            "gap-1.5 px-2.5 py-1 text-xs font-medium border-border/50",
+            "gap-1.5 px-2.5 py-1.5 text-xs font-medium border-border/50 transition-all duration-200 hover:shadow-[var(--shadow-sm)]",
             item.urgent && "border-destructive/30 animate-pulse"
           )}
         >
@@ -99,7 +99,7 @@ export const SystemHealthBar = memo(function SystemHealthBar() {
               <span className="absolute -top-0.5 -end-0.5 h-1.5 w-1.5 rounded-full bg-chart-2 animate-ping" />
             )}
           </div>
-          <AnimatedCounter value={item.value} className={item.color} />
+          <AnimatedCounter value={item.value} className={cn("font-bold tabular-nums", item.color)} />
           <span className="text-muted-foreground hidden sm:inline">{item.label}</span>
         </Badge>
       ))}
