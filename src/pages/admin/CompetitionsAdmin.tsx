@@ -669,8 +669,7 @@ export default function CompetitionsAdmin() {
       />
 
       {/* Table */}
-      <Card className="rounded-2xl border-border/40 overflow-hidden">
-        <CardContent className="p-0">
+      <AdminTableCard>
           {isLoading ? (
             <div className="p-4">
               <AdminTableSkeleton rows={6} columns={6} />

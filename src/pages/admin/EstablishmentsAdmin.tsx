@@ -332,7 +332,7 @@ export default function EstablishmentsAdmin() {
           <p className="text-sm text-muted-foreground">{isAr ? "لا توجد جهات" : "No entities found"}</p>
         </div>
       ) : (
-        <Card className="rounded-2xl border-border/40 overflow-hidden">
+        <AdminTableCard>
           <Table>
             <TableHeader>
               <TableRow>
@@ -368,7 +368,7 @@ export default function EstablishmentsAdmin() {
               ))}
             </TableBody>
           </Table>
-        </Card>
+        </AdminTableCard>
       )}
 
       {/* Detail Drawer */}
