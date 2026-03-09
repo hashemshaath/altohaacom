@@ -301,7 +301,22 @@ export const CommandPalette = memo(function CommandPalette() {
               );
             })}
 
-            {/* Empty state */}
+            {/* AI Summary */}
+            {(aiSummary || isAiLoading) && query.length >= 3 && (
+              <div className="mx-1 my-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <span className="text-[11px] font-semibold text-primary">
+                    {isAr ? "ملخص ذكي" : "AI Insight"}
+                  </span>
+                  {isAiLoading && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
+                </div>
+                {aiSummary && (
+                  <p className="text-xs text-foreground/80 leading-relaxed line-clamp-4">{aiSummary}</p>
+                )}
+              </div>
+            )}
+
             {query.length >= 2 && !isFetching && results.length === 0 && (
               <div className="py-8 text-center text-sm text-muted-foreground space-y-2">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
