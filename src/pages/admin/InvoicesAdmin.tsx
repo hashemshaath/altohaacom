@@ -729,7 +729,7 @@ export default function InvoicesAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices.map((inv) => (
+                  {pagination.paginated.map((inv) => (
                     <TableRow key={inv.id} className={`cursor-pointer ${bulk.isSelected(inv.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedInvoice(inv.id)}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={bulk.isSelected(inv.id)} onCheckedChange={() => bulk.toggleOne(inv.id)} />
