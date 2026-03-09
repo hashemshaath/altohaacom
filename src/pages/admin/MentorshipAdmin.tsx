@@ -248,6 +248,24 @@ export default function MentorshipAdmin() {
 
         {/* Applications Tab */}
         <TabsContent value="applications" className="mt-4 space-y-3">
+          <AdminFilterBar
+            searchValue={appSearch}
+            onSearchChange={setAppSearch}
+            searchPlaceholder={isAr ? "بحث في الطلبات..." : "Search applications..."}
+          >
+            <Select value={appStatusFilter} onValueChange={setAppStatusFilter}>
+              <SelectTrigger className="w-[140px] h-9 rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All Status"}</SelectItem>
+                <SelectItem value="pending">{isAr ? "معلقة" : "Pending"}</SelectItem>
+                <SelectItem value="approved">{isAr ? "مقبولة" : "Approved"}</SelectItem>
+                <SelectItem value="rejected">{isAr ? "مرفوضة" : "Rejected"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </AdminFilterBar>
+
           <BulkActionBar
             count={bulkApps.count}
             onClear={bulkApps.clearSelection}
@@ -255,8 +273,10 @@ export default function MentorshipAdmin() {
           />
           {applications.length === 0 ? (
             <AdminEmptyState icon={ClipboardList} title="No applications" titleAr="لا توجد طلبات" description="Mentor applications will appear here" descriptionAr="ستظهر طلبات الإرشاد هنا عند تقديمها" />
+          ) : filteredApps.length === 0 ? (
+            <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد نتائج" : "No results found"}</p>
           ) : (
-            applications.map(app => (
+            filteredApps.map(app => (
               <Card key={app.id} className={bulkApps.isSelected(app.id) ? "ring-1 ring-primary/30" : ""}>
                 <CardContent className="flex items-center justify-between py-4">
                   <div className="flex items-center gap-3">
