@@ -39,6 +39,8 @@ const PaginationLink = ({ className, isActive, size = "icon", ...props }: Pagina
         variant: isActive ? "outline" : "ghost",
         size,
       }),
+      "rounded-xl transition-all duration-200",
+      isActive && "border-primary/30 bg-primary/10 text-primary font-semibold",
       className,
     )}
     {...props}
