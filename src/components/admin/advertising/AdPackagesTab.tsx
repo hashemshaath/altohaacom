@@ -20,7 +20,7 @@ interface Props {
   onEdit?: (pkg: any) => void;
 }
 
-export const AdPackagesTab = memo(function AdPackagesTab({ packages }: Props) {
+export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleActive, onEdit }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
