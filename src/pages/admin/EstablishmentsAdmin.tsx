@@ -341,23 +341,23 @@ export default function EstablishmentsAdmin() {
       ) : (
         <AdminTableCard>
           <Table>
-            <TableHeader>
+             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px] bg-muted/30">
                   <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                 </TableHead>
-                <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "الرقم" : "#"}</TableHead>
-                <TableHead className="bg-muted/30">{isAr ? "الجهة" : "Entity"}</TableHead>
-                <TableHead className="hidden md:table-cell bg-muted/30">{isAr ? "النوع" : "Type"}</TableHead>
+                <SortableTableHead column="entity_number" label={isAr ? "الرقم" : "#"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="hidden xl:table-cell bg-muted/30" />
+                <SortableTableHead column="name" label={isAr ? "الجهة" : "Entity"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="hidden md:table-cell bg-muted/30" />
                 <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "النطاق" : "Scope"}</TableHead>
-                <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
+                <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                 <TableHead className="bg-muted/30">{isAr ? "مرئي" : "Visible"}</TableHead>
                 <TableHead className="hidden lg:table-cell bg-muted/30">{isAr ? "المتابعون" : "Followers"}</TableHead>
                 <TableHead className="text-end bg-muted/30">{isAr ? "إجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((entity: any) => (
+              {pagination.paginated.map((entity: any) => (
                 <EntityTableRow
                   key={entity.id}
                   entity={entity}
