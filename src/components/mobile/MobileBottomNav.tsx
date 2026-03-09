@@ -43,7 +43,7 @@ function getFabActions(pathname: string) {
   }
   if (pathname.startsWith("/recipes")) {
     return [
-      { to: "/recipes/new", labelEn: "New Recipe", labelAr: "وصفة جديدة", icon: UtensilsCrossed },
+      { to: "/recipes/create", labelEn: "New Recipe", labelAr: "وصفة جديدة", icon: UtensilsCrossed },
       { to: "/search?type=recipes", labelEn: "Browse", labelAr: "تصفح", icon: Search },
     ];
   }
