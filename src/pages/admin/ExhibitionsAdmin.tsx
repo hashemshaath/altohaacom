@@ -1056,12 +1056,12 @@ export default function ExhibitionsAdmin() {
                 <TableHead className="w-10">
                   <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                 </TableHead>
-                <TableHead className="font-semibold">{t("Event", "الفعالية")}</TableHead>
+                <SortableTableHead column="title" label={t("Event", "الفعالية")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                 <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
-                <TableHead className="font-semibold">{t("Type", "النوع")}</TableHead>
-                <TableHead className="font-semibold">{t("Status", "الحالة")}</TableHead>
+                <SortableTableHead column="type" label={t("Type", "النوع")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                <SortableTableHead column="status" label={t("Status", "الحالة")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                 <TableHead className="font-semibold">{t("Tickets", "التذاكر")}</TableHead>
-                <TableHead className="font-semibold">{t("Date", "التاريخ")}</TableHead>
+                <SortableTableHead column="start_date" label={t("Date", "التاريخ")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                 <TableHead className="font-semibold">{t("Location", "الموقع")}</TableHead>
                 <TableHead className="text-end font-semibold">{t("Actions", "الإجراءات")}</TableHead>
               </TableRow>
