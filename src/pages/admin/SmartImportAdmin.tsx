@@ -942,43 +942,45 @@ export default function SmartImportAdmin() {
           </div>
 
           {importMode === "search" ? (
-            <Card className="border-primary/20">
-              <CardHeader>
+            <Card className="border-primary/15 rounded-2xl overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-red-500" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-destructive/10">
+                    <MapPin className="h-4 w-4 text-destructive" />
+                  </div>
                   {isAr ? "البحث في خرائط جوجل" : "Search Google Maps"}
                 </CardTitle>
                 <CardDescription>
                   {isAr ? "أدخل اسم المنشأة والموقع — ⌘K للبحث السريع" : "Enter entity name and location — ⌘K for quick search"}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="sm:col-span-2 space-y-1.5">
-                      <Label className="text-xs">{isAr ? "اسم الكيان / المنشأة" : "Entity / Business Name"}</Label>
+                      <Label className="text-xs font-medium">{isAr ? "اسم الكيان / المنشأة" : "Entity / Business Name"}</Label>
                       <div className="relative">
                         <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input ref={searchInputRef} className="ps-9 h-11" placeholder={isAr ? "مثال: مطعم الريف، فندق هيلتون..." : "e.g. Al Reef Restaurant, Hilton Hotel..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
+                        <Input ref={searchInputRef} className="ps-9 h-11 rounded-xl" placeholder={isAr ? "مثال: مطعم الريف، فندق هيلتون..." : "e.g. Al Reef Restaurant, Hilton Hotel..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
+                      <Label className="text-xs font-medium">{isAr ? "الموقع" : "Location"}</Label>
                       <div className="relative">
                         <MapPin className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input className="ps-9 h-11" placeholder={isAr ? "الرياض" : "Riyadh"} value={location} onChange={(e) => setLocation(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
+                        <Input className="ps-9 h-11 rounded-xl" placeholder={isAr ? "الرياض" : "Riyadh"} value={location} onChange={(e) => setLocation(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 items-end">
                     <div className="flex-1 space-y-1.5">
-                      <Label className="text-xs">{isAr ? "الموقع الإلكتروني (اختياري)" : "Website URL (optional)"}</Label>
+                      <Label className="text-xs font-medium">{isAr ? "الموقع الإلكتروني (اختياري)" : "Website URL (optional)"}</Label>
                       <div className="relative">
                         <Globe className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input className="ps-9" placeholder="https://example.com" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} />
+                        <Input className="ps-9 rounded-xl" placeholder="https://example.com" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} />
                       </div>
                     </div>
-                    <Button onClick={handleSearch} disabled={searching || !query.trim()} className="gap-2 h-10 px-8 shrink-0">
+                    <Button onClick={handleSearch} disabled={searching || !query.trim()} className="gap-2 h-10 px-8 shrink-0 rounded-xl shadow-md shadow-primary/15 active:scale-95 transition-all">
                       {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                       {searching ? (isAr ? "جاري البحث..." : "Searching...") : (isAr ? "بحث" : "Search")}
                     </Button>
