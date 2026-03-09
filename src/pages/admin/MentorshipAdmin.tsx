@@ -374,7 +374,7 @@ export default function MentorshipAdmin() {
           </div>
 
           {matches.length === 0 ? (
-            <Card className="border-dashed"><CardContent className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد مطابقات" : "No matches"}</CardContent></Card>
+            <AdminEmptyState icon={Handshake} title="No matches" titleAr="لا توجد مطابقات" description="Mentor-mentee matches will appear here" descriptionAr="ستظهر المطابقات هنا عند إنشائها" />
           ) : (
             matches.map(m => (
               <Card key={m.id}>
