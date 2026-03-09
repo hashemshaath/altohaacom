@@ -691,13 +691,22 @@ export default function RoleManagement() {
         <TabsContent value="activity" className="mt-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary" />
-                {isAr ? "سجل تغييرات الأدوار" : "Role Change Activity Log"}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {isAr ? "آخر 50 تغيير في الأدوار والصلاحيات" : "Last 50 role and permission changes"}
-              </CardDescription>
+               <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" />
+                    {isAr ? "سجل تغييرات الأدوار" : "Role Change Activity Log"}
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    {isAr ? "آخر 50 تغيير في الأدوار والصلاحيات" : "Last 50 role and permission changes"}
+                  </CardDescription>
+                </div>
+                {recentChanges.length > 0 && (
+                  <Button variant="outline" size="sm" className="gap-1.5" onClick={() => exportActivityCSV(recentChanges)}>
+                    <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {recentChanges.length === 0 ? (
