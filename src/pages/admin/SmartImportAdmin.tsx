@@ -921,23 +921,24 @@ export default function SmartImportAdmin() {
           <ImportStats stats={stats} loading={loadingStats} isAr={isAr} />
 
           {/* Mode Toggle */}
-          <div className="flex gap-2">
-            <Button variant={importMode === "search" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("search")}>
-              <Search className="h-3.5 w-3.5" />
-              {isAr ? "بحث خرائط" : "Maps Search"}
-            </Button>
-            <Button variant={importMode === "url" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("url")}>
-              <Link2 className="h-3.5 w-3.5" />
-              {isAr ? "رابط مباشر" : "URL Import"}
-            </Button>
-            <Button variant={importMode === "bulk" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("bulk")}>
-              <Layers className="h-3.5 w-3.5" />
-              {isAr ? "استيراد جماعي" : "Bulk Import"}
-            </Button>
-            <Button variant={importMode === "cv" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("cv")}>
-              <FileText className="h-3.5 w-3.5" />
-              {isAr ? "سيرة ذاتية" : "CV Import"}
-            </Button>
+          <div className="flex gap-2 p-1 rounded-2xl bg-muted/40 border border-border/30 w-fit">
+            {[
+              { key: "search", icon: Search, labelEn: "Maps Search", labelAr: "بحث خرائط" },
+              { key: "url", icon: Link2, labelEn: "URL Import", labelAr: "رابط مباشر" },
+              { key: "bulk", icon: Layers, labelEn: "Bulk Import", labelAr: "استيراد جماعي" },
+              { key: "cv", icon: FileText, labelEn: "CV Import", labelAr: "سيرة ذاتية" },
+            ].map((mode) => (
+              <Button
+                key={mode.key}
+                variant={importMode === mode.key ? "default" : "ghost"}
+                size="sm"
+                className={`gap-1.5 rounded-xl transition-all duration-200 ${importMode === mode.key ? "shadow-sm" : "hover:bg-muted"}`}
+                onClick={() => setImportMode(mode.key as any)}
+              >
+                <mode.icon className="h-3.5 w-3.5" />
+                {isAr ? mode.labelAr : mode.labelEn}
+              </Button>
+            ))}
           </div>
 
           {importMode === "search" ? (
