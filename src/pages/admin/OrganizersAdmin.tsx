@@ -562,7 +562,7 @@ export default function OrganizersAdmin() {
               onAction={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}
             />
           ) : (
-            <Card className="rounded-2xl border-border/40 overflow-hidden">
+            <AdminTableCard>
               <Table>
                 <TableHeader>
                   <TableRow>
