@@ -735,6 +735,12 @@ export default function CostCenterAdmin() {
                     onClick={() => setSelectedEstimateId(est.id)}>
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
+                        <Checkbox
+                          checked={bulk.isSelected(est.id)}
+                          onCheckedChange={() => bulk.toggleOne(est.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="shrink-0"
+                        />
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
                           <ModIcon className="h-5 w-5 text-primary" />
                         </div>
