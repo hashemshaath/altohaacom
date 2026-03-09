@@ -17,6 +17,8 @@ import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { OrganizerExhibitionsPanel } from "@/components/admin/OrganizerExhibitionsPanel";
 import OrganizerDetailDrawer from "@/components/admin/OrganizerDetailDrawer";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
