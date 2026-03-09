@@ -130,6 +130,7 @@ function AppContent() {
         <IOSInstallGuide />
         <OfflineBanner />
         <UpdatePrompt />
+        <ReEngagementPrompt />
       </Suspense>
     </>
   );
