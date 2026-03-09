@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCSVExport } from "@/hooks/useCSVExport";
 import { usePermissions, useRolePermissions } from "@/hooks/usePermissions";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -266,6 +267,26 @@ export default function RoleManagement() {
   }, [allRolePerms, overrides]);
 
   const totalPerms = permissions.length;
+
+  const { exportCSV: exportUsersCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (u: any) => u.full_name || "" },
+      { header: isAr ? "اسم المستخدم" : "Username", accessor: (u: any) => u.username || "" },
+      { header: isAr ? "البريد" : "Email", accessor: (u: any) => u.email || "" },
+      { header: isAr ? "رقم الحساب" : "Account #", accessor: (u: any) => u.account_number || "" },
+      { header: isAr ? "الأدوار" : "Roles", accessor: (u: any) => u.roles?.join(", ") || "" },
+    ],
+    filename: "role-assignments",
+  });
+
+  const { exportCSV: exportActivityCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الإجراء" : "Action", accessor: (r: any) => r.action_type?.replace(/_/g, " ") || "" },
+      { header: isAr ? "التفاصيل" : "Details", accessor: (r: any) => r.details ? JSON.stringify(r.details) : "" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+    ],
+    filename: "role-activity-log",
+  });
 
   const exportMatrixCSV = () => {
     const headers = ["Category", "Permission", "Code", ...ALL_ROLES.map(r => ROLE_META[r].labelEn)];
@@ -537,13 +558,18 @@ export default function RoleManagement() {
         <TabsContent value="users" className="mt-4 space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
+               <CardTitle className="text-sm flex items-center gap-2">
                 <UserCog className="h-4 w-4 text-primary" />
                 {isAr ? "تعيين الأدوار للمستخدمين" : "Assign Roles to Users"}
               </CardTitle>
               <CardDescription className="text-xs">
                 {isAr ? "ابحث عن مستخدم وعيّن أو أزل الأدوار مباشرة" : "Search for a user and assign or remove roles directly"}
               </CardDescription>
+              {usersForAssignment.length > 0 && (
+                <Button variant="outline" size="sm" className="gap-1.5 ms-auto" onClick={() => exportUsersCSV(usersForAssignment)}>
+                  <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+                </Button>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="relative">
@@ -665,13 +691,22 @@ export default function RoleManagement() {
         <TabsContent value="activity" className="mt-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary" />
-                {isAr ? "سجل تغييرات الأدوار" : "Role Change Activity Log"}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {isAr ? "آخر 50 تغيير في الأدوار والصلاحيات" : "Last 50 role and permission changes"}
-              </CardDescription>
+               <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" />
+                    {isAr ? "سجل تغييرات الأدوار" : "Role Change Activity Log"}
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    {isAr ? "آخر 50 تغيير في الأدوار والصلاحيات" : "Last 50 role and permission changes"}
+                  </CardDescription>
+                </div>
+                {recentChanges.length > 0 && (
+                  <Button variant="outline" size="sm" className="gap-1.5" onClick={() => exportActivityCSV(recentChanges)}>
+                    <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {recentChanges.length === 0 ? (
