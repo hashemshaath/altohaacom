@@ -360,11 +360,6 @@ export default function CountriesAdmin() {
     setEditCountry(null);
   };
 
-  const toggleSort = (field: SortField) => {
-    if (sortField === field) setSortAsc(!sortAsc);
-    else { setSortField(field); setSortAsc(true); }
-  };
-
 
   const stats = {
     total: countries.length,
@@ -384,14 +379,6 @@ export default function CountriesAdmin() {
 
   const enabledFeatureCount = (c: Country) => Object.values(c.features || {}).filter(Boolean).length;
 
-  const SortHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <TableHead className="cursor-pointer select-none" onClick={() => toggleSort(field)}>
-      <div className="flex items-center gap-1">
-        {children}
-        {sortField === field && <ArrowUpDown className="h-3 w-3" />}
-      </div>
-    </TableHead>
-  );
 
   return (
     <div className="space-y-6">
