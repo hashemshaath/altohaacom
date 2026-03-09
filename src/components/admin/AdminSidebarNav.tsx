@@ -123,8 +123,8 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                         cn(
                           "group relative flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-all duration-150",
                           isActive
-                            ? "bg-primary/8 text-primary font-semibold"
-                            : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                            ? "bg-sidebar-primary/15 text-sidebar-primary-foreground font-semibold"
+                            : "text-sidebar-foreground/60 hover:bg-sidebar-accent/10 hover:text-sidebar-foreground"
                         )
                       }
                     >
