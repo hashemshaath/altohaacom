@@ -330,7 +330,7 @@ export default function LoyaltyAdmin() {
                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {redemptions.map((r: any) => (
+                  {rdPagination.paginated.map((r: any) => (
                     <TableRow key={r.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}`}>
                       <TableCell>
                         <Checkbox checked={bulkRedemptions.isSelected(r.id)} onCheckedChange={() => bulkRedemptions.toggleOne(r.id)} />
