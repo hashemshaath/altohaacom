@@ -58,6 +58,8 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
     specialization: { en: "Specialization", ar: "التخصص" },
     country: { en: "Country", ar: "البلد" },
     username: { en: "Username", ar: "اسم المستخدم" },
+    job_title: { en: "Job title", ar: "المسمى الوظيفي" },
+    phone: { en: "Phone", ar: "الهاتف" },
   };
 
   return (
