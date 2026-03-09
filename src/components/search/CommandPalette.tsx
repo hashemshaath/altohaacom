@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Search, Trophy, FileText, Users, UtensilsCrossed, Ticket,
   Building2, ArrowRight, Command, CornerDownLeft, Loader2,
-  Mic, MicOff,
+  Mic, MicOff, Sparkles,
 } from "lucide-react";
 import { addRecentSearch } from "@/lib/recentSearches";
 
