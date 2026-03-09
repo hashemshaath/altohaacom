@@ -235,7 +235,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
         </div>
       </CardHeader>
       <CardContent className="p-4 sm:p-5 space-y-2.5">
-        {leaderboard.map((entry) => {
+        {filteredLeaderboard.map((entry) => {
           const isTop3 = entry.rank <= 3;
           const config = isTop3 ? RANK_CONFIG[entry.rank - 1] : null;
           const RankIcon = config?.icon || null;
