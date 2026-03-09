@@ -1,4 +1,8 @@
 import { useState, useCallback, useMemo } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { CompetitionPipelineTracker } from "@/components/admin/CompetitionPipelineTracker";
 import { JudgingOverviewWidget } from "@/components/admin/JudgingOverviewWidget";
