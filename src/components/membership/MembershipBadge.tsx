@@ -37,6 +37,16 @@ const TIER_CONFIG: Record<string, {
       ar: ["جميع مميزات المحترف", "إدارة الفريق", "علامة تجارية مخصصة", "الوصول للواجهة البرمجية", "مدير حساب مخصص"],
     },
   },
+  gold: {
+    en: "Gold",
+    ar: "ذهبي",
+    icon: Crown,
+    className: "bg-chart-4/10 text-chart-4 border-chart-4/30 hover:bg-chart-4/15",
+    benefits: {
+      en: ["All Enterprise features", "VIP event access", "Exclusive chef sessions", "Gold badge recognition"],
+      ar: ["جميع مميزات المؤسسي", "دخول VIP للفعاليات", "جلسات طهاة حصرية", "شارة ذهبية مميزة"],
+    },
+  },
 };
 
 const SIZE_CLASSES = {
