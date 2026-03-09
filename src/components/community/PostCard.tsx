@@ -281,7 +281,7 @@ export const PostCard = memo(function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/10" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-0">
                 <Button
                   variant="ghost"
