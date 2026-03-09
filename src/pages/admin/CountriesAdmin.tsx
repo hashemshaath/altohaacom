@@ -536,9 +536,9 @@ export default function CountriesAdmin() {
                         />
                       </TableHead>
                       <TableHead className="w-[40px]"></TableHead>
-                      <SortHeader field="name">{isAr ? "الدولة" : "Country"}</SortHeader>
-                      <SortHeader field="code">{isAr ? "الرمز" : "Code"}</SortHeader>
-                      <SortHeader field="region">{isAr ? "المنطقة" : "Region"}</SortHeader>
+                      <SortableTableHead column="name" label={isAr ? "الدولة" : "Country"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                      <SortableTableHead column="code" label={isAr ? "الرمز" : "Code"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                      <SortableTableHead column="region" label={isAr ? "المنطقة" : "Region"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                       <TableHead>{isAr ? "العملة" : "Currency"}</TableHead>
                       <TableHead>{isAr ? "الميزات" : "Features"}</TableHead>
                       <TableHead>{isAr ? "الاكتمال" : "Health"}</TableHead>
