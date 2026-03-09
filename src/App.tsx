@@ -64,10 +64,13 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 3,
       gcTime: 1000 * 60 * 15,
-      retry: 1,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors (client errors)
+        if (error?.status >= 400 && error?.status < 500) return false;
+        return failureCount < 1;
+      },
       refetchOnWindowFocus: false,
       refetchOnReconnect: "always",
-      // Deduplicate identical queries within a 2s window
       structuralSharing: true,
     },
     mutations: {
