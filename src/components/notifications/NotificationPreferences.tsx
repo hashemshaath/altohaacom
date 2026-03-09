@@ -251,6 +251,26 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
 
             <Separator />
 
+            {/* Digest frequency (email channel only) */}
+            {activeChannel === "email" && (
+              <div>
+                <Label className="text-xs text-muted-foreground mb-2 block">{isAr ? "ملخص البريد" : "Email Digest"}</Label>
+                <Select
+                  value={activePrefs.digest_frequency || "none"}
+                  onValueChange={v => updateChannel(activeChannel, "digest_frequency", v === "none" ? null : v)}
+                >
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{isAr ? "إرسال فوري" : "Instant delivery"}</SelectItem>
+                    <SelectItem value="daily">{isAr ? "ملخص يومي" : "Daily digest"}</SelectItem>
+                    <SelectItem value="weekly">{isAr ? "ملخص أسبوعي" : "Weekly digest"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <Separator />
+
             {/* Muted types */}
             <div>
               <Label className="text-xs text-muted-foreground mb-2 block">{isAr ? "تصنيفات الإشعارات" : "Notification Types"}</Label>
