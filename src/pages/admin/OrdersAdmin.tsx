@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
 import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
 import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
@@ -617,9 +620,7 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <Badge className={statusColors[orderDetails.status] || "bg-muted text-muted-foreground"}>
-                      {getStatusLabel(orderDetails.status)}
-                    </Badge>
+                    <AdminStatusBadge status={orderDetails.status} label={getStatusLabel(orderDetails.status)} />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الاتجاه" : "Direction"}</p>
@@ -899,9 +900,7 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <Badge className={statusColors[shopOrderDetails.status] || "bg-muted text-muted-foreground"}>
-                      {getStatusLabel(shopOrderDetails.status)}
-                    </Badge>
+                    <AdminStatusBadge status={shopOrderDetails.status} label={getStatusLabel(shopOrderDetails.status)} />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الدفع" : "Payment"}</p>
@@ -1378,9 +1377,7 @@ export default function OrdersAdmin() {
                         <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
                         <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
                         <TableCell>
-                          <Badge className={statusColors[order.status] || "bg-muted text-muted-foreground"}>
-                            {getStatusLabel(order.status)}
-                          </Badge>
+                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                         <TableCell>
@@ -1483,9 +1480,7 @@ export default function OrdersAdmin() {
                           <Badge variant="outline" className="text-xs">{getStatusLabel(order.payment_status || "pending")}</Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge className={statusColors[order.status] || "bg-muted text-muted-foreground"}>
-                            {getStatusLabel(order.status)}
-                          </Badge>
+                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                         <TableCell>
