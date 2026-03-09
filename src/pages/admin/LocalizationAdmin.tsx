@@ -549,7 +549,7 @@ export default function LocalizationAdmin() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredTranslations.map(t => (
+                      tlPagination.paginated.map(t => (
                         <TableRow key={t.id}>
                           <TableCell>
                             <Checkbox
