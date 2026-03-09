@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
