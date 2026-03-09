@@ -31,19 +31,19 @@ const navItems = [
 function getFabActions(pathname: string) {
   if (pathname.startsWith("/competitions")) {
     return [
-      { to: "/create-competition", labelEn: "New Competition", labelAr: "مسابقة جديدة", icon: Trophy },
+      { to: "/competitions/create", labelEn: "New Competition", labelAr: "مسابقة جديدة", icon: Trophy },
       { to: "/search?type=competitions", labelEn: "Browse", labelAr: "تصفح", icon: Search },
     ];
   }
   if (pathname.startsWith("/community")) {
     return [
       { to: "/community?action=post", labelEn: "New Post", labelAr: "منشور جديد", icon: Camera },
-      { to: "/recipes/new", labelEn: "Share Recipe", labelAr: "شارك وصفة", icon: UtensilsCrossed },
+      { to: "/recipes/create", labelEn: "Share Recipe", labelAr: "شارك وصفة", icon: UtensilsCrossed },
     ];
   }
   if (pathname.startsWith("/recipes")) {
     return [
-      { to: "/recipes/new", labelEn: "New Recipe", labelAr: "وصفة جديدة", icon: UtensilsCrossed },
+      { to: "/recipes/create", labelEn: "New Recipe", labelAr: "وصفة جديدة", icon: UtensilsCrossed },
       { to: "/search?type=recipes", labelEn: "Browse", labelAr: "تصفح", icon: Search },
     ];
   }
@@ -60,7 +60,7 @@ function getFabActions(pathname: string) {
     ];
   }
   return [
-    { to: "/create-competition", labelEn: "Competition", labelAr: "مسابقة", icon: Trophy },
+    { to: "/competitions/create", labelEn: "Competition", labelAr: "مسابقة", icon: Trophy },
     { to: "/search", labelEn: "Search", labelAr: "بحث", icon: Search },
     { to: "/messages", labelEn: "Messages", labelAr: "الرسائل", icon: MessageSquare },
   ];
