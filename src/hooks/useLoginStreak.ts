@@ -14,8 +14,8 @@ export function useLoginStreak() {
   const { data: streak, isLoading } = useQuery({
     queryKey: ["user-streak", user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("user_streaks" as any)
+      const { data, error } = await (supabase
+        .from("user_streaks" as any) as any)
         .select("*")
         .eq("user_id", user!.id)
         .maybeSingle();

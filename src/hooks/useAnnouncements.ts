@@ -42,8 +42,8 @@ export function useAnnouncements() {
   const { data: dismissedIds = [] } = useQuery({
     queryKey: ["dismissed-announcements", user?.id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("dismissed_announcements" as any)
+      const { data } = await (supabase
+        .from("dismissed_announcements" as any) as any)
         .select("announcement_id")
         .eq("user_id", user!.id);
       return (data || []).map((d: any) => d.announcement_id) as string[];
