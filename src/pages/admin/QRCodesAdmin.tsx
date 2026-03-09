@@ -247,7 +247,7 @@ export default function QRCodesAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered?.map((qr) => (
+                    {qrPagination.paginated.map((qr) => (
                       <TableRow key={qr.id} className={bulk.isSelected(qr.id) ? "bg-primary/5" : ""}>
                         <TableCell>
                           <Checkbox checked={bulk.isSelected(qr.id)} onCheckedChange={() => bulk.toggleOne(qr.id)} />
