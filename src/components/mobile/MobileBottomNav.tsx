@@ -60,7 +60,7 @@ function getFabActions(pathname: string) {
     ];
   }
   return [
-    { to: "/create-competition", labelEn: "Competition", labelAr: "مسابقة", icon: Trophy },
+    { to: "/competitions/create", labelEn: "Competition", labelAr: "مسابقة", icon: Trophy },
     { to: "/search", labelEn: "Search", labelAr: "بحث", icon: Search },
     { to: "/messages", labelEn: "Messages", labelAr: "الرسائل", icon: MessageSquare },
   ];
