@@ -1097,7 +1097,7 @@ export default function ExhibitionsAdmin() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredExhibitions?.map((ex) => {
+                exPagination.paginated?.map((ex) => {
                   const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
                   return (
                   <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 cursor-pointer ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`} onClick={() => setDrawerExhibitionId(ex.id)}>
