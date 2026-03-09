@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
 import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
 import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
