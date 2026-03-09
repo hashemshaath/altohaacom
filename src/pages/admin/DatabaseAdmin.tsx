@@ -89,6 +89,8 @@ export default function DatabaseAdmin() {
 
   const totalRecords = useMemo(() => tableStats?.reduce((sum, t) => sum + t.count, 0) || 0, [tableStats]);
 
+  const { sorted: sortedStats, sortColumn, sortDirection, toggleSort } = useTableSort(tableStats || []);
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
