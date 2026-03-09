@@ -303,8 +303,9 @@ export default function LoyaltyAdmin() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
-          </AdminTableCard>
+               </Table>
+               <AdminTablePagination page={rwPagination.page} totalPages={rwPagination.totalPages} totalItems={rwPagination.totalItems} startItem={rwPagination.startItem} endItem={rwPagination.endItem} pageSize={rwPagination.pageSize} pageSizeOptions={rwPagination.pageSizeOptions} hasNext={rwPagination.hasNext} hasPrev={rwPagination.hasPrev} onPageChange={rwPagination.goTo} onPageSizeChange={rwPagination.changePageSize} />
+           </AdminTableCard>
         </TabsContent>
 
         <TabsContent value="redemptions">
