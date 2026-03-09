@@ -23,27 +23,24 @@ export default function AdminLayout() {
         {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 md:block",
-            collapsed ? "w-[68px]" : "w-64"
+            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border/40 bg-card transition-all duration-300 md:block",
+            collapsed ? "w-[60px]" : "w-60"
           )}
         >
           <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-border/40 p-3">
+            <div className="flex items-center justify-between border-b border-border/30 px-2.5 py-2.5">
               {!collapsed && (
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-sm shadow-primary/15">
-                    <Building className="h-4 w-4 text-primary-foreground" />
-                  </div>
-                  <span className="font-bold text-sm">{language === "ar" ? "لوحة الإدارة" : "Admin Panel"}</span>
-                </div>
+                <span className="px-1 text-xs font-semibold text-muted-foreground/80 uppercase tracking-wider">
+                  {language === "ar" ? "القائمة" : "Menu"}
+                </span>
               )}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setCollapsed(!collapsed)}
-                className={cn("shrink-0 rounded-xl h-8 w-8 hover:bg-muted", collapsed && "mx-auto")}
+                className={cn("shrink-0 rounded-lg h-7 w-7 hover:bg-muted", collapsed && "mx-auto")}
               >
-                {collapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+                {collapsed ? <PanelLeft className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
               </Button>
             </div>
             <AdminSidebarNav collapsed={collapsed} />
