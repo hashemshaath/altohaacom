@@ -1179,16 +1179,19 @@ export default function SmartImportAdmin() {
 
       {/* ─── Loading ─── */}
       {(loadingDetails || urlImporting) && step !== "results" && (
-        <Card>
-          <CardContent className="py-16">
-            <div className="flex flex-col items-center gap-4 text-center">
+        <Card className="rounded-2xl border-border/40 overflow-hidden">
+          <CardContent className="py-20">
+            <div className="flex flex-col items-center gap-5 text-center animate-in fade-in-50 zoom-in-95 duration-500">
               <div className="relative">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <Sparkles className="h-5 w-5 text-primary absolute -top-1 -end-1 animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-primary/10 blur-xl scale-150 animate-pulse" />
+                <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/15 to-primary/5 ring-1 ring-primary/10">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                </div>
+                <Sparkles className="h-5 w-5 text-primary absolute -top-1 -end-1 animate-bounce" />
               </div>
               <div>
-                <p className="font-semibold text-lg">{isAr ? "جاري جلب وتحليل البيانات..." : "Fetching & Analyzing Data..."}</p>
-                <p className="text-sm text-muted-foreground mt-1">{isAr ? "تحليل ذكي + خرائط جوجل + الموقع الرسمي" : "AI analysis + Google Maps + Official website"}</p>
+                <p className="font-serif font-bold text-xl">{isAr ? "جاري جلب وتحليل البيانات..." : "Fetching & Analyzing Data..."}</p>
+                <p className="text-sm text-muted-foreground mt-1.5">{isAr ? "تحليل ذكي + خرائط جوجل + الموقع الرسمي" : "AI analysis + Google Maps + Official website"}</p>
               </div>
             </div>
           </CardContent>
