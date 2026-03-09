@@ -19,6 +19,7 @@ interface Props {
     servings?: number | null;
     average_rating?: number | null;
     view_count?: number | null;
+    save_count?: number | null;
   };
   isAr: boolean;
   priority?: boolean;
