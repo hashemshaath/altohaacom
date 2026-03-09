@@ -1,12 +1,14 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Target, ExternalLink, Monitor, Home, Newspaper, Trophy, Users, Layout } from "lucide-react";
+import { Target, ExternalLink, Monitor, Home, Newspaper, Trophy, Users, Layout, Search } from "lucide-react";
 
 const pageIcons: Record<string, any> = {
   homepage: Home,
@@ -24,16 +26,33 @@ interface Props {
 export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onToggle }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageFilter, setPageFilter] = useState("all");
 
-  const sortedPlacements = useMemo(() => 
-    [...placements].sort((a, b) => {
-      if (a.is_active && !b.is_active) return -1;
-      if (!a.is_active && b.is_active) return 1;
-      if (a.is_premium && !b.is_premium) return -1;
-      if (!a.is_premium && b.is_premium) return 1;
-      return (a.sort_order || 999) - (b.sort_order || 999);
-    }), [placements]
-  );
+  const pageLocations = useMemo(() => {
+    const pages = new Set(placements.map(p => p.page_location || "other"));
+    return Array.from(pages);
+  }, [placements]);
+
+  const sortedPlacements = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return [...placements]
+      .filter(p => {
+        if (pageFilter !== "all" && (p.page_location || "other") !== pageFilter) return false;
+        if (q) {
+          const text = `${p.name || ""} ${p.name_ar || ""} ${p.slug || ""} ${p.placement_type || ""}`.toLowerCase();
+          if (!text.includes(q)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (a.is_active && !b.is_active) return -1;
+        if (!a.is_active && b.is_active) return 1;
+        if (a.is_premium && !b.is_premium) return -1;
+        if (!a.is_premium && b.is_premium) return 1;
+        return (a.sort_order || 999) - (b.sort_order || 999);
+      });
+  }, [placements, searchQuery, pageFilter]);
 
   // Group placements by page_location
   const grouped = sortedPlacements.reduce((acc: Record<string, any[]>, p: any) => {
@@ -78,13 +97,37 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
         </CardContent>
       </Card>
 
+      {/* Filters */}
+      <div className="flex gap-3 items-center">
+        <div className="relative flex-1">
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "بحث في المواقع..." : "Search placements..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="ps-9"
+          />
+        </div>
+        <Select value={pageFilter} onValueChange={setPageFilter}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "كل الصفحات" : "All Pages"}</SelectItem>
+            {pageLocations.map(page => (
+              <SelectItem key={page} value={page}>{page}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Placements table */}
       <Card className="rounded-2xl">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">{isAr ? "المواقع الإعلانية" : "Ad Placements"}</CardTitle>
             <Badge variant="secondary" className="text-[10px]">
-              {placements.filter(p => p.is_active).length}/{placements.length} {isAr ? "مفعل" : "active"}
+              {sortedPlacements.filter(p => p.is_active).length}/{sortedPlacements.length} {isAr ? "مفعل" : "active"}
             </Badge>
           </div>
         </CardHeader>

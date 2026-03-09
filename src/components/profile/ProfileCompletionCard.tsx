@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign } from "lucide-react";
+import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign, Phone, Share2 } from "lucide-react";
 
 /**
  * Compact profile completion card that encourages users
@@ -24,7 +24,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
       if (!user) return null;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, avatar_url, bio, specialization, country_code, username, profile_completed")
+      .select("full_name, avatar_url, bio, specialization, country_code, username, profile_completed, job_title, phone")
         .eq("user_id", user.id)
         .single();
       if (!profile) return null;
@@ -36,6 +36,8 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
         { key: "specialization", filled: !!profile.specialization, icon: Briefcase },
         { key: "country", filled: !!profile.country_code, icon: Globe },
         { key: "username", filled: !!profile.username, icon: AtSign },
+        { key: "job_title", filled: !!(profile as any).job_title, icon: Briefcase },
+        { key: "phone", filled: !!(profile as any).phone, icon: Phone },
       ];
       const filled = fields.filter(f => f.filled).length;
       const percent = Math.round((filled / fields.length) * 100);
@@ -56,6 +58,8 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
     specialization: { en: "Specialization", ar: "التخصص" },
     country: { en: "Country", ar: "البلد" },
     username: { en: "Username", ar: "اسم المستخدم" },
+    job_title: { en: "Job title", ar: "المسمى الوظيفي" },
+    phone: { en: "Phone", ar: "الهاتف" },
   };
 
   return (
