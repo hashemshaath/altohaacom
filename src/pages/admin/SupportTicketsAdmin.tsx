@@ -519,16 +519,11 @@ export default function SupportTicketsAdmin() {
       ) : (
         /* List View */
         <>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            <div className="relative flex-1 min-w-[140px] sm:min-w-[200px]">
-              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "بحث..." : "Search..."}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="ps-8 h-8 sm:h-9 text-xs sm:text-sm rounded-xl bg-muted/30 border-border/40"
-              />
-            </div>
+          <AdminFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={isAr ? "بحث..." : "Search..."}
+          >
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -549,7 +544,7 @@ export default function SupportTicketsAdmin() {
                 <SelectItem value="low">{isAr ? "منخفض" : "Low"}</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </AdminFilterBar>
 
           <BulkActionBar
             count={bulk.count}
