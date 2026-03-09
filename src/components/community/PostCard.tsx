@@ -67,6 +67,7 @@ export const PostCard = memo(function PostCard({
 
   const totalEngagement = post.likes_count + post.comments_count + post.reposts_count;
   const isHotPost = totalEngagement >= 10;
+  const isViral = totalEngagement >= 50;
 
   return (
     <article
@@ -89,6 +90,12 @@ export const PostCard = memo(function PostCard({
         <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-muted-foreground">
           <Pin className="h-3 w-3" />
           {isAr ? "منشور مثبت" : "Pinned"}
+        </div>
+      )}
+
+      {!isEditing && isViral && !post.is_pinned && (
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4">
+          🔥 {isAr ? "منشور رائج" : "Trending post"}
         </div>
       )}
 
