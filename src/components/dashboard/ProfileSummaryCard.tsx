@@ -55,7 +55,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
   const initials = (profile.full_name || "U").slice(0, 2).toUpperCase();
 
   return (
-    <Card className="overflow-hidden border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 group/card">
+    <Card className="overflow-hidden border-border/40 shadow-sm hover:shadow-xl transition-all duration-500 group/card">
       {/* Gradient header */}
       <div className="h-20 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,hsl(var(--primary)/0.15),transparent_60%)]" />
@@ -108,7 +108,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               { label: isAr ? "متابَعون" : "Following", value: stats.following },
               { label: isAr ? "منشورات" : "Posts", value: stats.posts },
             ].map((s, i) => (
-              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 transition-colors">
+              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 hover:border-primary/20 hover:shadow-sm transition-all duration-300 cursor-defaultary/20 hover:shadow-sm transition-all duration-300 cursor-default">
                 <div className="text-sm font-bold tabular-nums">{s.value}</div>
                 <div className="text-[8px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
               </div>
@@ -126,7 +126,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
         )}
 
         <Link to="/profile">
-          <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8">
+          <Button  rounded-xl active:scale-95 transition-allvariant="outline" size="sm" className="w-full gap-1.5 text-xs h-8">
             {isAr ? "عرض الملف" : "View Profile"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />
           </Button>
