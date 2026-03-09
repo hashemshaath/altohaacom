@@ -208,7 +208,7 @@ export const PostCard = memo(function PostCard({
               const count = Math.min(urls.length, 4);
               return (
                 <div className={cn(
-                  "mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm",
+                  "mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm transition-shadow duration-300 hover:shadow-md",
                   count === 1 && "max-h-[512px]",
                   count === 2 && "grid grid-cols-2 gap-0.5",
                   count === 3 && "grid grid-cols-2 gap-0.5",
@@ -244,7 +244,7 @@ export const PostCard = memo(function PostCard({
 
             {/* Video */}
             {post.video_url && (
-              <div className="mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm" onClick={(e) => e.stopPropagation()}>
+              <div className="mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm transition-shadow duration-300 hover:shadow-md" onClick={(e) => e.stopPropagation()}>
                 <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" />
               </div>
             )}
@@ -273,7 +273,7 @@ export const PostCard = memo(function PostCard({
                 href={post.link_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 hover:border-primary/20 transition-all duration-200 shadow-sm group/link"
+                className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 hover:border-primary/20 hover:shadow-sm transition-all duration-200 shadow-sm group/link"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-3 text-xs text-muted-foreground truncate group-hover/link:text-primary transition-colors">{post.link_url}</div>
@@ -281,7 +281,7 @@ export const PostCard = memo(function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/20" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/10" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-0">
                 <Button
                   variant="ghost"

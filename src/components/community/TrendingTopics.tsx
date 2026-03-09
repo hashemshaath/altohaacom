@@ -52,7 +52,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
   if (!isLoading && topics.length === 0) return null;
 
   return (
-    <Card>
+    <Card className="border-border/40 bg-card/60 backdrop-blur-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-chart-4/10">
@@ -74,9 +74,9 @@ export const TrendingTopics = memo(function TrendingTopics() {
               <Link
                 key={topic.tag}
                 to={`/community?tag=${topic.tag.replace("#", "")}`}
-                className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/40 transition-colors group"
+                className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/40 transition-all duration-200 group hover:-translate-x-0.5 rtl:hover:translate-x-0.5"
               >
-                <span className="text-xs font-bold text-muted-foreground w-5 text-center">{idx + 1}</span>
+                <span className="text-xs font-bold text-muted-foreground w-5 text-center tabular-nums">{idx + 1}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold group-hover:text-primary transition-colors">{topic.tag}</p>
                   <p className="text-[10px] text-muted-foreground">

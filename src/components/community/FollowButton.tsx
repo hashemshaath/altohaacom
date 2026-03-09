@@ -58,7 +58,7 @@ export const FollowButton = forwardRef<HTMLDivElement, FollowButtonProps>(functi
       <Button
         variant={isFollowing ? "outline" : "default"}
         size="sm"
-        className={`gap-1.5 text-xs h-8 rounded-xl font-semibold transition-all duration-200 ${fullWidth ? "w-full" : ""} ${className}`}
+        className={`gap-1.5 text-xs h-8 rounded-xl font-semibold transition-all duration-200 active:scale-95 ${fullWidth ? "w-full" : ""} ${className}`}
         disabled={toggleFollow.isPending}
         onClick={handleClick}
       >
