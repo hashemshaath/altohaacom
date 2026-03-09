@@ -1248,6 +1248,12 @@ export default function ExhibitionsAdmin() {
               )}
             </TableBody>
           </Table>
+          <AdminTablePagination
+            page={exPagination.page} totalPages={exPagination.totalPages} totalItems={exPagination.totalItems}
+            startItem={exPagination.startItem} endItem={exPagination.endItem} pageSize={exPagination.pageSize}
+            pageSizeOptions={exPagination.pageSizeOptions} hasNext={exPagination.hasNext} hasPrev={exPagination.hasPrev}
+            onPageChange={exPagination.goTo} onPageSizeChange={exPagination.changePageSize}
+          />
       </AdminTableCard>
       <ExhibitionDetailDrawer
         exhibitionId={drawerExhibitionId}

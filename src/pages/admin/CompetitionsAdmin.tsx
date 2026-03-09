@@ -883,6 +883,12 @@ export default function CompetitionsAdmin() {
                 })}
               </TableBody>
             </Table>
+            <AdminTablePagination
+              page={compPagination.page} totalPages={compPagination.totalPages} totalItems={compPagination.totalItems}
+              startItem={compPagination.startItem} endItem={compPagination.endItem} pageSize={compPagination.pageSize}
+              pageSizeOptions={compPagination.pageSizeOptions} hasNext={compPagination.hasNext} hasPrev={compPagination.hasPrev}
+              onPageChange={compPagination.goTo} onPageSizeChange={compPagination.changePageSize}
+            />
           )}
       </AdminTableCard>
         </TabsContent>
