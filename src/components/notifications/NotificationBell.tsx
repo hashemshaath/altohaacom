@@ -179,7 +179,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" 2xl border-border/50 shadow-2xl shadow-primary/5 backdrop-blur-sm50 shadow-xl shadow-primary/5">
+      <DropdownMenuContent align="end" className="w-[400px] rounded-2xl border-border/50 shadow-2xl shadow-primary/5 backdrop-blur-sm">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-gradient-to-r from-primary/5 to-transparent rounded-t-xl">
           <div className="flex items-center gap-2">
             <h3 className="font-bold text-base">{isAr ? "الإشعارات" : "Notifications"}</h3>
