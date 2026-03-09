@@ -104,9 +104,16 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
     );
   }
 
+  // Compute trend: compare last 7 days to previous 7 days
+  const last7 = analytics.last7Days;
+  const prev7 = analytics.dailyViews
+    ?.slice(0, analytics.dailyViews.length - 7)
+    ?.reduce((s: number, d: any) => s + (d.views || 0), 0) || 0;
+  const viewsTrend = prev7 > 0 ? Math.round(((last7 - prev7) / prev7) * 100) : last7 > 0 ? 100 : 0;
+
   const statCards = [
     { icon: Eye, label: isAr ? "إجمالي الزيارات" : "Total Views", value: analytics.totalViews, sub: isAr ? "آخر 30 يوم" : "Last 30 days", color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: TrendingUp, label: isAr ? "آخر 7 أيام" : "Last 7 Days", value: analytics.last7Days, sub: isAr ? "زيارة" : "views", color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: TrendingUp, label: isAr ? "آخر 7 أيام" : "Last 7 Days", value: analytics.last7Days, sub: isAr ? "زيارة" : "views", color: "text-chart-2", bg: "bg-chart-2/10", trend: viewsTrend },
     { icon: Users, label: isAr ? "زوار فريدون" : "Unique Visitors", value: analytics.uniqueVisitors, sub: isAr ? "آخر 30 يوم" : "Last 30 days", color: "text-chart-3", bg: "bg-chart-3/10" },
     { icon: Globe, label: isAr ? "الشركات" : "Companies", value: analytics.viewerTypeBreakdown["company"] || 0, sub: isAr ? "زيارة من شركات" : "Company visits", color: "text-chart-4", bg: "bg-chart-4/10" },
   ];
@@ -157,6 +164,11 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
                 <div>
                   <AnimatedCounter value={typeof stat.value === "number" ? stat.value : parseInt(String(stat.value)) || 0} className="text-2xl" />
                   <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+                  {"trend" in stat && (stat as any).trend !== undefined && (stat as any).trend !== 0 && (
+                    <p className={`text-[10px] font-medium ${(stat as any).trend > 0 ? "text-chart-5" : "text-destructive"}`}>
+                      {(stat as any).trend > 0 ? "↑ +" : "↓ "}{(stat as any).trend}% {isAr ? "أسبوعياً" : "vs prev week"}
+                    </p>
+                  )}
                 </div>
               </div>
             </CardContent>

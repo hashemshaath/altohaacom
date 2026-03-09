@@ -3,10 +3,11 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award, Link2, Copy, Check, Share2, ExternalLink, Sparkles } from "lucide-react";
+import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award, Link2, Copy, Check, Share2, ExternalLink, Sparkles, Users, UserPlus } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -81,6 +82,23 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
   const tier = tierConfig[profile?.membership_tier || "basic"];
   const TierIcon = tier.icon;
   const profileViews = (profile as any)?.view_count || 0;
+
+  // Follower/following counts
+  const { data: followStats } = useQuery({
+    queryKey: ["profile-follow-stats", userId],
+    queryFn: async () => {
+      const [followersRes, followingRes] = await Promise.allSettled([
+        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("following_id", userId),
+        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("follower_id", userId),
+      ]);
+      return {
+        followers: followersRes.status === "fulfilled" ? (followersRes.value.count || 0) : 0,
+        following: followingRes.status === "fulfilled" ? (followingRes.value.count || 0) : 0,
+      };
+    },
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5,
+  });
 
   return (
     <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
@@ -223,6 +241,20 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
             <span className="text-muted-foreground/70">{isAr ? "عضو منذ" : "Joined"}</span>
             <span className="font-bold text-foreground">{toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
           </div>
+          {followStats && (
+            <>
+              <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 cursor-default">
+                <Users className="h-3.5 w-3.5 text-chart-1/60" />
+                <AnimatedCounter value={followStats.followers} className="font-bold text-foreground" />
+                <span className="text-muted-foreground/70">{isAr ? "متابع" : "followers"}</span>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 cursor-default">
+                <UserPlus className="h-3.5 w-3.5 text-chart-2/60" />
+                <AnimatedCounter value={followStats.following} className="font-bold text-foreground" />
+                <span className="text-muted-foreground/70">{isAr ? "يتابع" : "following"}</span>
+              </div>
+            </>
+          )}
           {profile?.loyalty_points > 0 && (
             <div className="flex items-center gap-1.5 rounded-xl bg-primary/5 px-3.5 py-2.5 text-xs border border-primary/10 transition-all hover:bg-primary/8">
               <Star className="h-3.5 w-3.5 text-primary" />
