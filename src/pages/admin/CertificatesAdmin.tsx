@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -77,13 +79,7 @@ const certificateTypes: { value: CertificateType; label: string; labelAr: string
   { value: "volunteer", label: "Volunteer", labelAr: "متطوع", color: "bg-accent-foreground" },
 ];
 
-const statusColors: Record<CertificateStatus, string> = {
-  draft: "bg-muted text-muted-foreground",
-  pending_signature: "bg-chart-4/20 text-chart-4",
-  signed: "bg-primary/20 text-primary",
-  issued: "bg-chart-5/20 text-chart-5",
-  revoked: "bg-destructive/20 text-destructive",
-};
+// statusColors removed — using AdminStatusBadge instead
 
 export default function CertificatesAdmin() {
   const { language } = useLanguage();
@@ -427,11 +423,12 @@ export default function CertificatesAdmin() {
                 </Button>
               </BulkActionBar>
 
-              <div className="flex flex-wrap gap-3 mb-4">
-                <div className="relative flex-1 min-w-[200px]">
-                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
-                </div>
+              <AdminFilterBar
+                searchValue={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder={language === "ar" ? "بحث بالاسم أو الرقم أو كود التحقق..." : "Search by name, number, or verification code..."}
+                className="border-0 shadow-none rounded-none"
+              >
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} /></SelectTrigger>
                   <SelectContent>
@@ -468,7 +465,7 @@ export default function CertificatesAdmin() {
                     <SelectItem value="type">{language === "ar" ? "النوع" : "Type"}</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </AdminFilterBar>
 
               {(() => {
                 const filtered = eventFilter === "all" ? certificates : certificates.filter(c => c.event_name === eventFilter);
@@ -518,7 +515,7 @@ export default function CertificatesAdmin() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Badge className={`text-[10px] ${statusColors[cert.status]}`}>{getStatusLabel(cert.status)}</Badge>
+                            <AdminStatusBadge status={cert.status} label={getStatusLabel(cert.status)} />
                           </TableCell>
                           <TableCell className="text-xs max-w-[120px] truncate">{cert.event_name || "—"}</TableCell>
                           <TableCell className="font-mono text-xs">{cert.verification_code}</TableCell>

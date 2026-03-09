@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -279,15 +282,15 @@ export default function SupportTicketsAdmin() {
   };
 
   const getStatusBadge = (status: string) => {
-    const map: Record<string, { class: string; label: string }> = {
-      open: { class: "bg-chart-4/10 text-chart-4", label: isAr ? "مفتوحة" : "Open" },
-      in_progress: { class: "bg-primary/10 text-primary", label: isAr ? "قيد المعالجة" : "In Progress" },
-      waiting: { class: "bg-chart-3/10 text-chart-3", label: isAr ? "في الانتظار" : "Waiting" },
-      resolved: { class: "bg-chart-5/10 text-chart-5", label: isAr ? "محلولة" : "Resolved" },
-      closed: { class: "bg-muted text-muted-foreground", label: isAr ? "مغلقة" : "Closed" },
+    const labelMap: Record<string, { label: string }> = {
+      open: { label: isAr ? "مفتوحة" : "Open" },
+      in_progress: { label: isAr ? "قيد المعالجة" : "In Progress" },
+      waiting: { label: isAr ? "في الانتظار" : "Waiting" },
+      resolved: { label: isAr ? "محلولة" : "Resolved" },
+      closed: { label: isAr ? "مغلقة" : "Closed" },
     };
-    const s = map[status] || map.open;
-    return <Badge className={s.class} variant="outline">{s.label}</Badge>;
+    const s = labelMap[status] || labelMap.open;
+    return <AdminStatusBadge status={status} label={s.label} />;
   };
 
   const getPriorityBadge = (p: string) => {
@@ -516,16 +519,11 @@ export default function SupportTicketsAdmin() {
       ) : (
         /* List View */
         <>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            <div className="relative flex-1 min-w-[140px] sm:min-w-[200px]">
-              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                placeholder={isAr ? "بحث..." : "Search..."}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="ps-8 h-8 sm:h-9 text-xs sm:text-sm rounded-xl bg-muted/30 border-border/40"
-              />
-            </div>
+          <AdminFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={isAr ? "بحث..." : "Search..."}
+          >
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[100px] sm:w-[140px] h-8 sm:h-9 text-xs sm:text-sm rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -546,7 +544,7 @@ export default function SupportTicketsAdmin() {
                 <SelectItem value="low">{isAr ? "منخفض" : "Low"}</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </AdminFilterBar>
 
           <BulkActionBar
             count={bulk.count}
@@ -555,8 +553,7 @@ export default function SupportTicketsAdmin() {
             onExport={() => exportTicketsCSV(bulk.count > 0 ? bulk.selectedItems : filteredTickets)}
           />
 
-          <Card className="rounded-2xl border-border/50 overflow-hidden">
-            <CardContent className="p-0">
+          <AdminTableCard>
               {isLoading ? (
                 <div className="p-4 sm:p-6 space-y-3">
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
@@ -664,8 +661,7 @@ export default function SupportTicketsAdmin() {
                   </div>
                 </>
               )}
-            </CardContent>
-          </Card>
+          </AdminTableCard>
         </>
       )}
     </div>
