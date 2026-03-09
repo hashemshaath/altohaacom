@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle, XCircle, DollarSign, Megaphone, Pause, Play } from "lucide-react";
+import { CheckCircle, XCircle, DollarSign, Megaphone, Pause, Play, TrendingUp, MousePointerClick, Eye } from "lucide-react";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { statusColors } from "./statusColors";
 
