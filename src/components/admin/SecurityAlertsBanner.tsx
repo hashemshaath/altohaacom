@@ -41,34 +41,39 @@ export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
   const alerts = [
     data.criticalEvents > 0 && {
       icon: ShieldAlert,
-      text: isAr ? `${data.criticalEvents} حدث أمني حرج` : `${data.criticalEvents} critical events`,
+      text: isAr ? `${data.criticalEvents} حدث أمني حرج` : `${data.criticalEvents} critical security events`,
       color: "text-destructive",
+      bg: "bg-destructive/10",
     },
     data.failedLogins >= 5 && {
       icon: Lock,
-      text: isAr ? `${data.failedLogins} محاولة دخول فاشلة` : `${data.failedLogins} failed logins`,
+      text: isAr ? `${data.failedLogins} محاولة دخول فاشلة` : `${data.failedLogins} failed login attempts`,
       color: "text-chart-4",
+      bg: "bg-chart-4/10",
     },
     data.blockedIPs > 0 && {
       icon: Ban,
-      text: isAr ? `${data.blockedIPs} عنوان محظور` : `${data.blockedIPs} blocked IPs`,
+      text: isAr ? `${data.blockedIPs} عنوان IP محظور` : `${data.blockedIPs} blocked IP addresses`,
       color: "text-chart-4",
+      bg: "bg-chart-4/10",
     },
-  ].filter(Boolean) as { icon: any; text: string; color: string }[];
+  ].filter(Boolean) as { icon: any; text: string; color: string; bg: string }[];
 
   return (
     <Card className="border-destructive/30 bg-destructive/5">
       <CardContent className="p-3 flex items-center gap-3 flex-wrap">
-        <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
-        <div className="flex items-center gap-3 flex-wrap flex-1">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-destructive/10 shrink-0">
+          <AlertTriangle className="h-4 w-4 text-destructive" />
+        </div>
+        <div className="flex items-center gap-2 flex-wrap flex-1">
           {alerts.map((a, i) => (
-            <Badge key={i} variant="outline" className="text-xs gap-1">
+            <Badge key={i} variant="outline" className="text-xs gap-1.5 border-destructive/20">
               <a.icon className={`h-3 w-3 ${a.color}`} />
               {a.text}
             </Badge>
           ))}
         </div>
-        <Button variant="ghost" size="sm" asChild className="text-xs">
+        <Button variant="ghost" size="sm" asChild className="text-xs font-medium">
           <Link to="/admin/security">
             {isAr ? "مركز الأمان" : "Security Center"}
             <ArrowRight className="ms-1 h-3 w-3" />

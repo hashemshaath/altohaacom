@@ -175,14 +175,14 @@ export default function AdminDashboard() {
   };
 
   const statCards = useMemo(() => [
-    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, bg: "bg-primary/8", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
-    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, bg: "bg-chart-5/8", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/users?status=active" },
-    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, bg: "bg-destructive/8", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
-    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, bg: "bg-chart-2/8", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
-    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, bg: "bg-chart-3/8", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
-    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-chart-4/8", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
-    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, bg: "bg-chart-1/8", color: "text-chart-1", chartColor: "hsl(var(--chart-1))", link: "/admin/articles" },
-    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-accent/8", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/orders" },
+    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
+    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, bg: "bg-chart-5/10", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/users?status=active" },
+    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, bg: "bg-destructive/10", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
+    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, bg: "bg-chart-2/10", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
+    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, bg: "bg-chart-3/10", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
+    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-chart-4/10", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
+    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, bg: "bg-chart-1/10", color: "text-chart-1", chartColor: "hsl(var(--chart-1))", link: "/admin/articles" },
+    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-accent/10", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/orders" },
   ], [stats, isAr]);
 
   const quickActions = useMemo(() => [
@@ -243,9 +243,9 @@ export default function AdminDashboard() {
 
           return (
             <Link key={stat.title} to={stat.link}>
-              <Card className={cn(
-                "group overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 rounded-xl",
-                stat.urgent && "ring-1 ring-destructive/30"
+               <Card className={cn(
+                "group overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 rounded-xl border-border/50",
+                stat.urgent && "ring-1 ring-destructive/30 border-destructive/20"
               )}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
@@ -257,23 +257,23 @@ export default function AdminDashboard() {
                           <AnimatedCounter value={stat.value} />
                         </p>
                       )}
-                      <p className="text-xs text-muted-foreground font-medium mt-1">{stat.title}</p>
+                      <p className="text-[11px] text-muted-foreground font-medium mt-1">{stat.title}</p>
                     </div>
-                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-105", stat.bg)}>
+                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200 group-hover:scale-110", stat.bg)}>
                       <stat.icon className={cn("h-4 w-4", stat.color)} />
                     </div>
                   </div>
                   {sparkPoints && sparkPoints.length > 0 && (
                     <div className="mt-3 -mx-1 flex items-center gap-2">
-                      <div className="flex-1 opacity-50 group-hover:opacity-100 transition-opacity">
-                        <ResponsiveContainer width="100%" height={24}>
+                      <div className="flex-1 opacity-40 group-hover:opacity-100 transition-opacity duration-300">
+                        <ResponsiveContainer width="100%" height={28}>
                           <LineChart data={sparkPoints}>
                             <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
                           </LineChart>
                         </ResponsiveContainer>
                       </div>
                       {trend !== 0 && (
-                        <span className={cn("text-[10px] font-medium tabular-nums flex items-center gap-0.5",
+                        <span className={cn("text-[10px] font-semibold tabular-nums flex items-center gap-0.5",
                           trend > 0 ? "text-chart-5" : "text-destructive"
                         )}>
                           {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}

@@ -30,14 +30,16 @@ export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoadi
   return (
     <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
       {cards.map((card) => (
-        <Card key={card.label}>
+        <Card key={card.label} className="transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 group border-border/50">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.bg} ${card.color}`}>
-              <card.icon className="h-4 w-4" />
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${card.bg} ${card.color} transition-transform duration-200 group-hover:scale-110`}>
+              <card.icon className="h-4.5 w-4.5" />
             </div>
             <div className="min-w-0">
-              <p className="text-xl font-bold leading-none tabular-nums">{isLoading ? "..." : <AnimatedCounter value={card.value || 0} />}</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-1 truncate">{card.label}</p>
+              <p className="text-xl font-bold leading-none tabular-nums">
+                {isLoading ? "..." : <AnimatedCounter value={card.value || 0} />}
+              </p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-1.5 truncate">{card.label}</p>
             </div>
           </CardContent>
         </Card>
