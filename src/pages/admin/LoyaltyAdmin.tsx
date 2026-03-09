@@ -359,17 +359,17 @@ export default function LoyaltyAdmin() {
                       </TableCell>
                     </TableRow>
                   ))}
-                  {redemptions.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                        {isAr ? "لا توجد طلبات استبدال" : "No redemptions yet"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-          </AdminTableCard>
-        </TabsContent>
+                   {rdPagination.paginated.length === 0 && (
+                     <TableRow>
+                       <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                         {isAr ? "لا توجد طلبات استبدال" : "No redemptions yet"}
+                       </TableCell>
+                     </TableRow>
+                   )}
+                 </TableBody>
+               </Table>
+               <AdminTablePagination page={rdPagination.page} totalPages={rdPagination.totalPages} totalItems={rdPagination.totalItems} startItem={rdPagination.startItem} endItem={rdPagination.endItem} pageSize={rdPagination.pageSize} pageSizeOptions={rdPagination.pageSizeOptions} hasNext={rdPagination.hasNext} hasPrev={rdPagination.hasPrev} onPageChange={rdPagination.goTo} onPageSizeChange={rdPagination.changePageSize} />
+           </AdminTableCard>
       </Tabs>
     </div>
   );
