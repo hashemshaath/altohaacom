@@ -244,11 +244,11 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                   <p className="text-sm font-semibold text-muted-foreground">{isAr ? "لا توجد إشعارات" : "All caught up!"}</p>
                   <p className="text-xs text-muted-foreground/50 mt-1">{isAr ? "ستظهر الإشعارات الجديدة هنا" : "New notifications will appear here"}</p>
                 </div>
-              ) : Object.entries(grouped).map(([date, items]) => (
-                <div key={date}>
-                  <p className="text-xs font-medium text-muted-foreground mb-2 sticky top-0 bg-background z-10 py-1 flex items-center gap-2">
+              ) : Object.entries(grouped).map(([date, items], gIdx) => (
+                <div key={date} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200" style={{ animationDelay: `${gIdx * 60}ms`, animationFillMode: 'both' }}>
+                  <p className="text-xs font-medium text-muted-foreground mb-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-1.5 flex items-center gap-2">
                     {date}
-                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 rounded-lg font-normal">
+                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 rounded-lg font-normal tabular-nums">
                       {(items as any[]).length}
                     </Badge>
                   </p>

@@ -540,16 +540,19 @@ export default function NotificationPreferences() {
                         key={opt.value}
                         onClick={() => handleDigestChange(opt.value)}
                         disabled={saving === "digest"}
-                        className={`rounded-2xl border p-4 text-start transition-all duration-200 ${
+                        className={`rounded-2xl border p-4 text-start transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] ${
                           digestFrequency === opt.value
-                            ? "border-primary/30 bg-primary/5 ring-1 ring-primary/15 shadow-sm"
-                            : "border-border/20 hover:border-border/40 hover:bg-muted/20"
+                            ? "border-primary/30 bg-primary/5 ring-1 ring-primary/15 shadow-sm shadow-primary/5"
+                            : "border-border/20 hover:border-border/40 hover:bg-muted/20 hover:shadow-sm"
                         }`}
                       >
-                        <p className={`text-sm font-medium ${digestFrequency === opt.value ? "text-primary" : ""}`}>
-                          {isAr ? opt.labelAr : opt.label}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? opt.descAr : opt.desc}</p>
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full transition-colors ${digestFrequency === opt.value ? "bg-primary" : "bg-border"}`} />
+                          <p className={`text-sm font-medium ${digestFrequency === opt.value ? "text-primary" : ""}`}>
+                            {isAr ? opt.labelAr : opt.label}
+                          </p>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-1 ps-4">{isAr ? opt.descAr : opt.desc}</p>
                       </button>
                     ))}
                   </div>
