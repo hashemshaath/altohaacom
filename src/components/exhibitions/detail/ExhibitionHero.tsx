@@ -122,7 +122,7 @@ export const ExhibitionHero = memo(function ExhibitionHero({
       )}
 
       {/* Content bar — below the image */}
-      <div className="border-b border-border/50 bg-card">
+      <div className="border-b border-border/50 bg-gradient-to-b from-card to-card/80">
         <div className="container py-3 sm:py-5 space-y-2 sm:space-y-3">
           {/* Title row */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
