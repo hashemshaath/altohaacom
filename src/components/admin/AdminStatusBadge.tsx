@@ -16,6 +16,18 @@ const STATUS_STYLES: Record<string, string> = {
   suspended: "bg-destructive/15 text-destructive border-destructive/25",
   banned: "bg-destructive/20 text-destructive border-destructive/30",
 
+  // Ticket / support statuses
+  open: "bg-chart-4/15 text-chart-4 border-chart-4/25",
+  waiting: "bg-chart-3/15 text-chart-3 border-chart-3/25",
+  resolved: "bg-chart-5/15 text-chart-5 border-chart-5/25",
+  closed: "bg-muted text-muted-foreground border-border",
+
+  // Certificate statuses
+  pending_signature: "bg-chart-4/15 text-chart-4 border-chart-4/25",
+  signed: "bg-primary/15 text-primary border-primary/25",
+  issued: "bg-chart-5/15 text-chart-5 border-chart-5/25",
+  revoked: "bg-destructive/15 text-destructive border-destructive/25",
+
   // Order statuses
   draft: "bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20",
   in_progress: "bg-chart-3/15 text-chart-3 border-chart-3/25",
