@@ -75,7 +75,10 @@ export default function GlobalEventsAdmin() {
     return ev.title?.toLowerCase().includes(q) || ev.title_ar?.toLowerCase().includes(q) || ev.city?.toLowerCase().includes(q);
   }), [events, typeFilter, search]);
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedEvents, sortColumn: evSortCol, sortDirection: evSortDir, toggleSort: evToggleSort } = useTableSort(filtered, "start_date", "desc");
+  const eventPagination = usePagination(sortedEvents, { defaultPageSize: 15 });
+
+  const bulk = useAdminBulkActions(sortedEvents);
 
   const handleSave = async () => {
     if (!editing?.title || !editing?.start_date) {
