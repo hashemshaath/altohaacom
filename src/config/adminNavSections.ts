@@ -46,6 +46,9 @@ import {
   Bot,
   Database,
   ScanSearch,
+  ImagePlay,
+  Wrench,
+  Code,
   type LucideIcon,
 } from "lucide-react";
 
@@ -64,103 +67,151 @@ export interface NavSection {
 }
 
 export const adminNavSections: NavSection[] = [
+  /* ── 1. Overview ── */
   {
-    titleEn: "Dashboard",
-    titleAr: "لوحة التحكم",
+    titleEn: "Overview",
+    titleAr: "نظرة عامة",
     items: [
-      { to: "/admin", icon: LayoutDashboard, labelEn: "Overview", labelAr: "نظرة عامة", end: true },
-      { to: "/admin/analytics", icon: BarChart3, labelEn: "Reports & Analytics", labelAr: "التقارير والتحليلات" },
+      { to: "/admin", icon: LayoutDashboard, labelEn: "Dashboard", labelAr: "لوحة التحكم", end: true },
+      { to: "/admin/analytics", icon: BarChart3, labelEn: "Analytics", labelAr: "التحليلات" },
     ],
   },
+
+  /* ── 2. Users ── */
   {
-    titleEn: "Users & CRM",
-    titleAr: "المستخدمين والعلاقات",
+    titleEn: "Users",
+    titleAr: "المستخدمين",
     items: [
-      { to: "/admin/users", icon: Users, labelEn: "Users", labelAr: "المستخدمين" },
-      { to: "/admin/roles", icon: Shield, labelEn: "Roles & Permissions", labelAr: "الأدوار والصلاحيات" },
-      { to: "/admin/verification", icon: ShieldCheck, labelEn: "Verification", labelAr: "التوثيق والتحقق" },
+      { to: "/admin/users", icon: Users, labelEn: "All Users", labelAr: "جميع المستخدمين" },
+      { to: "/admin/roles", icon: Shield, labelEn: "Roles", labelAr: "الأدوار" },
+      { to: "/admin/verification", icon: ShieldCheck, labelEn: "Verification", labelAr: "التوثيق" },
       { to: "/admin/memberships", icon: CreditCard, labelEn: "Memberships", labelAr: "العضويات" },
-      { to: "/admin/loyalty", icon: Crown, labelEn: "Loyalty & Rewards", labelAr: "الولاء والمكافآت" },
-      { to: "/admin/companies", icon: Building, labelEn: "Organizations", labelAr: "الجهات والشركات" },
+      { to: "/admin/loyalty", icon: Crown, labelEn: "Loyalty", labelAr: "الولاء" },
+    ],
+  },
+
+  /* ── 3. Organizations ── */
+  {
+    titleEn: "Organizations",
+    titleAr: "الجهات",
+    items: [
+      { to: "/admin/companies", icon: Building, labelEn: "Companies", labelAr: "الشركات" },
       { to: "/admin/establishments", icon: Building2, labelEn: "Establishments", labelAr: "المنشآت" },
+      { to: "/admin/organizers", icon: Landmark, labelEn: "Organizers", labelAr: "المنظمين" },
+    ],
+  },
+
+  /* ── 4. CRM & Marketing ── */
+  {
+    titleEn: "CRM & Marketing",
+    titleAr: "العلاقات والتسويق",
+    items: [
       { to: "/admin/crm", icon: Activity, labelEn: "CRM", labelAr: "إدارة العلاقات" },
       { to: "/admin/leads", icon: UserSearch, labelEn: "Leads", labelAr: "العملاء المحتملين" },
-      { to: "/admin/audience-segments", icon: Target, labelEn: "Segments", labelAr: "شرائح الجمهور" },
+      { to: "/admin/audience-segments", icon: Target, labelEn: "Segments", labelAr: "الشرائح" },
+      { to: "/admin/advertising", icon: Megaphone, labelEn: "Advertising", labelAr: "الإعلانات" },
+      { to: "/admin/marketing-automation", icon: Sparkles, labelEn: "Automation", labelAr: "الأتمتة" },
     ],
   },
+
+  /* ── 5. Competitions & Events ── */
   {
-    titleEn: "Competitions & Events",
-    titleAr: "المسابقات والفعاليات",
+    titleEn: "Competitions",
+    titleAr: "المسابقات",
     items: [
-      { to: "/admin/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمين" },
       { to: "/admin/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
-      { to: "/admin/evaluation", icon: ClipboardCheck, labelEn: "Evaluation", labelAr: "مركز التقييم" },
+      { to: "/admin/evaluation", icon: ClipboardCheck, labelEn: "Evaluation", labelAr: "التقييم" },
       { to: "/admin/certificates", icon: Award, labelEn: "Certificates", labelAr: "الشهادات" },
-      { to: "/admin/exhibitions", icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض والفعاليات" },
-      { to: "/admin/global-events", icon: Earth, labelEn: "Global Events", labelAr: "التقويم العالمي" },
       { to: "/admin/chefs-table", icon: ChefHat, labelEn: "Chef's Table", labelAr: "طاولة الشيف" },
-      { to: "/admin/chef-schedule", icon: Calendar, labelEn: "Schedules", labelAr: "جداول الطهاة" },
+      { to: "/admin/chef-schedule", icon: Calendar, labelEn: "Schedules", labelAr: "الجداول" },
     ],
   },
+
+  /* ── 6. Events ── */
   {
-    titleEn: "Content & Media",
-    titleAr: "المحتوى والوسائط",
+    titleEn: "Events",
+    titleAr: "الفعاليات",
     items: [
-      { to: "/admin/articles", icon: Newspaper, labelEn: "Articles & News", labelAr: "المقالات والأخبار" },
-      { to: "/admin/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "بوابة المعرفة" },
+      { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions", labelAr: "المعارض" },
+      { to: "/admin/global-events", icon: Calendar, labelEn: "Global Events", labelAr: "التقويم العالمي" },
+    ],
+  },
+
+  /* ── 7. Content ── */
+  {
+    titleEn: "Content",
+    titleAr: "المحتوى",
+    items: [
+      { to: "/admin/articles", icon: Newspaper, labelEn: "Articles", labelAr: "المقالات" },
+      { to: "/admin/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
       { to: "/admin/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدورات" },
       { to: "/admin/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
-      { to: "/admin/media", icon: Image, labelEn: "Media Library", labelAr: "مكتبة الوسائط" },
+      { to: "/admin/media", icon: Image, labelEn: "Media", labelAr: "الوسائط" },
+      { to: "/admin/moderation", icon: Flag, labelEn: "Moderation", labelAr: "الإشراف" },
       { to: "/admin/qr-codes", icon: QrCode, labelEn: "QR Codes", labelAr: "رموز QR" },
-      { to: "/admin/moderation", icon: Flag, labelEn: "Moderation", labelAr: "إدارة المحتوى" },
-      { to: "/admin/advertising", icon: Megaphone, labelEn: "Advertising", labelAr: "الإعلانات" },
     ],
   },
+
+  /* ── 8. Finance ── */
   {
     titleEn: "Finance",
     titleAr: "المالية",
     items: [
       { to: "/admin/orders", icon: Package, labelEn: "Orders", labelAr: "الطلبات" },
       { to: "/admin/invoices", icon: FileText, labelEn: "Invoices", labelAr: "الفواتير" },
-      { to: "/admin/cost-center", icon: Calculator, labelEn: "Cost Center", labelAr: "مركز التكلفة" },
+      { to: "/admin/cost-center", icon: Calculator, labelEn: "Cost Center", labelAr: "التكلفة" },
     ],
   },
+
+  /* ── 9. Communications ── */
   {
     titleEn: "Communications",
-    titleAr: "الدعم والتواصل",
+    titleAr: "التواصل",
     items: [
-      { to: "/admin/support-tickets", icon: Ticket, labelEn: "Tickets", labelAr: "تذاكر الدعم" },
-      { to: "/admin/live-chat", icon: Headphones, labelEn: "Live Support", labelAr: "الدعم المباشر" },
-      { to: "/admin/communications", icon: MessageSquare, labelEn: "Messages", labelAr: "صندوق التواصل" },
+      { to: "/admin/support-tickets", icon: Ticket, labelEn: "Tickets", labelAr: "التذاكر" },
+      { to: "/admin/live-chat", icon: Headphones, labelEn: "Live Chat", labelAr: "الدعم المباشر" },
+      { to: "/admin/communications", icon: MessageSquare, labelEn: "Messages", labelAr: "الرسائل" },
       { to: "/admin/templates", icon: MailOpen, labelEn: "Templates", labelAr: "القوالب" },
       { to: "/admin/notifications", icon: Bell, labelEn: "Notifications", labelAr: "الإشعارات" },
-      { to: "/admin/marketing-automation", icon: Megaphone, labelEn: "Automation", labelAr: "الأتمتة" },
     ],
   },
+
+  /* ── 10. Design ── */
   {
-    titleEn: "Design & Identity",
-    titleAr: "التصميم والهوية",
+    titleEn: "Design",
+    titleAr: "التصميم",
     items: [
       { to: "/admin/design", icon: Palette, labelEn: "Overview", labelAr: "نظرة عامة", end: true },
-      { to: "/admin/design/brand-identity", icon: Sparkles, labelEn: "Identity & Branding", labelAr: "الهوية والعلامة التجارية" },
+      { to: "/admin/design/brand-identity", icon: Sparkles, labelEn: "Branding", labelAr: "الهوية" },
       { to: "/admin/design/header-footer", icon: PanelTop, labelEn: "Header & Footer", labelAr: "الرأس والتذييل" },
-      { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الصفحة الرئيسية" },
-      { to: "/admin/design/covers", icon: Layers, labelEn: "Covers & Themes", labelAr: "الأغلفة والمظهر" },
-      { to: "/admin/design/layout", icon: Layers, labelEn: "Layout & Spacing", labelAr: "التخطيط والتباعد" },
-      { to: "/admin/design/custom-css", icon: Palette, labelEn: "Custom CSS", labelAr: "CSS مخصص" },
+      { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الرئيسية" },
+      { to: "/admin/hero-slides", icon: ImagePlay, labelEn: "Hero Slides", labelAr: "شرائح البانر" },
+      { to: "/admin/design/covers", icon: Layers, labelEn: "Covers", labelAr: "الأغلفة" },
+      { to: "/admin/design/layout", icon: Layers, labelEn: "Layout", labelAr: "التخطيط" },
+      { to: "/admin/design/custom-css", icon: Code, labelEn: "Custom CSS", labelAr: "CSS مخصص" },
     ],
   },
+
+  /* ── 11. System ── */
   {
     titleEn: "System",
-    titleAr: "النظام والإعدادات",
+    titleAr: "النظام",
     items: [
       { to: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات" },
       { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان" },
-      { to: "/admin/localization", icon: Globe, labelEn: "Localization", labelAr: "اللغات والترجمة" },
+      { to: "/admin/localization", icon: Globe, labelEn: "Languages", labelAr: "اللغات" },
       { to: "/admin/countries", icon: Earth, labelEn: "Countries", labelAr: "الدول" },
       { to: "/admin/integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات" },
+    ],
+  },
+
+  /* ── 12. Tools ── */
+  {
+    titleEn: "Tools",
+    titleAr: "الأدوات",
+    items: [
       { to: "/admin/smart-import", icon: Sparkles, labelEn: "Smart Import", labelAr: "استيراد ذكي" },
-      { to: "/admin/deduplication", icon: ScanSearch, labelEn: "Deduplication", labelAr: "فاحص التكرارات" },
+      { to: "/admin/deduplication", icon: ScanSearch, labelEn: "Deduplication", labelAr: "التكرارات" },
       { to: "/admin/ai", icon: Bot, labelEn: "AI Config", labelAr: "الذكاء الاصطناعي" },
       { to: "/admin/audit", icon: FileText, labelEn: "Audit Log", labelAr: "سجل العمليات" },
       { to: "/admin/database", icon: Database, labelEn: "Database", labelAr: "قاعدة البيانات" },
