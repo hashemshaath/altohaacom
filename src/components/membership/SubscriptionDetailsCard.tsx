@@ -127,13 +127,13 @@ export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ u
       <CardContent className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
           {details.map((d) => (
-            <div key={d.label} className="flex items-center gap-3 rounded-xl border p-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <div key={d.label} className="flex items-center gap-3 rounded-xl border border-border/40 p-3 transition-all duration-200 hover:border-primary/20 hover:bg-muted/30 group/detail">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover/detail:scale-110">
                 <d.icon className="h-4 w-4 text-primary" />
               </div>
               <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">{d.label}</p>
-                <p className="text-sm font-semibold truncate">{d.value}</p>
+                <p className="text-sm font-semibold truncate tabular-nums">{d.value}</p>
               </div>
             </div>
           ))}

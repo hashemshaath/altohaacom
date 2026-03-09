@@ -21,20 +21,20 @@ export const PageSkeleton = memo(function PageSkeleton({
 }: PageSkeletonProps) {
   if (variant === "dashboard") {
     return (
-      <div className={cn("space-y-6 animate-pulse", className)}>
+      <div className={cn("space-y-6", className)}>
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-24 rounded-xl" />
+            <Skeleton key={i} className="h-24 rounded-2xl animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
           ))}
         </div>
         {/* Charts */}
         <div className="grid md:grid-cols-2 gap-4">
-          <Skeleton className="h-64 rounded-xl" />
-          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-64 rounded-2xl animate-pulse" style={{ animationDelay: '500ms' }} />
+          <Skeleton className="h-64 rounded-2xl animate-pulse" style={{ animationDelay: '600ms' }} />
         </div>
         {/* Table */}
-        <Skeleton className="h-48 rounded-xl" />
+        <Skeleton className="h-48 rounded-2xl animate-pulse" style={{ animationDelay: '700ms' }} />
       </div>
     );
   }

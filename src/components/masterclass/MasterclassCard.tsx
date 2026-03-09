@@ -95,12 +95,24 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
         </h3>
         {mc.instructor_name && (
           <p className="mb-1 text-[11px] font-medium text-muted-foreground">
-            {isAr ? "المدرب:" : "By"} <span className="text-foreground/80">{mc.instructor_name}</span>
+            {isAr ? "المدرب:" : "By"} <span className="text-foreground/80 hover:text-primary transition-colors cursor-pointer">{mc.instructor_name}</span>
           </p>
         )}
         <p className="mb-5 flex-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed font-medium">
           {description}
         </p>
+        {/* Progress bar for enrolled users */}
+        {isEnrolled && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+              <span>{isAr ? "التقدم" : "Progress"}</span>
+              <span className="font-semibold text-primary">{isAr ? "مسجل" : "Enrolled"}</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+              <div className="h-full rounded-full bg-primary/60 transition-all duration-500" style={{ width: "0%" }} />
+            </div>
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-muted-foreground border-t border-border/40 pt-4">
           <span className="flex items-center gap-1.5">
             <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
