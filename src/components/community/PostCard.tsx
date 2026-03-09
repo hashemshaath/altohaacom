@@ -208,7 +208,7 @@ export const PostCard = memo(function PostCard({
               const count = Math.min(urls.length, 4);
               return (
                 <div className={cn(
-                  "mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm",
+                  "mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm transition-shadow duration-300 hover:shadow-md",
                   count === 1 && "max-h-[512px]",
                   count === 2 && "grid grid-cols-2 gap-0.5",
                   count === 3 && "grid grid-cols-2 gap-0.5",
