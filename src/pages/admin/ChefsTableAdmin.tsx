@@ -100,7 +100,7 @@ export default function ChefsTableAdmin() {
 
   const pendingRequests = requests.filter(r => r.status === "pending");
 
-  const bulkSessions = useAdminBulkActions(filteredSessions);
+  const bulkSessions = useAdminBulkActions(sortedSessions);
 
   const { exportCSV: exportSessionsCSV } = useCSVExport({
     columns: [
