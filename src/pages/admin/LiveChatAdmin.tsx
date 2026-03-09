@@ -285,7 +285,7 @@ export default function LiveChatAdmin() {
           <ScrollArea className="flex-1">
             <div className="p-2 space-y-1">
               {isLoading ? (
-                [1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full rounded-xl" />)
+                [1, 2, 3].map(i => <div key={i} className="h-16 w-full rounded-xl bg-muted/50 animate-pulse" />)
               ) : filteredSessions.length === 0 ? (
                 <div className="flex flex-col items-center py-12 text-center">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-3">
