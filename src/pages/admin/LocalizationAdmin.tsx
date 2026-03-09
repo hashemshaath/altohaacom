@@ -533,7 +533,7 @@ export default function LocalizationAdmin() {
                           <AdminTableSkeleton rows={5} columns={5} showActions />
                         </TableCell>
                       </TableRow>
-                    ) : filteredTranslations.length === 0 ? (
+                    ) : sortedTranslations.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={7} className="p-0">
                           <AdminEmptyState
