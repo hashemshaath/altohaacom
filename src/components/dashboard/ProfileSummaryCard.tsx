@@ -55,7 +55,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
   const initials = (profile.full_name || "U").slice(0, 2).toUpperCase();
 
   return (
-    <Card className="overflow-hidden border-border/40 shadow-sm hover:shadow-lg transition-all duration-300 group/card">
+    <Card className="overflow-hidden border-border/40 shadow-sm hover:shadow-xl transition-all duration-500 group/card">
       {/* Gradient header */}
       <div className="h-20 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,hsl(var(--primary)/0.15),transparent_60%)]" />
