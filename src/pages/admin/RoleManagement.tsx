@@ -558,13 +558,18 @@ export default function RoleManagement() {
         <TabsContent value="users" className="mt-4 space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
+               <CardTitle className="text-sm flex items-center gap-2">
                 <UserCog className="h-4 w-4 text-primary" />
                 {isAr ? "تعيين الأدوار للمستخدمين" : "Assign Roles to Users"}
               </CardTitle>
               <CardDescription className="text-xs">
                 {isAr ? "ابحث عن مستخدم وعيّن أو أزل الأدوار مباشرة" : "Search for a user and assign or remove roles directly"}
               </CardDescription>
+              {usersForAssignment.length > 0 && (
+                <Button variant="outline" size="sm" className="gap-1.5 ms-auto" onClick={() => exportUsersCSV(usersForAssignment)}>
+                  <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+                </Button>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="relative">
