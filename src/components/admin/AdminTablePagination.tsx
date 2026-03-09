@@ -55,8 +55,10 @@ export const AdminTablePagination = memo(function AdminTablePagination({
         <Button variant="ghost" size="icon" className="h-7 w-7" disabled={!hasPrev} onClick={() => onPageChange(page - 1)}>
           <ChevronLeft className="h-3.5 w-3.5" />
         </Button>
-        <span className="text-xs text-muted-foreground px-2 min-w-[60px] text-center">
-          {isAr ? `${page} / ${totalPages}` : `${page} / ${totalPages}`}
+        <span className="text-xs font-medium px-2 min-w-[60px] text-center tabular-nums">
+          <span className="text-foreground">{page}</span>
+          <span className="text-muted-foreground/50"> / </span>
+          <span className="text-muted-foreground">{totalPages}</span>
         </span>
         <Button variant="ghost" size="icon" className="h-7 w-7" disabled={!hasNext} onClick={() => onPageChange(page + 1)}>
           <ChevronRight className="h-3.5 w-3.5" />
