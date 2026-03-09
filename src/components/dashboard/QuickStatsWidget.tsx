@@ -17,6 +17,7 @@ interface StatCardProps {
 }
 
 function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColor = "text-primary", accent = "border-primary/20" }: StatCardProps) {
+  const numValue = typeof value === "number" ? value : 0;
   return (
     <Card className={`group relative overflow-hidden border-s-4 ${accent} bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-card`}>
       <div className="pointer-events-none absolute -end-6 -top-6 h-12 w-12 rounded-full bg-primary/5 blur-xl transition-all duration-500 group-hover:h-24 group-hover:w-24 group-hover:bg-primary/10" />
@@ -24,8 +25,15 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
         <div className={`flex h-9 w-9 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl ${iconBg} shadow-inner transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}>
           <Icon className={`h-4 w-4 sm:h-6 sm:w-6 ${iconColor}`} />
         </div>
-        <div className="min-w-0">
-          <p className="text-2xl sm:text-3xl font-black leading-none tracking-tight text-foreground tabular-nums group-hover:text-primary transition-colors">{value}</p>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-1.5">
+            <p className="text-2xl sm:text-3xl font-black leading-none tracking-tight text-foreground tabular-nums group-hover:text-primary transition-colors">{value}</p>
+            {numValue > 0 && (
+              <span className={`text-[9px] font-bold ${iconColor} opacity-0 group-hover:opacity-100 transition-opacity`}>
+                ●
+              </span>
+            )}
+          </div>
           <p className="mt-1 sm:mt-2 truncate text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">{label}</p>
         </div>
       </CardContent>

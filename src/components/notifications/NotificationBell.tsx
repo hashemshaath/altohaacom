@@ -164,15 +164,18 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           {dndMode ? (
             <BellOff className="h-5 w-5 text-muted-foreground" />
           ) : (
-            <Bell className="h-5 w-5 transition-transform group-hover:rotate-12" />
+            <Bell className={cn("h-5 w-5 transition-transform group-hover:rotate-12", unreadCount > 0 && "text-primary")} />
           )}
           {unreadCount > 0 && !dndMode && (
             <Badge
               variant="destructive"
-              className="absolute -top-1 -end-1 h-5 w-5 flex items-center justify-center p-0 text-xs animate-scale-in"
+              className="absolute -top-1 -end-1 h-5 min-w-5 flex items-center justify-center p-0 text-xs animate-scale-in"
             >
-              {unreadCount > 9 ? "9+" : unreadCount}
+              {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>
+          )}
+          {unreadCount > 0 && !dndMode && (
+            <span className="absolute -top-1 -end-1 h-5 w-5 rounded-full bg-destructive/40 animate-ping pointer-events-none" />
           )}
         </Button>
       </DropdownMenuTrigger>
