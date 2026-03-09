@@ -513,7 +513,12 @@ export default function LeadManagement() {
                 {isAr ? "لا توجد نتائج" : "No leads found"}
               </p>
             ) : (
-              <Table>
+              {(() => {
+                const { sorted: sortedLeads, sortColumn: leadSortCol, sortDirection: leadSortDir, toggleSort: toggleLeadSort } = useTableSort(leads, "created_at", "desc");
+                const leadPagination = usePagination(sortedLeads, { defaultPageSize: 15 });
+                return (
+                  <>
+                  <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10">
@@ -522,17 +527,17 @@ export default function LeadManagement() {
                         onCheckedChange={toggleSelectAll}
                       />
                     </TableHead>
-                    <TableHead>{isAr ? "جهة الاتصال" : "Contact"}</TableHead>
-                    <TableHead>{isAr ? "الشركة" : "Company"}</TableHead>
-                    <TableHead>{isAr ? "النوع" : "Type"}</TableHead>
-                    <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                    <TableHead>{isAr ? "المصدر" : "Source"}</TableHead>
-                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
+                    <SortableTableHead column="contact_name" label={isAr ? "جهة الاتصال" : "Contact"} sortColumn={leadSortCol} sortDirection={leadSortDir} onSort={toggleLeadSort} />
+                    <SortableTableHead column="company_name" label={isAr ? "الشركة" : "Company"} sortColumn={leadSortCol} sortDirection={leadSortDir} onSort={toggleLeadSort} />
+                    <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={leadSortCol} sortDirection={leadSortDir} onSort={toggleLeadSort} />
+                    <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={leadSortCol} sortDirection={leadSortDir} onSort={toggleLeadSort} />
+                    <SortableTableHead column="source" label={isAr ? "المصدر" : "Source"} sortColumn={leadSortCol} sortDirection={leadSortDir} onSort={toggleLeadSort} />
+                    <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={leadSortCol} sortDirection={leadSortDir} onSort={toggleLeadSort} />
                     <TableHead className="w-12"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {leads.map(lead => (
+                  {leadPagination.paginated.map(lead => (
                     <TableRow key={lead.id} className="cursor-pointer hover:bg-muted/50">
                       <TableCell onClick={e => e.stopPropagation()}>
                         <Checkbox
