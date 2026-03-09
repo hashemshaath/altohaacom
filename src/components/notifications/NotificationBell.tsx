@@ -164,7 +164,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           {dndMode ? (
             <BellOff className="h-5 w-5 text-muted-foreground" />
           ) : (
-            <Bell className={cn("h-5 w-5 transition-transform group-hover:rotate-12", unreadCount > 0 && "text-primary")} />
+            <Bell className={cn("h-5 w-5 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110", unreadCount > 0 && "text-primary")} />
           )}
           {unreadCount > 0 && !dndMode && (
             <Badge
