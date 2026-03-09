@@ -712,6 +712,7 @@ export default function InvoicesAdmin() {
           {isLoading ? (
             <div className="p-6"><Skeleton className="h-64" /></div>
           ) : invoices.length > 0 ? (
+            <>
             <div className="overflow-x-auto">
               <Table>
                  <TableHeader>
@@ -773,6 +774,7 @@ export default function InvoicesAdmin() {
               onPageChange={pagination.goTo}
               onPageSizeChange={pagination.changePageSize}
             />
+            </>
           ) : (
               <AdminEmptyState
                 icon={FileText}
