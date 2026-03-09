@@ -26,14 +26,14 @@ export const TrendIndicator = memo(function TrendIndicator({ value, suffix, isPe
 
   return (
     <span className={cn(
-      "inline-flex items-center gap-0.5 font-semibold tabular-nums",
+      "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 font-semibold tabular-nums",
       textSize,
-      isPositive && "text-chart-2",
-      isNeutral && "text-muted-foreground",
-      !isPositive && !isNeutral && "text-destructive",
+      isPositive && "text-chart-2 bg-chart-2/10",
+      isNeutral && "text-muted-foreground bg-muted",
+      !isPositive && !isNeutral && "text-destructive bg-destructive/10",
       className
     )}>
-      <Icon className={iconSize} />
+      <Icon className={cn(iconSize, "transition-transform duration-200", isPositive && "animate-bounce-subtle")} />
       {Math.abs(value)}{isPercentage ? "%" : ""}{suffix ? ` ${suffix}` : ""}
     </span>
   );
