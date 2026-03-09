@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle, XCircle, DollarSign, Megaphone, Pause, Play } from "lucide-react";
+import { CheckCircle, XCircle, DollarSign, Megaphone, Pause, Play, TrendingUp, MousePointerClick, Eye } from "lucide-react";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { statusColors } from "./statusColors";
 
@@ -26,6 +26,16 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  const stats = useMemo(() => {
+    const totalBudget = campaigns.reduce((s, c) => s + (c.budget || 0), 0);
+    const totalSpent = campaigns.reduce((s, c) => s + (c.spent || 0), 0);
+    const totalImpressions = campaigns.reduce((s, c) => s + (c.total_impressions || 0), 0);
+    const totalClicks = campaigns.reduce((s, c) => s + (c.total_clicks || 0), 0);
+    const avgCtr = totalImpressions ? ((totalClicks / totalImpressions) * 100).toFixed(1) : "0";
+    const activeCount = campaigns.filter(c => c.status === "active").length;
+    return { totalBudget, totalSpent, totalImpressions, totalClicks, avgCtr, activeCount };
+  }, [campaigns]);
+
   if (campaigns.length === 0) {
     return (
       <Card className="rounded-2xl">
@@ -40,8 +50,31 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
     );
   }
 
+
   return (
     <div className="space-y-3">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { icon: Megaphone, label: isAr ? "حملات نشطة" : "Active", value: stats.activeCount, color: "text-chart-2" },
+          { icon: Eye, label: isAr ? "مشاهدات" : "Impressions", value: stats.totalImpressions.toLocaleString(), color: "text-primary" },
+          { icon: MousePointerClick, label: isAr ? "نقرات" : "Clicks", value: stats.totalClicks.toLocaleString(), color: "text-chart-4" },
+          { icon: TrendingUp, label: isAr ? "معدل CTR" : "Avg CTR", value: `${stats.avgCtr}%`, color: "text-chart-1" },
+        ].map((s, i) => (
+          <Card key={i} className="rounded-2xl">
+            <CardContent className="p-3 flex items-center gap-3">
+              <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-muted/50`}>
+                <s.icon className={`h-4 w-4 ${s.color}`} />
+              </div>
+              <div>
+                <p className="text-lg font-bold leading-none">{s.value}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       <BulkActionBar
         count={bulkActions.count}
         onClear={bulkActions.clearSelection}

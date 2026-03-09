@@ -181,6 +181,12 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
             </div>
           </div>
 
+          {profile?.bio && (
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xl mt-1">
+              {isAr ? (profile.bio_ar || profile.bio) : profile.bio}
+            </p>
+          )}
+
           <div className="flex items-center gap-2 flex-wrap">
             <Badge className={`${tier.color} gap-1.5 px-3.5 py-2 shadow-sm border rounded-2xl text-xs font-bold`}>
               <TierIcon className="h-3.5 w-3.5" />

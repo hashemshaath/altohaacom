@@ -8,7 +8,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bell, CheckCheck, Filter, BellOff, Clock, Settings, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Bell, CheckCheck, Filter, BellOff, Clock, Settings, Trash2, Search } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -53,6 +54,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
   const navigate = useNavigate();
   const [tab, setTab] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["smart-notifications", user?.id],
@@ -119,14 +121,21 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
     },
   });
 
-  const filtered = useMemo(() => notifications.filter(n => {
-    if (tab === "unread" && n.is_read) return false;
-    if (categoryFilter !== "all") {
-      const cat = categoryMap[n.type || "system"] || "system";
-      if (cat !== categoryFilter) return false;
-    }
-    return true;
-  }), [notifications, tab, categoryFilter]);
+  const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return notifications.filter(n => {
+      if (tab === "unread" && n.is_read) return false;
+      if (categoryFilter !== "all") {
+        const cat = categoryMap[n.type || "system"] || "system";
+        if (cat !== categoryFilter) return false;
+      }
+      if (q) {
+        const text = `${n.title || ""} ${n.title_ar || ""} ${n.body || ""} ${n.body_ar || ""}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [notifications, tab, categoryFilter, searchQuery]);
 
   const unreadCount = useMemo(() => notifications.filter(n => !n.is_read).length, [notifications]);
   const readCount = useMemo(() => notifications.filter(n => n.is_read).length, [notifications]);
@@ -175,7 +184,18 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
             </TabsList>
           </div>
 
-          {/* Category filter chips */}
+          {/* Search & category filter */}
+          <div className="px-4 pt-2">
+            <div className="relative">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "بحث في الإشعارات..." : "Search notifications..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 text-xs ps-8 rounded-xl"
+              />
+            </div>
+          </div>
           <div className="px-4 py-2 flex gap-1.5 flex-wrap">
             {(Object.keys(categoryLabels) as CategoryFilter[]).map(cat => (
               <Badge

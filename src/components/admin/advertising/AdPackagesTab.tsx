@@ -4,7 +4,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Package, Star, ExternalLink, CheckCircle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Package, Star, ExternalLink, CheckCircle, Pencil } from "lucide-react";
 
 const tierColors: Record<string, string> = {
   platinum: "border-primary bg-primary/5",
@@ -15,9 +16,11 @@ const tierColors: Record<string, string> = {
 
 interface Props {
   packages: any[];
+  onToggleActive?: (id: string, active: boolean) => void;
+  onEdit?: (pkg: any) => void;
 }
 
-export const AdPackagesTab = memo(function AdPackagesTab({ packages }: Props) {
+export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleActive, onEdit }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -86,9 +89,22 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages }: Props) {
                 </p>
               )}
 
-              <Badge variant={pkg.is_active ? "secondary" : "outline"} className="w-full justify-center text-[10px]">
-                {pkg.is_active ? (isAr ? "مفعلة" : "Active") : (isAr ? "معطلة" : "Inactive")}
-              </Badge>
+              <div className="flex items-center justify-between gap-2 border-t border-border/30 pt-2">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={pkg.is_active}
+                    onCheckedChange={(checked) => onToggleActive?.(pkg.id, checked)}
+                  />
+                  <span className="text-[10px] text-muted-foreground">
+                    {pkg.is_active ? (isAr ? "مفعلة" : "Active") : (isAr ? "معطلة" : "Inactive")}
+                  </span>
+                </div>
+                {onEdit && (
+                  <Button size="sm" variant="ghost" className="h-7 w-7 rounded-xl" onClick={() => onEdit(pkg)}>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}
