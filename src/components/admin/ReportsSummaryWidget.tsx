@@ -4,9 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { FileBarChart, Users, Trophy, Package, FileText, TrendingUp, Download, Landmark } from "lucide-react";
-import { useCSVExport } from "@/hooks/useCSVExport";
+import { FileBarChart, Users, Trophy, Package, FileText, TrendingUp, Landmark } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface ModuleStat {
@@ -15,6 +13,7 @@ interface ModuleStat {
   total: number;
   thisWeek: number;
   color: string;
+  bg: string;
 }
 
 export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
@@ -63,12 +62,12 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
   if (!data) return null;
 
   const modules: ModuleStat[] = [
-    { icon: Users, label: isAr ? "المستخدمين" : "Users", total: data.users.total, thisWeek: data.users.week, color: "text-primary" },
-    { icon: Trophy, label: isAr ? "المسابقات" : "Competitions", total: data.comps.total, thisWeek: data.comps.week, color: "text-chart-2" },
-    { icon: Package, label: isAr ? "الطلبات" : "Orders", total: data.orders.total, thisWeek: data.orders.week, color: "text-chart-3" },
-    { icon: FileText, label: isAr ? "المقالات" : "Articles", total: data.articles.total, thisWeek: data.articles.week, color: "text-chart-4" },
-    { icon: Landmark, label: isAr ? "المعارض" : "Exhibitions", total: data.exhibitions.total, thisWeek: data.exhibitions.week, color: "text-chart-5" },
-    { icon: FileBarChart, label: isAr ? "الشهادات" : "Certificates", total: data.certs.total, thisWeek: data.certs.week, color: "text-chart-1" },
+    { icon: Users, label: isAr ? "المستخدمين" : "Users", total: data.users.total, thisWeek: data.users.week, color: "text-primary", bg: "bg-primary/10" },
+    { icon: Trophy, label: isAr ? "المسابقات" : "Competitions", total: data.comps.total, thisWeek: data.comps.week, color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: Package, label: isAr ? "الطلبات" : "Orders", total: data.orders.total, thisWeek: data.orders.week, color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: FileText, label: isAr ? "المقالات" : "Articles", total: data.articles.total, thisWeek: data.articles.week, color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: Landmark, label: isAr ? "المعارض" : "Exhibitions", total: data.exhibitions.total, thisWeek: data.exhibitions.week, color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: FileBarChart, label: isAr ? "الشهادات" : "Certificates", total: data.certs.total, thisWeek: data.certs.week, color: "text-chart-1", bg: "bg-chart-1/10" },
   ];
 
   return (
@@ -76,24 +75,30 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
-            <FileBarChart className="h-4 w-4 text-chart-2" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-2/10">
+              <FileBarChart className="h-4 w-4 text-chart-2" />
+            </div>
             {isAr ? "ملخص التقارير الأسبوعي" : "Weekly Reports Summary"}
           </CardTitle>
-          <Badge variant="outline" className="text-[9px]">{isAr ? "آخر 7 أيام" : "Last 7 days"}</Badge>
+          <Badge variant="outline" className="text-[9px] font-medium">{isAr ? "آخر 7 أيام" : "Last 7 days"}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {modules.map((m, i) => (
-            <div key={i} className="p-2.5 rounded-xl bg-muted/30 border border-border/40">
-              <div className="flex items-center gap-2 mb-1">
-                <m.icon className={`h-3.5 w-3.5 ${m.color}`} />
-                <span className="text-[10px] text-muted-foreground">{m.label}</span>
+            <div key={i} className="p-3 rounded-xl border border-border/30 transition-all duration-200 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 group">
+              <div className="flex items-center gap-2 mb-2">
+                <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${m.bg} transition-transform duration-200 group-hover:scale-110`}>
+                  <m.icon className={`h-3 w-3 ${m.color}`} />
+                </div>
+                <span className="text-[11px] text-muted-foreground font-medium">{m.label}</span>
               </div>
-              <AnimatedCounter value={m.total} className="text-lg font-bold" />
-              <div className="flex items-center gap-1 mt-0.5">
+              <AnimatedCounter value={m.total} className="text-xl font-bold tabular-nums" />
+              <div className="flex items-center gap-1 mt-1">
                 <TrendingUp className="h-2.5 w-2.5 text-chart-2" />
-                <span className="text-[9px] text-chart-2 font-medium">+<AnimatedCounter value={m.thisWeek} className="inline" /> {isAr ? "هذا الأسبوع" : "this week"}</span>
+                <span className="text-[10px] text-chart-2 font-semibold tabular-nums">
+                  +<AnimatedCounter value={m.thisWeek} className="inline" /> {isAr ? "هذا الأسبوع" : "this week"}
+                </span>
               </div>
             </div>
           ))}

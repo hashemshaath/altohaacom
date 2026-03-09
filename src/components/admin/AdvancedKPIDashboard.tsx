@@ -5,10 +5,16 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
-import { Activity, Users, Trophy, FileText, MessageSquare, DollarSign, TrendingUp, Ticket } from "lucide-react";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+} from "recharts";
+import { Activity, Users, Trophy, FileText, DollarSign, TrendingUp, Ticket } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import {
+  CHART_COLORS, TOOLTIP_STYLE, AXIS_TICK, X_AXIS_PROPS, Y_AXIS_PROPS, GRID_PROPS, getNoDataText,
+} from "@/lib/chartConfig";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();
@@ -112,15 +118,17 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
         {data.kpis.map(kpi => (
-          <Card key={kpi.label} className="transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group/kpi">
+          <Card key={kpi.label} className="transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 group/kpi">
             <CardContent className="p-3 flex items-center gap-2.5">
-              <div className={`rounded-xl p-2 ${kpi.bg} transition-transform group-hover/kpi:scale-110`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
+              <div className={`rounded-xl p-2 ${kpi.bg} transition-transform duration-200 group-hover/kpi:scale-110`}>
+                <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
+              </div>
               <div className="min-w-0">
-                <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
+                <p className="text-[10px] text-muted-foreground font-medium truncate">{kpi.label}</p>
                 <div className="flex items-baseline gap-1.5">
-                  <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} className="text-lg font-bold" />
+                  <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} className="text-lg font-bold tabular-nums" />
                   {kpi.growth !== 0 && (
-                    <Badge variant={kpi.growth > 0 ? "default" : "destructive"} className="text-[8px] h-4 px-1">
+                    <Badge variant={kpi.growth > 0 ? "default" : "destructive"} className="text-[8px] h-4 px-1 font-semibold">
                       {kpi.growth > 0 ? "+" : ""}{kpi.growth}%
                     </Badge>
                   )}
@@ -135,18 +143,38 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
         {/* Registration Trend */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-primary" />
-              {isAr ? "اتجاه التسجيل (30 يوم)" : "Registration Trend (30 Days)"}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                {isAr ? "اتجاه التسجيل (30 يوم)" : "Registration Trend (30 Days)"}
+              </CardTitle>
+              <Badge variant="outline" className="text-[9px]">
+                {isAr ? "آخر 30 يوم" : "Last 30 days"}
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={160}>
+            <ResponsiveContainer width="100%" height={180}>
               <LineChart data={data.trend}>
-                <XAxis dataKey="day" tick={{ fontSize: 9 }} interval={4} />
-                <YAxis tick={{ fontSize: 9 }} width={24} />
-                <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8 }} />
-                <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} />
+                <XAxis
+                  dataKey="day"
+                  {...X_AXIS_PROPS}
+                  interval={4}
+                />
+                <YAxis {...Y_AXIS_PROPS} width={28} />
+                <Tooltip
+                  contentStyle={TOOLTIP_STYLE}
+                  labelStyle={{ fontSize: 11, fontWeight: 600, marginBottom: 4 }}
+                  formatter={(value: number) => [value, isAr ? "المستخدمين" : "Users"]}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="users"
+                  stroke={CHART_COLORS[0]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4, strokeWidth: 2, fill: "hsl(var(--card))" }}
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -161,12 +189,21 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={200}>
               <RadarChart data={data.radarData}>
-                <PolarGrid stroke="hsl(var(--border))" />
-                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 9 }} />
+                <PolarGrid stroke="hsl(var(--border))" strokeOpacity={0.6} />
+                <PolarAngleAxis
+                  dataKey="metric"
+                  tick={{ ...AXIS_TICK, fontSize: 10 }}
+                />
                 <PolarRadiusAxis tick={false} domain={[0, 100]} />
-                <Radar dataKey="score" fill="hsl(var(--primary))" fillOpacity={0.3} stroke="hsl(var(--primary))" strokeWidth={2} />
+                <Radar
+                  dataKey="score"
+                  fill={CHART_COLORS[0]}
+                  fillOpacity={0.2}
+                  stroke={CHART_COLORS[0]}
+                  strokeWidth={2}
+                />
               </RadarChart>
             </ResponsiveContainer>
           </CardContent>
