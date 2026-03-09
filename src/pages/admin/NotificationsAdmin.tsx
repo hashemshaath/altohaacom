@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
