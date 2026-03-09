@@ -118,6 +118,12 @@ export function useApplyTheme() {
 
     if (bodyFont) root.style.setProperty("--font-sans", bodyFont.family);
     if (headingFont) root.style.setProperty("--font-serif", headingFont.family);
+
+    // Re-apply admin color template on top (if active)
+    const adminTemplateId = localStorage.getItem(ADMIN_COLOR_STORAGE_KEY);
+    if (adminTemplateId && ADMIN_COLOR_TEMPLATES.find((t) => t.id === adminTemplateId)) {
+      applyAdminColorTemplate(adminTemplateId);
+    }
   }, []);
 
   // Apply on mount and when settings change
