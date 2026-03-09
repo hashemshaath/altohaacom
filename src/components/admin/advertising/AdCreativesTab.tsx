@@ -86,18 +86,13 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
       </div>
 
       {/* Filters */}
-      <div className="flex gap-3 items-center">
-        <div className="relative flex-1">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={isAr ? "بحث في المواد الإعلانية..." : "Search creatives..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="ps-9"
-          />
-        </div>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={isAr ? "بحث في المواد الإعلانية..." : "Search creatives..."}
+      >
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] h-9 rounded-xl">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -107,7 +102,7 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
             <SelectItem value="rejected">{isAr ? "مرفوضة" : "Rejected"}</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </AdminFilterBar>
 
       {filteredCreatives.length === 0 ? (
         <Card className="rounded-2xl">
