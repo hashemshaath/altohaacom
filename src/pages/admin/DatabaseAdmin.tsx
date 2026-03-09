@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
