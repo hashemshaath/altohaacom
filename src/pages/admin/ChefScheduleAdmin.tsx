@@ -1,5 +1,9 @@
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -80,7 +84,9 @@ export default function ChefScheduleAdmin() {
     return true;
   }), [allEvents, typeFilter, statusFilter, visFilter, search]);
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedSchedule, sortColumn: schSortCol, sortDirection: schSortDir, toggleSort: schToggleSort } = useTableSort(filtered, "start_date", "desc");
+  const schedulePagination = usePagination(sortedSchedule, { defaultPageSize: 15 });
+  const bulk = useAdminBulkActions(schedulePagination.paginated);
 
   const { exportCSV: exportScheduleCSV } = useCSVExport({
     columns: [
@@ -285,24 +291,24 @@ export default function ChefScheduleAdmin() {
                     />
                   </TableHead>
                   <TableHead className="text-xs">{isAr ? "الشيف" : "Chef"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "العنوان" : "Title"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "الرؤية" : "Vis."}</TableHead>
+                  <SortableTableHead column="event_type" label={isAr ? "النوع" : "Type"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="title" label={isAr ? "العنوان" : "Title"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="start_date" label={isAr ? "التاريخ" : "Date"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="city" label={isAr ? "الموقع" : "Location"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="visibility" label={isAr ? "الرؤية" : "Vis."} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
                   <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.length === 0 ? (
+                {schedulePagination.paginated.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
                       {isAr ? "لا توجد أحداث" : "No events found"}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filtered.map(ev => {
+                  schedulePagination.paginated.map(ev => {
                     const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                     const Icon = EVENT_ICONS[ev.event_type] || MoreHorizontal;
                     const VisIcon = VIS_ICONS[ev.visibility] || Lock;
@@ -357,6 +363,7 @@ export default function ChefScheduleAdmin() {
                 )}
               </TableBody>
             </Table>
+            <AdminTablePagination page={schedulePagination.page} totalPages={schedulePagination.totalPages} totalItems={schedulePagination.totalItems} startItem={schedulePagination.startItem} endItem={schedulePagination.endItem} pageSize={schedulePagination.pageSize} pageSizeOptions={schedulePagination.pageSizeOptions} hasNext={schedulePagination.hasNext} hasPrev={schedulePagination.hasPrev} onPageChange={schedulePagination.goTo} onPageSizeChange={schedulePagination.changePageSize} />
           </Card>
         </TabsContent>
 

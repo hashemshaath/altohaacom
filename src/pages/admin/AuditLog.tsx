@@ -1,5 +1,9 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -134,8 +138,13 @@ export default function AuditLog() {
     return [...new Set(contentAudit.map(c => c.action_type))].sort();
   }, [contentAudit]);
 
-  const bulkAdmin = useAdminBulkActions(filteredActions);
-  const bulkContent = useAdminBulkActions(filteredContent);
+  const { sorted: sortedContent, sortColumn: cSortCol, sortDirection: cSortDir, toggleSort: cToggleSort } = useTableSort(filteredContent, "created_at", "desc");
+  const contentPagination = usePagination(sortedContent, { defaultPageSize: 15 });
+  const bulkContent = useAdminBulkActions(contentPagination.paginated);
+
+  const { sorted: sortedActions, sortColumn: aSortCol, sortDirection: aSortDir, toggleSort: aToggleSort } = useTableSort(filteredActions, "created_at", "desc");
+  const actionPagination = usePagination(sortedActions, { defaultPageSize: 15 });
+  const bulkAdmin = useAdminBulkActions(actionPagination.paginated);
 
   const { exportCSV: exportAdminCSV } = useCSVExport({
     columns: [
@@ -278,15 +287,15 @@ export default function AuditLog() {
                     <TableHeader>
                      <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkContent.isAllSelected} onCheckedChange={bulkContent.toggleAll} /></TableHead>
-                        <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
-                        <TableHead className="text-xs">{isAr ? "النوع" : "Entity"}</TableHead>
+                        <SortableTableHead column="action_type" label={isAr ? "الإجراء" : "Action"} sortColumn={cSortCol} sortDirection={cSortDir} onSort={cToggleSort} className="text-xs" />
+                        <SortableTableHead column="entity_type" label={isAr ? "النوع" : "Entity"} sortColumn={cSortCol} sortDirection={cSortDir} onSort={cToggleSort} className="text-xs" />
                         <TableHead className="text-xs">{isAr ? "المحتوى" : "Content"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "السبب" : "Reason"}</TableHead>
-                        <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
+                        <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={cSortCol} sortDirection={cSortDir} onSort={cToggleSort} className="text-xs" />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredContent.map(entry => (
+                      {contentPagination.paginated.map(entry => (
                         <TableRow key={entry.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkContent.isSelected(entry.id) ? "bg-primary/5" : ""}`}>
                           <TableCell><Checkbox checked={bulkContent.isSelected(entry.id)} onCheckedChange={() => bulkContent.toggleOne(entry.id)} /></TableCell>
                           <TableCell>{getContentActionBadge(entry.action_type)}</TableCell>
@@ -301,6 +310,7 @@ export default function AuditLog() {
                       ))}
                     </TableBody>
                   </Table>
+                  <AdminTablePagination page={contentPagination.page} totalPages={contentPagination.totalPages} totalItems={contentPagination.totalItems} startItem={contentPagination.startItem} endItem={contentPagination.endItem} pageSize={contentPagination.pageSize} pageSizeOptions={contentPagination.pageSizeOptions} hasNext={contentPagination.hasNext} hasPrev={contentPagination.hasPrev} onPageChange={contentPagination.goTo} onPageSizeChange={contentPagination.changePageSize} />
                 </ScrollArea>
               )}
             </AdminTableCard>
@@ -343,13 +353,13 @@ export default function AuditLog() {
                     <TableHeader>
                       <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkAdmin.isAllSelected} onCheckedChange={bulkAdmin.toggleAll} /></TableHead>
-                        <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
+                        <SortableTableHead column="action_type" label={isAr ? "الإجراء" : "Action"} sortColumn={aSortCol} sortDirection={aSortDir} onSort={aToggleSort} className="text-xs" />
                         <TableHead className="text-xs">{isAr ? "التفاصيل" : "Details"}</TableHead>
-                        <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
+                        <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={aSortCol} sortDirection={aSortDir} onSort={aToggleSort} className="text-xs" />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredActions.map(action => (
+                      {actionPagination.paginated.map(action => (
                         <TableRow key={action.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkAdmin.isSelected(action.id) ? "bg-primary/5" : ""}`}>
                           <TableCell><Checkbox checked={bulkAdmin.isSelected(action.id)} onCheckedChange={() => bulkAdmin.toggleOne(action.id)} /></TableCell>
                           <TableCell>{getActionBadge(action.action_type)}</TableCell>
@@ -363,6 +373,7 @@ export default function AuditLog() {
                       ))}
                     </TableBody>
                   </Table>
+                  <AdminTablePagination page={actionPagination.page} totalPages={actionPagination.totalPages} totalItems={actionPagination.totalItems} startItem={actionPagination.startItem} endItem={actionPagination.endItem} pageSize={actionPagination.pageSize} pageSizeOptions={actionPagination.pageSizeOptions} hasNext={actionPagination.hasNext} hasPrev={actionPagination.hasPrev} onPageChange={actionPagination.goTo} onPageSizeChange={actionPagination.changePageSize} />
                 </ScrollArea>
               )}
             </AdminTableCard>
