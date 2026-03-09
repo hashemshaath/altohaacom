@@ -71,14 +71,14 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
 
         <div className="grid grid-cols-2 gap-3">
           {/* Balance */}
-          <div className="rounded-xl bg-muted/40 p-3 text-center border border-border/30 hover:bg-muted/50 transition-all hover:border-border/50">
-            <p className="text-xl font-bold tabular-nums">{data.balance.toFixed(2)}</p>
+          <div className="rounded-xl bg-muted/40 p-3 text-center border border-border/30 hover:bg-muted/50 transition-all hover:border-border/50 group/bal">
+            <p className="text-xl font-bold tabular-nums group-hover/bal:text-primary transition-colors">{data.balance.toFixed(2)}</p>
             <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{data.currency}</p>
           </div>
 
           {/* Points */}
-          <div className="rounded-xl bg-chart-4/5 p-3 text-center border border-chart-4/15 hover:bg-chart-4/10 transition-all hover:border-chart-4/25">
-            <p className="text-xl font-bold tabular-nums text-chart-4">{data.points.toLocaleString()}</p>
+          <div className="rounded-xl bg-chart-4/5 p-3 text-center border border-chart-4/15 hover:bg-chart-4/10 transition-all hover:border-chart-4/25 group/pts">
+            <p className="text-xl font-bold tabular-nums text-chart-4 group-hover/pts:scale-105 transition-transform inline-block">{data.points.toLocaleString()}</p>
             <div className="flex items-center justify-center gap-1 mt-0.5">
               <Star className="h-2.5 w-2.5 text-chart-4" />
               <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "نقاط" : "Points"}</p>
@@ -88,9 +88,15 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
 
         {data.weeklyPoints > 0 && (
           <div className="mt-2.5 flex items-center justify-center gap-1.5 text-[10px] font-semibold text-chart-2 bg-chart-2/5 rounded-lg py-1.5 border border-chart-2/10">
-            <TrendingUp className="h-3 w-3" />
+            <TrendingUp className="h-3 w-3 animate-bounce" />
             +{data.weeklyPoints.toLocaleString()} {isAr ? "نقطة هذا الأسبوع" : "pts this week"}
           </div>
+        )}
+
+        {data.weeklyPoints === 0 && data.points > 0 && (
+          <p className="mt-2 text-center text-[9px] text-muted-foreground/60">
+            {isAr ? "اكسب نقاط عبر التفاعل والمشاركة" : "Earn points by engaging & participating"}
+          </p>
         )}
       </CardContent>
     </Card>

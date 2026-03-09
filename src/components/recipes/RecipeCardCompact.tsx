@@ -78,7 +78,7 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
               </span>
             )}
             {recipe.average_rating != null && recipe.average_rating > 0 && (
-              <span className="flex items-center gap-0.5">
+              <span className="flex items-center gap-0.5 font-semibold text-chart-4">
                 <Star className="h-2.5 w-2.5 fill-chart-4 text-chart-4" /> {recipe.average_rating.toFixed(1)}
               </span>
             )}
@@ -97,6 +97,12 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
           {totalTime > 0 && totalTime <= 15 && (
             <Badge variant="outline" className="mt-1.5 text-[8px] py-0 px-1.5 border-chart-3/30 text-chart-3">
               ⚡ {isAr ? "سريع التحضير" : "Quick prep"}
+            </Badge>
+          )}
+          {/* Popular recipe indicator */}
+          {recipe.save_count != null && recipe.save_count >= 25 && (
+            <Badge variant="outline" className="mt-1.5 text-[8px] py-0 px-1.5 border-primary/30 text-primary ms-1">
+              🔥 {isAr ? "وصفة شائعة" : "Popular"}
             </Badge>
           )}
         </CardContent>

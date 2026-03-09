@@ -70,11 +70,12 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
         )}
         {totalItems === 0 ? (
           <div className="flex flex-col items-center py-8 text-center">
-            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-chart-2/10">
-              <Eye className="h-4 w-4 text-chart-2" />
+            <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-chart-2/10">
+              <Eye className="h-5 w-5 text-chart-2" />
             </div>
-            <p className="text-sm font-medium text-chart-2">{isAr ? "كل شيء نظيف! ✨" : "All clear! ✨"}</p>
-            <p className="text-xs text-muted-foreground mt-1">{isAr ? "لا توجد عناصر معلقة" : "No pending items"}</p>
+            <p className="text-sm font-bold text-chart-2">{isAr ? "كل شيء نظيف! ✨" : "All clear! ✨"}</p>
+            <p className="text-xs text-muted-foreground mt-1">{isAr ? "لا توجد عناصر معلقة للمراجعة" : "No pending items to review"}</p>
+            <p className="text-[10px] text-muted-foreground/50 mt-0.5">{isAr ? "آخر فحص: الآن" : "Last checked: just now"}</p>
           </div>
         ) : (
           <div className="space-y-2">
