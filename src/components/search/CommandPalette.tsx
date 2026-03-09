@@ -131,6 +131,64 @@ export const CommandPalette = memo(function CommandPalette() {
     staleTime: 30000,
   });
 
+  // Trigger AI summary when we have results and query is 3+ chars
+  useEffect(() => {
+    if (debouncedQuery.length < 3 || !results.length) {
+      setAiSummary(null);
+      return;
+    }
+    let cancelled = false;
+    const fetchAI = async () => {
+      setIsAiLoading(true);
+      try {
+        const resp = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-search`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ query: debouncedQuery, language }),
+          }
+        );
+        if (!resp.ok || !resp.body) return;
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let accumulated = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let idx: number;
+          while ((idx = buffer.indexOf("\n")) !== -1) {
+            let line = buffer.slice(0, idx);
+            buffer = buffer.slice(idx + 1);
+            if (line.endsWith("\r")) line = line.slice(0, -1);
+            if (!line.startsWith("data: ")) continue;
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr === "[DONE]") break;
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content && !cancelled) {
+                accumulated += content;
+                setAiSummary(accumulated);
+              }
+            } catch { /* partial */ }
+          }
+        }
+      } catch {
+        // AI summary failed silently
+      } finally {
+        if (!cancelled) setIsAiLoading(false);
+      }
+    };
+    fetchAI();
+    return () => { cancelled = true; };
+  }, [debouncedQuery, results.length, language]);
+
   // Keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
