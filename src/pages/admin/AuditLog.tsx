@@ -138,8 +138,13 @@ export default function AuditLog() {
     return [...new Set(contentAudit.map(c => c.action_type))].sort();
   }, [contentAudit]);
 
-  const bulkAdmin = useAdminBulkActions(filteredActions);
-  const bulkContent = useAdminBulkActions(filteredContent);
+  const { sorted: sortedContent, sortColumn: cSortCol, sortDirection: cSortDir, toggleSort: cToggleSort } = useTableSort(filteredContent, "created_at", "desc");
+  const contentPagination = usePagination(sortedContent, { defaultPageSize: 15 });
+  const bulkContent = useAdminBulkActions(contentPagination.paginated);
+
+  const { sorted: sortedActions, sortColumn: aSortCol, sortDirection: aSortDir, toggleSort: aToggleSort } = useTableSort(filteredActions, "created_at", "desc");
+  const actionPagination = usePagination(sortedActions, { defaultPageSize: 15 });
+  const bulkAdmin = useAdminBulkActions(actionPagination.paginated);
 
   const { exportCSV: exportAdminCSV } = useCSVExport({
     columns: [
