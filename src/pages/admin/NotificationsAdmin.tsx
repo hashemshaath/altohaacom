@@ -512,7 +512,7 @@ export default function NotificationsAdmin() {
             return (
               <AdminTableCard>
                 {loadingRecent ? (
-                  <div className="p-6"><Skeleton className="h-64" /></div>
+                  <AdminTableSkeleton rows={5} columns={5} />
                 ) : filteredRecent.length > 0 ? (
                   <>
                     <div className="overflow-x-auto">

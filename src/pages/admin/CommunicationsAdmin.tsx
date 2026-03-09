@@ -438,9 +438,9 @@ export default function CommunicationsAdmin() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-24" />
-        <div className="grid grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
-        <Skeleton className="h-96" />
+        <AdminWidgetSkeleton rows={2} />
+        <div className="grid grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <AdminWidgetSkeleton key={i} rows={2} />)}</div>
+        <AdminTableSkeleton rows={5} columns={5} />
       </div>
     );
   }
