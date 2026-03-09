@@ -219,10 +219,10 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
                             </div>
                           )}
                           <div className={cn(
-                            "max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm transition-shadow",
+                            "max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm transition-all duration-300",
                             isMine
-                              ? "bg-primary text-primary-foreground rounded-br-md shadow-sm shadow-primary/10"
-                              : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm"
+                              ? "bg-primary text-primary-foreground rounded-br-md shadow-md shadow-primary/15 hover:shadow-lg hover:shadow-primary/20"
+                              : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm hover:shadow-md"
                           )}>
                             <p className="whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
                             <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
