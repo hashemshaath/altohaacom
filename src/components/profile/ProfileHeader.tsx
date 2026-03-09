@@ -83,6 +83,23 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
   const TierIcon = tier.icon;
   const profileViews = (profile as any)?.view_count || 0;
 
+  // Follower/following counts
+  const { data: followStats } = useQuery({
+    queryKey: ["profile-follow-stats", userId],
+    queryFn: async () => {
+      const [followersRes, followingRes] = await Promise.allSettled([
+        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("following_id", userId),
+        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("follower_id", userId),
+      ]);
+      return {
+        followers: followersRes.status === "fulfilled" ? (followersRes.value.count || 0) : 0,
+        following: followingRes.status === "fulfilled" ? (followingRes.value.count || 0) : 0,
+      };
+    },
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5,
+  });
+
   return (
     <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
       {/* Cover Image */}
