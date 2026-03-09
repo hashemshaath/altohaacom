@@ -32,8 +32,8 @@ import ChefScheduleEventForm from "@/components/admin/chef-schedule/ChefSchedule
 import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminScheduleCalendar";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
-import { useCSVExport } from "@/hooks/useCSVExport";
-import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 const EVENT_ICONS: Record<string, any> = {
