@@ -877,8 +877,7 @@ export default function CompetitionsAdmin() {
               </TableBody>
             </Table>
           )}
-        </CardContent>
-      </Card>
+      </AdminTableCard>
         </TabsContent>
       </Tabs>
 
