@@ -79,7 +79,7 @@ const ArticlesSection = memo(function ArticlesSection() {
             return (
               <Link
                 key={article.id}
-                to={`/articles/${article.slug}`}
+                to={`/news/${article.slug}`}
                 className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
               >
                 <Card className="overflow-hidden border-border/30 h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 rounded-2xl active:scale-[0.98]">
