@@ -212,8 +212,11 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
                 onClick={() => {
                   try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {}
                 }}
+                role="menuitem"
+                aria-current={isActive ? "page" : undefined}
+                aria-label={isAr ? item.labelAr : item.labelEn}
                 className={cn(
-                  "relative flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-[0.88] min-h-[48px] touch-manipulation select-none",
+                  "relative flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 rounded-xl transition-all duration-200 active:scale-[0.88] min-h-[48px] min-w-[48px] touch-manipulation select-none",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
@@ -237,7 +240,7 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
                     strokeWidth={isActive ? 2.5 : 2}
                   />
                   {item.to === "/dashboard" && unreadCount > 0 && (
-                    <span className="absolute -top-0.5 -end-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground animate-scale-in">
+                    <span className="absolute -top-0.5 -end-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground animate-scale-in" aria-label={`${unreadCount} notifications`}>
                       {unreadCount > 9 ? "9+" : unreadCount}
                     </span>
                   )}
