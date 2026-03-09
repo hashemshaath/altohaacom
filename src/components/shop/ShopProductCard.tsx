@@ -99,6 +99,11 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
               <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
               <span className="font-bold">{product.rating_avg.toFixed(1)}</span>
               {product.review_count > 0 && <span>({product.review_count})</span>}
+              {product.rating_avg >= 4.5 && (
+                <Badge variant="secondary" className="text-[7px] px-1 py-0 h-3 bg-chart-4/10 text-chart-4 border-0">
+                  {isAr ? "مفضّل" : "Top Rated"}
+                </Badge>
+              )}
             </div>
           )}
         </div>
