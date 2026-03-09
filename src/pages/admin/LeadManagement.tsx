@@ -440,60 +440,53 @@ export default function LeadManagement() {
       </div>
 
       {/* Filters + View Toggle */}
-      <Card>
-        <CardContent className="flex flex-wrap gap-4 pt-6">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={isAr ? "بحث بالاسم أو البريد الإلكتروني أو الشركة..." : "Search by name, email, or company..."}
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="ps-10"
-            />
-          </div>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder={isAr ? "نوع العميل" : "Lead Type"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
-              <SelectItem value="sponsor">{t("sponsor")}</SelectItem>
-              <SelectItem value="organizer">{t("organizer")}</SelectItem>
-              <SelectItem value="partnership">{isAr ? "شراكة" : "Partnership"}</SelectItem>
-              <SelectItem value="general">{isAr ? "عام" : "General"}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder={isAr ? "الحالة" : "Status"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isAr ? "جميع الحالات" : "All Statuses"}</SelectItem>
-              {LEAD_STATUSES.map(s => (
-                <SelectItem key={s} value={s}>{stageLabels[s]?.[language] || s}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex items-center border rounded-md">
-            <Button
-              variant={viewMode === "table" ? "secondary" : "ghost"}
-              size="icon"
-              className="h-9 w-9 rounded-e-none"
-              onClick={() => setViewMode("table")}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === "kanban" ? "secondary" : "ghost"}
-              size="icon"
-              className="h-9 w-9 rounded-s-none"
-              onClick={() => setViewMode("kanban")}
-            >
-              <Kanban className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={isAr ? "بحث بالاسم أو البريد الإلكتروني أو الشركة..." : "Search by name, email, or company..."}
+      >
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-40 rounded-xl">
+            <SelectValue placeholder={isAr ? "نوع العميل" : "Lead Type"} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+            <SelectItem value="sponsor">{t("sponsor")}</SelectItem>
+            <SelectItem value="organizer">{t("organizer")}</SelectItem>
+            <SelectItem value="partnership">{isAr ? "شراكة" : "Partnership"}</SelectItem>
+            <SelectItem value="general">{isAr ? "عام" : "General"}</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-40 rounded-xl">
+            <SelectValue placeholder={isAr ? "الحالة" : "Status"} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "جميع الحالات" : "All Statuses"}</SelectItem>
+            {LEAD_STATUSES.map(s => (
+              <SelectItem key={s} value={s}>{stageLabels[s]?.[language] || s}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="flex items-center border rounded-xl">
+          <Button
+            variant={viewMode === "table" ? "secondary" : "ghost"}
+            size="icon"
+            className="h-9 w-9 rounded-e-none"
+            onClick={() => setViewMode("table")}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === "kanban" ? "secondary" : "ghost"}
+            size="icon"
+            className="h-9 w-9 rounded-s-none"
+            onClick={() => setViewMode("kanban")}
+          >
+            <Kanban className="h-4 w-4" />
+          </Button>
+        </div>
+      </AdminFilterBar>
 
       {/* Bulk Actions Bar */}
       <BulkActionBar
