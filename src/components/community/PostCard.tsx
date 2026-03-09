@@ -94,8 +94,9 @@ export const PostCard = memo(function PostCard({
       )}
 
       {!isEditing && isViral && !post.is_pinned && (
-        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4">
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4 animate-in fade-in-50">
           🔥 {isAr ? "منشور رائج" : "Trending post"}
+          <span className="text-muted-foreground font-normal">• {totalEngagement} {isAr ? "تفاعل" : "interactions"}</span>
         </div>
       )}
 
