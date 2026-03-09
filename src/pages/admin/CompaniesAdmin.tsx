@@ -768,7 +768,7 @@ export default function CompaniesAdmin() {
               <div>
                 <h1 className="text-2xl font-bold">{isAr && companyDetails.name_ar ? companyDetails.name_ar : companyDetails.name}</h1>
                 <div className="flex flex-wrap items-center gap-2 mt-1">
-                  <Badge className={statusColors[companyDetails.status as CompanyStatus]}>{getStatusLabel(companyDetails.status)}</Badge>
+                  <AdminStatusBadge status={companyDetails.status} label={getStatusLabel(companyDetails.status)} />
                   <Badge variant="outline">{getTypeLabel(companyDetails.type)}</Badge>
                   {companyDetails.country_code && (
                     <Badge variant="outline">{countryFlag(companyDetails.country_code)} {companyDetails.country || companyDetails.country_code}</Badge>
