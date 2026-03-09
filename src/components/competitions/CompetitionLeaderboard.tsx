@@ -43,6 +43,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
 }: CompetitionLeaderboardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   const { data: leaderboard, isLoading } = useQuery({
     queryKey: ["competition-leaderboard", competitionId],
