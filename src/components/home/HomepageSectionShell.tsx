@@ -43,24 +43,29 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
   const config = useSectionConfig();
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   const animation = config?.animation || "none";
   const hasAnimation = animation !== "none";
 
   useEffect(() => {
-    if (!hasAnimation || !ref.current) {
-      setIsVisible(true);
+    const el = ref.current;
+    if (!el) {
+      setShouldRender(true);
+      if (!hasAnimation) setIsVisible(true);
       return;
     }
-    const el = ref.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true);
+          setShouldRender(true);
+          if (!hasAnimation) setIsVisible(true);
+          // For animated sections, delay visibility one frame so animation plays
+          else requestAnimationFrame(() => setIsVisible(true));
           observer.unobserve(el);
         }
       },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.01, rootMargin: "200px 0px 200px 0px" }
     );
     observer.observe(el);
     return () => observer.unobserve(el);
@@ -68,7 +73,11 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
 
   // If no config, render children with sensible default spacing
   if (!config) {
-    return <div className={SPACING_MAP.normal}>{children}</div>;
+    return (
+      <div ref={ref} className={SPACING_MAP.normal}>
+        {shouldRender ? children : <div className="min-h-[120px]" />}
+      </div>
+    );
   }
 
   const spacing = SPACING_MAP[config.spacing] || SPACING_MAP.normal;
@@ -84,7 +93,7 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
       )}
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
-      {children}
+      {shouldRender ? children : <div className="min-h-[120px]" />}
     </div>
   );
 });
