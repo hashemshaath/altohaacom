@@ -19,6 +19,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCountries } from "@/hooks/useCountries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
