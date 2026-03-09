@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Save, PanelTop, PanelBottom, Link as LinkIcon } from "lucide-react";
+import { Save, PanelTop, PanelBottom, Link as LinkIcon, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   settings: Record<string, any>;
@@ -51,89 +52,194 @@ export const HeaderFooterSettings = memo(function HeaderFooterSettings({ setting
     { key: "snapchatUrl", en: "Snapchat URL", ar: "رابط سناب شات", placeholder: "https://snapchat.com/..." },
   ];
 
+  const headerEnabledCount = headerToggles.filter(t => header[t.key] ?? true).length;
+  const footerEnabledCount = footerToggles.filter(t => footer[t.key] ?? true).length;
+  const socialFilledCount = socialFields.filter(f => footer[f.key]).length;
+
   return (
     <div className="space-y-6">
       {/* Header Settings */}
-      <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <PanelTop className="h-4.5 w-4.5 text-primary" />
-            {isAr ? "إعدادات الرأس (Header)" : "Header Settings"}
-          </CardTitle>
-          <CardDescription className="text-xs">
-            {isAr ? "التحكم في مكونات ومظهر الرأس العلوي للموقع" : "Control header components and appearance across the site"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {headerToggles.map(item => (
-              <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3">
-                <div>
-                  <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
-                  <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
-                </div>
-                <Switch checked={header[item.key] ?? true} onCheckedChange={v => setHeader({ ...header, [item.key]: v })} />
+      <Card className="rounded-2xl border-border/40 shadow-sm overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-primary/5 via-transparent to-transparent pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
+                <PanelTop className="h-5 w-5 text-primary" />
               </div>
-            ))}
+              <div>
+                <CardTitle className="text-base font-semibold">
+                  {isAr ? "إعدادات الرأس (Header)" : "Header Settings"}
+                </CardTitle>
+                <CardDescription className="text-xs mt-0.5">
+                  {isAr ? "التحكم في مكونات ومظهر الرأس العلوي للموقع" : "Control header components and appearance across the site"}
+                </CardDescription>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1 rounded-xl bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary tabular-nums">
+              <CheckCircle2 className="h-3 w-3" />
+              {headerEnabledCount}/{headerToggles.length}
+            </span>
           </div>
-          <Button size="sm" className="gap-1.5 mt-2" onClick={() => onSave("header", header, "layout")} disabled={isPending}>
-            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ إعدادات الرأس" : "Save Header Settings"}
+        </CardHeader>
+        <CardContent className="space-y-4 pt-2">
+          <div className="grid gap-2 sm:grid-cols-2">
+            {headerToggles.map(item => {
+              const isOn = header[item.key] ?? true;
+              return (
+                <div
+                  key={item.key}
+                  className={cn(
+                    "group flex items-center justify-between rounded-xl border p-3 transition-all duration-200",
+                    isOn
+                      ? "border-primary/20 bg-primary/[0.03]"
+                      : "border-border/30 bg-muted/20 opacity-75"
+                  )}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {isOn ? (
+                      <Eye className="h-3.5 w-3.5 text-primary shrink-0" />
+                    ) : (
+                      <EyeOff className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    )}
+                    <div>
+                      <p className="text-sm font-medium leading-tight">{isAr ? item.ar : item.en}</p>
+                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{isAr ? item.descAr : item.descEn}</p>
+                    </div>
+                  </div>
+                  <Switch checked={isOn} onCheckedChange={v => setHeader({ ...header, [item.key]: v })} />
+                </div>
+              );
+            })}
+          </div>
+          <Button
+            size="sm"
+            className="gap-1.5 rounded-xl active:scale-95 transition-all shadow-sm shadow-primary/10"
+            onClick={() => onSave("header", header, "layout")}
+            disabled={isPending}
+          >
+            <Save className="h-3.5 w-3.5" />
+            {isAr ? "حفظ إعدادات الرأس" : "Save Header Settings"}
           </Button>
         </CardContent>
       </Card>
 
       {/* Footer Settings */}
-      <Card className="border-border/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <PanelBottom className="h-4.5 w-4.5 text-primary" />
-            {isAr ? "إعدادات التذييل (Footer)" : "Footer Settings"}
-          </CardTitle>
-          <CardDescription className="text-xs">
-            {isAr ? "التحكم في محتوى التذييل وروابط التواصل الاجتماعي" : "Manage footer content and social media links"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {footerToggles.map(item => (
-              <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3">
-                <div>
-                  <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
-                  <p className="text-[11px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
-                </div>
-                <Switch checked={footer[item.key] ?? true} onCheckedChange={v => setFooter({ ...footer, [item.key]: v })} />
+      <Card className="rounded-2xl border-border/40 shadow-sm overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-accent/30 via-transparent to-transparent pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/60 ring-1 ring-accent-foreground/10">
+                <PanelBottom className="h-5 w-5 text-accent-foreground" />
               </div>
-            ))}
+              <div>
+                <CardTitle className="text-base font-semibold">
+                  {isAr ? "إعدادات التذييل (Footer)" : "Footer Settings"}
+                </CardTitle>
+                <CardDescription className="text-xs mt-0.5">
+                  {isAr ? "التحكم في محتوى التذييل وروابط التواصل الاجتماعي" : "Manage footer content and social media links"}
+                </CardDescription>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-1 rounded-xl bg-accent/60 px-2.5 py-1 text-[11px] font-semibold text-accent-foreground tabular-nums">
+              <CheckCircle2 className="h-3 w-3" />
+              {footerEnabledCount}/{footerToggles.length}
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-5 pt-2">
+          {/* Footer toggles */}
+          <div className="grid gap-2 sm:grid-cols-2">
+            {footerToggles.map(item => {
+              const isOn = footer[item.key] ?? true;
+              return (
+                <div
+                  key={item.key}
+                  className={cn(
+                    "group flex items-center justify-between rounded-xl border p-3 transition-all duration-200",
+                    isOn
+                      ? "border-primary/20 bg-primary/[0.03]"
+                      : "border-border/30 bg-muted/20 opacity-75"
+                  )}
+                >
+                  <div className="flex items-center gap-2.5">
+                    {isOn ? (
+                      <Eye className="h-3.5 w-3.5 text-primary shrink-0" />
+                    ) : (
+                      <EyeOff className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    )}
+                    <div>
+                      <p className="text-sm font-medium leading-tight">{isAr ? item.ar : item.en}</p>
+                      <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{isAr ? item.descAr : item.descEn}</p>
+                    </div>
+                  </div>
+                  <Switch checked={isOn} onCheckedChange={v => setFooter({ ...footer, [item.key]: v })} />
+                </div>
+              );
+            })}
           </div>
 
-          <Separator />
+          <Separator className="bg-border/30" />
+
+          {/* Copyright */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "نص حقوق النشر (إنجليزي)" : "Copyright Text (English)"}</Label>
-              <Input value={footer.copyrightText || ""} onChange={e => setFooter({ ...footer, copyrightText: e.target.value })} placeholder="© {year} Altoha." />
+              <Label className="text-xs font-medium">{isAr ? "نص حقوق النشر (إنجليزي)" : "Copyright Text (English)"}</Label>
+              <Input
+                className="rounded-xl"
+                value={footer.copyrightText || ""}
+                onChange={e => setFooter({ ...footer, copyrightText: e.target.value })}
+                placeholder="© {year} Altoha."
+              />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "نص حقوق النشر (عربي)" : "Copyright Text (Arabic)"}</Label>
-              <Input value={footer.copyrightTextAr || ""} onChange={e => setFooter({ ...footer, copyrightTextAr: e.target.value })} dir="rtl" />
+              <Label className="text-xs font-medium">{isAr ? "نص حقوق النشر (عربي)" : "Copyright Text (Arabic)"}</Label>
+              <Input
+                className="rounded-xl"
+                value={footer.copyrightTextAr || ""}
+                onChange={e => setFooter({ ...footer, copyrightTextAr: e.target.value })}
+                dir="rtl"
+              />
             </div>
           </div>
 
-          <Separator />
-          <h4 className="text-sm font-medium flex items-center gap-1.5">
-            <LinkIcon className="h-3.5 w-3.5 text-primary" />
-            {isAr ? "روابط التواصل الاجتماعي" : "Social Media Links"}
-          </h4>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {socialFields.map(f => (
-              <div key={f.key} className="space-y-1">
-                <Label className="text-xs">{isAr ? f.ar : f.en}</Label>
-                <Input className="h-8 text-sm" value={footer[f.key] || ""} onChange={e => setFooter({ ...footer, [f.key]: e.target.value })} placeholder={f.placeholder} />
-              </div>
-            ))}
+          <Separator className="bg-border/30" />
+
+          {/* Social Links */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted">
+                  <LinkIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+                {isAr ? "روابط التواصل الاجتماعي" : "Social Media Links"}
+              </h4>
+              <span className="text-[11px] text-muted-foreground tabular-nums">
+                {socialFilledCount}/{socialFields.length} {isAr ? "مكتمل" : "filled"}
+              </span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {socialFields.map(f => (
+                <div key={f.key} className="space-y-1">
+                  <Label className="text-xs font-medium">{isAr ? f.ar : f.en}</Label>
+                  <Input
+                    className="h-9 rounded-xl text-sm"
+                    value={footer[f.key] || ""}
+                    onChange={e => setFooter({ ...footer, [f.key]: e.target.value })}
+                    placeholder={f.placeholder}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
-          <Button size="sm" className="gap-1.5 mt-2" onClick={() => onSave("footer", footer, "layout")} disabled={isPending}>
-            <Save className="h-3.5 w-3.5" />{isAr ? "حفظ إعدادات التذييل" : "Save Footer Settings"}
+          <Button
+            size="sm"
+            className="gap-1.5 rounded-xl active:scale-95 transition-all shadow-sm shadow-primary/10"
+            onClick={() => onSave("footer", footer, "layout")}
+            disabled={isPending}
+          >
+            <Save className="h-3.5 w-3.5" />
+            {isAr ? "حفظ إعدادات التذييل" : "Save Footer Settings"}
           </Button>
         </CardContent>
       </Card>
