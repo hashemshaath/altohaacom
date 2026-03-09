@@ -31,7 +31,7 @@ const navItems = [
 function getFabActions(pathname: string) {
   if (pathname.startsWith("/competitions")) {
     return [
-      { to: "/create-competition", labelEn: "New Competition", labelAr: "مسابقة جديدة", icon: Trophy },
+      { to: "/competitions/create", labelEn: "New Competition", labelAr: "مسابقة جديدة", icon: Trophy },
       { to: "/search?type=competitions", labelEn: "Browse", labelAr: "تصفح", icon: Search },
     ];
   }
