@@ -165,7 +165,7 @@ export default function CountriesAdmin() {
   const { sorted: sortedCountries, sortColumn, sortDirection, toggleSort } = useTableSort(filtered, "sort_order", "asc");
   const countryPagination = usePagination(sortedCountries, { defaultPageSize: 15 });
 
-  const bulk = useAdminBulkActions(filtered);
+  const bulk = useAdminBulkActions(sortedCountries);
 
   const { exportCSV: exportCountriesCSV } = useCSVExport({
     columns: [
