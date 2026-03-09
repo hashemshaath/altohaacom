@@ -215,7 +215,9 @@ export default function ArticlesAdmin() {
     filename: "articles",
   });
 
-  const bulk = useAdminBulkActions(articles || []);
+  const { sorted: sortedArticles, sortColumn, sortDirection, toggleSort } = useTableSort(articles || [], "created_at", "desc");
+  const pagination = usePagination(sortedArticles, { defaultPageSize: 15 });
+  const bulk = useAdminBulkActions(sortedArticles);
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
