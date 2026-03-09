@@ -105,17 +105,17 @@ export default function AnalyticsDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <AdminPageHeader
         icon={BarChart3}
         title={isAr ? "التحليلات المتقدمة" : "Advanced Analytics"}
-        description={isAr ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis and predictions"}
+        description={isAr ? "إحصائيات شاملة مع تحليلات ذكية وتنبؤات" : "Comprehensive insights with AI-powered analysis"}
         actions={
           <div className="flex items-center gap-2 flex-wrap">
             <AnalyticsDateRange value={dateRange} onChange={setDateRange} onExport={() => handleExport()} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1.5">
+                <Button variant="outline" size="sm" className="gap-1.5 text-xs">
                   <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
                 </Button>
               </DropdownMenuTrigger>
@@ -125,21 +125,21 @@ export default function AnalyticsDashboard() {
                 <DropdownMenuItem onClick={() => handleExport("print")}><Printer className="me-2 h-4 w-4" />{isAr ? "طباعة" : "Print"}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setSaveReportOpen(true)}>
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => setSaveReportOpen(true)}>
               <Bookmark className="h-3.5 w-3.5" />{isAr ? "حفظ" : "Save"}
             </Button>
           </div>
         }
       />
 
-      {/* Saved Reports Bar */}
+      {/* Saved Reports */}
       {savedReports.length > 0 && (
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <span className="text-xs text-muted-foreground whitespace-nowrap">
             <Bookmark className="inline h-3 w-3 me-1" />{isAr ? "المحفوظة:" : "Saved:"}
           </span>
           {savedReports.map(report => (
-            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-all duration-300 gap-1 whitespace-nowrap rounded-lg" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
+            <Badge key={report.id} variant="secondary" className="cursor-pointer hover:bg-primary/10 transition-colors gap-1 whitespace-nowrap" onClick={() => { setActiveTab(report.tab); toast({ title: `Loaded: ${report.name}` }); }}>
               {report.name}
               <button onClick={(e) => { e.stopPropagation(); handleDeleteReport(report.id); }} className="ms-1 text-muted-foreground hover:text-destructive">×</button>
             </Badge>
@@ -164,9 +164,13 @@ export default function AnalyticsDashboard() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
-          <TabsList className="inline-flex w-auto min-w-full flex-wrap gap-1 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5 h-auto">
+          <TabsList className="inline-flex w-auto min-w-full flex-wrap gap-0.5 bg-card border border-border p-1 h-auto rounded-lg">
             {tabs.map((tab) => (
-              <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5 min-w-max rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="gap-1.5 min-w-max rounded-md text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm px-2.5 py-1.5 transition-all"
+              >
                 <tab.icon className="h-3.5 w-3.5" />
                 <span className="hidden md:inline">{tab.label}</span>
               </TabsTrigger>
@@ -175,7 +179,7 @@ export default function AnalyticsDashboard() {
         </div>
 
         <TabsContent value="overview">
-          <div className="space-y-6">
+          <div className="space-y-5">
             <AdvancedKPIDashboard />
             <AdvancedExportWidget />
             <PlatformOverview dateRange={dateRange} />
