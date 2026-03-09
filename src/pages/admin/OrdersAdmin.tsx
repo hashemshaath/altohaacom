@@ -1377,9 +1377,7 @@ export default function OrdersAdmin() {
                         <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
                         <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
                         <TableCell>
-                          <Badge className={statusColors[order.status] || "bg-muted text-muted-foreground"}>
-                            {getStatusLabel(order.status)}
-                          </Badge>
+                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                         <TableCell>
