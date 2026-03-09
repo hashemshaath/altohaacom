@@ -15,6 +15,10 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { format } from "date-fns";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -78,7 +82,10 @@ export default function QRCodesAdmin() {
     );
   }) || [];
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedQR, sortColumn: qrSortCol, sortDirection: qrSortDir, toggleSort: qrToggleSort } = useTableSort(filtered, "created_at", "desc");
+  const qrPagination = usePagination(sortedQR, { defaultPageSize: 15 });
+
+  const bulk = useAdminBulkActions(sortedQR);
 
   const { exportCSV } = useCSVExport({
     columns: [
@@ -230,17 +237,17 @@ export default function QRCodesAdmin() {
                       <TableHead className="w-10">
                         <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                       </TableHead>
-                      <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
-                      <TableHead>{isAr ? "النوع" : "Entity Type"}</TableHead>
-                      <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                      <TableHead className="text-center">{isAr ? "المسح" : "Scans"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Created"}</TableHead>
+                      <SortableTableHead column="code" label={isAr ? "الكود" : "Code"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="entity_type" label={isAr ? "النوع" : "Entity Type"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="scan_count" label={isAr ? "المسح" : "Scans"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} className="text-center" />
+                      <SortableTableHead column="is_active" label={isAr ? "الحالة" : "Status"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Created"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
                       <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered?.map((qr) => (
+                    {qrPagination.paginated.map((qr) => (
                       <TableRow key={qr.id} className={bulk.isSelected(qr.id) ? "bg-primary/5" : ""}>
                         <TableCell>
                           <Checkbox checked={bulk.isSelected(qr.id)} onCheckedChange={() => bulk.toggleOne(qr.id)} />
@@ -278,6 +285,19 @@ export default function QRCodesAdmin() {
                     ))}
                   </TableBody>
                 </Table>
+                <AdminTablePagination
+                  page={qrPagination.page}
+                  totalPages={qrPagination.totalPages}
+                  totalItems={qrPagination.totalItems}
+                  startItem={qrPagination.startItem}
+                  endItem={qrPagination.endItem}
+                  pageSize={qrPagination.pageSize}
+                  pageSizeOptions={qrPagination.pageSizeOptions}
+                  hasNext={qrPagination.hasNext}
+                  hasPrev={qrPagination.hasPrev}
+                  onPageChange={qrPagination.goTo}
+                  onPageSizeChange={qrPagination.changePageSize}
+                />
               </div>
             </>
           )}

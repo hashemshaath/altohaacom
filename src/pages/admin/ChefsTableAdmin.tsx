@@ -32,6 +32,10 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -75,25 +79,17 @@ export default function ChefsTableAdmin() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [requestStatusFilter, setRequestStatusFilter] = useState("all");
-  const [sessionSort, setSessionSort] = useState<"date" | "title" | "status">("date");
-  const [sessionSortDir, setSortDir] = useState<"asc" | "desc">("desc");
-
   const filteredSessions = useMemo(() => {
-    let list = sessions.filter(s => {
+    return sessions.filter(s => {
       const q = search.toLowerCase();
       const matchSearch = s.title.toLowerCase().includes(q) || s.product_name.toLowerCase().includes(q);
       const matchStatus = statusFilter === "all" || s.status === statusFilter;
       return matchSearch && matchStatus;
     });
-    list.sort((a, b) => {
-      let cmp = 0;
-      if (sessionSort === "date") cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      else if (sessionSort === "title") cmp = a.title.localeCompare(b.title);
-      else cmp = a.status.localeCompare(b.status);
-      return sessionSortDir === "desc" ? -cmp : cmp;
-    });
-    return list;
-  }, [sessions, search, statusFilter, sessionSort, sessionSortDir]);
+  }, [sessions, search, statusFilter]);
+
+  const { sorted: sortedSessions, sortColumn: sesSortCol, sortDirection: sesSortDir, toggleSort: sesToggleSort } = useTableSort(filteredSessions, "created_at", "desc");
+  const sessionPagination = usePagination(sortedSessions, { defaultPageSize: 15 });
 
   const filteredRequests = useMemo(() => {
     return requests.filter(r => {
@@ -104,7 +100,7 @@ export default function ChefsTableAdmin() {
 
   const pendingRequests = requests.filter(r => r.status === "pending");
 
-  const bulkSessions = useAdminBulkActions(filteredSessions);
+  const bulkSessions = useAdminBulkActions(sortedSessions);
 
   const { exportCSV: exportSessionsCSV } = useCSVExport({
     columns: [
@@ -146,14 +142,6 @@ export default function ChefsTableAdmin() {
     }
   };
 
-  const toggleSort = (col: typeof sessionSort) => {
-    if (sessionSort === col) setSortDir(d => d === "asc" ? "desc" : "asc");
-    else { setSessionSort(col); setSortDir("desc"); }
-  };
-
-  const SortIndicator = ({ col }: { col: typeof sessionSort }) => (
-    sessionSort === col ? <ChevronDown className={`h-3 w-3 inline-block ms-0.5 transition-transform ${sessionSortDir === "asc" ? "rotate-180" : ""}`} /> : null
-  );
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -475,23 +463,17 @@ export default function ChefsTableAdmin() {
                       <TableHead className="w-10">
                         <Checkbox checked={bulkSessions.isAllSelected} onCheckedChange={bulkSessions.toggleAll} />
                       </TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("title")}>
-                        {isAr ? "الجلسة" : "Session"}<SortIndicator col="title" />
-                      </TableHead>
+                      <SortableTableHead column="title" label={isAr ? "الجلسة" : "Session"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
                       <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
                       <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("status")}>
-                        {isAr ? "الحالة" : "Status"}<SortIndicator col="status" />
-                      </TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("date")}>
-                        {isAr ? "التاريخ" : "Date"}<SortIndicator col="date" />
-                      </TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الطهاة" : "Chefs"}</TableHead>
+                      <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
+                      <SortableTableHead column="session_date" label={isAr ? "التاريخ" : "Date"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
+                      <SortableTableHead column="max_chefs" label={isAr ? "الطهاة" : "Chefs"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
                       <TableHead className="print:hidden w-12" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredSessions.map(session => {
+                   {sessionPagination.paginated.map(session => {
                       const sc = sessionStatusConfig[session.status] || sessionStatusConfig.scheduled;
                       const isExpanded = expandedSessionId === session.id;
                       return (
@@ -551,6 +533,19 @@ export default function ChefsTableAdmin() {
                     })}
                   </TableBody>
                 </Table>
+                <AdminTablePagination
+                  page={sessionPagination.page}
+                  totalPages={sessionPagination.totalPages}
+                  totalItems={sessionPagination.totalItems}
+                  startItem={sessionPagination.startItem}
+                  endItem={sessionPagination.endItem}
+                  pageSize={sessionPagination.pageSize}
+                  pageSizeOptions={sessionPagination.pageSizeOptions}
+                  hasNext={sessionPagination.hasNext}
+                  hasPrev={sessionPagination.hasPrev}
+                  onPageChange={sessionPagination.goTo}
+                  onPageSizeChange={sessionPagination.changePageSize}
+                />
               </Card>
             </>
           )}
