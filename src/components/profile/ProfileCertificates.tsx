@@ -170,10 +170,10 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
             const location = isAr && cert.event_location_ar ? cert.event_location_ar : cert.event_location;
 
             return (
-              <Card key={cert.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40">
+              <Card key={cert.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 group/cert">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/30 ${config.color}`}>
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/30 ${config.color} transition-transform duration-300 group-hover/cert:scale-110`}>
                       <IconComp className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
