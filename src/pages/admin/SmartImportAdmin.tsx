@@ -865,54 +865,54 @@ export default function SmartImportAdmin() {
   return (
     <div className="space-y-6">
       {/* ─── Header ─── */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {step !== "search" && (
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={step === "details" ? handleBackToResults : handleNewSearch}>
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          )}
-          <div>
-            <h1 className="font-serif text-2xl font-bold flex items-center gap-2">
+      <Card className="overflow-hidden border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5 animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+        <div className="flex items-center justify-between p-5 md:p-6">
+          <div className="flex items-center gap-4">
+            {step !== "search" && (
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl active:scale-90 transition-all" onClick={step === "details" ? handleBackToResults : handleNewSearch}>
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 ring-1 ring-primary/10">
               <Sparkles className="h-6 w-6 text-primary" />
-              {isAr ? "الاستيراد الذكي" : "Smart Import"}
-              <Badge variant="secondary" className="text-[10px] font-normal">v4.0</Badge>
-            </h1>
-            <p className="text-muted-foreground text-sm mt-0.5">
-              {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
-              {step === "results" && (isAr ? `${searchResults.length} نتيجة${searchTime ? ` في ${(searchTime / 1000).toFixed(1)}ث` : ''} — اضغط للتحليل` : `${searchResults.length} results${searchTime ? ` in ${(searchTime / 1000).toFixed(1)}s` : ''} — click to analyze`)}
-              {step === "details" && (isAr ? `${fieldCount} حقل — جودة ${dataQuality}% — قابل للتعديل` : `${fieldCount} fields — ${dataQuality}% quality — editable`)}
-            </p>
+            </div>
+            <div>
+              <h1 className="font-serif text-2xl font-bold tracking-tight flex items-center gap-2">
+                {isAr ? "الاستيراد الذكي" : "Smart Import"}
+                <Badge variant="secondary" className="text-[10px] font-normal rounded-lg">v4.0</Badge>
+              </h1>
+              <p className="text-muted-foreground text-sm mt-0.5">
+                {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
+                {step === "results" && (isAr ? `${searchResults.length} نتيجة${searchTime ? ` في ${(searchTime / 1000).toFixed(1)}ث` : ''} — اضغط للتحليل` : `${searchResults.length} results${searchTime ? ` in ${(searchTime / 1000).toFixed(1)}s` : ''} — click to analyze`)}
+                {step === "details" && (isAr ? `${fieldCount} حقل — جودة ${dataQuality}% — قابل للتعديل` : `${fieldCount} fields — ${dataQuality}% quality — editable`)}
+              </p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-3">
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-xl active:scale-95 transition-all" onClick={() => { setShowHistory(true); loadHistory(); }}>
+              <Clock className="h-3.5 w-3.5" />
+              {isAr ? "السجل" : "History"}
+            </Button>
+            <div className="flex items-center gap-1">
+              {[
+                { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
+                { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
+                { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
+              ].map((s, i) => (
+                <div key={s.key} className="flex items-center gap-1">
+                  {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/40" />}
+                  <Badge
+                    variant={step === s.key ? "default" : "outline"}
+                    className={`text-xs gap-1 rounded-lg transition-all duration-200 ${step === s.key ? "shadow-sm" : "opacity-60"}`}
+                  >
+                    {s.num}. {s.label}
+                  </Badge>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => { setShowHistory(true); loadHistory(); }}>
-                  <Clock className="h-3.5 w-3.5" />
-                  {isAr ? "السجل" : "History"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{isAr ? "عرض سجل الاستيراد" : "View import history"}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <div className="flex items-center gap-1.5">
-            {[
-              { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
-              { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
-              { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
-            ].map((s, i) => (
-              <div key={s.key} className="flex items-center gap-1.5">
-                {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/50" />}
-                <Badge variant={step === s.key ? "default" : "outline"} className="text-xs gap-1">
-                  {s.num}. {s.label}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </Card>
 
       {/* ─── STEP 1: Search Form ─── */}
       {step === "search" && (
@@ -921,63 +921,66 @@ export default function SmartImportAdmin() {
           <ImportStats stats={stats} loading={loadingStats} isAr={isAr} />
 
           {/* Mode Toggle */}
-          <div className="flex gap-2">
-            <Button variant={importMode === "search" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("search")}>
-              <Search className="h-3.5 w-3.5" />
-              {isAr ? "بحث خرائط" : "Maps Search"}
-            </Button>
-            <Button variant={importMode === "url" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("url")}>
-              <Link2 className="h-3.5 w-3.5" />
-              {isAr ? "رابط مباشر" : "URL Import"}
-            </Button>
-            <Button variant={importMode === "bulk" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("bulk")}>
-              <Layers className="h-3.5 w-3.5" />
-              {isAr ? "استيراد جماعي" : "Bulk Import"}
-            </Button>
-            <Button variant={importMode === "cv" ? "default" : "outline"} size="sm" className="gap-1.5" onClick={() => setImportMode("cv")}>
-              <FileText className="h-3.5 w-3.5" />
-              {isAr ? "سيرة ذاتية" : "CV Import"}
-            </Button>
+          <div className="flex gap-2 p-1 rounded-2xl bg-muted/40 border border-border/30 w-fit">
+            {[
+              { key: "search", icon: Search, labelEn: "Maps Search", labelAr: "بحث خرائط" },
+              { key: "url", icon: Link2, labelEn: "URL Import", labelAr: "رابط مباشر" },
+              { key: "bulk", icon: Layers, labelEn: "Bulk Import", labelAr: "استيراد جماعي" },
+              { key: "cv", icon: FileText, labelEn: "CV Import", labelAr: "سيرة ذاتية" },
+            ].map((mode) => (
+              <Button
+                key={mode.key}
+                variant={importMode === mode.key ? "default" : "ghost"}
+                size="sm"
+                className={`gap-1.5 rounded-xl transition-all duration-200 ${importMode === mode.key ? "shadow-sm" : "hover:bg-muted"}`}
+                onClick={() => setImportMode(mode.key as any)}
+              >
+                <mode.icon className="h-3.5 w-3.5" />
+                {isAr ? mode.labelAr : mode.labelEn}
+              </Button>
+            ))}
           </div>
 
           {importMode === "search" ? (
-            <Card className="border-primary/20">
-              <CardHeader>
+            <Card className="border-primary/15 rounded-2xl overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-red-500" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-destructive/10">
+                    <MapPin className="h-4 w-4 text-destructive" />
+                  </div>
                   {isAr ? "البحث في خرائط جوجل" : "Search Google Maps"}
                 </CardTitle>
                 <CardDescription>
                   {isAr ? "أدخل اسم المنشأة والموقع — ⌘K للبحث السريع" : "Enter entity name and location — ⌘K for quick search"}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="sm:col-span-2 space-y-1.5">
-                      <Label className="text-xs">{isAr ? "اسم الكيان / المنشأة" : "Entity / Business Name"}</Label>
+                      <Label className="text-xs font-medium">{isAr ? "اسم الكيان / المنشأة" : "Entity / Business Name"}</Label>
                       <div className="relative">
                         <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input ref={searchInputRef} className="ps-9 h-11" placeholder={isAr ? "مثال: مطعم الريف، فندق هيلتون..." : "e.g. Al Reef Restaurant, Hilton Hotel..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
+                        <Input ref={searchInputRef} className="ps-9 h-11 rounded-xl" placeholder={isAr ? "مثال: مطعم الريف، فندق هيلتون..." : "e.g. Al Reef Restaurant, Hilton Hotel..."} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-xs">{isAr ? "الموقع" : "Location"}</Label>
+                      <Label className="text-xs font-medium">{isAr ? "الموقع" : "Location"}</Label>
                       <div className="relative">
                         <MapPin className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input className="ps-9 h-11" placeholder={isAr ? "الرياض" : "Riyadh"} value={location} onChange={(e) => setLocation(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
+                        <Input className="ps-9 h-11 rounded-xl" placeholder={isAr ? "الرياض" : "Riyadh"} value={location} onChange={(e) => setLocation(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 items-end">
                     <div className="flex-1 space-y-1.5">
-                      <Label className="text-xs">{isAr ? "الموقع الإلكتروني (اختياري)" : "Website URL (optional)"}</Label>
+                      <Label className="text-xs font-medium">{isAr ? "الموقع الإلكتروني (اختياري)" : "Website URL (optional)"}</Label>
                       <div className="relative">
                         <Globe className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input className="ps-9" placeholder="https://example.com" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} />
+                        <Input className="ps-9 rounded-xl" placeholder="https://example.com" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} />
                       </div>
                     </div>
-                    <Button onClick={handleSearch} disabled={searching || !query.trim()} className="gap-2 h-10 px-8 shrink-0">
+                    <Button onClick={handleSearch} disabled={searching || !query.trim()} className="gap-2 h-10 px-8 shrink-0 rounded-xl shadow-md shadow-primary/15 active:scale-95 transition-all">
                       {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                       {searching ? (isAr ? "جاري البحث..." : "Searching...") : (isAr ? "بحث" : "Search")}
                     </Button>
@@ -986,31 +989,33 @@ export default function SmartImportAdmin() {
               </CardContent>
             </Card>
           ) : importMode === "url" ? (
-            <Card className="border-primary/20">
-              <CardHeader>
+            <Card className="border-primary/15 rounded-2xl overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Link2 className="h-5 w-5 text-primary" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+                    <Link2 className="h-4 w-4 text-primary" />
+                  </div>
                   {isAr ? "استيراد من رابط" : "Direct URL Import"}
                 </CardTitle>
                 <CardDescription>
                   {isAr ? "الصق رابط الموقع لاستخراج البيانات بالذكاء الاصطناعي" : "Paste a URL to auto-extract data with AI"}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 relative">
                     <Globe className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input className="ps-9 h-11" placeholder={isAr ? "الصق الرابط هنا..." : "Paste URL here..."} value={directUrl} onChange={(e) => setDirectUrl(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleUrlImport()} />
+                    <Input className="ps-9 h-11 rounded-xl" placeholder={isAr ? "الصق الرابط هنا..." : "Paste URL here..."} value={directUrl} onChange={(e) => setDirectUrl(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleUrlImport()} />
                   </div>
-                  <Button onClick={handleUrlImport} disabled={urlImporting || !directUrl.trim()} className="gap-2 h-11 px-8 shrink-0">
+                  <Button onClick={handleUrlImport} disabled={urlImporting || !directUrl.trim()} className="gap-2 h-11 px-8 shrink-0 rounded-xl shadow-md shadow-primary/15 active:scale-95 transition-all">
                     {urlImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
                     {urlImporting ? (isAr ? "جاري الاستخراج..." : "Extracting...") : (isAr ? "استخراج" : "Extract")}
                   </Button>
                 </div>
                 <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{isAr ? "تحليل ذكي + خرائط" : "AI + Maps analysis"}</span>
-                  <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{isAr ? "أي موقع" : "Any website"}</span>
-                  <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس جودة" : "Quality scoring"}</span>
+                  <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30"><Sparkles className="h-3 w-3 text-primary" />{isAr ? "تحليل ذكي + خرائط" : "AI + Maps analysis"}</span>
+                  <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30"><Globe className="h-3 w-3" />{isAr ? "أي موقع" : "Any website"}</span>
+                  <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس جودة" : "Quality scoring"}</span>
                 </div>
               </CardContent>
             </Card>
@@ -1174,16 +1179,19 @@ export default function SmartImportAdmin() {
 
       {/* ─── Loading ─── */}
       {(loadingDetails || urlImporting) && step !== "results" && (
-        <Card>
-          <CardContent className="py-16">
-            <div className="flex flex-col items-center gap-4 text-center">
+        <Card className="rounded-2xl border-border/40 overflow-hidden">
+          <CardContent className="py-20">
+            <div className="flex flex-col items-center gap-5 text-center animate-in fade-in-50 zoom-in-95 duration-500">
               <div className="relative">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <Sparkles className="h-5 w-5 text-primary absolute -top-1 -end-1 animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-primary/10 blur-xl scale-150 animate-pulse" />
+                <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-primary/15 to-primary/5 ring-1 ring-primary/10">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                </div>
+                <Sparkles className="h-5 w-5 text-primary absolute -top-1 -end-1 animate-bounce" />
               </div>
               <div>
-                <p className="font-semibold text-lg">{isAr ? "جاري جلب وتحليل البيانات..." : "Fetching & Analyzing Data..."}</p>
-                <p className="text-sm text-muted-foreground mt-1">{isAr ? "تحليل ذكي + خرائط جوجل + الموقع الرسمي" : "AI analysis + Google Maps + Official website"}</p>
+                <p className="font-serif font-bold text-xl">{isAr ? "جاري جلب وتحليل البيانات..." : "Fetching & Analyzing Data..."}</p>
+                <p className="text-sm text-muted-foreground mt-1.5">{isAr ? "تحليل ذكي + خرائط جوجل + الموقع الرسمي" : "AI analysis + Google Maps + Official website"}</p>
               </div>
             </div>
           </CardContent>
