@@ -1986,7 +1986,6 @@ export default function CompaniesAdmin() {
                 </TableBody>
               </Table>
             </ScrollArea>
-          </CardContent>
           <AdminTablePagination
             page={companyPagination.page}
             totalPages={companyPagination.totalPages}
@@ -2000,7 +1999,7 @@ export default function CompaniesAdmin() {
             onPageChange={companyPagination.goTo}
             onPageSizeChange={companyPagination.changePageSize}
           />
-        </Card>
+        </AdminTableCard>
         </>
         )}
       </div>
