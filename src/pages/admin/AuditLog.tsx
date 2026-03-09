@@ -359,7 +359,7 @@ export default function AuditLog() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredActions.map(action => (
+                      {actionPagination.paginated.map(action => (
                         <TableRow key={action.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkAdmin.isSelected(action.id) ? "bg-primary/5" : ""}`}>
                           <TableCell><Checkbox checked={bulkAdmin.isSelected(action.id)} onCheckedChange={() => bulkAdmin.toggleOne(action.id)} /></TableCell>
                           <TableCell>{getActionBadge(action.action_type)}</TableCell>
