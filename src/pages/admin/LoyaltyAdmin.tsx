@@ -105,7 +105,19 @@ export default function LoyaltyAdmin() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["adminRedemptions"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
 
-  const bulkRedemptions = useAdminBulkActions(redemptions);
+  // Sorting & pagination for challenges
+  const { sorted: sortedChallenges, sortColumn: chSortCol, sortDirection: chSortDir, toggleSort: chToggleSort } = useTableSort(challenges);
+  const chPagination = usePagination(sortedChallenges);
+
+  // Sorting & pagination for rewards
+  const { sorted: sortedRewards, sortColumn: rwSortCol, sortDirection: rwSortDir, toggleSort: rwToggleSort } = useTableSort(rewards);
+  const rwPagination = usePagination(sortedRewards);
+
+  // Sorting & pagination for redemptions
+  const { sorted: sortedRedemptions, sortColumn: rdSortCol, sortDirection: rdSortDir, toggleSort: rdToggleSort } = useTableSort(redemptions);
+  const rdPagination = usePagination(sortedRedemptions);
+
+  const bulkRedemptions = useAdminBulkActions(rdPagination.paginated);
 
   const { exportCSV: exportRedemptions } = useCSVExport({
     columns: [
