@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
