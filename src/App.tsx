@@ -89,6 +89,7 @@ function AppContent() {
   return (
     <>
       <ScrollToTop />
+      <RouteAnnouncer />
       <SkipToContent />
       <Suspense fallback={null}>
         <PullToRefreshIndicator {...ptr as any} />
