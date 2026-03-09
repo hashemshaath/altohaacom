@@ -609,21 +609,21 @@ export default function SupportTicketsAdmin() {
                   <div className="hidden sm:block overflow-x-auto">
                      <Table>
                       <TableHeader>
-                        <TableRow>
+                         <TableRow>
                           <TableHead className="w-10 bg-muted/30">
                             <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                           </TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الرقم" : "Ticket #"}</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الموضوع" : "Subject"}</TableHead>
+                          <SortableTableHead column="ticket_number" label={isAr ? "الرقم" : "Ticket #"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                          <SortableTableHead column="subject" label={isAr ? "الموضوع" : "Subject"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                           <TableHead className="bg-muted/30">{isAr ? "المستخدم" : "User"}</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الأولوية" : "Priority"}</TableHead>
+                          <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                          <SortableTableHead column="priority" label={isAr ? "الأولوية" : "Priority"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                           <TableHead className="bg-muted/30">SLA</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "التاريخ" : "Date"}</TableHead>
+                          <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredTickets.map(ticket => {
+                        {pagination.paginated.map(ticket => {
                           const profile = profileMap.get(ticket.user_id);
                           return (
                             <TableRow
