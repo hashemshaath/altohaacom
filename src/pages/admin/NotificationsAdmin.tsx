@@ -682,7 +682,7 @@ export default function NotificationsAdmin() {
           <Card>
             <CardContent className="p-0">
               {loadingQueue ? (
-                <div className="p-6"><Skeleton className="h-64" /></div>
+                <AdminTableSkeleton rows={5} columns={5} />
               ) : filteredQueue.length > 0 ? (
                 <div className="overflow-x-auto">
                   <Table>
