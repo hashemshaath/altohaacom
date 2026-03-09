@@ -736,9 +736,7 @@ export default function InvoicesAdmin() {
                           : "—"}
                       </TableCell>
                       <TableCell>
-                        <Badge variant={statusColors[inv.status || "draft"]}>
-                          {getStatusLabel(inv.status || "draft")}
-                        </Badge>
+                        <AdminStatusBadge status={inv.status || "draft"} label={getStatusLabel(inv.status || "draft")} />
                       </TableCell>
                       <TableCell className="text-right font-medium">
                         <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" format /> {inv.currency}
