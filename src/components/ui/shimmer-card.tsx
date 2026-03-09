@@ -86,7 +86,7 @@ export const ShimmerGrid = memo(function ShimmerGrid({
   return (
     <div className={cn("grid gap-4", columns, className)}>
       {Array.from({ length: count }).map((_, i) => (
-        <ShimmerCard key={i} variant={variant} />
+        <ShimmerCard key={i} variant={variant} style={{ animationDelay: `${i * 75}ms` }} className="animate-in fade-in-50 duration-300" />
       ))}
     </div>
   );
