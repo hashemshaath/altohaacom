@@ -418,21 +418,26 @@ export default function CommunicationTemplatesAdmin() {
         </div>
       ) : (
         /* Table View */
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">
-                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
-                </TableHead>
-                <TableHead>{isAr ? "القالب" : "Template"}</TableHead>
-                <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                <TableHead>{isAr ? "القناة" : "Channel"}</TableHead>
-                <TableHead>{isAr ? "المتغيرات" : "Variables"}</TableHead>
-                <TableHead>{isAr ? "نشط" : "Active"}</TableHead>
-                <TableHead>{isAr ? "إجراءات" : "Actions"}</TableHead>
-              </TableRow>
-            </TableHeader>
+        {(() => {
+          const { sorted: sortedTemplates, sortColumn: tplSortCol, sortDirection: tplSortDir, toggleSort: tplToggleSort } = useTableSort(templates, "name", "asc");
+          const tplPagination = usePagination(sortedTemplates, { defaultPageSize: 15 });
+
+          return (
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                    </TableHead>
+                    <SortableTableHead column="name" label={isAr ? "القالب" : "Template"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <SortableTableHead column="channel" label={isAr ? "القناة" : "Channel"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <TableHead>{isAr ? "المتغيرات" : "Variables"}</TableHead>
+                    <SortableTableHead column="is_active" label={isAr ? "نشط" : "Active"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <TableHead>{isAr ? "إجراءات" : "Actions"}</TableHead>
+                  </TableRow>
+                </TableHeader>
             <TableBody>
               {templates.map((t) => {
                 const ch = getChannelInfo(t.channel);

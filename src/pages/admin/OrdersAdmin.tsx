@@ -1335,79 +1335,101 @@ export default function OrdersAdmin() {
                 onExport={() => exportOrdersCSV(bulk.selectedItems)}
               />
 
-              <ScrollArea className="h-[500px]">
-                <Table>
-                  <TableHeader>
-                   <TableRow className="bg-muted/30 hover:bg-muted/30">
-                      <TableHead className="w-10">
-                        <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
-                      </TableHead>
-                      <TableHead className="font-semibold">{isAr ? "رقم الطلب" : "Order #"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "الشركة" : "Company"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "العنوان" : "Title"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "الاتجاه" : "Dir"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "الفئة" : "Category"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "المبلغ" : "Amount"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
-                      <TableHead></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {orders.map((order: any) => (
-                      <TableRow key={order.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
-                        <TableCell onClick={(e) => e.stopPropagation()}>
-                          <Checkbox checked={bulk.isSelected(order.id)} onCheckedChange={() => bulk.toggleOne(order.id)} />
-                        </TableCell>
-                        <TableCell className="font-mono text-sm">{order.order_number}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            {order.companies?.logo_url ? (
-                              <img src={order.companies.logo_url} alt="" className="h-6 w-6 rounded object-cover" loading="lazy" />
-                            ) : (
-                              <Building2 className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <span className="truncate max-w-[120px]">{order.companies?.name || "-"}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="max-w-[180px] truncate">{order.title}</TableCell>
-                        <TableCell>
-                          {order.direction === "incoming" ? (
-                            <ArrowDownLeft className="h-4 w-4 text-chart-5" />
-                          ) : (
-                            <ArrowUpRight className="h-4 w-4 text-chart-1" />
+              {(() => {
+                const { sorted: sortedOrders, sortColumn: orderSortCol, sortDirection: orderSortDir, toggleSort: toggleOrderSort } = useTableSort(orders, "created_at", "desc");
+                const orderPagination = usePagination(sortedOrders, { defaultPageSize: 15 });
+
+                return (
+                  <>
+                    <ScrollArea className="h-[500px]">
+                      <Table>
+                        <TableHeader>
+                         <TableRow className="bg-muted/30 hover:bg-muted/30">
+                            <TableHead className="w-10">
+                              <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                            </TableHead>
+                            <SortableTableHead column="order_number" label={isAr ? "رقم الطلب" : "Order #"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <TableHead className="font-semibold">{isAr ? "الشركة" : "Company"}</TableHead>
+                            <SortableTableHead column="title" label={isAr ? "العنوان" : "Title"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <SortableTableHead column="direction" label={isAr ? "الاتجاه" : "Dir"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <SortableTableHead column="total_amount" label={isAr ? "المبلغ" : "Amount"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={orderSortCol} sortDirection={orderSortDir} onSort={toggleOrderSort} />
+                            <TableHead></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {orderPagination.paginated.map((order: any) => (
+                            <TableRow key={order.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
+                              <TableCell onClick={(e) => e.stopPropagation()}>
+                                <Checkbox checked={bulk.isSelected(order.id)} onCheckedChange={() => bulk.toggleOne(order.id)} />
+                              </TableCell>
+                              <TableCell className="font-mono text-sm">{order.order_number}</TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  {order.companies?.logo_url ? (
+                                    <img src={order.companies.logo_url} alt="" className="h-6 w-6 rounded object-cover" loading="lazy" />
+                                  ) : (
+                                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                                  )}
+                                  <span className="truncate max-w-[120px]">{order.companies?.name || "-"}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="max-w-[180px] truncate">{order.title}</TableCell>
+                              <TableCell>
+                                {order.direction === "incoming" ? (
+                                  <ArrowDownLeft className="h-4 w-4 text-chart-5" />
+                                ) : (
+                                  <ArrowUpRight className="h-4 w-4 text-chart-1" />
+                                )}
+                              </TableCell>
+                              <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
+                              <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
+                              <TableCell>
+                                <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
+                              </TableCell>
+                              <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
+                              <TableCell>
+                                <Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                          {orders.length === 0 && (
+                            <TableRow>
+                              <TableCell colSpan={10} className="p-0">
+                                <AdminEmptyState
+                                  icon={Package}
+                                  title="No orders found"
+                                  titleAr="لا توجد طلبات"
+                                  description="Try adjusting your filters or create a new order"
+                                  descriptionAr="جرب تعديل الفلاتر أو أنشئ طلباً جديداً"
+                                  actionLabel="New Order"
+                                  actionLabelAr="طلب جديد"
+                                  onAction={() => setShowOrderForm(true)}
+                                />
+                              </TableCell>
+                            </TableRow>
                           )}
-                        </TableCell>
-                        <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
-                        <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
-                        <TableCell>
-                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
-                        </TableCell>
-                        <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {orders.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={10} className="p-0">
-                          <AdminEmptyState
-                            icon={Package}
-                            title="No orders found"
-                            titleAr="لا توجد طلبات"
-                            description="Try adjusting your filters or create a new order"
-                            descriptionAr="جرب تعديل الفلاتر أو أنشئ طلباً جديداً"
-                            actionLabel="New Order"
-                            actionLabelAr="طلب جديد"
-                            onAction={() => setShowOrderForm(true)}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                    <AdminTablePagination
+                      page={orderPagination.page}
+                      totalPages={orderPagination.totalPages}
+                      totalItems={orderPagination.totalItems}
+                      startItem={orderPagination.startItem}
+                      endItem={orderPagination.endItem}
+                      pageSize={orderPagination.pageSize}
+                      pageSizeOptions={orderPagination.pageSizeOptions}
+                      hasNext={orderPagination.hasNext}
+                      hasPrev={orderPagination.hasPrev}
+                      onPageChange={orderPagination.goTo}
+                      onPageSizeChange={orderPagination.changePageSize}
+                    />
+                  </>
+                );
+              })()}
             </CardContent>
           </Card>
         </TabsContent>
