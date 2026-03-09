@@ -2,6 +2,7 @@ import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import { Controller, ControllerProps, FieldPath, FieldValues, FormProvider, useFormContext } from "react-hook-form";
+import { AlertCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -74,11 +75,21 @@ FormItem.displayName = "FormItem";
 
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({ className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & { required?: boolean }
+>(({ className, required, children, ...props }, ref) => {
   const { error, formItemId } = useFormField();
 
-  return <Label ref={ref} className={cn(error && "text-destructive", className)} htmlFor={formItemId} {...props} />;
+  return (
+    <Label
+      ref={ref}
+      className={cn(error && "text-destructive", className)}
+      htmlFor={formItemId}
+      {...props}
+    >
+      {children}
+      {required && <span className="text-destructive ms-0.5" aria-hidden="true">*</span>}
+    </Label>
+  );
 });
 FormLabel.displayName = "FormLabel";
 
@@ -118,7 +129,17 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
     }
 
     return (
-      <p ref={ref} id={formMessageId} className={cn("text-sm font-medium text-destructive", className)} {...props}>
+      <p
+        ref={ref}
+        id={formMessageId}
+        role="alert"
+        className={cn(
+          "text-sm font-medium text-destructive flex items-center gap-1.5 animate-in fade-in-0 slide-in-from-top-1 duration-200",
+          className
+        )}
+        {...props}
+      >
+        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
         {body}
       </p>
     );
