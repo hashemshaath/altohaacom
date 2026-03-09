@@ -62,23 +62,23 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
           <div>
             <h4 className="mb-4 text-sm font-semibold">{isAr ? "المنصة" : "Platform"}</h4>
             <nav aria-label="Platform links" className="flex flex-col gap-2.5 text-sm text-muted-foreground">
-              <Link to="/competitions" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary">
-                <Trophy className="h-3.5 w-3.5 opacity-60" />{isAr ? "المسابقات" : "Competitions"}
+              <Link to="/competitions" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Trophy className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "المسابقات" : "Competitions"}
               </Link>
-              <Link to="/community" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary">
-                <Users className="h-3.5 w-3.5 opacity-60" />{isAr ? "المجتمع" : "Community"}
+              <Link to="/community" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Users className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "المجتمع" : "Community"}
               </Link>
-              <Link to="/masterclasses" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary">
-                <GraduationCap className="h-3.5 w-3.5 opacity-60" />{isAr ? "الدروس المتقدمة" : "Masterclasses"}
+              <Link to="/masterclasses" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <GraduationCap className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الدروس المتقدمة" : "Masterclasses"}
               </Link>
-              <Link to="/entities" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary">
-                <Building2 className="h-3.5 w-3.5 opacity-60" />{isAr ? "الجهات والجمعيات" : "Entities & Associations"}
+              <Link to="/entities" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Building2 className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الجهات والجمعيات" : "Entities & Associations"}
               </Link>
-              <Link to="/news" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary">
-                <Newspaper className="h-3.5 w-3.5 opacity-60" />{isAr ? "الأخبار" : "News"}
+              <Link to="/news" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Newspaper className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الأخبار" : "News"}
               </Link>
-              <Link to="/exhibitions" className="flex items-center gap-2 transition-colors duration-200 hover:text-primary">
-                <Globe className="h-3.5 w-3.5 opacity-60" />{isAr ? "المعارض" : "Exhibitions"}
+              <Link to="/exhibitions" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Globe className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "المعارض" : "Exhibitions"}
               </Link>
             </nav>
           </div>
