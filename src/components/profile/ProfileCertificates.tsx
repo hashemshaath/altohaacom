@@ -198,6 +198,11 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
                             <MapPin className="h-2.5 w-2.5" />{location}
                           </span>
                         )}
+                        {cert.issued_at && (
+                          <span className="flex items-center gap-1 text-chart-5">
+                            ✓ {isAr ? "صدرت" : "Issued"} {format(new Date(cert.issued_at), "MMM yyyy")}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
