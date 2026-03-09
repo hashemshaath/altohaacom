@@ -714,17 +714,17 @@ export default function InvoicesAdmin() {
           ) : invoices.length > 0 ? (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10">
                       <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                     </TableHead>
-                    <TableHead>{language === "ar" ? "رقم الفاتورة" : "Invoice #"}</TableHead>
+                    <SortableTableHead column="invoice_number" label={language === "ar" ? "رقم الفاتورة" : "Invoice #"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                     <TableHead>{language === "ar" ? "الشركة" : "Company"}</TableHead>
-                    <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="text-right">{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
-                    <TableHead>{language === "ar" ? "الاستحقاق" : "Due"}</TableHead>
+                    <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="amount" label={language === "ar" ? "المبلغ" : "Amount"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="text-right" />
+                    <SortableTableHead column="due_date" label={language === "ar" ? "الاستحقاق" : "Due"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
