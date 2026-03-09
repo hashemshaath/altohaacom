@@ -760,6 +760,19 @@ export default function InvoicesAdmin() {
                 </TableBody>
               </Table>
             </div>
+            <AdminTablePagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              totalItems={pagination.totalItems}
+              startItem={pagination.startItem}
+              endItem={pagination.endItem}
+              pageSize={pagination.pageSize}
+              pageSizeOptions={pagination.pageSizeOptions}
+              hasNext={pagination.hasNext}
+              hasPrev={pagination.hasPrev}
+              onPageChange={pagination.goTo}
+              onPageSizeChange={pagination.changePageSize}
+            />
           ) : (
               <AdminEmptyState
                 icon={FileText}
