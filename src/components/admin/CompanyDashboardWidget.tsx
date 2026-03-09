@@ -15,6 +15,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, BAR_RADIUS } from "@/lib/chartConfig";
 
 export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
   const { language } = useLanguage();
@@ -40,7 +41,6 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
         supabase.from("company_orders").select("created_at").gte("created_at", subDays(new Date(), 14).toISOString()).order("created_at", { ascending: true }),
       ]);
 
-      // Orders trend chart
       const trendMap: Record<string, number> = {};
       for (let i = 0; i < 14; i++) {
         trendMap[format(subDays(new Date(), 13 - i), "MMM dd")] = 0;
@@ -67,18 +67,27 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
   });
 
   if (isLoading) {
-    return <Card><CardContent className="p-6"><Skeleton className="h-48 w-full" /></CardContent></Card>;
+    return <Card><CardContent className="p-6"><Skeleton className="h-48 w-full rounded-xl" /></CardContent></Card>;
   }
 
   if (!data) return null;
 
   const orderDelta = data.ordersThisWeek - data.ordersPrevWeek;
 
+  const kpiItems = [
+    { icon: Building2, label: isAr ? "الشركات" : "Companies", value: data.totalCompanies, color: "text-chart-3", bg: "bg-chart-3/10" },
+    { icon: Users, label: isAr ? "نشطة" : "Active", value: data.activeCompanies, color: "text-chart-2", bg: "bg-chart-2/10" },
+    { icon: Package, label: isAr ? "طلبات الأسبوع" : "Weekly Orders", value: data.ordersThisWeek, color: "text-chart-4", bg: "bg-chart-4/10", delta: orderDelta },
+    { icon: CreditCard, label: isAr ? "إيرادات الأسبوع" : "Weekly Revenue", value: data.thisWeekRevenue, color: "text-primary", bg: "bg-primary/10", isCurrency: true },
+  ];
+
   return (
     <Card className="border-border/50">
       <CardHeader className="pb-3 flex flex-row items-center justify-between">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Building2 className="h-4 w-4 text-chart-3" />
+        <CardTitle className="text-sm flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-3/10">
+            <Building2 className="h-4 w-4 text-chart-3" />
+          </div>
           {isAr ? "لوحة الشركات" : "Company Dashboard"}
         </CardTitle>
         <Button variant="outline" size="sm" asChild className="text-xs gap-1.5">
@@ -90,19 +99,20 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
       <CardContent className="space-y-4">
         {/* KPI Row */}
         <div className="grid grid-cols-4 gap-2">
-          {[
-            { icon: Building2, label: isAr ? "الشركات" : "Companies", value: data.totalCompanies, color: "text-chart-3" },
-            { icon: Users, label: isAr ? "نشطة" : "Active", value: data.activeCompanies, color: "text-chart-2" },
-            { icon: Package, label: isAr ? "طلبات الأسبوع" : "Weekly Orders", value: data.ordersThisWeek, color: "text-chart-4", delta: orderDelta },
-            { icon: CreditCard, label: isAr ? "إيرادات الأسبوع" : "Weekly Revenue", value: data.thisWeekRevenue, color: "text-primary", isCurrency: true },
-          ].map((kpi, i) => (
-            <div key={i} className="text-center p-2 rounded-xl bg-muted/40">
-              <kpi.icon className={cn("h-4 w-4 mx-auto mb-1", kpi.color)} />
-              <p className="text-sm font-bold">{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} />{(kpi as any).isCurrency ? " SAR" : ""}</> : kpi.value}</p>
-              <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
+          {kpiItems.map((kpi, i) => (
+            <div key={i} className="text-center p-2.5 rounded-xl border border-border/30 group transition-all duration-200 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5">
+              <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg mx-auto mb-1.5 transition-transform duration-200 group-hover:scale-110", kpi.bg)}>
+                <kpi.icon className={cn("h-3.5 w-3.5", kpi.color)} />
+              </div>
+              <p className="text-sm font-bold tabular-nums">
+                {typeof kpi.value === "number" ? (
+                  <><AnimatedCounter value={kpi.value} />{kpi.isCurrency ? <span className="text-[9px] text-muted-foreground font-medium ms-0.5">SAR</span> : ""}</>
+                ) : kpi.value}
+              </p>
+              <p className="text-[9px] text-muted-foreground font-medium mt-0.5">{kpi.label}</p>
               {kpi.delta !== undefined && (
-                <Badge variant="outline" className={cn("text-[8px] mt-0.5", kpi.delta > 0 ? "text-chart-2" : kpi.delta < 0 ? "text-destructive" : "text-muted-foreground")}>
-                  {kpi.delta > 0 ? <ArrowUp className="h-2 w-2" /> : kpi.delta < 0 ? <ArrowDown className="h-2 w-2" /> : <Minus className="h-2 w-2" />}
+                <Badge variant="outline" className={cn("text-[8px] mt-1", kpi.delta > 0 ? "text-chart-2 border-chart-2/30" : kpi.delta < 0 ? "text-destructive border-destructive/30" : "text-muted-foreground")}>
+                  {kpi.delta > 0 ? <ArrowUp className="h-2 w-2 me-0.5" /> : kpi.delta < 0 ? <ArrowDown className="h-2 w-2 me-0.5" /> : <Minus className="h-2 w-2 me-0.5" />}
                   {Math.abs(kpi.delta)}
                 </Badge>
               )}
@@ -113,22 +123,22 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
         <div className="grid md:grid-cols-2 gap-4">
           {/* Orders trend */}
           <div>
-            <p className="text-xs font-medium mb-2 text-muted-foreground flex items-center gap-1">
+            <p className="text-xs font-semibold mb-2 text-muted-foreground flex items-center gap-1.5">
               <TrendingUp className="h-3 w-3" />
               {isAr ? "اتجاه الطلبات (14 يوم)" : "Orders Trend (14 days)"}
             </p>
             <ResponsiveContainer width="100%" height={120}>
               <BarChart data={data.ordersTrend}>
-                <XAxis dataKey="date" tick={{ fontSize: 8 }} interval="preserveStartEnd" />
-                <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8 }} />
-                <Bar dataKey="orders" fill="hsl(var(--chart-3))" radius={[2, 2, 0, 0]} />
+                <XAxis dataKey="date" {...X_AXIS_PROPS} interval="preserveStartEnd" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Bar dataKey="orders" fill={CHART_COLORS[2]} radius={BAR_RADIUS} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* Top companies */}
           <div>
-            <p className="text-xs font-medium mb-2 text-muted-foreground flex items-center gap-1">
+            <p className="text-xs font-semibold mb-2 text-muted-foreground flex items-center gap-1.5">
               <Star className="h-3 w-3" />
               {isAr ? "أفضل الشركات" : "Top Companies"}
             </p>
@@ -136,15 +146,18 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
               {data.topCompanies.length === 0 ? (
                 <p className="text-[10px] text-muted-foreground text-center py-4">{isAr ? "لا توجد بيانات" : "No data"}</p>
               ) : (
-                data.topCompanies.map((company: any) => (
-                  <div key={company.id} className="flex items-center justify-between p-2 rounded-xl bg-muted/30 text-xs">
-                    <div className="min-w-0">
-                      <p className="font-medium truncate">{isAr ? (company.name_ar || company.name) : company.name}</p>
-                      <p className="text-[9px] text-muted-foreground capitalize">{company.type}</p>
+                data.topCompanies.map((company: any, idx: number) => (
+                  <div key={company.id} className="flex items-center justify-between p-2.5 rounded-xl border border-border/30 text-xs transition-all duration-200 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 group">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-[10px] font-bold text-muted-foreground tabular-nums w-4">{idx + 1}</span>
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{isAr ? (company.name_ar || company.name) : company.name}</p>
+                        <p className="text-[9px] text-muted-foreground capitalize">{company.type}</p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Star className="h-3 w-3 text-chart-4 fill-chart-4" />
-                      <span className="text-[10px] font-bold">{company.average_rating?.toFixed(1) || "—"}</span>
+                      <span className="text-[10px] font-bold tabular-nums">{company.average_rating?.toFixed(1) || "—"}</span>
                       <span className="text-[9px] text-muted-foreground">({company.total_reviews || 0})</span>
                     </div>
                   </div>
