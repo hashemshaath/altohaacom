@@ -50,6 +50,8 @@ const SmartInstallBanner = safeLazy(() => import("@/components/pwa/SmartInstallB
 const OfflineBanner = safeLazy(() => import("@/components/pwa/OfflineBanner").then(m => ({ default: m.OfflineBanner as any })));
 const UpdatePrompt = safeLazy(() => import("@/components/pwa/UpdatePrompt").then(m => ({ default: m.UpdatePrompt })));
 const IOSInstallGuide = safeLazy(() => import("@/components/pwa/IOSInstallGuide").then(m => ({ default: m.IOSInstallGuide as any })));
+const AnnouncementBanner = safeLazy(() => import("@/components/engagement/AnnouncementBanner").then(m => ({ default: m.AnnouncementBanner as any })));
+const ReEngagementPrompt = safeLazy(() => import("@/components/engagement/ReEngagementPrompt").then(m => ({ default: m.ReEngagementPrompt as any })));
 const PullToRefreshIndicator = lazy(() => import("@/components/pwa/PullToRefreshIndicator").then(m => ({ default: m.PullToRefreshIndicator })).catch(() => ({ default: ((_props: any) => null) as any })));
 const ScrollProgress = safeLazy(() => import("@/components/ui/scroll-progress").then(m => ({ default: m.ScrollProgress as any })));
 const BackToTop = safeLazy(() => import("@/components/ui/back-to-top").then(m => ({ default: m.BackToTop as any })));
