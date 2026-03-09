@@ -285,6 +285,19 @@ export default function QRCodesAdmin() {
                     ))}
                   </TableBody>
                 </Table>
+                <AdminTablePagination
+                  page={qrPagination.page}
+                  totalPages={qrPagination.totalPages}
+                  totalItems={qrPagination.totalItems}
+                  startItem={qrPagination.startItem}
+                  endItem={qrPagination.endItem}
+                  pageSize={qrPagination.pageSize}
+                  pageSizeOptions={qrPagination.pageSizeOptions}
+                  hasNext={qrPagination.hasNext}
+                  hasPrev={qrPagination.hasPrev}
+                  onPageChange={qrPagination.goTo}
+                  onPageSizeChange={qrPagination.changePageSize}
+                />
               </div>
             </>
           )}
