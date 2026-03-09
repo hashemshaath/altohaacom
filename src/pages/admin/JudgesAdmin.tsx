@@ -204,18 +204,13 @@ export default function JudgesAdmin() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="relative flex-1">
-          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder={isAr ? "بحث بالاسم أو الجنسية أو الرقم..." : "Search by name, nationality, or number..."}
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="ps-10"
-          />
-        </div>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={isAr ? "بحث بالاسم أو الجنسية أو الرقم..." : "Search by name, nationality, or number..."}
+      >
         <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-full sm:w-48"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-48 rounded-xl"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع التخصصات" : "All Specialties"}</SelectItem>
             <SelectItem value="culinary">{isAr ? "طهي" : "Culinary"}</SelectItem>
@@ -225,7 +220,7 @@ export default function JudgesAdmin() {
           </SelectContent>
         </Select>
         <Select value={filterLevel} onValueChange={setFilterLevel}>
-          <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-40 rounded-xl"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{isAr ? "جميع المستويات" : "All Levels"}</SelectItem>
             <SelectItem value="national">{isAr ? "وطني" : "National"}</SelectItem>
@@ -233,7 +228,7 @@ export default function JudgesAdmin() {
             <SelectItem value="master">{isAr ? "ماستر" : "Master"}</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </AdminFilterBar>
 
       <BulkActionBar
         count={bulk.count}
