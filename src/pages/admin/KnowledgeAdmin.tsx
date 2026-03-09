@@ -15,7 +15,6 @@ import { Switch } from "@/components/ui/switch";
 import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Separator } from "@/components/ui/separator";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
