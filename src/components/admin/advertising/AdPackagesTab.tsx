@@ -89,9 +89,22 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
                 </p>
               )}
 
-              <Badge variant={pkg.is_active ? "secondary" : "outline"} className="w-full justify-center text-[10px]">
-                {pkg.is_active ? (isAr ? "مفعلة" : "Active") : (isAr ? "معطلة" : "Inactive")}
-              </Badge>
+              <div className="flex items-center justify-between gap-2 border-t border-border/30 pt-2">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={pkg.is_active}
+                    onCheckedChange={(checked) => onToggleActive?.(pkg.id, checked)}
+                  />
+                  <span className="text-[10px] text-muted-foreground">
+                    {pkg.is_active ? (isAr ? "مفعلة" : "Active") : (isAr ? "معطلة" : "Inactive")}
+                  </span>
+                </div>
+                {onEdit && (
+                  <Button size="sm" variant="ghost" className="h-7 w-7 rounded-xl" onClick={() => onEdit(pkg)}>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}

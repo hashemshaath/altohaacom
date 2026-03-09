@@ -184,7 +184,18 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
             </TabsList>
           </div>
 
-          {/* Category filter chips */}
+          {/* Search & category filter */}
+          <div className="px-4 pt-2">
+            <div className="relative">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder={isAr ? "بحث في الإشعارات..." : "Search notifications..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 text-xs ps-8 rounded-xl"
+              />
+            </div>
+          </div>
           <div className="px-4 py-2 flex gap-1.5 flex-wrap">
             {(Object.keys(categoryLabels) as CategoryFilter[]).map(cat => (
               <Badge
