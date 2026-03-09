@@ -237,12 +237,12 @@ export default function QRCodesAdmin() {
                       <TableHead className="w-10">
                         <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                       </TableHead>
-                      <TableHead>{isAr ? "الكود" : "Code"}</TableHead>
-                      <TableHead>{isAr ? "النوع" : "Entity Type"}</TableHead>
-                      <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                      <TableHead className="text-center">{isAr ? "المسح" : "Scans"}</TableHead>
-                      <TableHead>{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead>{isAr ? "التاريخ" : "Created"}</TableHead>
+                      <SortableTableHead column="code" label={isAr ? "الكود" : "Code"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="entity_type" label={isAr ? "النوع" : "Entity Type"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="scan_count" label={isAr ? "المسح" : "Scans"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} className="text-center" />
+                      <SortableTableHead column="is_active" label={isAr ? "الحالة" : "Status"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
+                      <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Created"} sortColumn={qrSortCol} sortDirection={qrSortDir} onSort={qrToggleSort} />
                       <TableHead className="text-end">{isAr ? "إجراءات" : "Actions"}</TableHead>
                     </TableRow>
                   </TableHeader>
