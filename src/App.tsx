@@ -12,6 +12,7 @@ import { ThemeApplicator } from "@/components/ThemeApplicator";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { RouteAnnouncer } from "@/components/a11y/RouteAnnouncer";
 import { MaintenanceGuard } from "@/components/MaintenanceGuard";
 import { PageTransition } from "@/components/mobile/PageTransition";
 import { ResourceHints } from "@/components/performance/ResourceHints";
@@ -88,6 +89,7 @@ function AppContent() {
   return (
     <>
       <ScrollToTop />
+      <RouteAnnouncer />
       <SkipToContent />
       <Suspense fallback={null}>
         <PullToRefreshIndicator {...ptr as any} />
