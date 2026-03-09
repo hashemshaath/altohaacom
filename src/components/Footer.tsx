@@ -143,7 +143,7 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary hover:scale-105"
+                  className="flex h-8 w-8 items-center justify-center rounded-xl bg-muted/50 text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:scale-110 hover:-translate-y-0.5 active:scale-95"
                 >
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d={social.icon} /></svg>
                 </a>
