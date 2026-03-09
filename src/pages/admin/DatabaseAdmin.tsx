@@ -148,13 +148,13 @@ export default function DatabaseAdmin() {
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30">
-                <TableHead>{language === "ar" ? "الجدول" : "Table"}</TableHead>
-                <TableHead className="text-end">{language === "ar" ? "السجلات" : "Records"}</TableHead>
+                <SortableTableHead column="label" label={language === "ar" ? "الجدول" : "Table"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                <SortableTableHead column="count" label={language === "ar" ? "السجلات" : "Records"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="text-end" />
                 <TableHead className="text-end">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tableStats?.map((table) => (
+              {sortedStats?.map((table) => (
                 <TableRow key={table.name} className="transition-colors duration-200 hover:bg-muted/40">
                   <TableCell>
                     <div className="flex items-center gap-3">

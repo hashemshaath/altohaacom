@@ -643,13 +643,16 @@ export default function LocalizationAdmin() {
                     )}
                   </TableBody>
                 </Table>
-              </div>
-            </CardContent>
-          </Card>
-          <p className="text-xs text-muted-foreground text-end tabular-nums">
-            {isAr ? `عرض ${filteredTranslations.length} من ${translations.length}` : `Showing ${filteredTranslations.length} of ${translations.length}`}
-          </p>
-        </TabsContent>
+               </div>
+             </CardContent>
+             <AdminTablePagination
+               page={tlPagination.page} totalPages={tlPagination.totalPages} totalItems={tlPagination.totalItems}
+               startItem={tlPagination.startItem} endItem={tlPagination.endItem} pageSize={tlPagination.pageSize}
+               pageSizeOptions={tlPagination.pageSizeOptions} hasNext={tlPagination.hasNext} hasPrev={tlPagination.hasPrev}
+               onPageChange={tlPagination.goTo} onPageSizeChange={tlPagination.changePageSize}
+             />
+           </Card>
+         </TabsContent>
 
         {/* ─── Languages Tab ─── */}
         <TabsContent value="languages" className="mt-4">
