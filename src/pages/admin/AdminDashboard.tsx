@@ -175,14 +175,14 @@ export default function AdminDashboard() {
   };
 
   const statCards = useMemo(() => [
-    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, bg: "bg-primary/8", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
-    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, bg: "bg-chart-5/8", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/users?status=active" },
-    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, bg: "bg-destructive/8", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
-    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, bg: "bg-chart-2/8", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
-    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, bg: "bg-chart-3/8", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
-    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-chart-4/8", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
-    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, bg: "bg-chart-1/8", color: "text-chart-1", chartColor: "hsl(var(--chart-1))", link: "/admin/articles" },
-    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-accent/8", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/orders" },
+    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
+    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, bg: "bg-chart-5/10", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/users?status=active" },
+    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, bg: "bg-destructive/10", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
+    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, bg: "bg-chart-2/10", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
+    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, bg: "bg-chart-3/10", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
+    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-chart-4/10", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
+    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, bg: "bg-chart-1/10", color: "text-chart-1", chartColor: "hsl(var(--chart-1))", link: "/admin/articles" },
+    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-accent/10", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/orders" },
   ], [stats, isAr]);
 
   const quickActions = useMemo(() => [
