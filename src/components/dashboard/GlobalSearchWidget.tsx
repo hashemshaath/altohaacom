@@ -89,6 +89,8 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setFocused(true)}
           className="h-12 border-border/40 bg-muted/20 ps-11 pe-10 text-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 rounded-2xl shadow-sm"
+          aria-label={isAr ? "بحث عام" : "Global search"}
+          role="searchbox"
         />
         {query && (
           <button onClick={() => { setQuery(""); inputRef.current?.focus(); }} className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted transition-colors">
@@ -159,7 +161,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
                 {results.length > 0 && (
                   <div className="border-t border-border/30 mt-1 pt-1">
                     <p className="text-center text-[10px] text-muted-foreground/50 py-1">
-                      {isAr ? `${results.length} نتيجة` : `${results.length} results found`}
+                      {isAr ? `${results.length} نتيجة — اضغط Enter للمزيد` : `${results.length} results — press Enter for more`}
                     </p>
                   </div>
                 )}
