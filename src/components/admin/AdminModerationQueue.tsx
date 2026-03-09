@@ -33,11 +33,11 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
   const totalItems = (data?.totalReports || 0) + (data?.totalPending || 0);
 
   return (
-    <Card className="border-border/50">
+    <Card className={`border-border/50 ${totalItems > 0 ? "border-destructive/20" : ""}`}>
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-destructive/10">
-            <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
+          <div className={`flex h-7 w-7 items-center justify-center rounded-xl ${totalItems > 0 ? "bg-destructive/10 animate-pulse" : "bg-chart-2/10"}`}>
+            <AlertTriangle className={`h-3.5 w-3.5 ${totalItems > 0 ? "text-destructive" : "text-chart-2"}`} />
           </div>
           {isAr ? "طابور المراجعة" : "Moderation Queue"}
           {totalItems > 0 && (

@@ -205,9 +205,14 @@ export const CompetitionCard = memo(
                 </div>
               )}
 
-              {/* Footer: location + arrow */}
+              {/* Footer: location + type badges + arrow */}
               <div className="flex items-center justify-between mt-auto pt-1">
                 <div className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground min-w-0">
+                  {competition.is_virtual && (
+                    <Badge variant="secondary" className="text-[8px] h-4 px-1.5 rounded-lg border-0 bg-chart-3/10 text-chart-3">
+                      {isAr ? "عن بُعد" : "Online"}
+                    </Badge>
+                  )}
                   {competition.is_virtual ? (
                     <span className="flex items-center gap-1 truncate"><Globe className="h-3 w-3 text-primary shrink-0" />{isAr ? "افتراضية" : "Virtual"}</span>
                   ) : (venue || competition.city) ? (
