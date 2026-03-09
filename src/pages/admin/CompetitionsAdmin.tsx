@@ -695,6 +695,7 @@ export default function CompetitionsAdmin() {
               </Button>
             </div>
           ) : (
+            <>
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30 hover:bg-muted/30">
