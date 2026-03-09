@@ -67,6 +67,7 @@ export const PostCard = memo(function PostCard({
 
   const totalEngagement = post.likes_count + post.comments_count + post.reposts_count;
   const isHotPost = totalEngagement >= 10;
+  const isViral = totalEngagement >= 50;
 
   return (
     <article
