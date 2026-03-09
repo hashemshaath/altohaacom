@@ -79,28 +79,33 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
 
           return (
             <Link key={chat.id} to="/messages" className="block">
-              <div className={`flex items-center gap-2.5 rounded-xl p-2 transition-colors hover:bg-muted/50 ${chat.isUnread ? "bg-primary/5" : ""}`}>
+              <div className={`flex items-center gap-2.5 rounded-xl p-2 transition-all hover:bg-muted/50 active:scale-[0.98] ${chat.isUnread ? "bg-primary/5 border border-primary/10" : ""}`}>
                 <div className="relative">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-9 w-9 ring-1 ring-border/30">
                     <AvatarImage src={chat.partner?.avatar_url || undefined} />
                     <AvatarFallback className="text-[10px] bg-muted">{initials}</AvatarFallback>
                   </Avatar>
                   {chat.isUnread && (
-                    <div className="absolute -top-0.5 -end-0.5 h-2.5 w-2.5 rounded-full bg-primary border-2 border-background" />
+                    <div className="absolute -top-0.5 -end-0.5 h-2.5 w-2.5 rounded-full bg-primary border-2 border-background">
+                      <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-40" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1">
-                    <span className={`text-xs truncate ${chat.isUnread ? "font-bold" : "font-medium"}`}>{name}</span>
-                    <span className="text-[9px] text-muted-foreground shrink-0">
+                    <span className={`text-xs truncate ${chat.isUnread ? "font-bold text-foreground" : "font-medium"}`}>{name}</span>
+                    <span className={`text-[9px] shrink-0 ${chat.isUnread ? "text-primary font-semibold" : "text-muted-foreground"}`}>
                       {formatDistanceToNow(new Date(chat.created_at), { addSuffix: false })}
                     </span>
                   </div>
                   <p className={`text-[10px] truncate ${chat.isUnread ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                     {chat.sender_id === user!.id && <span className="text-muted-foreground">{isAr ? "أنت: " : "You: "}</span>}
-                    {chat.content || (isAr ? "مرفق" : "Attachment")}
+                    {chat.content || (isAr ? "مرفق 📎" : "Attachment 📎")}
                   </p>
                 </div>
+                {chat.isUnread && (
+                  <div className="shrink-0 h-2 w-2 rounded-full bg-primary" />
+                )}
               </div>
             </Link>
           );
