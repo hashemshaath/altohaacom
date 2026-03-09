@@ -900,9 +900,7 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <Badge className={statusColors[shopOrderDetails.status] || "bg-muted text-muted-foreground"}>
-                      {getStatusLabel(shopOrderDetails.status)}
-                    </Badge>
+                    <AdminStatusBadge status={shopOrderDetails.status} label={getStatusLabel(shopOrderDetails.status)} />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الدفع" : "Payment"}</p>
