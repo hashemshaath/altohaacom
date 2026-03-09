@@ -387,12 +387,12 @@ export default function Notifications() {
             </Card>
           ) : (
             <div className="space-y-6">
-              {Object.entries(grouped).map(([dateLabel, items]) => (
-                <div key={dateLabel}>
+              {Object.entries(grouped).map(([dateLabel, items], groupIdx) => (
+                <div key={dateLabel} className="animate-in fade-in-50 slide-in-from-bottom-2 duration-300" style={{ animationDelay: `${groupIdx * 80}ms`, animationFillMode: 'both' }}>
                   <div className="flex items-center gap-3 mb-3">
                     <p className="text-sm font-semibold text-muted-foreground">{dateLabel}</p>
-                    <div className="flex-1 h-px bg-border/50" />
-                    <Badge variant="secondary" className="text-[10px] rounded-xl">
+                    <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
+                    <Badge variant="secondary" className="text-[10px] rounded-xl tabular-nums">
                       <AnimatedCounter value={items.length} className="inline" />
                     </Badge>
                   </div>
