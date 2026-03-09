@@ -113,7 +113,7 @@ const featureLabels: Record<string, { en: string; ar: string; icon: typeof Zap }
 const continents = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
 const regions = ["GCC", "MENA", "Europe", "Americas", "South Asia", "Southeast Asia", "East Asia", "Oceania", "Sub-Saharan Africa"];
 
-type SortField = "name" | "code" | "region" | "sort_order" | "updated_at";
+
 
 export default function CountriesAdmin() {
   const { language } = useLanguage();
