@@ -274,15 +274,23 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
             {/* Muted types */}
             <div>
               <Label className="text-xs text-muted-foreground mb-2 block">{isAr ? "تصنيفات الإشعارات" : "Notification Types"}</Label>
-              <div className="space-y-2.5">
+              <div className="space-y-1">
                 {NOTIFICATION_TYPES.map(nt => {
                   const Icon = nt.icon;
                   const isMuted = activePrefs.muted_types.includes(nt.key);
                   return (
-                    <div key={nt.key} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Icon className={cn("h-4 w-4", isMuted ? "text-muted-foreground" : nt.color)} />
-                        <Label className={cn("text-sm", isMuted && "text-muted-foreground")}>{isAr ? nt.labelAr : nt.label}</Label>
+                    <div
+                      key={nt.key}
+                      className={cn(
+                        "flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors",
+                        isMuted ? "opacity-60" : "hover:bg-muted/50"
+                      )}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className={cn("rounded-lg p-1.5", isMuted ? "bg-muted" : "bg-primary/10")}>
+                          <Icon className={cn("h-3.5 w-3.5", isMuted ? "text-muted-foreground" : nt.color)} />
+                        </div>
+                        <Label className={cn("text-sm", isMuted && "text-muted-foreground line-through")}>{isAr ? nt.labelAr : nt.label}</Label>
                       </div>
                       <Switch checked={!isMuted} onCheckedChange={() => toggleMutedType(activeChannel, nt.key)} />
                     </div>
