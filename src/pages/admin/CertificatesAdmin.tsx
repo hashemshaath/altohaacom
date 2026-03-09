@@ -515,7 +515,7 @@ export default function CertificatesAdmin() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Badge className={`text-[10px] ${statusColors[cert.status]}`}>{getStatusLabel(cert.status)}</Badge>
+                            <AdminStatusBadge status={cert.status} label={getStatusLabel(cert.status)} />
                           </TableCell>
                           <TableCell className="text-xs max-w-[120px] truncate">{cert.event_name || "—"}</TableCell>
                           <TableCell className="font-mono text-xs">{cert.verification_code}</TableCell>

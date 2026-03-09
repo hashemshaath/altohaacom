@@ -553,8 +553,7 @@ export default function SupportTicketsAdmin() {
             onExport={() => exportTicketsCSV(bulk.count > 0 ? bulk.selectedItems : filteredTickets)}
           />
 
-          <Card className="rounded-2xl border-border/50 overflow-hidden">
-            <CardContent className="p-0">
+          <AdminTableCard>
               {isLoading ? (
                 <div className="p-4 sm:p-6 space-y-3">
                   {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
