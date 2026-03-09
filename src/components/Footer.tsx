@@ -121,7 +121,7 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
           </div>
         </div>
 
-        <Separator className="my-8" />
+        <Separator className="my-8 opacity-50" />
 
         {/* Legal Links */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mb-6 text-xs text-muted-foreground">

@@ -42,16 +42,16 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
           size="sm"
           asChild
           className={cn(
-            "text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl transition-all duration-200 hover:bg-primary/5 hover:text-foreground relative",
+            "text-muted-foreground h-9 px-3.5 text-sm font-medium rounded-xl transition-all duration-300 hover:bg-primary/5 hover:text-foreground relative active:scale-95",
             isActive(link.to) &&
               "bg-primary/10 text-primary shadow-sm shadow-primary/5"
           )}
         >
           <Link to={link.to} className="flex items-center gap-1.5">
-            <link.icon className="h-3.5 w-3.5 shrink-0" />
+            <link.icon className={cn("h-3.5 w-3.5 shrink-0 transition-transform duration-300", isActive(link.to) && "scale-110")} />
             <span>{label(link.labelEn, link.labelAr)}</span>
             {isActive(link.to) && (
-              <span className="absolute -bottom-[9px] inset-x-3 h-0.5 rounded-full bg-primary" />
+              <span className="absolute -bottom-[9px] inset-x-3 h-0.5 rounded-full bg-primary animate-in fade-in-0 zoom-in-x-50 duration-300" />
             )}
           </Link>
         </Button>
@@ -90,7 +90,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="center" 
-          className="w-[420px] p-3 rounded-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2"
+          className="w-[420px] p-3 rounded-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 shadow-xl shadow-foreground/[0.06] border-border/50"
           sideOffset={8}
         >
           <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 px-1 pb-2">

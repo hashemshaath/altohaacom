@@ -102,7 +102,7 @@ export const UserDropdown = memo(function UserDropdown() {
             <ChevronDown className="h-3 w-3 text-muted-foreground hidden xl:block" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64 animate-in fade-in-0 zoom-in-95 p-0">
+        <DropdownMenuContent align="end" className="w-64 animate-in fade-in-0 zoom-in-95 duration-200 p-0 rounded-2xl shadow-xl shadow-foreground/[0.06] border-border/50">
           {/* Profile header */}
           <div className="px-4 py-3 border-b border-border/50 bg-muted/30">
             <div className="flex items-center gap-3">
@@ -126,32 +126,32 @@ export const UserDropdown = memo(function UserDropdown() {
           </div>
 
           <div className="py-1">
-            <DropdownMenuItem asChild>
-              <Link to="/dashboard" className="flex items-center gap-2.5 px-4 py-2">
+            <DropdownMenuItem asChild className="rounded-lg mx-1">
+              <Link to="/dashboard" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
                 <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
                 {label("Dashboard", "لوحة التحكم")}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/profile" className="flex items-center gap-2.5 px-4 py-2">
+            <DropdownMenuItem asChild className="rounded-lg mx-1">
+              <Link to="/profile" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
                 <User className="h-4 w-4 text-muted-foreground" />
                 {t("myProfile")}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/messages" className="flex items-center gap-2.5 px-4 py-2">
+            <DropdownMenuItem asChild className="rounded-lg mx-1">
+              <Link to="/messages" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
                 <MessageSquare className="h-4 w-4 text-muted-foreground" />
                 {label("Messages", "الرسائل")}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/notification-preferences" className="flex items-center gap-2.5 px-4 py-2">
+            <DropdownMenuItem asChild className="rounded-lg mx-1">
+              <Link to="/notification-preferences" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
                 <Settings className="h-4 w-4 text-muted-foreground" />
                 {t("notificationPreferences")}
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/help" className="flex items-center gap-2.5 px-4 py-2">
+            <DropdownMenuItem asChild className="rounded-lg mx-1">
+              <Link to="/help" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
                 <HelpCircle className="h-4 w-4 text-muted-foreground" />
                 {label("Help Center", "مركز المساعدة")}
               </Link>
