@@ -1,4 +1,8 @@
 import { useState, useMemo } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -348,7 +352,9 @@ export default function LocalizationAdmin() {
     });
   }, [translations, search, nsFilter, statusFilter]);
 
-  const bulk = useAdminBulkActions(filteredTranslations);
+  const { sorted: sortedTranslations, sortColumn: tlSortCol, sortDirection: tlSortDir, toggleSort: tlToggleSort } = useTableSort(filteredTranslations);
+  const tlPagination = usePagination(sortedTranslations);
+  const bulk = useAdminBulkActions(tlPagination.paginated);
 
   const { exportCSV: exportTranslationsCSV } = useCSVExport({
     columns: [
@@ -505,20 +511,20 @@ export default function LocalizationAdmin() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-10">
-                        <Checkbox
-                          checked={bulk.isAllSelected}
-                          onCheckedChange={bulk.toggleAll}
-                        />
-                      </TableHead>
-                      <TableHead className="w-[100px]">{isAr ? "القسم" : "Namespace"}</TableHead>
-                      <TableHead className="w-[180px]">{isAr ? "المفتاح" : "Key"}</TableHead>
-                      <TableHead>English</TableHead>
-                      <TableHead>العربية</TableHead>
-                      <TableHead className="w-[80px]">{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead className="w-[120px]">{isAr ? "إجراءات" : "Actions"}</TableHead>
-                    </TableRow>
+                     <TableRow>
+                       <TableHead className="w-10">
+                         <Checkbox
+                           checked={bulk.isAllSelected}
+                           onCheckedChange={bulk.toggleAll}
+                         />
+                       </TableHead>
+                       <SortableTableHead column="namespace" label={isAr ? "القسم" : "Namespace"} sortColumn={tlSortCol} sortDirection={tlSortDir} onSort={tlToggleSort} className="w-[100px]" />
+                       <SortableTableHead column="key" label={isAr ? "المفتاح" : "Key"} sortColumn={tlSortCol} sortDirection={tlSortDir} onSort={tlToggleSort} className="w-[180px]" />
+                       <TableHead>English</TableHead>
+                       <TableHead>العربية</TableHead>
+                       <SortableTableHead column="is_verified" label={isAr ? "الحالة" : "Status"} sortColumn={tlSortCol} sortDirection={tlSortDir} onSort={tlToggleSort} className="w-[80px]" />
+                       <TableHead className="w-[120px]">{isAr ? "إجراءات" : "Actions"}</TableHead>
+                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loadingTranslations ? (
@@ -527,7 +533,7 @@ export default function LocalizationAdmin() {
                           <AdminTableSkeleton rows={5} columns={5} showActions />
                         </TableCell>
                       </TableRow>
-                    ) : filteredTranslations.length === 0 ? (
+                    ) : sortedTranslations.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={7} className="p-0">
                           <AdminEmptyState
@@ -543,7 +549,7 @@ export default function LocalizationAdmin() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredTranslations.map(t => (
+                      tlPagination.paginated.map(t => (
                         <TableRow key={t.id}>
                           <TableCell>
                             <Checkbox
@@ -637,13 +643,16 @@ export default function LocalizationAdmin() {
                     )}
                   </TableBody>
                 </Table>
-              </div>
-            </CardContent>
-          </Card>
-          <p className="text-xs text-muted-foreground text-end tabular-nums">
-            {isAr ? `عرض ${filteredTranslations.length} من ${translations.length}` : `Showing ${filteredTranslations.length} of ${translations.length}`}
-          </p>
-        </TabsContent>
+               </div>
+             </CardContent>
+             <AdminTablePagination
+               page={tlPagination.page} totalPages={tlPagination.totalPages} totalItems={tlPagination.totalItems}
+               startItem={tlPagination.startItem} endItem={tlPagination.endItem} pageSize={tlPagination.pageSize}
+               pageSizeOptions={tlPagination.pageSizeOptions} hasNext={tlPagination.hasNext} hasPrev={tlPagination.hasPrev}
+               onPageChange={tlPagination.goTo} onPageSizeChange={tlPagination.changePageSize}
+             />
+           </Card>
+         </TabsContent>
 
         {/* ─── Languages Tab ─── */}
         <TabsContent value="languages" className="mt-4">
