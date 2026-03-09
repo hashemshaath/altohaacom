@@ -353,9 +353,9 @@ export default function AuditLog() {
                     <TableHeader>
                       <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkAdmin.isAllSelected} onCheckedChange={bulkAdmin.toggleAll} /></TableHead>
-                        <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
+                        <SortableTableHead column="action_type" label={isAr ? "الإجراء" : "Action"} sortColumn={aSortCol} sortDirection={aSortDir} onSort={aToggleSort} className="text-xs" />
                         <TableHead className="text-xs">{isAr ? "التفاصيل" : "Details"}</TableHead>
-                        <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
+                        <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={aSortCol} sortDirection={aSortDir} onSort={aToggleSort} className="text-xs" />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
