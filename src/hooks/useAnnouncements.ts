@@ -25,8 +25,8 @@ export function useAnnouncements() {
   const { data: announcements = [], isLoading } = useQuery({
     queryKey: ["site-announcements"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("site_announcements" as any)
+      const { data, error } = await (supabase
+        .from("site_announcements" as any) as any)
         .select("id, title, title_ar, body, body_ar, type, link_url, link_text, link_text_ar, bg_color, is_dismissible, priority")
         .eq("is_active", true)
         .lte("starts_at", new Date().toISOString())
