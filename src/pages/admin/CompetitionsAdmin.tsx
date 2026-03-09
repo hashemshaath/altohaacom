@@ -890,6 +890,7 @@ export default function CompetitionsAdmin() {
               pageSizeOptions={compPagination.pageSizeOptions} hasNext={compPagination.hasNext} hasPrev={compPagination.hasPrev}
               onPageChange={compPagination.goTo} onPageSizeChange={compPagination.changePageSize}
             />
+            </>
           )}
       </AdminTableCard>
         </TabsContent>
