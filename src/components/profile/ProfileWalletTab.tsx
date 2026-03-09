@@ -55,6 +55,17 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
     return { earned, spent, total: recentTransactions.length };
   }, [recentTransactions]);
 
+  const filteredTransactions = useMemo(() => {
+    let txs = recentTransactions;
+    if (txTypeFilter === "earned") txs = txs.filter(t => t.points > 0);
+    else if (txTypeFilter === "spent") txs = txs.filter(t => t.points < 0);
+    if (txSearch.trim()) {
+      const q = txSearch.toLowerCase();
+      txs = txs.filter(t => t.action_type?.toLowerCase().includes(q) || t.description?.toLowerCase().includes(q));
+    }
+    return txs;
+  }, [recentTransactions, txTypeFilter, txSearch]);
+
   if (walletLoading) {
     return (
       <div className="space-y-4">
