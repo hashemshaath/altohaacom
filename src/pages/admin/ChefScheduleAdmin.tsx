@@ -33,6 +33,7 @@ import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminSchedul
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
 const EVENT_ICONS: Record<string, any> = {
@@ -303,8 +304,14 @@ export default function ChefScheduleAdmin() {
               <TableBody>
                 {schedulePagination.paginated.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
-                      {isAr ? "لا توجد أحداث" : "No events found"}
+                    <TableCell colSpan={9} className="p-0">
+                      <AdminEmptyState
+                        icon={Calendar}
+                        title="No events found"
+                        titleAr="لا توجد أحداث"
+                        description="Try adjusting your filters or add a new event"
+                        descriptionAr="جرب تعديل الفلاتر أو أضف حدثاً جديداً"
+                      />
                     </TableCell>
                   </TableRow>
                 ) : (

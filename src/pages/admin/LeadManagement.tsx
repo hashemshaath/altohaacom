@@ -13,6 +13,8 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -505,13 +507,15 @@ export default function LeadManagement() {
       {viewMode === "table" ? (
         <AdminTableCard>
             {isLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-              </div>
+              <AdminTableSkeleton rows={5} columns={6} />
             ) : leads.length === 0 ? (
-              <p className="py-8 text-center text-muted-foreground">
-                {isAr ? "لا توجد نتائج" : "No leads found"}
-              </p>
+              <AdminEmptyState
+                icon={UserPlus}
+                title="No leads found"
+                titleAr="لا توجد نتائج"
+                description="Leads will appear here when added"
+                descriptionAr="ستظهر العملاء المحتملون هنا عند إضافتهم"
+              />
             ) : (
               (() => {
                 const { sorted: sortedLeads, sortColumn: leadSortCol, sortDirection: leadSortDir, toggleSort: toggleLeadSort } = useTableSort(leads, "created_at", "desc");

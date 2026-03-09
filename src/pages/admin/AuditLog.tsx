@@ -20,8 +20,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FileText, Trash2, ShieldAlert, Search, Download, Filter,
-  Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye,
+  Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye, FileSearch,
 } from "lucide-react";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, isAfter } from "date-fns";
@@ -276,11 +278,15 @@ export default function AuditLog() {
           </AdminFilterBar>
           <AdminTableCard title={isAr ? "سجل الحذف والرفض" : "Deletions & Rejections Log"}>
               {contentLoading ? (
-                <div className="flex justify-center py-8">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                </div>
+                <AdminTableSkeleton rows={5} columns={5} showActions={false} />
               ) : filteredContent.length === 0 ? (
-                <p className="py-8 text-center text-muted-foreground">{isAr ? "لا توجد سجلات" : "No records"}</p>
+                <AdminEmptyState
+                  icon={FileSearch}
+                  title="No records"
+                  titleAr="لا توجد سجلات"
+                  description="Content audit entries will appear here"
+                  descriptionAr="ستظهر سجلات تدقيق المحتوى هنا"
+                />
               ) : (
                 <ScrollArea className="max-h-[600px]">
                   <Table>
@@ -342,11 +348,15 @@ export default function AuditLog() {
           </AdminFilterBar>
           <AdminTableCard title={isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}>
               {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                </div>
+                <AdminTableSkeleton rows={5} columns={3} showActions={false} />
               ) : filteredActions.length === 0 ? (
-                <p className="py-8 text-center text-muted-foreground">{t("noResults")}</p>
+                <AdminEmptyState
+                  icon={FileText}
+                  title="No results"
+                  titleAr="لا توجد نتائج"
+                  description="Admin actions will appear here"
+                  descriptionAr="ستظهر إجراءات المشرفين هنا"
+                />
               ) : (
                 <ScrollArea className="max-h-[600px]">
                   <Table>

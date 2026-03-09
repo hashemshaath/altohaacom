@@ -4,6 +4,7 @@ import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -562,9 +563,7 @@ export default function SupportTicketsAdmin() {
 
           <AdminTableCard>
               {isLoading ? (
-                <div className="p-4 sm:p-6 space-y-3">
-                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
-                </div>
+                <AdminTableSkeleton rows={5} columns={5} />
               ) : filteredTickets.length === 0 ? (
                 <AdminEmptyState
                   icon={Ticket}
