@@ -513,7 +513,7 @@ export default function LeadManagement() {
                 {isAr ? "لا توجد نتائج" : "No leads found"}
               </p>
             ) : (
-              {(() => {
+              (() => {
                 const { sorted: sortedLeads, sortColumn: leadSortCol, sortDirection: leadSortDir, toggleSort: toggleLeadSort } = useTableSort(leads, "created_at", "desc");
                 const leadPagination = usePagination(sortedLeads, { defaultPageSize: 15 });
                 return (
