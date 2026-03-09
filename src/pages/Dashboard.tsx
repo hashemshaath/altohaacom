@@ -178,26 +178,28 @@ export default function Dashboard() {
 
 
       {/* Daily Digest */}
-      {user && (
+      {user && isVisible("daily-digest") && (
         <div className="mb-5"><W><DailyDigestWidget /></W></div>
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
       <div className="grid gap-4 md:gap-6 lg:grid-cols-12 pb-20 sm:pb-0">
-        {/* Left Column - Profile & Identity (sticky on desktop) */}
+        {/* Left Column - Profile & Identity */}
         <aside className="lg:col-span-3 space-y-4">
-          <div className="lg:sticky lg:top-20 space-y-4">
+          <SectionLabel icon={Star} label={isAr ? "ملفك الشخصي" : "Your Profile"} />
+          <div className="lg:sticky lg:top-20 space-y-4 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:scrollbar-none lg:pe-1">
             {user && <ProfileCompletionCard />}
             {user && <W><ProfileSummaryCard /></W>}
-            {user && <W><PlatformScoreWidget /></W>}
-            {user && <W><WalletBalanceWidget /></W>}
-            {user && <W><StreakWidget /></W>}
-            {user && <W><QuickActionsWidget /></W>}
+            {user && isVisible("platform-score") && <W><PlatformScoreWidget /></W>}
+            {user && isVisible("wallet") && <W><WalletBalanceWidget /></W>}
+            {user && isVisible("streak") && <W><StreakWidget /></W>}
+            {user && isVisible("quick-actions") && <W><QuickActionsWidget /></W>}
           </div>
         </aside>
 
         {/* Center Column - Main Content Feed */}
         <main className="lg:col-span-6 space-y-4 md:space-y-5">
+          <SectionLabel icon={Trophy} label={isAr ? "النشاط الرئيسي" : "Main Feed"} />
 
           {/* Common content */}
           {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
@@ -205,10 +207,10 @@ export default function Dashboard() {
           {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
 
           {/* AI Recommendations */}
-          {user && <W><SmartRecommendationsWidget /></W>}
+          {user && isVisible("recommendations") && <W><SmartRecommendationsWidget /></W>}
 
-          {user && !isFan && <W><WeeklyTrendChart /></W>}
-          {user && !isFan && <W><ActivityHeatmapWidget /></W>}
+          {user && !isFan && isVisible("weekly-trend") && <W><WeeklyTrendChart /></W>}
+          {user && !isFan && isVisible("activity-heatmap") && <W><ActivityHeatmapWidget /></W>}
           {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
           {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
           {user && !isFan && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
@@ -219,14 +221,15 @@ export default function Dashboard() {
 
         {/* Right Column - Activity & Social */}
         <aside className="lg:col-span-3 space-y-4">
-          <div className="lg:sticky lg:top-20 space-y-4">
-            {user && <W><NotificationDigest /></W>}
-            {user && <W><NotificationGroupWidget /></W>}
-            {user && <W><RecentChatsWidget /></W>}
-            {user && <W><GoalsMilestonesWidget /></W>}
-            {user && <W><AchievementsChallengesWidget /></W>}
-            {user && <W><RecentOrdersWidget /></W>}
-            {user && <W><LiveCompetitionsWidget /></W>}
+          <SectionLabel icon={MessageSquare} label={isAr ? "التحديثات" : "Updates"} />
+          <div className="lg:sticky lg:top-20 space-y-4 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:scrollbar-none lg:pe-1">
+            {user && isVisible("notification-digest") && <W><NotificationDigest /></W>}
+            {user && isVisible("notification-groups") && <W><NotificationGroupWidget /></W>}
+            {user && isVisible("recent-chats") && <W><RecentChatsWidget /></W>}
+            {user && isVisible("goals") && <W><GoalsMilestonesWidget /></W>}
+            {user && isVisible("achievements-challenges") && <W><AchievementsChallengesWidget /></W>}
+            {user && isVisible("recent-orders") && <W><RecentOrdersWidget /></W>}
+            {user && isVisible("live-competitions") && <W><LiveCompetitionsWidget /></W>}
 
             {/* Fan sidebar */}
             {user && isFan && <W><FanEventWatchlist /></W>}
@@ -243,7 +246,7 @@ export default function Dashboard() {
             {user && isVisible("events-calendar") && <W><EventsCalendarWidget /></W>}
             {user && isVisible("notification-prefs") && <W><NotificationPreferencesWidget /></W>}
             {user && isVisible("notifications") && <W><NotificationsSummaryWidget /></W>}
-            {user && <W><MessageSearchWidget /></W>}
+            {user && isVisible("message-search") && <W><MessageSearchWidget /></W>}
             {user && <W><DashboardPersonalizationWidget /></W>}
           </div>
         </aside>
@@ -254,6 +257,15 @@ export default function Dashboard() {
 }
 
 /* ---------- Sub-Components ---------- */
+
+const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5 mb-1 lg:mb-0">
+      <Icon className="h-3 w-3 text-primary/70" />
+      <span className="hidden lg:inline">{label}</span>
+    </h2>
+  );
+});
 
 const WelcomeBanner = memo(function WelcomeBanner({
   greeting, subtitle, isAr, widgets, toggleWidget, resetLayout, avatarUrl, firstName,
