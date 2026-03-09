@@ -29,7 +29,7 @@ export default function AdminLayout() {
           )}
         >
           <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-border/30 px-2.5 py-2">
+            <div className="flex items-center justify-between border-b border-sidebar-border px-2.5 py-2">
               {!collapsed && (
                 <span className="px-1 text-[10px] font-semibold text-sidebar-foreground/40 uppercase tracking-widest">
                   {language === "ar" ? "القائمة" : "Navigation"}
