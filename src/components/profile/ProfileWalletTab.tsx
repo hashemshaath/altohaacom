@@ -150,8 +150,30 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
             {isAr ? "آخر المعاملات" : "Recent Transactions"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          {recentTransactions.length === 0 ? (
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative flex-1 min-w-[140px]">
+              <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
+              <Input
+                placeholder={isAr ? "بحث..." : "Search..."}
+                value={txSearch}
+                onChange={(e) => setTxSearch(e.target.value)}
+                className="ps-8 h-8 text-xs rounded-xl border-border/30"
+              />
+            </div>
+            <Select value={txTypeFilter} onValueChange={setTxTypeFilter}>
+              <SelectTrigger className="h-8 text-xs rounded-xl w-[120px]">
+                <Filter className="h-3 w-3 me-1" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="earned">{isAr ? "مكتسبة" : "Earned"}</SelectItem>
+                <SelectItem value="spent">{isAr ? "مستبدلة" : "Spent"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {filteredTransactions.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Gift className="h-10 w-10 mx-auto mb-3 opacity-30" />
               <p className="text-sm">{isAr ? "لا توجد معاملات بعد" : "No transactions yet"}</p>
