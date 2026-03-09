@@ -26,16 +26,33 @@ interface Props {
 export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onToggle }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageFilter, setPageFilter] = useState("all");
 
-  const sortedPlacements = useMemo(() => 
-    [...placements].sort((a, b) => {
-      if (a.is_active && !b.is_active) return -1;
-      if (!a.is_active && b.is_active) return 1;
-      if (a.is_premium && !b.is_premium) return -1;
-      if (!a.is_premium && b.is_premium) return 1;
-      return (a.sort_order || 999) - (b.sort_order || 999);
-    }), [placements]
-  );
+  const pageLocations = useMemo(() => {
+    const pages = new Set(placements.map(p => p.page_location || "other"));
+    return Array.from(pages);
+  }, [placements]);
+
+  const sortedPlacements = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return [...placements]
+      .filter(p => {
+        if (pageFilter !== "all" && (p.page_location || "other") !== pageFilter) return false;
+        if (q) {
+          const text = `${p.name || ""} ${p.name_ar || ""} ${p.slug || ""} ${p.placement_type || ""}`.toLowerCase();
+          if (!text.includes(q)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (a.is_active && !b.is_active) return -1;
+        if (!a.is_active && b.is_active) return 1;
+        if (a.is_premium && !b.is_premium) return -1;
+        if (!a.is_premium && b.is_premium) return 1;
+        return (a.sort_order || 999) - (b.sort_order || 999);
+      });
+  }, [placements, searchQuery, pageFilter]);
 
   // Group placements by page_location
   const grouped = sortedPlacements.reduce((acc: Record<string, any[]>, p: any) => {
