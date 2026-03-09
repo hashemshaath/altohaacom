@@ -64,8 +64,8 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                           className={cn(
                             "flex items-center justify-center rounded-lg h-8 w-8 mx-auto transition-all duration-150",
                             isActive
-                              ? "bg-primary text-primary-foreground shadow-sm"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                              ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                              : "text-sidebar-foreground/60 hover:bg-sidebar-accent/10 hover:text-sidebar-foreground"
                           )}
                         >
                           <item.icon className="h-4 w-4" />
@@ -84,7 +84,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
           /* ── Expanded: section groups ── */
           return (
             <div key={idx}>
-              {idx > 0 && <div className="mx-3 my-2 h-px bg-border/40" />}
+              {idx > 0 && <div className="mx-3 my-2 h-px bg-sidebar-border" />}
 
               {/* Section header */}
               <button
@@ -92,8 +92,8 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                 className={cn(
                   "flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors select-none",
                   hasActiveItem
-                    ? "text-primary"
-                    : "text-muted-foreground/60 hover:text-muted-foreground"
+                    ? "text-sidebar-primary"
+                    : "text-sidebar-foreground/40 hover:text-sidebar-foreground/70"
                 )}
               >
                 <span className="truncate">{sectionLabel}</span>
@@ -123,8 +123,8 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                         cn(
                           "group relative flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-all duration-150",
                           isActive
-                            ? "bg-primary/8 text-primary font-semibold"
-                            : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                            ? "bg-sidebar-primary/15 text-sidebar-primary-foreground font-semibold"
+                            : "text-sidebar-foreground/60 hover:bg-sidebar-accent/10 hover:text-sidebar-foreground"
                         )
                       }
                     >
@@ -132,13 +132,13 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                         <>
                           {isActive && (
                             <span className={cn(
-                              "absolute top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-full bg-primary",
+                              "absolute top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-full bg-sidebar-primary",
                               isAr ? "-right-[3px]" : "-left-[3px]"
                             )} />
                           )}
                           <item.icon className={cn(
                             "h-3.5 w-3.5 shrink-0",
-                            isActive ? "text-primary" : "text-muted-foreground/70"
+                            isActive ? "text-sidebar-primary" : "text-sidebar-foreground/40"
                           )} />
                           <span className="truncate leading-tight">{isAr ? item.labelAr : item.labelEn}</span>
                         </>

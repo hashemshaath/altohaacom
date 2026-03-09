@@ -20,7 +20,7 @@ export const AdminHeader = memo(function AdminHeader() {
   const isAr = language === "ar";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-card backdrop-blur-xl">
       <div className="flex h-14 items-center justify-between px-4">
         {/* Left: Logo + Admin label */}
         <div className="flex items-center gap-3">

@@ -24,14 +24,14 @@ export default function AdminLayout() {
         {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border/50 bg-sidebar transition-all duration-300 md:block",
+            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-300 md:block",
             collapsed ? "w-[60px]" : "w-56"
           )}
         >
           <div className="flex h-full flex-col">
-            <div className="flex items-center justify-between border-b border-border/30 px-2.5 py-2">
+            <div className="flex items-center justify-between border-b border-sidebar-border px-2.5 py-2">
               {!collapsed && (
-                <span className="px-1 text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest">
+                <span className="px-1 text-[10px] font-semibold text-sidebar-foreground/40 uppercase tracking-widest">
                   {language === "ar" ? "القائمة" : "Navigation"}
                 </span>
               )}
