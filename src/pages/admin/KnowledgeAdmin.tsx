@@ -527,7 +527,7 @@ export default function KnowledgeAdmin() {
           />
 
           {loadingResources ? (
-            <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-20 rounded-2xl" />)}</div>
+            <AdminWidgetSkeleton rows={4} />
           ) : resources && resources.length > 0 ? (
             <div className="space-y-3">
               {resources.map(resource => (
