@@ -2,14 +2,10 @@ import { useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { AdminTodayTicker } from "@/components/admin/AdminTodayTicker";
-import { useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
-import { SystemHealthBar } from "@/components/admin/SystemHealthBar";
 import { AdminQuickActionsBar } from "@/components/admin/AdminQuickActionsBar";
 import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
 import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
-import { AdminKeyboardShortcuts, ShortcutHintsCard } from "@/components/admin/AdminKeyboardShortcuts";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,122 +16,43 @@ import { Badge } from "@/components/ui/badge";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { DataFreshness } from "@/components/ui/data-freshness";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import { toEnglishDigits } from "@/lib/formatNumber";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { useInViewport } from "@/hooks/useInViewport";
 import {
   Users, UserCheck, UserPlus, Flag, Trophy, FileText,
   TrendingUp, ArrowRight, ArrowUpRight, ArrowDownRight,
   Shield, Activity, CreditCard, Landmark, Package,
   GraduationCap, LayoutDashboard, Zap, MessageSquare,
-  AlertTriangle, CheckCircle2, Send, Plus, Settings,
+  AlertTriangle, Send, Plus, Settings,
   Heart, ChefHat,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ResponsiveContainer, LineChart, Line } from "recharts";
 
-// Lazy load ALL heavy widgets - they render far below the fold
+// Lazy load heavy widgets
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
-
 const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
 const AdminAlertCenter = lazy(() => import("@/components/admin/AdminAlertCenter").then(m => ({ default: m.AdminAlertCenter })));
 const CompanyDashboardWidget = lazy(() => import("@/components/admin/CompanyDashboardWidget").then(m => ({ default: m.CompanyDashboardWidget })));
 const FinanceMembershipWidget = lazy(() => import("@/components/admin/FinanceMembershipWidget").then(m => ({ default: m.FinanceMembershipWidget })));
 const DedupDashboardWidget = lazy(() => import("@/components/admin/DedupDashboardWidget").then(m => ({ default: m.DedupDashboardWidget })));
 const DataQualityDashboardWidget = lazy(() => import("@/components/admin/DataQualityDashboardWidget").then(m => ({ default: m.DataQualityDashboardWidget })));
-
 const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummaryWidget").then(m => ({ default: m.ReportsSummaryWidget })));
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
 
-/** Renders children only when the section scrolls into view */
 function LazySection({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
   const { ref, inView } = useInViewport("400px 0px");
   return (
     <div ref={ref}>
-      {inView ? <Suspense fallback={fallback || <SectionSkeleton />}>{children}</Suspense> : <div className="min-h-[120px]" />}
+      {inView ? <Suspense fallback={fallback || <SectionSkeleton />}>{children}</Suspense> : <div className="min-h-[80px]" />}
     </div>
-  );
-}
-
-function AnimatedStatValue({ value }: { value: number }) {
-  return (
-    <p className="text-2xl font-black leading-none tracking-tight">
-      <AnimatedCounter value={value} />
-    </p>
   );
 }
 
 function SectionSkeleton() {
-  return <div className="space-y-3"><Skeleton className="h-40 w-full rounded-xl" /><Skeleton className="h-32 w-full rounded-xl" /></div>;
-}
-
-function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, isAr }: any) {
-  const { getStyle } = useStaggeredReveal(statCards.length, 70);
-  return (
-    <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
-      {statCards.map((stat: any, index: number) => {
-        const sparkKey = sparklineKeys[stat.title];
-        const sparkPoints = sparkKey && sparkData ? sparkData.map((d: any) => ({ v: d[sparkKey] || 0 })) : null;
-        const trend = sparkPoints && sparkPoints.length >= 2
-          ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v
-          : 0;
-
-        return (
-          <Link key={stat.title} to={stat.link} style={getStyle(index)}>
-            <Card className={cn(
-              "group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:shadow-primary/8 hover:border-primary/20 rounded-2xl",
-              stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
-            )}>
-              {/* Accent top bar */}
-              <div className={cn("absolute inset-x-0 top-0 h-0.5 opacity-60 group-hover:h-1 group-hover:opacity-100 transition-all duration-300", stat.bg.replace("/10", ""))} />
-              <CardContent className="p-4 pt-5">
-                <div className="flex items-start gap-3">
-                  <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-0", stat.bg)}>
-                    <stat.icon className={cn("h-5 w-5 transition-all duration-300 group-hover:scale-110", stat.color)} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    {isLoading ? (
-                      <>
-                        <Skeleton className="h-7 w-14 mb-1 rounded-lg" />
-                        <Skeleton className="h-3 w-20 rounded-lg" />
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-1.5">
-                          <AnimatedStatValue value={stat.value} />
-                          {sparkPoints && trend !== 0 && (
-                            <Badge variant="outline" className={cn(
-                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-lg font-mono",
-                              trend > 0 ? "text-chart-2 border-chart-2/30 bg-chart-2/5" : "text-destructive border-destructive/30 bg-destructive/5"
-                            )}>
-                              {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
-                              {Math.abs(trend)}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="mt-1 text-[11px] text-muted-foreground truncate font-medium">{stat.title}</p>
-                      </>
-                    )}
-                  </div>
-                </div>
-                {sparkPoints && sparkPoints.length > 0 && (
-                  <div className="mt-3 -mx-1 opacity-40 group-hover:opacity-100 transition-opacity duration-500">
-                    <ResponsiveContainer width="100%" height={28}>
-                      <LineChart data={sparkPoints}>
-                        <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </Link>
-        );
-      })}
-    </div>
-  );
+  return <div className="space-y-3"><Skeleton className="h-32 w-full rounded-xl" /></div>;
 }
 
 export default function AdminDashboard() {
@@ -143,7 +60,6 @@ export default function AdminDashboard() {
   const isAr = language === "ar";
   useAdminCacheWarmer();
 
-  // ── Main stats (single batch) ──
   const { data: stats, isLoading } = useQuery({
     queryKey: ["superAdminStats"],
     queryFn: async () => {
@@ -199,7 +115,6 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60 * 3,
   });
 
-  // ── Today's activity ──
   const { data: todayStats } = useQuery({
     queryKey: ["admin-today-stats"],
     queryFn: async () => {
@@ -222,15 +137,11 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60 * 3,
   });
 
-  // ── Optimized 7-day sparkline: fetch date ranges for boundary counts only ──
   const { data: sparkData } = useQuery({
     queryKey: ["admin-sparkline-7d-optimized"],
     queryFn: async () => {
       const tables = ["profiles", "competitions", "exhibitions", "articles"] as const;
       const keys = ["users", "comps", "exhibitions", "articles"] as const;
-      const dateCol = ["created_at", "created_at", "created_at", "created_at"] as const;
-
-      // Build date ranges
       const ranges: { start: string; end: string; day: string }[] = [];
       for (let i = 6; i >= 0; i--) {
         const d = subDays(new Date(), i);
@@ -238,31 +149,17 @@ export default function AdminDashboard() {
         const end = new Date(d); end.setHours(23, 59, 59, 999);
         ranges.push({ start: start.toISOString(), end: end.toISOString(), day: format(d, "EEE") });
       }
-
-      // Fire one query per table for the full 7-day window, then bucket locally
       const fullStart = ranges[0].start;
       const fullEnd = ranges[ranges.length - 1].end;
-
       const tableData = await Promise.all(
         tables.map((table) =>
-          supabase
-            .from(table)
-            .select("created_at", { count: "exact" })
-            .gte("created_at", fullStart)
-            .lte("created_at", fullEnd)
-            .order("created_at", { ascending: true })
-            .limit(500)
-            .then(({ data }) => data || [])
+          supabase.from(table).select("created_at", { count: "exact" }).gte("created_at", fullStart).lte("created_at", fullEnd).order("created_at", { ascending: true }).limit(500).then(({ data }) => data || [])
         )
       );
-
-      // Bucket into days
       return ranges.map((range) => {
         const row: Record<string, any> = { day: range.day };
         tables.forEach((_, ti) => {
-          row[keys[ti]] = tableData[ti].filter(
-            (r: any) => r.created_at >= range.start && r.created_at <= range.end
-          ).length;
+          row[keys[ti]] = tableData[ti].filter((r: any) => r.created_at >= range.start && r.created_at <= range.end).length;
         });
         return row;
       });
@@ -278,31 +175,26 @@ export default function AdminDashboard() {
   };
 
   const statCards = useMemo(() => [
-    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
-    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users?status=active" },
-    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, accent: "border-s-destructive", bg: "bg-destructive/10", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
-    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, accent: "border-s-chart-2", bg: "bg-chart-2/10", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
-    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, accent: "border-s-chart-3", bg: "bg-chart-3/10", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
-    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, accent: "border-s-chart-4", bg: "bg-chart-4/10", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
-    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, accent: "border-s-chart-5", bg: "bg-chart-5/10", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/articles" },
-    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, accent: "border-s-primary", bg: "bg-primary/10", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/orders" },
+    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, bg: "bg-primary/8", color: "text-primary", chartColor: "hsl(var(--primary))", link: "/admin/users" },
+    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, bg: "bg-chart-5/8", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/users?status=active" },
+    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, bg: "bg-destructive/8", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
+    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, bg: "bg-chart-2/8", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
+    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, bg: "bg-chart-3/8", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
+    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-chart-4/8", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
+    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, bg: "bg-chart-1/8", color: "text-chart-1", chartColor: "hsl(var(--chart-1))", link: "/admin/articles" },
+    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-accent/8", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/orders" },
   ], [stats, isAr]);
 
   const quickActions = useMemo(() => [
-    { title: isAr ? "إدارة المستخدمين" : "User Management", description: isAr ? "عرض وتعديل جميع المستخدمين" : "View and edit all users", icon: Users, link: "/admin/users" },
-    { title: isAr ? "إدارة الأدوار" : "Role Management", description: isAr ? "تعيين وإدارة صلاحيات المستخدمين" : "Assign and manage user permissions", icon: Shield, link: "/admin/roles" },
-    { title: isAr ? "العضويات" : "Memberships", description: isAr ? "ترقية وتخفيض عضويات المستخدمين" : "Upgrade and downgrade memberships", icon: CreditCard, link: "/admin/memberships" },
-    { title: isAr ? "مراجعة المحتوى" : "Content Moderation", description: isAr ? "مراجعة التقارير والمحتوى المُبلغ عنه" : "Review reports and flagged content", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
+    { title: isAr ? "إدارة المستخدمين" : "Users", icon: Users, link: "/admin/users" },
+    { title: isAr ? "إدارة الأدوار" : "Roles", icon: Shield, link: "/admin/roles" },
+    { title: isAr ? "العضويات" : "Memberships", icon: CreditCard, link: "/admin/memberships" },
+    { title: isAr ? "مراجعة المحتوى" : "Moderation", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
+    { title: isAr ? "مسابقة جديدة" : "New Competition", icon: Plus, link: "/admin/competitions" },
+    { title: isAr ? "نشر مقال" : "Publish Article", icon: Send, link: "/admin/articles" },
+    { title: isAr ? "إرسال إشعار" : "Notifications", icon: MessageSquare, link: "/admin/notifications" },
+    { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings" },
   ], [isAr, stats?.pendingReports]);
-
-  const workflowShortcuts = useMemo(() => [
-    { label: isAr ? "مسابقة جديدة" : "New Competition", icon: Plus, link: "/admin/competitions", color: "text-chart-2" },
-    { label: isAr ? "نشر مقال" : "Publish Article", icon: Send, link: "/admin/articles", color: "text-chart-5" },
-    { label: isAr ? "إرسال إشعار" : "Send Notification", icon: MessageSquare, link: "/admin/notifications", color: "text-chart-3" },
-    { label: isAr ? "مراجعة البلاغات" : "Review Reports", icon: CheckCircle2, link: "/admin/moderation", color: "text-destructive" },
-    { label: isAr ? "إعدادات الموقع" : "Site Settings", icon: Settings, link: "/admin/settings", color: "text-chart-4" },
-    { label: isAr ? "إضافة معرض" : "New Exhibition", icon: Landmark, link: "/admin/exhibitions", color: "text-chart-1" },
-  ], [isAr]);
 
   const getActionBadge = (actionType: string) => {
     const colors: Record<string, string> = {
@@ -322,132 +214,180 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 pb-20 md:pb-0">
-      <AdminPageHeader
-        icon={LayoutDashboard}
-        title={isAr ? "لوحة التحكم" : "Admin Dashboard"}
-        description={isAr ? "مرحباً، مدير النظام" : "Welcome, Super Admin"}
-        actions={
-          <div className="flex items-center gap-3 flex-wrap">
-            <ActivityPulse status="live" label={isAr ? "مباشر" : "Live"} size="md" />
-            <AdminRealtimeNotificationBell />
-            <SystemHealthBar />
-            <Badge variant="secondary" className="gap-1.5">
-              <Shield className="h-3 w-3" />
-              {isAr ? "صلاحيات كاملة" : "Full Access"}
-            </Badge>
-          </div>
-        }
-      />
-
-      {/* Keyboard Shortcuts */}
-      <AdminKeyboardShortcuts />
+    <div className="space-y-5 pb-20 md:pb-0">
+      {/* Page Header — compact */}
+      <div className="flex items-center justify-between">
+        <AdminPageHeader
+          icon={LayoutDashboard}
+          title={isAr ? "لوحة التحكم" : "Dashboard"}
+          description={isAr ? "نظرة شاملة على النظام" : "System overview at a glance"}
+        />
+        <div className="hidden sm:flex items-center gap-2">
+          <ActivityPulse status="live" label={isAr ? "مباشر" : "Live"} size="md" />
+          <AdminRealtimeNotificationBell />
+        </div>
+      </div>
 
       {/* Security Alerts */}
       <SecurityAlertsBanner />
 
-      {/* Today Ticker */}
-      <AdminTodayTicker />
-
       {/* Mobile Nav Grid */}
       <AdminMobileNavGrid />
 
-      {/* Quick Actions & Shortcuts */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-2.5 sm:gap-3">
-        <div className="lg:col-span-3">
-          <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
-        </div>
-        <ShortcutHintsCard />
+      {/* ── Stats Grid ── */}
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        {statCards.map((stat) => {
+          const sparkKey = sparklineKeys[stat.title];
+          const sparkPoints = sparkKey && sparkData ? sparkData.map((d: any) => ({ v: d[sparkKey] || 0 })) : null;
+          const trend = sparkPoints && sparkPoints.length >= 2 ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v : 0;
+
+          return (
+            <Link key={stat.title} to={stat.link}>
+              <Card className={cn(
+                "group overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 rounded-xl",
+                stat.urgent && "ring-1 ring-destructive/30"
+              )}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      {isLoading ? (
+                        <Skeleton className="h-7 w-16 mb-1.5 rounded" />
+                      ) : (
+                        <p className="text-2xl font-bold tracking-tight tabular-nums">
+                          <AnimatedCounter value={stat.value} />
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground font-medium mt-1">{stat.title}</p>
+                    </div>
+                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-105", stat.bg)}>
+                      <stat.icon className={cn("h-4 w-4", stat.color)} />
+                    </div>
+                  </div>
+                  {sparkPoints && sparkPoints.length > 0 && (
+                    <div className="mt-3 -mx-1 flex items-center gap-2">
+                      <div className="flex-1 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <ResponsiveContainer width="100%" height={24}>
+                          <LineChart data={sparkPoints}>
+                            <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                      {trend !== 0 && (
+                        <span className={cn("text-[10px] font-medium tabular-nums flex items-center gap-0.5",
+                          trend > 0 ? "text-chart-5" : "text-destructive"
+                        )}>
+                          {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                          {Math.abs(trend)}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
 
+      <DataFreshness lastUpdated={stats ? new Date() : null} isRefetching={isLoading} />
 
-
-      {/* Stats Grid with sparklines */}
-      <div className="space-y-2">
-        <StaggeredStatsGrid statCards={statCards} isLoading={isLoading} sparklineKeys={sparklineKeys} sparkData={sparkData} isAr={isAr} />
-        <div className="flex justify-end px-1">
-          <DataFreshness
-            lastUpdated={stats ? new Date() : null}
-            isRefetching={isLoading}
-          />
-        </div>
-      </div>
-
-
-      {/* Command Bar */}
-      <Suspense fallback={null}><AdminCommandBar /></Suspense>
-
-      {/* ── Row: Today's Activity + Pending Actions + Account Types ── */}
-      <div className="grid gap-3 sm:gap-4 lg:grid-cols-3">
-        {/* Today's Activity */}
-        <Card className="rounded-2xl border-border/40 bg-gradient-to-br from-primary/5 via-transparent to-chart-2/5 lg:col-span-1 overflow-hidden">
-          <CardContent className="p-4">
-             <div className="flex items-center gap-2.5 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md shadow-primary/20">
-                <Zap className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <h3 className="text-sm font-bold">{isAr ? "نشاط اليوم" : "Today's Activity"}</h3>
-              <ActivityPulse status="live" className="ms-auto" />
+      {/* ── Quick Actions + Today's Activity ── */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        {/* Quick Actions */}
+        <Card className="lg:col-span-2 rounded-xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" />
+              {isAr ? "إجراءات سريعة" : "Quick Actions"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {quickActions.map((action) => (
+                <Link key={action.title} to={action.link}>
+                  <div className="group relative flex flex-col items-center gap-2 rounded-xl border border-border/40 p-3 text-center transition-all duration-200 hover:bg-muted/50 hover:border-primary/20 active:scale-95">
+                    <action.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
+                    {action.badge && action.badge > 0 && (
+                      <Badge variant="destructive" className="absolute -top-1.5 -end-1.5 text-[9px] h-4 min-w-4 px-1">{action.badge}</Badge>
+                    )}
+                  </div>
+                </Link>
+              ))}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Today's Activity */}
+        <Card className="rounded-xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Activity className="h-4 w-4 text-accent" />
+              {isAr ? "نشاط اليوم" : "Today"}
+              <ActivityPulse status="live" className="ms-auto" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary", bg: "bg-primary/10" },
-                { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2", bg: "bg-chart-2/10" },
-                { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3", bg: "bg-chart-3/10" },
-                { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground", bg: todayStats?.newReports ? "bg-destructive/10" : "bg-muted/50" },
+                { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary" },
+                { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2" },
+                { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3" },
+                { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground" },
               ].map((item, i) => (
-                <div key={i} className="group flex items-center gap-2.5 rounded-xl border border-border/20 bg-card/60 p-3 transition-all duration-300 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-border/40">
-                  <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-sm", item.bg)}>
-                    <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
-                  </div>
+                <div key={i} className="flex items-center gap-2.5 rounded-lg border border-border/30 p-2.5">
+                  <item.icon className={cn("h-4 w-4 shrink-0", item.color)} />
                   <div>
-                    <p className={`text-lg font-black leading-none tabular-nums ${item.color}`}><AnimatedCounter value={Number(item.value) || 0} className="inline" /></p>
-                    <p className="text-[9px] text-muted-foreground mt-1 font-medium">{item.label}</p>
+                    <p className={cn("text-base font-bold tabular-nums leading-none", item.color)}>
+                      <AnimatedCounter value={Number(item.value) || 0} className="inline" />
+                    </p>
+                    <p className="text-[9px] text-muted-foreground mt-0.5 font-medium">{item.label}</p>
                   </div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Pending Actions Widget */}
+      {/* Quick Actions Bar */}
+      <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
+
+      {/* Command Bar */}
+      <Suspense fallback={null}><AdminCommandBar /></Suspense>
+
+      {/* ── Pending Actions + Account Types ── */}
+      <div className="grid gap-4 lg:grid-cols-2">
         <AdminPendingActionsWidget />
 
         {/* Account Type Breakdown */}
-        <Card className="rounded-2xl border-border/40 overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-4/80 to-chart-4/60 shadow-sm shadow-chart-4/15">
-                <Users className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <h3 className="text-sm font-bold">{isAr ? "أنواع الحسابات" : "Account Types"}</h3>
-            </div>
-            <div className="space-y-3.5">
+        <Card className="rounded-xl">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Users className="h-4 w-4 text-chart-3" />
+              {isAr ? "أنواع الحسابات" : "Account Types"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
               {[
-                { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary", bgLight: "bg-primary/10" },
-                { label: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4", bgLight: "bg-chart-4/10" },
+                { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary" },
+                { label: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4" },
               ].map((type) => {
                 const pct = stats?.totalUsers ? Math.round((type.value / stats.totalUsers) * 100) : 0;
                 return (
-                  <div key={type.label} className="group flex items-center gap-3">
-                    <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105", type.bgLight)}>
-                      <type.icon className={cn("h-4.5 w-4.5", type.color)} />
-                    </div>
+                  <div key={type.label} className="flex items-center gap-3">
+                    <type.icon className={cn("h-4 w-4 shrink-0", type.color)} />
                     <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <p className="text-xs font-medium text-muted-foreground">{type.label}</p>
-                        <div className="flex items-center gap-1.5">
-                          <span className={cn("text-sm font-black tabular-nums", type.color)}>
-                            <AnimatedCounter value={type.value} />
-                          </span>
-                          <span className="text-[10px] text-muted-foreground/60 font-mono">{pct}%</span>
-                        </div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-medium">{type.label}</span>
+                        <span className={cn("text-sm font-bold tabular-nums", type.color)}>
+                          <AnimatedCounter value={type.value} />
+                          <span className="text-[10px] text-muted-foreground ms-1">{pct}%</span>
+                        </span>
                       </div>
-                      <div className="h-2 rounded-full bg-muted/80 overflow-hidden">
-                        <div
-                          className={cn("h-full rounded-full transition-all duration-700 ease-out", type.bg)}
-                          style={{ width: `${pct}%` }}
-                        />
+                      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div className={cn("h-full rounded-full transition-all duration-700", type.bg)} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                   </div>
@@ -458,45 +398,11 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Workflow Shortcuts */}
-      <Card className="rounded-2xl border-border/40 overflow-hidden">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-chart-3 to-chart-3/80 shadow-md shadow-chart-3/15">
-              <Zap className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <h3 className="text-sm font-bold">{isAr ? "اختصارات سريعة" : "Quick Workflows"}</h3>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-2.5">
-            {workflowShortcuts.map((shortcut) => (
-              <Link key={shortcut.label} to={shortcut.link}>
-                <div className="group flex flex-col items-center gap-2.5 rounded-2xl border border-border/20 bg-gradient-to-b from-card to-muted/20 p-4 transition-all duration-300 hover:bg-accent/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/15 text-center active:scale-95">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-muted group-hover:ring-0 group-hover:shadow-md">
-                    <shortcut.icon className={cn("h-5 w-5 transition-all duration-300 group-hover:scale-110", shortcut.color)} />
-                  </div>
-                  <span className="text-[10px] font-semibold text-muted-foreground leading-tight group-hover:text-foreground transition-colors duration-200">{shortcut.label}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* ── Lazy Widgets ── */}
+      <LazySection><FinanceMembershipWidget /></LazySection>
+      <LazySection><ReportsSummaryWidget /></LazySection>
+      <LazySection><ShopOrdersOverviewWidget /></LazySection>
 
-      {/* Finance & Membership */}
-      <LazySection>
-        <FinanceMembershipWidget />
-      </LazySection>
-
-      <LazySection>
-        <ReportsSummaryWidget />
-      </LazySection>
-
-      {/* ── Row: Shop ── */}
-      <LazySection>
-        <ShopOrdersOverviewWidget />
-      </LazySection>
-
-      {/* ── Row: Activity Feed + Moderation + Alerts ── */}
       <LazySection>
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
           <AdminActivityFeed />
@@ -505,75 +411,30 @@ export default function AdminDashboard() {
         </div>
       </LazySection>
 
-      {/* ── Row: Quick Actions + Recent Actions ── */}
-      <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
-        {/* Quick Actions */}
-        <Card className="rounded-2xl border-border/40">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
-                <Activity className="h-3.5 w-3.5 text-primary" />
-              </div>
-              {isAr ? "إجراءات سريعة" : "Quick Actions"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {quickActions.map((action) => (
-              <Link key={action.title} to={action.link}>
-                <div className="flex items-center justify-between rounded-2xl border border-border/40 p-3.5 transition-all duration-300 hover:bg-accent/50 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 group/action">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover/action:bg-primary/20 group-hover/action:scale-110">
-                      <action.icon className="h-4 w-4 text-primary transition-transform duration-300 group-hover/action:rotate-3" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{action.title}</p>
-                      <p className="text-xs text-muted-foreground">{action.description}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {action.badge && action.badge > 0 && (
-                      <Badge variant="destructive" className="text-[10px]">{action.badge}</Badge>
-                    )}
-                    <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform duration-300 group-hover/action:translate-x-1" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Recent Admin Actions */}
-        <Card className="rounded-2xl border-border/40">
+      {/* Recent Actions + Recent Users */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
-                <TrendingUp className="h-3.5 w-3.5 text-primary" />
-              </div>
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
               {isAr ? "آخر الإجراءات" : "Recent Actions"}
             </CardTitle>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="text-xs">
               <Link to="/admin/audit">
                 {isAr ? "عرض الكل" : "View All"}
-                <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
+                <ArrowRight className="ms-1 h-3 w-3" />
               </Link>
             </Button>
           </CardHeader>
           <CardContent>
             {stats?.recentActions?.length === 0 ? (
-              <div className="flex flex-col items-center py-10 text-center">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted/60">
-                  <TrendingUp className="h-5 w-5 text-muted-foreground/40" />
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {isAr ? "لا توجد إجراءات حديثة" : "No recent actions"}
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "لا توجد إجراءات حديثة" : "No recent actions"}</p>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {stats?.recentActions?.map((action: any) => (
-                  <div key={action.id} className="flex items-center justify-between rounded-xl border border-border/40 p-3 transition-all duration-200 hover:bg-muted/30">
+                  <div key={action.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5">
                     {getActionBadge(action.action_type)}
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[11px] text-muted-foreground tabular-nums">
                       {format(new Date(action.created_at), "MMM d, HH:mm")}
                     </span>
                   </div>
@@ -582,61 +443,46 @@ export default function AdminDashboard() {
             )}
           </CardContent>
         </Card>
+
+        <Card className="rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <div>
+              <CardTitle className="text-sm font-semibold">{isAr ? "أحدث المستخدمين" : "Recent Users"}</CardTitle>
+              <CardDescription className="text-xs mt-0.5">{isAr ? "آخر المستخدمين المسجلين" : "Latest registered"}</CardDescription>
+            </div>
+            <Button variant="ghost" size="sm" asChild className="text-xs">
+              <Link to="/admin/users">
+                {isAr ? "الكل" : "All"}
+                <ArrowRight className="ms-1 h-3 w-3" />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {stats?.recentUsers?.map((user: any) => (
+                <Link key={user.id} to={`/${user.username || user.id}`} className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50">
+                  <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden bg-primary/10">
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-primary text-xs font-semibold">
+                        {(user.display_name || user.full_name || "U")[0].toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{user.display_name || user.full_name || "Unknown"}</p>
+                    <p className="text-[10px] text-muted-foreground tabular-nums">{format(new Date(user.created_at), "MMM d, yyyy")}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Recent Users */}
-      <Card className="rounded-2xl border-border/40">
-        <CardHeader className="flex flex-row items-center justify-between pb-3">
-          <div>
-            <CardTitle className="text-base">{isAr ? "أحدث المستخدمين" : "Recent Users"}</CardTitle>
-            <CardDescription className="mt-0.5">
-              {isAr ? "آخر المستخدمين المسجلين" : "Latest registered users"}
-            </CardDescription>
-          </div>
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/admin/users">
-              {isAr ? "عرض الكل" : "View All"}
-              <ArrowRight className="ms-1.5 h-3.5 w-3.5" />
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-3">
-            {stats?.recentUsers?.map((user: any) => (
-              <Link
-                key={user.id}
-                to={`/${user.username || user.id}`}
-                className="group flex items-center gap-3 rounded-2xl border border-border/40 p-3 transition-all duration-300 hover:shadow-md hover:bg-accent/30 hover:-translate-y-0.5"
-              >
-                <div className="relative h-10 w-10 shrink-0 rounded-full overflow-hidden ring-2 ring-primary/20 transition-transform duration-300 group-hover:scale-110">
-                  {user.avatar_url ? (
-                    <img src={user.avatar_url} alt={user.display_name || user.full_name || "User"} className="h-full w-full object-cover" loading="lazy" />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary font-semibold">
-                      {(user.display_name || user.full_name || "U")[0].toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{user.display_name || user.full_name || "Unknown"}</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    {format(new Date(user.created_at), "MMM d, yyyy")}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-
-      {/* Company Dashboard */}
       <LazySection><CompanyDashboardWidget /></LazySection>
-
-      {/* Deduplication Widget */}
       <LazySection><DedupDashboardWidget /></LazySection>
-
-      {/* Data Quality Widget */}
       <LazySection><DataQualityDashboardWidget /></LazySection>
     </div>
   );
