@@ -26,6 +26,16 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  const stats = useMemo(() => {
+    const totalBudget = campaigns.reduce((s, c) => s + (c.budget || 0), 0);
+    const totalSpent = campaigns.reduce((s, c) => s + (c.spent || 0), 0);
+    const totalImpressions = campaigns.reduce((s, c) => s + (c.total_impressions || 0), 0);
+    const totalClicks = campaigns.reduce((s, c) => s + (c.total_clicks || 0), 0);
+    const avgCtr = totalImpressions ? ((totalClicks / totalImpressions) * 100).toFixed(1) : "0";
+    const activeCount = campaigns.filter(c => c.status === "active").length;
+    return { totalBudget, totalSpent, totalImpressions, totalClicks, avgCtr, activeCount };
+  }, [campaigns]);
+
   if (campaigns.length === 0) {
     return (
       <Card className="rounded-2xl">
@@ -40,15 +50,6 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
     );
   }
 
-  const stats = useMemo(() => {
-    const totalBudget = campaigns.reduce((s, c) => s + (c.budget || 0), 0);
-    const totalSpent = campaigns.reduce((s, c) => s + (c.spent || 0), 0);
-    const totalImpressions = campaigns.reduce((s, c) => s + (c.total_impressions || 0), 0);
-    const totalClicks = campaigns.reduce((s, c) => s + (c.total_clicks || 0), 0);
-    const avgCtr = totalImpressions ? ((totalClicks / totalImpressions) * 100).toFixed(1) : "0";
-    const activeCount = campaigns.filter(c => c.status === "active").length;
-    return { totalBudget, totalSpent, totalImpressions, totalClicks, avgCtr, activeCount };
-  }, [campaigns]);
 
   return (
     <div className="space-y-3">
