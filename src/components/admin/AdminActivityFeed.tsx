@@ -41,28 +41,42 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
 
       const items: FeedItem[] = [];
 
-      (users.data || []).forEach((u: any) => items.push({
+      const getData = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value?.data || []) : [];
+
+      getData(users).forEach((u: any) => items.push({
         id: `u-${u.user_id}`, type: "user",
         title: isAr ? `${u.display_name || u.full_name || "مستخدم"} انضم` : `${u.display_name || u.full_name || "User"} joined`,
         time: u.created_at, icon: UserPlus, color: "text-primary",
       }));
 
-      (reports.data || []).forEach((r: any) => items.push({
+      getData(reports).forEach((r: any) => items.push({
         id: `r-${r.id}`, type: "report",
         title: isAr ? `بلاغ جديد: ${r.reason || "محتوى"}` : `New report: ${r.reason || "content"}`,
         time: r.created_at, icon: Flag, color: "text-destructive",
       }));
 
-      (orders.data || []).forEach((o: any) => items.push({
+      getData(orders).forEach((o: any) => items.push({
         id: `o-${o.id}`, type: "order",
         title: isAr ? `طلب ${o.order_number}` : `Order ${o.order_number}`,
         time: o.created_at, icon: Package, color: "text-chart-3",
       }));
 
-      (actions.data || []).forEach((a: any) => items.push({
+      getData(actions).forEach((a: any) => items.push({
         id: `a-${a.id}`, type: "action",
         title: isAr ? `إجراء: ${a.action_type.replace(/_/g, " ")}` : `Action: ${a.action_type.replace(/_/g, " ")}`,
         time: a.created_at, icon: Shield, color: "text-chart-4",
+      }));
+
+      getData(competitions).forEach((c: any) => items.push({
+        id: `c-${c.id}`, type: "competition",
+        title: isAr ? `تسجيل مسابقة ${c.registration_number || ""}` : `Competition reg ${c.registration_number || ""}`,
+        time: c.registered_at, icon: Trophy, color: "text-chart-5",
+      }));
+
+      getData(tickets).forEach((t: any) => items.push({
+        id: `t-${t.id}`, type: "ticket",
+        title: isAr ? `تذكرة: ${t.subject || t.ticket_number}` : `Ticket: ${t.subject || t.ticket_number}`,
+        time: t.created_at, icon: Ticket, color: "text-chart-1",
       }));
 
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 15);
