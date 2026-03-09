@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCSVExport } from "@/hooks/useCSVExport";
 import { usePermissions, useRolePermissions } from "@/hooks/usePermissions";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";

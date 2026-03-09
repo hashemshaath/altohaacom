@@ -1,5 +1,11 @@
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCSVExport } from "@/hooks/useCSVExport";
+import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
+import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
