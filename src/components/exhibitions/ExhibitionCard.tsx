@@ -119,7 +119,7 @@ export const ExhibitionCard = memo(
         <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
           <Card
             ref={ref}
-            className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-lg shadow-primary/5" : ""}`}
+            className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-lg shadow-primary/5" : ""}`}
           >
             {/* Image */}
             <div className={`relative shrink-0 overflow-hidden bg-muted ${isFeaturedVariant ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
