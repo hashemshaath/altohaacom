@@ -498,53 +498,47 @@ export default function OrganizersAdmin() {
           </BulkActionBar>
 
           {/* Toolbar */}
-          <Card className="rounded-2xl border-border/40 bg-card/50 backdrop-blur-sm">
-            <CardContent className="p-3 flex flex-wrap gap-3 items-center justify-between">
-              <div className="flex gap-2 items-center flex-1 min-w-0">
-                <div className="relative flex-1 max-w-xs">
-                  <Search className="absolute start-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9 h-9" />
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                    <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-                    <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
-                    <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
-                  </SelectContent>
-                </Select>
-                {countries.length > 0 && (
-                  <Select value={countryFilter} onValueChange={setCountryFilter}>
-                    <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{isAr ? "كل الدول" : "All"}</SelectItem>
-                      {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                )}
-                <Select value={verifiedFilter} onValueChange={(v: any) => setVerifiedFilter(v)}>
-                  <SelectTrigger className="w-28 h-9"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                    <SelectItem value="verified">{isAr ? "موثق" : "Verified"}</SelectItem>
-                    <SelectItem value="unverified">{isAr ? "غير موثق" : "Unverified"}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={() => { setShowBulkImport(!showBulkImport); }}>
-                  <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
-                  <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
-                </Button>
-                <Button size="sm" onClick={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}>
-                  <Plus className="h-4 w-4 me-1.5" />{isAr ? "إضافة منظم" : "Add Organizer"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <AdminFilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."}
+          >
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
+                <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
+              </SelectContent>
+            </Select>
+            {countries.length > 0 && (
+              <Select value={countryFilter} onValueChange={setCountryFilter}>
+                <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isAr ? "كل الدول" : "All"}</SelectItem>
+                  {countries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            )}
+            <Select value={verifiedFilter} onValueChange={(v: any) => setVerifiedFilter(v)}>
+              <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="verified">{isAr ? "موثق" : "Verified"}</SelectItem>
+                <SelectItem value="unverified">{isAr ? "غير موثق" : "Unverified"}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button size="sm" variant="outline" onClick={() => { setShowBulkImport(!showBulkImport); }}>
+              <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد جماعي" : "Bulk Import"}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
+              <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
+            </Button>
+            <Button size="sm" onClick={() => { setEditId(null); setForm(emptyForm); setFormTab("basic"); setDialogOpen(true); }}>
+              <Plus className="h-4 w-4 me-1.5" />{isAr ? "إضافة منظم" : "Add Organizer"}
+            </Button>
+          </AdminFilterBar>
 
           {showBulkImport && (
             <BulkImportPanel
