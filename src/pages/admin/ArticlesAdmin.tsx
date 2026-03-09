@@ -528,8 +528,7 @@ export default function ArticlesAdmin() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </AdminTableCard>
     </div>
   );
 }
