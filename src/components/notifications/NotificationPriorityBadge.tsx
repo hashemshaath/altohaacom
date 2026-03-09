@@ -65,8 +65,8 @@ export const NotificationPriorityBadge = memo(function NotificationPriorityBadge
 export function inferPriority(notification: { type?: string | null; priority?: string | null }): string {
   if (notification.priority && notification.priority !== "normal") return notification.priority;
   const type = notification.type || "";
-  if (["error", "security", "payment_failed"].includes(type)) return "urgent";
-  if (["booth_assignment", "exhibition_reminder", "follow_request", "supplier_inquiry"].includes(type)) return "high";
-  if (["story_view", "bio_milestone", "link_milestone"].includes(type)) return "low";
+  if (["error", "security", "payment_failed", "ad_lifecycle"].includes(type)) return "urgent";
+  if (["booth_assignment", "exhibition_reminder", "follow_request", "supplier_inquiry", "schedule"].includes(type)) return "high";
+  if (["story_view", "bio_milestone", "link_milestone", "bio_subscriber"].includes(type)) return "low";
   return "normal";
 }

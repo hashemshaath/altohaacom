@@ -89,8 +89,17 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
           </div>
 
           <div className="space-y-1.5 mb-3">
-            <Progress value={data.percent} className="h-2 rounded-full" />
-            <p className="text-[10px] text-muted-foreground font-medium text-end tabular-nums">{data.percent}%</p>
+            <Progress value={data.percent} className={`h-2 rounded-full ${data.percent >= 80 ? "[&>div]:bg-chart-2" : ""}`} />
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-muted-foreground">
+                {data.percent >= 80
+                  ? (isAr ? "🎉 أنت قريب جداً!" : "🎉 Almost there!")
+                  : data.percent >= 50
+                  ? (isAr ? "نصف الطريق ✨" : "Halfway there ✨")
+                  : (isAr ? "ابدأ بالأساسيات" : "Start with basics")}
+              </p>
+              <p className="text-[10px] text-muted-foreground font-medium tabular-nums">{data.percent}%</p>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-1.5 mb-3">

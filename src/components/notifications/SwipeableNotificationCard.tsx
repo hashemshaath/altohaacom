@@ -65,7 +65,7 @@ export const SwipeableNotificationCard = memo(function SwipeableNotificationCard
   const showDelete = offset < -20;
 
   return (
-    <div className={cn("relative overflow-hidden rounded-xl transition-all duration-200", className)} ref={containerRef}>
+    <div className={cn("relative overflow-hidden rounded-xl transition-all duration-200", isRead && "opacity-70", className)} ref={containerRef}>
       {/* Background actions */}
       <div className="absolute inset-0 flex items-center justify-between px-4 pointer-events-none">
         <div
