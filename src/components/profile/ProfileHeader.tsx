@@ -101,7 +101,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
   });
 
   return (
-    <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
+    <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-700 hover:shadow-2xl hover:border-primary/15 group">
       {/* Cover Image */}
       <div className="relative h-32 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
         {/* Ambient blurs */}
@@ -141,7 +141,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
         {/* Avatar */}
         <div className="relative -mt-12 sm:-mt-22 mb-3 sm:mb-5">
           <div className="relative inline-block">
-            <div className="relative h-20 w-20 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/20 transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-primary/30">
+            <div className="relative h-20 w-20 sm:h-40 sm:w-40 rounded-3xl p-[3px] bg-gradient-to-br from-primary via-primary/80 to-accent shadow-2xl shadow-primary/25 transition-all duration-700 group-hover:scale-[1.03] group-hover:shadow-primary/35">
               <Avatar className="h-full w-full rounded-[calc(1.5rem-2px)] ring-4 ring-card shadow-inner overflow-hidden bg-card">
                 <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
                 <AvatarFallback className="text-3xl sm:text-5xl font-black bg-primary/10 text-primary">

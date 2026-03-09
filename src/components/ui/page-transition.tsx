@@ -22,8 +22,8 @@ export const PageTransition = memo(function PageTransition({ children, className
   return (
     <div
       className={cn(
-        "transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1",
+        "transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-2 scale-[0.995]",
         className
       )}
     >
