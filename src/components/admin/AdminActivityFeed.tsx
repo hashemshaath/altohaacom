@@ -13,7 +13,7 @@ import { ar } from "date-fns/locale";
 
 interface FeedItem {
   id: string;
-  type: "user" | "report" | "order" | "action" | "competition" | "article";
+  type: "user" | "report" | "order" | "action" | "competition" | "article" | "ticket" | "message";
   title: string;
   time: string;
   icon: typeof Activity;
