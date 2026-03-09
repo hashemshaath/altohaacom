@@ -132,13 +132,13 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                         <>
                           {isActive && (
                             <span className={cn(
-                              "absolute top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-full bg-primary",
+                              "absolute top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-full bg-sidebar-primary",
                               isAr ? "-right-[3px]" : "-left-[3px]"
                             )} />
                           )}
                           <item.icon className={cn(
                             "h-3.5 w-3.5 shrink-0",
-                            isActive ? "text-primary" : "text-muted-foreground/70"
+                            isActive ? "text-sidebar-primary" : "text-sidebar-foreground/40"
                           )} />
                           <span className="truncate leading-tight">{isAr ? item.labelAr : item.labelEn}</span>
                         </>

@@ -24,7 +24,7 @@ export default function AdminLayout() {
         {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border/50 bg-sidebar transition-all duration-300 md:block",
+            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-sidebar-border bg-sidebar text-sidebar-foreground transition-all duration-300 md:block",
             collapsed ? "w-[60px]" : "w-56"
           )}
         >
