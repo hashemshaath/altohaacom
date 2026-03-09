@@ -512,6 +512,16 @@ export default function Judging() {
             )}
           </TabsContent>
 
+          {/* Offline Tab */}
+          <TabsContent value="offline">
+            <div className="max-w-lg mx-auto">
+              <OfflineJudgingPanel onSelectCachedCompetition={(id) => {
+                setSelectedCompetition(id);
+                setActiveTab("scoring");
+              }} />
+            </div>
+          </TabsContent>
+
           {/* Scoring Tab */}
           <TabsContent value="scoring">
         {loadingCompetitions ? (
