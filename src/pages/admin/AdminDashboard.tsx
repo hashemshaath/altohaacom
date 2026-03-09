@@ -85,21 +85,21 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
         return (
           <Link key={stat.title} to={stat.link} style={getStyle(index)}>
             <Card className={cn(
-              "group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:shadow-primary/8 hover:border-primary/20",
+              "group relative overflow-hidden border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:shadow-primary/8 hover:border-primary/20 rounded-2xl",
               stat.urgent && "ring-1 ring-destructive/30 animate-pulse"
             )}>
               {/* Accent top bar */}
-              <div className={cn("absolute inset-x-0 top-0 h-1 rounded-t-xl", stat.bg.replace("/10", ""))} />
+              <div className={cn("absolute inset-x-0 top-0 h-0.5 opacity-60 group-hover:h-1 group-hover:opacity-100 transition-all duration-300", stat.bg.replace("/10", ""))} />
               <CardContent className="p-4 pt-5">
-                <div className="flex items-center gap-3">
-                  <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg", stat.bg)}>
-                    <stat.icon className={cn("h-5 w-5 transition-transform duration-300 group-hover:rotate-6", stat.color)} />
+                <div className="flex items-start gap-3">
+                  <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-0", stat.bg)}>
+                    <stat.icon className={cn("h-5 w-5 transition-all duration-300 group-hover:scale-110", stat.color)} />
                   </div>
                   <div className="min-w-0 flex-1">
                     {isLoading ? (
                       <>
-                        <Skeleton className="h-7 w-14 mb-1 rounded-xl" />
-                        <Skeleton className="h-3 w-20 rounded-xl" />
+                        <Skeleton className="h-7 w-14 mb-1 rounded-lg" />
+                        <Skeleton className="h-3 w-20 rounded-lg" />
                       </>
                     ) : (
                       <>
@@ -107,7 +107,7 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                           <AnimatedStatValue value={stat.value} />
                           {sparkPoints && trend !== 0 && (
                             <Badge variant="outline" className={cn(
-                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-xl",
+                              "text-[9px] px-1.5 py-0.5 gap-0.5 rounded-lg font-mono",
                               trend > 0 ? "text-chart-2 border-chart-2/30 bg-chart-2/5" : "text-destructive border-destructive/30 bg-destructive/5"
                             )}>
                               {trend > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
@@ -121,8 +121,8 @@ function StaggeredStatsGrid({ statCards, isLoading, sparklineKeys, sparkData, is
                   </div>
                 </div>
                 {sparkPoints && sparkPoints.length > 0 && (
-                  <div className="mt-3 -mx-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                    <ResponsiveContainer width="100%" height={32}>
+                  <div className="mt-3 -mx-1 opacity-40 group-hover:opacity-100 transition-opacity duration-500">
+                    <ResponsiveContainer width="100%" height={28}>
                       <LineChart data={sparkPoints}>
                         <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
                       </LineChart>
