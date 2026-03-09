@@ -248,34 +248,25 @@ export default function AuditLog() {
             onClear={bulkContent.clearSelection}
             onExport={() => exportContentCSV(bulkContent.selectedItems)}
           />
-          <Card className="rounded-2xl border-border/40 overflow-hidden">
-            <CardHeader className="pb-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <CardTitle className="flex items-center gap-2 text-sm">
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                  {isAr ? "سجل الحذف والرفض" : "Deletions & Rejections Log"}
-                </CardTitle>
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => exportContentCSV(filteredContent)}>
-                  <Download className="h-3.5 w-3.5" /> CSV
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <div className="relative flex-1 min-w-[180px]">
-                  <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث..." : "Search..."} value={contentSearch} onChange={e => setContentSearch(e.target.value)} className="ps-8 h-8 text-xs rounded-xl" />
-                </div>
-                <Select value={contentActionFilter} onValueChange={setContentActionFilter}>
-                   <SelectTrigger className="w-40 h-8 text-xs rounded-xl"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
-                    {uniqueContentActionTypes.map(t => (
-                      <SelectItem key={t} value={t} className="text-xs">{t.replace(/_/g, " ")}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
+          <AdminFilterBar
+            searchValue={contentSearch}
+            onSearchChange={setContentSearch}
+            searchPlaceholder={isAr ? "بحث..." : "Search..."}
+          >
+            <Select value={contentActionFilter} onValueChange={setContentActionFilter}>
+              <SelectTrigger className="w-40 h-9 text-xs rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الإجراءات" : "All Actions"}</SelectItem>
+                {uniqueContentActionTypes.map(t => (
+                  <SelectItem key={t} value={t} className="text-xs">{t.replace(/_/g, " ")}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-xl" onClick={() => exportContentCSV(filteredContent)}>
+              <Download className="h-3.5 w-3.5" /> CSV
+            </Button>
+          </AdminFilterBar>
+          <AdminTableCard title={isAr ? "سجل الحذف والرفض" : "Deletions & Rejections Log"}>
               {contentLoading ? (
                 <div className="flex justify-center py-8">
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
