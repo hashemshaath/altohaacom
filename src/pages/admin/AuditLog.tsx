@@ -310,6 +310,7 @@ export default function AuditLog() {
                       ))}
                     </TableBody>
                   </Table>
+                  <AdminTablePagination page={contentPagination.page} totalPages={contentPagination.totalPages} totalItems={contentPagination.totalItems} startItem={contentPagination.startItem} endItem={contentPagination.endItem} pageSize={contentPagination.pageSize} pageSizeOptions={contentPagination.pageSizeOptions} hasNext={contentPagination.hasNext} hasPrev={contentPagination.hasPrev} onPageChange={contentPagination.goTo} onPageSizeChange={contentPagination.changePageSize} />
                 </ScrollArea>
               )}
             </AdminTableCard>
