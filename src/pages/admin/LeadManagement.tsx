@@ -595,6 +595,22 @@ export default function LeadManagement() {
                   ))}
                 </TableBody>
               </Table>
+              <AdminTablePagination
+                page={leadPagination.page}
+                totalPages={leadPagination.totalPages}
+                totalItems={leadPagination.totalItems}
+                startItem={leadPagination.startItem}
+                endItem={leadPagination.endItem}
+                pageSize={leadPagination.pageSize}
+                pageSizeOptions={leadPagination.pageSizeOptions}
+                hasNext={leadPagination.hasNext}
+                hasPrev={leadPagination.hasPrev}
+                onPageChange={leadPagination.goTo}
+                onPageSizeChange={leadPagination.changePageSize}
+              />
+              </>
+                );
+              })()}
             )}
         </AdminTableCard>
       ) : (

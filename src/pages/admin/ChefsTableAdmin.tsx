@@ -533,6 +533,19 @@ export default function ChefsTableAdmin() {
                     })}
                   </TableBody>
                 </Table>
+                <AdminTablePagination
+                  page={sessionPagination.page}
+                  totalPages={sessionPagination.totalPages}
+                  totalItems={sessionPagination.totalItems}
+                  startItem={sessionPagination.startItem}
+                  endItem={sessionPagination.endItem}
+                  pageSize={sessionPagination.pageSize}
+                  pageSizeOptions={sessionPagination.pageSizeOptions}
+                  hasNext={sessionPagination.hasNext}
+                  hasPrev={sessionPagination.hasPrev}
+                  onPageChange={sessionPagination.goTo}
+                  onPageSizeChange={sessionPagination.changePageSize}
+                />
               </Card>
             </>
           )}
