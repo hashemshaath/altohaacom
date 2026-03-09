@@ -5,6 +5,7 @@ import AdminPendingBanner from "@/components/admin/AdminPendingBanner";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
+import { AdminPageTransition } from "@/components/admin/AdminPageTransition";
 import { cn } from "@/lib/utils";
 import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 import { useGlobalShortcuts } from "@/hooks/useGlobalShortcuts";
@@ -23,7 +24,7 @@ export default function AdminLayout() {
         {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border/40 bg-card transition-all duration-300 md:block",
+            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border/40 bg-card/80 backdrop-blur-sm transition-all duration-300 md:block",
             collapsed ? "w-[60px]" : "w-60"
           )}
         >
@@ -38,7 +39,7 @@ export default function AdminLayout() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setCollapsed(!collapsed)}
-                className={cn("shrink-0 rounded-lg h-7 w-7 hover:bg-muted", collapsed && "mx-auto")}
+                className={cn("shrink-0 rounded-lg h-7 w-7 hover:bg-muted active:scale-90 transition-all", collapsed && "mx-auto")}
               >
                 {collapsed ? <PanelLeft className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
               </Button>
@@ -53,7 +54,9 @@ export default function AdminLayout() {
             <AdminPendingBanner />
             <AdminBreadcrumb />
             <WidgetErrorBoundary name="admin-page">
-              <Outlet />
+              <AdminPageTransition>
+                <Outlet />
+              </AdminPageTransition>
             </WidgetErrorBoundary>
           </div>
         </main>

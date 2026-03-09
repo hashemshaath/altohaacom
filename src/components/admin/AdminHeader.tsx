@@ -10,6 +10,7 @@ import { AdminSearchCommand } from "./AdminSearchCommand";
 import { AdminMobileNavDrawer } from "./AdminMobileNavDrawer";
 import { Button } from "@/components/ui/button";
 import { Home, LogOut } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const AdminHeader = memo(function AdminHeader() {
   const { signOut } = useAuth();
@@ -19,16 +20,16 @@ export const AdminHeader = memo(function AdminHeader() {
   const isAr = language === "ar";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-card/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-card/60 backdrop-blur-xl supports-[backdrop-filter]:bg-card/50">
       <div className="flex h-14 items-center justify-between px-4">
         {/* Left: Logo + Admin label */}
         <div className="flex items-center gap-3">
           <AdminMobileNavDrawer />
           <Link to="/admin" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-sm shadow-primary/20 transition-transform duration-200 group-hover:scale-105">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-md shadow-primary/20 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/30">
               <img src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-6 w-auto brightness-0 invert" />
             </div>
-            <span className={`text-lg font-bold text-foreground ${isAr ? "" : "font-serif"}`}>
+            <span className={`text-lg font-bold text-foreground transition-colors group-hover:text-primary ${isAr ? "" : "font-serif"}`}>
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
             </span>
           </Link>
@@ -42,18 +43,28 @@ export const AdminHeader = memo(function AdminHeader() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" asChild className="rounded-xl hover:bg-muted" title={language === "ar" ? "العودة للموقع" : "Back to site"}>
-            <Link to="/dashboard">
-              <Home className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" asChild className="rounded-xl hover:bg-muted transition-all active:scale-90">
+                <Link to="/dashboard">
+                  <Home className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="text-xs">{isAr ? "العودة للموقع" : "Back to site"}</TooltipContent>
+          </Tooltip>
           <NotificationBell />
           <ThemeToggle />
           <LanguageSwitcher />
-          <div className="mx-1 h-6 w-px bg-border/50" />
-          <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10" title={language === "ar" ? "تسجيل الخروج" : "Sign out"}>
-            <LogOut className="h-4 w-4" />
-          </Button>
+          <div className="mx-1.5 h-6 w-px bg-border/40" />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all active:scale-90">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="text-xs">{isAr ? "تسجيل الخروج" : "Sign out"}</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </header>
