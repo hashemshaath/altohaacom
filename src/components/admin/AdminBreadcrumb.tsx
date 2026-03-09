@@ -58,6 +58,8 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/design/covers": { en: "Covers & Themes", ar: "الأغلفة والمظهر" },
   "/admin/design/layout": { en: "Layout & Spacing", ar: "التخطيط والتباعد" },
   "/admin/design/custom-css": { en: "Custom CSS", ar: "CSS مخصص" },
+  "/admin/hero-slides": { en: "Hero Slides", ar: "شرائح البانر" },
+  "/admin/deduplication": { en: "Deduplication", ar: "التكرارات" },
 };
 
 export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
@@ -75,21 +77,33 @@ export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
   if (!currentLabel) return null;
 
   return (
-    <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-5 animate-in fade-in-50 slide-in-from-start-2 duration-300" aria-label="Breadcrumb">
-      <Link to="/admin" className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 hover:bg-muted hover:text-foreground transition-all duration-200 group/bc">
+    <nav
+      className="flex items-center gap-1.5 text-xs text-muted-foreground mb-5 animate-in fade-in-50 slide-in-from-start-2 duration-300"
+      aria-label="Breadcrumb"
+    >
+      <Link
+        to="/admin"
+        className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 hover:bg-muted/80 hover:text-foreground transition-all duration-200 group/bc active:scale-95"
+      >
         <LayoutDashboard className="h-3 w-3 group-hover/bc:text-primary transition-colors" />
         <span>{isAr ? "لوحة التحكم" : "Dashboard"}</span>
       </Link>
       {parentLabel && (
         <>
-          <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
-          <Link to="/admin/design" className="rounded-xl px-2.5 py-1.5 hover:bg-muted hover:text-foreground transition-all duration-200">
+          <ChevronRight className={cn("h-3 w-3 text-border/60", isAr && "rotate-180")} />
+          <Link
+            to="/admin/design"
+            className="rounded-xl px-2.5 py-1.5 hover:bg-muted/80 hover:text-foreground transition-all duration-200 active:scale-95"
+          >
             {isAr ? parentLabel.ar : parentLabel.en}
           </Link>
         </>
       )}
-      <ChevronRight className={cn("h-3 w-3 text-border", isAr && "rotate-180")} />
-      <span className="rounded-xl bg-primary/10 px-3 py-1.5 text-primary font-semibold shadow-sm" aria-current="page">
+      <ChevronRight className={cn("h-3 w-3 text-border/60", isAr && "rotate-180")} />
+      <span
+        className="rounded-xl bg-primary/8 border border-primary/15 px-3 py-1.5 text-primary font-semibold"
+        aria-current="page"
+      >
         {isAr ? currentLabel.ar : currentLabel.en}
       </span>
     </nav>
