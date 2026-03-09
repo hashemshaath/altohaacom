@@ -79,13 +79,7 @@ const certificateTypes: { value: CertificateType; label: string; labelAr: string
   { value: "volunteer", label: "Volunteer", labelAr: "متطوع", color: "bg-accent-foreground" },
 ];
 
-const statusColors: Record<CertificateStatus, string> = {
-  draft: "bg-muted text-muted-foreground",
-  pending_signature: "bg-chart-4/20 text-chart-4",
-  signed: "bg-primary/20 text-primary",
-  issued: "bg-chart-5/20 text-chart-5",
-  revoked: "bg-destructive/20 text-destructive",
-};
+// statusColors removed — using AdminStatusBadge instead
 
 export default function CertificatesAdmin() {
   const { language } = useLanguage();
