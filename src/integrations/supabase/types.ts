@@ -7325,6 +7325,35 @@ export type Database = {
         }
         Relationships: []
       }
+      dismissed_announcements: {
+        Row: {
+          announcement_id: string
+          dismissed_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          announcement_id: string
+          dismissed_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          announcement_id?: string
+          dismissed_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dismissed_announcements_announcement_id_fkey"
+            columns: ["announcement_id"]
+            isOneToOne: false
+            referencedRelation: "site_announcements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_verifications: {
         Row: {
           attempts: number | null
@@ -19299,6 +19328,69 @@ export type Database = {
           title_ar?: string | null
           updated_at?: string
           weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      site_announcements: {
+        Row: {
+          bg_color: string | null
+          body: string | null
+          body_ar: string | null
+          created_at: string
+          created_by: string | null
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          is_dismissible: boolean
+          link_text: string | null
+          link_text_ar: string | null
+          link_url: string | null
+          priority: number
+          starts_at: string
+          target_roles: string[] | null
+          title: string
+          title_ar: string | null
+          type: string
+        }
+        Insert: {
+          bg_color?: string | null
+          body?: string | null
+          body_ar?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_dismissible?: boolean
+          link_text?: string | null
+          link_text_ar?: string | null
+          link_url?: string | null
+          priority?: number
+          starts_at?: string
+          target_roles?: string[] | null
+          title: string
+          title_ar?: string | null
+          type?: string
+        }
+        Update: {
+          bg_color?: string | null
+          body?: string | null
+          body_ar?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_dismissible?: boolean
+          link_text?: string | null
+          link_text_ar?: string | null
+          link_url?: string | null
+          priority?: number
+          starts_at?: string
+          target_roles?: string[] | null
+          title?: string
+          title_ar?: string | null
+          type?: string
         }
         Relationships: []
       }
