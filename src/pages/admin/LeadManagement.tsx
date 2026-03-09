@@ -610,7 +610,7 @@ export default function LeadManagement() {
               />
               </>
                 );
-              })()}
+              })()
             )}
         </AdminTableCard>
       ) : (
