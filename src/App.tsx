@@ -84,15 +84,15 @@ function AppContent() {
   useEnhancedSEO(language);
   return (
     <>
-      <Suspense fallback={null}><PullToRefreshIndicator {...ptr as any} /></Suspense>
       <ScrollToTop />
       <SkipToContent />
       <Suspense fallback={null}>
+        <PullToRefreshIndicator {...ptr as any} />
         <GoogleTrackingProvider />
         <TrackingScriptsInjector />
         <PageTracker />
+        <FloatingHelpButton />
       </Suspense>
-      <Suspense fallback={null}><FloatingHelpButton /></Suspense>
       <MaintenanceGuard>
       <ErrorBoundary>
       <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
