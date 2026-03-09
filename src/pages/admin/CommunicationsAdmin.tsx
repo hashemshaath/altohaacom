@@ -569,7 +569,7 @@ export default function CommunicationsAdmin() {
               <Archive className="me-1 h-3.5 w-3.5" />
               {isAr ? "الأرشيف" : "Archive"}
             </Button>
-          </div>
+          </AdminFilterBar>
 
           {/* Messages List & Detail */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
