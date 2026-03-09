@@ -24,7 +24,6 @@ import {
   ShoppingBag,
   UtensilsCrossed,
   Building2,
-  LayoutDashboard,
   Star,
   BookOpen,
   HandHeart,
@@ -50,6 +49,9 @@ const moreLinks = [
   { to: "/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
 ];
 
+const HEADER_HEIGHT = "h-14";
+const HEADER_SPACER = "h-14"; // Must match header height
+
 export const Header = memo(function Header() {
   const { user } = useAuth();
   const { language } = useLanguage();
@@ -62,76 +64,75 @@ export const Header = memo(function Header() {
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
   const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
-  // Priority: brand_identity logos > branding logoUrl > fallback
   const logoUrl = identityLogos.natural || identityLogos.variation2 || brandCfg.logoUrl || "/altoha-logo.png";
 
-  const visiblePrimary = primaryNav;
+  const isFixed = headerCfg.stickyHeader !== false;
 
   return (
-    <header
-      role="banner"
-      className={cn(
-        "fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 will-change-[background-color,box-shadow,transform]",
-        headerCfg.stickyHeader === false && "relative",
-        scrolled
-          ? "bg-card/80 backdrop-blur-xl border-border/50 shadow-lg shadow-foreground/[0.03]"
-          : "bg-card/60 backdrop-blur-md border-border/20 shadow-none",
-        !headerVisible && "md:translate-y-0 -translate-y-full"
-      )}
-    >
-      <nav className="container flex h-14 items-center gap-2 sm:gap-2.5" aria-label="Main navigation">
-        {/* Mobile menu */}
-        <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
+    <>
+      <header
+        role="banner"
+        className={cn(
+          "inset-x-0 top-0 z-50 border-b transition-all duration-300",
+          isFixed ? "fixed" : "relative",
+          scrolled
+            ? "bg-card/95 backdrop-blur-xl border-border shadow-sm"
+            : "bg-card border-border/40",
+          isFixed && !headerVisible && "-translate-y-full"
+        )}
+      >
+        <div className={cn("container flex items-center gap-3", HEADER_HEIGHT)}>
+          {/* Left: Mobile menu + Logo */}
+          <div className="flex items-center gap-2 shrink-0">
+            <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
+            <Link
+              to="/"
+              aria-label="Altoha homepage"
+              className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+            >
+              {headerCfg.showLogo !== false && (
+                <img
+                  src={logoUrl}
+                  alt={brandCfg.siteName || "Altoha"}
+                  className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
+                />
+              )}
+              {headerCfg.showBrandName !== false && (
+                <span className={cn(
+                  "text-base font-bold text-foreground hidden sm:inline tracking-tight",
+                  !isAr && "font-serif"
+                )}>
+                  {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
+                </span>
+              )}
+            </Link>
+          </div>
 
-        {/* Logo */}
-        <Link
-          to="/"
-          aria-label="Altoha homepage"
-          className="flex shrink-0 items-center gap-2 me-1 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-xl"
-        >
-          {headerCfg.showLogo !== false && (
-          <img
-              src={logoUrl}
-              alt={brandCfg.siteName || "Altoha"}
-              className="h-8 w-auto sm:h-9 transition-transform duration-300 group-hover:scale-110 group-active:scale-95"
-            />
-          )}
-          {headerCfg.showBrandName !== false && (
-            <span className={cn("text-lg font-bold text-primary hidden sm:inline tracking-tight", !isAr && "font-serif")}>
-              {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
-            </span>
-          )}
-        </Link>
+          {/* Center: Desktop Nav */}
+          <DesktopNav
+            primaryNav={primaryNav}
+            moreLinks={moreLinks}
+            isJudge={isJudge}
+            isAr={isAr}
+          />
 
-        {/* Desktop Nav */}
-        <DesktopNav
-          primaryNav={visiblePrimary}
-          moreLinks={moreLinks}
-          isJudge={isJudge}
-          isAr={isAr}
-        />
-
-        {/* Right side */}
-        <div className="flex items-center gap-0.5 sm:gap-1 ms-auto">
-          {/* Mobile search button */}
-          {headerCfg.showSearch !== false && (
-            <Button variant="ghost" size="icon" asChild className="rounded-xl md:hidden h-9 w-9">
-              <Link to="/search"><Search className="h-4 w-4" /></Link>
-            </Button>
-          )}
-          {headerCfg.showSearch !== false && (
-            <div className="hidden md:block">
-              <Button variant="ghost" size="icon" asChild className="rounded-xl">
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1 ms-auto shrink-0">
+            {headerCfg.showSearch !== false && (
+              <Button variant="ghost" size="icon" asChild className="rounded-lg h-8 w-8">
                 <Link to="/search"><Search className="h-4 w-4" /></Link>
               </Button>
-            </div>
-          )}
-          {user && headerCfg.showNotifications !== false && <NotificationBell />}
-          {headerCfg.showThemeToggle !== false && <ThemeToggle />}
-          {headerCfg.showLanguageSwitcher !== false && <LanguageSwitcher />}
-          <UserDropdown />
+            )}
+            {user && headerCfg.showNotifications !== false && <NotificationBell />}
+            {headerCfg.showThemeToggle !== false && <ThemeToggle />}
+            {headerCfg.showLanguageSwitcher !== false && <LanguageSwitcher />}
+            <UserDropdown />
+          </div>
         </div>
-      </nav>
-    </header>
+      </header>
+
+      {/* Spacer to prevent content from hiding behind fixed header */}
+      {isFixed && <div className={HEADER_SPACER} aria-hidden="true" />}
+    </>
   );
 });
