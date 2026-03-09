@@ -247,7 +247,7 @@ export default function LoyaltyAdmin() {
                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {challenges.map((c: any) => (
+                  {chPagination.paginated.map((c: any) => (
                     <TableRow key={c.id} className="transition-colors duration-200 hover:bg-muted/40 group">
                       <TableCell>
                         <div className="flex items-center gap-2.5">
