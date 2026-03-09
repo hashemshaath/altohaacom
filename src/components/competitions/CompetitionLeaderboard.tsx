@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, Medal, Award, User, ChefHat } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trophy, Medal, Award, User, ChefHat, Download, Filter } from "lucide-react";
+import { downloadCSV } from "@/lib/exportUtils";
 
 interface CompetitionLeaderboardProps {
   competitionId: string;
@@ -40,6 +43,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
 }: CompetitionLeaderboardProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   const { data: leaderboard, isLoading } = useQuery({
     queryKey: ["competition-leaderboard", competitionId],
@@ -116,9 +120,49 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
       entries.sort((a, b) => b.total_weighted_score - a.total_weighted_score);
       entries.forEach((entry, index) => { entry.rank = index + 1; });
 
-      return showTopOnly ? entries.slice(0, 3) : entries;
+      return entries;
     },
   });
+
+  const categories = useMemo(() => {
+    if (!leaderboard) return [];
+    const cats = new Set(leaderboard.map(e => e.category_name).filter(Boolean));
+    return Array.from(cats) as string[];
+  }, [leaderboard]);
+
+  const filteredLeaderboard = useMemo(() => {
+    if (!leaderboard) return [];
+    let filtered = leaderboard;
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter(e => e.category_name === categoryFilter);
+    }
+    // Re-rank after filter
+    filtered.forEach((entry, i) => { entry.rank = i + 1; });
+    return showTopOnly ? filtered.slice(0, 3) : filtered;
+  }, [leaderboard, categoryFilter, showTopOnly]);
+
+  const handleExport = () => {
+    if (!filteredLeaderboard?.length) return;
+    downloadCSV(
+      filteredLeaderboard.map(l => ({
+        rank: l.rank,
+        participant: l.participant_name || "",
+        dish: l.dish_name || "",
+        category: (isAr ? l.category_name_ar : l.category_name) || "",
+        score: l.total_weighted_score,
+        evaluations: l.scores_count,
+      })),
+      `leaderboard-${competitionId}`,
+      [
+        { key: "rank", label: isAr ? "المرتبة" : "Rank" },
+        { key: "participant", label: isAr ? "المشارك" : "Participant" },
+        { key: "dish", label: isAr ? "الطبق" : "Dish" },
+        { key: "category", label: isAr ? "الفئة" : "Category" },
+        { key: "score", label: isAr ? "النتيجة" : "Score" },
+        { key: "evaluations", label: isAr ? "التقييمات" : "Evaluations" },
+      ]
+    );
+  };
 
   if (isLoading) {
     return (
@@ -167,12 +211,31 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
           </div>
           {isAr ? "لوحة المتصدرين" : "Leaderboard"}
           <Badge variant="secondary" className="ms-auto text-[10px] font-bold tabular-nums">
-            {leaderboard.length} {isAr ? "متسابق" : "entries"}
+            {filteredLeaderboard.length} {isAr ? "متسابق" : "entries"}
           </Badge>
         </CardTitle>
+        <div className="flex items-center gap-2 mt-3 flex-wrap">
+          {categories.length > 1 && (
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="h-8 text-xs rounded-xl w-[160px]">
+                <Filter className="h-3 w-3 me-1.5" />
+                <SelectValue placeholder={isAr ? "الكل" : "All"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الفئات" : "All Categories"}</SelectItem>
+                {categories.map(c => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          <Button size="sm" variant="outline" className="h-8 text-xs rounded-xl ms-auto" onClick={handleExport}>
+            <Download className="h-3 w-3 me-1.5" /> {isAr ? "تصدير" : "Export"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="p-4 sm:p-5 space-y-2.5">
-        {leaderboard.map((entry) => {
+        {filteredLeaderboard.map((entry) => {
           const isTop3 = entry.rank <= 3;
           const config = isTop3 ? RANK_CONFIG[entry.rank - 1] : null;
           const RankIcon = config?.icon || null;

@@ -1,13 +1,15 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Wallet, Star, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Gift, Clock, Coins } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Wallet, Star, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Gift, Clock, Coins, Search, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { Link } from "react-router-dom";
@@ -19,6 +21,8 @@ interface ProfileWalletTabProps {
 export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: ProfileWalletTabProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [txSearch, setTxSearch] = useState("");
+  const [txTypeFilter, setTxTypeFilter] = useState("all");
 
   const { data: wallet, isLoading: walletLoading } = useQuery({
     queryKey: ["profile-wallet", userId],
@@ -50,6 +54,17 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
     const spent = Math.abs(recentTransactions.filter(t => t.points < 0).reduce((s, t) => s + t.points, 0));
     return { earned, spent, total: recentTransactions.length };
   }, [recentTransactions]);
+
+  const filteredTransactions = useMemo(() => {
+    let txs = recentTransactions;
+    if (txTypeFilter === "earned") txs = txs.filter(t => t.points > 0);
+    else if (txTypeFilter === "spent") txs = txs.filter(t => t.points < 0);
+    if (txSearch.trim()) {
+      const q = txSearch.toLowerCase();
+      txs = txs.filter(t => t.action_type?.toLowerCase().includes(q) || t.description?.toLowerCase().includes(q));
+    }
+    return txs;
+  }, [recentTransactions, txTypeFilter, txSearch]);
 
   if (walletLoading) {
     return (
@@ -135,15 +150,37 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
             {isAr ? "آخر المعاملات" : "Recent Transactions"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
-          {recentTransactions.length === 0 ? (
+        <CardContent className="space-y-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative flex-1 min-w-[140px]">
+              <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60" />
+              <Input
+                placeholder={isAr ? "بحث..." : "Search..."}
+                value={txSearch}
+                onChange={(e) => setTxSearch(e.target.value)}
+                className="ps-8 h-8 text-xs rounded-xl border-border/30"
+              />
+            </div>
+            <Select value={txTypeFilter} onValueChange={setTxTypeFilter}>
+              <SelectTrigger className="h-8 text-xs rounded-xl w-[120px]">
+                <Filter className="h-3 w-3 me-1" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                <SelectItem value="earned">{isAr ? "مكتسبة" : "Earned"}</SelectItem>
+                <SelectItem value="spent">{isAr ? "مستبدلة" : "Spent"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {filteredTransactions.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Gift className="h-10 w-10 mx-auto mb-3 opacity-30" />
               <p className="text-sm">{isAr ? "لا توجد معاملات بعد" : "No transactions yet"}</p>
               <p className="text-xs mt-1">{isAr ? "ابدأ بكسب النقاط من خلال المسابقات والتفاعل" : "Start earning points through competitions & engagement"}</p>
             </div>
           ) : (
-            recentTransactions.map((tx) => {
+            filteredTransactions.map((tx) => {
               const isPositive = tx.points > 0;
               const label = actionLabels[tx.action_type];
               return (

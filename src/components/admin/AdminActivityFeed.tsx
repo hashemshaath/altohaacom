@@ -7,13 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link } from "react-router-dom";
-import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package, AlertTriangle } from "lucide-react";
+import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package, AlertTriangle, Ticket, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 
 interface FeedItem {
   id: string;
-  type: "user" | "report" | "order" | "action" | "competition" | "article";
+  type: "user" | "report" | "order" | "action" | "competition" | "article" | "ticket" | "message";
   title: string;
   time: string;
   icon: typeof Activity;
@@ -30,37 +30,53 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
       const now = new Date();
       const since = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
 
-      const [users, reports, orders, actions] = await Promise.all([
+      const [users, reports, orders, actions, competitions, tickets] = await Promise.allSettled([
         supabase.from("profiles").select("user_id, full_name, display_name, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
         supabase.from("content_reports").select("id, reason, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
         supabase.from("company_orders").select("id, order_number, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
         supabase.from("admin_actions").select("id, action_type, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
+        supabase.from("competition_registrations").select("id, registration_number, registered_at").gte("registered_at", since).order("registered_at", { ascending: false }).limit(5),
+        supabase.from("support_tickets").select("id, ticket_number, subject, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),
       ]);
 
       const items: FeedItem[] = [];
 
-      (users.data || []).forEach((u: any) => items.push({
+      const getData = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value?.data || []) : [];
+
+      getData(users).forEach((u: any) => items.push({
         id: `u-${u.user_id}`, type: "user",
         title: isAr ? `${u.display_name || u.full_name || "مستخدم"} انضم` : `${u.display_name || u.full_name || "User"} joined`,
         time: u.created_at, icon: UserPlus, color: "text-primary",
       }));
 
-      (reports.data || []).forEach((r: any) => items.push({
+      getData(reports).forEach((r: any) => items.push({
         id: `r-${r.id}`, type: "report",
         title: isAr ? `بلاغ جديد: ${r.reason || "محتوى"}` : `New report: ${r.reason || "content"}`,
         time: r.created_at, icon: Flag, color: "text-destructive",
       }));
 
-      (orders.data || []).forEach((o: any) => items.push({
+      getData(orders).forEach((o: any) => items.push({
         id: `o-${o.id}`, type: "order",
         title: isAr ? `طلب ${o.order_number}` : `Order ${o.order_number}`,
         time: o.created_at, icon: Package, color: "text-chart-3",
       }));
 
-      (actions.data || []).forEach((a: any) => items.push({
+      getData(actions).forEach((a: any) => items.push({
         id: `a-${a.id}`, type: "action",
         title: isAr ? `إجراء: ${a.action_type.replace(/_/g, " ")}` : `Action: ${a.action_type.replace(/_/g, " ")}`,
         time: a.created_at, icon: Shield, color: "text-chart-4",
+      }));
+
+      getData(competitions).forEach((c: any) => items.push({
+        id: `c-${c.id}`, type: "competition",
+        title: isAr ? `تسجيل مسابقة ${c.registration_number || ""}` : `Competition reg ${c.registration_number || ""}`,
+        time: c.registered_at, icon: Trophy, color: "text-chart-5",
+      }));
+
+      getData(tickets).forEach((t: any) => items.push({
+        id: `t-${t.id}`, type: "ticket",
+        title: isAr ? `تذكرة: ${t.subject || t.ticket_number}` : `Ticket: ${t.subject || t.ticket_number}`,
+        time: t.created_at, icon: Ticket, color: "text-chart-1",
       }));
 
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 15);
