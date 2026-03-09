@@ -20,24 +20,24 @@ export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoadi
   const isAr = language === "ar";
 
   const cards = useMemo(() => [
-    { label: isAr ? "المسابقات" : "Competitions", value: data?.totalCompetitions, icon: Trophy, color: "text-primary" },
-    { label: isAr ? "التسجيلات" : "Registrations", value: data?.totalRegistrations, icon: ClipboardList, color: "text-chart-2" },
-    { label: isAr ? "الحكام" : "Judges", value: data?.totalJudges, icon: Users, color: "text-chart-3" },
-    { label: isAr ? "التقييمات" : "Scores", value: data?.totalScores, icon: Star, color: "text-chart-4" },
-    { label: isAr ? "الدول" : "Countries", value: data?.totalCountries, icon: Globe, color: "text-chart-5" },
+    { label: isAr ? "المسابقات" : "Competitions", value: data?.totalCompetitions, icon: Trophy, color: "text-primary", bg: "bg-primary/10" },
+    { label: isAr ? "التسجيلات" : "Registrations", value: data?.totalRegistrations, icon: ClipboardList, color: "text-chart-2", bg: "bg-chart-2/10" },
+    { label: isAr ? "الحكام" : "Judges", value: data?.totalJudges, icon: Users, color: "text-chart-3", bg: "bg-chart-3/10" },
+    { label: isAr ? "التقييمات" : "Scores", value: data?.totalScores, icon: Star, color: "text-chart-4", bg: "bg-chart-4/10" },
+    { label: isAr ? "الدول" : "Countries", value: data?.totalCountries, icon: Globe, color: "text-chart-5", bg: "bg-chart-5/10" },
   ], [data, isAr]);
 
   return (
     <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
       {cards.map((card) => (
-        <Card key={card.label} className="border-border/30">
+        <Card key={card.label}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 ${card.color}`}>
-              <card.icon className="h-5 w-5" />
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.bg} ${card.color}`}>
+              <card.icon className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-2xl font-black leading-none">{isLoading ? "..." : <AnimatedCounter value={card.value || 0} />}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5 truncate">{card.label}</p>
+              <p className="text-xl font-bold leading-none tabular-nums">{isLoading ? "..." : <AnimatedCounter value={card.value || 0} />}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-1 truncate">{card.label}</p>
             </div>
           </CardContent>
         </Card>

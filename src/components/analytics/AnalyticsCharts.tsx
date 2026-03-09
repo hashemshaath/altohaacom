@@ -5,25 +5,13 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, Legend,
 } from "recharts";
-
-const CHART_COLORS = [
-  "hsl(var(--primary))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-];
-
-const TOOLTIP_STYLE = {
-  borderRadius: 12,
-  border: "1px solid hsl(var(--border))",
-  background: "hsl(var(--card))",
-};
-
-const AXIS_PROPS = { tick: { fontSize: 11 }, stroke: "hsl(var(--muted-foreground))" };
+import {
+  CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
+  GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, CHART_HEIGHT, getNoDataText,
+} from "@/lib/chartConfig";
 
 function NoData({ isAr }: { isAr: boolean }) {
-  return <p className="py-12 text-center text-muted-foreground text-sm">{isAr ? "لا توجد بيانات" : "No data available"}</p>;
+  return <p className="py-12 text-center text-muted-foreground text-sm">{getNoDataText(isAr)}</p>;
 }
 
 /* ─── Registration Trend ─── */
@@ -32,19 +20,19 @@ export const RegistrationTrendChart = memo(function RegistrationTrendChart({ dat
   const isAr = language === "ar";
 
   return (
-    <Card className="border-border/30">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">{isAr ? "اتجاه التسجيلات" : "Registration Trend"}</CardTitle>
+        <CardTitle className="text-sm font-semibold">{isAr ? "اتجاه التسجيلات" : "Registration Trend"}</CardTitle>
       </CardHeader>
       <CardContent>
         {data && data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="month" {...AXIS_PROPS} />
-              <YAxis allowDecimals={false} {...AXIS_PROPS} />
+              <CartesianGrid {...GRID_PROPS} />
+              <XAxis dataKey="month" {...X_AXIS_PROPS} />
+              <YAxis {...Y_AXIS_PROPS} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar dataKey="count" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="count" fill={CHART_COLORS[0]} radius={BAR_RADIUS} name={isAr ? "التسجيلات" : "Registrations"} />
             </BarChart>
           </ResponsiveContainer>
         ) : <NoData isAr={isAr} />}
@@ -59,19 +47,19 @@ export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({
   const isAr = language === "ar";
 
   return (
-    <Card className="border-border/30">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">{isAr ? "المسابقات حسب الشهر" : "Competitions by Month"}</CardTitle>
+        <CardTitle className="text-sm font-semibold">{isAr ? "المسابقات حسب الشهر" : "Competitions by Month"}</CardTitle>
       </CardHeader>
       <CardContent>
         {data && data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
             <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="month" {...AXIS_PROPS} />
-              <YAxis allowDecimals={false} {...AXIS_PROPS} />
+              <CartesianGrid {...GRID_PROPS} />
+              <XAxis dataKey="month" {...X_AXIS_PROPS} />
+              <YAxis {...Y_AXIS_PROPS} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Line type="monotone" dataKey="count" stroke="hsl(var(--chart-3))" strokeWidth={2.5} dot={{ r: 4, fill: "hsl(var(--chart-3))" }} />
+              <Line type="monotone" dataKey="count" stroke={CHART_COLORS[2]} strokeWidth={2} dot={{ r: 3, fill: CHART_COLORS[2] }} name={isAr ? "المسابقات" : "Competitions"} />
             </LineChart>
           </ResponsiveContainer>
         ) : <NoData isAr={isAr} />}
@@ -86,19 +74,19 @@ export const ScoreDistributionChart = memo(function ScoreDistributionChart({ dat
   const isAr = language === "ar";
 
   return (
-    <Card className="border-border/30">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">{isAr ? "توزيع الدرجات" : "Score Distribution"}</CardTitle>
+        <CardTitle className="text-sm font-semibold">{isAr ? "توزيع الدرجات" : "Score Distribution"}</CardTitle>
       </CardHeader>
       <CardContent>
         {data && data.some(s => s.count > 0) ? (
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="range" {...AXIS_PROPS} />
-              <YAxis allowDecimals={false} {...AXIS_PROPS} />
+              <CartesianGrid {...GRID_PROPS} />
+              <XAxis dataKey="range" {...X_AXIS_PROPS} />
+              <YAxis {...Y_AXIS_PROPS} />
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="count" fill={CHART_COLORS[1]} radius={BAR_RADIUS} name={isAr ? "العدد" : "Count"} />
             </BarChart>
           </ResponsiveContainer>
         ) : <NoData isAr={isAr} />}
@@ -113,19 +101,19 @@ export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }:
   const isAr = language === "ar";
 
   return (
-    <Card className="border-border/30">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">{isAr ? "حالات المسابقات" : "Competition Status"}</CardTitle>
+        <CardTitle className="text-sm font-semibold">{isAr ? "حالات المسابقات" : "Competition Status"}</CardTitle>
       </CardHeader>
       <CardContent>
         {data && data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
             <PieChart>
-              <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40} paddingAngle={3} strokeWidth={0}>
+              <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={85} innerRadius={45} paddingAngle={3} strokeWidth={0}>
                 {data.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Pie>
               <Tooltip contentStyle={TOOLTIP_STYLE} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend wrapperStyle={LEGEND_STYLE} />
             </PieChart>
           </ResponsiveContainer>
         ) : <NoData isAr={isAr} />}
@@ -142,18 +130,18 @@ export const TopCountriesChart = memo(function TopCountriesChart({ data }: { dat
   if (!data || data.length === 0) return null;
 
   return (
-    <Card className="border-border/30 lg:col-span-2">
+    <Card className="lg:col-span-2">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-bold">{isAr ? "أكثر الدول مسابقات" : "Top Countries"}</CardTitle>
+        <CardTitle className="text-sm font-semibold">{isAr ? "أكثر الدول مسابقات" : "Top Countries"}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={CHART_HEIGHT.sm}>
           <BarChart data={data} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis type="number" allowDecimals={false} {...AXIS_PROPS} />
-            <YAxis type="category" dataKey="country" {...AXIS_PROPS} width={50} />
+            <CartesianGrid {...GRID_PROPS} />
+            <XAxis type="number" allowDecimals={false} tick={X_AXIS_PROPS.tick} axisLine={X_AXIS_PROPS.axisLine} tickLine={false} />
+            <YAxis type="category" dataKey="country" tick={Y_AXIS_PROPS.tick} axisLine={false} tickLine={false} width={60} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
-            <Bar dataKey="count" fill="hsl(var(--chart-4))" radius={[0, 6, 6, 0]} />
+            <Bar dataKey="count" fill={CHART_COLORS[3]} radius={H_BAR_RADIUS} name={isAr ? "العدد" : "Count"} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
