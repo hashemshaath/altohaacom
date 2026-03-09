@@ -103,10 +103,10 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                     onClick={onItemClick}
                     className={({ isActive }) =>
                       cn(
-                        "group/nav flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-200",
+                        "group/nav flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-300 active:scale-[0.97]",
                         isActive
-                          ? "bg-primary text-primary-foreground shadow-sm shadow-primary/15 font-medium"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20 font-medium"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-0.5 rtl:hover:-translate-x-0.5"
                       )
                     }
                   >

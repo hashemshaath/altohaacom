@@ -90,10 +90,10 @@ export const Header = memo(function Header() {
           className="flex shrink-0 items-center gap-2 me-1 sm:me-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-xl"
         >
           {headerCfg.showLogo !== false && (
-            <img
+          <img
               src={logoUrl}
               alt={brandCfg.siteName || "Altoha"}
-              className="h-8 w-auto sm:h-9 transition-transform duration-200 group-hover:scale-105"
+              className="h-8 w-auto sm:h-9 transition-transform duration-300 group-hover:scale-110 group-active:scale-95"
             />
           )}
           {headerCfg.showBrandName !== false && (
