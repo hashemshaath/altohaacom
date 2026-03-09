@@ -219,10 +219,10 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
                             </div>
                           )}
                           <div className={cn(
-                            "max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm transition-shadow",
+                            "max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm transition-all duration-300",
                             isMine
-                              ? "bg-primary text-primary-foreground rounded-br-md shadow-sm shadow-primary/10"
-                              : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm"
+                              ? "bg-primary text-primary-foreground rounded-br-md shadow-md shadow-primary/15 hover:shadow-lg hover:shadow-primary/20"
+                              : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm hover:shadow-md"
                           )}>
                             <p className="whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
                             <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
@@ -252,10 +252,10 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
                 className="flex-1 rounded-xl h-10 bg-muted/20 border-border/20 focus:bg-background transition-colors"
                 disabled={sending}
               />
-              <Button
-                type="submit"
-                size="icon"
-                className="rounded-xl h-10 w-10 shrink-0 shadow-sm"
+               <Button
+                 type="submit"
+                 size="icon"
+                 className="rounded-xl h-10 w-10 shrink-0 shadow-sm shadow-primary/20 active:scale-90 transition-all duration-200"
                 disabled={!newMessage.trim() || sending}
               >
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}

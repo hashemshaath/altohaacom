@@ -11,7 +11,7 @@ export const OfflineBanner = memo(function OfflineBanner() {
   if (isOnline) return null;
 
   return (
-    <div className="fixed top-0 inset-x-0 z-[100] bg-destructive text-destructive-foreground px-4 py-2 text-center text-sm font-medium animate-in slide-in-from-top duration-300">
+    <div className="fixed top-0 inset-x-0 z-[100] bg-destructive text-destructive-foreground px-4 py-2.5 text-center text-sm font-medium animate-in slide-in-from-top duration-500 shadow-lg shadow-destructive/20">
       <div className="flex items-center justify-center gap-2">
         <WifiOff className="h-4 w-4" />
         <span>{isAr ? "أنت غير متصل بالإنترنت" : "You're offline"}</span>

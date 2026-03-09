@@ -19,7 +19,7 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
 
   return (
     <div className="fixed bottom-20 inset-x-0 z-50 px-3 md:bottom-4 md:px-0 md:flex md:justify-center animate-in slide-in-from-bottom-4 duration-500 safe-area-bottom">
-      <div className="rounded-2xl border border-primary/20 bg-card/95 p-3.5 sm:p-4 shadow-xl backdrop-blur-md md:max-w-md">
+      <div className="rounded-2xl border border-primary/20 bg-card/95 p-3.5 sm:p-4 shadow-2xl shadow-primary/10 backdrop-blur-xl10 backdrop-blur-xl md:max-w-md">
         <div className="flex items-start gap-3">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-chart-4/20 ring-2 ring-primary/10">
             <Download className="h-6 w-6 text-primary animate-bounce [animation-duration:2s]" />
@@ -50,7 +50,7 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
           })}
         </div>
 
-        <Button size="sm" onClick={install} className="w-full active:scale-[0.98] transition-transform gap-2">
+        <Button size="sm" onClick={install} className="w-ful7] transition-all duration-300 gap-2 shadow-md shadow-primary/20ion-transform gap-2">
           <Download className="h-4 w-4" />
           {isAr ? "تثبيت الآن — مجاني" : "Install Now — Free"}
         </Button>
