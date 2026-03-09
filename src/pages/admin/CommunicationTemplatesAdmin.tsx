@@ -418,7 +418,7 @@ export default function CommunicationTemplatesAdmin() {
         </div>
       ) : (
         /* Table View */
-        {(() => {
+        (() => {
           const { sorted: sortedTemplates, sortColumn: tplSortCol, sortDirection: tplSortDir, toggleSort: tplToggleSort } = useTableSort(templates, "name", "asc");
           const tplPagination = usePagination(sortedTemplates, { defaultPageSize: 15 });
 
@@ -498,7 +498,6 @@ export default function CommunicationTemplatesAdmin() {
                         </div>
                       </TableCell>
                     </TableRow>
-                    {/* Inline Detail Panel */}
                     {isExpanded && (
                       <TableRow key={`${t.id}-detail`}>
                         <TableCell colSpan={7} className="bg-muted/20 p-0">
@@ -552,7 +551,7 @@ export default function CommunicationTemplatesAdmin() {
           />
         </Card>
           );
-        })()}
+        })()
       )}
 
       {/* Delete Confirmation */}
