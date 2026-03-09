@@ -269,8 +269,9 @@ export default function LoyaltyAdmin() {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
-          </AdminTableCard>
+               </Table>
+               <AdminTablePagination page={chPagination.page} totalPages={chPagination.totalPages} totalItems={chPagination.totalItems} startItem={chPagination.startItem} endItem={chPagination.endItem} pageSize={chPagination.pageSize} pageSizeOptions={chPagination.pageSizeOptions} hasNext={chPagination.hasNext} hasPrev={chPagination.hasPrev} onPageChange={chPagination.goTo} onPageSizeChange={chPagination.changePageSize} />
+           </AdminTableCard>
         </TabsContent>
 
         <TabsContent value="rewards">
