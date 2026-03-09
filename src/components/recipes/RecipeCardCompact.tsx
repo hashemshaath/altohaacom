@@ -65,8 +65,8 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
           )}
         </div>
         <CardContent className="p-3">
-          <h3 className="line-clamp-1 text-sm font-semibold mb-1.5 group-hover:text-primary transition-colors">{title}</h3>
-          <div className="flex items-center gap-3 text-[10px] text-muted-foreground flex-wrap">
+          <h3 className="line-clamp-1 text-sm font-semibold mb-1.5 group-hover:text-primary transition-colors duration-200">{title}</h3>
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground flex-wrap tabular-nums">
             {totalTime > 0 && (
               <span className="flex items-center gap-0.5">
                 <Clock className="h-2.5 w-2.5" /> {totalTime}{isAr ? "د" : "m"}
