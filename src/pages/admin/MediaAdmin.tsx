@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from "react";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -218,40 +219,27 @@ export default function MediaAdmin() {
       </div>
 
       {/* Filters */}
-      <Card className="rounded-2xl border-border/40">
-        <CardContent className="pt-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex-1 min-w-[200px]">
-              <div className="relative">
-                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder={language === "ar" ? "بحث في الملفات..." : "Search files..."}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="ps-9 rounded-xl"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-32 h-9 text-xs rounded-xl"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
-                  <SelectItem value="images">{language === "ar" ? "صور" : "Images"}</SelectItem>
-                  <SelectItem value="videos">{language === "ar" ? "فيديو" : "Videos"}</SelectItem>
-                  <SelectItem value="documents">{language === "ar" ? "مستندات" : "Documents"}</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("grid")}>
-                <Grid className="h-4 w-4" />
-              </Button>
-              <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("list")}>
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <AdminFilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={language === "ar" ? "بحث في الملفات..." : "Search files..."}
+      >
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-32 h-9 text-xs rounded-xl"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
+            <SelectItem value="images">{language === "ar" ? "صور" : "Images"}</SelectItem>
+            <SelectItem value="videos">{language === "ar" ? "فيديو" : "Videos"}</SelectItem>
+            <SelectItem value="documents">{language === "ar" ? "مستندات" : "Documents"}</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button variant={viewMode === "grid" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("grid")}>
+          <Grid className="h-4 w-4" />
+        </Button>
+        <Button variant={viewMode === "list" ? "default" : "outline"} size="icon" className="rounded-xl" onClick={() => setViewMode("list")}>
+          <List className="h-4 w-4" />
+        </Button>
+      </AdminFilterBar>
 
       {/* Media Grid/List */}
       <Card className="rounded-2xl border-border/40">

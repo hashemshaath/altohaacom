@@ -19,6 +19,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCountries } from "@/hooks/useCountries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -943,18 +945,13 @@ export default function ExhibitionsAdmin() {
       )}
 
       {/* Search & Filter */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder={t("Search by name, organizer...", "بحث بالاسم، المنظم...")}
-            className="ps-9"
-          />
-        </div>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={t("Search by name, organizer...", "بحث بالاسم، المنظم...")}
+      >
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] rounded-xl">
             <SelectValue placeholder={t("Status", "الحالة")} />
           </SelectTrigger>
           <SelectContent>
@@ -965,7 +962,7 @@ export default function ExhibitionsAdmin() {
           </SelectContent>
         </Select>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] rounded-xl">
             <SelectValue placeholder={t("Type", "النوع")} />
           </SelectTrigger>
           <SelectContent>
@@ -976,7 +973,7 @@ export default function ExhibitionsAdmin() {
           </SelectContent>
         </Select>
         <Select value={yearFilter} onValueChange={setYearFilter}>
-          <SelectTrigger className="w-[120px]">
+          <SelectTrigger className="w-[120px] rounded-xl">
             <SelectValue placeholder={t("Year", "السنة")} />
           </SelectTrigger>
           <SelectContent>
@@ -987,7 +984,7 @@ export default function ExhibitionsAdmin() {
           </SelectContent>
         </Select>
         <Select value={cityFilter} onValueChange={setCityFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] rounded-xl">
             <SelectValue placeholder={t("City", "المدينة")} />
           </SelectTrigger>
           <SelectContent>
@@ -998,7 +995,7 @@ export default function ExhibitionsAdmin() {
           </SelectContent>
         </Select>
         <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-[160px] rounded-xl">
             <SelectValue placeholder={t("Organizer", "المنظم")} />
           </SelectTrigger>
           <SelectContent>
@@ -1009,7 +1006,7 @@ export default function ExhibitionsAdmin() {
           </SelectContent>
         </Select>
         <Select value={seriesFilter} onValueChange={setSeriesFilter}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-[160px] rounded-xl">
             <SelectValue placeholder={t("Series", "السلسلة")} />
           </SelectTrigger>
           <SelectContent>
@@ -1020,7 +1017,7 @@ export default function ExhibitionsAdmin() {
             ))}
           </SelectContent>
         </Select>
-      </div>
+      </AdminFilterBar>
 
       {/* Status Legend */}
       <Card className="rounded-2xl border-border/40">
@@ -1046,8 +1043,7 @@ export default function ExhibitionsAdmin() {
       />
 
       {/* Table */}
-      <Card className="border-border/60 overflow-hidden">
-        <CardContent className="p-0">
+      <AdminTableCard>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -1246,8 +1242,7 @@ export default function ExhibitionsAdmin() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </AdminTableCard>
       <ExhibitionDetailDrawer
         exhibitionId={drawerExhibitionId}
         open={!!drawerExhibitionId}

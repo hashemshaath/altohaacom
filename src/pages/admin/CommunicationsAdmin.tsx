@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -532,14 +533,13 @@ export default function CommunicationsAdmin() {
           )}
 
           {/* Filters */}
-          <div className="flex flex-wrap gap-2">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isAr ? "بحث في الرسائل..." : "Search messages..."} className="ps-10 rounded-xl" />
-            </div>
+          <AdminFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={isAr ? "بحث في الرسائل..." : "Search messages..."}
+          >
             <Select value={filter} onValueChange={setFilter}>
-              <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[160px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
                 <SelectItem value="unread">{isAr ? "غير مقروءة" : "Unread"}</SelectItem>
@@ -549,7 +549,7 @@ export default function CommunicationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[140px] rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل الأولويات" : "All Priorities"}</SelectItem>
                 <SelectItem value="urgent">{isAr ? "عاجل" : "Urgent"}</SelectItem>
@@ -559,17 +559,17 @@ export default function CommunicationsAdmin() {
               </SelectContent>
             </Select>
             <Select value={tagFilter} onValueChange={setTagFilter}>
-              <SelectTrigger className="w-[140px]"><Tag className="me-1 h-3.5 w-3.5" /><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[140px] rounded-xl"><Tag className="me-1 h-3.5 w-3.5" /><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "كل العلامات" : "All Tags"}</SelectItem>
                 {TAG_OPTIONS.map((t) => <SelectItem key={t.value} value={t.value}>{isAr ? t.labelAr : t.label}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Button variant={showArchived ? "secondary" : "outline"} size="sm" className="h-10" onClick={() => setShowArchived(!showArchived)}>
+            <Button variant={showArchived ? "secondary" : "outline"} size="sm" className="h-9" onClick={() => setShowArchived(!showArchived)}>
               <Archive className="me-1 h-3.5 w-3.5" />
               {isAr ? "الأرشيف" : "Archive"}
             </Button>
-          </div>
+          </AdminFilterBar>
 
           {/* Messages List & Detail */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
