@@ -291,12 +291,12 @@ export default function ChefScheduleAdmin() {
                     />
                   </TableHead>
                   <TableHead className="text-xs">{isAr ? "الشيف" : "Chef"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "العنوان" : "Title"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "الموقع" : "Location"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
-                  <TableHead className="text-xs">{isAr ? "الرؤية" : "Vis."}</TableHead>
+                  <SortableTableHead column="event_type" label={isAr ? "النوع" : "Type"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="title" label={isAr ? "العنوان" : "Title"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="start_date" label={isAr ? "التاريخ" : "Date"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="city" label={isAr ? "الموقع" : "Location"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
+                  <SortableTableHead column="visibility" label={isAr ? "الرؤية" : "Vis."} sortColumn={schSortCol} sortDirection={schSortDir} onSort={schToggleSort} className="text-xs" />
                   <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
                 </TableRow>
               </TableHeader>
