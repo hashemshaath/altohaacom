@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -414,23 +418,28 @@ export default function CommunicationTemplatesAdmin() {
         </div>
       ) : (
         /* Table View */
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">
-                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
-                </TableHead>
-                <TableHead>{isAr ? "القالب" : "Template"}</TableHead>
-                <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                <TableHead>{isAr ? "القناة" : "Channel"}</TableHead>
-                <TableHead>{isAr ? "المتغيرات" : "Variables"}</TableHead>
-                <TableHead>{isAr ? "نشط" : "Active"}</TableHead>
-                <TableHead>{isAr ? "إجراءات" : "Actions"}</TableHead>
-              </TableRow>
-            </TableHeader>
+        (() => {
+          const { sorted: sortedTemplates, sortColumn: tplSortCol, sortDirection: tplSortDir, toggleSort: tplToggleSort } = useTableSort(templates, "name", "asc");
+          const tplPagination = usePagination(sortedTemplates, { defaultPageSize: 15 });
+
+          return (
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                    </TableHead>
+                    <SortableTableHead column="name" label={isAr ? "القالب" : "Template"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <SortableTableHead column="channel" label={isAr ? "القناة" : "Channel"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <TableHead>{isAr ? "المتغيرات" : "Variables"}</TableHead>
+                    <SortableTableHead column="is_active" label={isAr ? "نشط" : "Active"} sortColumn={tplSortCol} sortDirection={tplSortDir} onSort={tplToggleSort} />
+                    <TableHead>{isAr ? "إجراءات" : "Actions"}</TableHead>
+                  </TableRow>
+                </TableHeader>
             <TableBody>
-              {templates.map((t) => {
+              {tplPagination.paginated.map((t) => {
                 const ch = getChannelInfo(t.channel);
                 const ChIcon = ch?.icon || Mail;
                 const isExpanded = expandedId === t.id;
@@ -489,7 +498,6 @@ export default function CommunicationTemplatesAdmin() {
                         </div>
                       </TableCell>
                     </TableRow>
-                    {/* Inline Detail Panel */}
                     {isExpanded && (
                       <TableRow key={`${t.id}-detail`}>
                         <TableCell colSpan={7} className="bg-muted/20 p-0">
@@ -498,50 +506,18 @@ export default function CommunicationTemplatesAdmin() {
                               <TabsList>
                                 <TabsTrigger value="preview">{isAr ? "معاينة" : "Preview"}</TabsTrigger>
                                 <TabsTrigger value="preview_ar">{isAr ? "معاينة عربي" : "Preview (Arabic)"}</TabsTrigger>
-                                <TabsTrigger value="info">{isAr ? "معلومات" : "Info"}</TabsTrigger>
+                                <TabsTrigger value="source">{isAr ? "المصدر" : "Source"}</TabsTrigger>
                               </TabsList>
-                              <TabsContent value="preview" className="space-y-2 mt-3">
-                                {t.subject && (
-                                  <div>
-                                    <p className="text-xs text-muted-foreground mb-1">{isAr ? "الموضوع" : "Subject"}</p>
-                                    <p className="font-medium text-sm">{t.subject}</p>
-                                  </div>
-                                )}
-                                <div className="rounded-xl border bg-background p-4 text-sm whitespace-pre-wrap">
-                                  {t.body}
-                                </div>
+                              <TabsContent value="preview" className="mt-3">
+                                {t.subject && <p className="text-sm font-medium mb-2">{isAr ? "الموضوع:" : "Subject:"} {t.subject}</p>}
+                                <div className="rounded-xl bg-background border p-4 text-sm whitespace-pre-wrap">{t.body}</div>
                               </TabsContent>
-                              <TabsContent value="preview_ar" className="space-y-2 mt-3">
-                                {t.subject_ar && (
-                                  <div dir="rtl">
-                                    <p className="text-xs text-muted-foreground mb-1">الموضوع</p>
-                                    <p className="font-medium text-sm">{t.subject_ar}</p>
-                                  </div>
-                                )}
-                                <div className="rounded-xl border bg-background p-4 text-sm whitespace-pre-wrap" dir="rtl">
-                                  {t.body_ar || <span className="text-muted-foreground italic">{isAr ? "لا يوجد محتوى عربي" : "No Arabic content"}</span>}
-                                </div>
+                              <TabsContent value="preview_ar" className="mt-3" dir="rtl">
+                                {t.subject_ar && <p className="text-sm font-medium mb-2">{isAr ? "الموضوع:" : "Subject:"} {t.subject_ar}</p>}
+                                <div className="rounded-xl bg-background border p-4 text-sm whitespace-pre-wrap">{t.body_ar || (isAr ? "لا يوجد محتوى عربي" : "No Arabic content")}</div>
                               </TabsContent>
-                              <TabsContent value="info" className="mt-3">
-                                <div className="grid gap-3 sm:grid-cols-3">
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">{isAr ? "تاريخ الإنشاء" : "Created"}</p>
-                                    <p className="text-sm">{new Date(t.created_at).toLocaleDateString()}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">{isAr ? "آخر تحديث" : "Updated"}</p>
-                                    <p className="text-sm">{new Date(t.updated_at).toLocaleDateString()}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">{isAr ? "المتغيرات" : "Variables"}</p>
-                                    <div className="flex flex-wrap gap-1 mt-1">
-                                      {(t.variables || []).map(v => (
-                                        <Badge key={v} variant="secondary" className="text-[10px] font-mono">{`{{${v}}}`}</Badge>
-                                      ))}
-                                      {!(t.variables || []).length && <span className="text-sm text-muted-foreground">—</span>}
-                                    </div>
-                                  </div>
-                                </div>
+                              <TabsContent value="source" className="mt-3">
+                                <pre className="rounded-xl bg-muted p-3 text-xs overflow-x-auto whitespace-pre-wrap font-mono">{t.body}</pre>
                               </TabsContent>
                             </Tabs>
                           </div>
@@ -560,7 +536,22 @@ export default function CommunicationTemplatesAdmin() {
               )}
             </TableBody>
           </Table>
+          <AdminTablePagination
+            page={tplPagination.page}
+            totalPages={tplPagination.totalPages}
+            totalItems={tplPagination.totalItems}
+            startItem={tplPagination.startItem}
+            endItem={tplPagination.endItem}
+            pageSize={tplPagination.pageSize}
+            pageSizeOptions={tplPagination.pageSizeOptions}
+            hasNext={tplPagination.hasNext}
+            hasPrev={tplPagination.hasPrev}
+            onPageChange={tplPagination.goTo}
+            onPageSizeChange={tplPagination.changePageSize}
+          />
         </Card>
+          );
+        })()
       )}
 
       {/* Delete Confirmation */}

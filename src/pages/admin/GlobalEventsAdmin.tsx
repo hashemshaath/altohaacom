@@ -1,4 +1,8 @@
 import { useState, useMemo } from "react";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -71,7 +75,10 @@ export default function GlobalEventsAdmin() {
     return ev.title?.toLowerCase().includes(q) || ev.title_ar?.toLowerCase().includes(q) || ev.city?.toLowerCase().includes(q);
   }), [events, typeFilter, search]);
 
-  const bulk = useAdminBulkActions(filtered);
+  const { sorted: sortedEvents, sortColumn: evSortCol, sortDirection: evSortDir, toggleSort: evToggleSort } = useTableSort(filtered, "start_date", "desc");
+  const eventPagination = usePagination(sortedEvents, { defaultPageSize: 15 });
+
+  const bulk = useAdminBulkActions(sortedEvents);
 
   const handleSave = async () => {
     if (!editing?.title || !editing?.start_date) {
@@ -455,11 +462,11 @@ export default function GlobalEventsAdmin() {
                   onCheckedChange={bulk.toggleAll}
                 />
               </TableHead>
-              <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
-              <TableHead className="text-xs">{isAr ? "العنوان" : "Title"}</TableHead>
-              <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
-              <TableHead className="text-xs">{isAr ? "الموقع" : "Location"}</TableHead>
-              <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
+              <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={evSortCol} sortDirection={evSortDir} onSort={evToggleSort} className="text-xs" />
+              <SortableTableHead column="title" label={isAr ? "العنوان" : "Title"} sortColumn={evSortCol} sortDirection={evSortDir} onSort={evToggleSort} className="text-xs" />
+              <SortableTableHead column="start_date" label={isAr ? "التاريخ" : "Date"} sortColumn={evSortCol} sortDirection={evSortDir} onSort={evToggleSort} className="text-xs" />
+              <SortableTableHead column="city" label={isAr ? "الموقع" : "Location"} sortColumn={evSortCol} sortDirection={evSortDir} onSort={evToggleSort} className="text-xs" />
+              <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={evSortCol} sortDirection={evSortDir} onSort={evToggleSort} className="text-xs" />
               <TableHead className="text-xs">{isAr ? "خصائص" : "Flags"}</TableHead>
               <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
             </TableRow>
@@ -467,10 +474,10 @@ export default function GlobalEventsAdmin() {
           <TableBody>
             {isLoading ? (
               <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">{isAr ? "جاري التحميل..." : "Loading..."}</TableCell></TableRow>
-            ) : filtered.length === 0 ? (
+            ) : eventPagination.paginated.length === 0 ? (
               <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">{isAr ? "لا توجد فعاليات" : "No events"}</TableCell></TableRow>
             ) : (
-              filtered.map(ev => {
+              eventPagination.paginated.map(ev => {
                 const typeKey = ev.type as GlobalEventType;
                 const label = GLOBAL_EVENT_LABELS[typeKey] || GLOBAL_EVENT_LABELS.other;
                 const colors = GLOBAL_EVENT_COLORS[typeKey] || GLOBAL_EVENT_COLORS.other;
@@ -522,6 +529,19 @@ export default function GlobalEventsAdmin() {
             )}
           </TableBody>
         </Table>
+        <AdminTablePagination
+          page={eventPagination.page}
+          totalPages={eventPagination.totalPages}
+          totalItems={eventPagination.totalItems}
+          startItem={eventPagination.startItem}
+          endItem={eventPagination.endItem}
+          pageSize={eventPagination.pageSize}
+          pageSizeOptions={eventPagination.pageSizeOptions}
+          hasNext={eventPagination.hasNext}
+          hasPrev={eventPagination.hasPrev}
+          onPageChange={eventPagination.goTo}
+          onPageSizeChange={eventPagination.changePageSize}
+        />
       </Card>
     </div>
   );
