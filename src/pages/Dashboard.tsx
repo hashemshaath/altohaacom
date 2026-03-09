@@ -258,6 +258,15 @@ export default function Dashboard() {
 
 /* ---------- Sub-Components ---------- */
 
+const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
+  return (
+    <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5 mb-1 lg:mb-0">
+      <Icon className="h-3 w-3 text-primary/70" />
+      <span className="hidden lg:inline">{label}</span>
+    </h2>
+  );
+});
+
 const WelcomeBanner = memo(function WelcomeBanner({
   greeting, subtitle, isAr, widgets, toggleWidget, resetLayout, avatarUrl, firstName,
 }: {
