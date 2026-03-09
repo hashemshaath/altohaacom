@@ -64,8 +64,8 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                           className={cn(
                             "flex items-center justify-center rounded-lg h-8 w-8 mx-auto transition-all duration-150",
                             isActive
-                              ? "bg-primary text-primary-foreground shadow-sm"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                              ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                              : "text-sidebar-foreground/60 hover:bg-sidebar-accent/10 hover:text-sidebar-foreground"
                           )}
                         >
                           <item.icon className="h-4 w-4" />
