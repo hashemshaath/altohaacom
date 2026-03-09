@@ -1,12 +1,14 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Target, ExternalLink, Monitor, Home, Newspaper, Trophy, Users, Layout } from "lucide-react";
+import { Target, ExternalLink, Monitor, Home, Newspaper, Trophy, Users, Layout, Search } from "lucide-react";
 
 const pageIcons: Record<string, any> = {
   homepage: Home,
