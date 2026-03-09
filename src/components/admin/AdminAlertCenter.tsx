@@ -123,7 +123,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
       });
     },
     staleTime: 1000 * 60 * 2,
-    refetchInterval: 1000 * 60 * 5,
+    refetchInterval: useVisibleRefetchInterval(1000 * 60 * 5),
   });
 
   const severityConfig = {

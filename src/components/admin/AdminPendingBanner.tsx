@@ -75,7 +75,7 @@ const AdminPendingBanner = memo(function AdminPendingBanner() {
       return list.filter(i => i.count > 0);
     },
     staleTime: 1000 * 60 * 5,
-    refetchInterval: 1000 * 60 * 5,
+    refetchInterval: useVisibleRefetchInterval(1000 * 60 * 5),
   });
 
   if (!items || items.length === 0) return null;

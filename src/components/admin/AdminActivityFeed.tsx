@@ -83,7 +83,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 15);
     },
     staleTime: 1000 * 30,
-    refetchInterval: 1000 * 60,
+    refetchInterval: useVisibleRefetchInterval(1000 * 60),
   });
 
   return (

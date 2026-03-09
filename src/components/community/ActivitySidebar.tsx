@@ -71,7 +71,7 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 2,
-    refetchInterval: 1000 * 60 * 2,
+    refetchInterval: useVisibleRefetchInterval(1000 * 60 * 2),
   });
 
   if (!user || activities.length === 0) return null;
