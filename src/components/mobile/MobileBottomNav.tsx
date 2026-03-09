@@ -190,11 +190,17 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
                 >
                   <div
                     className={cn(
-                      "flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-all duration-300 active:scale-[0.85]",
-                      fabOpen && "rotate-45 bg-destructive shadow-destructive/30 scale-105"
+                      "relative flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-all duration-300 active:scale-[0.85]",
+                      fabOpen ? "rotate-45 bg-destructive shadow-destructive/30 scale-105" : "hover:shadow-xl hover:shadow-primary/40"
                     )}
                   >
                     <Plus className="h-5 w-5" />
+                    {!fabOpen && (
+                      <span className="absolute -top-0.5 -end-0.5 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-foreground/60" />
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-foreground/80" />
+                      </span>
+                    )}
                   </div>
                 </button>
               );

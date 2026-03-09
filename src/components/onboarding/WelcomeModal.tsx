@@ -100,8 +100,16 @@ export const WelcomeModal = memo(function WelcomeModal() {
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleDismiss(); }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center pb-2">
-          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 ring-2 ring-primary/20">
-            <Sparkles className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-3 relative">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 ring-2 ring-primary/20">
+              <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+            </div>
+            {profile.avatar_url && (
+              <Avatar className="absolute -bottom-1 -end-1 h-7 w-7 ring-2 ring-card">
+                <AvatarImage src={profile.avatar_url} />
+                <AvatarFallback className="text-[10px]">{(profile.full_name || "U")[0]}</AvatarFallback>
+              </Avatar>
+            )}
           </div>
           <DialogTitle className="text-xl font-bold">
             {isAr ? `مرحباً ${profile.full_name || ""}! 🎉` : `Welcome ${profile.full_name || ""}! 🎉`}
@@ -111,6 +119,11 @@ export const WelcomeModal = memo(function WelcomeModal() {
               ? (isAr ? "أكمل ملفك الشخصي واستكشف الطهاة والفعاليات" : "Complete your profile and explore chefs & events")
               : (isAr ? "أكمل ملفك الشخصي للحصول على أفضل تجربة" : "Complete your profile for the best experience")}
           </DialogDescription>
+          {percent > 0 && percent < 100 && (
+            <p className="text-xs text-primary font-semibold mt-1">
+              {isAr ? `أنت على بعد خطوة واحدة! ${percent}% مكتمل` : `Almost there! ${percent}% complete`}
+            </p>
+          )}
         </DialogHeader>
 
         <div className="space-y-4">
