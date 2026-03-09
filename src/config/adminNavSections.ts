@@ -47,8 +47,13 @@ import {
   Database,
   ScanSearch,
   ImagePlay,
-  Wrench,
   Code,
+  Zap,
+  CalendarRange,
+  LayoutGrid,
+  MapPin,
+  ClipboardList,
+  Upload,
   type LucideIcon,
 } from "lucide-react";
 
@@ -110,11 +115,11 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/leads", icon: UserSearch, labelEn: "Leads", labelAr: "العملاء المحتملين" },
       { to: "/admin/audience-segments", icon: Target, labelEn: "Segments", labelAr: "الشرائح" },
       { to: "/admin/advertising", icon: Megaphone, labelEn: "Advertising", labelAr: "الإعلانات" },
-      { to: "/admin/marketing-automation", icon: Sparkles, labelEn: "Automation", labelAr: "الأتمتة" },
+      { to: "/admin/marketing-automation", icon: Zap, labelEn: "Automation", labelAr: "الأتمتة" },
     ],
   },
 
-  /* ── 5. Competitions & Events ── */
+  /* ── 5. Competitions ── */
   {
     titleEn: "Competitions",
     titleAr: "المسابقات",
@@ -133,7 +138,7 @@ export const adminNavSections: NavSection[] = [
     titleAr: "الفعاليات",
     items: [
       { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions", labelAr: "المعارض" },
-      { to: "/admin/global-events", icon: Calendar, labelEn: "Global Events", labelAr: "التقويم العالمي" },
+      { to: "/admin/global-events", icon: CalendarRange, labelEn: "Global Events", labelAr: "التقويم العالمي" },
     ],
   },
 
@@ -187,7 +192,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الرئيسية" },
       { to: "/admin/hero-slides", icon: ImagePlay, labelEn: "Hero Slides", labelAr: "شرائح البانر" },
       { to: "/admin/design/covers", icon: Layers, labelEn: "Covers", labelAr: "الأغلفة" },
-      { to: "/admin/design/layout", icon: Layers, labelEn: "Layout", labelAr: "التخطيط" },
+      { to: "/admin/design/layout", icon: LayoutGrid, labelEn: "Layout", labelAr: "التخطيط" },
       { to: "/admin/design/custom-css", icon: Code, labelEn: "Custom CSS", labelAr: "CSS مخصص" },
     ],
   },
@@ -200,7 +205,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات" },
       { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان" },
       { to: "/admin/localization", icon: Globe, labelEn: "Languages", labelAr: "اللغات" },
-      { to: "/admin/countries", icon: Earth, labelEn: "Countries", labelAr: "الدول" },
+      { to: "/admin/countries", icon: MapPin, labelEn: "Countries", labelAr: "الدول" },
       { to: "/admin/integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات" },
     ],
   },
@@ -210,10 +215,10 @@ export const adminNavSections: NavSection[] = [
     titleEn: "Tools",
     titleAr: "الأدوات",
     items: [
-      { to: "/admin/smart-import", icon: Sparkles, labelEn: "Smart Import", labelAr: "استيراد ذكي" },
+      { to: "/admin/smart-import", icon: Upload, labelEn: "Smart Import", labelAr: "استيراد ذكي" },
       { to: "/admin/deduplication", icon: ScanSearch, labelEn: "Deduplication", labelAr: "التكرارات" },
       { to: "/admin/ai", icon: Bot, labelEn: "AI Config", labelAr: "الذكاء الاصطناعي" },
-      { to: "/admin/audit", icon: FileText, labelEn: "Audit Log", labelAr: "سجل العمليات" },
+      { to: "/admin/audit", icon: ClipboardList, labelEn: "Audit Log", labelAr: "سجل العمليات" },
       { to: "/admin/database", icon: Database, labelEn: "Database", labelAr: "قاعدة البيانات" },
     ],
   },
