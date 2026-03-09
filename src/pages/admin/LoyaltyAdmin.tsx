@@ -370,6 +370,7 @@ export default function LoyaltyAdmin() {
                </Table>
                <AdminTablePagination page={rdPagination.page} totalPages={rdPagination.totalPages} totalItems={rdPagination.totalItems} startItem={rdPagination.startItem} endItem={rdPagination.endItem} pageSize={rdPagination.pageSize} pageSizeOptions={rdPagination.pageSizeOptions} hasNext={rdPagination.hasNext} hasPrev={rdPagination.hasPrev} onPageChange={rdPagination.goTo} onPageSizeChange={rdPagination.changePageSize} />
            </AdminTableCard>
+         </TabsContent>
       </Tabs>
     </div>
   );
