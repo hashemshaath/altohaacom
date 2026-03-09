@@ -429,7 +429,7 @@ export default function ArticlesAdmin() {
                   </TableCell>
                 </TableRow>
               ) : (
-                articles?.map((article) => {
+                pagination.paginated.map((article) => {
                   const isScheduled = article.status === "published" && article.published_at && new Date(article.published_at) > new Date();
                   return (
                   <TableRow key={article.id} className={cn("hover:bg-accent/30 transition-colors group", bulk.isSelected(article.id) && "bg-primary/5")}>
