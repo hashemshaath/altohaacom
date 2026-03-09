@@ -352,7 +352,9 @@ export default function LocalizationAdmin() {
     });
   }, [translations, search, nsFilter, statusFilter]);
 
-  const bulk = useAdminBulkActions(filteredTranslations);
+  const { sorted: sortedTranslations, sortColumn: tlSortCol, sortDirection: tlSortDir, toggleSort: tlToggleSort } = useTableSort(filteredTranslations);
+  const tlPagination = usePagination(sortedTranslations);
+  const bulk = useAdminBulkActions(tlPagination.paginated);
 
   const { exportCSV: exportTranslationsCSV } = useCSVExport({
     columns: [
