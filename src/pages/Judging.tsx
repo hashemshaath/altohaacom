@@ -472,6 +472,10 @@ export default function Judging() {
               <ArrowLeftRight className="h-4 w-4" />
               {language === "ar" ? "المقارنة" : "Compare"}
             </TabsTrigger>
+            <TabsTrigger value="offline" className="gap-2">
+              <WifiOff className="h-4 w-4" />
+              {language === "ar" ? "بدون اتصال" : "Offline"}
+            </TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
