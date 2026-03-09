@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import {
   useMentorshipPrograms,
   useAllMentorApplications,
