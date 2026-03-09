@@ -583,16 +583,13 @@ export default function KnowledgeAdmin() {
               ))}
             </div>
           ) : (
-            <Card className="rounded-2xl border-border/40">
-              <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-                  <BookOpen className="h-8 w-8 text-muted-foreground/40" />
-                </div>
-                <p className="text-muted-foreground">
-                  {language === "ar" ? "لم تتم إضافة أي موارد بعد" : "No resources added yet"}
-                </p>
-              </CardContent>
-            </Card>
+            <AdminEmptyState
+              icon={BookOpen}
+              title="No resources added yet"
+              titleAr="لم تتم إضافة أي موارد بعد"
+              description="Add resources to build your knowledge portal"
+              descriptionAr="أضف موارد لبناء بوابة المعرفة"
+            />
           )}
         </TabsContent>
 
