@@ -32,8 +32,8 @@ export function useLoginStreak() {
       const today = new Date().toISOString().split("T")[0];
 
       // Check existing streak
-      const { data: existing } = await supabase
-        .from("user_streaks" as any)
+      const { data: existing } = await (supabase
+        .from("user_streaks" as any) as any)
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
