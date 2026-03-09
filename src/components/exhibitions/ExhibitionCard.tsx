@@ -109,6 +109,10 @@ export const ExhibitionCard = memo(
         ? differenceInDays(new Date(exhibition.start_date), new Date())
         : null;
 
+      const regDeadlineDays = exhibition.registration_deadline && isFuture(new Date(exhibition.registration_deadline))
+        ? differenceInDays(new Date(exhibition.registration_deadline), new Date())
+        : null;
+
       const isFeaturedVariant = variant === "featured";
 
       return (
