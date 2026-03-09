@@ -622,13 +622,14 @@ export default function CostCenterAdmin() {
 
         {/* ─── Estimates Tab ──────────── */}
         <TabsContent value="estimates" className="space-y-4">
-          <div className="flex items-center gap-3 flex-wrap print:hidden">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={e => setSearch(e.target.value)} className="ps-9" />
-            </div>
+          <AdminFilterBar
+            searchValue={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={isAr ? "بحث في التقديرات..." : "Search estimates..."}
+            className="print:hidden"
+          >
             <Select value={moduleFilter} onValueChange={setModuleFilter}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[140px] h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع الأقسام" : "All Modules"}</SelectItem>
                 {Object.entries(MODULE_TYPES).map(([k, v]) => (
@@ -637,7 +638,7 @@ export default function CostCenterAdmin() {
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-[140px] h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
                 {Object.entries(ESTIMATE_STATUS_CONFIG).map(([k, v]) => (
@@ -645,10 +646,19 @@ export default function CostCenterAdmin() {
                 ))}
               </SelectContent>
             </Select>
-            <Button size="sm" className="gap-1.5 ms-auto" onClick={() => setShowForm(true)}>
+            <Button size="sm" variant="outline" className="gap-1.5 h-9 rounded-xl" onClick={() => exportEstimatesCSV(filteredEstimates)}>
+              <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+            </Button>
+            <Button size="sm" className="gap-1.5 h-9 rounded-xl ms-auto" onClick={() => setShowForm(true)}>
               <Plus className="h-3.5 w-3.5" />{isAr ? "تقدير جديد" : "New Estimate"}
             </Button>
-          </div>
+          </AdminFilterBar>
+
+          <BulkActionBar
+            count={bulk.count}
+            onClear={bulk.clearSelection}
+            onExport={() => exportEstimatesCSV(bulk.selectedItems)}
+          />
 
           {/* Create Form */}
           {showForm && (
