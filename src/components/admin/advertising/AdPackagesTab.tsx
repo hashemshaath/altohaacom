@@ -16,6 +16,8 @@ const tierColors: Record<string, string> = {
 
 interface Props {
   packages: any[];
+  onToggleActive?: (id: string, active: boolean) => void;
+  onEdit?: (pkg: any) => void;
 }
 
 export const AdPackagesTab = memo(function AdPackagesTab({ packages }: Props) {
