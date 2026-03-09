@@ -142,14 +142,6 @@ export default function ChefsTableAdmin() {
     }
   };
 
-  const toggleSort = (col: typeof sessionSort) => {
-    if (sessionSort === col) setSortDir(d => d === "asc" ? "desc" : "asc");
-    else { setSessionSort(col); setSortDir("desc"); }
-  };
-
-  const SortIndicator = ({ col }: { col: typeof sessionSort }) => (
-    sessionSort === col ? <ChevronDown className={`h-3 w-3 inline-block ms-0.5 transition-transform ${sessionSortDir === "asc" ? "rotate-180" : ""}`} /> : null
-  );
 
   return (
     <div className="space-y-4 sm:space-y-6">
