@@ -187,7 +187,25 @@ export default function ContentModeration() {
           <AdminCommentModeration />
         </TabsContent>
 
-        <TabsContent value="reports">
+        <TabsContent value="reports" className="space-y-4">
+      <AdminFilterBar
+        searchValue={reportSearch}
+        onSearchChange={setReportSearch}
+        searchPlaceholder={isAr ? "بحث في البلاغات..." : "Search reports..."}
+      >
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[140px] h-9 rounded-xl">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "الكل" : "All Status"}</SelectItem>
+            <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+            <SelectItem value="resolved">{isAr ? "تم الحل" : "Resolved"}</SelectItem>
+            <SelectItem value="dismissed">{isAr ? "مرفوض" : "Dismissed"}</SelectItem>
+          </SelectContent>
+        </Select>
+      </AdminFilterBar>
+
       <BulkActionBar
         count={bulk.count}
         onClear={bulk.clearSelection}
@@ -197,12 +215,17 @@ export default function ContentModeration() {
 
       <Card className="rounded-2xl border-border/40">
         <CardHeader>
-          <CardTitle>{t("reports")}</CardTitle>
-          <CardDescription>
-            {language === "ar" 
-              ? "انقر على أي بلاغ لعرض التفاصيل واتخاذ إجراء" 
-              : "Click on any report to view details and take action"}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t("reports")}</CardTitle>
+              <CardDescription>
+                {language === "ar" 
+                  ? "انقر على أي بلاغ لعرض التفاصيل واتخاذ إجراء" 
+                  : "Click on any report to view details and take action"}
+              </CardDescription>
+            </div>
+            <Badge variant="secondary" className="text-[10px]">{filteredReports.length}/{reports?.length || 0}</Badge>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -215,9 +238,11 @@ export default function ContentModeration() {
               description="All clear! No content reports to review."
               descriptionAr="كل شيء واضح! لا توجد بلاغات للمراجعة."
             />
+          ) : filteredReports.length === 0 ? (
+            <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد نتائج" : "No results found"}</p>
           ) : (
             <div className="space-y-2">
-              {reports?.map((report) => (
+              {filteredReports.map((report) => (
                 <div 
                   key={report.id} 
                   className={`rounded-xl border transition-all duration-200 ${
