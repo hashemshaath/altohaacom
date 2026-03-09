@@ -60,6 +60,14 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
       <div className="h-20 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,hsl(var(--primary)/0.15),transparent_60%)]" />
         <div className="pointer-events-none absolute -end-8 -top-8 h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-all duration-700 group-hover/card:scale-150" />
+        {/* Online status indicator */}
+        <div className="absolute top-3 end-3 flex items-center gap-1.5 bg-background/70 backdrop-blur-sm rounded-full px-2 py-0.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-3 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-chart-3" />
+          </span>
+          <span className="text-[9px] font-semibold text-chart-3">{isAr ? "متصل" : "Online"}</span>
+        </div>
       </div>
       <CardContent className="relative -mt-10 px-4 pb-4">
         <div className="flex items-end gap-3 mb-3">

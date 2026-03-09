@@ -165,6 +165,12 @@ export const CompetitionCard = memo(
               <h3 className="mb-1 flex-1 line-clamp-2 text-sm sm:text-[14px] font-bold leading-snug tracking-tight group-hover:text-primary transition-colors duration-300">
                 {title}
               </h3>
+              {/* New badge for upcoming competitions starting within 7 days */}
+              {derived.status === "registration_open" && derived.daysLeft && derived.daysLeft <= 14 && derived.daysLeft > 7 && (
+                <Badge variant="secondary" className="w-fit text-[8px] px-1.5 py-0 h-4 rounded-lg mb-1.5 bg-chart-3/10 text-chart-3 border-0">
+                  ✨ {isAr ? "جديد" : "New"}
+                </Badge>
+              )}
               {/* Registration urgency */}
               {derived.status === "registration_closing_soon" && derived.daysLeft && derived.daysLeft <= 7 && (
                 <p className="text-[9px] font-bold text-destructive mb-1.5 flex items-center gap-1 animate-pulse">

@@ -242,16 +242,25 @@ export const CommandPalette = memo(function CommandPalette() {
 
             {/* Empty state */}
             {query.length >= 2 && !isFetching && results.length === 0 && (
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                {isAr ? "لا توجد نتائج" : "No results found"}
+              <div className="py-8 text-center text-sm text-muted-foreground space-y-2">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
+                  <Search className="h-6 w-6 text-muted-foreground/30" />
+                </div>
+                <p className="font-medium">{isAr ? "لا توجد نتائج" : "No results found"}</p>
+                <p className="text-xs text-muted-foreground/60">{isAr ? "جرّب كلمات بحث مختلفة" : "Try different keywords"}</p>
               </div>
             )}
 
             {/* Initial state */}
             {query.length < 2 && (
-              <div className="py-8 text-center text-muted-foreground">
-                <Search className="h-8 w-8 mx-auto mb-2 opacity-20" />
-                <p className="text-xs">{isAr ? "اكتب للبحث..." : "Type to search..."}</p>
+              <div className="py-8 text-center text-muted-foreground space-y-3">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10">
+                  <Search className="h-7 w-7 text-primary/30" />
+                </div>
+                <div>
+                  <p className="text-xs font-medium">{isAr ? "اكتب للبحث..." : "Type to search..."}</p>
+                  <p className="text-[10px] text-muted-foreground/50 mt-1">{isAr ? "مسابقات، وصفات، أعضاء، والمزيد" : "Competitions, recipes, members & more"}</p>
+                </div>
               </div>
             )}
           </div>
