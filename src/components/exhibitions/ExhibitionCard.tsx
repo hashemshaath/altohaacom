@@ -2,7 +2,7 @@ import { forwardRef, memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building, Eye } from "lucide-react";
+import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building, Eye, AlertTriangle } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -109,6 +109,10 @@ export const ExhibitionCard = memo(
         ? differenceInDays(new Date(exhibition.start_date), new Date())
         : null;
 
+      const regDeadlineDays = exhibition.registration_deadline && isFuture(new Date(exhibition.registration_deadline))
+        ? differenceInDays(new Date(exhibition.registration_deadline), new Date())
+        : null;
+
       const isFeaturedVariant = variant === "featured";
 
       return (
@@ -160,6 +164,12 @@ export const ExhibitionCard = memo(
                   <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-chart-4-foreground shadow-lg border-0 py-1 px-2.5">
                     <Clock className="h-2.5 w-2.5" />
                     {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
+                  </Badge>
+                )}
+                {regDeadlineDays !== null && regDeadlineDays <= 3 && regDeadlineDays >= 0 && (
+                  <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-destructive/90 text-destructive-foreground shadow-lg border-0 py-1 px-2.5 animate-pulse">
+                    <AlertTriangle className="h-2.5 w-2.5" />
+                    {isAr ? "التسجيل يغلق قريباً" : "Reg. closing soon"}
                   </Badge>
                 )}
               </div>
