@@ -173,9 +173,18 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: "es2020",
-    cssMinify: true,
+    cssMinify: "lightningcss",
+    cssCodeSplit: true,
     sourcemap: false,
     chunkSizeWarningLimit: 800,
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        passes: 2,
+      },
+    },
     modulePreload: {
       polyfill: true,
     },
