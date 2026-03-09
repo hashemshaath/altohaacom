@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Search, Trophy, FileText, Users, UtensilsCrossed, Ticket,
   Building2, ArrowRight, Command, CornerDownLeft, Loader2,
-  Mic, MicOff,
+  Mic, MicOff, Sparkles,
 } from "lucide-react";
 import { addRecentSearch } from "@/lib/recentSearches";
 
@@ -39,6 +39,8 @@ export const CommandPalette = memo(function CommandPalette() {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isListening, setIsListening] = useState(false);
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
 
@@ -60,6 +62,7 @@ export const CommandPalette = memo(function CommandPalette() {
     if (open) {
       setQuery("");
       setSelectedIndex(0);
+      setAiSummary(null);
       setTimeout(() => inputRef.current?.focus(), 100);
     } else {
       stopListening();
@@ -127,6 +130,64 @@ export const CommandPalette = memo(function CommandPalette() {
     enabled: debouncedQuery.length >= 2,
     staleTime: 30000,
   });
+
+  // Trigger AI summary when we have results and query is 3+ chars
+  useEffect(() => {
+    if (debouncedQuery.length < 3 || !results.length) {
+      setAiSummary(null);
+      return;
+    }
+    let cancelled = false;
+    const fetchAI = async () => {
+      setIsAiLoading(true);
+      try {
+        const resp = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-search`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ query: debouncedQuery, language }),
+          }
+        );
+        if (!resp.ok || !resp.body) return;
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let accumulated = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          let idx: number;
+          while ((idx = buffer.indexOf("\n")) !== -1) {
+            let line = buffer.slice(0, idx);
+            buffer = buffer.slice(idx + 1);
+            if (line.endsWith("\r")) line = line.slice(0, -1);
+            if (!line.startsWith("data: ")) continue;
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr === "[DONE]") break;
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content && !cancelled) {
+                accumulated += content;
+                setAiSummary(accumulated);
+              }
+            } catch { /* partial */ }
+          }
+        }
+      } catch {
+        // AI summary failed silently
+      } finally {
+        if (!cancelled) setIsAiLoading(false);
+      }
+    };
+    fetchAI();
+    return () => { cancelled = true; };
+  }, [debouncedQuery, results.length, language]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -240,7 +301,22 @@ export const CommandPalette = memo(function CommandPalette() {
               );
             })}
 
-            {/* Empty state */}
+            {/* AI Summary */}
+            {(aiSummary || isAiLoading) && query.length >= 3 && (
+              <div className="mx-1 my-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <span className="text-[11px] font-semibold text-primary">
+                    {isAr ? "ملخص ذكي" : "AI Insight"}
+                  </span>
+                  {isAiLoading && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
+                </div>
+                {aiSummary && (
+                  <p className="text-xs text-foreground/80 leading-relaxed line-clamp-4">{aiSummary}</p>
+                )}
+              </div>
+            )}
+
             {query.length >= 2 && !isFetching && results.length === 0 && (
               <div className="py-8 text-center text-sm text-muted-foreground space-y-2">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/60">
