@@ -71,6 +71,8 @@ export default function MentorshipAdmin() {
   const [matchProgramId, setMatchProgramId] = useState("");
   const [matchMentorId, setMatchMentorId] = useState("");
   const [matchMenteeId, setMatchMenteeId] = useState("");
+  const [appSearch, setAppSearch] = useState("");
+  const [appStatusFilter, setAppStatusFilter] = useState("all");
 
   const pendingApps = applications.filter(a => a.status === "pending");
   const approvedMentors = applications.filter(a => a.status === "approved");
