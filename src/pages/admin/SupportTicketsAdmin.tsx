@@ -282,15 +282,15 @@ export default function SupportTicketsAdmin() {
   };
 
   const getStatusBadge = (status: string) => {
-    const map: Record<string, { class: string; label: string }> = {
-      open: { class: "bg-chart-4/10 text-chart-4", label: isAr ? "مفتوحة" : "Open" },
-      in_progress: { class: "bg-primary/10 text-primary", label: isAr ? "قيد المعالجة" : "In Progress" },
-      waiting: { class: "bg-chart-3/10 text-chart-3", label: isAr ? "في الانتظار" : "Waiting" },
-      resolved: { class: "bg-chart-5/10 text-chart-5", label: isAr ? "محلولة" : "Resolved" },
-      closed: { class: "bg-muted text-muted-foreground", label: isAr ? "مغلقة" : "Closed" },
+    const labelMap: Record<string, { label: string }> = {
+      open: { label: isAr ? "مفتوحة" : "Open" },
+      in_progress: { label: isAr ? "قيد المعالجة" : "In Progress" },
+      waiting: { label: isAr ? "في الانتظار" : "Waiting" },
+      resolved: { label: isAr ? "محلولة" : "Resolved" },
+      closed: { label: isAr ? "مغلقة" : "Closed" },
     };
-    const s = map[status] || map.open;
-    return <Badge className={s.class} variant="outline">{s.label}</Badge>;
+    const s = labelMap[status] || labelMap.open;
+    return <AdminStatusBadge status={status} label={s.label} />;
   };
 
   const getPriorityBadge = (p: string) => {
