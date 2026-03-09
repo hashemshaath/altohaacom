@@ -1,4 +1,5 @@
 import { useLanguage } from "@/i18n/LanguageContext";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
