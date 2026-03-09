@@ -287,11 +287,11 @@ export default function AuditLog() {
                     <TableHeader>
                      <TableRow className="bg-muted/30">
                         <TableHead className="w-8"><Checkbox checked={bulkContent.isAllSelected} onCheckedChange={bulkContent.toggleAll} /></TableHead>
-                        <TableHead className="text-xs">{isAr ? "الإجراء" : "Action"}</TableHead>
-                        <TableHead className="text-xs">{isAr ? "النوع" : "Entity"}</TableHead>
+                        <SortableTableHead column="action_type" label={isAr ? "الإجراء" : "Action"} sortColumn={cSortCol} sortDirection={cSortDir} onSort={cToggleSort} className="text-xs" />
+                        <SortableTableHead column="entity_type" label={isAr ? "النوع" : "Entity"} sortColumn={cSortCol} sortDirection={cSortDir} onSort={cToggleSort} className="text-xs" />
                         <TableHead className="text-xs">{isAr ? "المحتوى" : "Content"}</TableHead>
                         <TableHead className="text-xs">{isAr ? "السبب" : "Reason"}</TableHead>
-                        <TableHead className="text-xs">{isAr ? "التاريخ" : "Date"}</TableHead>
+                        <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={cSortCol} sortDirection={cSortDir} onSort={cToggleSort} className="text-xs" />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
