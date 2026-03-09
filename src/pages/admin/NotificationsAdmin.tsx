@@ -505,98 +505,120 @@ export default function NotificationsAdmin() {
             onExport={() => exportNotifications(bulkRecent.selectedItems)}
           />
 
-          <AdminTableCard>
-              {loadingRecent ? (
-                <div className="p-6"><Skeleton className="h-64" /></div>
-              ) : filteredRecent.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/30 hover:bg-muted/30">
-                        <TableHead className="w-8">
-                          <Checkbox checked={bulkRecent.isAllSelected} onCheckedChange={bulkRecent.toggleAll} />
-                        </TableHead>
-                        <TableHead className="w-8"></TableHead>
-                        <TableHead className="font-semibold">{isAr ? "العنوان" : "Title"}</TableHead>
-                        <TableHead className="font-semibold">{isAr ? "النوع" : "Type"}</TableHead>
-                        <TableHead className="font-semibold">{isAr ? "القناة" : "Channel"}</TableHead>
-                        <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
-                        <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredRecent.map((notif: any) => (
-                        <>
-                          <TableRow key={notif.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
-                            <TableCell onClick={e => e.stopPropagation()}>
-                              <Checkbox checked={bulkRecent.isSelected(notif.id)} onCheckedChange={() => bulkRecent.toggleOne(notif.id)} />
-                            </TableCell>
-                            <TableCell>
-                              {expandedNotifId === notif.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                            </TableCell>
-                            <TableCell>
-                              <p className="font-medium text-sm truncate max-w-[250px]">
-                                {isAr && notif.title_ar ? notif.title_ar : notif.title}
-                              </p>
-                            </TableCell>
-                            <TableCell>{getTypeBadge(notif.type || "info")}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-1.5">
-                                {getChannelIcon(notif.channel || "in_app")}
-                                <span className="text-xs capitalize">{notif.channel || "in_app"}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell>{getStatusBadge(notif.status || "pending")}</TableCell>
-                            <TableCell className="text-sm text-muted-foreground">{format(new Date(notif.created_at), "MMM d, HH:mm")}</TableCell>
+          {(() => {
+            const { sorted: sortedRecent, sortColumn: recentSortCol, sortDirection: recentSortDir, toggleSort: toggleRecentSort } = useTableSort(filteredRecent, "created_at", "desc");
+            const recentPagination = usePagination(sortedRecent, { defaultPageSize: 15 });
+
+            return (
+              <AdminTableCard>
+                {loadingRecent ? (
+                  <div className="p-6"><Skeleton className="h-64" /></div>
+                ) : filteredRecent.length > 0 ? (
+                  <>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-muted/30 hover:bg-muted/30">
+                            <TableHead className="w-8">
+                              <Checkbox checked={bulkRecent.isAllSelected} onCheckedChange={bulkRecent.toggleAll} />
+                            </TableHead>
+                            <TableHead className="w-8"></TableHead>
+                            <SortableTableHead column="title" label={isAr ? "العنوان" : "Title"} sortColumn={recentSortCol} sortDirection={recentSortDir} onSort={toggleRecentSort} />
+                            <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={recentSortCol} sortDirection={recentSortDir} onSort={toggleRecentSort} />
+                            <SortableTableHead column="channel" label={isAr ? "القناة" : "Channel"} sortColumn={recentSortCol} sortDirection={recentSortDir} onSort={toggleRecentSort} />
+                            <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={recentSortCol} sortDirection={recentSortDir} onSort={toggleRecentSort} />
+                            <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={recentSortCol} sortDirection={recentSortDir} onSort={toggleRecentSort} />
                           </TableRow>
-                          {expandedNotifId === notif.id && (
-                            <TableRow key={`${notif.id}-detail`}>
-                              <TableCell colSpan={6}>
-                                <div className="rounded-xl bg-muted/50 p-4 space-y-2">
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                      <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "العنوان (EN)" : "Title (EN)"}</p>
-                                      <p className="text-sm">{notif.title || "—"}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "العنوان (AR)" : "Title (AR)"}</p>
-                                      <p className="text-sm" dir="rtl">{notif.title_ar || "—"}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "المحتوى (EN)" : "Body (EN)"}</p>
-                                      <p className="text-sm whitespace-pre-wrap">{notif.body || "—"}</p>
-                                    </div>
-                                    <div>
-                                      <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "المحتوى (AR)" : "Body (AR)"}</p>
-                                      <p className="text-sm whitespace-pre-wrap" dir="rtl">{notif.body_ar || "—"}</p>
-                                    </div>
+                        </TableHeader>
+                        <TableBody>
+                          {recentPagination.paginated.map((notif: any) => (
+                            <>
+                              <TableRow key={notif.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
+                                <TableCell onClick={e => e.stopPropagation()}>
+                                  <Checkbox checked={bulkRecent.isSelected(notif.id)} onCheckedChange={() => bulkRecent.toggleOne(notif.id)} />
+                                </TableCell>
+                                <TableCell>
+                                  {expandedNotifId === notif.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                </TableCell>
+                                <TableCell>
+                                  <p className="font-medium text-sm truncate max-w-[250px]">
+                                    {isAr && notif.title_ar ? notif.title_ar : notif.title}
+                                  </p>
+                                </TableCell>
+                                <TableCell>{getTypeBadge(notif.type || "info")}</TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-1.5">
+                                    {getChannelIcon(notif.channel || "in_app")}
+                                    <span className="text-xs capitalize">{notif.channel || "in_app"}</span>
                                   </div>
-                                  <Separator />
-                                  <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-                                    <span><strong>ID:</strong> {notif.id.substring(0, 12)}...</span>
-                                    <span><strong>User:</strong> {notif.user_id?.substring(0, 12) || "—"}...</span>
-                                    {notif.link && <span><strong>Link:</strong> {notif.link}</span>}
-                                    <span><strong>Created:</strong> {format(new Date(notif.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
-                                  </div>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <AdminEmptyState
-                  icon={Bell}
-                  title="No notifications found"
-                  titleAr="لا توجد إشعارات"
-                  description="Notifications will appear here once sent"
-                  descriptionAr="ستظهر الإشعارات هنا بمجرد إرسالها"
-                />
-              )}
-          </AdminTableCard>
+                                </TableCell>
+                                <TableCell>{getStatusBadge(notif.status || "pending")}</TableCell>
+                                <TableCell className="text-sm text-muted-foreground">{format(new Date(notif.created_at), "MMM d, HH:mm")}</TableCell>
+                              </TableRow>
+                              {expandedNotifId === notif.id && (
+                                <TableRow key={`${notif.id}-detail`}>
+                                  <TableCell colSpan={7}>
+                                    <div className="rounded-xl bg-muted/50 p-4 space-y-2">
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                          <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "العنوان (EN)" : "Title (EN)"}</p>
+                                          <p className="text-sm">{notif.title || "—"}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "العنوان (AR)" : "Title (AR)"}</p>
+                                          <p className="text-sm" dir="rtl">{notif.title_ar || "—"}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "المحتوى (EN)" : "Body (EN)"}</p>
+                                          <p className="text-sm whitespace-pre-wrap">{notif.body || "—"}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-xs font-medium text-muted-foreground mb-1">{isAr ? "المحتوى (AR)" : "Body (AR)"}</p>
+                                          <p className="text-sm whitespace-pre-wrap" dir="rtl">{notif.body_ar || "—"}</p>
+                                        </div>
+                                      </div>
+                                      <Separator />
+                                      <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+                                        <span><strong>ID:</strong> {notif.id.substring(0, 12)}...</span>
+                                        <span><strong>User:</strong> {notif.user_id?.substring(0, 12) || "—"}...</span>
+                                        {notif.link && <span><strong>Link:</strong> {notif.link}</span>}
+                                        <span><strong>Created:</strong> {format(new Date(notif.created_at), "yyyy-MM-dd HH:mm:ss")}</span>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              )}
+                            </>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    <AdminTablePagination
+                      page={recentPagination.page}
+                      totalPages={recentPagination.totalPages}
+                      totalItems={recentPagination.totalItems}
+                      startItem={recentPagination.startItem}
+                      endItem={recentPagination.endItem}
+                      pageSize={recentPagination.pageSize}
+                      pageSizeOptions={recentPagination.pageSizeOptions}
+                      hasNext={recentPagination.hasNext}
+                      hasPrev={recentPagination.hasPrev}
+                      onPageChange={recentPagination.goTo}
+                      onPageSizeChange={recentPagination.changePageSize}
+                    />
+                  </>
+                ) : (
+                  <AdminEmptyState
+                    icon={Bell}
+                    title="No notifications found"
+                    titleAr="لا توجد إشعارات"
+                    description="Notifications will appear here once sent"
+                    descriptionAr="ستظهر الإشعارات هنا بمجرد إرسالها"
+                  />
+                )}
+              </AdminTableCard>
+            );
+          })()}
         </TabsContent>
 
         {/* ═══ SMART RULES TAB ═══ */}

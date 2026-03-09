@@ -25,6 +25,10 @@ import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import {
   Globe, Plus, Edit, Trash2, Search, CheckCircle, XCircle,
   MapPin, Star, Save, X, ChevronRight,

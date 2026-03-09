@@ -324,84 +324,106 @@ export default function MasterclassesAdmin() {
       </div>
 
       {/* Table */}
-      <Card>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <AdminTableSkeleton rows={5} columns={8} />
-          ) : masterclasses.length === 0 ? (
-            <AdminEmptyState
-              icon={GraduationCap}
-              title="No masterclasses yet"
-              titleAr="لا توجد دورات"
-              description="Create your first masterclass to get started"
-              descriptionAr="أنشئ أول دورة تعليمية للبدء"
-              actionLabel="Create Masterclass"
-              actionLabelAr="إنشاء دورة"
-              onAction={() => setShowCreateForm(true)}
-            />
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-8">
-                    <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
-                  </TableHead>
-                  <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
-                  <TableHead>{language === "ar" ? "المستوى" : "Level"}</TableHead>
-                  <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                  <TableHead>{language === "ar" ? "الوحدات" : "Modules"}</TableHead>
-                  <TableHead>{language === "ar" ? "المسجلين" : "Enrollments"}</TableHead>
-                  <TableHead>{language === "ar" ? "التاريخ" : "Date"}</TableHead>
-                  <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {masterclasses.map((mc: any) => (
-                  <TableRow key={mc.id} className={bulk.isSelected(mc.id) ? "bg-primary/5" : ""}>
-                    <TableCell>
-                      <Checkbox checked={bulk.isSelected(mc.id)} onCheckedChange={() => bulk.toggleOne(mc.id)} />
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">{mc.title}</p>
-                        {mc.title_ar && <p className="text-xs text-muted-foreground" dir="rtl">{mc.title_ar}</p>}
-                      </div>
-                    </TableCell>
-                    <TableCell><Badge variant="outline">{mc.level}</Badge></TableCell>
-                    <TableCell>{getStatusBadge(mc.status)}</TableCell>
-                    <TableCell>{mc.masterclass_modules?.length || 0}</TableCell>
-                    <TableCell>{mc.masterclass_enrollments?.length || 0}</TableCell>
-                    <TableCell className="text-sm">{format(new Date(mc.created_at), "MMM d, yyyy")}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => setManagingModulesId(mc.id)}>
-                          <BookOpen className="h-3 w-3 me-1" />
-                          {language === "ar" ? "المحتوى" : "Content"}
-                        </Button>
-                        {mc.status === "draft" && (
-                          <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "published" })}>
-                            <Eye className="h-3 w-3 me-1" />
-                            {language === "ar" ? "نشر" : "Publish"}
-                          </Button>
-                        )}
-                        {mc.status === "published" && (
-                          <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "archived" })}>
-                            <EyeOff className="h-3 w-3 me-1" />
-                            {language === "ar" ? "أرشفة" : "Archive"}
-                          </Button>
-                        )}
-                        <Button size="sm" variant="destructive" onClick={() => deleteMutation.mutate(mc.id)}>
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      {(() => {
+        const { sorted, sortColumn, sortDirection, toggleSort } = useTableSort(masterclasses, "created_at", "desc");
+        const pagination = usePagination(sorted, { defaultPageSize: 15 });
+
+        return (
+          <Card>
+            <CardContent className="p-0">
+              {isLoading ? (
+                <AdminTableSkeleton rows={5} columns={8} />
+              ) : masterclasses.length === 0 ? (
+                <AdminEmptyState
+                  icon={GraduationCap}
+                  title="No masterclasses yet"
+                  titleAr="لا توجد دورات"
+                  description="Create your first masterclass to get started"
+                  descriptionAr="أنشئ أول دورة تعليمية للبدء"
+                  actionLabel="Create Masterclass"
+                  actionLabelAr="إنشاء دورة"
+                  onAction={() => setShowCreateForm(true)}
+                />
+              ) : (
+                <>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-8">
+                          <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                        </TableHead>
+                        <SortableTableHead column="title" label={language === "ar" ? "العنوان" : "Title"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                        <SortableTableHead column="level" label={language === "ar" ? "المستوى" : "Level"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                        <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                        <TableHead>{language === "ar" ? "الوحدات" : "Modules"}</TableHead>
+                        <TableHead>{language === "ar" ? "المسجلين" : "Enrollments"}</TableHead>
+                        <SortableTableHead column="created_at" label={language === "ar" ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                        <TableHead>{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pagination.paginated.map((mc: any) => (
+                        <TableRow key={mc.id} className={bulk.isSelected(mc.id) ? "bg-primary/5" : ""}>
+                          <TableCell>
+                            <Checkbox checked={bulk.isSelected(mc.id)} onCheckedChange={() => bulk.toggleOne(mc.id)} />
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{mc.title}</p>
+                              {mc.title_ar && <p className="text-xs text-muted-foreground" dir="rtl">{mc.title_ar}</p>}
+                            </div>
+                          </TableCell>
+                          <TableCell><Badge variant="outline">{mc.level}</Badge></TableCell>
+                          <TableCell>{getStatusBadge(mc.status)}</TableCell>
+                          <TableCell>{mc.masterclass_modules?.length || 0}</TableCell>
+                          <TableCell>{mc.masterclass_enrollments?.length || 0}</TableCell>
+                          <TableCell className="text-sm">{format(new Date(mc.created_at), "MMM d, yyyy")}</TableCell>
+                          <TableCell>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="outline" onClick={() => setManagingModulesId(mc.id)}>
+                                <BookOpen className="h-3 w-3 me-1" />
+                                {language === "ar" ? "المحتوى" : "Content"}
+                              </Button>
+                              {mc.status === "draft" && (
+                                <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "published" })}>
+                                  <Eye className="h-3 w-3 me-1" />
+                                  {language === "ar" ? "نشر" : "Publish"}
+                                </Button>
+                              )}
+                              {mc.status === "published" && (
+                                <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: mc.id, status: "archived" })}>
+                                  <EyeOff className="h-3 w-3 me-1" />
+                                  {language === "ar" ? "أرشفة" : "Archive"}
+                                </Button>
+                              )}
+                              <Button size="sm" variant="destructive" onClick={() => deleteMutation.mutate(mc.id)}>
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <AdminTablePagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.totalItems}
+                    startItem={pagination.startItem}
+                    endItem={pagination.endItem}
+                    pageSize={pagination.pageSize}
+                    pageSizeOptions={pagination.pageSizeOptions}
+                    hasNext={pagination.hasNext}
+                    hasPrev={pagination.hasPrev}
+                    onPageChange={pagination.goTo}
+                    onPageSizeChange={pagination.changePageSize}
+                  />
+                </>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })()}
     </div>
   );
 }
