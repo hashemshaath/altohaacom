@@ -93,6 +93,11 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
         <h3 className="mb-2 text-base font-black line-clamp-2 group-hover:text-primary transition-colors duration-300 leading-tight">
           {title}
         </h3>
+        {mc.instructor_name && (
+          <p className="mb-1 text-[11px] font-medium text-muted-foreground">
+            {isAr ? "المدرب:" : "By"} <span className="text-foreground/80">{mc.instructor_name}</span>
+          </p>
+        )}
         <p className="mb-5 flex-1 text-xs text-muted-foreground line-clamp-2 leading-relaxed font-medium">
           {description}
         </p>

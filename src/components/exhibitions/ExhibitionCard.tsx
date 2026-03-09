@@ -278,6 +278,15 @@ export const ExhibitionCard = memo(
                     <AnimatedCounter value={exhibition.view_count!} className="inline" />
                   </span>
                 )}
+                {/* Duration indicator */}
+                {(() => {
+                  const days = differenceInDays(new Date(exhibition.end_date), new Date(exhibition.start_date));
+                  return days > 0 ? (
+                    <Badge variant="outline" className="text-[9px] border-border/30 py-0 px-1.5">
+                      {days} {isAr ? "يوم" : days === 1 ? "day" : "days"}
+                    </Badge>
+                  ) : null;
+                })()}
                 {exhibition.registration_url && (
                   <button
                     className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all active:scale-90"
