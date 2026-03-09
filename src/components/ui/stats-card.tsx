@@ -28,18 +28,18 @@ export const StatsCard = memo(function StatsCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border/40 bg-card p-4 space-y-2 transition-all hover:shadow-md hover:border-primary/20",
+        "rounded-2xl border border-border/40 bg-card p-4 space-y-2 transition-all duration-300 hover:shadow-md hover:border-primary/20 group/stat",
         className
       )}
     >
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground font-medium">{label}</span>
+        <span className="text-sm text-muted-foreground font-medium group-hover/stat:text-foreground transition-colors">{label}</span>
         <div className="flex items-center gap-2">
           {isLive && <ActivityPulse status="live" />}
-          <div className="rounded-xl bg-primary/10 p-2 text-primary">{icon}</div>
+          <div className="rounded-xl bg-primary/10 p-2 text-primary transition-transform duration-300 group-hover/stat:scale-110 group-hover/stat:bg-primary/15">{icon}</div>
         </div>
       </div>
-      <p className="text-2xl font-bold tracking-tight">{value}</p>
+      <p className="text-2xl font-bold tracking-tight tabular-nums">{value}</p>
       {trend && <TrendIndicator value={trend.value} suffix={trend.label} />}
     </div>
   );
