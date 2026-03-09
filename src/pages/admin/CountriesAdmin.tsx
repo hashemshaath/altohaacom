@@ -547,7 +547,7 @@ export default function CountriesAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.map(c => (
+                    {countryPagination.paginated.map(c => (
                       <TableRow key={c.id} className={`${!c.is_active ? "opacity-60" : ""} ${detailCountry?.id === c.id ? "bg-primary/5" : ""}`}>
                         <TableCell>
                           <Checkbox checked={bulk.isSelected(c.id)} onCheckedChange={() => bulk.toggleOne(c.id)} />
