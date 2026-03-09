@@ -314,6 +314,9 @@ export default function CompetitionsAdmin() {
     draft: competitions?.filter(c => c.status === "draft").length || 0,
   };
 
+  const { sorted: sortedCompetitions, sortColumn, sortDirection, toggleSort: toggleCompSort } = useTableSort(competitions || []);
+  const compPagination = usePagination(sortedCompetitions || []);
+
   const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
   const getTypesForComp = (compId: string) => typeAssignments?.filter((t: any) => t.competition_id === compId) || [];
 
