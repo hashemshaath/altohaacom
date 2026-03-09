@@ -252,10 +252,10 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
                 className="flex-1 rounded-xl h-10 bg-muted/20 border-border/20 focus:bg-background transition-colors"
                 disabled={sending}
               />
-              <Button
-                type="submit"
-                size="icon"
-                className="rounded-xl h-10 w-10 shrink-0 shadow-sm"
+               <Button
+                 type="submit"
+                 size="icon"
+                 className="rounded-xl h-10 w-10 shrink-0 shadow-sm shadow-primary/20 active:scale-90 transition-all duration-200"
                 disabled={!newMessage.trim() || sending}
               >
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
