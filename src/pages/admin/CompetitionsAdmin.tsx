@@ -711,7 +711,7 @@ export default function CompetitionsAdmin() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {competitions?.map((comp) => {
+                {compPagination.paginated?.map((comp) => {
                   const counts = participantCounts?.[comp.id] || { approved: 0, pending: 0 };
                   const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
                   const categories = getCategoriesForComp(comp.id);
