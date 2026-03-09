@@ -388,18 +388,15 @@ export default function ArticlesAdmin() {
       <AdminTableCard>
           <Table>
             <TableHeader>
-              <TableRow>
+               <TableRow>
                 <TableHead className="w-10 bg-muted/30">
-                  <Checkbox
-                    checked={bulk.isAllSelected}
-                    onCheckedChange={bulk.toggleAll}
-                  />
+                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                 </TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "العنوان" : "Title"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "النوع" : "Type"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "المشاهدات" : "Views"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+                <SortableTableHead column="title" label={language === "ar" ? "العنوان" : "Title"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="type" label={language === "ar" ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="view_count" label={language === "ar" ? "المشاهدات" : "Views"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="created_at" label={language === "ar" ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                 <TableHead className="w-[120px] bg-muted/30">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
