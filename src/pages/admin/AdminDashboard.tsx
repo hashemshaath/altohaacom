@@ -243,9 +243,9 @@ export default function AdminDashboard() {
 
           return (
             <Link key={stat.title} to={stat.link}>
-              <Card className={cn(
-                "group overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 rounded-xl",
-                stat.urgent && "ring-1 ring-destructive/30"
+               <Card className={cn(
+                "group overflow-hidden transition-all duration-200 hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 rounded-xl border-border/50",
+                stat.urgent && "ring-1 ring-destructive/30 border-destructive/20"
               )}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
@@ -257,23 +257,23 @@ export default function AdminDashboard() {
                           <AnimatedCounter value={stat.value} />
                         </p>
                       )}
-                      <p className="text-xs text-muted-foreground font-medium mt-1">{stat.title}</p>
+                      <p className="text-[11px] text-muted-foreground font-medium mt-1">{stat.title}</p>
                     </div>
-                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-105", stat.bg)}>
+                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200 group-hover:scale-110", stat.bg)}>
                       <stat.icon className={cn("h-4 w-4", stat.color)} />
                     </div>
                   </div>
                   {sparkPoints && sparkPoints.length > 0 && (
                     <div className="mt-3 -mx-1 flex items-center gap-2">
-                      <div className="flex-1 opacity-50 group-hover:opacity-100 transition-opacity">
-                        <ResponsiveContainer width="100%" height={24}>
+                      <div className="flex-1 opacity-40 group-hover:opacity-100 transition-opacity duration-300">
+                        <ResponsiveContainer width="100%" height={28}>
                           <LineChart data={sparkPoints}>
                             <Line type="monotone" dataKey="v" stroke={stat.chartColor} strokeWidth={1.5} dot={false} />
                           </LineChart>
                         </ResponsiveContainer>
                       </div>
                       {trend !== 0 && (
-                        <span className={cn("text-[10px] font-medium tabular-nums flex items-center gap-0.5",
+                        <span className={cn("text-[10px] font-semibold tabular-nums flex items-center gap-0.5",
                           trend > 0 ? "text-chart-5" : "text-destructive"
                         )}>
                           {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
