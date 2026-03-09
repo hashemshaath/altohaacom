@@ -177,8 +177,7 @@ export default function LoyaltyAdmin() {
         </TabsList>
 
         <TabsContent value="tiers">
-          <Card className="rounded-2xl border-border/40 overflow-hidden">
-            <CardContent className="p-0">
+          <AdminTableCard>
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/30">
@@ -215,8 +214,7 @@ export default function LoyaltyAdmin() {
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
+          </AdminTableCard>
         </TabsContent>
 
         <TabsContent value="challenges">
