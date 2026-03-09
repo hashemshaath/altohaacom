@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { THEME_PRESETS, FONT_OPTIONS, HEADING_FONT_OPTIONS } from "@/config/themePresets";
+import { ADMIN_COLOR_STORAGE_KEY, applyAdminColorTemplate, ADMIN_COLOR_TEMPLATES } from "@/config/adminColorTemplates";
 
 const LOCAL_THEME_KEY = "altoha_theme_preset";
 const LOCAL_FONT_KEY = "altoha_body_font";
@@ -13,9 +14,12 @@ const LOCAL_HEADING_FONT_KEY = "altoha_heading_font";
  */
 export function useApplyTheme() {
   const settings = useSiteSettingsContext();
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
 
-  const applyTheme = () => {
-    const globalPresetId = (settings.theme as any)?.preset || "gold";
+  const applyTheme = useCallback(() => {
+    const currentSettings = settingsRef.current;
+    const globalPresetId = (currentSettings.theme as any)?.preset || "gold";
     const localPresetId = localStorage.getItem(LOCAL_THEME_KEY);
     const activePresetId = localPresetId || globalPresetId;
 
@@ -32,7 +36,7 @@ export function useApplyTheme() {
     });
 
     // Override with Brand Identity custom colors if saved
-    const identity = settings.brand_identity as any;
+    const identity = currentSettings.brand_identity as any;
     if (identity) {
       const pc = identity.primaryColors;
       const sc = identity.secondaryColors;
@@ -62,7 +66,6 @@ export function useApplyTheme() {
           root.style.setProperty("--input", sc.border);
         }
       }
-      // Apply typography colors (heading → foreground, body → card-foreground, caption → muted-foreground, link → primary)
       if (tc) {
         if (tc.heading) {
           root.style.setProperty("--foreground", tc.heading);
@@ -103,7 +106,7 @@ export function useApplyTheme() {
     }
 
     // Apply typography fonts
-    const globalTypo = (settings.typography as any) || {};
+    const globalTypo = (currentSettings.typography as any) || {};
     const localBodyFont = localStorage.getItem(LOCAL_FONT_KEY);
     const localHeadingFont = localStorage.getItem(LOCAL_HEADING_FONT_KEY);
 
@@ -115,10 +118,41 @@ export function useApplyTheme() {
 
     if (bodyFont) root.style.setProperty("--font-sans", bodyFont.family);
     if (headingFont) root.style.setProperty("--font-serif", headingFont.family);
-  };
 
+    // Re-apply admin color template on top (if active)
+    const adminTemplateId = localStorage.getItem(ADMIN_COLOR_STORAGE_KEY);
+    if (adminTemplateId && ADMIN_COLOR_TEMPLATES.find((t) => t.id === adminTemplateId)) {
+      applyAdminColorTemplate(adminTemplateId);
+    }
+  }, []);
+
+  // Apply on mount and when settings change
   useEffect(() => {
     applyTheme();
+  }, [settings, applyTheme]);
+
+  // Watch for dark/light class changes and re-apply
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      // Small delay to ensure class is fully applied
+      requestAnimationFrame(applyTheme);
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    window.addEventListener("theme-change", applyTheme);
+    window.addEventListener("storage", (e) => {
+      if (e.key === LOCAL_THEME_KEY) applyTheme();
+    });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("theme-change", applyTheme);
+    };
+  }, [applyTheme]);
+
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
       const root = document.documentElement;
       const preset = THEME_PRESETS[0];
@@ -126,18 +160,5 @@ export function useApplyTheme() {
       root.style.removeProperty("--font-sans");
       root.style.removeProperty("--font-serif");
     };
-  }, [settings]);
-
-  useEffect(() => {
-    const observer = new MutationObserver(applyTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    window.addEventListener("theme-change", applyTheme);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("theme-change", applyTheme);
-    };
-  }, [settings]);
+  }, []);
 }

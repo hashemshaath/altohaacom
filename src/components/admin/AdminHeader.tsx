@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AdminColorStyleSelector } from "./AdminColorStyleSelector";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { AdminSearchCommand } from "./AdminSearchCommand";
 import { AdminMobileNavDrawer } from "./AdminMobileNavDrawer";
@@ -54,6 +55,7 @@ export const AdminHeader = memo(function AdminHeader() {
             <TooltipContent className="text-xs">{isAr ? "العودة للموقع" : "Back to site"}</TooltipContent>
           </Tooltip>
           <NotificationBell />
+          <AdminColorStyleSelector />
           <ThemeToggle />
           <LanguageSwitcher />
           <div className="mx-1 h-5 w-px bg-border" />
