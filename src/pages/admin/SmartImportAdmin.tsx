@@ -989,31 +989,33 @@ export default function SmartImportAdmin() {
               </CardContent>
             </Card>
           ) : importMode === "url" ? (
-            <Card className="border-primary/20">
-              <CardHeader>
+            <Card className="border-primary/15 rounded-2xl overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Link2 className="h-5 w-5 text-primary" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">
+                    <Link2 className="h-4 w-4 text-primary" />
+                  </div>
                   {isAr ? "استيراد من رابط" : "Direct URL Import"}
                 </CardTitle>
                 <CardDescription>
                   {isAr ? "الصق رابط الموقع لاستخراج البيانات بالذكاء الاصطناعي" : "Paste a URL to auto-extract data with AI"}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 relative">
                     <Globe className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input className="ps-9 h-11" placeholder={isAr ? "الصق الرابط هنا..." : "Paste URL here..."} value={directUrl} onChange={(e) => setDirectUrl(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleUrlImport()} />
+                    <Input className="ps-9 h-11 rounded-xl" placeholder={isAr ? "الصق الرابط هنا..." : "Paste URL here..."} value={directUrl} onChange={(e) => setDirectUrl(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleUrlImport()} />
                   </div>
-                  <Button onClick={handleUrlImport} disabled={urlImporting || !directUrl.trim()} className="gap-2 h-11 px-8 shrink-0">
+                  <Button onClick={handleUrlImport} disabled={urlImporting || !directUrl.trim()} className="gap-2 h-11 px-8 shrink-0 rounded-xl shadow-md shadow-primary/15 active:scale-95 transition-all">
                     {urlImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
                     {urlImporting ? (isAr ? "جاري الاستخراج..." : "Extracting...") : (isAr ? "استخراج" : "Extract")}
                   </Button>
                 </div>
                 <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Sparkles className="h-3 w-3" />{isAr ? "تحليل ذكي + خرائط" : "AI + Maps analysis"}</span>
-                  <span className="flex items-center gap-1"><Globe className="h-3 w-3" />{isAr ? "أي موقع" : "Any website"}</span>
-                  <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس جودة" : "Quality scoring"}</span>
+                  <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30"><Sparkles className="h-3 w-3 text-primary" />{isAr ? "تحليل ذكي + خرائط" : "AI + Maps analysis"}</span>
+                  <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30"><Globe className="h-3 w-3" />{isAr ? "أي موقع" : "Any website"}</span>
+                  <span className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30"><BarChart3 className="h-3 w-3" />{isAr ? "مقياس جودة" : "Quality scoring"}</span>
                 </div>
               </CardContent>
             </Card>
