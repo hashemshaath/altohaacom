@@ -469,7 +469,7 @@ export default function ArticlesAdmin() {
                       </div>
                     </TableCell>
                     <TableCell>{getTypeBadge(article.type)}</TableCell>
-                    <TableCell>{getStatusBadge(article.status || "draft")}</TableCell>
+                    <TableCell><AdminStatusBadge status={article.status || "draft"} /></TableCell>
                     <TableCell>
                       <span className="font-mono text-xs">{(article.view_count || 0).toLocaleString()}</span>
                     </TableCell>
