@@ -7,7 +7,7 @@ import { Settings, Home, Globe, Shield, Users, Database, Palette } from "lucide-
 const NAV_ITEMS = [
   { href: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات" },
   { href: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الرئيسية" },
-  { href: "/admin/design/identity", icon: Palette, labelEn: "Design", labelAr: "التصميم" },
+  { href: "/admin/design/brand-identity", icon: Palette, labelEn: "Design", labelAr: "التصميم" },
   { href: "/admin/localization", icon: Globe, labelEn: "Localization", labelAr: "التعريب" },
   { href: "/admin/security", icon: Shield, labelEn: "Security", labelAr: "الأمان" },
   { href: "/admin/roles", icon: Users, labelEn: "Roles", labelAr: "الأدوار" },
