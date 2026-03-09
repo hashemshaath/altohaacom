@@ -133,8 +133,6 @@ export default function CountriesAdmin() {
   
   const [deleteTarget, setDeleteTarget] = useState<Country | null>(null);
   const [detailCountry, setDetailCountry] = useState<Country | null>(null);
-  const [sortField, setSortField] = useState<SortField>("sort_order");
-  const [sortAsc, setSortAsc] = useState(true);
 
   const { data: countries = [], isLoading } = useQuery({
     queryKey: ["admin-countries"],
