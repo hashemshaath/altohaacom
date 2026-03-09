@@ -120,9 +120,49 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
       entries.sort((a, b) => b.total_weighted_score - a.total_weighted_score);
       entries.forEach((entry, index) => { entry.rank = index + 1; });
 
-      return showTopOnly ? entries.slice(0, 3) : entries;
+      return entries;
     },
   });
+
+  const categories = useMemo(() => {
+    if (!leaderboard) return [];
+    const cats = new Set(leaderboard.map(e => e.category_name).filter(Boolean));
+    return Array.from(cats) as string[];
+  }, [leaderboard]);
+
+  const filteredLeaderboard = useMemo(() => {
+    if (!leaderboard) return [];
+    let filtered = leaderboard;
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter(e => e.category_name === categoryFilter);
+    }
+    // Re-rank after filter
+    filtered.forEach((entry, i) => { entry.rank = i + 1; });
+    return showTopOnly ? filtered.slice(0, 3) : filtered;
+  }, [leaderboard, categoryFilter, showTopOnly]);
+
+  const handleExport = () => {
+    if (!filteredLeaderboard?.length) return;
+    downloadCSV(
+      filteredLeaderboard.map(l => ({
+        rank: l.rank,
+        participant: l.participant_name || "",
+        dish: l.dish_name || "",
+        category: (isAr ? l.category_name_ar : l.category_name) || "",
+        score: l.total_weighted_score,
+        evaluations: l.scores_count,
+      })),
+      `leaderboard-${competitionId}`,
+      [
+        { key: "rank", label: isAr ? "المرتبة" : "Rank" },
+        { key: "participant", label: isAr ? "المشارك" : "Participant" },
+        { key: "dish", label: isAr ? "الطبق" : "Dish" },
+        { key: "category", label: isAr ? "الفئة" : "Category" },
+        { key: "score", label: isAr ? "النتيجة" : "Score" },
+        { key: "evaluations", label: isAr ? "التقييمات" : "Evaluations" },
+      ]
+    );
+  };
 
   if (isLoading) {
     return (
