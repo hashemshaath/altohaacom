@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { THEME_PRESETS, FONT_OPTIONS, HEADING_FONT_OPTIONS } from "@/config/themePresets";
+import { ADMIN_COLOR_STORAGE_KEY, applyAdminColorTemplate, ADMIN_COLOR_TEMPLATES } from "@/config/adminColorTemplates";
 
 const LOCAL_THEME_KEY = "altoha_theme_preset";
 const LOCAL_FONT_KEY = "altoha_body_font";
