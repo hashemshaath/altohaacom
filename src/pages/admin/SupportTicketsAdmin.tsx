@@ -661,8 +661,7 @@ export default function SupportTicketsAdmin() {
                   </div>
                 </>
               )}
-            </CardContent>
-          </Card>
+          </AdminTableCard>
         </>
       )}
     </div>
