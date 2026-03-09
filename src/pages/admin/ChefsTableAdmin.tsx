@@ -463,18 +463,12 @@ export default function ChefsTableAdmin() {
                       <TableHead className="w-10">
                         <Checkbox checked={bulkSessions.isAllSelected} onCheckedChange={bulkSessions.toggleAll} />
                       </TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("title")}>
-                        {isAr ? "الجلسة" : "Session"}<SortIndicator col="title" />
-                      </TableHead>
+                      <SortableTableHead column="title" label={isAr ? "الجلسة" : "Session"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
                       <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
                       <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("status")}>
-                        {isAr ? "الحالة" : "Status"}<SortIndicator col="status" />
-                      </TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("date")}>
-                        {isAr ? "التاريخ" : "Date"}<SortIndicator col="date" />
-                      </TableHead>
-                      <TableHead className="font-bold text-[11px] uppercase tracking-wider">{isAr ? "الطهاة" : "Chefs"}</TableHead>
+                      <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
+                      <SortableTableHead column="session_date" label={isAr ? "التاريخ" : "Date"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
+                      <SortableTableHead column="max_chefs" label={isAr ? "الطهاة" : "Chefs"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
                       <TableHead className="print:hidden w-12" />
                     </TableRow>
                   </TableHeader>
