@@ -113,6 +113,11 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
                 {product.compare_at_price.toFixed(0)}
               </span>
             )}
+            {product.product_type === "physical" && !isOutOfStock && product.stock_quantity > 0 && product.stock_quantity <= 5 && (
+              <span className="text-[9px] text-destructive font-bold mt-0.5">
+                {isAr ? `باقي ${product.stock_quantity} فقط` : `Only ${product.stock_quantity} left`}
+              </span>
+            )}
           </div>
           <Button
             size="sm"

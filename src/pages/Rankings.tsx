@@ -215,12 +215,23 @@ export default function Rankings() {
                           {chef.silver_medals > 0 && <span className="text-xs">🥈{chef.silver_medals}</span>}
                           {chef.bronze_medals > 0 && <span className="text-xs">🥉{chef.bronze_medals}</span>}
                         </div>
+                        {chef.average_score > 0 && (
+                          <span className="text-[10px] text-muted-foreground tabular-nums hidden sm:inline">
+                            {isAr ? "المعدل:" : "Avg:"} {Number(chef.average_score).toFixed(1)}
+                          </span>
+                        )}
                         <Badge variant="secondary" className="text-xs font-bold">{chef.total_points} pts</Badge>
                         <div className="w-6 flex justify-center">
                           {chef.rank_change && chef.rank_change > 0 ? (
-                            <TrendingUp className="h-4 w-4 text-chart-5" />
+                            <div className="flex items-center gap-0.5">
+                              <TrendingUp className="h-4 w-4 text-chart-5" />
+                              <span className="text-[9px] text-chart-5 font-bold">+{chef.rank_change}</span>
+                            </div>
                           ) : chef.rank_change && chef.rank_change < 0 ? (
-                            <TrendingDown className="h-4 w-4 text-destructive" />
+                            <div className="flex items-center gap-0.5">
+                              <TrendingDown className="h-4 w-4 text-destructive" />
+                              <span className="text-[9px] text-destructive font-bold">{chef.rank_change}</span>
+                            </div>
                           ) : (
                             <Minus className="h-4 w-4 text-muted-foreground" />
                           )}

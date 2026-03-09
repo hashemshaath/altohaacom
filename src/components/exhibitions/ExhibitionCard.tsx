@@ -166,6 +166,12 @@ export const ExhibitionCard = memo(
                     {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
                   </Badge>
                 )}
+                {regDeadlineDays !== null && regDeadlineDays <= 3 && regDeadlineDays >= 0 && (
+                  <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-destructive/90 text-destructive-foreground shadow-lg border-0 py-1 px-2.5 animate-pulse">
+                    <AlertTriangle className="h-2.5 w-2.5" />
+                    {isAr ? "التسجيل يغلق قريباً" : "Reg. closing soon"}
+                  </Badge>
+                )}
               </div>
 
               {/* Bottom: Country + Date overlay */}

@@ -66,10 +66,15 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
         </div>
         <CardContent className="p-3">
           <h3 className="line-clamp-1 text-sm font-semibold mb-1.5 group-hover:text-primary transition-colors">{title}</h3>
-          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground flex-wrap">
             {totalTime > 0 && (
               <span className="flex items-center gap-0.5">
                 <Clock className="h-2.5 w-2.5" /> {totalTime}{isAr ? "د" : "m"}
+              </span>
+            )}
+            {recipe.servings != null && recipe.servings > 0 && (
+              <span className="flex items-center gap-0.5">
+                <Users className="h-2.5 w-2.5" /> {recipe.servings}
               </span>
             )}
             {recipe.average_rating != null && recipe.average_rating > 0 && (
@@ -77,7 +82,12 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
                 <Star className="h-2.5 w-2.5 fill-chart-4 text-chart-4" /> {recipe.average_rating.toFixed(1)}
               </span>
             )}
-            {recipe.view_count != null && recipe.view_count > 0 && (
+            {recipe.save_count != null && recipe.save_count > 0 && (
+              <span className="flex items-center gap-0.5 ms-auto">
+                <Bookmark className="h-2.5 w-2.5" /> {recipe.save_count}
+              </span>
+            )}
+            {(recipe.save_count == null || recipe.save_count === 0) && recipe.view_count != null && recipe.view_count > 0 && (
               <span className="flex items-center gap-0.5 ms-auto">
                 <Eye className="h-2.5 w-2.5" /> {recipe.view_count}
               </span>
