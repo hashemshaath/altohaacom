@@ -1043,8 +1043,7 @@ export default function ExhibitionsAdmin() {
       />
 
       {/* Table */}
-      <Card className="border-border/60 overflow-hidden">
-        <CardContent className="p-0">
+      <AdminTableCard>
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
