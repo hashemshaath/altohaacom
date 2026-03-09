@@ -336,45 +336,34 @@ export default function ArticlesAdmin() {
       </div>
 
       {/* Filters */}
-      <Card className="rounded-2xl border-border/40">
-        <CardContent className="pt-6">
-          <div className="flex flex-wrap gap-4">
-            <div className="flex-1 min-w-[200px]">
-              <div className="relative">
-                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder={language === "ar" ? "بحث..." : "Search..."}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="ps-9 rounded-xl"
-                />
-              </div>
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[150px] rounded-xl">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="all">{language === "ar" ? "الكل" : "All Status"}</SelectItem>
-                <SelectItem value="draft">{language === "ar" ? "مسودة" : "Draft"}</SelectItem>
-                <SelectItem value="published">{language === "ar" ? "منشور" : "Published"}</SelectItem>
-                <SelectItem value="archived">{language === "ar" ? "مؤرشف" : "Archived"}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[150px] rounded-xl">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
-                <SelectItem value="news">{language === "ar" ? "أخبار" : "News"}</SelectItem>
-                <SelectItem value="article">{language === "ar" ? "مقال" : "Article"}</SelectItem>
-                <SelectItem value="exhibition">{language === "ar" ? "معرض" : "Exhibition"}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
+      <AdminFilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={language === "ar" ? "بحث..." : "Search..."}
+      >
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[150px] rounded-xl h-9 text-sm">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all">{language === "ar" ? "الكل" : "All Status"}</SelectItem>
+            <SelectItem value="draft">{language === "ar" ? "مسودة" : "Draft"}</SelectItem>
+            <SelectItem value="published">{language === "ar" ? "منشور" : "Published"}</SelectItem>
+            <SelectItem value="archived">{language === "ar" ? "مؤرشف" : "Archived"}</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-[150px] rounded-xl h-9 text-sm">
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
+            <SelectItem value="news">{language === "ar" ? "أخبار" : "News"}</SelectItem>
+            <SelectItem value="article">{language === "ar" ? "مقال" : "Article"}</SelectItem>
+            <SelectItem value="exhibition">{language === "ar" ? "معرض" : "Exhibition"}</SelectItem>
+          </SelectContent>
+        </Select>
+      </AdminFilterBar>
 
       {/* Bulk Action Bar */}
       <BulkActionBar
