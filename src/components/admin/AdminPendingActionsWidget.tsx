@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -47,7 +48,7 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
       };
     },
     staleTime: 1000 * 30,
-    refetchInterval: 1000 * 60,
+    refetchInterval: useVisibleRefetchInterval(1000 * 60),
   });
 
   const items: PendingItem[] = [

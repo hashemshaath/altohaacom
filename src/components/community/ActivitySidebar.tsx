@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -70,7 +71,7 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 2,
-    refetchInterval: 1000 * 60 * 2,
+    refetchInterval: useVisibleRefetchInterval(1000 * 60 * 2),
   });
 
   if (!user || activities.length === 0) return null;

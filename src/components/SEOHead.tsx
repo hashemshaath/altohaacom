@@ -68,7 +68,6 @@ export const SEOHead = memo(function SEOHead({
     setMeta("property", "og:type", ogType);
     setMeta("property", "og:locale", lang === "ar" ? "ar_SA" : "en_US");
     setMeta("property", "og:site_name", siteName);
-    setMeta("property", "og:locale", lang === "ar" ? "ar_SA" : "en_US");
 
     // Alternate language
     const altLang = lang === "ar" ? "en_US" : "ar_SA";
