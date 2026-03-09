@@ -54,6 +54,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
   const navigate = useNavigate();
   const [tab, setTab] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["smart-notifications", user?.id],
