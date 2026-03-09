@@ -2,7 +2,7 @@ import { forwardRef, memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building, Eye } from "lucide-react";
+import { Calendar, MapPin, Globe, ExternalLink, Clock, ArrowRight, Building, Eye, AlertTriangle } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval, differenceInDays } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
