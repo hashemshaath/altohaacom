@@ -4,6 +4,7 @@ import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
