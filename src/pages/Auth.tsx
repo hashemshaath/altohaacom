@@ -1128,12 +1128,22 @@ export default function Auth() {
               ) : (
                 <>
                   {isLockedOut && (
-                    <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-center">
+                    <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-center animate-in fade-in slide-in-from-top-2 duration-300">
+                      <ShieldCheck className="h-5 w-5 text-destructive mx-auto mb-1.5" />
                       <p className="text-sm font-medium text-destructive">
                         {isAr ? "تم قفل تسجيل الدخول مؤقتاً بسبب محاولات كثيرة" : "Login temporarily locked due to too many attempts"}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {isAr ? "يرجى الانتظار 5 دقائق" : "Please wait 5 minutes"}
+                        {isAr ? "يرجى الانتظار 5 دقائق ثم أعد المحاولة" : "Please wait 5 minutes, then try again"}
+                      </p>
+                    </div>
+                  )}
+                  {loginAttempts > 0 && loginAttempts < MAX_LOGIN_ATTEMPTS && !isLockedOut && (
+                    <div className="rounded-xl border border-chart-4/30 bg-chart-4/5 px-3 py-2 text-center animate-in fade-in">
+                      <p className="text-[11px] text-chart-4 font-medium">
+                        {isAr
+                          ? `${MAX_LOGIN_ATTEMPTS - loginAttempts} محاولات متبقية قبل القفل المؤقت`
+                          : `${MAX_LOGIN_ATTEMPTS - loginAttempts} attempts remaining before temporary lock`}
                       </p>
                     </div>
                   )}
