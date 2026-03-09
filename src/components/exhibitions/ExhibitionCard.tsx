@@ -119,7 +119,7 @@ export const ExhibitionCard = memo(
         <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
           <Card
             ref={ref}
-            className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-lg shadow-primary/5" : ""}`}
+            className={`group flex h-full flex-col overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/30 hover:bg-card ${exhibition.is_featured ? "ring-1 ring-primary/20 shadow-lg shadow-primary/5" : ""}`}
           >
             {/* Image */}
             <div className={`relative shrink-0 overflow-hidden bg-muted ${isFeaturedVariant ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
@@ -267,7 +267,7 @@ export const ExhibitionCard = memo(
             </CardContent>
 
             {/* Footer */}
-            <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:px-5 py-2.5 transition-colors group-hover:bg-primary/5">
+            <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:all duration-300 group-hover:bg-primary/5 group-hover:border-primary/10roup-hover:bg-primary/5">
               <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
                 {isAr ? "عرض التفاصيل" : "View Details"}
                 <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180" />

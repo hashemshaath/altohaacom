@@ -188,7 +188,7 @@ export const ExhibitionHero = memo(function ExhibitionHero({
           </div>
 
           {/* Info strip — organizer + stats */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1 border-t border-border/40">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1 border-t border-border/20">
             {organizer && (
               <div className="flex items-center gap-2 pt-2">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10">

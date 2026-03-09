@@ -29,7 +29,7 @@ export const ExhibitionListItem = memo(({ exhibition, language, sponsors = [] }:
 
   return (
     <Link to={`/exhibitions/${exhibition.slug}`} className="group block">
-      <div className="flex gap-4 rounded-xl border border-border/40 bg-card/60 backdrop-blur-sm p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:bg-card">
+      <div className="flex gap-4 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/30 hover:bg-card hover:-translate-y-0.5">
         {/* Image */}
         <div className="hidden sm:block shrink-0 w-32 h-24 md:w-40 md:h-28 rounded-xl overflow-hidden bg-muted">
           {exhibition.cover_image_url ? (
