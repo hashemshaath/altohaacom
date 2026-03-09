@@ -766,8 +766,7 @@ export default function InvoicesAdmin() {
                 onAction={() => setShowForm(true)}
               />
           )}
-        </CardContent>
-      </Card>
+      </AdminTableCard>
     </div>
   );
 }

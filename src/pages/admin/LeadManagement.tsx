@@ -587,8 +587,7 @@ export default function LeadManagement() {
                 </TableBody>
               </Table>
             )}
-          </CardContent>
-        </Card>
+        </AdminTableCard>
       ) : (
         /* Kanban Board View */
         <div className="flex gap-4 overflow-x-auto pb-4">

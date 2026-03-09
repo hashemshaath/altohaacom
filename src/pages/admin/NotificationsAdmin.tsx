@@ -592,8 +592,7 @@ export default function NotificationsAdmin() {
                   descriptionAr="ستظهر الإشعارات هنا بمجرد إرسالها"
                 />
               )}
-            </CardContent>
-          </Card>
+          </AdminTableCard>
         </TabsContent>
 
         {/* ═══ SMART RULES TAB ═══ */}

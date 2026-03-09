@@ -322,8 +322,7 @@ export default function JudgesAdmin() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </AdminTableCard>
     </div>
   );
 }

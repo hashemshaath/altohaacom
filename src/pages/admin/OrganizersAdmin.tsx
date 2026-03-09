@@ -666,7 +666,7 @@ export default function OrganizersAdmin() {
                 onPageChange={pagination.goTo}
                 onPageSizeChange={pagination.changePageSize}
               />
-            </Card>
+            </AdminTableCard>
           )}
         </>
       )}

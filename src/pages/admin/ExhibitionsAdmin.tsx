@@ -1242,8 +1242,7 @@ export default function ExhibitionsAdmin() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </AdminTableCard>
       <ExhibitionDetailDrawer
         exhibitionId={drawerExhibitionId}
         open={!!drawerExhibitionId}
