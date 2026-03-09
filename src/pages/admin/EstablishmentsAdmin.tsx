@@ -14,14 +14,14 @@ import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
-import { Card, CardContent } from "@/components/ui/card";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Building2, Plus, Search, XCircle, CheckCircle, Eye, FileSpreadsheet, ScanSearch, Download } from "lucide-react";
+import { Building2, Plus, XCircle, CheckCircle, Eye, FileSpreadsheet, ScanSearch, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function EstablishmentsAdmin() {
