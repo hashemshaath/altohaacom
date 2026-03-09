@@ -62,10 +62,14 @@ export function EventChip({ event, isAr, compact = false }: { event: GlobalEvent
       colors.bg, colors.text, colors.border,
       "hover:shadow-sm hover:brightness-95",
       compact ? "text-[9px]" : "text-[10px]",
-      countdown.urgent && !countdown.past && "ring-1 ring-destructive/30"
+      countdown.urgent && !countdown.past && "ring-1 ring-destructive/30",
+      countdown.past && "opacity-60"
     )}>
       <IconComp className={cn(compact ? "h-2.5 w-2.5 shrink-0" : "h-3 w-3 shrink-0")} />
       <span className="truncate font-medium leading-tight">{isAr && event.title_ar ? event.title_ar : event.title}</span>
+      {!compact && countdown.urgent && !countdown.past && (
+        <Badge variant="destructive" className="text-[7px] px-1 py-0 h-3 ms-0.5 shrink-0">{countdown.text}</Badge>
+      )}
     </div>
   );
 

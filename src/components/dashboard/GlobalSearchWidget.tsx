@@ -161,7 +161,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
                 {results.length > 0 && (
                   <div className="border-t border-border/30 mt-1 pt-1">
                     <p className="text-center text-[10px] text-muted-foreground/50 py-1">
-                      {isAr ? `${results.length} نتيجة` : `${results.length} results found`}
+                      {isAr ? `${results.length} نتيجة — اضغط Enter للمزيد` : `${results.length} results — press Enter for more`}
                     </p>
                   </div>
                 )}
