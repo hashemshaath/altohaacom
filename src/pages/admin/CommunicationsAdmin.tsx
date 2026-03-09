@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+import { AdminTableSkeleton, AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -438,9 +438,9 @@ export default function CommunicationsAdmin() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-24" />
-        <div className="grid grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
-        <Skeleton className="h-96" />
+        <AdminWidgetSkeleton rows={2} />
+        <div className="grid grid-cols-4 gap-4">{[...Array(4)].map((_, i) => <AdminWidgetSkeleton key={i} rows={2} />)}</div>
+        <AdminTableSkeleton rows={5} columns={5} />
       </div>
     );
   }

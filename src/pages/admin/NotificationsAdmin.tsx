@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Skeleton } from "@/components/ui/skeleton";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -512,7 +512,7 @@ export default function NotificationsAdmin() {
             return (
               <AdminTableCard>
                 {loadingRecent ? (
-                  <div className="p-6"><Skeleton className="h-64" /></div>
+                  <AdminTableSkeleton rows={5} columns={5} />
                 ) : filteredRecent.length > 0 ? (
                   <>
                     <div className="overflow-x-auto">
@@ -681,7 +681,7 @@ export default function NotificationsAdmin() {
           <Card>
             <CardContent className="p-0">
               {loadingQueue ? (
-                <div className="p-6"><Skeleton className="h-64" /></div>
+                <AdminTableSkeleton rows={5} columns={5} />
               ) : filteredQueue.length > 0 ? (
                 <div className="overflow-x-auto">
                   <Table>
