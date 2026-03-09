@@ -1,12 +1,12 @@
 /**
  * IndexedDB-based offline cache for key platform content.
- * Stores competitions, articles, recipes, and user profile data
- * for browsing when offline.
+ * Stores competitions, articles, recipes, user profile data,
+ * and judging data for offline scoring at events.
  */
 
 const DB_NAME = "altoha_offline";
-const DB_VERSION = 1;
-const STORES = ["competitions", "articles", "recipes", "profiles", "offline_queue"] as const;
+const DB_VERSION = 2;
+const STORES = ["competitions", "articles", "recipes", "profiles", "offline_queue", "judging_data", "offline_scores"] as const;
 type StoreName = (typeof STORES)[number];
 
 function openDB(): Promise<IDBDatabase> {
@@ -88,6 +88,18 @@ export async function getCachedItem<T>(store: StoreName, id: string): Promise<T 
   }
 }
 
+export async function removeCachedItem(store: StoreName, id: string): Promise<void> {
+  try {
+    const db = await openDB();
+    const tx = db.transaction(store, "readwrite");
+    tx.objectStore(store).delete(id);
+    await new Promise<void>((res) => { tx.oncomplete = () => res(); });
+    db.close();
+  } catch {
+    // Silently fail
+  }
+}
+
 export async function clearStore(store: StoreName): Promise<void> {
   try {
     const db = await openDB();
@@ -149,15 +161,19 @@ export async function getCacheStats(): Promise<{
   competitions: number;
   articles: number;
   recipes: number;
+  judgingData: number;
+  pendingScores: number;
   lastSync: number | null;
 }> {
-  const [competitions, articles, recipes] = await Promise.all([
+  const [competitions, articles, recipes, judgingData, pendingScores] = await Promise.all([
     getCachedItems("competitions"),
     getCachedItems("articles"),
     getCachedItems("recipes"),
+    getCachedItems("judging_data"),
+    getCachedItems("offline_scores"),
   ]);
 
-  const allItems = [...competitions, ...articles, ...recipes] as Array<{ _cachedAt?: number }>;
+  const allItems = [...competitions, ...articles, ...recipes, ...judgingData] as Array<{ _cachedAt?: number }>;
   const lastSync = allItems.reduce((max, item) => {
     const t = item._cachedAt || 0;
     return t > max ? t : max;
@@ -167,6 +183,8 @@ export async function getCacheStats(): Promise<{
     competitions: competitions.length,
     articles: articles.length,
     recipes: recipes.length,
+    judgingData: judgingData.length,
+    pendingScores: pendingScores.length,
     lastSync: lastSync || null,
   };
 }

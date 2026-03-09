@@ -24,6 +24,8 @@ import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGaller
 import { JudgeDashboard } from "@/components/judging/JudgeDashboard";
 import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
 import { EntryComparison } from "@/components/judging/EntryComparison";
+import { OfflineJudgingPanel } from "@/components/judging/OfflineJudgingPanel";
+import { WifiOff } from "lucide-react";
 
 type Registration = Database["public"]["Tables"]["competition_registrations"]["Row"];
 type Criteria = Database["public"]["Tables"]["judging_criteria"]["Row"];
@@ -470,6 +472,10 @@ export default function Judging() {
               <ArrowLeftRight className="h-4 w-4" />
               {language === "ar" ? "المقارنة" : "Compare"}
             </TabsTrigger>
+            <TabsTrigger value="offline" className="gap-2">
+              <WifiOff className="h-4 w-4" />
+              {language === "ar" ? "بدون اتصال" : "Offline"}
+            </TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -504,6 +510,16 @@ export default function Judging() {
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          {/* Offline Tab */}
+          <TabsContent value="offline">
+            <div className="max-w-lg mx-auto">
+              <OfflineJudgingPanel onSelectCachedCompetition={(id) => {
+                setSelectedCompetition(id);
+                setActiveTab("scoring");
+              }} />
+            </div>
           </TabsContent>
 
           {/* Scoring Tab */}
