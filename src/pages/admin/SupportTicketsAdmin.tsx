@@ -11,6 +11,10 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -241,6 +245,9 @@ export default function SupportTicketsAdmin() {
     profileMap.get(t.user_id)?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const { sorted: sortedTickets, sortColumn, sortDirection, toggleSort } = useTableSort(filteredTickets, "created_at", "desc");
+  const pagination = usePagination(sortedTickets, { defaultPageSize: 15 });
+
   const stats = {
     total: tickets.length,
     open: tickets.filter(t => t.status === "open").length,
@@ -254,7 +261,7 @@ export default function SupportTicketsAdmin() {
     }).length,
   };
 
-  const bulk = useAdminBulkActions(filteredTickets);
+  const bulk = useAdminBulkActions(sortedTickets);
 
   const { exportCSV: exportTicketsCSV } = useCSVExport({
     columns: [
@@ -602,21 +609,21 @@ export default function SupportTicketsAdmin() {
                   <div className="hidden sm:block overflow-x-auto">
                      <Table>
                       <TableHeader>
-                        <TableRow>
+                         <TableRow>
                           <TableHead className="w-10 bg-muted/30">
                             <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                           </TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الرقم" : "Ticket #"}</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الموضوع" : "Subject"}</TableHead>
+                          <SortableTableHead column="ticket_number" label={isAr ? "الرقم" : "Ticket #"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                          <SortableTableHead column="subject" label={isAr ? "الموضوع" : "Subject"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                           <TableHead className="bg-muted/30">{isAr ? "المستخدم" : "User"}</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "الأولوية" : "Priority"}</TableHead>
+                          <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                          <SortableTableHead column="priority" label={isAr ? "الأولوية" : "Priority"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                           <TableHead className="bg-muted/30">SLA</TableHead>
-                          <TableHead className="bg-muted/30">{isAr ? "التاريخ" : "Date"}</TableHead>
+                          <SortableTableHead column="created_at" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredTickets.map(ticket => {
+                        {pagination.paginated.map(ticket => {
                           const profile = profileMap.get(ticket.user_id);
                           return (
                             <TableRow
@@ -659,6 +666,19 @@ export default function SupportTicketsAdmin() {
                       </TableBody>
                     </Table>
                   </div>
+                  <AdminTablePagination
+                    page={pagination.page}
+                    totalPages={pagination.totalPages}
+                    totalItems={pagination.totalItems}
+                    startItem={pagination.startItem}
+                    endItem={pagination.endItem}
+                    pageSize={pagination.pageSize}
+                    pageSizeOptions={pagination.pageSizeOptions}
+                    hasNext={pagination.hasNext}
+                    hasPrev={pagination.hasPrev}
+                    onPageChange={pagination.goTo}
+                    onPageSizeChange={pagination.changePageSize}
+                  />
                 </>
               )}
           </AdminTableCard>

@@ -14,6 +14,10 @@ import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Button } from "@/components/ui/button";
@@ -84,8 +88,11 @@ export default function EstablishmentsAdmin() {
     });
   }, [entities, search, typeFilter, statusFilter]);
 
+  const { sorted, sortColumn, sortDirection, toggleSort } = useTableSort(filtered, "created_at", "desc");
+  const pagination = usePagination(sorted, { defaultPageSize: 15 });
+
   const { selected, toggleOne, toggleAll, clearSelection, isAllSelected, count, selectedItems } =
-    useAdminBulkActions(filtered || []);
+    useAdminBulkActions(sorted || []);
 
   const { exportCSV } = useCSVExport({
     columns: [
@@ -334,23 +341,23 @@ export default function EstablishmentsAdmin() {
       ) : (
         <AdminTableCard>
           <Table>
-            <TableHeader>
+             <TableHeader>
               <TableRow>
                 <TableHead className="w-[40px] bg-muted/30">
                   <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                 </TableHead>
-                <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "الرقم" : "#"}</TableHead>
-                <TableHead className="bg-muted/30">{isAr ? "الجهة" : "Entity"}</TableHead>
-                <TableHead className="hidden md:table-cell bg-muted/30">{isAr ? "النوع" : "Type"}</TableHead>
+                <SortableTableHead column="entity_number" label={isAr ? "الرقم" : "#"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="hidden xl:table-cell bg-muted/30" />
+                <SortableTableHead column="name" label={isAr ? "الجهة" : "Entity"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="type" label={isAr ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="hidden md:table-cell bg-muted/30" />
                 <TableHead className="hidden xl:table-cell bg-muted/30">{isAr ? "النطاق" : "Scope"}</TableHead>
-                <TableHead className="bg-muted/30">{isAr ? "الحالة" : "Status"}</TableHead>
+                <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                 <TableHead className="bg-muted/30">{isAr ? "مرئي" : "Visible"}</TableHead>
                 <TableHead className="hidden lg:table-cell bg-muted/30">{isAr ? "المتابعون" : "Followers"}</TableHead>
                 <TableHead className="text-end bg-muted/30">{isAr ? "إجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((entity: any) => (
+              {pagination.paginated.map((entity: any) => (
                 <EntityTableRow
                   key={entity.id}
                   entity={entity}
@@ -368,9 +375,21 @@ export default function EstablishmentsAdmin() {
               ))}
             </TableBody>
           </Table>
+          <AdminTablePagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            totalItems={pagination.totalItems}
+            startItem={pagination.startItem}
+            endItem={pagination.endItem}
+            pageSize={pagination.pageSize}
+            pageSizeOptions={pagination.pageSizeOptions}
+            hasNext={pagination.hasNext}
+            hasPrev={pagination.hasPrev}
+            onPageChange={pagination.goTo}
+            onPageSizeChange={pagination.changePageSize}
+          />
         </AdminTableCard>
       )}
-
       {/* Detail Drawer */}
       <EstablishmentDetailDrawer
         entityId={detailId}

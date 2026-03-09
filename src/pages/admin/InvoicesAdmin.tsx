@@ -8,6 +8,10 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -275,7 +279,9 @@ export default function InvoicesAdmin() {
 
   const isAr = language === "ar";
 
-  const bulk = useAdminBulkActions(invoices);
+  const { sorted: sortedInvoices, sortColumn, sortDirection, toggleSort } = useTableSort(invoices, "created_at", "desc");
+  const pagination = usePagination(sortedInvoices, { defaultPageSize: 15 });
+  const bulk = useAdminBulkActions(sortedInvoices);
 
   const { exportCSV: exportInvoicesCSV } = useCSVExport({
     columns: [
@@ -706,24 +712,25 @@ export default function InvoicesAdmin() {
           {isLoading ? (
             <div className="p-6"><Skeleton className="h-64" /></div>
           ) : invoices.length > 0 ? (
+            <>
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10">
                       <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                     </TableHead>
-                    <TableHead>{language === "ar" ? "رقم الفاتورة" : "Invoice #"}</TableHead>
+                    <SortableTableHead column="invoice_number" label={language === "ar" ? "رقم الفاتورة" : "Invoice #"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                     <TableHead>{language === "ar" ? "الشركة" : "Company"}</TableHead>
-                    <TableHead>{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                    <TableHead className="text-right">{language === "ar" ? "المبلغ" : "Amount"}</TableHead>
-                    <TableHead>{language === "ar" ? "الاستحقاق" : "Due"}</TableHead>
+                    <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+                    <SortableTableHead column="amount" label={language === "ar" ? "المبلغ" : "Amount"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="text-right" />
+                    <SortableTableHead column="due_date" label={language === "ar" ? "الاستحقاق" : "Due"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {invoices.map((inv) => (
+                  {pagination.paginated.map((inv) => (
                     <TableRow key={inv.id} className={`cursor-pointer ${bulk.isSelected(inv.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedInvoice(inv.id)}>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <Checkbox checked={bulk.isSelected(inv.id)} onCheckedChange={() => bulk.toggleOne(inv.id)} />
@@ -754,6 +761,20 @@ export default function InvoicesAdmin() {
                 </TableBody>
               </Table>
             </div>
+            <AdminTablePagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              totalItems={pagination.totalItems}
+              startItem={pagination.startItem}
+              endItem={pagination.endItem}
+              pageSize={pagination.pageSize}
+              pageSizeOptions={pagination.pageSizeOptions}
+              hasNext={pagination.hasNext}
+              hasPrev={pagination.hasPrev}
+              onPageChange={pagination.goTo}
+              onPageSizeChange={pagination.changePageSize}
+            />
+            </>
           ) : (
               <AdminEmptyState
                 icon={FileText}

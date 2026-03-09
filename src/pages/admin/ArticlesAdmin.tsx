@@ -28,6 +28,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { useTableSort } from "@/hooks/useTableSort";
+import { usePagination } from "@/hooks/usePagination";
+import { SortableTableHead } from "@/components/admin/SortableTableHead";
+import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -211,7 +215,9 @@ export default function ArticlesAdmin() {
     filename: "articles",
   });
 
-  const bulk = useAdminBulkActions(articles || []);
+  const { sorted: sortedArticles, sortColumn, sortDirection, toggleSort } = useTableSort(articles || [], "created_at", "desc");
+  const pagination = usePagination(sortedArticles, { defaultPageSize: 15 });
+  const bulk = useAdminBulkActions(sortedArticles);
 
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
@@ -382,18 +388,15 @@ export default function ArticlesAdmin() {
       <AdminTableCard>
           <Table>
             <TableHeader>
-              <TableRow>
+               <TableRow>
                 <TableHead className="w-10 bg-muted/30">
-                  <Checkbox
-                    checked={bulk.isAllSelected}
-                    onCheckedChange={bulk.toggleAll}
-                  />
+                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
                 </TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "العنوان" : "Title"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "النوع" : "Type"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "الحالة" : "Status"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "المشاهدات" : "Views"}</TableHead>
-                <TableHead className="bg-muted/30">{language === "ar" ? "التاريخ" : "Date"}</TableHead>
+                <SortableTableHead column="title" label={language === "ar" ? "العنوان" : "Title"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="type" label={language === "ar" ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="view_count" label={language === "ar" ? "المشاهدات" : "Views"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="created_at" label={language === "ar" ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
                 <TableHead className="w-[120px] bg-muted/30">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
               </TableRow>
             </TableHeader>
@@ -426,7 +429,7 @@ export default function ArticlesAdmin() {
                   </TableCell>
                 </TableRow>
               ) : (
-                articles?.map((article) => {
+                pagination.paginated.map((article) => {
                   const isScheduled = article.status === "published" && article.published_at && new Date(article.published_at) > new Date();
                   return (
                   <TableRow key={article.id} className={cn("hover:bg-accent/30 transition-colors group", bulk.isSelected(article.id) && "bg-primary/5")}>
@@ -528,6 +531,19 @@ export default function ArticlesAdmin() {
               )}
             </TableBody>
           </Table>
+          <AdminTablePagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            totalItems={pagination.totalItems}
+            startItem={pagination.startItem}
+            endItem={pagination.endItem}
+            pageSize={pagination.pageSize}
+            pageSizeOptions={pagination.pageSizeOptions}
+            hasNext={pagination.hasNext}
+            hasPrev={pagination.hasPrev}
+            onPageChange={pagination.goTo}
+            onPageSizeChange={pagination.changePageSize}
+          />
       </AdminTableCard>
     </div>
   );
