@@ -22,8 +22,19 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /auth
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
 Disallow: /onboarding
 Disallow: /messages
 Disallow: /dashboard
+Disallow: /profile
+Disallow: /checkout
+Disallow: /notification-preferences
+Disallow: /notifications
+Disallow: /support
+Disallow: /company/
+Disallow: /judging
+Disallow: /company-login
 
 Sitemap: https://altoha.com/sitemap.xml

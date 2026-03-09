@@ -5,19 +5,31 @@ import { useLocation } from "react-router-dom";
  * Manages dynamic SEO meta tags based on current route.
  * Adds structured data, canonical URLs, and optimized meta.
  */
-const routeMeta: Record<string, { title: string; titleAr: string; description: string; descriptionAr: string; type?: string }> = {
-  "/": { title: "Altoha — Professional Culinary Network", titleAr: "الطهاة — شبكة الطهاة المحترفين", description: "Join the leading culinary competition and networking platform for professional chefs worldwide.", descriptionAr: "انضم إلى منصة مسابقات الطهي الرائدة وشبكة الطهاة المحترفين حول العالم.", type: "website" },
-  "/competitions": { title: "Culinary Competitions — Altoha", titleAr: "مسابقات الطهي — الطهاة", description: "Browse and join culinary competitions worldwide. Compete with top chefs.", descriptionAr: "تصفح وانضم لمسابقات الطهي حول العالم. تنافس مع أفضل الطهاة.", type: "CollectionPage" },
+const routeMeta: Record<string, { title: string; titleAr: string; description: string; descriptionAr: string; type?: string; keywords?: string }> = {
+  "/": { title: "Altoha — Professional Culinary Network", titleAr: "الطهاة — شبكة الطهاة المحترفين", description: "Join the leading culinary competition and networking platform for professional chefs worldwide.", descriptionAr: "انضم إلى منصة مسابقات الطهي الرائدة وشبكة الطهاة المحترفين حول العالم.", type: "website", keywords: "culinary competitions, chef community, cooking, مسابقات الطهي" },
+  "/competitions": { title: "Culinary Competitions — Altoha", titleAr: "مسابقات الطهي — الطهاة", description: "Browse and join culinary competitions worldwide. Compete with top chefs.", descriptionAr: "تصفح وانضم لمسابقات الطهي حول العالم. تنافس مع أفضل الطهاة.", type: "CollectionPage", keywords: "culinary competitions, chef contest, cooking competition" },
   "/discover": { title: "Discover Competitions — Altoha", titleAr: "اكتشف المسابقات — الطهاة", description: "Discover upcoming culinary competitions and events near you.", descriptionAr: "اكتشف مسابقات الطهي والفعاليات القادمة بالقرب منك.", type: "CollectionPage" },
-  "/shop": { title: "Culinary Shop — Altoha", titleAr: "متجر الطهي — الطهاة", description: "Shop professional culinary tools, books, and ingredients.", descriptionAr: "تسوق أدوات الطهي الاحترافية والكتب والمكونات.", type: "Store" },
-  "/recipes": { title: "Recipes — Altoha", titleAr: "الوصفات — الطهاة", description: "Discover professional recipes from top chefs.", descriptionAr: "اكتشف وصفات احترافية من أفضل الطهاة.", type: "CollectionPage" },
+  "/shop": { title: "Culinary Shop — Altoha", titleAr: "متجر الطهي — الطهاة", description: "Shop professional culinary tools, books, and ingredients.", descriptionAr: "تسوق أدوات الطهي الاحترافية والكتب والمكونات.", type: "Store", keywords: "culinary tools, chef equipment, cooking supplies" },
+  "/recipes": { title: "Professional Recipes — Altoha", titleAr: "وصفات احترافية — الطهاة", description: "Discover professional recipes from award-winning chefs worldwide.", descriptionAr: "اكتشف وصفات احترافية من أفضل الطهاة حول العالم.", type: "CollectionPage", keywords: "recipes, professional cooking, chef recipes, وصفات" },
   "/community": { title: "Chef Community — Altoha", titleAr: "مجتمع الطهاة — الطهاة", description: "Connect with fellow chefs, share recipes, and discuss culinary arts.", descriptionAr: "تواصل مع الطهاة وشارك الوصفات وناقش فنون الطهي.", type: "CollectionPage" },
-  "/exhibitions": { title: "Culinary Exhibitions — Altoha", titleAr: "معارض الطهي — الطهاة", description: "Explore culinary exhibitions and food events worldwide.", descriptionAr: "استكشف معارض الطهي والفعاليات الغذائية حول العالم.", type: "CollectionPage" },
-  "/masterclasses": { title: "Masterclasses — Altoha", titleAr: "الدروس المتقدمة — الطهاة", description: "Learn from expert chefs through professional masterclasses.", descriptionAr: "تعلم من طهاة خبراء عبر دروس احترافية متقدمة.", type: "CollectionPage" },
-  "/rankings": { title: "Chef Rankings — Altoha", titleAr: "تصنيف الطهاة — الطهاة", description: "Global chef rankings based on competition performance.", descriptionAr: "تصنيف الطهاة العالمي بناءً على أداء المسابقات.", type: "CollectionPage" },
-  "/suppliers": { title: "Culinary Suppliers — Altoha", titleAr: "موردي الطهي — الطهاة", description: "Find trusted culinary suppliers and equipment providers.", descriptionAr: "اعثر على موردي الطهي الموثوقين ومزودي المعدات.", type: "CollectionPage" },
-  "/news": { title: "Culinary News — Altoha", titleAr: "أخبار الطهي — الطهاة", description: "Latest culinary news, events, and industry updates.", descriptionAr: "آخر أخبار الطهي والفعاليات وتحديثات الصناعة.", type: "CollectionPage" },
-  "/tastings": { title: "Chef's Table Tastings — Altoha", titleAr: "تذوق طاولة الشيف — الطهاة", description: "Exclusive chef's table tasting experiences with top chefs.", descriptionAr: "تجارب تذوق حصرية على طاولة الشيف مع أفضل الطهاة.", type: "CollectionPage" },
+  "/exhibitions": { title: "Culinary Exhibitions — Altoha", titleAr: "معارض الطهي — الطهاة", description: "Explore culinary exhibitions and food events worldwide.", descriptionAr: "استكشف معارض الطهي والفعاليات الغذائية حول العالم.", type: "CollectionPage", keywords: "food exhibitions, culinary events, food shows" },
+  "/masterclasses": { title: "Culinary Masterclasses — Altoha", titleAr: "الدروس المتقدمة — الطهاة", description: "Learn from expert chefs through professional culinary masterclasses.", descriptionAr: "تعلم من طهاة خبراء عبر دروس احترافية متقدمة.", type: "CollectionPage", keywords: "cooking masterclass, chef training, culinary education" },
+  "/rankings": { title: "Chef Rankings — Altoha", titleAr: "تصنيف الطهاة — الطهاة", description: "Global chef rankings based on competition performance and achievements.", descriptionAr: "تصنيف الطهاة العالمي بناءً على أداء المسابقات والإنجازات.", type: "CollectionPage" },
+  "/pro-suppliers": { title: "Culinary Suppliers — Altoha", titleAr: "موردي الطهي — الطهاة", description: "Find trusted culinary suppliers and equipment providers.", descriptionAr: "اعثر على موردي الطهي الموثوقين ومزودي المعدات.", type: "CollectionPage" },
+  "/news": { title: "Culinary News — Altoha", titleAr: "أخبار الطهي — الطهاة", description: "Latest culinary news, events, and industry updates.", descriptionAr: "آخر أخبار الطهي والفعاليات وتحديثات الصناعة.", type: "CollectionPage", keywords: "culinary news, food industry, chef news" },
+  "/chefs-table": { title: "Chef's Table Experiences — Altoha", titleAr: "تجارب طاولة الشيف — الطهاة", description: "Exclusive chef's table dining experiences with top chefs.", descriptionAr: "تجارب طعام حصرية على طاولة الشيف مع أفضل الطهاة.", type: "CollectionPage" },
+  "/mentorship": { title: "Culinary Mentorship — Altoha", titleAr: "الإرشاد المهني — الطهاة", description: "Connect with experienced chef mentors for professional growth.", descriptionAr: "تواصل مع مرشدين خبراء للنمو المهني في الطهي.", type: "CollectionPage" },
+  "/establishments": { title: "Culinary Establishments — Altoha", titleAr: "المؤسسات — الطهاة", description: "Discover top culinary establishments and restaurants.", descriptionAr: "اكتشف أفضل المؤسسات والمطاعم.", type: "CollectionPage" },
+  "/organizers": { title: "Event Organizers — Altoha", titleAr: "المنظمون — الطهاة", description: "Browse culinary event organizers and competition hosts.", descriptionAr: "تصفح منظمي فعاليات الطهي ومضيفي المسابقات.", type: "CollectionPage" },
+  "/events-calendar": { title: "Culinary Events Calendar — Altoha", titleAr: "تقويم الفعاليات — الطهاة", description: "Browse upcoming culinary events, competitions, and exhibitions worldwide.", descriptionAr: "تصفح الفعاليات والمسابقات والمعارض القادمة حول العالم.", type: "CollectionPage" },
+  "/membership": { title: "Membership Plans — Altoha", titleAr: "خطط العضوية — الطهاة", description: "Join Altoha membership for exclusive benefits and features.", descriptionAr: "انضم لعضوية الطهاة للحصول على مزايا وميزات حصرية.", type: "WebPage" },
+  "/about": { title: "About Altoha", titleAr: "عن الطهاة", description: "Learn about Altoha, the premier professional culinary network.", descriptionAr: "تعرف على الطهاة، الشبكة المهنية الرائدة للطهاة.", type: "AboutPage" },
+  "/contact": { title: "Contact Us — Altoha", titleAr: "اتصل بنا — الطهاة", description: "Get in touch with the Altoha team for support and inquiries.", descriptionAr: "تواصل مع فريق الطهاة للدعم والاستفسارات.", type: "ContactPage" },
+  "/help": { title: "Help Center — Altoha", titleAr: "مركز المساعدة — الطهاة", description: "Find answers to your questions about using Altoha.", descriptionAr: "اعثر على إجابات لأسئلتك حول استخدام الطهاة.", type: "WebPage" },
+  "/for-chefs": { title: "For Chefs — Altoha", titleAr: "للطهاة — الطهاة", description: "Join Altoha as a professional chef. Compete, learn, and grow your career.", descriptionAr: "انضم كطاهٍ محترف. تنافس وتعلم وطوّر مسيرتك.", type: "WebPage" },
+  "/for-companies": { title: "For Companies — Altoha", titleAr: "للشركات — الطهاة", description: "Partner with Altoha for culinary talent, sponsorships, and brand visibility.", descriptionAr: "تشارك مع الطهاة للمواهب والرعايات والظهور.", type: "WebPage" },
+  "/for-organizers": { title: "For Organizers — Altoha", titleAr: "للمنظمين — الطهاة", description: "Organize culinary competitions and events with Altoha's platform.", descriptionAr: "نظم مسابقات وفعاليات الطهي عبر منصة الطهاة.", type: "WebPage" },
+  "/sponsors": { title: "For Sponsors — Altoha", titleAr: "للرعاة — الطهاة", description: "Sponsor culinary competitions and reach professional chefs globally.", descriptionAr: "ارعَ مسابقات الطهي وتواصل مع الطهاة المحترفين عالمياً.", type: "WebPage" },
 };
 
 export function useEnhancedSEO(language: string) {
@@ -29,6 +41,9 @@ export function useEnhancedSEO(language: string) {
     const meta = routeMeta[path];
     if (!meta) return;
 
+    const origin = window.location.origin;
+    const fullUrl = `${origin}${path}`;
+
     // Set canonical URL
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
@@ -36,10 +51,10 @@ export function useEnhancedSEO(language: string) {
       canonical.rel = "canonical";
       document.head.appendChild(canonical);
     }
-    canonical.href = `${window.location.origin}${path}`;
+    canonical.href = fullUrl;
 
-    // Set hreflang alternates
-    ["en", "ar"].forEach(lang => {
+    // Set hreflang alternates (en, ar, x-default)
+    ["en", "ar", "x-default"].forEach(lang => {
       const id = `hreflang-${lang}`;
       let link = document.getElementById(id) as HTMLLinkElement;
       if (!link) {
@@ -49,45 +64,40 @@ export function useEnhancedSEO(language: string) {
         link.hreflang = lang;
         document.head.appendChild(link);
       }
-      link.href = `${window.location.origin}${path}?lang=${lang}`;
+      link.href = lang === "x-default" ? fullUrl : `${fullUrl}?lang=${lang}`;
     });
 
-    // Set Open Graph tags
-    const ogTags: Record<string, string> = {
-      "og:title": isAr ? meta.titleAr : meta.title,
-      "og:description": isAr ? meta.descriptionAr : meta.description,
-      "og:url": `${window.location.origin}${path}`,
-      "og:type": meta.type === "website" ? "website" : "article",
-      "og:site_name": "Altoha",
-      "og:locale": isAr ? "ar_SA" : "en_US",
-    };
-
-    Object.entries(ogTags).forEach(([property, content]) => {
-      let tag = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
+    // Set description meta
+    const setMeta = (attr: string, key: string, content: string) => {
+      let tag = document.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
       if (!tag) {
         tag = document.createElement("meta");
-        tag.setAttribute("property", property);
+        tag.setAttribute(attr, key);
         document.head.appendChild(tag);
       }
       tag.content = content;
-    });
-
-    // Set Twitter card
-    const twitterTags: Record<string, string> = {
-      "twitter:card": "summary_large_image",
-      "twitter:title": isAr ? meta.titleAr : meta.title,
-      "twitter:description": isAr ? meta.descriptionAr : meta.description,
     };
 
-    Object.entries(twitterTags).forEach(([name, content]) => {
-      let tag = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
-      if (!tag) {
-        tag = document.createElement("meta");
-        tag.name = name;
-        document.head.appendChild(tag);
-      }
-      tag.content = content;
-    });
+    const title = isAr ? meta.titleAr : meta.title;
+    const desc = isAr ? meta.descriptionAr : meta.description;
+
+    // Standard meta
+    setMeta("name", "description", desc);
+    if (meta.keywords) setMeta("name", "keywords", meta.keywords);
+
+    // Open Graph tags
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:description", desc);
+    setMeta("property", "og:url", fullUrl);
+    setMeta("property", "og:type", meta.type === "website" ? "website" : "article");
+    setMeta("property", "og:site_name", "Altoha");
+    setMeta("property", "og:locale", isAr ? "ar_SA" : "en_US");
+    setMeta("property", "og:locale:alternate", isAr ? "en_US" : "ar_SA");
+
+    // Twitter card
+    setMeta("name", "twitter:card", "summary_large_image");
+    setMeta("name", "twitter:title", title);
+    setMeta("name", "twitter:description", desc);
 
     // Inject JSON-LD
     const ldId = "enhanced-seo-jsonld";
@@ -99,24 +109,45 @@ export function useEnhancedSEO(language: string) {
       document.head.appendChild(script);
     }
     
-    const origin = window.location.origin;
     const jsonLdItems: any[] = [];
 
     // Primary page schema
-    const pageSchema: any = {
+    jsonLdItems.push({
       "@context": "https://schema.org",
       "@type": meta.type || "WebPage",
-      name: isAr ? meta.titleAr : meta.title,
-      description: isAr ? meta.descriptionAr : meta.description,
-      url: `${origin}${path}`,
+      name: title,
+      description: desc,
+      url: fullUrl,
       inLanguage: isAr ? "ar" : "en",
       isPartOf: {
         "@type": "WebSite",
         name: "Altoha",
         url: origin,
       },
-    };
-    jsonLdItems.push(pageSchema);
+    });
+
+    // BreadcrumbList for non-homepage
+    if (path !== "/") {
+      const segments = path.split("/").filter(Boolean);
+      const breadcrumbs = [
+        { "@type": "ListItem", position: 1, name: "Home", item: origin },
+      ];
+      let currentPath = "";
+      segments.forEach((seg, i) => {
+        currentPath += `/${seg}`;
+        breadcrumbs.push({
+          "@type": "ListItem",
+          position: i + 2,
+          name: seg.charAt(0).toUpperCase() + seg.slice(1).replace(/-/g, " "),
+          item: `${origin}${currentPath}`,
+        });
+      });
+      jsonLdItems.push({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs,
+      });
+    }
 
     // Homepage-specific rich schemas
     if (path === "/") {
@@ -124,20 +155,38 @@ export function useEnhancedSEO(language: string) {
         "@context": "https://schema.org",
         "@type": "Organization",
         name: "Altoha",
+        alternateName: "الطهاة",
         url: origin,
+        logo: {
+          "@type": "ImageObject",
+          url: `${origin}/pwa-512x512.png`,
+          width: 512,
+          height: 512,
+        },
         description: isAr
           ? "منصة الطهي الاحترافية الرائدة — مسابقات، معارض، تواصل بين الطهاة"
           : "The leading professional culinary platform — competitions, exhibitions, and chef networking",
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer support",
+          url: `${origin}/contact`,
+          availableLanguage: ["English", "Arabic"],
+        },
         sameAs: [],
       });
       jsonLdItems.push({
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "Altoha",
+        alternateName: "الطهاة",
         url: origin,
+        inLanguage: ["en", "ar"],
         potentialAction: {
           "@type": "SearchAction",
-          target: `${origin}/discover?q={search_term_string}`,
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${origin}/search?q={search_term_string}`,
+          },
           "query-input": "required name=search_term_string",
         },
       });
@@ -148,7 +197,7 @@ export function useEnhancedSEO(language: string) {
     );
 
     return () => {
-      // Cleanup is handled by overwriting on next route
+      // Cleanup handled by overwrite on next route
     };
   }, [location.pathname, isAr]);
 }
