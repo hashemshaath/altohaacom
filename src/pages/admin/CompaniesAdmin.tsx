@@ -1862,45 +1862,43 @@ export default function CompaniesAdmin() {
 
         {showBulkImport && <BulkImportPanel entityType="company" />}
 
+        {/* Search & Filters */}
+        <AdminFilterBar
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."}
+        >
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-[150px] rounded-xl h-9 text-sm"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+              {companyTypes.map(type => <SelectItem key={type.value} value={type.value}>{isAr ? type.labelAr : type.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[150px] rounded-xl h-9 text-sm"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
+              <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+              <SelectItem value="pending">{isAr ? "قيد الانتظار" : "Pending"}</SelectItem>
+              <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
+              <SelectItem value="suspended">{isAr ? "معلق" : "Suspended"}</SelectItem>
+            </SelectContent>
+          </Select>
+        </AdminFilterBar>
+
+        <BulkActionBar
+          count={bulk.count}
+          onClear={bulk.clearSelection}
+          onStatusChange={bulkActivate}
+          onDelete={bulkSuspend}
+          onExport={() => exportCompaniesCSV(bulk.selectedItems)}
+        />
+
         {/* Company List */}
-        <Card className="rounded-2xl border-border/40">
-          <CardContent className="pt-6">
-            <div className="flex flex-wrap gap-4 mb-4">
-              <div className="flex-1 min-w-[200px]">
-                <div className="relative">
-                  <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder={isAr ? "بحث بالاسم أو البريد..." : "Search by name or email..."} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="ps-10 rounded-xl" />
-                </div>
-              </div>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
-                  {companyTypes.map(type => <SelectItem key={type.value} value={type.value}>{isAr ? type.labelAr : type.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[150px] rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "جميع الحالات" : "All Status"}</SelectItem>
-                  <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-                  <SelectItem value="pending">{isAr ? "قيد الانتظار" : "Pending"}</SelectItem>
-                  <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
-                  <SelectItem value="suspended">{isAr ? "معلق" : "Suspended"}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <BulkActionBar
-              count={bulk.count}
-              onClear={bulk.clearSelection}
-              onStatusChange={bulkActivate}
-              onDelete={bulkSuspend}
-              onExport={() => exportCompaniesCSV(bulk.selectedItems)}
-            />
-
-            <ScrollArea className="h-[500px]">
-              <Table>
+        <AdminTableCard>
+          <ScrollArea className="h-[500px]">
+            <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10 bg-muted/30">
