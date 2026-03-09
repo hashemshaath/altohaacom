@@ -85,7 +85,7 @@ const ArticlesSection = memo(function ArticlesSection() {
                 <Card className="overflow-hidden border-border/30 h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 rounded-2xl active:scale-[0.98]">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     {article.featured_image_url ? (
-                      <img src={article.featured_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                      <img src={article.featured_image_url} alt={isAr ? article.title_ar || article.title : article.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                     ) : (
                       <div className="h-full w-full bg-muted flex items-center justify-center">
                         <Newspaper className="h-8 w-8 text-muted-foreground/20" />
