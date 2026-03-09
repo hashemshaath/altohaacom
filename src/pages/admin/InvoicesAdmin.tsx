@@ -279,7 +279,9 @@ export default function InvoicesAdmin() {
 
   const isAr = language === "ar";
 
-  const bulk = useAdminBulkActions(invoices);
+  const { sorted: sortedInvoices, sortColumn, sortDirection, toggleSort } = useTableSort(invoices, "created_at", "desc");
+  const pagination = usePagination(sortedInvoices, { defaultPageSize: 15 });
+  const bulk = useAdminBulkActions(sortedInvoices);
 
   const { exportCSV: exportInvoicesCSV } = useCSVExport({
     columns: [
