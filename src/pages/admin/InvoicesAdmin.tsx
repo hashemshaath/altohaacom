@@ -672,18 +672,13 @@ export default function InvoicesAdmin() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="ps-10"
-            placeholder={language === "ar" ? "بحث بالرقم أو العنوان..." : "Search by number or title..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      <AdminFilterBar
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={language === "ar" ? "بحث بالرقم أو العنوان..." : "Search by number or title..."}
+      >
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px] rounded-xl">
             <SelectValue placeholder={language === "ar" ? "الحالة" : "Status"} />
           </SelectTrigger>
           <SelectContent>
@@ -696,7 +691,7 @@ export default function InvoicesAdmin() {
             <SelectItem value="cancelled">{language === "ar" ? "ملغاة" : "Cancelled"}</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </AdminFilterBar>
 
       <BulkActionBar
         count={bulk.count}
