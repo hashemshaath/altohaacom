@@ -18,24 +18,24 @@ export const AdminTableSkeleton = memo(function AdminTableSkeleton({
   className,
 }: AdminTableSkeletonProps) {
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-3 animate-in fade-in-50 duration-300", className)}>
       {/* Filter bar skeleton */}
       <div className="flex items-center gap-3 flex-wrap">
-        <Skeleton className="h-9 w-64 rounded-xl" />
-        <Skeleton className="h-9 w-32 rounded-xl" />
-        <Skeleton className="h-9 w-24 rounded-xl" />
-        {showActions && <Skeleton className="h-9 w-28 rounded-xl ms-auto" />}
+        <Skeleton className="h-10 w-64 rounded-xl" />
+        <Skeleton className="h-10 w-32 rounded-xl" />
+        <Skeleton className="h-10 w-24 rounded-xl" />
+        {showActions && <Skeleton className="h-10 w-28 rounded-xl ms-auto" />}
       </div>
 
       {/* Table skeleton */}
-      <div className="rounded-2xl border border-border/40 overflow-hidden">
+      <div className="rounded-2xl border border-border/40 overflow-hidden bg-card/50">
         {showHeader && (
-          <div className="flex items-center gap-4 p-3 bg-muted/30 border-b border-border/30">
+          <div className="flex items-center gap-4 p-3.5 bg-muted/40 border-b border-border/30">
             {Array.from({ length: columns }).map((_, i) => (
               <Skeleton
                 key={`h-${i}`}
                 className={cn(
-                  "h-3.5 rounded-xl",
+                  "h-3.5 rounded-lg",
                   i === 0 ? "w-32" : i === columns - 1 ? "w-20 ms-auto" : "w-24"
                 )}
               />
@@ -46,17 +46,17 @@ export const AdminTableSkeleton = memo(function AdminTableSkeleton({
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <div
             key={`r-${rowIndex}`}
-            className="flex items-center gap-4 p-3 border-b border-border/20 last:border-b-0"
-            style={{ animation: `pulse 1.5s ease-in-out infinite`, animationDelay: `${rowIndex * 100}ms` }}
+            className="flex items-center gap-4 p-3.5 border-b border-border/15 last:border-b-0"
+            style={{ animationDelay: `${rowIndex * 80}ms` }}
           >
             {/* Avatar column */}
-            <Skeleton className="h-9 w-9 rounded-full shrink-0" />
+            <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
             {/* Text columns */}
             {Array.from({ length: columns - 1 }).map((_, colIndex) => (
               <Skeleton
                 key={`c-${colIndex}`}
                 className={cn(
-                  "h-3.5 rounded-xl",
+                  "h-3.5 rounded-lg",
                   colIndex === 0 ? "w-28" : colIndex === columns - 2 ? "w-16 ms-auto" : "w-20"
                 )}
               />
@@ -66,8 +66,8 @@ export const AdminTableSkeleton = memo(function AdminTableSkeleton({
       </div>
 
       {/* Pagination skeleton */}
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-3.5 w-32 rounded-xl" />
+      <div className="flex items-center justify-between pt-1">
+        <Skeleton className="h-3.5 w-32 rounded-lg" />
         <div className="flex gap-1.5">
           <Skeleton className="h-8 w-8 rounded-xl" />
           <Skeleton className="h-8 w-8 rounded-xl" />
@@ -81,15 +81,19 @@ export const AdminTableSkeleton = memo(function AdminTableSkeleton({
 /** Compact card-based skeleton for dashboard widgets */
 export const AdminWidgetSkeleton = memo(function AdminWidgetSkeleton({ rows = 3 }: { rows?: number }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 animate-in fade-in-50 duration-300">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/30 p-3">
-          <Skeleton className="h-9 w-9 rounded-xl shrink-0" />
+        <div
+          key={i}
+          className="flex items-center gap-3 rounded-2xl border border-border/30 p-3"
+          style={{ animationDelay: `${i * 80}ms` }}
+        >
+          <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
           <div className="flex-1 space-y-1.5">
-            <Skeleton className="h-3 w-24 rounded-xl" />
-            <Skeleton className="h-2.5 w-16 rounded-xl" />
+            <Skeleton className="h-3 w-24 rounded-lg" />
+            <Skeleton className="h-2.5 w-16 rounded-lg" />
           </div>
-          <Skeleton className="h-5 w-12 rounded-xl" />
+          <Skeleton className="h-5 w-12 rounded-lg" />
         </div>
       ))}
     </div>

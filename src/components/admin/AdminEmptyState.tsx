@@ -35,27 +35,31 @@ export const AdminEmptyState = memo(function AdminEmptyState({
 
   return (
     <div className={cn("flex flex-col items-center justify-center py-16 text-center animate-in fade-in-50 slide-in-from-bottom-3 duration-500", className)}>
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-muted/80 to-muted/30 ring-1 ring-border/30 transition-all duration-300 hover:ring-border/50 hover:shadow-md hover:scale-105">
-        <Icon className="h-7 w-7 text-muted-foreground/50 transition-colors duration-300" />
+      <div className="relative mb-5">
+        {/* Ambient glow */}
+        <div className="absolute inset-0 rounded-3xl bg-primary/5 blur-xl scale-150" />
+        <div className="relative flex h-18 w-18 items-center justify-center rounded-3xl bg-gradient-to-br from-muted/80 to-muted/30 ring-1 ring-border/30 transition-all duration-500 hover:ring-primary/20 hover:shadow-xl hover:shadow-primary/5 hover:scale-110 group">
+          <Icon className="h-8 w-8 text-muted-foreground/40 transition-all duration-500 group-hover:text-primary/50 group-hover:scale-110" />
+        </div>
       </div>
-      <h3 className="text-sm font-semibold text-foreground">
+      <h3 className="text-base font-semibold text-foreground">
         {isAr && titleAr ? titleAr : title}
       </h3>
       {(description || descriptionAr) && (
-        <p className="mt-1.5 max-w-xs text-xs text-muted-foreground leading-relaxed">
+        <p className="mt-2 max-w-xs text-sm text-muted-foreground leading-relaxed">
           {isAr && descriptionAr ? descriptionAr : description}
         </p>
       )}
       {(actionLabel || actionLabelAr) && (
         actionLink ? (
-          <Button asChild variant="outline" size="sm" className="mt-5 gap-1.5 rounded-xl">
+          <Button asChild size="sm" className="mt-6 gap-1.5 rounded-xl shadow-md shadow-primary/15 active:scale-95 transition-all">
             <Link to={actionLink}>
               <Plus className="h-3.5 w-3.5" />
               {isAr && actionLabelAr ? actionLabelAr : actionLabel}
             </Link>
           </Button>
         ) : onAction ? (
-          <Button variant="outline" size="sm" className="mt-5 gap-1.5 rounded-xl" onClick={onAction}>
+          <Button size="sm" className="mt-6 gap-1.5 rounded-xl shadow-md shadow-primary/15 active:scale-95 transition-all" onClick={onAction}>
             <Plus className="h-3.5 w-3.5" />
             {isAr && actionLabelAr ? actionLabelAr : actionLabel}
           </Button>
