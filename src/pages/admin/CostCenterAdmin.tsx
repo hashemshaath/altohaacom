@@ -101,7 +101,25 @@ export default function CostCenterAdmin() {
     );
   }, [estimates, search]);
 
-  // Stats
+  // Bulk actions & CSV export for estimates
+  const bulk = useAdminBulkActions(filteredEstimates);
+
+  const { exportCSV: exportEstimatesCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الرقم" : "Estimate #", accessor: (e: CostEstimate) => e.estimate_number },
+      { header: isAr ? "العنوان" : "Title", accessor: (e: CostEstimate) => e.title },
+      { header: isAr ? "القسم" : "Module", accessor: (e: CostEstimate) => MODULE_TYPES[e.module_type]?.en || e.module_type },
+      { header: isAr ? "الحالة" : "Status", accessor: (e: CostEstimate) => e.status },
+      { header: isAr ? "المجموع الفرعي" : "Subtotal", accessor: (e: CostEstimate) => e.subtotal },
+      { header: isAr ? "الضريبة" : "Tax", accessor: (e: CostEstimate) => e.tax_amount },
+      { header: isAr ? "الإجمالي" : "Total", accessor: (e: CostEstimate) => e.total_amount },
+      { header: isAr ? "العملة" : "Currency", accessor: (e: CostEstimate) => e.currency },
+      { header: isAr ? "التاريخ" : "Created", accessor: (e: CostEstimate) => format(new Date(e.created_at), "yyyy-MM-dd") },
+    ],
+    filename: "cost-estimates",
+  });
+
+
   const stats = useMemo(() => {
     const all = estimates;
     return {

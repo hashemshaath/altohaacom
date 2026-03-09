@@ -268,6 +268,26 @@ export default function RoleManagement() {
 
   const totalPerms = permissions.length;
 
+  const { exportCSV: exportUsersCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الاسم" : "Name", accessor: (u: any) => u.full_name || "" },
+      { header: isAr ? "اسم المستخدم" : "Username", accessor: (u: any) => u.username || "" },
+      { header: isAr ? "البريد" : "Email", accessor: (u: any) => u.email || "" },
+      { header: isAr ? "رقم الحساب" : "Account #", accessor: (u: any) => u.account_number || "" },
+      { header: isAr ? "الأدوار" : "Roles", accessor: (u: any) => u.roles?.join(", ") || "" },
+    ],
+    filename: "role-assignments",
+  });
+
+  const { exportCSV: exportActivityCSV } = useCSVExport({
+    columns: [
+      { header: isAr ? "الإجراء" : "Action", accessor: (r: any) => r.action_type?.replace(/_/g, " ") || "" },
+      { header: isAr ? "التفاصيل" : "Details", accessor: (r: any) => r.details ? JSON.stringify(r.details) : "" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+    ],
+    filename: "role-activity-log",
+  });
+
   const exportMatrixCSV = () => {
     const headers = ["Category", "Permission", "Code", ...ALL_ROLES.map(r => ROLE_META[r].labelEn)];
     const rows = matrixData.flatMap(({ category, perms }) =>
