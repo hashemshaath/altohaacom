@@ -865,54 +865,54 @@ export default function SmartImportAdmin() {
   return (
     <div className="space-y-6">
       {/* ─── Header ─── */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {step !== "search" && (
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={step === "details" ? handleBackToResults : handleNewSearch}>
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          )}
-          <div>
-            <h1 className="font-serif text-2xl font-bold flex items-center gap-2">
+      <Card className="overflow-hidden border-border/40 bg-gradient-to-br from-primary/5 via-background to-accent/5 animate-in fade-in-50 slide-in-from-bottom-2 duration-500">
+        <div className="flex items-center justify-between p-5 md:p-6">
+          <div className="flex items-center gap-4">
+            {step !== "search" && (
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl active:scale-90 transition-all" onClick={step === "details" ? handleBackToResults : handleNewSearch}>
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 ring-1 ring-primary/10">
               <Sparkles className="h-6 w-6 text-primary" />
-              {isAr ? "الاستيراد الذكي" : "Smart Import"}
-              <Badge variant="secondary" className="text-[10px] font-normal">v4.0</Badge>
-            </h1>
-            <p className="text-muted-foreground text-sm mt-0.5">
-              {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
-              {step === "results" && (isAr ? `${searchResults.length} نتيجة${searchTime ? ` في ${(searchTime / 1000).toFixed(1)}ث` : ''} — اضغط للتحليل` : `${searchResults.length} results${searchTime ? ` in ${(searchTime / 1000).toFixed(1)}s` : ''} — click to analyze`)}
-              {step === "details" && (isAr ? `${fieldCount} حقل — جودة ${dataQuality}% — قابل للتعديل` : `${fieldCount} fields — ${dataQuality}% quality — editable`)}
-            </p>
+            </div>
+            <div>
+              <h1 className="font-serif text-2xl font-bold tracking-tight flex items-center gap-2">
+                {isAr ? "الاستيراد الذكي" : "Smart Import"}
+                <Badge variant="secondary" className="text-[10px] font-normal rounded-lg">v4.0</Badge>
+              </h1>
+              <p className="text-muted-foreground text-sm mt-0.5">
+                {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
+                {step === "results" && (isAr ? `${searchResults.length} نتيجة${searchTime ? ` في ${(searchTime / 1000).toFixed(1)}ث` : ''} — اضغط للتحليل` : `${searchResults.length} results${searchTime ? ` in ${(searchTime / 1000).toFixed(1)}s` : ''} — click to analyze`)}
+                {step === "details" && (isAr ? `${fieldCount} حقل — جودة ${dataQuality}% — قابل للتعديل` : `${fieldCount} fields — ${dataQuality}% quality — editable`)}
+              </p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-3">
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-xl active:scale-95 transition-all" onClick={() => { setShowHistory(true); loadHistory(); }}>
+              <Clock className="h-3.5 w-3.5" />
+              {isAr ? "السجل" : "History"}
+            </Button>
+            <div className="flex items-center gap-1">
+              {[
+                { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
+                { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
+                { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
+              ].map((s, i) => (
+                <div key={s.key} className="flex items-center gap-1">
+                  {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/40" />}
+                  <Badge
+                    variant={step === s.key ? "default" : "outline"}
+                    className={`text-xs gap-1 rounded-lg transition-all duration-200 ${step === s.key ? "shadow-sm" : "opacity-60"}`}
+                  >
+                    {s.num}. {s.label}
+                  </Badge>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => { setShowHistory(true); loadHistory(); }}>
-                  <Clock className="h-3.5 w-3.5" />
-                  {isAr ? "السجل" : "History"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{isAr ? "عرض سجل الاستيراد" : "View import history"}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <div className="flex items-center gap-1.5">
-            {[
-              { key: "search", label: isAr ? "بحث" : "Search", num: 1 },
-              { key: "results", label: isAr ? "نتائج" : "Results", num: 2 },
-              { key: "details", label: isAr ? "تفاصيل" : "Details", num: 3 },
-            ].map((s, i) => (
-              <div key={s.key} className="flex items-center gap-1.5">
-                {i > 0 && <ChevronRight className="h-3 w-3 text-muted-foreground/50" />}
-                <Badge variant={step === s.key ? "default" : "outline"} className="text-xs gap-1">
-                  {s.num}. {s.label}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </Card>
 
       {/* ─── STEP 1: Search Form ─── */}
       {step === "search" && (
