@@ -324,12 +324,11 @@ export default function CommunicationTemplatesAdmin() {
         </Button>
       </BulkActionBar>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input className="ps-9 rounded-xl" placeholder={isAr ? "بحث..." : "Search..."} value={search} onChange={(e) => setSearch(e.target.value)} />
-        </div>
+      <AdminFilterBar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={isAr ? "بحث..." : "Search..."}
+      >
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger className="w-[150px] rounded-xl"><Filter className="me-2 h-4 w-4" /><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -352,7 +351,7 @@ export default function CommunicationTemplatesAdmin() {
             <LayoutGrid className="h-4 w-4" />
           </Button>
         </div>
-      </div>
+      </AdminFilterBar>
 
       {/* Grid View */}
       {viewMode === "grid" ? (
