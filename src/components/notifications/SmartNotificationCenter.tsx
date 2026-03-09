@@ -121,14 +121,21 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
     },
   });
 
-  const filtered = useMemo(() => notifications.filter(n => {
-    if (tab === "unread" && n.is_read) return false;
-    if (categoryFilter !== "all") {
-      const cat = categoryMap[n.type || "system"] || "system";
-      if (cat !== categoryFilter) return false;
-    }
-    return true;
-  }), [notifications, tab, categoryFilter]);
+  const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return notifications.filter(n => {
+      if (tab === "unread" && n.is_read) return false;
+      if (categoryFilter !== "all") {
+        const cat = categoryMap[n.type || "system"] || "system";
+        if (cat !== categoryFilter) return false;
+      }
+      if (q) {
+        const text = `${n.title || ""} ${n.title_ar || ""} ${n.body || ""} ${n.body_ar || ""}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [notifications, tab, categoryFilter, searchQuery]);
 
   const unreadCount = useMemo(() => notifications.filter(n => !n.is_read).length, [notifications]);
   const readCount = useMemo(() => notifications.filter(n => n.is_read).length, [notifications]);
