@@ -128,7 +128,7 @@ const DEFAULT_SECTION_KEYS = [
 const Index = () => {
   const { language } = useLanguage();
   useAdTracking();
-  useEffect(() => { prefetchCommonRoutes(); }, []);
+  // Route prefetching is handled by RoutePrefetcher in App.tsx
 
   const { data: dbSections = [] } = useHomepageSections();
 
