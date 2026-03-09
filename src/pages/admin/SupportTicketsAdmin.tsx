@@ -562,9 +562,7 @@ export default function SupportTicketsAdmin() {
 
           <AdminTableCard>
               {isLoading ? (
-                <div className="p-4 sm:p-6 space-y-3">
-                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full" />)}
-                </div>
+                <AdminTableSkeleton rows={5} columns={5} />
               ) : filteredTickets.length === 0 ? (
                 <AdminEmptyState
                   icon={Ticket}

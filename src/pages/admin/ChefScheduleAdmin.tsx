@@ -303,8 +303,14 @@ export default function ChefScheduleAdmin() {
               <TableBody>
                 {schedulePagination.paginated.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="text-center py-12 text-muted-foreground">
-                      {isAr ? "لا توجد أحداث" : "No events found"}
+                    <TableCell colSpan={9} className="p-0">
+                      <AdminEmptyState
+                        icon={Calendar}
+                        title="No events found"
+                        titleAr="لا توجد أحداث"
+                        description="Try adjusting your filters or add a new event"
+                        descriptionAr="جرب تعديل الفلاتر أو أضف حدثاً جديداً"
+                      />
                     </TableCell>
                   </TableRow>
                 ) : (

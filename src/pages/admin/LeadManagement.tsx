@@ -505,13 +505,15 @@ export default function LeadManagement() {
       {viewMode === "table" ? (
         <AdminTableCard>
             {isLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-              </div>
+              <AdminTableSkeleton rows={5} columns={6} />
             ) : leads.length === 0 ? (
-              <p className="py-8 text-center text-muted-foreground">
-                {isAr ? "لا توجد نتائج" : "No leads found"}
-              </p>
+              <AdminEmptyState
+                icon={UserPlus}
+                title="No leads found"
+                titleAr="لا توجد نتائج"
+                description="Leads will appear here when added"
+                descriptionAr="ستظهر العملاء المحتملون هنا عند إضافتهم"
+              />
             ) : (
               (() => {
                 const { sorted: sortedLeads, sortColumn: leadSortCol, sortDirection: leadSortDir, toggleSort: toggleLeadSort } = useTableSort(leads, "created_at", "desc");

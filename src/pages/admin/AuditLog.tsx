@@ -348,11 +348,15 @@ export default function AuditLog() {
           </AdminFilterBar>
           <AdminTableCard title={isAr ? "إجراءات المشرفين الأخيرة" : "Recent Admin Actions"}>
               {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                </div>
+                <AdminTableSkeleton rows={5} columns={3} showActions={false} />
               ) : filteredActions.length === 0 ? (
-                <p className="py-8 text-center text-muted-foreground">{t("noResults")}</p>
+                <AdminEmptyState
+                  icon={FileText}
+                  title="No results"
+                  titleAr="لا توجد نتائج"
+                  description="Admin actions will appear here"
+                  descriptionAr="ستظهر إجراءات المشرفين هنا"
+                />
               ) : (
                 <ScrollArea className="max-h-[600px]">
                   <Table>
