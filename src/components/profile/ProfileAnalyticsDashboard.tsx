@@ -164,6 +164,11 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
                 <div>
                   <AnimatedCounter value={typeof stat.value === "number" ? stat.value : parseInt(String(stat.value)) || 0} className="text-2xl" />
                   <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+                  {"trend" in stat && (stat as any).trend !== undefined && (stat as any).trend !== 0 && (
+                    <p className={`text-[10px] font-medium ${(stat as any).trend > 0 ? "text-chart-5" : "text-destructive"}`}>
+                      {(stat as any).trend > 0 ? "↑ +" : "↓ "}{(stat as any).trend}% {isAr ? "أسبوعياً" : "vs prev week"}
+                    </p>
+                  )}
                 </div>
               </div>
             </CardContent>

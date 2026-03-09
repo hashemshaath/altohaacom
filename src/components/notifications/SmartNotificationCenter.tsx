@@ -225,7 +225,12 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                 </div>
               ) : Object.entries(grouped).map(([date, items]) => (
                 <div key={date}>
-                  <p className="text-xs font-medium text-muted-foreground mb-2 sticky top-0 bg-background z-10 py-1">{date}</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2 sticky top-0 bg-background z-10 py-1 flex items-center gap-2">
+                    {date}
+                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 rounded-lg font-normal">
+                      {(items as any[]).length}
+                    </Badge>
+                  </p>
                   <div className="space-y-1">
                     {(items as any[]).map((n: any) => {
                       const priority = inferPriority(n);

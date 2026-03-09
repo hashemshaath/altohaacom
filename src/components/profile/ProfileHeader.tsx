@@ -241,6 +241,20 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
             <span className="text-muted-foreground/70">{isAr ? "عضو منذ" : "Joined"}</span>
             <span className="font-bold text-foreground">{toEnglishDigits(new Date(profile?.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }))}</span>
           </div>
+          {followStats && (
+            <>
+              <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 cursor-default">
+                <Users className="h-3.5 w-3.5 text-chart-1/60" />
+                <AnimatedCounter value={followStats.followers} className="font-bold text-foreground" />
+                <span className="text-muted-foreground/70">{isAr ? "متابع" : "followers"}</span>
+              </div>
+              <div className="flex items-center gap-1.5 rounded-xl bg-background/50 px-3.5 py-2.5 text-xs text-muted-foreground transition-all hover:bg-background/70 cursor-default">
+                <UserPlus className="h-3.5 w-3.5 text-chart-2/60" />
+                <AnimatedCounter value={followStats.following} className="font-bold text-foreground" />
+                <span className="text-muted-foreground/70">{isAr ? "يتابع" : "following"}</span>
+              </div>
+            </>
+          )}
           {profile?.loyalty_points > 0 && (
             <div className="flex items-center gap-1.5 rounded-xl bg-primary/5 px-3.5 py-2.5 text-xs border border-primary/10 transition-all hover:bg-primary/8">
               <Star className="h-3.5 w-3.5 text-primary" />
