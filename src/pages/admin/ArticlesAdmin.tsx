@@ -545,5 +545,6 @@ export default function ArticlesAdmin() {
             onPageSizeChange={pagination.changePageSize}
           />
       </AdminTableCard>
+    </div>
   );
 }
