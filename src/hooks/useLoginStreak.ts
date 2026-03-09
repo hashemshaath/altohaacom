@@ -14,13 +14,14 @@ export function useLoginStreak() {
   const { data: streak, isLoading } = useQuery({
     queryKey: ["user-streak", user?.id],
     queryFn: async () => {
-      const { data, error } = await (supabase
-        .from("user_streaks" as any) as any)
+      const { data, error } = await supabase
+        .from("user_streaks")
         .select("*")
         .eq("user_id", user!.id)
+        .eq("streak_type", "login")
         .maybeSingle();
       if (error) throw error;
-      return data as any;
+      return data;
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 5,
@@ -32,26 +33,26 @@ export function useLoginStreak() {
       const today = new Date().toISOString().split("T")[0];
 
       // Check existing streak
-      const { data: existing } = await (supabase
-        .from("user_streaks" as any) as any)
+      const { data: existing } = await supabase
+        .from("user_streaks")
         .select("*")
         .eq("user_id", user.id)
+        .eq("streak_type", "login")
         .maybeSingle();
 
       if (!existing) {
         // Create new streak record
-        await (supabase.from("user_streaks" as any) as any).insert({
+        await supabase.from("user_streaks").insert({
           user_id: user.id,
           current_streak: 1,
           longest_streak: 1,
-          last_login_date: today,
-          total_logins: 1,
-          streak_multiplier: 1.0,
+          last_activity_date: today,
+          streak_type: "login",
         });
         return;
       }
 
-      const lastLogin = existing.last_login_date;
+      const lastLogin = existing.last_activity_date;
       if (lastLogin === today) return; // Already logged in today
 
       const yesterday = new Date();
@@ -63,19 +64,16 @@ export function useLoginStreak() {
         newStreak = (existing.current_streak || 0) + 1;
       }
 
-      // Calculate multiplier: 1.0 base, +0.1 per day up to 2.0x
-      const multiplier = Math.min(2.0, 1.0 + (newStreak - 1) * 0.1);
-
-      await (supabase.from("user_streaks" as any) as any)
+      await supabase
+        .from("user_streaks")
         .update({
           current_streak: newStreak,
           longest_streak: Math.max(newStreak, existing.longest_streak || 0),
-          last_login_date: today,
-          total_logins: (existing.total_logins || 0) + 1,
-          streak_multiplier: Math.round(multiplier * 10) / 10,
+          last_activity_date: today,
           updated_at: new Date().toISOString(),
         })
-        .eq("user_id", user.id);
+        .eq("user_id", user.id)
+        .eq("streak_type", "login");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-streak"] });
@@ -86,7 +84,7 @@ export function useLoginStreak() {
   useEffect(() => {
     if (user && !isLoading) {
       const today = new Date().toISOString().split("T")[0];
-      if (!streak || streak.last_login_date !== today) {
+      if (!streak || streak.last_activity_date !== today) {
         updateStreak.mutate();
       }
     }
@@ -95,8 +93,8 @@ export function useLoginStreak() {
   return {
     currentStreak: streak?.current_streak || 0,
     longestStreak: streak?.longest_streak || 0,
-    totalLogins: streak?.total_logins || 0,
-    multiplier: streak?.streak_multiplier || 1.0,
+    totalLogins: 0,
+    multiplier: 1.0,
     isLoading,
   };
 }
