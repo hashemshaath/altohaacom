@@ -94,8 +94,9 @@ export const PostCard = memo(function PostCard({
       )}
 
       {!isEditing && isViral && !post.is_pinned && (
-        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4">
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4 animate-in fade-in-50">
           🔥 {isAr ? "منشور رائج" : "Trending post"}
+          <span className="text-muted-foreground font-normal">• {totalEngagement} {isAr ? "تفاعل" : "interactions"}</span>
         </div>
       )}
 
@@ -254,6 +255,14 @@ export const PostCard = memo(function PostCard({
               commentsCount={post.comments_count}
               repostsCount={post.reposts_count}
             />
+
+            {/* Hot post indicator */}
+            {isHotPost && !isViral && (
+              <div className="mt-2 flex items-center gap-1.5 text-[10px] text-chart-4/80">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4 animate-pulse" />
+                {isAr ? "محتوى نشط" : "Active thread"}
+              </div>
+            )}
 
             {/* Poll */}
             <PollDisplay postId={post.id} />
