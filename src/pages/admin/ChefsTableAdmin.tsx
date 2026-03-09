@@ -79,25 +79,17 @@ export default function ChefsTableAdmin() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [requestStatusFilter, setRequestStatusFilter] = useState("all");
-  const [sessionSort, setSessionSort] = useState<"date" | "title" | "status">("date");
-  const [sessionSortDir, setSortDir] = useState<"asc" | "desc">("desc");
-
   const filteredSessions = useMemo(() => {
-    let list = sessions.filter(s => {
+    return sessions.filter(s => {
       const q = search.toLowerCase();
       const matchSearch = s.title.toLowerCase().includes(q) || s.product_name.toLowerCase().includes(q);
       const matchStatus = statusFilter === "all" || s.status === statusFilter;
       return matchSearch && matchStatus;
     });
-    list.sort((a, b) => {
-      let cmp = 0;
-      if (sessionSort === "date") cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      else if (sessionSort === "title") cmp = a.title.localeCompare(b.title);
-      else cmp = a.status.localeCompare(b.status);
-      return sessionSortDir === "desc" ? -cmp : cmp;
-    });
-    return list;
-  }, [sessions, search, statusFilter, sessionSort, sessionSortDir]);
+  }, [sessions, search, statusFilter]);
+
+  const { sorted: sortedSessions, sortColumn: sesSortCol, sortDirection: sesSortDir, toggleSort: sesToggleSort } = useTableSort(filteredSessions, "created_at", "desc");
+  const sessionPagination = usePagination(sortedSessions, { defaultPageSize: 15 });
 
   const filteredRequests = useMemo(() => {
     return requests.filter(r => {
