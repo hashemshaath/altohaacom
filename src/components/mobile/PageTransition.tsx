@@ -18,7 +18,7 @@ export const PageTransition = memo(function PageTransition({ children }: { child
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           if (ref.current) {
-            ref.current.style.transition = "opacity 0.2s cubic-bezier(0.22,1,0.36,1), transform 0.2s cubic-bezier(0.22,1,0.36,1)";
+            ref.current.style.transition = "opacity 0.25s cubic-bezier(0.22,1,0.36,1), transform 0.25s cubic-bezier(0.22,1,0.36,1)";
             ref.current.style.opacity = "1";
             ref.current.style.transform = "translateY(0)";
           }

@@ -90,7 +90,7 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="center" 
-          className="w-[420px] p-3 rounded-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2"
+          className="w-[420px] p-3 rounded-2xl animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 shadow-xl shadow-foreground/[0.06] border-border/50"
           sideOffset={8}
         >
           <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 px-1 pb-2">
