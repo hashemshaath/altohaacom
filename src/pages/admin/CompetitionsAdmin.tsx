@@ -701,10 +701,10 @@ export default function CompetitionsAdmin() {
                   <TableHead className="w-10">
                     <Checkbox checked={isAllSelected} onCheckedChange={toggleAll} />
                   </TableHead>
-                  <TableHead className="font-semibold">{isAr ? "المسابقة" : "Competition"}</TableHead>
+                  <SortableTableHead column="title" label={isAr ? "المسابقة" : "Competition"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
                   <TableHead className="font-semibold">{isAr ? "المنظم / المعرض" : "Organizer / Exhibition"}</TableHead>
-                  <TableHead className="font-semibold">{isAr ? "الحالة" : "Status"}</TableHead>
-                  <TableHead className="font-semibold">{isAr ? "التاريخ" : "Date"}</TableHead>
+                  <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
+                  <SortableTableHead column="competition_start" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
                   <TableHead className="font-semibold">{isAr ? "الفئات" : "Categories"}</TableHead>
                   <TableHead className="font-semibold">{isAr ? "المشاركين" : "Participants"}</TableHead>
                   <TableHead className="w-12"></TableHead>
