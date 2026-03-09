@@ -64,10 +64,13 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 3,
       gcTime: 1000 * 60 * 15,
-      retry: 1,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors (client errors)
+        if (error?.status >= 400 && error?.status < 500) return false;
+        return failureCount < 1;
+      },
       refetchOnWindowFocus: false,
       refetchOnReconnect: "always",
-      // Deduplicate identical queries within a 2s window
       structuralSharing: true,
     },
     mutations: {
@@ -84,15 +87,15 @@ function AppContent() {
   useEnhancedSEO(language);
   return (
     <>
-      <Suspense fallback={null}><PullToRefreshIndicator {...ptr as any} /></Suspense>
       <ScrollToTop />
       <SkipToContent />
       <Suspense fallback={null}>
+        <PullToRefreshIndicator {...ptr as any} />
         <GoogleTrackingProvider />
         <TrackingScriptsInjector />
         <PageTracker />
+        <FloatingHelpButton />
       </Suspense>
-      <Suspense fallback={null}><FloatingHelpButton /></Suspense>
       <MaintenanceGuard>
       <ErrorBoundary>
       <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
@@ -110,16 +113,14 @@ function AppContent() {
       </Suspense>
       </ErrorBoundary>
       </MaintenanceGuard>
-      <Suspense fallback={null}><LiveChatWidget /></Suspense>
-      <Suspense fallback={null}><WelcomeModal /></Suspense>
-      <Suspense fallback={null}><GuidedTour /></Suspense>
-      <Suspense fallback={null}><CommandPalette /></Suspense>
       <Suspense fallback={null}>
+        <LiveChatWidget />
+        <WelcomeModal />
+        <GuidedTour />
+        <CommandPalette />
         <MobileBottomNav />
         <ScrollProgress />
         <BackToTop />
-      </Suspense>
-      <Suspense fallback={null}>
         <SmartInstallBanner />
         <IOSInstallGuide />
         <OfflineBanner />

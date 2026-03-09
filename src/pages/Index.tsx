@@ -12,7 +12,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { useAdTracking } from "@/hooks/useAdTracking";
-import { prefetchCommonRoutes } from "@/lib/prefetch";
+// Route prefetching handled by RoutePrefetcher component in App
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -128,7 +128,7 @@ const DEFAULT_SECTION_KEYS = [
 const Index = () => {
   const { language } = useLanguage();
   useAdTracking();
-  useEffect(() => { prefetchCommonRoutes(); }, []);
+  // Route prefetching is handled by RoutePrefetcher in App.tsx
 
   const { data: dbSections = [] } = useHomepageSections();
 
