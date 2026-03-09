@@ -24,6 +24,8 @@ import { ReferenceGalleryPanel } from "@/components/competitions/ReferenceGaller
 import { JudgeDashboard } from "@/components/judging/JudgeDashboard";
 import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
 import { EntryComparison } from "@/components/judging/EntryComparison";
+import { OfflineJudgingPanel } from "@/components/judging/OfflineJudgingPanel";
+import { WifiOff } from "lucide-react";
 
 type Registration = Database["public"]["Tables"]["competition_registrations"]["Row"];
 type Criteria = Database["public"]["Tables"]["judging_criteria"]["Row"];
