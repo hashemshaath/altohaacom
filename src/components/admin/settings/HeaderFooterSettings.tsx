@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ interface Props {
   isPending: boolean;
 }
 
-export const HeaderFooterSettings = memo(function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
+export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const headerCfg = settings.header || {};
@@ -245,4 +245,4 @@ export const HeaderFooterSettings = memo(function HeaderFooterSettings({ setting
       </Card>
     </div>
   );
-});
+}
