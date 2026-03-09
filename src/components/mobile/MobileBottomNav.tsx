@@ -38,7 +38,7 @@ function getFabActions(pathname: string) {
   if (pathname.startsWith("/community")) {
     return [
       { to: "/community?action=post", labelEn: "New Post", labelAr: "منشور جديد", icon: Camera },
-      { to: "/recipes/new", labelEn: "Share Recipe", labelAr: "شارك وصفة", icon: UtensilsCrossed },
+      { to: "/recipes/create", labelEn: "Share Recipe", labelAr: "شارك وصفة", icon: UtensilsCrossed },
     ];
   }
   if (pathname.startsWith("/recipes")) {
