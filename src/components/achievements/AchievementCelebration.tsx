@@ -74,11 +74,20 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
             <div className="flex justify-center">
               <div className="relative">
                 <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center ring-4 ring-primary/10 animate-pulse">
-                  <Trophy className="h-10 w-10 text-primary" />
+                  {event.type === "badge" ? (
+                    <span className="text-4xl">{event.badge?.slice(0, 2) || "🏆"}</span>
+                  ) : (
+                    <Trophy className="h-10 w-10 text-primary" />
+                  )}
                 </div>
                 <div className="absolute -top-1 -end-1 h-6 w-6 rounded-full bg-chart-3 flex items-center justify-center animate-bounce">
                   <Star className="h-3.5 w-3.5 text-chart-3-foreground" />
                 </div>
+                {event.points && event.points >= 50 && (
+                  <div className="absolute -bottom-1 -start-1 h-5 w-5 rounded-full bg-chart-4 flex items-center justify-center text-[8px] font-black text-chart-4-foreground">
+                    ⚡
+                  </div>
+                )}
               </div>
             </div>
 

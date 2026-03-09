@@ -515,10 +515,17 @@ function ArticleCard({
                 <Calendar className="h-3 w-3" />
                 {formatDate(article.published_at || article.created_at)}
               </span>
-              <span className="flex items-center gap-1">
-                <Eye className="h-3 w-3" />
-                {article.view_count}
-              </span>
+              <div className="flex items-center gap-2.5">
+                {(article.view_count ?? 0) >= 100 && (
+                  <Badge variant="secondary" className="text-[8px] px-1.5 py-0 h-4 rounded-lg gap-0.5 bg-chart-4/10 text-chart-4 border-0">
+                    🔥 {isAr ? "رائج" : "Trending"}
+                  </Badge>
+                )}
+                <span className="flex items-center gap-1">
+                  <Eye className="h-3 w-3" />
+                  {article.view_count}
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>

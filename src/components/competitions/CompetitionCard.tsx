@@ -172,6 +172,13 @@ export const CompetitionCard = memo(
                   {isAr ? `آخر ${derived.daysLeft} أيام للتسجيل!` : `Only ${derived.daysLeft} days to register!`}
                 </p>
               )}
+              {/* Judging indicator */}
+              {competition.status === "judging" && (
+                <p className="text-[9px] font-bold text-chart-4 mb-1.5 flex items-center gap-1">
+                  <span className="relative flex h-1.5 w-1.5 me-0.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-4 opacity-75" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-chart-4" /></span>
+                  {isAr ? "التحكيم جارٍ الآن" : "Judging in progress"}
+                </p>
+              )}
 
               {/* Registration stats row */}
               {regCount > 0 && (
