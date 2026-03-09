@@ -122,7 +122,7 @@ export const ExhibitionHero = memo(function ExhibitionHero({
       )}
 
       {/* Content bar — below the image */}
-      <div className="border-b border-border/50 bg-card">
+      <div className="border-b border-border/50 bg-gradient-to-b from-card to-card/80">
         <div className="container py-3 sm:py-5 space-y-2 sm:space-y-3">
           {/* Title row */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -188,7 +188,7 @@ export const ExhibitionHero = memo(function ExhibitionHero({
           </div>
 
           {/* Info strip — organizer + stats */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1 border-t border-border/40">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1 border-t border-border/20">
             {organizer && (
               <div className="flex items-center gap-2 pt-2">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-primary/5 ring-1 ring-primary/10">

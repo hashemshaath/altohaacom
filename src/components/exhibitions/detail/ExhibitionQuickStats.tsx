@@ -48,9 +48,9 @@ export const ExhibitionQuickStats = memo(function ExhibitionQuickStats({ exhibit
   return (
     <div className="flex flex-wrap items-center gap-2">
       {items.map((item, i) => (
-        <Badge key={i} variant="outline" className="gap-1 py-1 px-2 text-[10px] font-medium border-border/50">
-          <item.icon className="h-2.5 w-2.5" />
-          <span className="font-bold">{item.value}</span>
+        <Badge key={i} variant="outline" className="gap-1.5 py-1.5 px-2.5 text-[10px] font-medium border-border/50 bg-card/60 backdrop-blur-sm hover:bg-muted/40 hover:border-border transition-all duration-200 cursor-default">
+          <item.icon className="h-3 w-3 text-primary/60" />
+          <span className="font-bold tabular-nums">{item.value}</span>
           <span className="text-muted-foreground">{item.label}</span>
         </Badge>
       ))}

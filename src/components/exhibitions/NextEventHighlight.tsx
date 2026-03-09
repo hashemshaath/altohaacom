@@ -49,14 +49,14 @@ export const NextEventHighlight = memo(function NextEventHighlight({ exhibition,
       </div>
 
       {/* Countdown */}
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-black text-primary tabular-nums"><AnimatedCounter value={daysLeft} /></span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{isAr ? "يوم" : "days"}</span>
+      <div className="flex items-center gap-4 mb-3">
+        <div className="flex flex-col items-center rounded-xl bg-primary/10 px-3 py-2 min-w-[52px]">
+          <span className="text-xl font-black text-primary tabular-nums leading-none"><AnimatedCounter value={daysLeft} /></span>
+          <span className="text-[8px] font-bold uppercase tracking-wider text-primary/60 mt-0.5">{isAr ? "يوم" : "days"}</span>
         </div>
-        <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-black text-primary tabular-nums"><AnimatedCounter value={hoursLeft} /></span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{isAr ? "ساعة" : "hrs"}</span>
+        <div className="flex flex-col items-center rounded-xl bg-primary/10 px-3 py-2 min-w-[52px]">
+          <span className="text-xl font-black text-primary tabular-nums leading-none"><AnimatedCounter value={hoursLeft} /></span>
+          <span className="text-[8px] font-bold uppercase tracking-wider text-primary/60 mt-0.5">{isAr ? "ساعة" : "hrs"}</span>
         </div>
       </div>
 
