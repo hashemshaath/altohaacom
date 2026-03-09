@@ -431,9 +431,9 @@ export default function NotificationPreferences() {
                     return (
                       <div key={cat.key}>
                         {idx > 0 && <Separator />}
-                        <label className="flex items-center justify-between py-4 cursor-pointer" htmlFor={`cat-${cat.key}`}>
+                        <label className="flex items-center justify-between py-4 cursor-pointer group hover:bg-muted/20 -mx-4 px-4 rounded-xl transition-colors duration-200" htmlFor={`cat-${cat.key}`}>
                           <div className="flex items-center gap-3">
-                            <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all ${!isMuted ? "bg-primary/10" : "bg-muted"}`}>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 ${!isMuted ? "bg-primary/10" : "bg-muted"}`}>
                               <Icon className={`h-4.5 w-4.5 transition-colors ${!isMuted ? "text-primary" : "text-muted-foreground"}`} />
                             </div>
                             <div>
