@@ -278,14 +278,14 @@ export default function LoyaltyAdmin() {
           <AdminTableCard>
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/30">
-                    <TableHead>{isAr ? "المكافأة" : "Reward"}</TableHead>
-                    <TableHead>{isAr ? "الفئة" : "Category"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "التكلفة" : "Cost"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "الحد الأدنى" : "Min Tier"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "مميز" : "Featured"}</TableHead>
-                    <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
-                  </TableRow>
+                   <TableRow className="bg-muted/30">
+                     <SortableTableHead column="name" label={isAr ? "المكافأة" : "Reward"} sortColumn={rwSortCol} sortDirection={rwSortDir} onSort={rwToggleSort} />
+                     <SortableTableHead column="category" label={isAr ? "الفئة" : "Category"} sortColumn={rwSortCol} sortDirection={rwSortDir} onSort={rwToggleSort} />
+                     <SortableTableHead column="points_cost" label={isAr ? "التكلفة" : "Cost"} sortColumn={rwSortCol} sortDirection={rwSortDir} onSort={rwToggleSort} className="text-center" />
+                     <TableHead className="text-center">{isAr ? "الحد الأدنى" : "Min Tier"}</TableHead>
+                     <TableHead className="text-center">{isAr ? "مميز" : "Featured"}</TableHead>
+                     <TableHead className="text-center">{isAr ? "مفعّل" : "Active"}</TableHead>
+                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {rewards.map((r: any) => (
