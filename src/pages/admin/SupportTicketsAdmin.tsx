@@ -238,12 +238,8 @@ export default function SupportTicketsAdmin() {
     },
   });
 
-  const filteredTickets = tickets.filter(t =>
-    !searchQuery ||
-    t.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.ticket_number.includes(searchQuery) ||
-    profileMap.get(t.user_id)?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { sorted: sortedTickets, sortColumn, sortDirection, toggleSort } = useTableSort(filteredTickets, "created_at", "desc");
+  const pagination = usePagination(sortedTickets, { defaultPageSize: 15 });
 
   const stats = {
     total: tickets.length,
@@ -258,7 +254,7 @@ export default function SupportTicketsAdmin() {
     }).length,
   };
 
-  const bulk = useAdminBulkActions(filteredTickets);
+  const bulk = useAdminBulkActions(sortedTickets);
 
   const { exportCSV: exportTicketsCSV } = useCSVExport({
     columns: [
