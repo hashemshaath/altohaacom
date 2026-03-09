@@ -180,7 +180,7 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
               <p className="text-xs mt-1">{isAr ? "ابدأ بكسب النقاط من خلال المسابقات والتفاعل" : "Start earning points through competitions & engagement"}</p>
             </div>
           ) : (
-            recentTransactions.map((tx) => {
+            filteredTransactions.map((tx) => {
               const isPositive = tx.points > 0;
               const label = actionLabels[tx.action_type];
               return (
