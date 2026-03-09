@@ -101,7 +101,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
   });
 
   return (
-    <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:border-primary/10 group">
+    <div className="relative overflow-visible rounded-3xl border border-border/20 bg-card/60 backdrop-blur-md shadow-xl shadow-primary/5 transition-all duration-700 hover:shadow-2xl hover:border-primary/15 group">
       {/* Cover Image */}
       <div className="relative h-32 sm:h-52 md:h-72 bg-gradient-to-br from-primary/10 via-background to-accent/10 overflow-hidden rounded-t-3xl">
         {/* Ambient blurs */}
