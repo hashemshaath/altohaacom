@@ -288,7 +288,7 @@ export default function LoyaltyAdmin() {
                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rewards.map((r: any) => (
+                  {rwPagination.paginated.map((r: any) => (
                     <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
