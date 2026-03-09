@@ -511,20 +511,20 @@ export default function LocalizationAdmin() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-10">
-                        <Checkbox
-                          checked={bulk.isAllSelected}
-                          onCheckedChange={bulk.toggleAll}
-                        />
-                      </TableHead>
-                      <TableHead className="w-[100px]">{isAr ? "القسم" : "Namespace"}</TableHead>
-                      <TableHead className="w-[180px]">{isAr ? "المفتاح" : "Key"}</TableHead>
-                      <TableHead>English</TableHead>
-                      <TableHead>العربية</TableHead>
-                      <TableHead className="w-[80px]">{isAr ? "الحالة" : "Status"}</TableHead>
-                      <TableHead className="w-[120px]">{isAr ? "إجراءات" : "Actions"}</TableHead>
-                    </TableRow>
+                     <TableRow>
+                       <TableHead className="w-10">
+                         <Checkbox
+                           checked={bulk.isAllSelected}
+                           onCheckedChange={bulk.toggleAll}
+                         />
+                       </TableHead>
+                       <SortableTableHead column="namespace" label={isAr ? "القسم" : "Namespace"} sortColumn={tlSortCol} sortDirection={tlSortDir} onSort={tlToggleSort} className="w-[100px]" />
+                       <SortableTableHead column="key" label={isAr ? "المفتاح" : "Key"} sortColumn={tlSortCol} sortDirection={tlSortDir} onSort={tlToggleSort} className="w-[180px]" />
+                       <TableHead>English</TableHead>
+                       <TableHead>العربية</TableHead>
+                       <SortableTableHead column="is_verified" label={isAr ? "الحالة" : "Status"} sortColumn={tlSortCol} sortDirection={tlSortDir} onSort={tlToggleSort} className="w-[80px]" />
+                       <TableHead className="w-[120px]">{isAr ? "إجراءات" : "Actions"}</TableHead>
+                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loadingTranslations ? (
