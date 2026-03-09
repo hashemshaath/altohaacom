@@ -97,13 +97,37 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
         </CardContent>
       </Card>
 
+      {/* Filters */}
+      <div className="flex gap-3 items-center">
+        <div className="relative flex-1">
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "بحث في المواقع..." : "Search placements..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="ps-9"
+          />
+        </div>
+        <Select value={pageFilter} onValueChange={setPageFilter}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "كل الصفحات" : "All Pages"}</SelectItem>
+            {pageLocations.map(page => (
+              <SelectItem key={page} value={page}>{page}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Placements table */}
       <Card className="rounded-2xl">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">{isAr ? "المواقع الإعلانية" : "Ad Placements"}</CardTitle>
             <Badge variant="secondary" className="text-[10px]">
-              {placements.filter(p => p.is_active).length}/{placements.length} {isAr ? "مفعل" : "active"}
+              {sortedPlacements.filter(p => p.is_active).length}/{sortedPlacements.length} {isAr ? "مفعل" : "active"}
             </Badge>
           </div>
         </CardHeader>
