@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
