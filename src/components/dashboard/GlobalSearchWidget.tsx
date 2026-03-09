@@ -53,7 +53,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
         id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: `/recipes/${r.id}`, subtitle: r.category || undefined,
       }));
       articles.data?.forEach(a => searchResults.push({
-        id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: `/articles/${a.slug}`, subtitle: a.type,
+        id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: `/news/${a.slug}`, subtitle: a.type,
       }));
       chefs.data?.forEach(c => searchResults.push({
         id: c.user_id, title: isAr && c.full_name_ar ? c.full_name_ar : c.full_name || c.username || "", type: "chef", href: `/u/${c.username}`, subtitle: c.specialization || undefined,

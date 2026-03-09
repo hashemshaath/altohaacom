@@ -36,7 +36,7 @@ export const OfflineIndicator = memo(function OfflineIndicator() {
       "animate-in slide-in-from-top-2 duration-300",
       offline
         ? "bg-destructive text-destructive-foreground"
-        : "bg-chart-2 text-white"
+        : "bg-chart-2 text-chart-2-foreground"
     )}>
       {offline ? (
         <>

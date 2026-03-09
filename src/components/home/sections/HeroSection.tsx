@@ -43,7 +43,7 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
     >
       <img
         src={slide.image_url}
-        alt=""
+        alt={slide.title}
         className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
         loading={isFirst ? "eager" : "lazy"}
         decoding={isFirst ? "sync" : "async"}

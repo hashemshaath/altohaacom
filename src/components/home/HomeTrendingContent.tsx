@@ -107,13 +107,13 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
               {filtered.map((article: any, i: number) => (
                 <Link
                   key={article.id}
-                  to={`/articles/${article.slug}`}
+                  to={`/news/${article.slug}`}
                   className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
                 >
                   <Card className="overflow-hidden h-full border-border/40 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]">
                     <div className="relative aspect-[16/10] overflow-hidden">
                       {article.featured_image_url ? (
-                        <img src={article.featured_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                        <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                       ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center">
                           <TrendingUp className="h-8 w-8 text-muted-foreground/20" />
