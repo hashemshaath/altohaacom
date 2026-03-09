@@ -65,12 +65,16 @@ export const PostCard = memo(function PostCard({
   const navigate = useNavigate();
   const isAr = language === "ar";
 
+  const totalEngagement = post.likes_count + post.comments_count + post.reposts_count;
+  const isHotPost = totalEngagement >= 10;
+
   return (
     <article
       className={cn(
         "transition-all duration-200 animate-in fade-in-50",
         !isEditing && "px-3 sm:px-4 py-2.5 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20 touch-manipulation active:scale-[0.995]",
-        post.is_pinned && "bg-primary/5 border-s-primary/40"
+        post.is_pinned && "bg-primary/5 border-s-primary/40",
+        isHotPost && !post.is_pinned && "border-s-chart-4/40"
       )}
     >
       {isEditing && (

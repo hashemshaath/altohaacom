@@ -83,7 +83,10 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-[10px] text-muted-foreground">{isAr ? "معدل الحل" : "Resolution Rate"}</span>
-            <span className="text-[10px] font-medium">{data.resolutionRate}%</span>
+            <span className={`text-[10px] font-medium ${data.resolutionRate >= 80 ? "text-chart-2" : data.resolutionRate >= 50 ? "text-chart-4" : "text-destructive"}`}>
+              {data.resolutionRate}%
+              {data.resolutionRate >= 80 ? " ✓" : data.resolutionRate < 50 ? " ⚠" : ""}
+            </span>
           </div>
           <Progress value={data.resolutionRate} className="h-1.5" />
         </div>
