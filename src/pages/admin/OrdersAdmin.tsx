@@ -1480,9 +1480,7 @@ export default function OrdersAdmin() {
                           <Badge variant="outline" className="text-xs">{getStatusLabel(order.payment_status || "pending")}</Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge className={statusColors[order.status] || "bg-muted text-muted-foreground"}>
-                            {getStatusLabel(order.status)}
-                          </Badge>
+                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                         <TableCell>
