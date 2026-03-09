@@ -48,7 +48,7 @@ export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight
   };
 
   return (
-    <div className="flex items-center gap-2 border-b border-border/40 px-3 py-2 bg-muted/10 animate-fade-in">
+    <div className="flex items-center gap-2 border-b border-border/40 px-3 py-2 bg-muted/10 animate-fade-in" role="search" aria-label={isAr ? "بحث في الرسائل" : "Search messages"}>
       <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
       <Input
         autoFocus
