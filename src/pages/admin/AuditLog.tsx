@@ -20,8 +20,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FileText, Trash2, ShieldAlert, Search, Download, Filter,
-  Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye,
+  Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye, FileSearch,
 } from "lucide-react";
+import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, isAfter } from "date-fns";
