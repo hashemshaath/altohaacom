@@ -1,4 +1,7 @@
 import { useState, useMemo } from "react";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
 import { useLanguage } from "@/i18n/LanguageContext";
