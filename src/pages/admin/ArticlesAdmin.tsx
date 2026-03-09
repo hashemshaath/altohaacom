@@ -10,30 +10,29 @@ import { ContentLiveStatsWidget } from "@/components/admin/ContentLiveStatsWidge
 import { ContentPerformanceWidget } from "@/components/admin/ContentPerformanceWidget";
 import { EditorialCalendarWidget, ArticlePerformanceWidget } from "@/components/admin/EditorialCalendarWidget";
 import { ArticleEditorPro } from "@/components/articles/ArticleEditorPro";
+import { AdminTableCard } from "@/components/admin/AdminTableCard";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { 
-  Plus, Search, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
+  Plus, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
   Calendar, Clock, Star, Download, BarChart3, TrendingUp, ToggleLeft, ToggleRight,
   Timer,
 } from "lucide-react";
