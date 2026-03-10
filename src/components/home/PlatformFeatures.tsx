@@ -165,7 +165,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       {/* CTA Cards */}
       <section className="container" dir={isAr ? "rtl" : "ltr"}>
         <div className="grid gap-3 md:grid-cols-2">
-          <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 to-transparent transition-all hover:shadow-xl">
+          <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/10 via-card to-card transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
                 <Star className="h-5 w-5 text-primary" />
