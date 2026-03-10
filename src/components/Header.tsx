@@ -28,6 +28,9 @@ import {
   BookOpen,
   HandHeart,
   Factory,
+  Briefcase,
+  CalendarDays,
+  Medal,
 } from "lucide-react";
 
 const primaryNav = [
@@ -38,6 +41,7 @@ const primaryNav = [
 ];
 
 const moreLinks = [
+  { to: "/jobs", icon: Briefcase, labelEn: "Jobs", labelAr: "الوظائف" },
   { to: "/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
   { to: "/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدروس المتقدمة" },
   { to: "/recipes", icon: UtensilsCrossed, labelEn: "Recipes", labelAr: "الوصفات" },
@@ -47,6 +51,8 @@ const moreLinks = [
   { to: "/pro-suppliers", icon: Factory, labelEn: "Pro Suppliers", labelAr: "الموردون المحترفون" },
   { to: "/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
   { to: "/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
+  { to: "/events-calendar", icon: CalendarDays, labelEn: "Events Calendar", labelAr: "تقويم الفعاليات" },
+  { to: "/rankings", icon: Medal, labelEn: "Rankings", labelAr: "التصنيفات" },
 ];
 
 const HEADER_HEIGHT = "h-14";

@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { Link } from "react-router-dom";
-import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail, User, LayoutDashboard } from "lucide-react";
+import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail, User, LayoutDashboard, Briefcase, CalendarDays, Medal, UtensilsCrossed } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(function Footer(_props, ref) {
@@ -68,17 +68,26 @@ export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLEle
               <Link to="/community" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Users className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "المجتمع" : "Community"}
               </Link>
+              <Link to="/jobs" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Briefcase className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الوظائف" : "Jobs"}
+              </Link>
               <Link to="/masterclasses" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <GraduationCap className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الدروس المتقدمة" : "Masterclasses"}
               </Link>
-              <Link to="/entities" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
-                <Building2 className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الجهات والجمعيات" : "Entities & Associations"}
+              <Link to="/recipes" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <UtensilsCrossed className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الوصفات" : "Recipes"}
+              </Link>
+              <Link to="/exhibitions" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Globe className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "المعارض" : "Exhibitions"}
               </Link>
               <Link to="/news" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
                 <Newspaper className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "الأخبار" : "News"}
               </Link>
-              <Link to="/exhibitions" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
-                <Globe className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "المعارض" : "Exhibitions"}
+              <Link to="/rankings" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <Medal className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "التصنيفات" : "Rankings"}
+              </Link>
+              <Link to="/events-calendar" className="group/link flex items-center gap-2 transition-all duration-200 hover:text-primary hover:translate-x-0.5 rtl:hover:-translate-x-0.5">
+                <CalendarDays className="h-3.5 w-3.5 opacity-60 group-hover/link:opacity-100 transition-opacity" />{isAr ? "تقويم الفعاليات" : "Events Calendar"}
               </Link>
             </nav>
           </div>
