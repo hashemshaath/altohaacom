@@ -30,6 +30,13 @@ const routeMeta: Record<string, { title: string; titleAr: string; description: s
   "/for-companies": { title: "For Companies — Altoha", titleAr: "للشركات — الطهاة", description: "Partner with Altoha for culinary talent, sponsorships, and brand visibility.", descriptionAr: "تشارك مع الطهاة للمواهب والرعايات والظهور.", type: "WebPage" },
   "/for-organizers": { title: "For Organizers — Altoha", titleAr: "للمنظمين — الطهاة", description: "Organize culinary competitions and events with Altoha's platform.", descriptionAr: "نظم مسابقات وفعاليات الطهي عبر منصة الطهاة.", type: "WebPage" },
   "/sponsors": { title: "For Sponsors — Altoha", titleAr: "للرعاة — الطهاة", description: "Sponsor culinary competitions and reach professional chefs globally.", descriptionAr: "ارعَ مسابقات الطهي وتواصل مع الطهاة المحترفين عالمياً.", type: "WebPage" },
+  "/search": { title: "Search — Altoha", titleAr: "البحث — الطهاة", description: "Search for chefs, competitions, recipes, and culinary content.", descriptionAr: "ابحث عن الطهاة والمسابقات والوصفات والمحتوى.", type: "SearchResultsPage" },
+  "/jobs": { title: "Culinary Jobs — Altoha", titleAr: "وظائف الطهي — الطهاة", description: "Browse culinary job opportunities from top restaurants and hotels.", descriptionAr: "تصفح فرص العمل في الطهي من أفضل المطاعم والفنادق.", type: "CollectionPage", keywords: "culinary jobs, chef jobs, restaurant careers" },
+  "/privacy": { title: "Privacy Policy — Altoha", titleAr: "سياسة الخصوصية — الطهاة", description: "Altoha privacy policy and data protection practices.", descriptionAr: "سياسة الخصوصية وحماية البيانات في الطهاة.", type: "WebPage" },
+  "/terms": { title: "Terms & Conditions — Altoha", titleAr: "الشروط والأحكام — الطهاة", description: "Terms and conditions for using the Altoha platform.", descriptionAr: "الشروط والأحكام لاستخدام منصة الطهاة.", type: "WebPage" },
+  "/cookies": { title: "Cookie Policy — Altoha", titleAr: "سياسة ملفات تعريف الارتباط — الطهاة", description: "Cookie policy and tracking information for Altoha.", descriptionAr: "سياسة ملفات تعريف الارتباط في الطهاة.", type: "WebPage" },
+  "/verify/certificate": { title: "Verify Certificate — Altoha", titleAr: "التحقق من الشهادة — الطهاة", description: "Verify the authenticity of an Altoha culinary certificate.", descriptionAr: "تحقق من صحة شهادة الطهاة.", type: "WebPage" },
+  "/install": { title: "Install Altoha App", titleAr: "تثبيت تطبيق الطهاة", description: "Install the Altoha progressive web app on your device.", descriptionAr: "ثبّت تطبيق الطهاة على جهازك.", type: "WebPage" },
 };
 
 export function useEnhancedSEO(language: string) {
