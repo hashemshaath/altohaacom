@@ -1,4 +1,4 @@
-import { useState, useMemo, memo, useCallback, useEffect } from "react";
+import { useState, useMemo, memo, useCallback, useEffect, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Progress } from "@/components/ui/progress";
 import { OpenToWorkBadge } from "@/components/profile/OpenToWorkBadge";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -23,12 +23,14 @@ import {
   Briefcase, Search, MapPin, Building2, Clock, Users, ChefHat, Filter, DollarSign,
   Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap, X,
   ArrowRight, Sparkles, Eye, Star, Globe, BarChart3, Megaphone, Home, ChevronRight,
-  LayoutGrid, LayoutList, Bell, BellRing, Heart, Bookmark, TrendingUp,
-  SlidersHorizontal, History, Zap, Share2, AlertCircle
+  LayoutGrid, LayoutList, Bell, BellRing, Bookmark, TrendingUp,
+  SlidersHorizontal, History, Zap, AlertCircle, Share2, Copy, Check,
+  ArrowUpDown, Flame, Target, Crown, ExternalLink, ChevronDown, Command, Loader2
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -46,14 +48,14 @@ const EXP_LEVELS: Record<string, { en: string; ar: string }> = {
 };
 
 const CULINARY_CATEGORIES = [
-  { key: "chef", icon: ChefHat, en: "Head Chef", ar: "رئيس طهاة", count: 0 },
-  { key: "pastry", icon: Cake, en: "Pastry & Bakery", ar: "حلويات ومخابز", count: 0 },
-  { key: "restaurant", icon: Utensils, en: "Restaurants", ar: "مطاعم", count: 0 },
-  { key: "cafe", icon: Coffee, en: "Cafés & Coffee", ar: "مقاهي وقهوة", count: 0 },
-  { key: "catering", icon: Soup, en: "Catering", ar: "تموين وضيافة", count: 0 },
-  { key: "nutrition", icon: Salad, en: "Nutrition", ar: "تغذية", count: 0 },
-  { key: "consulting", icon: Award, en: "Consulting", ar: "استشارات", count: 0 },
-  { key: "training", icon: GraduationCap, en: "Training", ar: "تدريب", count: 0 },
+  { key: "chef", icon: ChefHat, en: "Head Chef", ar: "رئيس طهاة" },
+  { key: "pastry", icon: Cake, en: "Pastry & Bakery", ar: "حلويات ومخابز" },
+  { key: "restaurant", icon: Utensils, en: "Restaurants", ar: "مطاعم" },
+  { key: "cafe", icon: Coffee, en: "Cafés & Coffee", ar: "مقاهي وقهوة" },
+  { key: "catering", icon: Soup, en: "Catering", ar: "تموين وضيافة" },
+  { key: "nutrition", icon: Salad, en: "Nutrition", ar: "تغذية" },
+  { key: "consulting", icon: Award, en: "Consulting", ar: "استشارات" },
+  { key: "training", icon: GraduationCap, en: "Training", ar: "تدريب" },
 ];
 
 const SALARY_RANGES = [
@@ -63,11 +65,10 @@ const SALARY_RANGES = [
   { key: "8000+", en: "8,000+", ar: "8,000+" },
 ];
 
-// Recent searches from localStorage
+const ITEMS_PER_PAGE = 12;
+
 function getRecentSearches(): string[] {
-  try {
-    return JSON.parse(localStorage.getItem("job-recent-searches") || "[]").slice(0, 5);
-  } catch { return []; }
+  try { return JSON.parse(localStorage.getItem("job-recent-searches") || "[]").slice(0, 5); } catch { return []; }
 }
 function addRecentSearch(q: string) {
   if (!q.trim()) return;
@@ -82,6 +83,7 @@ export default function JobSearch() {
   const isAr = language === "ar";
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const initialQ = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || null;
@@ -95,23 +97,41 @@ export default function JobSearch() {
   const [salaryFilter, setSalaryFilter] = useState("all");
   const [tab, setTab] = useState(initialTab);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
-  const [sortBy, setSortBy] = useState<"newest" | "salary" | "views">("newest");
+  const [sortBy, setSortBy] = useState<"newest" | "salary" | "views" | "deadline">("newest");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [showSalaryOnly, setShowSalaryOnly] = useState(false);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>(getRecentSearches());
   const [showRecentSearches, setShowRecentSearches] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const [copiedShare, setCopiedShare] = useState(false);
   const [savedJobs, setSavedJobs] = useState<Set<string>>(() => {
     try { return new Set(JSON.parse(localStorage.getItem("saved-jobs") || "[]")); } catch { return new Set(); }
   });
 
-  // Save search on Enter
+  // Keyboard shortcut: "/" to focus search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "/" && !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+      if (e.key === "Escape") {
+        searchInputRef.current?.blur();
+        setShowRecentSearches(false);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (search.trim()) {
       addRecentSearch(search.trim());
       setRecentSearches(getRecentSearches());
       setShowRecentSearches(false);
+      setVisibleCount(ITEMS_PER_PAGE);
     }
   }, [search]);
 
@@ -120,11 +140,26 @@ export default function JobSearch() {
     e.stopPropagation();
     setSavedJobs(prev => {
       const next = new Set(prev);
-      if (next.has(jobId)) next.delete(jobId); else next.add(jobId);
+      if (next.has(jobId)) { next.delete(jobId); toast(isAr ? "تمت إزالة الوظيفة" : "Job removed"); }
+      else { next.add(jobId); toast(isAr ? "تم حفظ الوظيفة" : "Job saved"); }
       localStorage.setItem("saved-jobs", JSON.stringify([...next]));
       return next;
     });
-  }, []);
+  }, [isAr]);
+
+  const handleShareSearch = useCallback(() => {
+    const params = new URLSearchParams();
+    if (search) params.set("q", search);
+    if (selectedCategory) params.set("category", selectedCategory);
+    if (jobTypeFilter !== "all") params.set("type", jobTypeFilter);
+    if (tab !== "postings") params.set("tab", tab);
+    const url = `${window.location.origin}/jobs/search${params.toString() ? `?${params}` : ""}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedShare(true);
+      toast(isAr ? "تم نسخ رابط البحث" : "Search link copied");
+      setTimeout(() => setCopiedShare(false), 2000);
+    });
+  }, [search, selectedCategory, jobTypeFilter, tab, isAr]);
 
   const { data: jobPostings = [], isLoading: loadingPostings } = useQuery({
     queryKey: ["job-postings-search", jobTypeFilter],
@@ -158,7 +193,32 @@ export default function JobSearch() {
     },
   });
 
-  // Stats from data
+  // Top hiring companies
+  const topCompanies = useMemo(() => {
+    const counts: Record<string, { name: string; nameAr: string; logo: string | null; slug: string | null; count: number }> = {};
+    jobPostings.forEach((j: any) => {
+      const c = j.companies;
+      if (!c?.name) return;
+      const key = c.name;
+      if (!counts[key]) counts[key] = { name: c.name, nameAr: c.name_ar || c.name, logo: c.logo_url, slug: c.slug, count: 0 };
+      counts[key].count++;
+    });
+    return Object.values(counts).sort((a, b) => b.count - a.count).slice(0, 5);
+  }, [jobPostings]);
+
+  // Salary insights
+  const salaryInsights = useMemo(() => {
+    const salaries = jobPostings.filter((j: any) => j.is_salary_visible && j.salary_min).map((j: any) => j.salary_min as number);
+    if (salaries.length < 2) return null;
+    const sorted = [...salaries].sort((a, b) => a - b);
+    return {
+      min: sorted[0],
+      max: sorted[sorted.length - 1],
+      median: sorted[Math.floor(sorted.length / 2)],
+      count: salaries.length,
+    };
+  }, [jobPostings]);
+
   const stats = useMemo(() => {
     const totalJobs = jobPostings.length;
     const featuredCount = jobPostings.filter((j: any) => j.is_featured).length;
@@ -166,27 +226,29 @@ export default function JobSearch() {
       const d = Math.floor((Date.now() - new Date(j.created_at).getTime()) / 86400000);
       return d <= 7;
     }).length;
-    return { totalJobs, featuredCount, newThisWeek, totalChefs: availableChefs.length };
+    const urgentCount = jobPostings.filter((j: any) => {
+      if (!j.application_deadline) return false;
+      const diff = new Date(j.application_deadline).getTime() - Date.now();
+      return diff > 0 && diff < 7 * 86400000;
+    }).length;
+    return { totalJobs, featuredCount, newThisWeek, totalChefs: availableChefs.length, urgentCount };
   }, [jobPostings, availableChefs]);
 
-  // Category counts
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     CULINARY_CATEGORIES.forEach(c => { counts[c.key] = 0; });
     jobPostings.forEach((j: any) => {
       CULINARY_CATEGORIES.forEach(c => {
-        if (j.specialization?.toLowerCase().includes(c.key) || j.title?.toLowerCase().includes(c.key)) {
-          counts[c.key]++;
-        }
+        if (j.specialization?.toLowerCase().includes(c.key) || j.title?.toLowerCase().includes(c.key)) counts[c.key]++;
       });
     });
     return counts;
   }, [jobPostings]);
 
   const cities = useMemo(() => {
-    const set = new Set<string>();
-    jobPostings.forEach((j: any) => { if (j.city) set.add(j.city); });
-    return Array.from(set).sort();
+    const map: Record<string, number> = {};
+    jobPostings.forEach((j: any) => { if (j.city) map[j.city] = (map[j.city] || 0) + 1; });
+    return Object.entries(map).sort(([, a], [, b]) => b - a).map(([city, count]) => ({ city, count }));
   }, [jobPostings]);
 
   const activeFilterCount = [
@@ -201,7 +263,7 @@ export default function JobSearch() {
   const clearAllFilters = () => {
     setJobTypeFilter("all"); setCityFilter("all"); setExpFilter("all");
     setSalaryFilter("all"); setSelectedCategory(null); setSearch("");
-    setShowSalaryOnly(false);
+    setShowSalaryOnly(false); setVisibleCount(ITEMS_PER_PAGE);
   };
 
   const filteredPostings = useMemo(() => {
@@ -211,7 +273,7 @@ export default function JobSearch() {
       results = results.filter((j: any) =>
         j.title?.toLowerCase().includes(q) || j.title_ar?.includes(q) ||
         (j.companies as any)?.name?.toLowerCase().includes(q) || j.location?.toLowerCase().includes(q) ||
-        j.specialization?.toLowerCase().includes(q)
+        j.specialization?.toLowerCase().includes(q) || j.description?.toLowerCase().includes(q)
       );
     }
     if (cityFilter !== "all") results = results.filter((j: any) => j.city === cityFilter);
@@ -235,6 +297,11 @@ export default function JobSearch() {
     }
     if (sortBy === "salary") results = [...results].sort((a: any, b: any) => (b.salary_min || 0) - (a.salary_min || 0));
     if (sortBy === "views") results = [...results].sort((a: any, b: any) => (b.views_count || 0) - (a.views_count || 0));
+    if (sortBy === "deadline") results = [...results].sort((a: any, b: any) => {
+      if (!a.application_deadline) return 1;
+      if (!b.application_deadline) return -1;
+      return new Date(a.application_deadline).getTime() - new Date(b.application_deadline).getTime();
+    });
     return results;
   }, [jobPostings, search, cityFilter, expFilter, salaryFilter, selectedCategory, sortBy, showSalaryOnly]);
 
@@ -250,6 +317,12 @@ export default function JobSearch() {
     if (expFilter !== "all") results = results.filter((c: any) => c.experience_level === expFilter);
     return results;
   }, [availableChefs, search, expFilter]);
+
+  const paginatedPostings = filteredPostings.slice(0, visibleCount);
+  const hasMoreJobs = visibleCount < filteredPostings.length;
+
+  // Reset pagination on filter change
+  useEffect(() => { setVisibleCount(ITEMS_PER_PAGE); }, [search, jobTypeFilter, cityFilter, expFilter, salaryFilter, selectedCategory, showSalaryOnly]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
@@ -272,32 +345,41 @@ export default function JobSearch() {
               <span className="text-foreground font-medium">{isAr ? "بحث" : "Search"}</span>
             </nav>
 
-            {/* Title + stats mini bar */}
+            {/* Title + stats + share */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-5">
               <div>
                 <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
                   {isAr ? "بحث الوظائف" : "Job Search"}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {isAr 
+                  {isAr
                     ? `${stats.totalJobs} وظيفة متاحة • ${stats.newThisWeek} جديدة هذا الأسبوع`
                     : `${stats.totalJobs} jobs available • ${stats.newThisWeek} new this week`}
                 </p>
               </div>
-              {/* Mini stats */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                {stats.urgentCount > 0 && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Flame className="h-3.5 w-3.5 text-destructive" />
+                    <span className="text-destructive font-medium">{stats.urgentCount} {isAr ? "عاجلة" : "urgent"}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-1.5 text-xs">
                   <div className="h-2 w-2 rounded-full bg-[hsl(var(--success))] animate-pulse" />
-                  <span className="text-muted-foreground">{stats.totalChefs} {isAr ? "طاهٍ متاح" : "talent available"}</span>
+                  <span className="text-muted-foreground">{stats.totalChefs} {isAr ? "طاهٍ متاح" : "talent"}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs">
-                  <Sparkles className="h-3 w-3 text-primary" />
-                  <span className="text-muted-foreground">{stats.featuredCount} {isAr ? "مميزة" : "featured"}</span>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl" onClick={handleShareSearch}>
+                      {copiedShare ? <Check className="h-3.5 w-3.5 text-[hsl(var(--success))]" /> : <Share2 className="h-3.5 w-3.5 text-muted-foreground" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="text-[10px]">{isAr ? "مشاركة البحث" : "Share search"}</TooltipContent>
+                </Tooltip>
               </div>
             </div>
 
-            {/* Category pills with counts */}
+            {/* Category pills */}
             <div className="flex gap-2 overflow-x-auto scrollbar-none pb-3 mb-4">
               <button
                 onClick={() => setSelectedCategory(null)}
@@ -341,18 +423,25 @@ export default function JobSearch() {
                 <div className="relative flex-1">
                   <Search className="absolute start-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
                   <Input
-                    className="ps-11 pe-10 h-12 rounded-2xl border-border/20 bg-card shadow-sm text-sm focus:ring-2 focus:ring-primary/20"
+                    ref={searchInputRef}
+                    className="ps-11 pe-20 h-12 rounded-2xl border-border/20 bg-card shadow-sm text-sm focus:ring-2 focus:ring-primary/20"
                     placeholder={isAr ? "ابحث عن وظيفة، شركة، تخصص، أو مدينة..." : "Search jobs, companies, specializations, or cities..."}
                     value={search}
                     onChange={(e) => { setSearch(e.target.value); setShowRecentSearches(!e.target.value); }}
                     onFocus={() => { if (!search) setShowRecentSearches(true); }}
                     onBlur={() => setTimeout(() => setShowRecentSearches(false), 200)}
                   />
-                  {search && (
-                    <button type="button" onClick={() => setSearch("")} className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-muted transition-colors">
-                      <X className="h-3.5 w-3.5 text-muted-foreground" />
-                    </button>
-                  )}
+                  <div className="absolute end-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                    {search ? (
+                      <button type="button" onClick={() => setSearch("")} className="p-1 rounded-lg hover:bg-muted transition-colors">
+                        <X className="h-3.5 w-3.5 text-muted-foreground" />
+                      </button>
+                    ) : (
+                      <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-border/30 bg-muted/30 px-1.5 text-[9px] font-mono text-muted-foreground/50">
+                        /
+                      </kbd>
+                    )}
+                  </div>
 
                   {/* Recent searches dropdown */}
                   {showRecentSearches && recentSearches.length > 0 && (
@@ -376,7 +465,6 @@ export default function JobSearch() {
                   )}
                 </div>
 
-                {/* Filter toggle button (mobile) */}
                 <Button
                   type="button"
                   variant="outline"
@@ -441,60 +529,48 @@ export default function JobSearch() {
                     </SelectTrigger>
                     <SelectContent className="rounded-xl">
                       <SelectItem value="all">{isAr ? "كل المدن" : "All Cities"}</SelectItem>
-                      {cities.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                      {cities.map((c) => <SelectItem key={c.city} value={c.city}>{c.city} ({c.count})</SelectItem>)}
                     </SelectContent>
                   </Select>
                 )}
 
-                {/* Salary only toggle */}
                 <div className="flex items-center gap-2 rounded-xl border border-border/20 bg-card px-3 h-10">
-                  <Switch
-                    id="salary-only"
-                    checked={showSalaryOnly}
-                    onCheckedChange={setShowSalaryOnly}
-                    className="scale-75"
-                  />
+                  <Switch id="salary-only" checked={showSalaryOnly} onCheckedChange={setShowSalaryOnly} className="scale-75" />
                   <Label htmlFor="salary-only" className="text-[10px] text-muted-foreground cursor-pointer whitespace-nowrap">
                     {isAr ? "الراتب ظاهر فقط" : "With salary only"}
                   </Label>
                 </div>
               </div>
 
-              {/* Sort + View toggle */}
               <div className="flex items-center gap-2">
                 <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
-                  <SelectTrigger className="w-[130px] rounded-xl border-border/20 bg-card text-xs h-10">
-                    <BarChart3 className="h-3 w-3 me-1 text-muted-foreground/50" /><SelectValue />
+                  <SelectTrigger className="w-[140px] rounded-xl border-border/20 bg-card text-xs h-10">
+                    <ArrowUpDown className="h-3 w-3 me-1 text-muted-foreground/50" /><SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="newest">{isAr ? "الأحدث" : "Newest"}</SelectItem>
                     <SelectItem value="salary">{isAr ? "الأعلى راتباً" : "Highest Salary"}</SelectItem>
                     <SelectItem value="views">{isAr ? "الأكثر مشاهدة" : "Most Viewed"}</SelectItem>
+                    <SelectItem value="deadline">{isAr ? "أقرب موعد" : "Soonest Deadline"}</SelectItem>
                   </SelectContent>
                 </Select>
 
                 <div className="hidden md:flex items-center border border-border/20 rounded-xl bg-card overflow-hidden h-10">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button
-                        onClick={() => setViewMode("list")}
-                        className={cn("h-full px-2.5 transition-colors", viewMode === "list" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
-                      >
+                      <button onClick={() => setViewMode("list")} className={cn("h-full px-2.5 transition-colors", viewMode === "list" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}>
                         <LayoutList className="h-3.5 w-3.5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-[10px]">{isAr ? "عرض قائمة" : "List View"}</TooltipContent>
+                    <TooltipContent side="bottom" className="text-[10px]">{isAr ? "قائمة" : "List"}</TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button
-                        onClick={() => setViewMode("grid")}
-                        className={cn("h-full px-2.5 transition-colors", viewMode === "grid" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
-                      >
+                      <button onClick={() => setViewMode("grid")} className={cn("h-full px-2.5 transition-colors", viewMode === "grid" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}>
                         <LayoutGrid className="h-3.5 w-3.5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-[10px]">{isAr ? "عرض شبكة" : "Grid View"}</TooltipContent>
+                    <TooltipContent side="bottom" className="text-[10px]">{isAr ? "شبكة" : "Grid"}</TooltipContent>
                   </Tooltip>
                 </div>
               </div>
@@ -549,7 +625,6 @@ export default function JobSearch() {
             <div className="grid md:grid-cols-[1fr_280px] gap-6">
               {/* Main content */}
               <div>
-                {/* Tabs + result info */}
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                   <Tabs value={tab} onValueChange={setTab} className="w-full">
                     <div className="flex items-center justify-between mb-4">
@@ -568,7 +643,9 @@ export default function JobSearch() {
 
                       <p className="text-[11px] text-muted-foreground hidden sm:block">
                         {tab === "postings"
-                          ? `${filteredPostings.length} ${isAr ? "نتيجة" : "results"}`
+                          ? (isAr
+                            ? `عرض ${Math.min(visibleCount, filteredPostings.length)} من ${filteredPostings.length}`
+                            : `Showing ${Math.min(visibleCount, filteredPostings.length)} of ${filteredPostings.length}`)
                           : `${filteredChefs.length} ${isAr ? "نتيجة" : "results"}`
                         }
                       </p>
@@ -577,35 +654,47 @@ export default function JobSearch() {
                     {/* Job Postings */}
                     <TabsContent value="postings" className="mt-0">
                       {loadingPostings ? (
-                        <div className={cn(
-                          viewMode === "grid" ? "grid sm:grid-cols-2 gap-3" : "space-y-3"
-                        )}>
-                          {[1,2,3,4].map(i => <div key={i} className="h-40 rounded-2xl animate-pulse bg-card border border-border/10" />)}
+                        <div className={cn(viewMode === "grid" ? "grid sm:grid-cols-2 gap-3" : "space-y-3")}>
+                          {[1,2,3,4,5,6].map(i => <JobCardSkeleton key={i} viewMode={viewMode} />)}
                         </div>
                       ) : filteredPostings.length === 0 ? (
                         <EmptyState isAr={isAr} type="jobs" onClear={clearAllFilters} />
                       ) : (
-                        <div className={cn(
-                          viewMode === "grid" ? "grid sm:grid-cols-2 gap-3" : "space-y-3"
-                        )}>
-                          {filteredPostings.map((job: any) => (
-                            <JobPostingCard
-                              key={job.id}
-                              job={job}
-                              isAr={isAr}
-                              viewMode={viewMode}
-                              isSaved={savedJobs.has(job.id)}
-                              onToggleSave={toggleSaveJob}
-                            />
-                          ))}
-                        </div>
+                        <>
+                          <div className={cn(viewMode === "grid" ? "grid sm:grid-cols-2 gap-3" : "space-y-3")}>
+                            {paginatedPostings.map((job: any) => (
+                              <JobPostingCard
+                                key={job.id}
+                                job={job}
+                                isAr={isAr}
+                                viewMode={viewMode}
+                                isSaved={savedJobs.has(job.id)}
+                                onToggleSave={toggleSaveJob}
+                              />
+                            ))}
+                          </div>
+                          {/* Load More */}
+                          {hasMoreJobs && (
+                            <div className="mt-6 text-center space-y-3">
+                              <Progress value={(visibleCount / filteredPostings.length) * 100} className="h-1 max-w-xs mx-auto" />
+                              <Button
+                                variant="outline"
+                                className="rounded-xl text-xs gap-2 px-8"
+                                onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
+                              >
+                                <ChevronDown className="h-3.5 w-3.5" />
+                                {isAr ? `عرض المزيد (${filteredPostings.length - visibleCount} متبقية)` : `Load More (${filteredPostings.length - visibleCount} remaining)`}
+                              </Button>
+                            </div>
+                          )}
+                        </>
                       )}
                     </TabsContent>
 
                     {/* Available Talent */}
                     <TabsContent value="chefs" className="mt-0">
                       {loadingChefs ? (
-                        <div className="grid gap-3 sm:grid-cols-2">{[1,2,3,4].map(i => <div key={i} className="h-48 rounded-2xl animate-pulse bg-card border border-border/10" />)}</div>
+                        <div className="grid gap-3 sm:grid-cols-2">{[1,2,3,4].map(i => <ChefCardSkeleton key={i} />)}</div>
                       ) : filteredChefs.length === 0 ? (
                         <EmptyState isAr={isAr} type="chefs" onClear={clearAllFilters} />
                       ) : (
@@ -652,6 +741,43 @@ export default function JobSearch() {
                   </CardContent>
                 </Card>
 
+                {/* Salary Insights */}
+                {salaryInsights && (
+                  <Card className="rounded-2xl border-border/15">
+                    <CardContent className="p-5 space-y-3">
+                      <h4 className="text-xs font-bold flex items-center gap-1.5">
+                        <DollarSign className="h-3.5 w-3.5 text-[hsl(var(--chart-4))]" />
+                        {isAr ? "نظرة على الرواتب" : "Salary Insights"}
+                      </h4>
+                      <div className="space-y-2.5">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] text-muted-foreground">{isAr ? "الأدنى" : "Min"}</span>
+                          <span className="text-xs font-bold tabular-nums">{salaryInsights.min.toLocaleString()}</span>
+                        </div>
+                        <div className="relative h-2 rounded-full bg-muted/30 overflow-hidden">
+                          <div className="absolute inset-y-0 start-0 bg-gradient-to-r from-[hsl(var(--chart-2))] to-[hsl(var(--chart-4))] rounded-full" style={{ width: "100%" }} />
+                          <div
+                            className="absolute top-1/2 -translate-y-1/2 h-3.5 w-0.5 bg-foreground rounded-full"
+                            style={{ left: `${((salaryInsights.median - salaryInsights.min) / (salaryInsights.max - salaryInsights.min)) * 100}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] text-muted-foreground">{isAr ? "الأعلى" : "Max"}</span>
+                          <span className="text-xs font-bold tabular-nums">{salaryInsights.max.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center justify-center gap-1.5 pt-1 border-t border-border/10">
+                          <Target className="h-3 w-3 text-primary" />
+                          <span className="text-[10px] text-muted-foreground">{isAr ? "المتوسط" : "Median"}:</span>
+                          <span className="text-xs font-bold text-primary tabular-nums">{salaryInsights.median.toLocaleString()}</span>
+                        </div>
+                        <p className="text-[9px] text-muted-foreground/50 text-center">
+                          {isAr ? `بناءً على ${salaryInsights.count} وظيفة` : `Based on ${salaryInsights.count} jobs`}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Quick Stats */}
                 <Card className="rounded-2xl border-border/15">
                   <CardContent className="p-5 space-y-4">
@@ -664,21 +790,58 @@ export default function JobSearch() {
                       <StatRow icon={Zap} label={isAr ? "جديدة هذا الأسبوع" : "New This Week"} value={stats.newThisWeek} accent />
                       <StatRow icon={Sparkles} label={isAr ? "وظائف مميزة" : "Featured"} value={stats.featuredCount} />
                       <StatRow icon={Users} label={isAr ? "مواهب متاحة" : "Available Talent"} value={stats.totalChefs} />
+                      {stats.urgentCount > 0 && <StatRow icon={Flame} label={isAr ? "عاجلة" : "Urgent"} value={stats.urgentCount} accent />}
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Saved Jobs */}
-                {savedJobs.size > 0 && (
+                {/* Top Hiring Companies */}
+                {topCompanies.length > 0 && (
                   <Card className="rounded-2xl border-border/15">
                     <CardContent className="p-5 space-y-3">
                       <h4 className="text-xs font-bold flex items-center gap-1.5">
-                        <Bookmark className="h-3.5 w-3.5 text-[hsl(var(--warning))]" />
+                        <Crown className="h-3.5 w-3.5 text-[hsl(var(--chart-4))]" />
+                        {isAr ? "أكثر الشركات توظيفاً" : "Top Hiring"}
+                      </h4>
+                      <div className="space-y-2">
+                        {topCompanies.map((c, i) => (
+                          <div key={c.name} className="flex items-center gap-2.5 group">
+                            <span className="text-[9px] font-bold text-muted-foreground/40 w-3 tabular-nums">{i + 1}</span>
+                            <Avatar className="h-7 w-7 rounded-lg shrink-0 border border-border/10">
+                              {c.logo && <AvatarImage src={c.logo} alt={c.name} />}
+                              <AvatarFallback className="rounded-lg text-[9px] bg-primary/5 text-primary font-bold">{c.name[0]}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[11px] font-semibold truncate group-hover:text-primary transition-colors">
+                                {isAr ? c.nameAr : c.name}
+                              </p>
+                            </div>
+                            <Badge variant="secondary" className="text-[9px] px-1.5 h-4 tabular-nums shrink-0">{c.count}</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Saved Jobs */}
+                {savedJobs.size > 0 && (
+                  <Card className="rounded-2xl border-[hsl(var(--warning))]/20 bg-[hsl(var(--warning))]/[0.03]">
+                    <CardContent className="p-5 space-y-3">
+                      <h4 className="text-xs font-bold flex items-center gap-1.5">
+                        <Bookmark className="h-3.5 w-3.5 text-[hsl(var(--warning))] fill-[hsl(var(--warning))]" />
                         {isAr ? "الوظائف المحفوظة" : "Saved Jobs"}
                       </h4>
                       <p className="text-[10px] text-muted-foreground">
                         {savedJobs.size} {isAr ? "وظيفة محفوظة" : "jobs saved"}
                       </p>
+                      <Button variant="outline" size="sm" className="w-full rounded-xl text-[10px] h-7" onClick={() => {
+                        setSavedJobs(new Set());
+                        localStorage.removeItem("saved-jobs");
+                        toast(isAr ? "تم مسح الوظائف المحفوظة" : "Saved jobs cleared");
+                      }}>
+                        {isAr ? "مسح المحفوظات" : "Clear Saved"}
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
@@ -689,10 +852,10 @@ export default function JobSearch() {
                     <CardContent className="p-5 space-y-3">
                       <h4 className="text-xs font-bold flex items-center gap-1.5">
                         <MapPin className="h-3.5 w-3.5 text-[hsl(var(--chart-2))]" />
-                        {isAr ? "المدن المتاحة" : "Available Cities"}
+                        {isAr ? "المدن المتاحة" : "Popular Cities"}
                       </h4>
                       <div className="flex flex-wrap gap-1.5">
-                        {cities.slice(0, 8).map((city) => (
+                        {cities.slice(0, 8).map(({ city, count }) => (
                           <button
                             key={city}
                             onClick={() => setCityFilter(city === cityFilter ? "all" : city)}
@@ -703,7 +866,7 @@ export default function JobSearch() {
                                 : "border-border/20 text-muted-foreground hover:border-primary/20 hover:text-foreground"
                             )}
                           >
-                            {city}
+                            {city} <span className="opacity-50">({count})</span>
                           </button>
                         ))}
                       </div>
@@ -712,20 +875,32 @@ export default function JobSearch() {
                 )}
 
                 {/* Employer CTA */}
-                <Card className="rounded-2xl border-border/15 bg-muted/20">
+                <Card className="rounded-2xl border-border/15 bg-gradient-to-br from-muted/20 to-muted/5">
                   <CardContent className="p-5 space-y-3 text-center">
-                    <Building2 className="h-8 w-8 mx-auto text-muted-foreground/30" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 mx-auto">
+                      <Building2 className="h-6 w-6 text-primary/60" />
+                    </div>
                     <h4 className="text-xs font-bold">{isAr ? "هل أنت صاحب عمل؟" : "Are you an employer?"}</h4>
-                    <p className="text-[10px] text-muted-foreground">
-                      {isAr ? "انشر وظيفتك ووصل لأفضل المواهب" : "Post your job and reach top talent"}
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      {isAr ? "انشر وظيفتك ووصل لأفضل المواهب في مجال الطهي والضيافة" : "Post your job and reach top culinary & hospitality talent"}
                     </p>
                     <Link to="/company-login" className="block">
-                      <Button variant="outline" size="sm" className="w-full rounded-xl text-xs gap-1 font-semibold">
+                      <Button size="sm" className="w-full rounded-xl text-xs gap-1 font-semibold">
                         {isAr ? "انشر وظيفة" : "Post a Job"} <ArrowRight className="h-3 w-3" />
                       </Button>
                     </Link>
                   </CardContent>
                 </Card>
+
+                {/* Keyboard shortcuts hint */}
+                <div className="text-center px-4 py-3">
+                  <p className="text-[9px] text-muted-foreground/40 flex items-center justify-center gap-2">
+                    <kbd className="h-4 px-1 rounded border border-border/20 bg-muted/20 text-[8px] font-mono inline-flex items-center">/</kbd>
+                    {isAr ? "للبحث السريع" : "Quick search"}
+                    <kbd className="h-4 px-1 rounded border border-border/20 bg-muted/20 text-[8px] font-mono inline-flex items-center">Esc</kbd>
+                    {isAr ? "للإغلاق" : "Close"}
+                  </p>
+                </div>
               </aside>
             </div>
           </div>
@@ -745,6 +920,49 @@ function StatRow({ icon: Icon, label, value, accent }: { icon: any; label: strin
         <Icon className="h-3 w-3" />{label}
       </span>
       <span className={cn("text-xs font-bold tabular-nums", accent && "text-primary")}>{value}</span>
+    </div>
+  );
+}
+
+function JobCardSkeleton({ viewMode }: { viewMode: "list" | "grid" }) {
+  return (
+    <div className="rounded-2xl border border-border/10 bg-card p-5 animate-pulse">
+      <div className={cn(viewMode === "grid" ? "space-y-3" : "flex gap-4")}>
+        <div className={cn("rounded-xl bg-muted/20 shrink-0", viewMode === "grid" ? "h-12 w-12" : "h-14 w-14")} />
+        <div className="flex-1 space-y-2.5">
+          <div className="h-4 bg-muted/20 rounded-lg w-3/4" />
+          <div className="h-3 bg-muted/15 rounded-lg w-1/2" />
+          <div className="flex gap-2">
+            <div className="h-5 bg-muted/15 rounded-lg w-20" />
+            <div className="h-5 bg-muted/15 rounded-lg w-16" />
+          </div>
+          <div className="h-3 bg-muted/10 rounded-lg w-full" />
+          <div className="flex gap-3">
+            <div className="h-3 bg-muted/10 rounded w-12" />
+            <div className="h-3 bg-muted/10 rounded w-12" />
+            <div className="h-3 bg-muted/10 rounded w-12" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChefCardSkeleton() {
+  return (
+    <div className="rounded-2xl border border-border/10 bg-card p-5 animate-pulse space-y-3">
+      <div className="flex items-start gap-3">
+        <div className="h-14 w-14 rounded-xl bg-muted/20" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 bg-muted/20 rounded-lg w-2/3" />
+          <div className="h-3 bg-muted/15 rounded-lg w-1/2" />
+        </div>
+      </div>
+      <div className="h-3 bg-muted/10 rounded-lg w-full" />
+      <div className="flex gap-2">
+        <div className="h-4 bg-muted/10 rounded w-16" />
+        <div className="h-4 bg-muted/10 rounded w-16" />
+      </div>
     </div>
   );
 }
@@ -800,6 +1018,11 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr, viewMode, isSav
         job.is_featured && "ring-1 ring-primary/20 bg-primary/[0.02]",
         isUrgent && "border-destructive/20"
       )}>
+        {/* Featured glow */}
+        {job.is_featured && (
+          <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        )}
+
         {/* Top badges */}
         <div className="absolute top-0 end-0 flex items-center gap-1 p-3 z-10">
           {job.is_featured && (
@@ -820,7 +1043,12 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr, viewMode, isSav
         {/* Save button */}
         <button
           onClick={(e) => onToggleSave(job.id, e)}
-          className="absolute top-3 start-3 z-10 p-1.5 rounded-lg bg-card/80 backdrop-blur-sm border border-border/10 hover:bg-card transition-colors"
+          className={cn(
+            "absolute top-3 start-3 z-10 p-1.5 rounded-lg backdrop-blur-sm border transition-all",
+            isSaved
+              ? "bg-[hsl(var(--warning))]/10 border-[hsl(var(--warning))]/20"
+              : "bg-card/80 border-border/10 hover:bg-card"
+          )}
         >
           <Bookmark className={cn("h-3.5 w-3.5 transition-colors", isSaved ? "text-[hsl(var(--warning))] fill-[hsl(var(--warning))]" : "text-muted-foreground/40")} />
         </button>
