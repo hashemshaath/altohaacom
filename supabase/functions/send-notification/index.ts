@@ -308,6 +308,22 @@ serve(async (req) => {
       }
     }
 
+    // Trigger push processor if push notifications were queued
+    if (results.push?.queued) {
+      try {
+        const pushProcessUrl = `${supabaseUrl}/functions/v1/process-push-queue`;
+        fetch(pushProcessUrl, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${supabaseKey}`,
+            "Content-Type": "application/json",
+          },
+        }).catch((e) => console.error("Failed to trigger push processor:", e));
+      } catch (e) {
+        console.error("Failed to trigger push processor:", e);
+      }
+    }
+
     console.log("Notification sent:", { userId, userLang, channels: channelsToUse, results });
 
     return new Response(
