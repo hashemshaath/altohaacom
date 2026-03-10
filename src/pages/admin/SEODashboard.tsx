@@ -208,8 +208,68 @@ export default function SEODashboard() {
       .sort((a, b) => (b.lcp || 0) - (a.lcp || 0));
   };
 
+  // Trend data: daily P75 for each metric
+  const trendData = useMemo(() => {
+    if (!vitalsData?.length) return [];
+    const byDay: Record<string, { lcp: number[]; inp: number[]; cls: number[]; fcp: number[]; ttfb: number[] }> = {};
+    vitalsData.forEach((v: any) => {
+      const day = format(new Date(v.created_at), "MM/dd");
+      if (!byDay[day]) byDay[day] = { lcp: [], inp: [], cls: [], fcp: [], ttfb: [] };
+      if (v.lcp != null) byDay[day].lcp.push(Number(v.lcp));
+      if (v.inp != null) byDay[day].inp.push(Number(v.inp));
+      if (v.cls != null) byDay[day].cls.push(Number(v.cls));
+      if (v.fcp != null) byDay[day].fcp.push(Number(v.fcp));
+      if (v.ttfb != null) byDay[day].ttfb.push(Number(v.ttfb));
+    });
+    const p75 = (arr: number[]) => {
+      if (!arr.length) return null;
+      const s = [...arr].sort((a, b) => a - b);
+      return s[Math.ceil(s.length * 0.75) - 1];
+    };
+    return Object.entries(byDay)
+      .map(([day, m]) => ({ day, lcp: p75(m.lcp), inp: p75(m.inp), cls: p75(m.cls), fcp: p75(m.fcp), ttfb: p75(m.ttfb) }))
+      .sort((a, b) => a.day.localeCompare(b.day));
+  }, [vitalsData]);
+
+  // Connection type distribution
+  const connectionDistribution = useMemo(() => {
+    if (!vitalsData?.length) return [];
+    const counts: Record<string, number> = {};
+    vitalsData.forEach((v: any) => {
+      const ct = v.connection_type || "unknown";
+      counts[ct] = (counts[ct] || 0) + 1;
+    });
+    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  }, [vitalsData]);
+
+  // Device vitals comparison
+  const deviceVitalsComparison = useMemo(() => {
+    if (!vitalsData?.length) return [];
+    const byDevice: Record<string, { lcp: number[]; fcp: number[]; ttfb: number[] }> = {};
+    vitalsData.forEach((v: any) => {
+      const dt = v.device_type || "unknown";
+      if (!byDevice[dt]) byDevice[dt] = { lcp: [], fcp: [], ttfb: [] };
+      if (v.lcp != null) byDevice[dt].lcp.push(Number(v.lcp));
+      if (v.fcp != null) byDevice[dt].fcp.push(Number(v.fcp));
+      if (v.ttfb != null) byDevice[dt].ttfb.push(Number(v.ttfb));
+    });
+    const p75 = (arr: number[]) => {
+      if (!arr.length) return 0;
+      const s = [...arr].sort((a, b) => a - b);
+      return Math.round(s[Math.ceil(s.length * 0.75) - 1]);
+    };
+    return Object.entries(byDevice).map(([device, m]) => ({
+      device: device.charAt(0).toUpperCase() + device.slice(1),
+      LCP: p75(m.lcp),
+      FCP: p75(m.fcp),
+      TTFB: p75(m.ttfb),
+    }));
+  }, [vitalsData]);
+
   const vitalsAgg = computeVitalsAggregates();
   const pageVitals = computePageVitals();
+
+  const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
   const handlePingSitemap = async () => {
     setPinging(true);
