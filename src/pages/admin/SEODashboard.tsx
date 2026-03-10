@@ -1288,6 +1288,11 @@ export default function SEODashboard() {
           </Card>
         </TabsContent>
 
+        {/* SEO Audit */}
+        <TabsContent value="audit">
+          <SEOAuditPanel />
+        </TabsContent>
+
         {/* Crawl Log */}
         <TabsContent value="crawl">
           <Card>
