@@ -420,7 +420,101 @@ export default function SEODashboard() {
               </div>
             )}
 
-            {/* Per-page vitals */}
+            {/* Vitals Trend Chart */}
+            {trendData.length > 1 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{isAr ? "اتجاه الأداء اليومي (P75)" : "Daily Performance Trend (P75)"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <LineChart data={trendData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                      <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <RechartsTooltip
+                        contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                        labelStyle={{ color: "hsl(var(--foreground))" }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: 11 }} />
+                      <ReferenceLine y={2500} stroke="hsl(var(--destructive))" strokeDasharray="4 4" label={{ value: "LCP limit", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                      <Line type="monotone" dataKey="lcp" name="LCP (ms)" stroke={CHART_COLORS[0]} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      <Line type="monotone" dataKey="fcp" name="FCP (ms)" stroke={CHART_COLORS[1]} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      <Line type="monotone" dataKey="ttfb" name="TTFB (ms)" stroke={CHART_COLORS[2]} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      <Line type="monotone" dataKey="inp" name="INP (ms)" stroke={CHART_COLORS[3]} strokeWidth={1.5} dot={{ r: 2 }} connectNulls />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Device Comparison + Connection Distribution */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Device Vitals Comparison */}
+              {deviceVitalsComparison.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-1.5">
+                      <Monitor className="h-4 w-4" />
+                      {isAr ? "أداء حسب الجهاز (P75)" : "Vitals by Device (P75)"}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={deviceVitalsComparison} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                        <XAxis dataKey="device" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                        <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" unit="ms" />
+                        <RechartsTooltip
+                          contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                        <Bar dataKey="LCP" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="FCP" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="TTFB" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Connection Type Distribution */}
+              {connectionDistribution.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-1.5">
+                      <Wifi className="h-4 w-4" />
+                      {isAr ? "توزيع نوع الاتصال" : "Connection Type Distribution"}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <PieChart>
+                        <Pie
+                          data={connectionDistribution}
+                          cx="50%" cy="50%"
+                          innerRadius={50} outerRadius={80}
+                          paddingAngle={3}
+                          dataKey="value"
+                          nameKey="name"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          labelLine={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}
+                        >
+                          {connectionDistribution.map((_, i) => (
+                            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip
+                          contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Per-page vitals table */}
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">{isAr ? "أداء الصفحات (P75)" : "Per-Page Performance (P75)"}</CardTitle>
@@ -472,9 +566,6 @@ export default function SEODashboard() {
             </Card>
           </div>
         </TabsContent>
-
-        {/* Top Pages */}
-        <TabsContent value="pages">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">{isAr ? "أكثر الصفحات زيارة" : "Top Pages"}</CardTitle>
