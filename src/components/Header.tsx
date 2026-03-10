@@ -9,38 +9,25 @@ import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { NotificationBell } from "./notifications/NotificationBell";
-import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DesktopNav } from "./header/DesktopNav";
 import { UserDropdown } from "./header/UserDropdown";
 import { MobileMenu } from "./header/MobileMenu";
 import { cn } from "@/lib/utils";
 import {
-  Trophy,
-  Users,
-  GraduationCap,
-  Landmark,
-  Newspaper,
-  ShoppingBag,
-  UtensilsCrossed,
-  Building2,
-  Star,
-  BookOpen,
-  HandHeart,
-  Factory,
-  Briefcase,
-  CalendarDays,
-  Medal,
+  Search, Trophy, Users, GraduationCap, Landmark, Newspaper,
+  ShoppingBag, UtensilsCrossed, Building2, Star, BookOpen,
+  HandHeart, Factory, Briefcase, CalendarDays, Medal,
 } from "lucide-react";
 
-const primaryNav = [
+export const primaryNav = [
   { to: "/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
   { to: "/exhibitions", icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض" },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع" },
   { to: "/news", icon: Newspaper, labelEn: "News", labelAr: "الأخبار" },
 ];
 
-const moreLinks = [
+export const moreLinks = [
   { to: "/jobs", icon: Briefcase, labelEn: "Jobs", labelAr: "الوظائف" },
   { to: "/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
   { to: "/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدروس المتقدمة" },
@@ -51,12 +38,11 @@ const moreLinks = [
   { to: "/pro-suppliers", icon: Factory, labelEn: "Pro Suppliers", labelAr: "الموردون المحترفون" },
   { to: "/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
   { to: "/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
-  { to: "/events-calendar", icon: CalendarDays, labelEn: "Events Calendar", labelAr: "تقويم الفعاليات" },
+  { to: "/events-calendar", icon: CalendarDays, labelEn: "Events", labelAr: "الفعاليات" },
   { to: "/rankings", icon: Medal, labelEn: "Rankings", labelAr: "التصنيفات" },
 ];
 
 const HEADER_HEIGHT = "h-14";
-const HEADER_SPACER = "h-14"; // Must match header height
 
 export const Header = memo(function Header() {
   const { user } = useAuth();
@@ -71,7 +57,6 @@ export const Header = memo(function Header() {
   const brandCfg = siteSettings.branding || {};
   const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
   const logoUrl = identityLogos.natural || identityLogos.variation2 || brandCfg.logoUrl || "/altoha-logo.png";
-
   const isFixed = headerCfg.stickyHeader !== false;
 
   return (
@@ -79,28 +64,28 @@ export const Header = memo(function Header() {
       <header
         role="banner"
         className={cn(
-          "inset-x-0 top-0 z-50 border-b transition-all duration-300",
+          "inset-x-0 top-0 z-50 transition-all duration-300 will-change-transform",
           isFixed ? "fixed" : "relative",
           scrolled
-            ? "bg-card/95 backdrop-blur-xl border-border shadow-sm"
-            : "bg-card border-border/40",
+            ? "bg-card/90 backdrop-blur-2xl border-b border-border/50 shadow-[var(--shadow-sm)]"
+            : "bg-card/70 backdrop-blur-md border-b border-transparent",
           isFixed && !headerVisible && "-translate-y-full"
         )}
       >
-        <div className={cn("container flex items-center gap-3", HEADER_HEIGHT)}>
+        <div className={cn("container flex items-center gap-2", HEADER_HEIGHT)}>
           {/* Left: Mobile menu + Logo */}
           <div className="flex items-center gap-2 shrink-0">
             <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
             <Link
               to="/"
               aria-label="Altoha homepage"
-              className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
+              className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
             >
               {headerCfg.showLogo !== false && (
                 <img
                   src={logoUrl}
                   alt={brandCfg.siteName || "Altoha"}
-                  className="h-7 w-auto sm:h-8 transition-transform duration-200 group-hover:scale-105"
+                  className="h-7 w-auto sm:h-8 transition-transform duration-300 group-hover:scale-105"
                 />
               )}
               {headerCfg.showBrandName !== false && (
@@ -123,9 +108,9 @@ export const Header = memo(function Header() {
           />
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-1 ms-auto shrink-0">
+          <div className="flex items-center gap-0.5 ms-auto shrink-0">
             {headerCfg.showSearch !== false && (
-              <Button variant="ghost" size="icon" asChild className="rounded-lg h-8 w-8">
+              <Button variant="ghost" size="icon" asChild className="rounded-xl h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent/10">
                 <Link to="/search"><Search className="h-4 w-4" /></Link>
               </Button>
             )}
@@ -137,8 +122,7 @@ export const Header = memo(function Header() {
         </div>
       </header>
 
-      {/* Spacer to prevent content from hiding behind fixed header */}
-      {isFixed && <div className={HEADER_SPACER} aria-hidden="true" />}
+      {isFixed && <div className={HEADER_HEIGHT} aria-hidden="true" />}
     </>
   );
 });
