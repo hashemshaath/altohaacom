@@ -351,11 +351,49 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                                 <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{isAr ? n.body_ar || n.body : n.body}</p>
                               )}
                               <NotificationActionButtons notification={n} onMarkRead={markRead} />
-                              <p className="text-[10px] text-muted-foreground mt-1">
-                                <Clock className="h-3 w-3 inline me-0.5" />
-                                {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                              </p>
-                            </div>
+                              <div className="flex items-center gap-1 mt-1">
+                                <p className="text-[10px] text-muted-foreground flex-1">
+                                  <Clock className="h-3 w-3 inline me-0.5" />
+                                  {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
+                                </p>
+                                {tab !== "snoozed" && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                      <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <MoreVertical className="h-3 w-3" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-40">
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleSnooze(n.id, 3600000); }}>
+                                        <AlarmClock className="h-3.5 w-3.5 me-2" />
+                                        {isAr ? "أجّل ساعة" : "Snooze 1h"}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleSnooze(n.id, 14400000); }}>
+                                        <AlarmClock className="h-3.5 w-3.5 me-2" />
+                                        {isAr ? "أجّل ٤ ساعات" : "Snooze 4h"}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleSnooze(n.id, 86400000); }}>
+                                        <AlarmClock className="h-3.5 w-3.5 me-2" />
+                                        {isAr ? "أجّل لغداً" : "Snooze till tomorrow"}
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )}
+                                {tab === "snoozed" && (
+                                  <Button
+                                    variant="ghost" size="sm" className="h-5 text-[10px] px-1.5"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const snoozed = getSnoozed();
+                                      delete snoozed[n.id];
+                                      localStorage.setItem(SNOOZE_KEY, JSON.stringify(snoozed));
+                                      setSnoozedIds(prev => { const next = new Set(prev); next.delete(n.id); return next; });
+                                    }}
+                                  >
+                                    {isAr ? "إلغاء التأجيل" : "Unsnooze"}
+                                  </Button>
+                                )}
+                              </div>
                             {!n.is_read && (
                               <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-2 animate-pulse" />
                             )}
