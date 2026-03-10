@@ -326,7 +326,7 @@ const HomeListEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent;
           )}
           {event.logo_url && (
             <div className="absolute bottom-1.5 start-1.5 h-7 w-7 rounded-md bg-background/90 shadow-sm flex items-center justify-center overflow-hidden">
-              <img src={event.logo_url} alt="" className="h-5 w-5 object-contain" loading="lazy" />
+              <img src={event.logo_url} alt={`${event.title || "Event"} logo`} className="h-5 w-5 object-contain" loading="lazy" decoding="async" />
             </div>
           )}
           {!countdown.past && (

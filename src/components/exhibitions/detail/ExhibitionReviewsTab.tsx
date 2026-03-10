@@ -549,7 +549,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
                     <div className="mt-3 flex gap-2 flex-wrap">
                       {review.photo_urls.map((url: string, i: number) => (
                         <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="h-20 w-20 rounded-xl overflow-hidden border border-border/40 hover:opacity-80 transition-opacity">
-                          <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                          <img src={url} alt={`Review photo ${i + 1}`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                         </a>
                       ))}
                     </div>

@@ -158,7 +158,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
       >
         <div className="flex items-center gap-3">
           {company?.logo_url && (
-            <img src={company.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" />
+            <img src={company.logo_url} alt={company?.name || "Sponsor"} className="h-10 w-10 rounded-xl object-cover shrink-0" loading="lazy" />
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5">
