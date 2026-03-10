@@ -202,7 +202,7 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
               <DialogTitle className="text-center">{isAr ? "امسح للتسجيل" : "Scan to Sign Up"}</DialogTitle>
             </DialogHeader>
             <div className="flex flex-col items-center gap-4 py-4">
-              <div className="rounded-2xl border-4 border-primary/20 p-4 bg-white">
+              <div className="rounded-2xl border-4 border-primary/20 p-4 bg-card">
                 <QRCodeSVG value={referralLink} size={200} level="H" />
               </div>
               <Badge variant="outline" className="font-mono text-sm px-4 py-1.5">
