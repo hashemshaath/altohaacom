@@ -156,7 +156,7 @@ const Index = () => {
       }
 
       return (
-        <Suspense key={key} fallback={<SectionSkeleton />}>
+        <Suspense key={key} fallback={getSectionSkeleton()}>
           <SectionKeyProvider sectionKey={key}>
             <HomepageSectionShell>
               <SectionWrapper Component={Component} />
