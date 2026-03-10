@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { ProfileShareButtons } from "@/components/profile/ProfileShareButtons";
+import { OpenToWorkBadge } from "@/components/profile/OpenToWorkBadge";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   BadgeCheck, Briefcase, MapPin, UserPlus, UserMinus, Loader2, Clock, Lock, Hash, Heart,
@@ -138,6 +139,14 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                       <Heart className="h-3 w-3" />
                       {isAr ? "متابع" : "Follower"}
                     </Badge>
+                   )}
+                  {profile.is_open_to_work && profile.job_availability_visibility === "public" && (
+                    <OpenToWorkBadge
+                      note={profile.work_availability_note}
+                      noteAr={profile.work_availability_note_ar}
+                      isAr={isAr}
+                      size="sm"
+                    />
                   )}
                   {profile.show_nationality !== false && profile.nationality && (
                     <Tooltip>

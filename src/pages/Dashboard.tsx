@@ -62,7 +62,7 @@ const AchievementsChallengesWidget = lazy(() => import("@/components/dashboard/A
 const SmartRecommendationsWidget = lazy(() => import("@/components/community/SmartRecommendations").then(m => ({ default: m.SmartRecommendations })));
 const PlatformScoreWidget = lazy(() => import("@/components/dashboard/PlatformScoreWidget").then(m => ({ default: m.PlatformScoreWidget })));
 const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendChart").then(m => ({ default: m.WeeklyTrendChart })));
-
+const JobAvailabilityWidget = lazy(() => import("@/components/dashboard/JobAvailabilityWidget").then(m => ({ default: m.JobAvailabilityWidget })));
 import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 
 function W({ children, lines, name }: { children: React.ReactNode; lines?: number; name?: string }) {
@@ -239,6 +239,7 @@ export default function Dashboard() {
             {/* Pro sidebar */}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
             {user && !isFan && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
+            {user && !isFan && <W name="job-availability"><JobAvailabilityWidget /></W>}
 
             {/* Shared sidebar */}
             {user && isVisible("referral") && <W><ReferralWidget /></W>}

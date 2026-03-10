@@ -7,6 +7,7 @@ import { Save, Loader2, CheckCircle2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { PersonalInfoSection } from "./edit/PersonalInfoSection";
 import { ProfessionalInfoSection } from "./edit/ProfessionalInfoSection";
+import { JobAvailabilitySection } from "./edit/JobAvailabilitySection";
 import { LocationSection } from "./edit/LocationSection";
 import { SocialMediaSection } from "./edit/SocialMediaSection";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -59,6 +60,17 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
     date_of_birth: profile?.date_of_birth || "",
     gender: profile?.gender || "",
     preferred_language: profile?.preferred_language || "ar",
+    // Job availability fields
+    is_open_to_work: profile?.is_open_to_work || false,
+    job_availability_visibility: profile?.job_availability_visibility || "private",
+    preferred_job_types: profile?.preferred_job_types || [],
+    preferred_work_locations: profile?.preferred_work_locations || [],
+    salary_range_min: profile?.salary_range_min || "",
+    salary_range_max: profile?.salary_range_max || "",
+    salary_currency: profile?.salary_currency || "SAR",
+    work_availability_note: profile?.work_availability_note || "",
+    work_availability_note_ar: profile?.work_availability_note_ar || "",
+    willing_to_relocate: profile?.willing_to_relocate || false,
   });
 
   const update = (k: string, v: any) => {
@@ -100,6 +112,17 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
       gender: form.gender || null,
       preferred_language: form.preferred_language || "ar",
       profile_completed: true,
+      // Job availability
+      is_open_to_work: form.is_open_to_work || false,
+      job_availability_visibility: form.job_availability_visibility || "private",
+      preferred_job_types: form.preferred_job_types || [],
+      preferred_work_locations: form.preferred_work_locations || [],
+      salary_range_min: form.salary_range_min ? Number(form.salary_range_min) : null,
+      salary_range_max: form.salary_range_max ? Number(form.salary_range_max) : null,
+      salary_currency: form.salary_currency || "SAR",
+      work_availability_note: form.work_availability_note || null,
+      work_availability_note_ar: form.work_availability_note_ar || null,
+      willing_to_relocate: form.willing_to_relocate || false,
     };
     const { error } = await supabase.from("profiles").update(payload).eq("user_id", userId);
     setSaving(false);
@@ -118,6 +141,7 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
       <AccountTypeCard />
       <PersonalInfoSection form={form} update={update} isAr={isAr} />
       {!isFan && <ProfessionalInfoSection form={form} update={update} isAr={isAr} />}
+      {!isFan && <JobAvailabilitySection form={form} update={update} isAr={isAr} />}
       <LocationSection form={form} update={update} isAr={isAr} />
       <SocialMediaSection form={form} update={update} isAr={isAr} />
 
