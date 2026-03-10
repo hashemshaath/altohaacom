@@ -239,6 +239,7 @@ export default function Dashboard() {
             {/* Pro sidebar */}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
             {user && !isFan && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
+            {user && !isFan && <W name="job-availability"><JobAvailabilityWidget /></W>}
 
             {/* Shared sidebar */}
             {user && isVisible("referral") && <W><ReferralWidget /></W>}

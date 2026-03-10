@@ -122,6 +122,8 @@ export const publicRoutes = (
     <Route path="/cookies" element={<CookiePolicy />} />
     <Route path="/membership" element={<MembershipPlans />} />
     <Route path="/membership/redeem" element={<MembershipRedeem />} />
+    <Route path="/jobs" element={<Jobs />} />
+    <Route path="/jobs/:id" element={<JobDetail />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
     <Route path="/:username/links" element={<LegacyLinksRedirect />} />
