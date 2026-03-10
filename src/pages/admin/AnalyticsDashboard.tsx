@@ -97,6 +97,7 @@ export default function AnalyticsDashboard() {
     { value: "heatmap", icon: Flame, label: isAr ? "خريطة حرارية" : "Heatmap" },
     { value: "geographic", icon: Globe, label: isAr ? "جغرافي" : "Geographic" },
     { value: "funnel", icon: Filter, label: isAr ? "مسار التحويل" : "Funnel" },
+    { value: "journey", icon: Route, label: isAr ? "خريطة الرحلة" : "Journey Map" },
     { value: "anomaly", icon: AlertTriangle, label: isAr ? "كشف الشذوذ" : "Anomaly" },
     { value: "ab-testing", icon: FlaskConical, label: isAr ? "اختبار A/B" : "A/B Testing" },
     { value: "reports", icon: FileText, label: isAr ? "تقارير" : "Reports" },
