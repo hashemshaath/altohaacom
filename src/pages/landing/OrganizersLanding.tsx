@@ -315,6 +315,9 @@ export default function OrganizersLanding() {
             </div>
           </div>
         </section>
+        <div className="container">
+          <RelatedPages currentPath="/for-organizers" />
+        </div>
       </main>
       <Footer />
     </div>

@@ -170,6 +170,9 @@ export default function ChefsLanding() {
             </div>
           </div>
         </section>
+        <div className="container">
+          <RelatedPages currentPath="/for-chefs" />
+        </div>
       </main>
       <Footer />
     </div>

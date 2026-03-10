@@ -236,6 +236,9 @@ export default function CompaniesLanding() {
             </div>
           </div>
         </section>
+        <div className="container">
+          <RelatedPages currentPath="/for-companies" />
+        </div>
       </main>
       <Footer />
     </div>
