@@ -14,7 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import {
   Briefcase, MapPin, DollarSign, Clock, Building2, Users, ArrowLeft, Send,
-  CheckCircle2, Share2, Eye, Award, Star, Globe, ChefHat, ArrowRight, Sparkles, Heart
+  CheckCircle2, Share2, Eye, Award, Star, Globe, ChefHat, ArrowRight, Sparkles, Heart,
+  Home, ChevronRight, Bookmark, AlertCircle, Calendar
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -78,7 +79,7 @@ export default function JobDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("job_postings")
-        .select("id, title, title_ar, job_type, location, companies(name, name_ar, logo_url)")
+        .select("id, title, title_ar, job_type, location, salary_min, salary_max, salary_currency, is_salary_visible, created_at, companies(name, name_ar, logo_url)")
         .eq("status", "active")
         .eq("job_type", job!.job_type)
         .neq("id", job!.id)
@@ -148,16 +149,23 @@ export default function JobDetail() {
   const typeLabel = JOB_TYPE_LABELS[job.job_type] || { en: job.job_type, ar: job.job_type };
   const daysAgo = Math.floor((Date.now() - new Date(job.created_at!).getTime()) / 86400000);
   const expLabel = job.experience_level ? (isAr ? EXP_LEVELS[job.experience_level]?.ar : EXP_LEVELS[job.experience_level]?.en) : null;
+  const isDeadlineSoon = job.application_deadline && (new Date(job.application_deadline).getTime() - Date.now()) < 7 * 86400000 && new Date(job.application_deadline) > new Date();
 
   return (
     <div className="min-h-screen bg-muted/5">
       {/* Top Bar */}
       <div className="bg-background border-b border-border/10 sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/jobs")} className="rounded-xl gap-1.5 text-muted-foreground text-xs">
-            <ArrowLeft className="h-3.5 w-3.5" />
-            {isAr ? "العودة للوظائف" : "Back to Jobs"}
-          </Button>
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Link to="/" className="hover:text-primary transition-colors flex items-center gap-1">
+              <Home className="h-3 w-3" />
+            </Link>
+            <ChevronRight className="h-3 w-3 text-muted-foreground/30" />
+            <Link to="/jobs" className="hover:text-primary transition-colors">{isAr ? "الوظائف" : "Jobs"}</Link>
+            <ChevronRight className="h-3 w-3 text-muted-foreground/30" />
+            <span className="text-foreground font-medium truncate max-w-[200px]">{title}</span>
+          </nav>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" className="rounded-xl text-xs gap-1" onClick={handleShare}>
               <Share2 className="h-3.5 w-3.5" />
@@ -198,23 +206,41 @@ export default function JobDetail() {
                   </div>
                 </div>
 
+                {/* Salary Display - prominent like Sabbar */}
+                {job.is_salary_visible && job.salary_min && (
+                  <div className="bg-muted/5 rounded-xl p-4 border border-border/10">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                      <span className="text-lg font-extrabold text-foreground">
+                        {job.salary_min.toLocaleString()}{job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : "+"}
+                      </span>
+                      <span className="text-sm text-muted-foreground">{job.salary_currency || ""} / {isAr ? "شهرياً" : "month"}</span>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary" className="rounded-lg gap-1"><Briefcase className="h-3 w-3" />{isAr ? typeLabel.ar : typeLabel.en}</Badge>
                   {location && <Badge variant="outline" className="rounded-lg gap-1"><MapPin className="h-3 w-3" />{location}</Badge>}
                   {expLabel && <Badge variant="outline" className="rounded-lg gap-1"><Award className="h-3 w-3" />{expLabel}</Badge>}
-                  {job.is_salary_visible && job.salary_min && (
-                    <Badge variant="outline" className="rounded-lg gap-1">
-                      <DollarSign className="h-3 w-3" />
-                      {job.salary_min.toLocaleString()}{job.salary_max ? `–${job.salary_max.toLocaleString()}` : "+"} {job.salary_currency}
-                    </Badge>
-                  )}
+                  {job.specialization && <Badge variant="outline" className="rounded-lg gap-1"><ChefHat className="h-3 w-3" />{job.specialization}</Badge>}
                 </div>
 
                 <div className="flex flex-wrap gap-4 text-xs text-muted-foreground/50">
-                  <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{daysAgo === 0 ? (isAr ? "نُشرت اليوم" : "Posted today") : `${isAr ? "نُشرت قبل" : "Posted"} ${daysAgo} ${isAr ? "يوم" : "days ago"}`}</span>
+                  <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{daysAgo === 0 ? (isAr ? "نُشرت اليوم" : "Posted today") : isAr ? `نُشرت منذ ${daysAgo} يوم` : `Posted ${daysAgo} days ago`}</span>
                   <span className="flex items-center gap-1"><Users className="h-3 w-3" />{job.applications_count || 0} {isAr ? "متقدم" : "applicants"}</span>
                   <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{job.views_count || 0} {isAr ? "مشاهدة" : "views"}</span>
                 </div>
+
+                {/* Deadline warning */}
+                {isDeadlineSoon && (
+                  <div className="flex items-center gap-2 bg-destructive/5 border border-destructive/10 rounded-xl px-4 py-2.5">
+                    <AlertCircle className="h-4 w-4 text-destructive shrink-0" />
+                    <span className="text-xs text-destructive font-medium">
+                      {isAr ? `آخر موعد للتقديم: ${format(new Date(job.application_deadline!), "d MMM yyyy")}` : `Application deadline: ${format(new Date(job.application_deadline!), "MMM d, yyyy")}`}
+                    </span>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -226,7 +252,7 @@ export default function JobDetail() {
                     <div className="h-1 w-1 rounded-full bg-primary" />
                     {isAr ? "وصف الوظيفة" : "Job Description"}
                   </h2>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{desc}</p>
+                  <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{desc}</div>
                 </div>
 
                 {reqs && (
@@ -237,7 +263,7 @@ export default function JobDetail() {
                         <div className="h-1 w-1 rounded-full bg-chart-2" />
                         {isAr ? "المتطلبات" : "Requirements"}
                       </h2>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{reqs}</p>
+                      <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{reqs}</div>
                     </div>
                   </>
                 )}
@@ -250,10 +276,32 @@ export default function JobDetail() {
                         <div className="h-1 w-1 rounded-full bg-accent-foreground" />
                         {isAr ? "المزايا" : "Benefits"}
                       </h2>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{benefits}</p>
+                      <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">{benefits}</div>
                     </div>
                   </>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Job Summary Card */}
+            <Card className="rounded-2xl border-border/15">
+              <CardContent className="p-6">
+                <h2 className="font-bold text-sm mb-4 flex items-center gap-2">
+                  <div className="h-1 w-1 rounded-full bg-primary" />
+                  {isAr ? "ملخص الوظيفة" : "Job Summary"}
+                </h2>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <SummaryRow icon={Briefcase} label={isAr ? "نوع الدوام" : "Job Type"} value={isAr ? typeLabel.ar : typeLabel.en} />
+                  {location && <SummaryRow icon={MapPin} label={isAr ? "الموقع" : "Location"} value={location} />}
+                  {expLabel && <SummaryRow icon={Award} label={isAr ? "مستوى الخبرة" : "Experience"} value={expLabel} />}
+                  {job.is_salary_visible && job.salary_min && (
+                    <SummaryRow icon={DollarSign} label={isAr ? "الراتب" : "Salary"} value={`${job.salary_min.toLocaleString()}${job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : "+"} ${job.salary_currency || ""}`} />
+                  )}
+                  {job.application_deadline && (
+                    <SummaryRow icon={Calendar} label={isAr ? "آخر موعد" : "Deadline"} value={format(new Date(job.application_deadline), "MMM d, yyyy")} />
+                  )}
+                  <SummaryRow icon={Calendar} label={isAr ? "تاريخ النشر" : "Posted"} value={format(new Date(job.created_at!), "MMM d, yyyy")} />
+                </div>
               </CardContent>
             </Card>
 
@@ -262,27 +310,36 @@ export default function JobDetail() {
               <div className="space-y-3">
                 <h3 className="font-bold text-sm">{isAr ? "وظائف مشابهة" : "Similar Jobs"}</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
-                  {relatedJobs.map((rj: any) => (
-                    <Link key={rj.id} to={`/jobs/${rj.id}`}>
-                      <Card className="rounded-xl border-border/15 hover:shadow-md transition-all p-4 group">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-10 w-10 rounded-lg shrink-0 border border-border/10">
-                            {(rj.companies as any)?.logo_url ? <AvatarImage src={(rj.companies as any).logo_url} /> : null}
-                            <AvatarFallback className="rounded-lg bg-muted/10 text-xs">{((rj.companies as any)?.name || "?")[0]}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
-                              {isAr ? (rj.title_ar || rj.title) : rj.title}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground truncate">
-                              {isAr ? ((rj.companies as any)?.name_ar || (rj.companies as any)?.name) : (rj.companies as any)?.name}
-                            </p>
+                  {relatedJobs.map((rj: any) => {
+                    const rjDaysAgo = Math.floor((Date.now() - new Date(rj.created_at).getTime()) / 86400000);
+                    return (
+                      <Link key={rj.id} to={`/jobs/${rj.id}`}>
+                        <Card className="rounded-xl border-border/15 hover:shadow-md transition-all p-4 group">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10 rounded-lg shrink-0 border border-border/10">
+                              {(rj.companies as any)?.logo_url ? <AvatarImage src={(rj.companies as any).logo_url} /> : null}
+                              <AvatarFallback className="rounded-lg bg-muted/10 text-xs">{((rj.companies as any)?.name || "?")[0]}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
+                                {isAr ? (rj.title_ar || rj.title) : rj.title}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground truncate">
+                                {isAr ? ((rj.companies as any)?.name_ar || (rj.companies as any)?.name) : (rj.companies as any)?.name}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1">
+                                {rj.is_salary_visible && rj.salary_min && (
+                                  <span className="text-[10px] font-bold">{rj.salary_min.toLocaleString()} {rj.salary_currency}</span>
+                                )}
+                                <span className="text-[9px] text-muted-foreground/40">{rjDaysAgo === 0 ? (isAr ? "اليوم" : "Today") : `${rjDaysAgo}d`}</span>
+                              </div>
+                            </div>
+                            <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-primary transition-colors shrink-0" />
                           </div>
-                          <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-primary transition-colors shrink-0" />
-                        </div>
-                      </Card>
-                    </Link>
-                  ))}
+                        </Card>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -314,7 +371,9 @@ export default function JobDetail() {
                         placeholder={isAr ? "اكتب رسالة تعريفية قصيرة..." : "Write a brief cover letter..."}
                         value={coverLetter}
                         onChange={(e) => setCoverLetter(e.target.value)}
+                        maxLength={1000}
                       />
+                      <p className="text-[10px] text-muted-foreground text-end">{coverLetter.length}/1000</p>
                       <div className="flex flex-col gap-2">
                         <Button onClick={() => apply.mutate()} disabled={apply.isPending} className="rounded-xl gap-1.5 w-full font-bold">
                           <Send className="h-3.5 w-3.5" />
@@ -357,43 +416,68 @@ export default function JobDetail() {
                       <AvatarFallback className="rounded-lg bg-muted/10 text-xs">{(company?.name || "?")[0]}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-semibold">{isAr ? (company?.name_ar || company?.name) : company?.name}</p>
+                      <p className="text-xs font-semibold">{isAr ? (company?.name_ar || company?.name) : company?.name}</p>
                       {company?.slug && (
                         <Link to={`/companies/${company.slug}`} className="text-[10px] text-primary hover:underline">
-                          {isAr ? "عرض الصفحة" : "View Page"}
+                          {isAr ? "عرض صفحة الشركة" : "View company page"}
                         </Link>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {job.application_deadline && (
-                  <>
-                    <Separator className="bg-border/10" />
-                    <div className="flex items-center gap-2 text-xs text-destructive/70">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>{isAr ? "آخر موعد للتقديم:" : "Application deadline:"} <strong>{format(new Date(job.application_deadline), "MMM d, yyyy")}</strong></span>
-                    </div>
-                  </>
-                )}
+                <Separator className="bg-border/10" />
+
+                {/* Share & Actions */}
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="rounded-xl flex-1 text-xs gap-1" onClick={handleShare}>
+                    <Share2 className="h-3 w-3" />
+                    {isAr ? "مشاركة" : "Share"}
+                  </Button>
+                  <Button variant="outline" size="sm" className="rounded-xl flex-1 text-xs gap-1" onClick={() => navigate("/jobs")}>
+                    <ArrowLeft className="h-3 w-3" />
+                    {isAr ? "العودة" : "Back"}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Actions Card */}
+            {/* Quick Stats Card */}
             <Card className="rounded-2xl border-border/15">
-              <CardContent className="p-4 space-y-2">
-                <Button variant="ghost" size="sm" onClick={handleShare} className="w-full justify-start rounded-xl text-xs gap-2">
-                  <Share2 className="h-3.5 w-3.5" /> {isAr ? "مشاركة الوظيفة" : "Share this job"}
-                </Button>
-                <Link to="/jobs" className="block">
-                  <Button variant="ghost" size="sm" className="w-full justify-start rounded-xl text-xs gap-2">
-                    <Briefcase className="h-3.5 w-3.5" /> {isAr ? "تصفح جميع الوظائف" : "Browse all jobs"}
-                  </Button>
-                </Link>
+              <CardContent className="p-4 space-y-3">
+                <h4 className="text-xs font-bold">{isAr ? "إحصائيات سريعة" : "Quick Stats"}</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground flex items-center gap-1.5"><Users className="h-3 w-3" />{isAr ? "عدد المتقدمين" : "Applicants"}</span>
+                    <span className="font-bold">{job.applications_count || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground flex items-center gap-1.5"><Eye className="h-3 w-3" />{isAr ? "المشاهدات" : "Views"}</span>
+                    <span className="font-bold">{job.views_count || 0}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground flex items-center gap-1.5"><Clock className="h-3 w-3" />{isAr ? "نُشرت" : "Posted"}</span>
+                    <span className="font-bold">{daysAgo === 0 ? (isAr ? "اليوم" : "Today") : isAr ? `منذ ${daysAgo} يوم` : `${daysAgo}d ago`}</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function SummaryRow({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted/10">
+        <Icon className="h-3.5 w-3.5 text-muted-foreground/50" />
+      </div>
+      <div>
+        <p className="text-[10px] text-muted-foreground">{label}</p>
+        <p className="text-xs font-semibold">{value}</p>
       </div>
     </div>
   );
