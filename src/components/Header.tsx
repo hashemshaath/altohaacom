@@ -28,6 +28,9 @@ import {
   BookOpen,
   HandHeart,
   Factory,
+  Briefcase,
+  CalendarDays,
+  Medal,
 } from "lucide-react";
 
 const primaryNav = [
