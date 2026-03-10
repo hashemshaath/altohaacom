@@ -206,7 +206,14 @@ export function useEnhancedSEO(language: string) {
           url: `${origin}/contact`,
           availableLanguage: ["English", "Arabic"],
         },
-        sameAs: [],
+        sameAs: [
+          "https://www.instagram.com/altohaglobal",
+          "https://www.facebook.com/altohaglobal",
+          "https://x.com/altohaglobal",
+          "https://www.linkedin.com/company/altoha",
+          "https://www.youtube.com/@altohaglobal",
+          "https://www.tiktok.com/@altohaglobal",
+        ],
       });
       jsonLdItems.push({
         "@context": "https://schema.org",
