@@ -7,6 +7,7 @@ import { Save, Loader2, CheckCircle2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { PersonalInfoSection } from "./edit/PersonalInfoSection";
 import { ProfessionalInfoSection } from "./edit/ProfessionalInfoSection";
+import { JobAvailabilitySection } from "./edit/JobAvailabilitySection";
 import { LocationSection } from "./edit/LocationSection";
 import { SocialMediaSection } from "./edit/SocialMediaSection";
 import { useAccountType } from "@/hooks/useAccountType";
