@@ -60,6 +60,7 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/design/custom-css": { en: "Custom CSS", ar: "CSS مخصص" },
   "/admin/hero-slides": { en: "Hero Slides", ar: "شرائح البانر" },
   "/admin/deduplication": { en: "Deduplication", ar: "التكرارات" },
+  "/admin/seo": { en: "SEO Dashboard", ar: "لوحة SEO" },
 };
 
 export const AdminBreadcrumb = memo(function AdminBreadcrumb() {

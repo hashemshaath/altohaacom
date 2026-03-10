@@ -53,6 +53,7 @@ const OrganizersAdmin = lazy(() => import("@/pages/admin/OrganizersAdmin"));
 const DesignIdentityAdmin = lazy(() => import("@/pages/admin/DesignIdentityAdmin"));
 const HeroSlidesAdmin = lazy(() => import("@/pages/admin/HeroSlidesAdmin"));
 const DeduplicationAdmin = lazy(() => import("@/pages/admin/DeduplicationAdmin"));
+const SEODashboard = lazy(() => import("@/pages/admin/SEODashboard"));
 
 const BrandIdentityPage = lazy(() => import("@/pages/admin/design/BrandIdentityPage"));
 
@@ -139,5 +140,6 @@ export const adminRoutes = (
     <Route path="audit" element={<AuditLog />} />
     <Route path="database" element={<DatabaseAdmin />} />
     <Route path="deduplication" element={<DeduplicationAdmin />} />
+    <Route path="seo" element={<SEODashboard />} />
   </Route>
 );
