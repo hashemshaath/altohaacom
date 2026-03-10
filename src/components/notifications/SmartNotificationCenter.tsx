@@ -87,6 +87,33 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
   const [tab, setTab] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [snoozedIds, setSnoozedIds] = useState<Set<string>>(() => new Set(Object.keys(getSnoozed()).filter(id => getSnoozed()[id] > Date.now())));
+
+  // Unsnooze expired notifications periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const expired = unsnoozeExpired();
+      if (expired.length > 0) {
+        setSnoozedIds(prev => {
+          const next = new Set(prev);
+          expired.forEach(id => next.delete(id));
+          return next;
+        });
+        toast({ title: isAr ? `${expired.length} إشعار عاد من التأجيل` : `${expired.length} snoozed notification${expired.length > 1 ? "s" : ""} returned` });
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [isAr]);
+
+  const handleSnooze = useCallback((id: string, durationMs: number) => {
+    const until = Date.now() + durationMs;
+    snoozeNotification(id, until);
+    setSnoozedIds(prev => new Set(prev).add(id));
+    const label = durationMs <= 3600000 ? (isAr ? "ساعة" : "1 hour") :
+                  durationMs <= 14400000 ? (isAr ? "٤ ساعات" : "4 hours") :
+                  (isAr ? "غداً" : "tomorrow");
+    toast({ title: isAr ? `تم تأجيل الإشعار لمدة ${label}` : `Snoozed for ${label}` });
+  }, [isAr]);
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["smart-notifications", user?.id],
