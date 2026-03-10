@@ -506,9 +506,11 @@ export default function OrganizerDetail() {
                 <img
                   key={i}
                   src={url}
-                  alt=""
+                  alt={`${orgName} gallery ${i + 1}`}
                   className="h-28 w-44 rounded-2xl object-cover shrink-0 cursor-pointer hover:opacity-90 transition-opacity border border-border/40"
                   onClick={() => setGalleryOpen(url)}
+                  loading="lazy"
+                  decoding="async"
                 />
               ))}
             </div>
