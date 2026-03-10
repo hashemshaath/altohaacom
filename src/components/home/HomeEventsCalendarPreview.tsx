@@ -368,4 +368,4 @@ function HomeListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean 
   );
 
   return event.link ? <Link to={event.link}>{card}</Link> : card;
-});
+}
