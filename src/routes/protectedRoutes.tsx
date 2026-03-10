@@ -39,6 +39,9 @@ const MembershipReferral = lazy(() => import("@/pages/MembershipReferral"));
 const MembershipGiftsHistory = lazy(() => import("@/pages/MembershipGiftsHistory"));
 const OrganizerPortal = lazy(() => import("@/pages/OrganizerPortal"));
 const ForYou = lazy(() => import("@/pages/ForYou"));
+const Tastings = lazy(() => import("@/pages/Tastings"));
+const TastingDetail = lazy(() => import("@/pages/TastingDetail"));
+const CreateTasting = lazy(() => import("@/pages/CreateTasting"));
 
 export const protectedRoutes = (
   <>
@@ -77,5 +80,8 @@ export const protectedRoutes = (
     <Route path="/membership/referral" element={<ProtectedRoute><MembershipReferral /></ProtectedRoute>} />
     <Route path="/membership/gifts" element={<ProtectedRoute><MembershipGiftsHistory /></ProtectedRoute>} />
     <Route path="/for-you" element={<ProtectedRoute><ForYou /></ProtectedRoute>} />
+    <Route path="/tastings" element={<ProtectedRoute><Tastings /></ProtectedRoute>} />
+    <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
+    <Route path="/tastings/:id" element={<ProtectedRoute><TastingDetail /></ProtectedRoute>} />
   </>
 );
