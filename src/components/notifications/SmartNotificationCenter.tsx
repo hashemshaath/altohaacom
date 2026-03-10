@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Bell, CheckCheck, Filter, BellOff, Clock, Settings, Trash2, Search } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Bell, CheckCheck, BellOff, Clock, Settings, Trash2, Search, AlarmClock, MoreVertical, Pin, Archive } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -18,6 +19,37 @@ import { NotificationActionButtons } from "./NotificationActionButtons";
 import { NotificationPriorityBadge, inferPriority } from "./NotificationPriorityBadge";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+
+// Snooze helpers
+const SNOOZE_KEY = "altoha_snoozed_notifications";
+
+function getSnoozed(): Record<string, number> {
+  try { return JSON.parse(localStorage.getItem(SNOOZE_KEY) || "{}"); } catch { return {}; }
+}
+
+function snoozeNotification(id: string, until: number) {
+  const snoozed = getSnoozed();
+  snoozed[id] = until;
+  localStorage.setItem(SNOOZE_KEY, JSON.stringify(snoozed));
+}
+
+function unsnoozeExpired(): string[] {
+  const snoozed = getSnoozed();
+  const now = Date.now();
+  const unsnoozed: string[] = [];
+  const remaining: Record<string, number> = {};
+  for (const [id, until] of Object.entries(snoozed)) {
+    if (until <= now) unsnoozed.push(id);
+    else remaining[id] = until;
+  }
+  localStorage.setItem(SNOOZE_KEY, JSON.stringify(remaining));
+  return unsnoozed;
+}
+
+function isSnoozed(id: string): boolean {
+  const snoozed = getSnoozed();
+  return snoozed[id] ? snoozed[id] > Date.now() : false;
+}
 
 interface Props {
   open: boolean;
@@ -55,6 +87,33 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
   const [tab, setTab] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [snoozedIds, setSnoozedIds] = useState<Set<string>>(() => new Set(Object.keys(getSnoozed()).filter(id => getSnoozed()[id] > Date.now())));
+
+  // Unsnooze expired notifications periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const expired = unsnoozeExpired();
+      if (expired.length > 0) {
+        setSnoozedIds(prev => {
+          const next = new Set(prev);
+          expired.forEach(id => next.delete(id));
+          return next;
+        });
+        toast({ title: isAr ? `${expired.length} إشعار عاد من التأجيل` : `${expired.length} snoozed notification${expired.length > 1 ? "s" : ""} returned` });
+      }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [isAr]);
+
+  const handleSnooze = useCallback((id: string, durationMs: number) => {
+    const until = Date.now() + durationMs;
+    snoozeNotification(id, until);
+    setSnoozedIds(prev => new Set(prev).add(id));
+    const label = durationMs <= 3600000 ? (isAr ? "ساعة" : "1 hour") :
+                  durationMs <= 14400000 ? (isAr ? "٤ ساعات" : "4 hours") :
+                  (isAr ? "غداً" : "tomorrow");
+    toast({ title: isAr ? `تم تأجيل الإشعار لمدة ${label}` : `Snoozed for ${label}` });
+  }, [isAr]);
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["smart-notifications", user?.id],
@@ -124,6 +183,9 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return notifications.filter(n => {
+      const notifSnoozed = snoozedIds.has(n.id);
+      if (tab === "snoozed") return notifSnoozed;
+      if (notifSnoozed) return false; // Hide snoozed from other tabs
       if (tab === "unread" && n.is_read) return false;
       if (categoryFilter !== "all") {
         const cat = categoryMap[n.type || "system"] || "system";
@@ -135,10 +197,11 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
       }
       return true;
     });
-  }, [notifications, tab, categoryFilter, searchQuery]);
+  }, [notifications, tab, categoryFilter, searchQuery, snoozedIds]);
 
-  const unreadCount = useMemo(() => notifications.filter(n => !n.is_read).length, [notifications]);
+  const unreadCount = useMemo(() => notifications.filter(n => !n.is_read && !snoozedIds.has(n.id)).length, [notifications, snoozedIds]);
   const readCount = useMemo(() => notifications.filter(n => n.is_read).length, [notifications]);
+  const snoozedCount = snoozedIds.size;
   const grouped = useMemo(() => groupByDate(filtered, isAr), [filtered, isAr]);
 
   const categoryLabels: Record<CategoryFilter, { en: string; ar: string }> = {
@@ -193,15 +256,25 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
               <span className="text-primary font-medium">{unreadCount} {isAr ? "جديد" : "new"}</span>
               <span className="text-border">|</span>
               <span>{readCount} {isAr ? "مقروء" : "read"}</span>
+              {snoozedCount > 0 && (
+                <>
+                  <span className="text-border">|</span>
+                  <span className="text-chart-4 font-medium"><AlarmClock className="h-3 w-3 inline me-0.5" />{snoozedCount} {isAr ? "مؤجل" : "snoozed"}</span>
+                </>
+              )}
             </div>
           )}
         </SheetHeader>
 
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <div className="px-4">
-            <TabsList className="w-full grid grid-cols-2">
+            <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
               <TabsTrigger value="unread">{isAr ? "غير مقروء" : "Unread"} {unreadCount > 0 && `(${unreadCount})`}</TabsTrigger>
+              <TabsTrigger value="snoozed" className="gap-1">
+                <AlarmClock className="h-3 w-3" />
+                {isAr ? "مؤجل" : "Snoozed"} {snoozedCount > 0 && `(${snoozedCount})`}
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -284,10 +357,49 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                                 <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{isAr ? n.body_ar || n.body : n.body}</p>
                               )}
                               <NotificationActionButtons notification={n} onMarkRead={markRead} />
-                              <p className="text-[10px] text-muted-foreground mt-1">
-                                <Clock className="h-3 w-3 inline me-0.5" />
-                                {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                              </p>
+                              <div className="flex items-center gap-1 mt-1">
+                                <p className="text-[10px] text-muted-foreground flex-1">
+                                  <Clock className="h-3 w-3 inline me-0.5" />
+                                  {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
+                                </p>
+                                {tab !== "snoozed" && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                      <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <MoreVertical className="h-3 w-3" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-40">
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleSnooze(n.id, 3600000); }}>
+                                        <AlarmClock className="h-3.5 w-3.5 me-2" />
+                                        {isAr ? "أجّل ساعة" : "Snooze 1h"}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleSnooze(n.id, 14400000); }}>
+                                        <AlarmClock className="h-3.5 w-3.5 me-2" />
+                                        {isAr ? "أجّل ٤ ساعات" : "Snooze 4h"}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleSnooze(n.id, 86400000); }}>
+                                        <AlarmClock className="h-3.5 w-3.5 me-2" />
+                                        {isAr ? "أجّل لغداً" : "Snooze till tomorrow"}
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )}
+                                {tab === "snoozed" && (
+                                  <Button
+                                    variant="ghost" size="sm" className="h-5 text-[10px] px-1.5"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const snoozed = getSnoozed();
+                                      delete snoozed[n.id];
+                                      localStorage.setItem(SNOOZE_KEY, JSON.stringify(snoozed));
+                                      setSnoozedIds(prev => { const next = new Set(prev); next.delete(n.id); return next; });
+                                    }}
+                                  >
+                                    {isAr ? "إلغاء التأجيل" : "Unsnooze"}
+                                  </Button>
+                                )}
+                              </div>
                             </div>
                             {!n.is_read && (
                               <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-2 animate-pulse" />
