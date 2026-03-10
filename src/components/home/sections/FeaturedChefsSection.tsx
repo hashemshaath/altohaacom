@@ -8,12 +8,12 @@ import { cn } from "@/lib/utils";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
-import { forwardRef } from "react";
+import { memo } from "react";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 
-const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSection(_props, ref) {
+const FeaturedChefsSection = memo(function FeaturedChefsSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
@@ -67,7 +67,7 @@ const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSecti
   if (chefs.length === 0) return null;
 
   return (
-    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
+    <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionHeader
           icon={ChefHat}

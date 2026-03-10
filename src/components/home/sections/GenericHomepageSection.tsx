@@ -1,4 +1,4 @@
-import { forwardRef, memo } from "react";
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSection } from "@/hooks/useHomepageSections";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ interface Props {
  * Generic placeholder for homepage sections that don't have a dedicated component yet.
  * Renders title/subtitle from DB config with a professional "coming soon" state.
  */
-const GenericHomepageSection = memo(forwardRef<HTMLElement, Props>(function GenericHomepageSection({ sectionKey }, ref) {
+const GenericHomepageSection = memo(function GenericHomepageSection({ sectionKey }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const section = useHomepageSection(sectionKey);
@@ -26,7 +26,7 @@ const GenericHomepageSection = memo(forwardRef<HTMLElement, Props>(function Gene
   const count = Math.min(section.item_count || 3, perRow * 2);
 
   return (
-    <section ref={ref} id={sectionKey}>
+    <section id={sectionKey}>
       <div className={cn(
         "container mx-auto px-4",
         section.container_width === "narrow" && "max-w-3xl",
@@ -66,6 +66,6 @@ const GenericHomepageSection = memo(forwardRef<HTMLElement, Props>(function Gene
       </div>
     </section>
   );
-}));
+});
 
 export default GenericHomepageSection;

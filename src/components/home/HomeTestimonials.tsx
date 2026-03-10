@@ -1,4 +1,4 @@
-import { forwardRef, useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
-export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimonials(_props, ref) {
+export const HomeTestimonials = function HomeTestimonials() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
@@ -62,7 +62,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
   const initials = name?.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div ref={ref}>
+    <div>
       <section aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container max-w-3xl">
           <SectionHeader
@@ -134,4 +134,4 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
       </section>
     </div>
   );
-});
+};

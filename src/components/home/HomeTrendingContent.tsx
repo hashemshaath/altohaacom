@@ -1,4 +1,4 @@
-import { forwardRef, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,7 +23,7 @@ const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   interview: { en: "Interview", ar: "مقابلة" },
 };
 
-export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrendingContent(_props, ref) {
+export const HomeTrendingContent = function HomeTrendingContent() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
   if (articles.length === 0) return null;
 
   return (
-    <div ref={ref}>
+    <div>
       <section aria-label={isAr ? "المحتوى الرائج" : "Trending Content"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container">
           <SectionHeader
@@ -152,4 +152,4 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
       </section>
     </div>
   );
-});
+};
