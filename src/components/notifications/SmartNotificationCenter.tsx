@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Bell, CheckCheck, Filter, BellOff, Clock, Settings, Trash2, Search } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Bell, CheckCheck, BellOff, Clock, Settings, Trash2, Search, AlarmClock, MoreVertical, Pin, Archive } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -17,6 +18,38 @@ import { SwipeableNotificationCard } from "./SwipeableNotificationCard";
 import { NotificationActionButtons } from "./NotificationActionButtons";
 import { NotificationPriorityBadge, inferPriority } from "./NotificationPriorityBadge";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
+
+// Snooze helpers
+const SNOOZE_KEY = "altoha_snoozed_notifications";
+
+function getSnoozed(): Record<string, number> {
+  try { return JSON.parse(localStorage.getItem(SNOOZE_KEY) || "{}"); } catch { return {}; }
+}
+
+function snoozeNotification(id: string, until: number) {
+  const snoozed = getSnoozed();
+  snoozed[id] = until;
+  localStorage.setItem(SNOOZE_KEY, JSON.stringify(snoozed));
+}
+
+function unsnoozeExpired(): string[] {
+  const snoozed = getSnoozed();
+  const now = Date.now();
+  const unsnoozed: string[] = [];
+  const remaining: Record<string, number> = {};
+  for (const [id, until] of Object.entries(snoozed)) {
+    if (until <= now) unsnoozed.push(id);
+    else remaining[id] = until;
+  }
+  localStorage.setItem(SNOOZE_KEY, JSON.stringify(remaining));
+  return unsnoozed;
+}
+
+function isSnoozed(id: string): boolean {
+  const snoozed = getSnoozed();
+  return snoozed[id] ? snoozed[id] > Date.now() : false;
+}
 import { cn } from "@/lib/utils";
 
 interface Props {
