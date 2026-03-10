@@ -231,6 +231,48 @@ export function useEnhancedSEO(language: string) {
           "query-input": "required name=search_term_string",
         },
       });
+      // MobileApplication schema for PWA
+      jsonLdItems.push({
+        "@context": "https://schema.org",
+        "@type": "MobileApplication",
+        name: "Altoha",
+        operatingSystem: "Any",
+        applicationCategory: "SocialNetworkingApplication",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        url: origin,
+        description: isAr
+          ? "تطبيق الطهاة — شبكة الطهي الاحترافية"
+          : "Altoha — Professional Culinary Network App",
+      });
+    }
+
+    // Shop page — Store schema
+    if (path === "/shop") {
+      jsonLdItems.push({
+        "@context": "https://schema.org",
+        "@type": "Store",
+        name: isAr ? "متجر الطهاة" : "Altoha Shop",
+        url: `${origin}/shop`,
+        description: isAr
+          ? "تسوق أدوات الطهي الاحترافية والكتب والمكونات"
+          : "Shop professional culinary tools, books, and ingredients",
+        isPartOf: { "@type": "WebSite", name: "Altoha", url: origin },
+      });
+    }
+
+    // Jobs page — ItemList of JobPostings
+    if (path === "/jobs") {
+      jsonLdItems.push({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: isAr ? "وظائف الطهي" : "Culinary Jobs",
+        url: `${origin}/jobs`,
+        itemListElement: [],
+        numberOfItems: 0,
+        description: isAr
+          ? "فرص عمل في قطاع الطهي والضيافة"
+          : "Career opportunities in culinary and hospitality",
+      });
     }
 
     // Mobile-optimized page signals

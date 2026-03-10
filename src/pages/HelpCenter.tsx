@@ -85,6 +85,19 @@ export default function HelpCenter() {
         title={language === "ar" ? "مركز المساعدة" : "Help Center"}
         description={language === "ar" ? "إجابات على الأسئلة الشائعة ودعم فني لمستخدمي المنصة" : "Find answers to FAQs and get support for using the Altoha platform"}
         keywords={language === "ar" ? "مساعدة, أسئلة شائعة, دعم فني, مركز المساعدة" : "help center, FAQ, support, troubleshooting"}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          name: language === "ar" ? "مركز المساعدة" : "Help Center",
+          mainEntity: filteredFaqs.slice(0, 20).map(faq => ({
+            "@type": "Question",
+            name: language === "ar" ? (faq.question_ar || faq.question) : faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: language === "ar" ? (faq.answer_ar || faq.answer) : faq.answer,
+            },
+          })),
+        }}
       />
       <Header />
       <main className="flex-1">

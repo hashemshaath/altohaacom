@@ -222,6 +222,22 @@ export default function PublicProfile() {
       <SEOHead
         title={`${displayName} (@${profile.username}) - Altoha`}
         description={bio || `${displayName}'s professional culinary profile on Altoha`}
+        ogImage={profile.avatar_url || undefined}
+        canonical={`https://altoha.com/chef/${profile.username}`}
+        lang={language}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: displayName,
+          alternateName: profile.username,
+          url: `https://altoha.com/chef/${profile.username}`,
+          image: profile.avatar_url || undefined,
+          description: bio || undefined,
+          jobTitle: profile.job_title || undefined,
+          worksFor: currentWork ? { "@type": "Organization", name: currentWork } : undefined,
+          nationality: profile.country_code ? { "@type": "Country", name: profile.country_code } : undefined,
+          memberOf: { "@type": "Organization", name: "Altoha", url: "https://altoha.com" },
+        }}
       />
       <Header />
 
