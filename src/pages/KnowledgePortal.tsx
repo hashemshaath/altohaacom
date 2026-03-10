@@ -118,8 +118,8 @@ export default function KnowledgePortal() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr ? "بوابة المعرفة" : "Knowledge Portal"}
-        description={isAr ? "موارد تعليمية ومعايير التحكيم والمراجع المهنية للطهاة" : "Educational resources, judging criteria, and professional references for chefs"}
+        title={language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
+        description={language === "ar" ? "موارد تعليمية ومعايير التحكيم والمراجع المهنية للطهاة" : "Educational resources, judging criteria, and professional references for chefs"}
       />
       <Header />
       {/* Compact Hero */}
