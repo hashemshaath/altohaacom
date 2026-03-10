@@ -420,6 +420,93 @@ export default function SEODashboard() {
               </div>
             )}
 
+            {/* Slow Page Alerts */}
+            {(() => {
+              const slowPages = pageVitals.filter(pv =>
+                (pv.lcp != null && getVitalStatus("lcp", pv.lcp) === "poor") ||
+                (pv.cls != null && getVitalStatus("cls", pv.cls) === "poor") ||
+                (pv.inp != null && getVitalStatus("inp", pv.inp) === "poor")
+              );
+              const warnPages = pageVitals.filter(pv =>
+                !slowPages.some(s => s.path === pv.path) && (
+                  (pv.lcp != null && getVitalStatus("lcp", pv.lcp) === "needs-improvement") ||
+                  (pv.cls != null && getVitalStatus("cls", pv.cls) === "needs-improvement") ||
+                  (pv.inp != null && getVitalStatus("inp", pv.inp) === "needs-improvement")
+                )
+              );
+              const allAlerts = [
+                ...slowPages.map(p => ({ ...p, severity: "poor" as const })),
+                ...warnPages.map(p => ({ ...p, severity: "needs-improvement" as const })),
+              ];
+              if (!allAlerts.length) return (
+                pageVitals.length > 0 ? (
+                  <Card className="border-green-500/30 bg-green-500/5">
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                          {isAr ? "جميع الصفحات تجتاز حدود Google" : "All pages pass Google's Core Web Vitals thresholds"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{isAr ? "لا توجد مشاكل أداء مكتشفة" : "No performance issues detected"}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : null
+              );
+              return (
+                <Card className="border-destructive/30">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-destructive" />
+                      {isAr ? "تنبيهات الصفحات البطيئة" : "Slow Page Alerts"}
+                      <Badge variant="destructive" className="text-[9px] ms-auto">{slowPages.length} {isAr ? "حرجة" : "critical"}</Badge>
+                      {warnPages.length > 0 && <Badge variant="secondary" className="text-[9px]">{warnPages.length} {isAr ? "تحذير" : "warning"}</Badge>}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-1.5">
+                      {allAlerts.slice(0, 10).map(alert => {
+                        const failingMetrics: string[] = [];
+                        if (alert.lcp != null) {
+                          const s = getVitalStatus("lcp", alert.lcp);
+                          if (s !== "good") failingMetrics.push(`LCP ${Math.round(alert.lcp)}ms`);
+                        }
+                        if (alert.cls != null) {
+                          const s = getVitalStatus("cls", alert.cls);
+                          if (s !== "good") failingMetrics.push(`CLS ${alert.cls.toFixed(3)}`);
+                        }
+                        if (alert.inp != null) {
+                          const s = getVitalStatus("inp", alert.inp);
+                          if (s !== "good") failingMetrics.push(`INP ${Math.round(alert.inp)}ms`);
+                        }
+                        return (
+                          <div key={alert.path} className="flex items-center gap-3 py-2 px-3 rounded-lg bg-muted/50 border border-border/30">
+                            {alert.severity === "poor" ? (
+                              <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
+                            ) : (
+                              <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-mono truncate">{alert.path}</p>
+                              <p className="text-[11px] text-muted-foreground">{failingMetrics.join(" · ")}</p>
+                            </div>
+                            <Badge variant={alert.severity === "poor" ? "destructive" : "secondary"} className="text-[9px] shrink-0">
+                              {alert.severity === "poor" ? (isAr ? "حرج" : "Critical") : (isAr ? "تحذير" : "Warning")}
+                            </Badge>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {allAlerts.length > 10 && (
+                      <p className="text-xs text-muted-foreground mt-2 text-center">
+                        +{allAlerts.length - 10} {isAr ? "صفحات أخرى" : "more pages"}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })()}
+
             {/* Vitals Trend Chart */}
             {trendData.length > 1 && (
               <Card>
