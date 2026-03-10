@@ -173,6 +173,35 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  /* Content-visibility for below-fold sections — reduces initial layout cost */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+  .cv-auto-sm {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 200px;
+  }
+  .cv-auto-lg {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 800px;
+  }
+
+  /* GPU-accelerated transforms */
+  .gpu {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Reduce motion for accessibility + performance */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @keyframes heroFadeUp {
