@@ -62,7 +62,7 @@ export const HomeTestimonials = function HomeTestimonials() {
   const initials = name?.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div ref={ref}>
+    <div>
       <section aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container max-w-3xl">
           <SectionHeader

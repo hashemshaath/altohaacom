@@ -64,7 +64,7 @@ export const HomeSearch = memo(function HomeSearch() {
   };
 
   return (
-    <section ref={ref} className="relative -mt-7 z-30 px-3 sm:-mt-9" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
+    <section className="relative -mt-7 z-30 px-3 sm:-mt-9" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <div ref={wrapperRef} className="mx-auto max-w-2xl rounded-3xl border border-border/40 bg-card/90 backdrop-blur-xl p-3.5 shadow-2xl shadow-primary/8 ring-1 ring-primary/5 sm:p-5">
           {/* Category pills */}

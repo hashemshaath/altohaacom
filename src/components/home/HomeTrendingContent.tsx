@@ -67,7 +67,7 @@ export const HomeTrendingContent = function HomeTrendingContent() {
   if (articles.length === 0) return null;
 
   return (
-    <div ref={ref}>
+    <div>
       <section aria-label={isAr ? "المحتوى الرائج" : "Trending Content"} dir={isAr ? "rtl" : "ltr"}>
         <div className="container">
           <SectionHeader
