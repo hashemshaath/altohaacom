@@ -36,6 +36,9 @@ export function useApplyTheme() {
     });
 
     // Override with Brand Identity custom colors if saved
+    // IMPORTANT: Surface/text/border colors are only applied in light mode
+    // because admin-configured colors are light-mode specific.
+    // Primary/accent/chart colors work in both modes.
     const identity = currentSettings.brand_identity as any;
     if (identity) {
       const pc = identity.primaryColors;
@@ -43,6 +46,7 @@ export function useApplyTheme() {
       const tc = identity.typographyColors;
       const st = identity.statusColors;
 
+      // Primary colors apply in both modes (they're brand colors)
       if (pc) {
         if (pc.primary) {
           root.style.setProperty("--primary", pc.primary);
@@ -51,14 +55,14 @@ export function useApplyTheme() {
         if (pc.accent) root.style.setProperty("--accent", pc.accent);
         if (pc.tertiary) root.style.setProperty("--chart-1", pc.tertiary);
       }
-      if (sc) {
+
+      // Surface/background colors only in light mode
+      if (!isDark && sc) {
         if (sc.background) {
           root.style.setProperty("--background", sc.background);
           root.style.setProperty("--popover", sc.background);
         }
-        if (sc.card) {
-          root.style.setProperty("--card", sc.card);
-        }
+        if (sc.card) root.style.setProperty("--card", sc.card);
         if (sc.surface) root.style.setProperty("--secondary", sc.surface);
         if (sc.muted) root.style.setProperty("--muted", sc.muted);
         if (sc.border) {
@@ -66,7 +70,9 @@ export function useApplyTheme() {
           root.style.setProperty("--input", sc.border);
         }
       }
-      if (tc) {
+
+      // Typography colors only in light mode
+      if (!isDark && tc) {
         if (tc.heading) {
           root.style.setProperty("--foreground", tc.heading);
           root.style.setProperty("--popover-foreground", tc.heading);
@@ -75,10 +81,10 @@ export function useApplyTheme() {
           root.style.setProperty("--card-foreground", tc.body);
           root.style.setProperty("--secondary-foreground", tc.body);
         }
-        if (tc.caption) {
-          root.style.setProperty("--muted-foreground", tc.caption);
-        }
+        if (tc.caption) root.style.setProperty("--muted-foreground", tc.caption);
       }
+
+      // Status colors apply in both modes
       if (st) {
         if (st.success) root.style.setProperty("--success", st.success);
         if (st.warning) root.style.setProperty("--warning", st.warning);
@@ -86,7 +92,7 @@ export function useApplyTheme() {
         if (st.info) root.style.setProperty("--info", st.info);
       }
 
-      // Check for active seasonal identity
+      // Seasonal identity — primary colors only (work in both modes)
       if (identity.activeSeasonalId && identity.seasonalIdentities) {
         const now = new Date();
         const seasonal = (identity.seasonalIdentities as any[]).find(
