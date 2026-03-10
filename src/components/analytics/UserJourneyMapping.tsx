@@ -108,19 +108,19 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
     if (!data || data.length === 0) return null;
 
     // Group by session
-    const sessions = new Map<string, typeof data>();
+    const sessions: Record<string, typeof data> = {};
     for (const view of data) {
       if (!view.session_id) continue;
-      if (!sessions.has(view.session_id)) sessions.set(view.session_id, []);
-      sessions.get(view.session_id)!.push(view);
+      if (!sessions[view.session_id]) sessions[view.session_id] = [];
+      sessions[view.session_id].push(view);
     }
 
     // Build flow edges (page A → page B transitions)
-    const edgeCounts = new Map<string, number>();
-    const journeyPaths = new Map<string, { count: number; totalDuration: number }>();
-    const pageExits = new Map<string, number>();
-    const pageVisits = new Map<string, number>();
-    const entryPages = new Map<string, number>();
+    const edgeCounts: Record<string, number> = {};
+    const journeyPaths: Record<string, { count: number; totalDuration: number }> = {};
+    const pageExits: Record<string, number> = {};
+    const pageVisits: Record<string, number> = {};
+    const entryPages: Record<string, number> = {};
 
     for (const [, views] of sessions) {
       if (views.length < 1) continue;
