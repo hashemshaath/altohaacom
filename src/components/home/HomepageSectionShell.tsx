@@ -91,7 +91,7 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
         hasAnimation && "transition-all duration-700 ease-out",
         hasAnimation && (isVisible ? ANIMATION_CLASS[animation] : ANIMATION_INITIAL[animation])
       )}
-      style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
+      style={config.bg_color && !document.documentElement.classList.contains("dark") ? { backgroundColor: config.bg_color } : undefined}
     >
       {shouldRender ? children : <div className="min-h-[60px]" />}
     </div>
