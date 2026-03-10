@@ -199,6 +199,72 @@ export default function SEODashboard() {
     else { toast.success(isAr ? "تم تهيئة حالة الفهرسة" : "Indexing status seeded"); refetchIndexing(); }
   };
 
+  // GSC Sync state
+  const [gscSyncing, setGscSyncing] = useState<string | null>(null);
+  const GSC_SITE_URL = "https://altoha.lovable.app";
+
+  const handleGSCSyncPerformance = async () => {
+    setGscSyncing("performance");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+      const end = format(new Date(), "yyyy-MM-dd");
+      const start = format(subDays(new Date(), 28), "yyyy-MM-dd");
+      const { data, error } = await supabase.functions.invoke("gsc-sync", {
+        body: { action: "search_performance", siteUrl: GSC_SITE_URL, startDate: start, endDate: end },
+      });
+      if (error) throw error;
+      toast.success(isAr ? `تم مزامنة ${data.total_queries} استعلام و ${data.synced_keywords} كلمة مفتاحية` : `Synced ${data.total_queries} queries, updated ${data.synced_keywords} keywords`);
+      refetchKeywords();
+    } catch (e: any) {
+      toast.error(e.message || "GSC sync failed");
+    } finally {
+      setGscSyncing(null);
+    }
+  };
+
+  const handleGSCInspectUrls = async () => {
+    if (!indexingStatus?.length) { toast.error("Seed pages first"); return; }
+    setGscSyncing("inspect");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+      const urls = indexingStatus.slice(0, 20).map((s: any) => s.url);
+      const { data, error } = await supabase.functions.invoke("gsc-sync", {
+        body: { action: "inspect_urls", siteUrl: GSC_SITE_URL, urls },
+      });
+      if (error) throw error;
+      const ok = data.inspections?.filter((i: any) => !i.error).length || 0;
+      toast.success(isAr ? `تم فحص ${ok} صفحة` : `Inspected ${ok} URLs`);
+      refetchIndexing();
+    } catch (e: any) {
+      toast.error(e.message || "Inspection failed");
+    } finally {
+      setGscSyncing(null);
+    }
+  };
+
+  const handleGSCSubmitUrls = async (urls?: string[]) => {
+    const targetUrls = urls || indexingStatus?.filter((s: any) => s.status !== "indexed").map((s: any) => s.url) || [];
+    if (!targetUrls.length) { toast.info(isAr ? "لا صفحات لإرسالها" : "No pages to submit"); return; }
+    setGscSyncing("submit");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+      const { data, error } = await supabase.functions.invoke("gsc-sync", {
+        body: { action: "submit_indexing", urls: targetUrls.slice(0, 10) },
+      });
+      if (error) throw error;
+      const ok = data.submissions?.filter((s: any) => s.success).length || 0;
+      toast.success(isAr ? `تم إرسال ${ok} صفحة للفهرسة` : `Submitted ${ok} URLs for indexing`);
+      refetchIndexing();
+    } catch (e: any) {
+      toast.error(e.message || "Submission failed");
+    } finally {
+      setGscSyncing(null);
+    }
+  };
+
   // Computed metrics
   const totalViews = pageViews?.length || 0;
   const uniqueSessions = new Set(pageViews?.map((v: any) => v.session_id) || []).size;
