@@ -292,6 +292,14 @@ export default function SystemSettings() {
                 </Card>
               </div>
             </TabsContent>
+
+            <TabsContent value="custom-entries" className="mt-0">
+              <GenericSettingsEditor settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+            </TabsContent>
+
+            <TabsContent value="integrations" className="mt-0">
+              <IntegrationsSecretsPanel />
+            </TabsContent>
           </Tabs>
 
           {/* Import/Export & Reset */}
