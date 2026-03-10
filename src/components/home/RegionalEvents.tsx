@@ -117,7 +117,7 @@ export const RegionalEvents = memo(function RegionalEvents() {
   );
 });
 
-function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
+const EventCard = forwardRef<HTMLAnchorElement, { item: any; isAr: boolean }>(function EventCard({ item, isAr }, ref) {
   const title = isAr && item.title_ar ? item.title_ar : item.title;
 
   const statusMap: Record<string, { label: string; labelAr: string; icon?: any; cls: string }> = {
