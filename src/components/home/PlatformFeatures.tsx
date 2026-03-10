@@ -165,7 +165,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       {/* CTA Cards */}
       <section className="container" dir={isAr ? "rtl" : "ltr"}>
         <div className="grid gap-3 md:grid-cols-2">
-          <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/5 to-transparent transition-all hover:shadow-xl">
+          <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/10 via-card to-card transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
                 <Star className="h-5 w-5 text-primary" />
@@ -186,7 +186,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               </div>
             </CardContent>
           </Card>
-          <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/5 to-transparent transition-all hover:shadow-xl">
+          <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/10 via-card to-card transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
                 <Trophy className="h-5 w-5 text-accent" />
@@ -208,8 +208,8 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       {/* Final CTA */}
       {!user && (
         <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.12),transparent_60%)]" />
           <div className="container relative py-16 text-center md:py-24">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />

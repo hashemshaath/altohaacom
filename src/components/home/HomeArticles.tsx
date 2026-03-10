@@ -112,7 +112,7 @@ export const HomeArticles = memo(function HomeArticles() {
                       <Newspaper className="h-12 w-12 text-primary/20" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                   <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       {typeTag(featured.type)}

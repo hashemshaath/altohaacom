@@ -211,7 +211,7 @@ function renderFeaturedCompetition(item: any, isAr: boolean, statusBadge: (s: st
               <Trophy className="h-12 w-12 text-primary/30" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
           <div className="absolute end-3 top-3 flex flex-col items-end gap-1.5">
             {statusBadge(item.status)}
             {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
@@ -264,7 +264,7 @@ function renderCompetitionCard(item: any, isAr: boolean, statusBadge: (s: string
               <Trophy className="h-8 w-8 text-primary/30" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
             {statusBadge(item.status)}
             {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
@@ -313,7 +313,7 @@ function renderExhibitionCard(item: any, isAr: boolean, statusBadge: (s: string)
               <Globe className="h-8 w-8 text-primary/30" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
             {statusBadge(item.status)}
             {item.start_date && <CountdownBadge targetDate={new Date(item.start_date)} isAr={isAr} />}
