@@ -13,7 +13,7 @@ interface Props {
  * Generic placeholder for homepage sections that don't have a dedicated component yet.
  * Renders title/subtitle from DB config with a professional "coming soon" state.
  */
-const GenericHomepageSection = memo(forwardRef<HTMLElement, Props>(function GenericHomepageSection({ sectionKey }, ref) {
+const GenericHomepageSection = memo(function GenericHomepageSection({ sectionKey }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const section = useHomepageSection(sectionKey);
