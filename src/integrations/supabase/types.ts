@@ -12687,6 +12687,163 @@ export type Database = {
         }
         Relationships: []
       }
+      job_applications: {
+        Row: {
+          cover_letter: string | null
+          created_at: string | null
+          id: string
+          job_id: string
+          resume_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cover_letter?: string | null
+          created_at?: string | null
+          id?: string
+          job_id: string
+          resume_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cover_letter?: string | null
+          created_at?: string | null
+          id?: string
+          job_id?: string
+          resume_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          application_deadline: string | null
+          applications_count: number | null
+          benefits: string | null
+          benefits_ar: string | null
+          city: string | null
+          company_id: string
+          country_code: string | null
+          created_at: string | null
+          description: string
+          description_ar: string | null
+          experience_level: string | null
+          id: string
+          is_featured: boolean | null
+          is_salary_visible: boolean | null
+          job_type: string
+          location: string | null
+          location_ar: string | null
+          posted_by: string
+          requirements: string | null
+          requirements_ar: string | null
+          salary_currency: string | null
+          salary_max: number | null
+          salary_min: number | null
+          specialization: string | null
+          specialization_ar: string | null
+          status: string
+          title: string
+          title_ar: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          application_deadline?: string | null
+          applications_count?: number | null
+          benefits?: string | null
+          benefits_ar?: string | null
+          city?: string | null
+          company_id: string
+          country_code?: string | null
+          created_at?: string | null
+          description: string
+          description_ar?: string | null
+          experience_level?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_salary_visible?: boolean | null
+          job_type?: string
+          location?: string | null
+          location_ar?: string | null
+          posted_by: string
+          requirements?: string | null
+          requirements_ar?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          specialization?: string | null
+          specialization_ar?: string | null
+          status?: string
+          title: string
+          title_ar?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          application_deadline?: string | null
+          applications_count?: number | null
+          benefits?: string | null
+          benefits_ar?: string | null
+          city?: string | null
+          company_id?: string
+          country_code?: string | null
+          created_at?: string | null
+          description?: string
+          description_ar?: string | null
+          experience_level?: string | null
+          id?: string
+          is_featured?: boolean | null
+          is_salary_visible?: boolean | null
+          job_type?: string
+          location?: string | null
+          location_ar?: string | null
+          posted_by?: string
+          requirements?: string | null
+          requirements_ar?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          specialization?: string | null
+          specialization_ar?: string | null
+          status?: string
+          title?: string
+          title_ar?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_postings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judge_ai_conversations: {
         Row: {
           competition_id: string | null
@@ -16784,7 +16941,9 @@ export type Database = {
           id: string
           instagram: string | null
           interests: string[] | null
+          is_open_to_work: boolean
           is_verified: boolean | null
+          job_availability_visibility: string
           job_title: string | null
           job_title_ar: string | null
           last_login_at: string | null
@@ -16804,9 +16963,14 @@ export type Database = {
           password_last_changed: string | null
           phone: string | null
           phone_verified: boolean | null
+          preferred_job_types: string[] | null
           preferred_language: string | null
+          preferred_work_locations: string[] | null
           profile_completed: boolean | null
           profile_visibility: string
+          salary_currency: string | null
+          salary_range_max: number | null
+          salary_range_min: number | null
           second_nationality: string | null
           secondary_email: string | null
           section_visibility: Json | null
@@ -16834,6 +16998,9 @@ export type Database = {
           wallet_balance: number | null
           website: string | null
           whatsapp: string | null
+          willing_to_relocate: boolean | null
+          work_availability_note: string | null
+          work_availability_note_ar: string | null
           years_of_experience: number | null
           youtube: string | null
         }
@@ -16871,7 +17038,9 @@ export type Database = {
           id?: string
           instagram?: string | null
           interests?: string[] | null
+          is_open_to_work?: boolean
           is_verified?: boolean | null
+          job_availability_visibility?: string
           job_title?: string | null
           job_title_ar?: string | null
           last_login_at?: string | null
@@ -16893,9 +17062,14 @@ export type Database = {
           password_last_changed?: string | null
           phone?: string | null
           phone_verified?: boolean | null
+          preferred_job_types?: string[] | null
           preferred_language?: string | null
+          preferred_work_locations?: string[] | null
           profile_completed?: boolean | null
           profile_visibility?: string
+          salary_currency?: string | null
+          salary_range_max?: number | null
+          salary_range_min?: number | null
           second_nationality?: string | null
           secondary_email?: string | null
           section_visibility?: Json | null
@@ -16923,6 +17097,9 @@ export type Database = {
           wallet_balance?: number | null
           website?: string | null
           whatsapp?: string | null
+          willing_to_relocate?: boolean | null
+          work_availability_note?: string | null
+          work_availability_note_ar?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
@@ -16960,7 +17137,9 @@ export type Database = {
           id?: string
           instagram?: string | null
           interests?: string[] | null
+          is_open_to_work?: boolean
           is_verified?: boolean | null
+          job_availability_visibility?: string
           job_title?: string | null
           job_title_ar?: string | null
           last_login_at?: string | null
@@ -16982,9 +17161,14 @@ export type Database = {
           password_last_changed?: string | null
           phone?: string | null
           phone_verified?: boolean | null
+          preferred_job_types?: string[] | null
           preferred_language?: string | null
+          preferred_work_locations?: string[] | null
           profile_completed?: boolean | null
           profile_visibility?: string
+          salary_currency?: string | null
+          salary_range_max?: number | null
+          salary_range_min?: number | null
           second_nationality?: string | null
           secondary_email?: string | null
           section_visibility?: Json | null
@@ -17012,6 +17196,9 @@ export type Database = {
           wallet_balance?: number | null
           website?: string | null
           whatsapp?: string | null
+          willing_to_relocate?: boolean | null
+          work_availability_note?: string | null
+          work_availability_note_ar?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
