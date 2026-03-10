@@ -19167,6 +19167,110 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_crawler_visits: {
+        Row: {
+          crawler_name: string
+          crawler_type: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          path: string
+          user_agent: string | null
+        }
+        Insert: {
+          crawler_name: string
+          crawler_type?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          path: string
+          user_agent?: string | null
+        }
+        Update: {
+          crawler_name?: string
+          crawler_type?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          path?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      seo_indexing_status: {
+        Row: {
+          coverage_state: string | null
+          created_at: string
+          id: string
+          last_indexed_at: string | null
+          last_submitted_at: string | null
+          notes: string | null
+          path: string
+          status: string | null
+          submitted_to: string[] | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          coverage_state?: string | null
+          created_at?: string
+          id?: string
+          last_indexed_at?: string | null
+          last_submitted_at?: string | null
+          notes?: string | null
+          path: string
+          status?: string | null
+          submitted_to?: string[] | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          coverage_state?: string | null
+          created_at?: string
+          id?: string
+          last_indexed_at?: string | null
+          last_submitted_at?: string | null
+          notes?: string | null
+          path?: string
+          status?: string | null
+          submitted_to?: string[] | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      seo_keyword_history: {
+        Row: {
+          checked_at: string
+          id: string
+          keyword_id: string
+          position: number | null
+          search_engine: string | null
+        }
+        Insert: {
+          checked_at?: string
+          id?: string
+          keyword_id: string
+          position?: number | null
+          search_engine?: string | null
+        }
+        Update: {
+          checked_at?: string
+          id?: string
+          keyword_id?: string
+          position?: number | null
+          search_engine?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_keyword_history_keyword_id_fkey"
+            columns: ["keyword_id"]
+            isOneToOne: false
+            referencedRelation: "seo_tracked_keywords"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seo_page_views: {
         Row: {
           country: string | null
@@ -19247,6 +19351,60 @@ export type Database = {
           rule_text_ar?: string
           severity?: string
           sort_order?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_tracked_keywords: {
+        Row: {
+          best_position: number | null
+          country_code: string | null
+          created_at: string
+          created_by: string | null
+          current_position: number | null
+          id: string
+          is_active: boolean | null
+          keyword: string
+          keyword_ar: string | null
+          last_checked_at: string | null
+          notes: string | null
+          previous_position: number | null
+          search_engine: string | null
+          target_page: string | null
+          updated_at: string
+        }
+        Insert: {
+          best_position?: number | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_position?: number | null
+          id?: string
+          is_active?: boolean | null
+          keyword: string
+          keyword_ar?: string | null
+          last_checked_at?: string | null
+          notes?: string | null
+          previous_position?: number | null
+          search_engine?: string | null
+          target_page?: string | null
+          updated_at?: string
+        }
+        Update: {
+          best_position?: number | null
+          country_code?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_position?: number | null
+          id?: string
+          is_active?: boolean | null
+          keyword?: string
+          keyword_ar?: string | null
+          last_checked_at?: string | null
+          notes?: string | null
+          previous_position?: number | null
+          search_engine?: string | null
+          target_page?: string | null
           updated_at?: string
         }
         Relationships: []
