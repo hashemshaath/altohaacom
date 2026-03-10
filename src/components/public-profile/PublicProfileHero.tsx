@@ -139,6 +139,14 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                       <Heart className="h-3 w-3" />
                       {isAr ? "متابع" : "Follower"}
                     </Badge>
+                   )}
+                  {profile.is_open_to_work && profile.job_availability_visibility === "public" && (
+                    <OpenToWorkBadge
+                      note={profile.work_availability_note}
+                      noteAr={profile.work_availability_note_ar}
+                      isAr={isAr}
+                      size="sm"
+                    />
                   )}
                   {profile.show_nationality !== false && profile.nationality && (
                     <Tooltip>
