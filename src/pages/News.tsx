@@ -130,7 +130,7 @@ export default function News() {
     <PageShell
       title={isAr ? "أخبار ومقالات الطهاة" : "Culinary News & Articles"}
       description={isAr ? "أحدث أخبار الطهاة والشركات والجمعيات ومقالات ملهمة من عالم فنون الطهي" : "Latest culinary news about chefs, companies, associations, and inspiring articles from the food industry"}
-      seoProps={{ jsonLd }}
+      seoProps={{ jsonLd, keywords: isAr ? "أخبار الطهاة, مقالات طهي, أخبار المطاعم, صناعة الأغذية, مدونة طهي" : "culinary news, chef articles, food industry news, restaurant news, cooking blog" }}
       container={false}
       padding="none"
     >

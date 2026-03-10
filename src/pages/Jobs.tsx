@@ -98,6 +98,7 @@ export default function Jobs() {
       <SEOHead
         title={isAr ? "وظائف الطهي والضيافة" : "Culinary & Hospitality Jobs"}
         description={isAr ? "ابحث عن أفضل الفرص الوظيفية في قطاع الطهي والضيافة حول العالم" : "Find top culinary and hospitality career opportunities worldwide on Altoha"}
+        keywords={isAr ? "وظائف طهي, وظائف مطاعم, وظائف فنادق, وظائف ضيافة, توظيف شيف" : "culinary jobs, restaurant jobs, hotel jobs, hospitality careers, chef recruitment"}
       />
       <Header />
       <main className="flex-1">

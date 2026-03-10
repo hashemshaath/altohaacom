@@ -78,6 +78,7 @@ export default function Rankings() {
     <PageShell
       title={isAr ? "التصنيف العالمي للطهاة" : "Global Chef Rankings"}
       description={isAr ? "اكتشف أفضل الطهاة حول العالم مرتبين حسب الأداء والإنجازات" : "Discover the top-ranked chefs worldwide based on performance and achievements"}
+      seoProps={{ keywords: isAr ? "تصنيف الطهاة, أفضل الطهاة, ترتيب عالمي, طهاة محترفون, ميداليات طهي" : "chef rankings, top chefs, global leaderboard, professional chefs, culinary medals" }}
       container={false}
       padding="none"
     >

@@ -31,6 +31,7 @@ export default function ChefsTable() {
     <PageShell
       title={isAr ? "طاولة الشيف — تقييم المنتجات الغذائية" : "Chef's Table — Food Product Evaluation"}
       description={isAr ? "خدمة تقييم المنتجات الغذائية من قبل طهاة محترفين" : "Professional food product evaluation by expert chefs"}
+      seoProps={{ keywords: isAr ? "تقييم منتجات غذائية, طاولة الشيف, تقييم طعام, مراجعة أغذية" : "food product evaluation, chefs table, food review, product assessment, chef tasting" }}
       container={false}
       padding="none"
     >

@@ -85,6 +85,7 @@ export default function Masterclasses() {
       title={isAr ? "الدروس المتقدمة للطهاة" : "Culinary Masterclasses"}
       description={isAr ? "تعلم من أمهر الطهاة عبر دروس حصرية في فنون الطبخ والحلويات" : "Learn from world-class chefs through exclusive masterclasses in cuisine, pastry arts, and more"}
       seoProps={{
+        keywords: isAr ? "دروس طهي, دورات طبخ, تعليم طهي, فنون الحلويات, دروس شيف" : "culinary masterclasses, cooking courses, chef training, pastry arts, culinary education",
         jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",

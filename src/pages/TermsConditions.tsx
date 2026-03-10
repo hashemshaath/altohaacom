@@ -38,7 +38,7 @@ export default function TermsConditions() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title={isAr ? "الشروط والأحكام" : "Terms & Conditions"} description={isAr ? "شروط وأحكام استخدام منصة الطهاة" : "Altoha Terms and Conditions"} />
+      <SEOHead title={isAr ? "الشروط والأحكام" : "Terms & Conditions"} description={isAr ? "شروط وأحكام استخدام منصة الطهاة" : "Altoha Terms and Conditions"} keywords={isAr ? "شروط وأحكام, سياسة الاستخدام" : "terms and conditions, usage policy"} />
       <Header />
       <main className="flex-1">
         <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">

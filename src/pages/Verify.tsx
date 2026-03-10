@@ -183,6 +183,7 @@ export default function Verify() {
       <SEOHead
         title={isAr ? "مركز التحقق" : "Verification Center"}
         description={isAr ? "تحقق من صحة الشهادات والحسابات والفواتير" : "Verify certificates, accounts, invoices and more"}
+        keywords={isAr ? "تحقق شهادات, التحقق من الحساب, مصادقة, تحقق" : "certificate verification, account verification, authentication, verify"}
       />
       <Header />
 

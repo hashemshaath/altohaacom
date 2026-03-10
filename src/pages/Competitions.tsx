@@ -141,6 +141,7 @@ export default function Competitions() {
       title={isAr ? "مسابقات الطهي" : "Culinary Competitions"}
       description={isAr ? "تصفح وانضم لمسابقات الطهي الاحترافية حول العالم على منصة الطهاة" : "Browse and join professional culinary competitions worldwide on Altoha"}
       seoProps={{
+        keywords: isAr ? "مسابقات طهي, بطولات طبخ, مسابقات شيف, تحكيم طهي, جوائز طهي" : "culinary competitions, cooking championships, chef contests, culinary judging, cooking awards",
         jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",

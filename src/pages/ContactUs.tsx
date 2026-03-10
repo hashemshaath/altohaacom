@@ -25,7 +25,7 @@ export default function ContactUs() {
   ];
 
   return (
-    <PageShell title={isAr ? "اتصل بنا" : "Contact Us"} description={isAr ? "تواصل مع فريق الطهاة" : "Get in touch with the Altoha team"} container={false}>
+    <PageShell title={isAr ? "اتصل بنا" : "Contact Us"} description={isAr ? "تواصل مع فريق منصة الطهاة للدعم والاستفسارات" : "Get in touch with the Altoha team for support and inquiries"} seoProps={{ keywords: isAr ? "اتصل بنا, دعم فني, تواصل, استفسارات" : "contact us, support, get in touch, inquiries" }} container={false}>
       <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
         <div className="container py-10 md:py-14 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">

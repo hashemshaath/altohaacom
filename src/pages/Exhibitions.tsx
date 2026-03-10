@@ -159,6 +159,7 @@ export default function Exhibitions() {
       title={isAr ? "معارض وفعاليات الأغذية" : "Food Exhibitions & Events"}
       description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات الطهوية حول العالم" : "Discover food exhibitions, conferences, and culinary events worldwide"}
       seoProps={{
+        keywords: isAr ? "معارض أغذية, فعاليات طهوية, مؤتمرات طعام, معارض دولية, صناعة الأغذية" : "food exhibitions, culinary events, food conferences, international expos, food industry",
         jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",

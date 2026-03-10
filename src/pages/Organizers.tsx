@@ -77,6 +77,7 @@ export default function Organizers() {
       <SEOHead
         title={isAr ? "منظمو الفعاليات والمعارض" : "Event & Exhibition Organizers"}
         description={isAr ? "تصفح منظمي الفعاليات والمعارض الرائدين في عالم الطهي" : "Browse leading event and exhibition organizers in the culinary world"}
+        keywords={isAr ? "منظمو فعاليات, منظمو معارض, إدارة مسابقات, تنظيم طهوي" : "event organizers, exhibition organizers, competition management, culinary event planning"}
       />
       <Header />
 

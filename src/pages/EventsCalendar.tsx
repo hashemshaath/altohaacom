@@ -123,6 +123,7 @@ export default function EventsCalendar() {
       <PageShell
         title={isAr ? "تقويم الفعاليات العالمية" : "Global Events Calendar"}
         description={isAr ? "تصفح جميع المسابقات والمعارض والفعاليات الطهوية" : "Browse all competitions, exhibitions, and culinary events worldwide"}
+        seoProps={{ keywords: isAr ? "تقويم فعاليات, مسابقات طهي, معارض أغذية, فعاليات قادمة" : "events calendar, culinary competitions, food exhibitions, upcoming events" }}
         container={false}
         padding="none"
       >

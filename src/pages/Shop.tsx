@@ -99,6 +99,7 @@ export default function Shop() {
     <PageShell
       title={isAr ? "متجر أدوات الطهي" : "Culinary Shop"}
       description={isAr ? "تصفح أدوات الطهي والكتب والمكونات والخدمات المهنية" : "Browse culinary tools, books, ingredients, and professional services on Altoha"}
+      seoProps={{ keywords: isAr ? "أدوات طهي, كتب طبخ, مكونات طهي, متجر شيف, معدات مطبخ" : "culinary tools, cooking books, chef supplies, kitchen equipment, professional cookware" }}
       container={false}
       padding="none"
     >
