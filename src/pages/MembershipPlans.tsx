@@ -147,6 +147,10 @@ export default function MembershipPlans() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={isAr ? "خطط العضوية" : "Membership Plans"}
+        description={isAr ? "اختر خطة العضوية المناسبة واستمتع بمزايا حصرية للطهاة المحترفين" : "Choose the right membership plan and unlock exclusive benefits for professional chefs"}
+      />
       {/* Trial Banner */}
       {trialInfo?.isInTrial && (
         <div className="bg-primary/10 border-b border-primary/20">

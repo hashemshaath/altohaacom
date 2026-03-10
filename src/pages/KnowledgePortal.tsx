@@ -117,6 +117,10 @@ export default function KnowledgePortal() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title={isAr ? "بوابة المعرفة" : "Knowledge Portal"}
+        description={isAr ? "موارد تعليمية ومعايير التحكيم والمراجع المهنية للطهاة" : "Educational resources, judging criteria, and professional references for chefs"}
+      />
       <Header />
       {/* Compact Hero */}
       <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-background to-background">

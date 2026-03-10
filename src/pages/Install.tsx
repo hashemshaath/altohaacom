@@ -72,6 +72,10 @@ export default function Install() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEOHead
+        title={isAr ? "تثبيت التطبيق" : "Install Altoha App"}
+        description={isAr ? "ثبّت تطبيق الطهاة على جهازك للوصول السريع والعمل بدون اتصال" : "Install the Altoha app on your device for quick access and offline support"}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

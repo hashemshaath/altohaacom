@@ -287,6 +287,11 @@ export default function MembershipCheckout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={isAr ? "اشتراك العضوية" : "Membership Checkout"}
+        description={isAr ? "أكمل اشتراكك في عضوية الطهاة" : "Complete your Altoha membership subscription"}
+        noIndex
+      />
       <div className="container max-w-3xl py-8 md:py-16 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
