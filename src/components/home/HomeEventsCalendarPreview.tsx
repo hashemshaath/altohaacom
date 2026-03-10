@@ -23,7 +23,7 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
 
-export const HomeEventsCalendarPreview = forwardRef<HTMLDivElement>(function HomeEventsCalendarPreview(_props, ref) {
+export function HomeEventsCalendarPreview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [viewMode, setViewMode] = useState<"cards" | "mini-cal">("cards");
