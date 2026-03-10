@@ -118,7 +118,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
             />
             {/* Overlay with text */}
             {(title || bodyText) && (
-              <div className="absolute inset-0 flex items-center bg-gradient-to-r from-background/80 via-background/40 to-transparent p-4 sm:p-6">
+              <div className="absolute inset-0 flex items-center bg-gradient-to-r from-black/80 via-black/40 to-transparent p-4 sm:p-6">
                 <div className="max-w-md space-y-1.5">
                   {company?.logo_url && (
                     <img src={company.logo_url} alt="" className="h-6 w-auto rounded-lg mb-2" />

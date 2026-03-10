@@ -132,7 +132,7 @@ export const SponsorshipOpportunities = memo(function SponsorshipOpportunities()
                         <Trophy className="h-10 w-10 text-primary/30" />
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-3">
                       <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">{title}</h3>
                     </div>

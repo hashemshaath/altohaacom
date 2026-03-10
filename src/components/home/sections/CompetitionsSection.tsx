@@ -99,7 +99,7 @@ const CompetitionsSection = memo(function CompetitionsSection() {
                       <Trophy className="h-8 w-8 text-muted-foreground/20" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <div className="absolute top-2 start-2 flex gap-1.5">
                     {event.status && STATUS_STYLES[event.status] && (
                       <Badge variant="outline" className={cn("text-[9px] font-bold", STATUS_STYLES[event.status].class)}>

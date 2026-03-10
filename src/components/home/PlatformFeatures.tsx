@@ -208,8 +208,8 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       {/* Final CTA */}
       {!user && (
         <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.12),transparent_60%)]" />
           <div className="container relative py-16 text-center md:py-24">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />

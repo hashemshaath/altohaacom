@@ -92,7 +92,7 @@ const ArticlesSection = memo(function ArticlesSection() {
                       </div>
                     )}
                     {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     {/* Type badge */}
                     {typeInfo && (
                       <Badge variant="outline" className={cn("absolute top-2.5 start-2.5 text-[9px] border backdrop-blur-sm", typeInfo.color)}>

@@ -119,7 +119,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
                           <TrendingUp className="h-8 w-8 text-muted-foreground/20" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                       <div className="absolute bottom-0 p-3">
                         <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                           {i === 0 && (

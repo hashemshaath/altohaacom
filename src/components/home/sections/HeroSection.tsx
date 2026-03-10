@@ -50,11 +50,11 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
         {...(isFirst ? { fetchPriority: "high" } : {})}
       />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10"
         style={{ opacity }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-background/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/80 to-transparent" />
     </div>
   );
 }));
