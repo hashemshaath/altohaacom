@@ -28,7 +28,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
   ) {
     return (
       <SectionReveal ref={ref}>
-        <div className={cn("mb-8", className)}>
+        <div className={cn("mb-5", className)}>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2 flex-wrap">
