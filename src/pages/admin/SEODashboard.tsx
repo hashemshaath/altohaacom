@@ -123,6 +123,82 @@ export default function SEODashboard() {
     },
   });
 
+  // Crawler visits (real-time)
+  const { data: crawlerVisits } = useQuery({
+    queryKey: ["seo-crawler-visits", range],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("seo_crawler_visits")
+        .select("path, crawler_name, crawler_type, created_at")
+        .gte("created_at", fromDate)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      return data || [];
+    },
+  });
+
+  // Tracked keywords
+  const { data: trackedKeywords, refetch: refetchKeywords } = useQuery({
+    queryKey: ["seo-tracked-keywords"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("seo_tracked_keywords")
+        .select("*")
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+  });
+
+  // Indexing status
+  const { data: indexingStatus, refetch: refetchIndexing } = useQuery({
+    queryKey: ["seo-indexing-status"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("seo_indexing_status")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      return data || [];
+    },
+  });
+
+  // State for new keyword form
+  const [newKeyword, setNewKeyword] = useState("");
+  const [newKeywordPage, setNewKeywordPage] = useState("");
+  const [addingKeyword, setAddingKeyword] = useState(false);
+
+  const handleAddKeyword = async () => {
+    if (!newKeyword.trim()) return;
+    setAddingKeyword(true);
+    try {
+      const { error } = await supabase.from("seo_tracked_keywords").insert({
+        keyword: newKeyword.trim(),
+        target_page: newKeywordPage.trim() || null,
+      });
+      if (error) throw error;
+      setNewKeyword("");
+      setNewKeywordPage("");
+      refetchKeywords();
+      toast.success(isAr ? "تمت إضافة الكلمة المفتاحية" : "Keyword added");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setAddingKeyword(false);
+    }
+  };
+
+  const handleDeleteKeyword = async (id: string) => {
+    await supabase.from("seo_tracked_keywords").delete().eq("id", id);
+    refetchKeywords();
+  };
+
+  const handleSeedIndexing = async () => {
+    const origin = window.location.origin;
+    const urls = PUBLIC_ROUTES.map(r => ({ url: origin + r.path, path: r.path, status: "unknown" }));
+    const { error } = await supabase.from("seo_indexing_status").upsert(urls, { onConflict: "url" });
+    if (error) toast.error(error.message);
+    else { toast.success(isAr ? "تم تهيئة حالة الفهرسة" : "Indexing status seeded"); refetchIndexing(); }
+  };
+
   // Computed metrics
   const totalViews = pageViews?.length || 0;
   const uniqueSessions = new Set(pageViews?.map((v: any) => v.session_id) || []).size;
