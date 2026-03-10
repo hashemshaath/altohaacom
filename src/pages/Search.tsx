@@ -168,7 +168,6 @@ export default function Search() {
     results.exhibitions.forEach((e) => allItems.push({ type: "exhibition", data: e }));
   }
 
-  const isAr = language === "ar";
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
