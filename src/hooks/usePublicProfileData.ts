@@ -18,7 +18,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
       if (data) return data;
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(username || "");
       if (isUuid) {
-        const { data: byId, error: err2 } = await supabase.from("profiles_public").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, cover_image_url, bio, bio_ar, specialization, specialization_ar, country_code, city, nationality, years_of_experience, job_title, job_title_ar, is_verified, account_type, gender, view_count, created_at, follow_privacy, section_visibility, instagram, twitter, facebook, linkedin, youtube, website, snapchat, tiktok, whatsapp").eq("user_id", username).maybeSingle();
+        const { data: byId, error: err2 } = await supabase.from("profiles_public").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, cover_image_url, bio, bio_ar, specialization, specialization_ar, country_code, city, nationality, years_of_experience, job_title, job_title_ar, is_verified, account_type, gender, view_count, created_at, follow_privacy, section_visibility, instagram, twitter, facebook, linkedin, youtube, website, snapchat, tiktok, whatsapp, is_open_to_work, job_availability_visibility, work_availability_note, work_availability_note_ar").eq("user_id", username).maybeSingle();
         if (err2) throw err2;
         if (byId) return byId;
       }
