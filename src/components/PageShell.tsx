@@ -76,6 +76,7 @@ export const PageShell = memo(function PageShell({
         )}
       </main>
       {footer && <Footer />}
+      <BackToTop />
     </div>
   );
 });
