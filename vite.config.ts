@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => ({
         scope: "/",
         start_url: "/",
         id: "/",
-        dir: "auto",
+        dir: "ltr" as const,
         lang: "en",
         prefer_related_applications: false,
         icons: [
