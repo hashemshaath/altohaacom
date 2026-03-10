@@ -90,7 +90,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           !event.cover_image_url && colors.bg
         )}>
           {event.cover_image_url ? (
-            <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
           ) : (
             <div className="flex items-center justify-center h-full">
               <IconComp className={cn("h-8 w-8 opacity-30", colors.text)} />
