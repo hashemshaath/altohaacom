@@ -238,8 +238,15 @@ serve(async (req) => {
     const { summary, snapshot } = await gatherPlatformData(supabase, reportType);
     const periodLabel = reportType === "quarterly" ? "quarterly" : reportType === "monthly" ? "monthly" : "weekly";
 
+    const reportTypeLabels: Record<string, { en: string; ar: string }> = {
+      weekly: { en: "Weekly", ar: "أسبوعي" },
+      monthly: { en: "Monthly", ar: "شهري" },
+      quarterly: { en: "Quarterly", ar: "ربع سنوي" },
+    };
+    const rtLabel = reportTypeLabels[reportType] || reportTypeLabels.weekly;
+
     const systemPrompt = language === "ar"
-      ? `أنت محلل بيانات خبير لمنصة التُهاء للمسابقات الطهوية. قم بتحليل البيانات التالية وقدم تقريراً شاملاً:
+      ? `أنت محلل بيانات خبير لمنصة التُهاء للمسابقات الطهوية. هذا تقرير ${rtLabel.ar}. قم بتحليل البيانات التالية وقدم تقريراً شاملاً:
 
 1. **📊 ملخص تنفيذي** (4-5 جمل تلخص الوضع العام)
 2. **📈 اتجاهات النمو** (4-6 نقاط مع أرقام دقيقة ونسب مئوية)
@@ -251,7 +258,7 @@ serve(async (req) => {
 استخدم Markdown مع emoji. أجب باللغة العربية. كن محدداً وقدم أرقاماً. قارن بين الفترات الزمنية.
 
 ${summary}`
-      : `You are an expert data analyst for Altoha, a culinary competition & community platform. Analyze the following data and provide a comprehensive report:
+      : `You are an expert data analyst for Altoha, a culinary competition & community platform. This is a ${rtLabel.en} report. Analyze the following data and provide a comprehensive report:
 
 1. **📊 Executive Summary** (4-5 sentences summarizing overall health)
 2. **📈 Growth Trends** (4-6 bullet points with precise numbers and percentages)
