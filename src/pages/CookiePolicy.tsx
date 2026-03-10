@@ -4,6 +4,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 import { Cookie, Calendar } from "lucide-react";
 
 export default function CookiePolicy() {
