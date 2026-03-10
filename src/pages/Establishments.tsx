@@ -54,8 +54,8 @@ export default function Establishments() {
 
   return (
     <PageShell
-      title={isAr ? "المنشآت | التحاء" : "Establishments | Altoha"}
-      description="Directory of restaurants, hotels, and food establishments"
+      title={isAr ? "دليل المنشآت الطهوية" : "Culinary Establishments Directory"}
+      description={isAr ? "تصفح المطاعم والفنادق ومنشآت الأغذية حيث يعمل الطهاة ويتدربون" : "Browse restaurants, hotels, and food establishments where chefs work and train"}
       container={false}
       padding="none"
     >

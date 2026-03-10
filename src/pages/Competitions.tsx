@@ -138,8 +138,8 @@ export default function Competitions() {
 
   return (
     <PageShell
-      title={isAr ? "مسابقات الطهي — الطهاة" : "Culinary Competitions — Altoha"}
-      description={isAr ? "تصفح وانضم لمسابقات الطهي حول العالم." : "Browse and join culinary competitions worldwide."}
+      title={isAr ? "مسابقات الطهي" : "Culinary Competitions"}
+      description={isAr ? "تصفح وانضم لمسابقات الطهي الاحترافية حول العالم على منصة الطهاة" : "Browse and join professional culinary competitions worldwide on Altoha"}
       seoProps={{
         jsonLd: {
           "@context": "https://schema.org",

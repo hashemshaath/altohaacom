@@ -34,8 +34,8 @@ export default function Mentorship() {
 
   return (
     <PageShell
-      title={isAr ? "برنامج الإرشاد - الطهاة" : "Mentorship Program - Altoha"}
-      description={isAr ? "برنامج إرشاد الطهاة" : "Chef-to-student mentoring program"}
+      title={isAr ? "برنامج الإرشاد المهني" : "Chef Mentorship Program"}
+      description={isAr ? "تواصل مع طهاة محترفين للإرشاد والتوجيه المهني" : "Connect with professional chefs for career mentoring and guidance"}
       container={false}
       padding="none"
     >

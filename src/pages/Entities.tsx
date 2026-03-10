@@ -143,7 +143,7 @@ export default function Entities() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SEOHead title="Culinary Entities Directory" description="Discover culinary associations, government entities, and academies worldwide." />
+      <SEOHead title={isAr ? "دليل الجهات والمؤسسات" : "Culinary Organizations Directory"} description={isAr ? "اكتشف الجمعيات المهنية والجهات الحكومية والأكاديميات في عالم الطهي" : "Discover culinary associations, government entities, and academies worldwide"} />
       <Header />
 
       {/* Hero Banner - Premium */}

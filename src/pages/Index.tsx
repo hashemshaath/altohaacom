@@ -174,8 +174,8 @@ const Index = () => {
     <div className="flex min-h-screen flex-col bg-background" role="document">
       <OfflineIndicator />
       <SEOHead
-        title="Altoha — The Global Culinary Community"
-        description="The premier platform for chefs, judges, organizers, and food industry professionals."
+        title={language === "ar" ? "الطهاة — المجتمع الطهوي العالمي" : "Altoha — Global Culinary Community"}
+        description={language === "ar" ? "المنصة الأولى للطهاة والحكام والمنظمين ومحترفي صناعة الأغذية حول العالم" : "The premier platform for chefs, judges, organizers, and food industry professionals worldwide"}
         ogImage="/pwa-512x512.png"
         lang={language}
         jsonLd={{

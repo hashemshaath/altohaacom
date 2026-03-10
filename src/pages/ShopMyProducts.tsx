@@ -120,7 +120,7 @@ export default function ShopMyProducts() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEOHead title="My Products" description="Manage your shop products on Altoha." />
+      <SEOHead title={isAr ? "منتجاتي" : "My Products"} description={isAr ? "إدارة منتجاتك في متجر الطهاة" : "Manage your shop products on Altoha"} noIndex />
       <Header />
 
       <main className="container flex-1 py-8 md:py-12">

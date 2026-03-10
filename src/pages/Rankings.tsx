@@ -77,7 +77,7 @@ export default function Rankings() {
   return (
     <PageShell
       title={isAr ? "التصنيف العالمي للطهاة" : "Global Chef Rankings"}
-      description="Discover the top-ranked chefs worldwide"
+      description={isAr ? "اكتشف أفضل الطهاة حول العالم مرتبين حسب الأداء والإنجازات" : "Discover the top-ranked chefs worldwide based on performance and achievements"}
       container={false}
       padding="none"
     >

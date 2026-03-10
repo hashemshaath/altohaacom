@@ -58,7 +58,7 @@ export default function ShopOrders() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SEOHead title="My Orders" description="View your shop orders on Altoha." />
+      <SEOHead title={isAr ? "طلباتي" : "My Orders"} description={isAr ? "عرض وتتبع طلباتك في متجر الطهاة" : "View and track your shop orders on Altoha"} noIndex />
       <Header />
 
       <main className="container flex-1 py-8 md:py-12">
