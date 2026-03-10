@@ -349,7 +349,7 @@ export const StoriesBar = memo(function StoriesBar() {
                       src={URL.createObjectURL(pendingFile)}
                       className="w-full h-full object-cover pointer-events-none"
                       style={{ objectPosition: `${imagePosition}% 50%` }}
-                      alt=""
+                      alt="Story preview"
                       draggable={false}
                     />
                 }
