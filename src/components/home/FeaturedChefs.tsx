@@ -79,7 +79,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
   if (chefs.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden py-8 md:py-12" aria-labelledby="featured-chefs-heading">
+    <section className="relative overflow-hidden" aria-labelledby="featured-chefs-heading">
       <div className="absolute inset-0 bg-muted/20" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.03),transparent_60%)]" />
       <div className="container relative" dir={isAr ? "rtl" : "ltr"}>

@@ -71,7 +71,7 @@ export const SponsorCarousel = memo(function SponsorCarousel() {
   const platinums = sponsors.filter(s => s.tier === "platinum");
 
   return (
-    <section className="py-8 md:py-12 overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
+    <section className="overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionReveal>
           <div className="mb-8 text-center">
