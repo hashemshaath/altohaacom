@@ -156,8 +156,8 @@ export default function Exhibitions() {
 
   return (
     <PageShell
-      title={isAr ? "المعارض والفعاليات — الطهاة" : "Food Exhibitions & Events — Altoha"}
-      description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات" : "Discover food exhibitions, conferences, and culinary events worldwide."}
+      title={isAr ? "معارض وفعاليات الأغذية" : "Food Exhibitions & Events"}
+      description={isAr ? "اكتشف معارض الطعام والمؤتمرات والفعاليات الطهوية حول العالم" : "Discover food exhibitions, conferences, and culinary events worldwide"}
       seoProps={{
         jsonLd: {
           "@context": "https://schema.org",

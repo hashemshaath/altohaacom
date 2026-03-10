@@ -97,8 +97,8 @@ export default function Shop() {
 
   return (
     <PageShell
-      title="Culinary Shop"
-      description="Browse culinary tools, books, ingredients, and professional services on Altoha."
+      title={isAr ? "متجر أدوات الطهي" : "Culinary Shop"}
+      description={isAr ? "تصفح أدوات الطهي والكتب والمكونات والخدمات المهنية" : "Browse culinary tools, books, ingredients, and professional services on Altoha"}
       container={false}
       padding="none"
     >

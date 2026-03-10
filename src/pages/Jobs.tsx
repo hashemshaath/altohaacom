@@ -96,8 +96,8 @@ export default function Jobs() {
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
-        title={isAr ? "وظائف الطهي والضيافة - Altoha" : "Culinary & Hospitality Jobs - Altoha"}
-        description={isAr ? "ابحث عن أفضل الفرص الوظيفية في قطاع الطهي والضيافة" : "Find the best culinary and hospitality career opportunities"}
+        title={isAr ? "وظائف الطهي والضيافة" : "Culinary & Hospitality Jobs"}
+        description={isAr ? "ابحث عن أفضل الفرص الوظيفية في قطاع الطهي والضيافة حول العالم" : "Find top culinary and hospitality career opportunities worldwide on Altoha"}
       />
       <Header />
       <main className="flex-1">

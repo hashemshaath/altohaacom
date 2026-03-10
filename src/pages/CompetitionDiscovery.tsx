@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { SEOHead } from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -98,6 +99,10 @@ export default function CompetitionDiscovery() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={isAr ? "استكشاف المسابقات" : "Discover Competitions"}
+        description={isAr ? "استكشف مسابقات الطهي القادمة وسجّل للمشاركة" : "Explore upcoming culinary competitions and register to compete"}
+      />
       {/* Hero */}
       <div className="border-b border-border/30 bg-gradient-to-b from-primary/5 to-transparent">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12">

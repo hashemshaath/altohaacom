@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { SEOHead } from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -286,6 +287,11 @@ export default function MembershipCheckout() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={isAr ? "اشتراك العضوية" : "Membership Checkout"}
+        description={isAr ? "أكمل اشتراكك في عضوية الطهاة" : "Complete your Altoha membership subscription"}
+        noIndex
+      />
       <div className="container max-w-3xl py-8 md:py-16 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">

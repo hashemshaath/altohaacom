@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,6 +117,10 @@ export default function KnowledgePortal() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title={language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
+        description={language === "ar" ? "موارد تعليمية ومعايير التحكيم والمراجع المهنية للطهاة" : "Educational resources, judging criteria, and professional references for chefs"}
+      />
       <Header />
       {/* Compact Hero */}
       <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-background to-background">

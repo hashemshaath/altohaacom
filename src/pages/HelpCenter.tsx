@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Search, BookOpen, HelpCircle, MessageSquare, ChevronRight, Ticket, Headphones } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -80,6 +81,10 @@ export default function HelpCenter() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title={language === "ar" ? "مركز المساعدة" : "Help Center"}
+        description={language === "ar" ? "إجابات على الأسئلة الشائعة ودعم فني لمستخدمي المنصة" : "Find answers to FAQs and get support for using the Altoha platform"}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

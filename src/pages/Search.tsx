@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense, createContext, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -167,8 +168,14 @@ export default function Search() {
     results.exhibitions.forEach((e) => allItems.push({ type: "exhibition", data: e }));
   }
 
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <SEOHead
+        title={isAr ? "بحث في المنصة" : "Search Altoha"}
+        description={isAr ? "ابحث عن الطهاة والمسابقات والوصفات والمقالات والمعارض" : "Search chefs, competitions, recipes, articles, and exhibitions on Altoha"}
+        noIndex
+      />
       <Header />
 
       <main className="flex-1">

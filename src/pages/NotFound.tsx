@@ -1,4 +1,5 @@
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -102,6 +103,11 @@ const NotFound = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
+      <SEOHead
+        title={isAr ? "الصفحة غير موجودة" : "Page Not Found"}
+        description={isAr ? "الصفحة المطلوبة غير موجودة" : "The page you're looking for doesn't exist"}
+        noIndex
+      />
       {/* Ambient glow */}
       <div className="absolute -top-32 start-1/4 h-64 w-64 rounded-full bg-primary/8 blur-[100px] animate-pulse pointer-events-none" />
       <div className="absolute -top-20 end-1/3 h-48 w-48 rounded-full bg-destructive/6 blur-[80px] animate-pulse [animation-delay:1s] pointer-events-none" />

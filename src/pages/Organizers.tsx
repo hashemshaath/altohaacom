@@ -75,8 +75,8 @@ export default function Organizers() {
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
-        title={isAr ? "منظمو الفعاليات | المنصة" : "Event Organizers | Platform"}
-        description={isAr ? "تصفح منظمي الفعاليات والمعارض الرائدين" : "Browse leading event and exhibition organizers"}
+        title={isAr ? "منظمو الفعاليات والمعارض" : "Event & Exhibition Organizers"}
+        description={isAr ? "تصفح منظمي الفعاليات والمعارض الرائدين في عالم الطهي" : "Browse leading event and exhibition organizers in the culinary world"}
       />
       <Header />
 

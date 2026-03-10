@@ -82,8 +82,8 @@ export default function Masterclasses() {
 
   return (
     <PageShell
-      title={isAr ? "الدروس المتقدمة — الطهاة" : "Culinary Masterclasses — Altoha"}
-      description={isAr ? "تعلم من أمهر الطهاة عبر دروس حصرية" : "Learn from world-class chefs with our curated masterclasses. From French cuisine to pastry arts."}
+      title={isAr ? "الدروس المتقدمة للطهاة" : "Culinary Masterclasses"}
+      description={isAr ? "تعلم من أمهر الطهاة عبر دروس حصرية في فنون الطبخ والحلويات" : "Learn from world-class chefs through exclusive masterclasses in cuisine, pastry arts, and more"}
       seoProps={{
         jsonLd: {
           "@context": "https://schema.org",
