@@ -454,6 +454,18 @@ export default function SEODashboard() {
               </button>
             ))}
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => {
+              const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-sitemap`;
+              window.open(url, "_blank");
+            }}
+          >
+            <Globe className="h-3.5 w-3.5" />
+            {isAr ? "عرض خريطة الموقع" : "View Sitemap"}
+          </Button>
           <Button onClick={handlePingSitemap} disabled={pinging} size="sm" className="gap-1.5">
             <Send className="h-3.5 w-3.5" />
             {pinging ? (isAr ? "جارٍ الإرسال..." : "Pinging...") : (isAr ? "إرسال خريطة الموقع" : "Ping Sitemap")}
