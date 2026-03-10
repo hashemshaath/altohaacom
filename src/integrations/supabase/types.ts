@@ -22231,7 +22231,9 @@ export type Database = {
           global_awards: Json | null
           id: string | null
           instagram: string | null
+          is_open_to_work: boolean | null
           is_verified: boolean | null
+          job_availability_visibility: string | null
           job_title: string | null
           job_title_ar: string | null
           linkedin: string | null
@@ -22243,7 +22245,9 @@ export type Database = {
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           nationality: string | null
           offers_services: boolean | null
+          preferred_job_types: string[] | null
           preferred_language: string | null
+          preferred_work_locations: string[] | null
           profile_completed: boolean | null
           profile_visibility: string | null
           second_nationality: string | null
@@ -22265,6 +22269,9 @@ export type Database = {
           view_count: number | null
           website: string | null
           whatsapp: string | null
+          willing_to_relocate: boolean | null
+          work_availability_note: string | null
+          work_availability_note_ar: string | null
           years_of_experience: number | null
           youtube: string | null
         }
@@ -22297,7 +22304,9 @@ export type Database = {
           global_awards?: Json | null
           id?: string | null
           instagram?: string | null
+          is_open_to_work?: boolean | null
           is_verified?: boolean | null
+          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
@@ -22311,7 +22320,9 @@ export type Database = {
             | null
           nationality?: string | null
           offers_services?: boolean | null
+          preferred_job_types?: string[] | null
           preferred_language?: string | null
+          preferred_work_locations?: string[] | null
           profile_completed?: boolean | null
           profile_visibility?: string | null
           second_nationality?: string | null
@@ -22333,6 +22344,9 @@ export type Database = {
           view_count?: number | null
           website?: string | null
           whatsapp?: string | null
+          willing_to_relocate?: boolean | null
+          work_availability_note?: string | null
+          work_availability_note_ar?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
@@ -22365,7 +22379,9 @@ export type Database = {
           global_awards?: Json | null
           id?: string | null
           instagram?: string | null
+          is_open_to_work?: boolean | null
           is_verified?: boolean | null
+          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
@@ -22379,7 +22395,9 @@ export type Database = {
             | null
           nationality?: string | null
           offers_services?: boolean | null
+          preferred_job_types?: string[] | null
           preferred_language?: string | null
+          preferred_work_locations?: string[] | null
           profile_completed?: boolean | null
           profile_visibility?: string | null
           second_nationality?: string | null
@@ -22401,6 +22419,9 @@ export type Database = {
           view_count?: number | null
           website?: string | null
           whatsapp?: string | null
+          willing_to_relocate?: boolean | null
+          work_availability_note?: string | null
+          work_availability_note_ar?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
