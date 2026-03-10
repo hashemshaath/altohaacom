@@ -76,7 +76,7 @@ export function DayEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolea
     )}>
       {event.cover_image_url ? (
         <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-muted shadow-sm">
-          <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
         </div>
       ) : (
         <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>

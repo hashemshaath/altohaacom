@@ -456,7 +456,7 @@ export const StoriesBar = memo(function StoriesBar() {
                 ) : (
                   <img
                     src={viewing.stories[storyIndex]?.media_url}
-                    alt=""
+                    alt={viewing.stories[storyIndex]?.caption || "Story"}
                     className="w-full h-full object-cover"
                   />
                 )}

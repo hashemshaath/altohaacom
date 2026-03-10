@@ -1002,7 +1002,7 @@ export default function OrganizerDetail() {
       {/* Gallery Lightbox */}
       {galleryOpen && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setGalleryOpen(null)}>
-          <img src={galleryOpen} alt="" className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" />
+          <img src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" />
         </div>
       )}
     </div>

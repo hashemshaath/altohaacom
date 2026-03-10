@@ -414,7 +414,7 @@ export const EvaluationReport = memo(function EvaluationReport({ session, evalua
                     {m.media_type === "image" ? (
                       <img src={m.media_url} alt={m.title || ""} className="h-full w-full object-cover" loading="lazy" />
                     ) : (
-                      <video src={m.media_url} className="h-full w-full object-cover" />
+                      <video src={m.media_url} className="h-full w-full object-cover" preload="metadata" />
                     )}
                   </div>
                 ))}

@@ -270,7 +270,7 @@ export default function ProSuppliers() {
                     {/* Cover / Gradient Header */}
                     <div className="relative h-32 bg-gradient-to-br from-primary/20 via-primary/5 to-accent/10">
                       {company.cover_image_url && (
-                        <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-40" alt="" />
+                        <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-40" alt={company.name} loading="lazy" decoding="async" />
                       )}
                       <div className="absolute -bottom-8 start-5">
                         <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-background bg-card shadow-lg">
