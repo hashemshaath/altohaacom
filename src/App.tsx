@@ -21,6 +21,7 @@ import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
 import { useOfflineSync } from "@/hooks/useOfflineSync";
 import { useEnhancedSEO } from "@/hooks/useEnhancedSEO";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
+import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
 import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
 
 const AchievementCelebration = lazy(() => import("@/components/achievements/AchievementCelebration").then(m => ({ default: m.AchievementCelebration })));
