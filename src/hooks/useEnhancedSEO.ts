@@ -81,6 +81,9 @@ export function useEnhancedSEO(language: string) {
     const title = isAr ? meta.titleAr : meta.title;
     const desc = isAr ? meta.descriptionAr : meta.description;
 
+    // Set document title (critical for SEO + browser tabs)
+    document.title = title;
+
     // Standard meta
     setMeta("name", "description", desc);
     if (meta.keywords) setMeta("name", "keywords", meta.keywords);
