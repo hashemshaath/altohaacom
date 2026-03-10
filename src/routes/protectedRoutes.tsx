@@ -80,5 +80,8 @@ export const protectedRoutes = (
     <Route path="/membership/referral" element={<ProtectedRoute><MembershipReferral /></ProtectedRoute>} />
     <Route path="/membership/gifts" element={<ProtectedRoute><MembershipGiftsHistory /></ProtectedRoute>} />
     <Route path="/for-you" element={<ProtectedRoute><ForYou /></ProtectedRoute>} />
+    <Route path="/tastings" element={<ProtectedRoute><Tastings /></ProtectedRoute>} />
+    <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
+    <Route path="/tastings/:id" element={<ProtectedRoute><TastingDetail /></ProtectedRoute>} />
   </>
 );
