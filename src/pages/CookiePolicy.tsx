@@ -54,6 +54,9 @@ export default function CookiePolicy() {
             </CardContent>
           </Card>
         </div>
+        <div className="container">
+          <RelatedPages currentPath="/cookies" links={["competitions", "community", "membership"]} />
+        </div>
       </main>
       <Footer />
     </div>

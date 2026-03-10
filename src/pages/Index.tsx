@@ -197,6 +197,9 @@ const Index = () => {
       <main className="flex flex-col pb-20 sm:pb-0">
         {showHero && <HeroSection />}
         {renderedSections}
+        <div className="container">
+          <RelatedPages currentPath="/" />
+        </div>
       </main>
 
       <Footer />

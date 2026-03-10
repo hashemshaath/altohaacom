@@ -69,6 +69,9 @@ export default function PrivacyPolicy() {
             </CardContent>
           </Card>
         </div>
+        <div className="container">
+          <RelatedPages currentPath="/privacy" links={["competitions", "community", "membership"]} />
+        </div>
       </main>
       <Footer />
     </div>

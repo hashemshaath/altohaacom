@@ -649,6 +649,9 @@ export default function Jobs() {
             </div>
           </div>
         </section>
+        <div className="container">
+          <RelatedPages currentPath="/jobs" />
+        </div>
       </main>
       <Footer />
     </div>

@@ -69,6 +69,9 @@ export default function TermsConditions() {
             </CardContent>
           </Card>
         </div>
+        <div className="container">
+          <RelatedPages currentPath="/terms" links={["competitions", "community", "membership"]} />
+        </div>
       </main>
       <Footer />
     </div>

@@ -116,6 +116,9 @@ export default function Community() {
           />
         </div>
       </main>
+      <div className="container">
+        <RelatedPages currentPath="/community" />
+      </div>
       <div className="pb-20 sm:pb-0" />
       <ScrollToTopFAB />
       <Footer />
