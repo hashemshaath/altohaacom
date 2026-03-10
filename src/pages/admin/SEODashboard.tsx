@@ -366,6 +366,9 @@ export default function SEODashboard() {
       <Tabs defaultValue="vitals" className="space-y-4">
         <TabsList className="flex-wrap">
           <TabsTrigger value="vitals" className="gap-1.5"><Gauge className="h-3.5 w-3.5" />{isAr ? "Web Vitals" : "Web Vitals"}</TabsTrigger>
+          <TabsTrigger value="crawlers" className="gap-1.5"><Bot className="h-3.5 w-3.5" />{isAr ? "الزواحف" : "Crawlers"}</TabsTrigger>
+          <TabsTrigger value="keywords" className="gap-1.5"><Target className="h-3.5 w-3.5" />{isAr ? "الكلمات المفتاحية" : "Keywords"}</TabsTrigger>
+          <TabsTrigger value="indexing" className="gap-1.5"><FileSearch className="h-3.5 w-3.5" />{isAr ? "الفهرسة" : "Indexing"}</TabsTrigger>
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
