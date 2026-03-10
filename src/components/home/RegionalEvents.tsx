@@ -164,4 +164,4 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any; isAr: boolean }>(fu
       </Card>
     </Link>
   );
-}
+});
