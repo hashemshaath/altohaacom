@@ -566,7 +566,8 @@ export default function SEODashboard() {
             </Card>
           </div>
         </TabsContent>
-          <Card>
+        {/* Top Pages */}
+        <TabsContent value="pages">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">{isAr ? "أكثر الصفحات زيارة" : "Top Pages"}</CardTitle>
             </CardHeader>
