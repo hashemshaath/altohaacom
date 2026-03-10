@@ -230,7 +230,7 @@ export function HomeEventsCalendarPreview() {
     </TooltipProvider>
     </div>
   );
-});
+}
 
 /* ─── Mini Tooltip ─── */
 function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
