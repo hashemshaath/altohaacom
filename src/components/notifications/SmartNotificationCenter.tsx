@@ -394,6 +394,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                                   </Button>
                                 )}
                               </div>
+                            </div>
                             {!n.is_read && (
                               <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-2 animate-pulse" />
                             )}
