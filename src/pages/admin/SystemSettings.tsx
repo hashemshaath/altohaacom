@@ -57,6 +57,8 @@ const tabs = [
   { value: "layout-seo", icon: Layout, en: "Layout & SEO", ar: "التخطيط و SEO", descEn: "Container, animations & meta", descAr: "الحاوية والرسوم والبيانات الوصفية" },
   { value: "security", icon: Shield, en: "Security & Content", ar: "الأمان والمحتوى", descEn: "Passwords, moderation & alerts", descAr: "كلمات المرور والإشراف والتنبيهات" },
   { value: "tracking", icon: BarChart3, en: "Tracking & Analytics", ar: "التتبع والتحليلات", descEn: "Google, Meta, TikTok & more", descAr: "جوجل وميتا وتيك توك والمزيد" },
+  { value: "custom-entries", icon: Database, en: "Custom Entries", ar: "إدخالات مخصصة", descEn: "Generic key-value settings", descAr: "إعدادات مفتاح-قيمة عامة" },
+  { value: "integrations", icon: Shield, en: "Integrations", ar: "التكاملات", descEn: "API keys & secrets setup", descAr: "مفاتيح API وإعدادات الأسرار" },
 ];
 
 // Settings completion calculator
