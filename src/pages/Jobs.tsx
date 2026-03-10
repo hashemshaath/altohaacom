@@ -10,11 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { OpenToWorkBadge } from "@/components/profile/OpenToWorkBadge";
 import {
   Briefcase, Search, MapPin, Building2, Clock, Users, ChefHat, Filter, DollarSign,
   Utensils, Coffee, Cake, Soup, Salad, IceCream, Star, TrendingUp, Globe,
-  ArrowRight, Sparkles, Eye, Heart, Award, GraduationCap
+  ArrowRight, Sparkles, Eye, Heart, Award, GraduationCap, X, Megaphone,
+  CheckCircle2, XCircle, Zap, Shield, MessageSquare, BarChart3, Crown, Bookmark, Timer
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -45,6 +47,13 @@ const CULINARY_CATEGORIES = [
   { key: "training", icon: GraduationCap, en: "Training", ar: "تدريب" },
 ];
 
+const SALARY_RANGES = [
+  { key: "0-3000", en: "Up to 3,000", ar: "حتى 3,000" },
+  { key: "3000-5000", en: "3,000 – 5,000", ar: "3,000 – 5,000" },
+  { key: "5000-8000", en: "5,000 – 8,000", ar: "5,000 – 8,000" },
+  { key: "8000+", en: "8,000+", ar: "8,000+" },
+];
+
 export default function Jobs() {
   const { language } = useLanguage();
   const { user } = useAuth();
@@ -53,8 +62,10 @@ export default function Jobs() {
   const [jobTypeFilter, setJobTypeFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
   const [expFilter, setExpFilter] = useState("all");
+  const [salaryFilter, setSalaryFilter] = useState("all");
   const [tab, setTab] = useState("postings");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<"newest" | "salary">("newest");
 
   // Fetch active job postings
   const { data: jobPostings = [], isLoading: loadingPostings } = useQuery({
@@ -115,6 +126,24 @@ export default function Jobs() {
     return Array.from(set).sort();
   }, [jobPostings]);
 
+  // Active filter count
+  const activeFilterCount = [
+    jobTypeFilter !== "all" ? 1 : 0,
+    cityFilter !== "all" ? 1 : 0,
+    expFilter !== "all" ? 1 : 0,
+    salaryFilter !== "all" ? 1 : 0,
+    selectedCategory ? 1 : 0,
+  ].reduce((a, b) => a + b, 0);
+
+  const clearAllFilters = () => {
+    setJobTypeFilter("all");
+    setCityFilter("all");
+    setExpFilter("all");
+    setSalaryFilter("all");
+    setSelectedCategory(null);
+    setSearch("");
+  };
+
   const filteredPostings = useMemo(() => {
     let results = jobPostings;
     if (search.trim()) {
@@ -131,14 +160,28 @@ export default function Jobs() {
     if (expFilter !== "all") {
       results = results.filter((j: any) => j.experience_level === expFilter);
     }
+    if (salaryFilter !== "all") {
+      results = results.filter((j: any) => {
+        if (!j.salary_min) return false;
+        if (salaryFilter === "0-3000") return j.salary_min <= 3000;
+        if (salaryFilter === "3000-5000") return j.salary_min >= 3000 && j.salary_min <= 5000;
+        if (salaryFilter === "5000-8000") return j.salary_min >= 5000 && j.salary_min <= 8000;
+        if (salaryFilter === "8000+") return j.salary_min >= 8000;
+        return true;
+      });
+    }
     if (selectedCategory) {
       results = results.filter((j: any) =>
         j.specialization?.toLowerCase().includes(selectedCategory) ||
         j.title?.toLowerCase().includes(selectedCategory)
       );
     }
+    // Sort
+    if (sortBy === "salary") {
+      results = [...results].sort((a: any, b: any) => (b.salary_min || 0) - (a.salary_min || 0));
+    }
     return results;
-  }, [jobPostings, search, cityFilter, expFilter, selectedCategory]);
+  }, [jobPostings, search, cityFilter, expFilter, salaryFilter, selectedCategory, sortBy]);
 
   const filteredChefs = useMemo(() => {
     let results = availableChefs;
@@ -175,14 +218,13 @@ export default function Jobs() {
             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
               {isAr ? (
                 <>
-                  <span className="text-foreground">المنصة الرائدة</span>{" "}
-                  <span className="text-primary">للتوظيف</span>{" "}
-                  <span className="text-foreground">في عالم الطهي</span>
+                  <span className="text-foreground">نربطك بالموظف المناسب</span>{" "}
+                  <span className="text-primary">من بين مئات المواهب!</span>
                 </>
               ) : (
                 <>
-                  <span className="text-foreground">The Leading Platform for</span>{" "}
-                  <span className="text-primary">Culinary Recruitment</span>
+                  <span className="text-foreground">We Connect You With the Right Talent</span>{" "}
+                  <span className="text-primary">From Hundreds of Professionals!</span>
                 </>
               )}
             </h1>
@@ -237,6 +279,11 @@ export default function Jobs() {
                 {isAr ? "أبحث عن موظفين" : "Looking for Talent"}
               </Button>
             </div>
+
+            {/* Quick info */}
+            <p className="text-xs text-muted-foreground/50">
+              {isAr ? "ادفع فقط عند التواصل مع المرشح المناسب" : "Pay only when you connect with the right candidate"}
+            </p>
           </div>
         </div>
       </section>
@@ -256,6 +303,35 @@ export default function Jobs() {
             <div className="space-y-1">
               <p className="text-2xl md:text-3xl font-extrabold text-accent-foreground">{stats?.companies || 0}+</p>
               <p className="text-xs text-muted-foreground">{isAr ? "شركة موظفة" : "Hiring Companies"}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Value Propositions - inspired by Sabbar employers page */}
+      <section className="bg-background border-b border-border/5">
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            <div className="space-y-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 mx-auto">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-bold text-sm">{isAr ? "مرشحون مطابقون في 24 ساعة" : "Matching Candidates in 24hrs"}</h3>
+              <p className="text-xs text-muted-foreground">{isAr ? "متقدمين مطابقين لشروط الوظيفة في أقل من 24 ساعة من نشر الإعلان" : "Receive matching applicants within 24 hours of posting"}</p>
+            </div>
+            <div className="space-y-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-chart-2/10 mx-auto">
+                <Timer className="h-6 w-6 text-chart-2" />
+              </div>
+              <h3 className="font-bold text-sm">{isAr ? "نختصر وقت البحث والتوظيف" : "Faster Hiring Process"}</h3>
+              <p className="text-xs text-muted-foreground">{isAr ? "أدوات تصفية متقدمة تساعدك في اتخاذ قرار أسرع" : "Advanced filtering tools help you make faster decisions"}</p>
+            </div>
+            <div className="space-y-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 mx-auto">
+                <DollarSign className="h-6 w-6 text-accent-foreground" />
+              </div>
+              <h3 className="font-bold text-sm">{isAr ? "توظيف بأقل التكاليف" : "Cost-Effective Recruitment"}</h3>
+              <p className="text-xs text-muted-foreground">{isAr ? "باقات اشتراك تناسب جميع الاحتياجات الوظيفية" : "Subscription plans to fit all hiring needs"}</p>
             </div>
           </div>
         </div>
@@ -298,19 +374,52 @@ export default function Jobs() {
               );
             })}
           </div>
-          {selectedCategory && (
-            <div className="text-center mt-4">
-              <Button variant="ghost" size="sm" className="text-xs rounded-xl" onClick={() => setSelectedCategory(null)}>
-                {isAr ? "إزالة الفلتر" : "Clear filter"} ✕
-              </Button>
-            </div>
-          )}
         </div>
       </section>
 
       {/* Main Listings */}
       <section id="jobs-listing" className="bg-muted/5 scroll-mt-4">
         <div className="max-w-5xl mx-auto px-4 py-10">
+          {/* Active Filter Chips */}
+          {activeFilterCount > 0 && (
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="text-xs text-muted-foreground font-medium">{isAr ? "الفلاتر النشطة:" : "Active filters:"}</span>
+              {selectedCategory && (
+                <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10" onClick={() => setSelectedCategory(null)}>
+                  {isAr ? CULINARY_CATEGORIES.find(c => c.key === selectedCategory)?.ar : CULINARY_CATEGORIES.find(c => c.key === selectedCategory)?.en}
+                  <X className="h-2.5 w-2.5" />
+                </Badge>
+              )}
+              {jobTypeFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10" onClick={() => setJobTypeFilter("all")}>
+                  {isAr ? JOB_TYPE_LABELS[jobTypeFilter]?.ar : JOB_TYPE_LABELS[jobTypeFilter]?.en}
+                  <X className="h-2.5 w-2.5" />
+                </Badge>
+              )}
+              {cityFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10" onClick={() => setCityFilter("all")}>
+                  {cityFilter}
+                  <X className="h-2.5 w-2.5" />
+                </Badge>
+              )}
+              {expFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10" onClick={() => setExpFilter("all")}>
+                  {isAr ? EXP_LEVELS[expFilter]?.ar : EXP_LEVELS[expFilter]?.en}
+                  <X className="h-2.5 w-2.5" />
+                </Badge>
+              )}
+              {salaryFilter !== "all" && (
+                <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10" onClick={() => setSalaryFilter("all")}>
+                  {isAr ? SALARY_RANGES.find(s => s.key === salaryFilter)?.ar : SALARY_RANGES.find(s => s.key === salaryFilter)?.en}
+                  <X className="h-2.5 w-2.5" />
+                </Badge>
+              )}
+              <Button variant="ghost" size="sm" className="text-[10px] h-6 px-2 text-destructive" onClick={clearAllFilters}>
+                {isAr ? "مسح الكل" : "Clear all"}
+              </Button>
+            </div>
+          )}
+
           {/* Filters Row */}
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <div className="relative flex-1">
@@ -348,6 +457,19 @@ export default function Jobs() {
                 </SelectContent>
               </Select>
 
+              <Select value={salaryFilter} onValueChange={setSalaryFilter}>
+                <SelectTrigger className="w-[130px] rounded-xl border-border/20 bg-card text-xs">
+                  <DollarSign className="h-3 w-3 me-1 text-muted-foreground/50" />
+                  <SelectValue placeholder={isAr ? "الراتب" : "Salary"} />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="all">{isAr ? "نطاق الراتب" : "Salary Range"}</SelectItem>
+                  {SALARY_RANGES.map((s) => (
+                    <SelectItem key={s.key} value={s.key}>{isAr ? s.ar : s.en}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               {cities.length > 0 && (
                 <Select value={cityFilter} onValueChange={setCityFilter}>
                   <SelectTrigger className="w-[130px] rounded-xl border-border/20 bg-card text-xs">
@@ -360,7 +482,28 @@ export default function Jobs() {
                   </SelectContent>
                 </Select>
               )}
+
+              <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+                <SelectTrigger className="w-[120px] rounded-xl border-border/20 bg-card text-xs">
+                  <BarChart3 className="h-3 w-3 me-1 text-muted-foreground/50" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="newest">{isAr ? "الأحدث" : "Newest"}</SelectItem>
+                  <SelectItem value="salary">{isAr ? "الأعلى راتباً" : "Highest Salary"}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+
+          {/* Result count */}
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-xs text-muted-foreground">
+              {tab === "postings"
+                ? `${filteredPostings.length} ${isAr ? "وظيفة" : "jobs found"}`
+                : `${filteredChefs.length} ${isAr ? "طاهٍ متاح" : "chefs available"}`
+              }
+            </p>
           </div>
 
           {/* Tabs */}
@@ -423,6 +566,125 @@ export default function Jobs() {
         </div>
       </section>
 
+      {/* Employer Pricing Section - Sabbar-inspired */}
+      <section className="bg-background border-t border-border/10">
+        <div className="max-w-5xl mx-auto px-4 py-14">
+          <div className="text-center space-y-3 mb-10">
+            <h2 className="text-xl md:text-2xl font-bold">
+              {isAr ? "وظّف بسرعة! وادفع بعد ما تجد الموظف المناسب!" : "Hire Fast! Pay Only When You Find the Right Match!"}
+            </h2>
+            <p className="text-sm text-muted-foreground">{isAr ? "باقات اشتراك مرنة تناسب جميع احتياجاتك" : "Flexible subscription plans to fit all your needs"}</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {/* Basic Plan */}
+            <Card className="rounded-2xl border-border/15 relative overflow-hidden hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-6 space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/10">
+                    <Briefcase className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm">{isAr ? "الأساسية" : "Basic"}</h3>
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "الباقة الأساسية للتوظيف" : "Basic recruitment plan"}</p>
+                  </div>
+                </div>
+                <div className="space-y-3 text-xs text-muted-foreground">
+                  <PlanFeature text={isAr ? "إعلان وظيفي واحد" : "1 Job Posting"} />
+                  <PlanFeature text={isAr ? "عدد غير محدود من السير الذاتية" : "Unlimited CV Access"} />
+                  <PlanFeature text={isAr ? "تواصل مع 50 متقدم لكل إعلان" : "Contact up to 50 applicants per ad"} />
+                  <PlanFeature text={isAr ? "مدة الباقة شهر واحد" : "1 Month Duration"} />
+                </div>
+                <Link to="/company-login" className="block">
+                  <Button variant="outline" className="w-full rounded-xl text-sm font-semibold">
+                    {isAr ? "إبدأ مجاناً" : "Start Free"}
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* Premium Plan */}
+            <Card className="rounded-2xl border-primary/20 relative overflow-hidden hover:shadow-lg transition-all duration-300 ring-1 ring-primary/10">
+              <div className="absolute top-0 end-0 bg-primary text-primary-foreground text-[9px] font-bold px-3 py-1 rounded-es-xl">
+                {isAr ? "إعلان مميز" : "Featured Ad"}
+              </div>
+              <CardContent className="p-6 space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                    <Crown className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm text-primary">{isAr ? "المميزة" : "Premium"}</h3>
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "وظف 10x أسرع" : "Hire 10x faster"}</p>
+                  </div>
+                </div>
+                <div className="space-y-3 text-xs text-muted-foreground">
+                  <PlanFeature text={isAr ? "إعلان وظيفي مميز بظهور 3x أضعاف" : "Featured listing with 3x visibility"} highlighted />
+                  <PlanFeature text={isAr ? "عدد غير محدود من السير الذاتية" : "Unlimited CV Access"} />
+                  <PlanFeature text={isAr ? "تواصل مع 150 متقدم لكل إعلان" : "Contact up to 150 applicants per ad"} highlighted />
+                  <PlanFeature text={isAr ? "فيديوهات تعريفية للمتقدمين" : "Applicant intro videos"} highlighted />
+                  <PlanFeature text={isAr ? "مدة الباقة شهر واحد" : "1 Month Duration"} />
+                </div>
+                <Link to="/company-login" className="block">
+                  <Button className="w-full rounded-xl text-sm font-semibold shadow-lg shadow-primary/15">
+                    {isAr ? "إبدأ مجاناً" : "Start Free"}
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+
+          <p className="text-center text-[10px] text-muted-foreground/50 mt-6">
+            {isAr ? "جميع الأسعار تخضع لضريبة القيمة المضافة. لا يتم تجديد الباقات تلقائياً" : "All prices subject to VAT. No auto-renewal"}
+          </p>
+        </div>
+      </section>
+
+      {/* Why Choose Us - Comparison Table (Sabbar-style) */}
+      <section className="bg-muted/5 border-t border-border/10">
+        <div className="max-w-4xl mx-auto px-4 py-14">
+          <div className="text-center space-y-3 mb-10">
+            <h2 className="text-xl md:text-2xl font-bold">{isAr ? "ما الذي يميزنا؟" : "Why Choose Us?"}</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* Social Media */}
+            <Card className="rounded-2xl border-border/15 p-5 space-y-4">
+              <h4 className="font-bold text-xs text-muted-foreground">{isAr ? "منصات التواصل الاجتماعي" : "Social Media Platforms"}</h4>
+              <div className="space-y-2.5">
+                <ComparisonItem negative text={isAr ? "آلاف المتقدمين العشوائيين" : "Thousands of random applicants"} />
+                <ComparisonItem negative text={isAr ? "صعوبة تصفية المتقدمين" : "Hard to filter applicants"} />
+                <ComparisonItem negative text={isAr ? "المتقدمين غير جادين" : "Non-serious applicants"} />
+              </div>
+            </Card>
+
+            {/* Our Platform */}
+            <Card className="rounded-2xl border-primary/20 p-5 space-y-4 ring-1 ring-primary/10 relative">
+              <div className="absolute -top-3 start-1/2 -translate-x-1/2">
+                <Badge className="bg-primary text-primary-foreground rounded-full px-3 py-0.5 text-[10px]">{isAr ? "منصتنا" : "Our Platform"}</Badge>
+              </div>
+              <h4 className="font-bold text-xs text-primary mt-2">{isAr ? "Altoha للتوظيف" : "Altoha Recruitment"}</h4>
+              <div className="space-y-2.5">
+                <ComparisonItem positive text={isAr ? "متقدمين مطابقين لشروط الوظيفة" : "Matching candidates for your requirements"} />
+                <ComparisonItem positive text={isAr ? "معلومات مهمة عن كل مرشح" : "Important info about each candidate"} />
+                <ComparisonItem positive text={isAr ? "أدوات تصفية متقدمة" : "Advanced filtering tools"} />
+                <ComparisonItem positive text={isAr ? "أسعار مناسبة" : "Competitive pricing"} />
+              </div>
+            </Card>
+
+            {/* Other Platforms */}
+            <Card className="rounded-2xl border-border/15 p-5 space-y-4">
+              <h4 className="font-bold text-xs text-muted-foreground">{isAr ? "منصات التوظيف الأخرى" : "Other Job Platforms"}</h4>
+              <div className="space-y-2.5">
+                <ComparisonItem negative text={isAr ? "متقدمين عشوائيين" : "Random applicants"} />
+                <ComparisonItem negative text={isAr ? "سير ذاتية غير محدثة" : "Outdated CVs"} />
+                <ComparisonItem negative text={isAr ? "رسوم عالية" : "High fees"} />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* For Employers / For Job Seekers */}
       <section className="bg-background border-t border-border/10">
         <div className="max-w-5xl mx-auto px-4 py-14">
@@ -443,8 +705,9 @@ export default function Jobs() {
                 </div>
                 <div className="p-6 pt-4 space-y-3">
                   <FeatureItem icon={Users} text={isAr ? "تصفح طهاة متاحين بمختلف التخصصات" : "Browse chefs across all specializations"} />
-                  <FeatureItem icon={TrendingUp} text={isAr ? "نختصر وقت البحث والتوظيف" : "We shorten your hiring time"} />
-                  <FeatureItem icon={Star} text={isAr ? "ملفات شخصية موثقة ومفصلة" : "Verified and detailed profiles"} />
+                  <FeatureItem icon={Zap} text={isAr ? "مرشحون مطابقون خلال 24 ساعة" : "Matching candidates within 24 hours"} />
+                  <FeatureItem icon={Shield} text={isAr ? "ملفات شخصية موثقة ومفصلة" : "Verified and detailed profiles"} />
+                  <FeatureItem icon={MessageSquare} text={isAr ? "تواصل مباشر مع المرشحين" : "Direct communication with candidates"} />
                   <Button className="w-full rounded-xl gap-2 mt-2" onClick={() => { setTab("chefs"); document.getElementById("jobs-listing")?.scrollIntoView({ behavior: "smooth" }); }}>
                     {isAr ? "تصفح المواهب" : "Browse Talent"}
                     <ArrowRight className="h-4 w-4" />
@@ -471,6 +734,7 @@ export default function Jobs() {
                   <FeatureItem icon={Search} text={isAr ? "ابحث عن وظيفة تناسب تخصصك" : "Find a job matching your expertise"} />
                   <FeatureItem icon={Eye} text={isAr ? "أظهر ملفك للشركات كمتاح للعمل" : "Show your profile as 'Open to Work'"} />
                   <FeatureItem icon={Sparkles} text={isAr ? "قدّم طلبك بضغطة زر واحدة" : "Apply with a single click"} />
+                  <FeatureItem icon={Bookmark} text={isAr ? "احفظ الوظائف المفضلة وتابعها" : "Save favorite jobs and track them"} />
                   {user ? (
                     <Link to="/profile?tab=edit" className="block">
                       <Button variant="outline" className="w-full rounded-xl gap-2 mt-2 border-chart-2/30 text-chart-2 hover:bg-chart-2/5">
@@ -493,6 +757,63 @@ export default function Jobs() {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="bg-muted/5 border-t border-border/10">
+        <div className="max-w-4xl mx-auto px-4 py-14">
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-xl md:text-2xl font-bold">{isAr ? "قالوا عنّا" : "What They Say About Us"}</h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <TestimonialCard
+              quote={isAr ? "وفرت لنا المنصة مواهب متنوعة وعرفنا نختار بسرعة" : "The platform provided us with diverse talent and we were able to hire quickly"}
+              name={isAr ? "أحمد" : "Ahmed"}
+              company={isAr ? "مطاعم الشرق" : "Al Sharq Restaurants"}
+            />
+            <TestimonialCard
+              quote={isAr ? "ساعدتنا في العثور على موظفين ممتازين في فترة وجيزة وبسهولة" : "Helped us find excellent employees in a short time with ease"}
+              name={isAr ? "سارة" : "Sarah"}
+              company={isAr ? "كافيه لاتيه" : "Café Latte"}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="bg-background border-t border-border/10">
+        <div className="max-w-3xl mx-auto px-4 py-14">
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-xl md:text-2xl font-bold">{isAr ? "الأسئلة الشائعة" : "Frequently Asked Questions"}</h2>
+          </div>
+          <Accordion type="single" collapsible className="space-y-2">
+            <FAQItem
+              value="1"
+              q={isAr ? "كيف تعمل المنصة؟" : "How does the platform work?"}
+              a={isAr ? "أنشئ حسابك كشركة، انشر إعلان وظيفتك، واستقبل متقدمين مطابقين لشروطك خلال 24 ساعة. يمكنك تصفية المتقدمين والتواصل معهم مباشرة." : "Create your company account, post your job ad, and receive matching applicants within 24 hours. You can filter applicants and communicate with them directly."}
+            />
+            <FAQItem
+              value="2"
+              q={isAr ? "ما الأدوار الوظيفية المتاحة؟" : "What job roles are available?"}
+              a={isAr ? "نوفر جميع الأدوار الوظيفية في قطاع الطهي والضيافة: رئيس طهاة، طاهي حلويات، باريستا، مدير مطعم، مقدم طعام، وغيرها الكثير." : "We offer all roles in the culinary and hospitality sector: Head Chef, Pastry Chef, Barista, Restaurant Manager, Waiter, and many more."}
+            />
+            <FAQItem
+              value="3"
+              q={isAr ? "هل توفرون موظفين بدوام كامل وجزئي؟" : "Do you offer full-time and part-time positions?"}
+              a={isAr ? "نعم، نوفر جميع أنواع الدوام: كامل، جزئي، عمل حر، عقود مؤقتة، واستشارات." : "Yes, we offer all employment types: full-time, part-time, freelance, contract, and consulting."}
+            />
+            <FAQItem
+              value="4"
+              q={isAr ? "كيف أتواصل مع المتقدمين؟" : "How do I communicate with applicants?"}
+              a={isAr ? "يمكنك التواصل مع المتقدمين مباشرة عبر المنصة أو الحصول على معلومات التواصل الموثقة (الجوال والبريد الإلكتروني)." : "You can communicate with applicants directly through the platform or get their verified contact information (phone and email)."}
+            />
+            <FAQItem
+              value="5"
+              q={isAr ? "هل المنصة مجانية للباحثين عن عمل؟" : "Is the platform free for job seekers?"}
+              a={isAr ? "نعم، المنصة مجانية تماماً للباحثين عن عمل. يمكنك إنشاء ملفك الشخصي والتقديم على الوظائف بدون أي رسوم." : "Yes, the platform is completely free for job seekers. You can create your profile and apply for jobs at no cost."}
+            />
+          </Accordion>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="bg-gradient-to-r from-primary/10 via-primary/5 to-chart-2/10 border-t border-border/10">
         <div className="max-w-3xl mx-auto px-4 py-14 text-center space-y-5">
@@ -511,15 +832,53 @@ export default function Jobs() {
                 {isAr ? "سجّل مجاناً" : "Join Free"}
               </Button>
             </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-2xl font-bold gap-2"
-              onClick={() => { setTab("postings"); document.getElementById("jobs-listing")?.scrollIntoView({ behavior: "smooth" }); }}
-            >
-              {isAr ? "تصفح الوظائف" : "Browse Jobs"}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+            <Link to="/company-login">
+              <Button size="lg" variant="outline" className="rounded-2xl font-bold gap-2">
+                <Building2 className="h-4 w-4" />
+                {isAr ? "تسجيل دخول الشركات" : "Employer Login"}
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* SEO Footer Links - Sabbar-style */}
+      <section className="bg-card/50 border-t border-border/10">
+        <div className="max-w-5xl mx-auto px-4 py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-xs">
+            <div className="space-y-3">
+              <h4 className="font-bold text-foreground text-sm">{isAr ? "وظائف حسب التخصص" : "Jobs by Specialization"}</h4>
+              <div className="space-y-1.5 text-muted-foreground">
+                {CULINARY_CATEGORIES.map(cat => (
+                  <button key={cat.key} onClick={() => { setSelectedCategory(cat.key); setTab("postings"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    className="block hover:text-primary transition-colors">
+                    {isAr ? `وظائف ${cat.ar}` : `${cat.en} Jobs`}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-bold text-foreground text-sm">{isAr ? "وظائف حسب النوع" : "Jobs by Type"}</h4>
+              <div className="space-y-1.5 text-muted-foreground">
+                {Object.entries(JOB_TYPE_LABELS).map(([k, v]) => (
+                  <button key={k} onClick={() => { setJobTypeFilter(k); setTab("postings"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    className="block hover:text-primary transition-colors">
+                    {isAr ? `وظائف ${v.ar}` : `${v.en} Jobs`}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-bold text-foreground text-sm">{isAr ? "روابط مفيدة" : "Useful Links"}</h4>
+              <div className="space-y-1.5 text-muted-foreground">
+                <Link to="/for-companies" className="block hover:text-primary transition-colors">{isAr ? "للشركات" : "For Companies"}</Link>
+                <Link to="/for-chefs" className="block hover:text-primary transition-colors">{isAr ? "للطهاة" : "For Chefs"}</Link>
+                <Link to="/membership" className="block hover:text-primary transition-colors">{isAr ? "خطط العضوية" : "Membership Plans"}</Link>
+                <Link to="/rankings" className="block hover:text-primary transition-colors">{isAr ? "التصنيفات" : "Rankings"}</Link>
+                <Link to="/competitions" className="block hover:text-primary transition-colors">{isAr ? "المسابقات" : "Competitions"}</Link>
+                <Link to="/help" className="block hover:text-primary transition-colors">{isAr ? "مركز المساعدة" : "Help Center"}</Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -528,6 +887,52 @@ export default function Jobs() {
 }
 
 /* ───── Sub Components ───── */
+
+function PlanFeature({ text, highlighted }: { text: string; highlighted?: boolean }) {
+  return (
+    <div className="flex items-start gap-2">
+      <CheckCircle2 className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${highlighted ? "text-primary" : "text-chart-2"}`} />
+      <span className={`text-xs ${highlighted ? "text-foreground font-medium" : "text-muted-foreground"}`}>{text}</span>
+    </div>
+  );
+}
+
+function ComparisonItem({ positive, negative, text }: { positive?: boolean; negative?: boolean; text: string }) {
+  return (
+    <div className="flex items-start gap-2">
+      {positive && <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 shrink-0 text-chart-2" />}
+      {negative && <XCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-destructive/50" />}
+      <span className="text-[11px] text-muted-foreground">{text}</span>
+    </div>
+  );
+}
+
+function TestimonialCard({ quote, name, company }: { quote: string; name: string; company: string }) {
+  return (
+    <Card className="rounded-2xl border-border/15 p-6 space-y-4">
+      <div className="text-2xl text-primary/30">"</div>
+      <p className="text-sm text-muted-foreground italic leading-relaxed">{quote}</p>
+      <div className="flex items-center gap-3">
+        <Avatar className="h-9 w-9 rounded-lg">
+          <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-bold">{name[0]}</AvatarFallback>
+        </Avatar>
+        <div>
+          <p className="text-xs font-bold">{name}</p>
+          <p className="text-[10px] text-muted-foreground">{company}</p>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function FAQItem({ value, q, a }: { value: string; q: string; a: string }) {
+  return (
+    <AccordionItem value={value} className="border border-border/15 rounded-xl px-4 data-[state=open]:bg-card">
+      <AccordionTrigger className="text-sm font-semibold hover:no-underline py-4">{q}</AccordionTrigger>
+      <AccordionContent className="text-xs text-muted-foreground pb-4 leading-relaxed">{a}</AccordionContent>
+    </AccordionItem>
+  );
+}
 
 function FeatureItem({ icon: Icon, text }: { icon: any; text: string }) {
   return (
@@ -558,17 +963,28 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr }: { job: any; i
   const location = isAr ? (job.location_ar || job.location) : job.location;
   const typeLabel = JOB_TYPE_LABELS[job.job_type] || { en: job.job_type, ar: job.job_type };
   const daysAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / 86400000);
+  const isNew = daysAgo <= 3;
 
   return (
     <Link to={`/jobs/${job.id}`} className="block">
       <Card className={`rounded-2xl border-border/15 hover:shadow-lg transition-all duration-300 group relative overflow-hidden ${
         job.is_featured ? "ring-1 ring-primary/20" : ""
       }`}>
-        {job.is_featured && (
-          <div className="absolute top-0 end-0 bg-primary text-primary-foreground text-[9px] font-bold px-2.5 py-0.5 rounded-es-xl">
-            {isAr ? "مميزة" : "Featured"}
-          </div>
-        )}
+        {/* Badges row */}
+        <div className="absolute top-0 end-0 flex items-center gap-1 p-2">
+          {job.is_featured && (
+            <Badge className="bg-primary text-primary-foreground text-[9px] font-bold px-2 py-0 h-5 rounded-lg gap-0.5">
+              <Megaphone className="h-2.5 w-2.5" />
+              {isAr ? "إعلان" : "Sponsored"}
+            </Badge>
+          )}
+          {isNew && !job.is_featured && (
+            <Badge className="bg-chart-2 text-primary-foreground text-[9px] font-bold px-2 py-0 h-5 rounded-lg">
+              {isAr ? "جديدة" : "New"}
+            </Badge>
+          )}
+        </div>
+
         <CardContent className="p-5">
           <div className="flex gap-4">
             <Avatar className="h-14 w-14 rounded-xl shrink-0 border border-border/10">
@@ -580,45 +996,43 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr }: { job: any; i
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0 space-y-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h3 className="font-bold text-sm group-hover:text-primary transition-colors line-clamp-1">{title}</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {isAr ? (company?.name_ar || company?.name) : company?.name}
-                  </p>
-                </div>
-                <Badge variant="secondary" className="shrink-0 text-[10px] rounded-lg">
-                  {isAr ? typeLabel.ar : typeLabel.en}
-                </Badge>
+              <div>
+                <h3 className="font-bold text-sm group-hover:text-primary transition-colors line-clamp-1">{title}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {isAr ? (company?.name_ar || company?.name) : company?.name}
+                </p>
               </div>
 
-              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground/70">
-                {location && (
-                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{location}</span>
-                )}
-                {job.experience_level && (
-                  <span className="flex items-center gap-1">
-                    <Award className="h-3 w-3" />
-                    {isAr ? (EXP_LEVELS[job.experience_level]?.ar || job.experience_level) : (EXP_LEVELS[job.experience_level]?.en || job.experience_level)}
-                  </span>
-                )}
+              {/* Salary + Type row */}
+              <div className="flex items-center gap-2 flex-wrap">
                 {job.is_salary_visible && job.salary_min && (
-                  <span className="flex items-center gap-1">
-                    <DollarSign className="h-3 w-3" />
-                    {job.salary_min.toLocaleString()}{job.salary_max ? `–${job.salary_max.toLocaleString()}` : "+"} {job.salary_currency}
+                  <span className="text-sm font-bold text-foreground">
+                    {job.salary_min.toLocaleString()}{job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : "+"} {job.salary_currency || ""}
+                    <span className="text-[10px] text-muted-foreground font-normal"> / {isAr ? "شهرياً" : "month"}</span>
                   </span>
                 )}
+                <Badge variant="secondary" className="text-[10px] rounded-lg">{isAr ? typeLabel.ar : typeLabel.en}</Badge>
               </div>
 
               {job.description && (
                 <p className="text-xs text-muted-foreground/50 line-clamp-2">{isAr ? (job.description_ar || job.description) : job.description}</p>
               )}
 
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground/70">
+                {location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{location}</span>}
+                {job.experience_level && (
+                  <span className="flex items-center gap-1">
+                    <Award className="h-3 w-3" />
+                    {isAr ? (EXP_LEVELS[job.experience_level]?.ar || job.experience_level) : (EXP_LEVELS[job.experience_level]?.en || job.experience_level)}
+                  </span>
+                )}
+              </div>
+
               <div className="flex items-center justify-between pt-1">
                 <div className="flex items-center gap-3 text-[10px] text-muted-foreground/40">
                   <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{job.applications_count || 0} {isAr ? "متقدم" : "applicants"}</span>
                   <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{job.views_count || 0} {isAr ? "مشاهدة" : "views"}</span>
-                  <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{daysAgo === 0 ? (isAr ? "اليوم" : "Today") : `${daysAgo}${isAr ? " يوم" : "d ago"}`}</span>
+                  <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{daysAgo === 0 ? (isAr ? "اليوم" : "Today") : isAr ? `منذ ${daysAgo} يوم` : `${daysAgo}d ago`}</span>
                 </div>
                 <Button size="sm" className="rounded-xl text-[10px] h-7 px-3 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                   {isAr ? "تفاصيل" : "View"} <ArrowRight className="h-3 w-3 ms-1" />
@@ -674,15 +1088,9 @@ const AvailableChefCard = memo(function AvailableChefCard({ chef, isAr }: { chef
           {spec && <p className="text-xs text-muted-foreground/70 line-clamp-1">{spec}</p>}
 
           <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground/60">
-            {chef.city && (
-              <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{chef.city}</span>
-            )}
-            {chef.years_of_experience && (
-              <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{chef.years_of_experience} {isAr ? "سنة خبرة" : "yrs exp"}</span>
-            )}
-            {expLabel && (
-              <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4">{expLabel}</Badge>
-            )}
+            {chef.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{chef.city}</span>}
+            {chef.years_of_experience && <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{chef.years_of_experience} {isAr ? "سنة خبرة" : "yrs exp"}</span>}
+            {expLabel && <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4">{expLabel}</Badge>}
             {chef.willing_to_relocate && (
               <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-chart-2/20 text-chart-2">
                 <Globe className="h-2 w-2 me-0.5" />{isAr ? "مستعد للانتقال" : "Relocate"}
