@@ -19134,6 +19134,84 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_crawl_log: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          response_body: string | null
+          response_code: number | null
+          search_engine: string | null
+          status: string | null
+          target_url: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          response_body?: string | null
+          response_code?: number | null
+          search_engine?: string | null
+          status?: string | null
+          target_url?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          response_body?: string | null
+          response_code?: number | null
+          search_engine?: string | null
+          status?: string | null
+          target_url?: string | null
+        }
+        Relationships: []
+      }
+      seo_page_views: {
+        Row: {
+          country: string | null
+          created_at: string
+          device_type: string | null
+          duration_seconds: number | null
+          id: string
+          is_bounce: boolean | null
+          path: string
+          referrer: string | null
+          session_id: string | null
+          title: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_bounce?: boolean | null
+          path: string
+          referrer?: string | null
+          session_id?: string | null
+          title?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_bounce?: boolean | null
+          path?: string
+          referrer?: string | null
+          session_id?: string | null
+          title?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       seo_rules: {
         Row: {
           created_at: string
