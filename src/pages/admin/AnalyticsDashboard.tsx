@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer, Route } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -19,6 +19,7 @@ import { ActivityHeatmap } from "@/components/analytics/ActivityHeatmap";
 import { GeographicDistribution } from "@/components/analytics/GeographicDistribution";
 import { AIAnalyticsChat } from "@/components/analytics/AIAnalyticsChat";
 import { FunnelAnalysis } from "@/components/analytics/FunnelAnalysis";
+import { UserJourneyMapping } from "@/components/analytics/UserJourneyMapping";
 import { AnomalyDetection } from "@/components/analytics/AnomalyDetection";
 import { ABTestingDashboard } from "@/components/analytics/ABTestingDashboard";
 import { ExecutiveSummary } from "@/components/analytics/ExecutiveSummary";
@@ -96,6 +97,7 @@ export default function AnalyticsDashboard() {
     { value: "heatmap", icon: Flame, label: isAr ? "خريطة حرارية" : "Heatmap" },
     { value: "geographic", icon: Globe, label: isAr ? "جغرافي" : "Geographic" },
     { value: "funnel", icon: Filter, label: isAr ? "مسار التحويل" : "Funnel" },
+    { value: "journey", icon: Route, label: isAr ? "خريطة الرحلة" : "Journey Map" },
     { value: "anomaly", icon: AlertTriangle, label: isAr ? "كشف الشذوذ" : "Anomaly" },
     { value: "ab-testing", icon: FlaskConical, label: isAr ? "اختبار A/B" : "A/B Testing" },
     { value: "reports", icon: FileText, label: isAr ? "تقارير" : "Reports" },
@@ -201,6 +203,7 @@ export default function AnalyticsDashboard() {
         <TabsContent value="heatmap"><ActivityHeatmap /></TabsContent>
         <TabsContent value="geographic"><GeographicDistribution /></TabsContent>
         <TabsContent value="funnel"><FunnelAnalysis /></TabsContent>
+        <TabsContent value="journey"><UserJourneyMapping /></TabsContent>
         <TabsContent value="anomaly"><AnomalyDetection /></TabsContent>
         <TabsContent value="ab-testing"><ABTestingDashboard /></TabsContent>
         <TabsContent value="reports"><CustomReportBuilder /></TabsContent>
