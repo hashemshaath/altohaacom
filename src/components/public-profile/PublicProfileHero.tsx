@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { MessageButton } from "@/components/profile/MessageButton";
 import { ProfileShareButtons } from "@/components/profile/ProfileShareButtons";
+import { OpenToWorkBadge } from "@/components/profile/OpenToWorkBadge";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   BadgeCheck, Briefcase, MapPin, UserPlus, UserMinus, Loader2, Clock, Lock, Hash, Heart,
