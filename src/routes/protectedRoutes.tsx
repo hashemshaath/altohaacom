@@ -39,6 +39,9 @@ const MembershipReferral = lazy(() => import("@/pages/MembershipReferral"));
 const MembershipGiftsHistory = lazy(() => import("@/pages/MembershipGiftsHistory"));
 const OrganizerPortal = lazy(() => import("@/pages/OrganizerPortal"));
 const ForYou = lazy(() => import("@/pages/ForYou"));
+const Tastings = lazy(() => import("@/pages/Tastings"));
+const TastingDetail = lazy(() => import("@/pages/TastingDetail"));
+const CreateTasting = lazy(() => import("@/pages/CreateTasting"));
 
 export const protectedRoutes = (
   <>
