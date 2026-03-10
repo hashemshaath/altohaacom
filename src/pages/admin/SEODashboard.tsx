@@ -11,7 +11,8 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
-  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi
+  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi,
+  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import {
@@ -121,6 +122,82 @@ export default function SEODashboard() {
       return data || [];
     },
   });
+
+  // Crawler visits (real-time)
+  const { data: crawlerVisits } = useQuery({
+    queryKey: ["seo-crawler-visits", range],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("seo_crawler_visits")
+        .select("path, crawler_name, crawler_type, created_at")
+        .gte("created_at", fromDate)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      return data || [];
+    },
+  });
+
+  // Tracked keywords
+  const { data: trackedKeywords, refetch: refetchKeywords } = useQuery({
+    queryKey: ["seo-tracked-keywords"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("seo_tracked_keywords")
+        .select("*")
+        .order("created_at", { ascending: false });
+      return data || [];
+    },
+  });
+
+  // Indexing status
+  const { data: indexingStatus, refetch: refetchIndexing } = useQuery({
+    queryKey: ["seo-indexing-status"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("seo_indexing_status")
+        .select("*")
+        .order("updated_at", { ascending: false });
+      return data || [];
+    },
+  });
+
+  // State for new keyword form
+  const [newKeyword, setNewKeyword] = useState("");
+  const [newKeywordPage, setNewKeywordPage] = useState("");
+  const [addingKeyword, setAddingKeyword] = useState(false);
+
+  const handleAddKeyword = async () => {
+    if (!newKeyword.trim()) return;
+    setAddingKeyword(true);
+    try {
+      const { error } = await supabase.from("seo_tracked_keywords").insert({
+        keyword: newKeyword.trim(),
+        target_page: newKeywordPage.trim() || null,
+      });
+      if (error) throw error;
+      setNewKeyword("");
+      setNewKeywordPage("");
+      refetchKeywords();
+      toast.success(isAr ? "تمت إضافة الكلمة المفتاحية" : "Keyword added");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setAddingKeyword(false);
+    }
+  };
+
+  const handleDeleteKeyword = async (id: string) => {
+    await supabase.from("seo_tracked_keywords").delete().eq("id", id);
+    refetchKeywords();
+  };
+
+  const handleSeedIndexing = async () => {
+    const origin = window.location.origin;
+    const urls = PUBLIC_ROUTES.map(r => ({ url: origin + r.path, path: r.path, status: "unknown" }));
+    const { error } = await supabase.from("seo_indexing_status").upsert(urls, { onConflict: "url" });
+    if (error) toast.error(error.message);
+    else { toast.success(isAr ? "تم تهيئة حالة الفهرسة" : "Indexing status seeded"); refetchIndexing(); }
+  };
 
   // Computed metrics
   const totalViews = pageViews?.length || 0;
@@ -365,6 +442,9 @@ export default function SEODashboard() {
       <Tabs defaultValue="vitals" className="space-y-4">
         <TabsList className="flex-wrap">
           <TabsTrigger value="vitals" className="gap-1.5"><Gauge className="h-3.5 w-3.5" />{isAr ? "Web Vitals" : "Web Vitals"}</TabsTrigger>
+          <TabsTrigger value="crawlers" className="gap-1.5"><Bot className="h-3.5 w-3.5" />{isAr ? "الزواحف" : "Crawlers"}</TabsTrigger>
+          <TabsTrigger value="keywords" className="gap-1.5"><Target className="h-3.5 w-3.5" />{isAr ? "الكلمات المفتاحية" : "Keywords"}</TabsTrigger>
+          <TabsTrigger value="indexing" className="gap-1.5"><FileSearch className="h-3.5 w-3.5" />{isAr ? "الفهرسة" : "Indexing"}</TabsTrigger>
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
@@ -653,6 +733,350 @@ export default function SEODashboard() {
             </Card>
           </div>
         </TabsContent>
+
+        {/* Crawler Activity Monitor */}
+        <TabsContent value="crawlers">
+          <div className="space-y-4">
+            {/* Crawler KPI cards */}
+            {(() => {
+              const totalCrawls = crawlerVisits?.length || 0;
+              const crawlerCounts: Record<string, number> = {};
+              const typeCounts: Record<string, number> = {};
+              const pathCounts: Record<string, number> = {};
+              crawlerVisits?.forEach((v: any) => {
+                crawlerCounts[v.crawler_name] = (crawlerCounts[v.crawler_name] || 0) + 1;
+                typeCounts[v.crawler_type] = (typeCounts[v.crawler_type] || 0) + 1;
+                pathCounts[v.path] = (pathCounts[v.path] || 0) + 1;
+              });
+              const crawlerEntries = Object.entries(crawlerCounts).sort(([,a],[,b]) => b - a);
+              const typeEntries = Object.entries(typeCounts).sort(([,a],[,b]) => b - a);
+              const topCrawledPages = Object.entries(pathCounts).sort(([,a],[,b]) => b - a).slice(0, 15);
+
+              return (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
+                          <Bot className="h-3.5 w-3.5" />
+                          {isAr ? "زيارات الزواحف" : "Crawler Visits"}
+                        </div>
+                        <p className="text-2xl font-bold"><AnimatedCounter value={totalCrawls} /></p>
+                        <p className="text-[10px] text-muted-foreground">{isAr ? `آخر ${range} أيام` : `Last ${range} days`}</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
+                          <Globe className="h-3.5 w-3.5" />
+                          {isAr ? "محركات البحث" : "Search Engines"}
+                        </div>
+                        <p className="text-2xl font-bold"><AnimatedCounter value={typeCounts["search_engine"] || 0} /></p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
+                          <Activity className="h-3.5 w-3.5" />
+                          {isAr ? "وسائل التواصل" : "Social Bots"}
+                        </div>
+                        <p className="text-2xl font-bold"><AnimatedCounter value={typeCounts["social"] || 0} /></p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
+                          <Zap className="h-3.5 w-3.5" />
+                          {isAr ? "أدوات SEO / AI" : "SEO / AI Bots"}
+                        </div>
+                        <p className="text-2xl font-bold"><AnimatedCounter value={(typeCounts["seo_tool"] || 0) + (typeCounts["ai"] || 0)} /></p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Crawler breakdown */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">{isAr ? "الزواحف حسب النوع" : "Crawlers by Bot"}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {crawlerEntries.length === 0 ? (
+                          <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "لا زيارات زواحف بعد" : "No crawler visits yet"}</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {crawlerEntries.map(([name, count]) => (
+                              <div key={name} className="flex items-center gap-3">
+                                <span className="text-sm font-medium flex-1 truncate">{name}</span>
+                                <span className="text-sm font-bold tabular-nums">{count}</span>
+                                <div className="w-20 h-2 rounded-full bg-muted overflow-hidden">
+                                  <div className="h-full bg-primary rounded-full" style={{ width: `${(count / (crawlerEntries[0]?.[1] || 1)) * 100}%` }} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">{isAr ? "أكثر الصفحات زحفاً" : "Most Crawled Pages"}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        {topCrawledPages.length === 0 ? (
+                          <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "لا بيانات" : "No data"}</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {topCrawledPages.map(([path, count], i) => (
+                              <div key={path} className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground w-5 tabular-nums">{i + 1}</span>
+                                <span className="text-xs font-mono flex-1 truncate">{path}</span>
+                                <span className="text-xs font-bold tabular-nums">{count}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Recent crawler visits */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{isAr ? "آخر زيارات الزواحف" : "Recent Crawler Visits"}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {!crawlerVisits?.length ? (
+                        <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "لا زيارات بعد. ستظهر عند زحف محركات البحث." : "No visits yet. Data appears when search engines crawl your site."}</p>
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b border-border/40 text-xs text-muted-foreground">
+                                <th className="text-start py-2 pe-3 font-medium">{isAr ? "الزاحف" : "Crawler"}</th>
+                                <th className="text-start py-2 px-3 font-medium">{isAr ? "النوع" : "Type"}</th>
+                                <th className="text-start py-2 px-3 font-medium">{isAr ? "الصفحة" : "Page"}</th>
+                                <th className="text-end py-2 ps-3 font-medium">{isAr ? "الوقت" : "Time"}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {crawlerVisits.slice(0, 30).map((v: any, i: number) => (
+                                <tr key={i} className="border-b border-border/20 last:border-0">
+                                  <td className="py-2 pe-3 font-medium">{v.crawler_name}</td>
+                                  <td className="py-2 px-3">
+                                    <Badge variant="outline" className="text-[9px]">{v.crawler_type}</Badge>
+                                  </td>
+                                  <td className="py-2 px-3 font-mono text-xs truncate max-w-[200px]">{v.path}</td>
+                                  <td className="py-2 ps-3 text-end text-xs text-muted-foreground">{format(new Date(v.created_at), "dd MMM HH:mm")}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </>
+              );
+            })()}
+          </div>
+        </TabsContent>
+
+        {/* Keyword Tracker */}
+        <TabsContent value="keywords">
+          <div className="space-y-4">
+            {/* Add keyword form */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Target className="h-4 w-4 text-primary" />
+                  {isAr ? "تتبع الكلمات المفتاحية" : "Keyword Tracker"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-2 flex-wrap">
+                  <input
+                    type="text"
+                    placeholder={isAr ? "الكلمة المفتاحية..." : "Keyword..."}
+                    value={newKeyword}
+                    onChange={e => setNewKeyword(e.target.value)}
+                    className="flex-1 min-w-[150px] px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <input
+                    type="text"
+                    placeholder={isAr ? "الصفحة المستهدفة (اختياري)" : "Target page (optional)"}
+                    value={newKeywordPage}
+                    onChange={e => setNewKeywordPage(e.target.value)}
+                    className="flex-1 min-w-[150px] px-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <Button onClick={handleAddKeyword} disabled={addingKeyword || !newKeyword.trim()} size="sm" className="gap-1.5">
+                    <Plus className="h-3.5 w-3.5" />
+                    {isAr ? "إضافة" : "Add"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Keywords table */}
+            <Card>
+              <CardContent className="pt-4">
+                {!trackedKeywords?.length ? (
+                  <p className="text-sm text-muted-foreground text-center py-8">{isAr ? "لم تتم إضافة كلمات مفتاحية بعد" : "No keywords tracked yet. Add your first keyword above."}</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/40 text-xs text-muted-foreground">
+                          <th className="text-start py-2 pe-3 font-medium">{isAr ? "الكلمة" : "Keyword"}</th>
+                          <th className="text-start py-2 px-2 font-medium">{isAr ? "الصفحة" : "Target"}</th>
+                          <th className="text-end py-2 px-2 font-medium">{isAr ? "الموقع" : "Position"}</th>
+                          <th className="text-end py-2 px-2 font-medium">{isAr ? "التغير" : "Change"}</th>
+                          <th className="text-end py-2 px-2 font-medium">{isAr ? "الأفضل" : "Best"}</th>
+                          <th className="text-end py-2 ps-2 font-medium">{isAr ? "آخر فحص" : "Last Check"}</th>
+                          <th className="text-end py-2 ps-2 font-medium"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {trackedKeywords.map((kw: any) => {
+                          const change = kw.previous_position && kw.current_position
+                            ? kw.previous_position - kw.current_position
+                            : null;
+                          return (
+                            <tr key={kw.id} className="border-b border-border/20 last:border-0">
+                              <td className="py-2 pe-3">
+                                <p className="font-medium">{kw.keyword}</p>
+                                {kw.keyword_ar && <p className="text-[10px] text-muted-foreground">{kw.keyword_ar}</p>}
+                              </td>
+                              <td className="py-2 px-2 font-mono text-xs text-muted-foreground truncate max-w-[120px]">{kw.target_page || "—"}</td>
+                              <td className="py-2 px-2 text-end font-bold tabular-nums">
+                                {kw.current_position ? `#${kw.current_position}` : "—"}
+                              </td>
+                              <td className="py-2 px-2 text-end tabular-nums">
+                                {change != null ? (
+                                  <span className={`inline-flex items-center gap-0.5 ${change > 0 ? "text-green-500" : change < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                                    {change > 0 ? <ArrowUp className="h-3 w-3" /> : change < 0 ? <ArrowDown className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+                                    {Math.abs(change)}
+                                  </span>
+                                ) : "—"}
+                              </td>
+                              <td className="py-2 px-2 text-end text-xs text-muted-foreground tabular-nums">
+                                {kw.best_position ? `#${kw.best_position}` : "—"}
+                              </td>
+                              <td className="py-2 px-2 text-end text-[10px] text-muted-foreground">
+                                {kw.last_checked_at ? format(new Date(kw.last_checked_at), "dd MMM") : "—"}
+                              </td>
+                              <td className="py-2 ps-2 text-end">
+                                <button onClick={() => handleDeleteKeyword(kw.id)} className="text-muted-foreground hover:text-destructive transition-colors">
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <p className="text-xs text-muted-foreground px-1">
+              {isAr ? "💡 لتحديث المواقع تلقائياً، قم بربط Google Search Console API." : "💡 To auto-update positions, connect Google Search Console API."}
+            </p>
+          </div>
+        </TabsContent>
+
+        {/* Indexing Status */}
+        <TabsContent value="indexing">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h3 className="text-base font-semibold flex items-center gap-2">
+                  <FileSearch className="h-4 w-4 text-primary" />
+                  {isAr ? "حالة الفهرسة" : "Indexing Status"}
+                </h3>
+                <p className="text-xs text-muted-foreground">{isAr ? "تتبع صفحاتك المفهرسة في محركات البحث" : "Track which pages are indexed by search engines"}</p>
+              </div>
+              <Button onClick={handleSeedIndexing} size="sm" variant="outline" className="gap-1.5">
+                <RefreshCw className="h-3.5 w-3.5" />
+                {isAr ? "تهيئة الصفحات" : "Seed Pages"}
+              </Button>
+            </div>
+
+            {/* Status summary */}
+            {indexingStatus && indexingStatus.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[
+                  { label: isAr ? "مفهرسة" : "Indexed", count: indexingStatus.filter((s: any) => s.status === "indexed").length, color: "text-green-500" },
+                  { label: isAr ? "مرسلة" : "Submitted", count: indexingStatus.filter((s: any) => s.status === "submitted").length, color: "text-chart-1" },
+                  { label: isAr ? "غير معروفة" : "Unknown", count: indexingStatus.filter((s: any) => s.status === "unknown").length, color: "text-muted-foreground" },
+                  { label: isAr ? "خطأ" : "Error", count: indexingStatus.filter((s: any) => s.status === "error").length, color: "text-destructive" },
+                ].map(s => (
+                  <Card key={s.label}>
+                    <CardContent className="p-3 text-center">
+                      <p className={`text-xl font-bold ${s.color}`}><AnimatedCounter value={s.count} /></p>
+                      <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            <Card>
+              <CardContent className="pt-4">
+                {!indexingStatus?.length ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground mb-3">{isAr ? "لم يتم تهيئة صفحات بعد" : "No pages tracked yet"}</p>
+                    <Button onClick={handleSeedIndexing} size="sm" className="gap-1.5">
+                      <Plus className="h-3.5 w-3.5" />
+                      {isAr ? "تهيئة من الصفحات العامة" : "Seed from public routes"}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/40 text-xs text-muted-foreground">
+                          <th className="text-start py-2 pe-3 font-medium">{isAr ? "الصفحة" : "Page"}</th>
+                          <th className="text-start py-2 px-2 font-medium">{isAr ? "الحالة" : "Status"}</th>
+                          <th className="text-start py-2 px-2 font-medium">{isAr ? "مرسلة إلى" : "Submitted To"}</th>
+                          <th className="text-end py-2 ps-2 font-medium">{isAr ? "آخر تحديث" : "Updated"}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {indexingStatus.map((page: any) => (
+                          <tr key={page.id} className="border-b border-border/20 last:border-0">
+                            <td className="py-2 pe-3 font-mono text-xs truncate max-w-[200px]">{page.path}</td>
+                            <td className="py-2 px-2">
+                              <Badge
+                                variant={page.status === "indexed" ? "default" : page.status === "error" ? "destructive" : "secondary"}
+                                className="text-[9px]"
+                              >
+                                {page.status === "indexed" ? "✓ Indexed" : page.status === "submitted" ? "⏳ Submitted" : page.status === "error" ? "✗ Error" : "? Unknown"}
+                              </Badge>
+                            </td>
+                            <td className="py-2 px-2 text-xs text-muted-foreground">
+                              {page.submitted_to?.length ? page.submitted_to.join(", ") : "—"}
+                            </td>
+                            <td className="py-2 ps-2 text-end text-[10px] text-muted-foreground">
+                              {format(new Date(page.updated_at), "dd MMM")}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <p className="text-xs text-muted-foreground px-1">
+              {isAr ? "💡 لتحديث الحالة تلقائياً، قم بربط Google Search Console API (Indexing API)." : "💡 To auto-update status, connect Google Search Console API (Indexing API)."}
+            </p>
+          </div>
+        </TabsContent>
+
         {/* Top Pages */}
         <TabsContent value="pages">
           <Card>
