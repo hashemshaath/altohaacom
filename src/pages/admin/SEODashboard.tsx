@@ -7,10 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
-  AlertTriangle, CheckCircle2, ExternalLink, Activity
+  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 
@@ -38,6 +39,34 @@ const PUBLIC_ROUTES = [
   { path: "/membership-plans", label: "Membership" },
 ];
 
+// Google thresholds for CWV
+const CWV_THRESHOLDS = {
+  lcp: { good: 2500, poor: 4000, unit: "ms", label: "LCP" },
+  inp: { good: 200, poor: 500, unit: "ms", label: "INP" },
+  cls: { good: 0.1, poor: 0.25, unit: "", label: "CLS" },
+  fcp: { good: 1800, poor: 3000, unit: "ms", label: "FCP" },
+  ttfb: { good: 800, poor: 1800, unit: "ms", label: "TTFB" },
+};
+
+function getVitalStatus(metric: keyof typeof CWV_THRESHOLDS, value: number): "good" | "needs-improvement" | "poor" {
+  const t = CWV_THRESHOLDS[metric];
+  if (value <= t.good) return "good";
+  if (value <= t.poor) return "needs-improvement";
+  return "poor";
+}
+
+const statusColors = {
+  good: "text-green-500",
+  "needs-improvement": "text-amber-500",
+  poor: "text-destructive",
+};
+
+const statusBadge = {
+  good: "default" as const,
+  "needs-improvement": "secondary" as const,
+  poor: "destructive" as const,
+};
+
 export default function SEODashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -52,7 +81,22 @@ export default function SEODashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("seo_page_views")
-        .select("path, device_type, is_bounce, duration_seconds, created_at")
+        .select("path, device_type, is_bounce, duration_seconds, created_at, session_id")
+        .gte("created_at", fromDate)
+        .order("created_at", { ascending: false })
+        .limit(1000);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Web Vitals data
+  const { data: vitalsData, isLoading: loadingVitals } = useQuery({
+    queryKey: ["seo-web-vitals", range],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("seo_web_vitals")
+        .select("path, lcp, inp, cls, fcp, ttfb, device_type, connection_type, created_at")
         .gte("created_at", fromDate)
         .order("created_at", { ascending: false })
         .limit(1000);
@@ -100,12 +144,68 @@ export default function SEODashboard() {
     .sort(([, a], [, b]) => b - a)
     .slice(0, 15);
 
-  // Daily views for sparkline
-  const dailyViews: Record<string, number> = {};
-  pageViews?.forEach((v: any) => {
-    const day = format(new Date(v.created_at), "MM/dd");
-    dailyViews[day] = (dailyViews[day] || 0) + 1;
-  });
+  // Vitals aggregation
+  const computeVitalsAggregates = () => {
+    if (!vitalsData?.length) return null;
+
+    const metrics = { lcp: [] as number[], inp: [] as number[], cls: [] as number[], fcp: [] as number[], ttfb: [] as number[] };
+    vitalsData.forEach((v: any) => {
+      if (v.lcp != null) metrics.lcp.push(Number(v.lcp));
+      if (v.inp != null) metrics.inp.push(Number(v.inp));
+      if (v.cls != null) metrics.cls.push(Number(v.cls));
+      if (v.fcp != null) metrics.fcp.push(Number(v.fcp));
+      if (v.ttfb != null) metrics.ttfb.push(Number(v.ttfb));
+    });
+
+    const p75 = (arr: number[]) => {
+      if (!arr.length) return null;
+      const sorted = [...arr].sort((a, b) => a - b);
+      const idx = Math.ceil(sorted.length * 0.75) - 1;
+      return sorted[idx];
+    };
+
+    return {
+      lcp: p75(metrics.lcp),
+      inp: p75(metrics.inp),
+      cls: p75(metrics.cls),
+      fcp: p75(metrics.fcp),
+      ttfb: p75(metrics.ttfb),
+      sampleCount: vitalsData.length,
+      mobileCount: vitalsData.filter((v: any) => v.device_type === "mobile").length,
+      desktopCount: vitalsData.filter((v: any) => v.device_type === "desktop").length,
+    };
+  };
+
+  // Per-page vitals
+  const computePageVitals = () => {
+    if (!vitalsData?.length) return [];
+    const byPath: Record<string, { lcp: number[]; cls: number[]; inp: number[] }> = {};
+    vitalsData.forEach((v: any) => {
+      if (!byPath[v.path]) byPath[v.path] = { lcp: [], cls: [], inp: [] };
+      if (v.lcp != null) byPath[v.path].lcp.push(Number(v.lcp));
+      if (v.cls != null) byPath[v.path].cls.push(Number(v.cls));
+      if (v.inp != null) byPath[v.path].inp.push(Number(v.inp));
+    });
+
+    const p75 = (arr: number[]) => {
+      if (!arr.length) return null;
+      const sorted = [...arr].sort((a, b) => a - b);
+      return sorted[Math.ceil(sorted.length * 0.75) - 1];
+    };
+
+    return Object.entries(byPath)
+      .map(([path, data]) => ({
+        path,
+        lcp: p75(data.lcp),
+        cls: p75(data.cls),
+        inp: p75(data.inp),
+        samples: data.lcp.length + data.cls.length + data.inp.length,
+      }))
+      .sort((a, b) => (b.lcp || 0) - (a.lcp || 0));
+  };
+
+  const vitalsAgg = computeVitalsAggregates();
+  const pageVitals = computePageVitals();
 
   const handlePingSitemap = async () => {
     setPinging(true);
@@ -162,7 +262,7 @@ export default function SEODashboard() {
               <Eye className="h-3.5 w-3.5" />
               {isAr ? "مشاهدات الصفحة" : "Page Views"}
             </div>
-            <p className="text-2xl font-bold">{totalViews.toLocaleString()}</p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={totalViews} /></p>
             <p className="text-[10px] text-muted-foreground">{isAr ? `آخر ${range} أيام` : `Last ${range} days`}</p>
           </CardContent>
         </Card>
@@ -172,7 +272,7 @@ export default function SEODashboard() {
               <Activity className="h-3.5 w-3.5" />
               {isAr ? "جلسات فريدة" : "Unique Sessions"}
             </div>
-            <p className="text-2xl font-bold">{uniqueSessions.toLocaleString()}</p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={uniqueSessions} /></p>
           </CardContent>
         </Card>
         <Card>
@@ -181,7 +281,7 @@ export default function SEODashboard() {
               <TrendingUp className="h-3.5 w-3.5" />
               {isAr ? "معدل الارتداد" : "Bounce Rate"}
             </div>
-            <p className="text-2xl font-bold">{bounceRate}%</p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={bounceRate} suffix="%" /></p>
             <Badge variant={bounceRate > 60 ? "destructive" : bounceRate > 40 ? "secondary" : "default"} className="text-[9px] mt-0.5">
               {bounceRate > 60 ? (isAr ? "مرتفع" : "High") : bounceRate > 40 ? (isAr ? "متوسط" : "Medium") : (isAr ? "جيد" : "Good")}
             </Badge>
@@ -193,18 +293,121 @@ export default function SEODashboard() {
               <Clock className="h-3.5 w-3.5" />
               {isAr ? "متوسط المدة" : "Avg Duration"}
             </div>
-            <p className="text-2xl font-bold">{avgDuration}s</p>
+            <p className="text-2xl font-bold"><AnimatedCounter value={avgDuration} suffix="s" /></p>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="pages" className="space-y-4">
-        <TabsList>
+      <Tabs defaultValue="vitals" className="space-y-4">
+        <TabsList className="flex-wrap">
+          <TabsTrigger value="vitals" className="gap-1.5"><Gauge className="h-3.5 w-3.5" />{isAr ? "Web Vitals" : "Web Vitals"}</TabsTrigger>
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
           <TabsTrigger value="crawl" className="gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "سجل الزحف" : "Crawl Log"}</TabsTrigger>
         </TabsList>
+
+        {/* Web Vitals */}
+        <TabsContent value="vitals">
+          <div className="space-y-4">
+            {/* Global P75 Vitals */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {(["lcp", "inp", "cls", "fcp", "ttfb"] as const).map(metric => {
+                const t = CWV_THRESHOLDS[metric];
+                const val = vitalsAgg?.[metric];
+                const status = val != null ? getVitalStatus(metric, val) : null;
+                return (
+                  <Card key={metric} className="relative overflow-hidden">
+                    {status && (
+                      <div className={`absolute top-0 inset-x-0 h-1 ${
+                        status === "good" ? "bg-green-500" : status === "needs-improvement" ? "bg-amber-500" : "bg-destructive"
+                      }`} />
+                    )}
+                    <CardContent className="p-4 pt-5">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">{t.label}</p>
+                      {val != null ? (
+                        <>
+                          <p className={`text-2xl font-bold tabular-nums ${status ? statusColors[status] : ""}`}>
+                            {metric === "cls" ? val.toFixed(3) : Math.round(val)}
+                            <span className="text-xs font-normal text-muted-foreground ms-0.5">{t.unit}</span>
+                          </p>
+                          <Badge variant={status ? statusBadge[status] : "secondary"} className="text-[9px] mt-1">
+                            {status === "good" ? "✓ Good" : status === "needs-improvement" ? "⚠ Needs Work" : "✗ Poor"}
+                          </Badge>
+                          <p className="text-[9px] text-muted-foreground mt-1">
+                            P75 · {isAr ? "الحد:" : "Threshold:"} ≤{metric === "cls" ? t.good : t.good + t.unit}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">{isAr ? "لا بيانات" : "No data"}</p>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Vitals metadata */}
+            {vitalsAgg && (
+              <div className="flex items-center gap-4 text-xs text-muted-foreground px-1">
+                <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> <AnimatedCounter value={vitalsAgg.sampleCount} className="inline" /> {isAr ? "عينة" : "samples"}</span>
+                <span className="flex items-center gap-1"><Smartphone className="h-3 w-3" /> <AnimatedCounter value={vitalsAgg.mobileCount} className="inline" /> {isAr ? "جوال" : "mobile"}</span>
+                <span className="flex items-center gap-1"><Monitor className="h-3 w-3" /> <AnimatedCounter value={vitalsAgg.desktopCount} className="inline" /> {isAr ? "حاسوب" : "desktop"}</span>
+              </div>
+            )}
+
+            {/* Per-page vitals */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">{isAr ? "أداء الصفحات (P75)" : "Per-Page Performance (P75)"}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loadingVitals ? (
+                  <div className="text-center py-8 text-muted-foreground text-sm">{isAr ? "جارٍ التحميل..." : "Loading..."}</div>
+                ) : !pageVitals.length ? (
+                  <div className="text-center py-8 text-muted-foreground text-sm">{isAr ? "لا توجد بيانات بعد. ستظهر البيانات بعد زيارات المستخدمين." : "No data yet. Data will appear after user visits."}</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-border/40 text-xs text-muted-foreground">
+                          <th className="text-start py-2 pe-4 font-medium">{isAr ? "الصفحة" : "Page"}</th>
+                          <th className="text-end py-2 px-2 font-medium">LCP</th>
+                          <th className="text-end py-2 px-2 font-medium">CLS</th>
+                          <th className="text-end py-2 px-2 font-medium">INP</th>
+                          <th className="text-end py-2 ps-2 font-medium">{isAr ? "عينات" : "Samples"}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pageVitals.slice(0, 20).map(pv => (
+                          <tr key={pv.path} className="border-b border-border/20 last:border-0">
+                            <td className="py-2 pe-4 font-mono text-xs truncate max-w-[200px]">{pv.path}</td>
+                            <td className="py-2 px-2 text-end tabular-nums">
+                              {pv.lcp != null ? (
+                                <span className={statusColors[getVitalStatus("lcp", pv.lcp)]}>{Math.round(pv.lcp)}<span className="text-[10px] text-muted-foreground">ms</span></span>
+                              ) : "—"}
+                            </td>
+                            <td className="py-2 px-2 text-end tabular-nums">
+                              {pv.cls != null ? (
+                                <span className={statusColors[getVitalStatus("cls", pv.cls)]}>{pv.cls.toFixed(3)}</span>
+                              ) : "—"}
+                            </td>
+                            <td className="py-2 px-2 text-end tabular-nums">
+                              {pv.inp != null ? (
+                                <span className={statusColors[getVitalStatus("inp", pv.inp)]}>{Math.round(pv.inp)}<span className="text-[10px] text-muted-foreground">ms</span></span>
+                              ) : "—"}
+                            </td>
+                            <td className="py-2 ps-2 text-end text-xs text-muted-foreground tabular-nums">{pv.samples}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
 
         {/* Top Pages */}
         <TabsContent value="pages">
@@ -250,7 +453,7 @@ export default function SEODashboard() {
               <Card key={d.label}>
                 <CardContent className="p-4 text-center">
                   <d.icon className={`h-8 w-8 mx-auto mb-2 ${d.color}`} />
-                  <p className="text-xl font-bold">{d.count}</p>
+                  <p className="text-xl font-bold"><AnimatedCounter value={d.count} /></p>
                   <p className="text-xs text-muted-foreground">{d.label}</p>
                   <p className="text-[10px] text-muted-foreground mt-1">
                     {totalViews > 0 ? Math.round((d.count / totalViews) * 100) : 0}%
@@ -272,15 +475,17 @@ export default function SEODashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {/* Static checks */}
                 {[
                   { label: "sitemap.xml", status: "ok", detail: "40+ routes, bilingual" },
-                  { label: "robots.txt", status: "ok", detail: "18+ blocked paths" },
+                  { label: "robots.txt", status: "ok", detail: "18+ blocked paths, mobile-bot rules" },
                   { label: "Canonical Tags", status: "ok", detail: "Dynamic per page" },
                   { label: "Open Graph", status: "ok", detail: "Title, desc, image" },
-                  { label: "JSON-LD", status: "ok", detail: "Organization, WebSite, BreadcrumbList" },
+                  { label: "JSON-LD", status: "ok", detail: "Organization, WebSite, MobileApplication, BreadcrumbList" },
+                  { label: "Core Web Vitals", status: "ok", detail: "LCP, INP, CLS, FCP, TTFB tracked per route" },
                   { label: "Alt Text Coverage", status: "ok", detail: "Contextual alt text on all public pages" },
                   { label: "Hreflang", status: "ok", detail: "EN ↔ AR alternates" },
+                  { label: "Mobile SEO", status: "ok", detail: "viewport-fit, safe-area, format-detection, MobileApplication schema" },
+                  { label: "PWA Manifest", status: "ok", detail: "Screenshots, shortcuts, categories, edge_side_panel" },
                   { label: "Meta Keywords", status: "ok", detail: "Bilingual on all pages" },
                   { label: "Internal Linking", status: "ok", detail: "RelatedPages on 24+ routes" },
                   { label: "Google Verification", status: "warn", detail: "Add verification meta tag" },

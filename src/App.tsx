@@ -91,6 +91,7 @@ function AppContent() {
   const { language } = useLanguageHook();
   useEnhancedSEO(language);
   useSEOTracking();
+  useWebVitalsTracking();
   return (
     <>
       <ScrollToTop />
