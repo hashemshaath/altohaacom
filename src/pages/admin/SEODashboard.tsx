@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,9 +11,13 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
-  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap
+  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
+  BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
+} from "recharts";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
@@ -204,8 +208,68 @@ export default function SEODashboard() {
       .sort((a, b) => (b.lcp || 0) - (a.lcp || 0));
   };
 
+  // Trend data: daily P75 for each metric
+  const trendData = useMemo(() => {
+    if (!vitalsData?.length) return [];
+    const byDay: Record<string, { lcp: number[]; inp: number[]; cls: number[]; fcp: number[]; ttfb: number[] }> = {};
+    vitalsData.forEach((v: any) => {
+      const day = format(new Date(v.created_at), "MM/dd");
+      if (!byDay[day]) byDay[day] = { lcp: [], inp: [], cls: [], fcp: [], ttfb: [] };
+      if (v.lcp != null) byDay[day].lcp.push(Number(v.lcp));
+      if (v.inp != null) byDay[day].inp.push(Number(v.inp));
+      if (v.cls != null) byDay[day].cls.push(Number(v.cls));
+      if (v.fcp != null) byDay[day].fcp.push(Number(v.fcp));
+      if (v.ttfb != null) byDay[day].ttfb.push(Number(v.ttfb));
+    });
+    const p75 = (arr: number[]) => {
+      if (!arr.length) return null;
+      const s = [...arr].sort((a, b) => a - b);
+      return s[Math.ceil(s.length * 0.75) - 1];
+    };
+    return Object.entries(byDay)
+      .map(([day, m]) => ({ day, lcp: p75(m.lcp), inp: p75(m.inp), cls: p75(m.cls), fcp: p75(m.fcp), ttfb: p75(m.ttfb) }))
+      .sort((a, b) => a.day.localeCompare(b.day));
+  }, [vitalsData]);
+
+  // Connection type distribution
+  const connectionDistribution = useMemo(() => {
+    if (!vitalsData?.length) return [];
+    const counts: Record<string, number> = {};
+    vitalsData.forEach((v: any) => {
+      const ct = v.connection_type || "unknown";
+      counts[ct] = (counts[ct] || 0) + 1;
+    });
+    return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  }, [vitalsData]);
+
+  // Device vitals comparison
+  const deviceVitalsComparison = useMemo(() => {
+    if (!vitalsData?.length) return [];
+    const byDevice: Record<string, { lcp: number[]; fcp: number[]; ttfb: number[] }> = {};
+    vitalsData.forEach((v: any) => {
+      const dt = v.device_type || "unknown";
+      if (!byDevice[dt]) byDevice[dt] = { lcp: [], fcp: [], ttfb: [] };
+      if (v.lcp != null) byDevice[dt].lcp.push(Number(v.lcp));
+      if (v.fcp != null) byDevice[dt].fcp.push(Number(v.fcp));
+      if (v.ttfb != null) byDevice[dt].ttfb.push(Number(v.ttfb));
+    });
+    const p75 = (arr: number[]) => {
+      if (!arr.length) return 0;
+      const s = [...arr].sort((a, b) => a - b);
+      return Math.round(s[Math.ceil(s.length * 0.75) - 1]);
+    };
+    return Object.entries(byDevice).map(([device, m]) => ({
+      device: device.charAt(0).toUpperCase() + device.slice(1),
+      LCP: p75(m.lcp),
+      FCP: p75(m.fcp),
+      TTFB: p75(m.ttfb),
+    }));
+  }, [vitalsData]);
+
   const vitalsAgg = computeVitalsAggregates();
   const pageVitals = computePageVitals();
+
+  const CHART_COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
   const handlePingSitemap = async () => {
     setPinging(true);
@@ -356,7 +420,101 @@ export default function SEODashboard() {
               </div>
             )}
 
-            {/* Per-page vitals */}
+            {/* Vitals Trend Chart */}
+            {trendData.length > 1 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{isAr ? "اتجاه الأداء اليومي (P75)" : "Daily Performance Trend (P75)"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <LineChart data={trendData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                      <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <RechartsTooltip
+                        contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                        labelStyle={{ color: "hsl(var(--foreground))" }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: 11 }} />
+                      <ReferenceLine y={2500} stroke="hsl(var(--destructive))" strokeDasharray="4 4" label={{ value: "LCP limit", fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                      <Line type="monotone" dataKey="lcp" name="LCP (ms)" stroke={CHART_COLORS[0]} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      <Line type="monotone" dataKey="fcp" name="FCP (ms)" stroke={CHART_COLORS[1]} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      <Line type="monotone" dataKey="ttfb" name="TTFB (ms)" stroke={CHART_COLORS[2]} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                      <Line type="monotone" dataKey="inp" name="INP (ms)" stroke={CHART_COLORS[3]} strokeWidth={1.5} dot={{ r: 2 }} connectNulls />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Device Comparison + Connection Distribution */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Device Vitals Comparison */}
+              {deviceVitalsComparison.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-1.5">
+                      <Monitor className="h-4 w-4" />
+                      {isAr ? "أداء حسب الجهاز (P75)" : "Vitals by Device (P75)"}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={deviceVitalsComparison} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                        <XAxis dataKey="device" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                        <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" unit="ms" />
+                        <RechartsTooltip
+                          contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 11 }} />
+                        <Bar dataKey="LCP" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="FCP" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="TTFB" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Connection Type Distribution */}
+              {connectionDistribution.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-1.5">
+                      <Wifi className="h-4 w-4" />
+                      {isAr ? "توزيع نوع الاتصال" : "Connection Type Distribution"}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <PieChart>
+                        <Pie
+                          data={connectionDistribution}
+                          cx="50%" cy="50%"
+                          innerRadius={50} outerRadius={80}
+                          paddingAngle={3}
+                          dataKey="value"
+                          nameKey="name"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          labelLine={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}
+                        >
+                          {connectionDistribution.map((_, i) => (
+                            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip
+                          contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Per-page vitals table */}
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">{isAr ? "أداء الصفحات (P75)" : "Per-Page Performance (P75)"}</CardTitle>
@@ -408,7 +566,6 @@ export default function SEODashboard() {
             </Card>
           </div>
         </TabsContent>
-
         {/* Top Pages */}
         <TabsContent value="pages">
           <Card>
