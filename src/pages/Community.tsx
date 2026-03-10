@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { CommunityFeed } from "@/components/community/CommunityFeed";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
