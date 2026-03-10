@@ -108,51 +108,51 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
     if (!data || data.length === 0) return null;
 
     // Group by session
-    const sessions: Record<string, typeof data> = {};
+    const sessions: Record<string, Array<{ path: string; session_id: string; duration_seconds: number; created_at: string }>> = {};
     for (const view of data) {
       if (!view.session_id) continue;
       if (!sessions[view.session_id]) sessions[view.session_id] = [];
       sessions[view.session_id].push(view);
     }
 
-    // Build flow edges (page A → page B transitions)
+    const sessionKeys = Object.keys(sessions);
+    if (sessionKeys.length === 0) return null;
+
+    // Build flow edges
     const edgeCounts: Record<string, number> = {};
-    const journeyPaths: Record<string, { count: number; totalDuration: number }> = {};
+    const journeyMap: Record<string, { count: number; totalDuration: number }> = {};
     const pageExits: Record<string, number> = {};
     const pageVisits: Record<string, number> = {};
-    const entryPages: Record<string, number> = {};
+    const entryPageCounts: Record<string, number> = {};
 
-    for (const [, views] of sessions) {
+    for (const sid of sessionKeys) {
+      const views = sessions[sid];
       if (views.length < 1) continue;
 
-      // Count entry page
       const entryPage = views[0].path;
-      entryPages.set(entryPage, (entryPages.get(entryPage) || 0) + 1);
+      entryPageCounts[entryPage] = (entryPageCounts[entryPage] || 0) + 1;
 
-      // Build journey key (first 5 steps)
       const journeySteps = views.slice(0, 5).map(v => v.path);
       const journeyKey = journeySteps.join(" → ");
       const totalDuration = views.reduce((s, v) => s + (v.duration_seconds || 0), 0);
-      const existing = journeyPaths.get(journeyKey) || { count: 0, totalDuration: 0 };
-      journeyPaths.set(journeyKey, { count: existing.count + 1, totalDuration: existing.totalDuration + totalDuration });
+      if (!journeyMap[journeyKey]) journeyMap[journeyKey] = { count: 0, totalDuration: 0 };
+      journeyMap[journeyKey].count += 1;
+      journeyMap[journeyKey].totalDuration += totalDuration;
 
-      // Count page visits and transitions
       for (let i = 0; i < views.length; i++) {
         const path = views[i].path;
-        pageVisits.set(path, (pageVisits.get(path) || 0) + 1);
+        pageVisits[path] = (pageVisits[path] || 0) + 1;
 
         if (i < views.length - 1) {
           const edgeKey = `${path}|||${views[i + 1].path}`;
-          edgeCounts.set(edgeKey, (edgeCounts.get(edgeKey) || 0) + 1);
+          edgeCounts[edgeKey] = (edgeCounts[edgeKey] || 0) + 1;
         } else {
-          // Last page in session = exit
-          pageExits.set(path, (pageExits.get(path) || 0) + 1);
+          pageExits[path] = (pageExits[path] || 0) + 1;
         }
       }
     }
 
-    // Top flow edges
-    const flowEdges: FlowEdge[] = Array.from(edgeCounts.entries())
+    const flowEdges: FlowEdge[] = Object.entries(edgeCounts)
       .map(([key, count]) => {
         const [from, to] = key.split("|||");
         return { from, to, count };
@@ -160,8 +160,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
       .sort((a, b) => b.count - a.count)
       .slice(0, 15);
 
-    // Top journey paths
-    const topJourneys: JourneyPath[] = Array.from(journeyPaths.entries())
+    const topJourneys: JourneyPath[] = Object.entries(journeyMap)
       .map(([key, val]) => ({
         steps: key.split(" → "),
         count: val.count,
@@ -170,26 +169,24 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
 
-    // Drop-off points
-    const dropOffs: DropOffPoint[] = Array.from(pageVisits.entries())
+    const dropOffs: DropOffPoint[] = Object.entries(pageVisits)
       .map(([page, visits]) => ({
         page,
-        exitCount: pageExits.get(page) || 0,
+        exitCount: pageExits[page] || 0,
         totalVisits: visits,
-        exitRate: Math.round(((pageExits.get(page) || 0) / visits) * 100),
+        exitRate: Math.round(((pageExits[page] || 0) / visits) * 100),
       }))
       .filter(d => d.totalVisits >= 3)
       .sort((a, b) => b.exitRate - a.exitRate)
       .slice(0, 10);
 
-    // Entry pages
-    const topEntries = Array.from(entryPages.entries())
+    const topEntries = Object.entries(entryPageCounts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 8);
 
     return {
-      totalSessions: sessions.size,
-      avgPagesPerSession: Math.round((data.length / sessions.size) * 10) / 10,
+      totalSessions: sessionKeys.length,
+      avgPagesPerSession: Math.round((data.length / sessionKeys.length) * 10) / 10,
       flowEdges,
       topJourneys,
       dropOffs,
