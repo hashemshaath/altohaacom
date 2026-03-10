@@ -117,14 +117,15 @@ export const RelatedPages = memo(function RelatedPages({
     .filter(Boolean)
     .slice(0, max);
 
-  if (pages.length === 0) return null;
+  if (pages.length === 0) return <nav ref={ref} aria-hidden />;
 
   const sectionTitle = title || (isAr ? (titleAr || "استكشف المزيد") : "Explore More");
 
   return (
     <nav
+      ref={ref}
       aria-label={isAr ? "صفحات ذات صلة" : "Related pages"}
-      className={cn("border-t border-border/40 mt-12 pt-8 pb-4", className)}
+      className={cn("border-t border-border/40 mt-12 pt-8 pb-4 cv-auto-sm", className)}
     >
       <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
         {sectionTitle}
