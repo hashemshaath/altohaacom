@@ -526,6 +526,7 @@ export default function SEODashboard() {
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
+          <TabsTrigger value="audit" className="gap-1.5"><Shield className="h-3.5 w-3.5" />{isAr ? "تدقيق" : "Audit"}</TabsTrigger>
           <TabsTrigger value="crawl" className="gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "سجل الزحف" : "Crawl Log"}</TabsTrigger>
         </TabsList>
 
