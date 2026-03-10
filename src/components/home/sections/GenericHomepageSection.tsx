@@ -66,6 +66,6 @@ const GenericHomepageSection = memo(function GenericHomepageSection({ sectionKey
       </div>
     </section>
   );
-}));
+});
 
 export default GenericHomepageSection;

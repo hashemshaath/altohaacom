@@ -59,7 +59,7 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
   const useMarquee = displayLogos.length >= 4;
 
   return (
-    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
+    <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         {showTitle && (
           <div className="text-center mb-10">
