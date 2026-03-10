@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,9 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, RefreshCw, Sparkles, TrendingUp, AlertTriangle, Lightbulb, BarChart3, History, Calendar, FileText } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Brain, RefreshCw, Sparkles, TrendingUp, AlertTriangle, Lightbulb, BarChart3, History, Calendar, FileText, Download } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
+import { toast } from "sonner";
+
+const REPORT_TYPES = [
+  { value: "weekly", labelEn: "Weekly", labelAr: "أسبوعي" },
+  { value: "monthly", labelEn: "Monthly", labelAr: "شهري" },
+  { value: "quarterly", labelEn: "Quarterly", labelAr: "ربع سنوي" },
+] as const;
 
 const AIInsightsPanel = memo(function AIInsightsPanel() {
   const { language } = useLanguage();
@@ -18,16 +26,18 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
+  const [reportType, setReportType] = useState<string>("weekly");
+  const reportRef = useRef<HTMLDivElement>(null);
 
   // Fetch saved reports
-  const { data: savedReports, isLoading: reportsLoading } = useQuery({
+  const { data: savedReports, isLoading: reportsLoading, refetch } = useQuery({
     queryKey: ["ai-analytics-reports"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("ai_analytics_reports")
         .select("id, report_type, language, content, data_snapshot, generated_at")
         .order("generated_at", { ascending: false })
-        .limit(20);
+        .limit(50);
       if (error) throw error;
       return data;
     },
@@ -40,7 +50,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
 
     try {
       const response = await supabase.functions.invoke("ai-analytics", {
-        body: { language },
+        body: { language, reportType },
       });
 
       if (response.error) throw response.error;
@@ -93,7 +103,72 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
     } finally {
       setIsLoading(false);
     }
-  }, [language, isAr]);
+  }, [language, isAr, reportType]);
+
+  const handleSaveReport = useCallback(async () => {
+    if (!insights) return;
+    try {
+      const { error } = await supabase.from("ai_analytics_reports").insert({
+        report_type: reportType,
+        language,
+        content: insights,
+        data_snapshot: {},
+      });
+      if (error) throw error;
+      toast.success(isAr ? "تم حفظ التقرير" : "Report saved");
+      refetch();
+    } catch {
+      toast.error(isAr ? "فشل حفظ التقرير" : "Failed to save report");
+    }
+  }, [insights, reportType, language, isAr, refetch]);
+
+  const handleExportPDF = useCallback(() => {
+    const content = reportRef.current;
+    if (!content) return;
+
+    // Use print-friendly approach
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      toast.error(isAr ? "يرجى السماح بالنوافذ المنبثقة" : "Please allow popups to export");
+      return;
+    }
+
+    const reportLabel = REPORT_TYPES.find(r => r.value === reportType);
+    const title = `Altoha ${reportLabel?.labelEn || "Report"} - ${format(new Date(), "PPP")}`;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html dir="${isAr ? "rtl" : "ltr"}" lang="${isAr ? "ar" : "en"}">
+      <head>
+        <meta charset="utf-8" />
+        <title>${title}</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 40px; color: #1a1a2e; line-height: 1.7; }
+          .header { border-bottom: 3px solid #6366f1; padding-bottom: 16px; margin-bottom: 32px; }
+          .header h1 { font-size: 24px; color: #6366f1; }
+          .header p { font-size: 12px; color: #666; margin-top: 4px; }
+          h1, h2, h3 { margin-top: 24px; margin-bottom: 8px; }
+          h2 { font-size: 18px; color: #1e1b4b; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }
+          ul, ol { padding-${isAr ? "right" : "left"}: 24px; }
+          li { margin-bottom: 4px; }
+          p { margin-bottom: 8px; }
+          strong { color: #1e1b4b; }
+          @media print { body { padding: 20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${title}</h1>
+          <p>${isAr ? "تم التوليد بواسطة الذكاء الاصطناعي" : "AI-Generated Executive Report"} • ${format(new Date(), "PPpp")}</p>
+        </div>
+        ${content.innerHTML}
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 500);
+  }, [isAr, reportType]);
 
   const sections = [
     { icon: BarChart3, label: isAr ? "ملخص تنفيذي" : "Executive Summary", color: "text-primary" },
@@ -106,6 +181,11 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
   const viewingReport = selectedReport
     ? savedReports?.find((r) => r.id === selectedReport)
     : null;
+
+  const reportTypeLabel = (type: string) => {
+    const rt = REPORT_TYPES.find(r => r.value === type);
+    return isAr ? (rt?.labelAr || type) : (rt?.labelEn || type);
+  };
 
   return (
     <div className="space-y-6 mt-4">
@@ -127,7 +207,19 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                 : "AI analyzes all platform data to deliver trends, predictions, and actionable recommendations"}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap justify-center">
+            <Select value={reportType} onValueChange={setReportType}>
+              <SelectTrigger className="w-[140px] h-10">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {REPORT_TYPES.map((rt) => (
+                  <SelectItem key={rt.value} value={rt.value}>
+                    {isAr ? rt.labelAr : rt.labelEn}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button
               onClick={generateInsights}
               disabled={isLoading}
@@ -148,7 +240,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
           </div>
           <Badge variant="outline" className="text-[10px] gap-1">
             <Calendar className="h-3 w-3" />
-            {isAr ? "تقرير أسبوعي تلقائي كل يوم اثنين" : "Auto-report every Monday at 6:00 AM"}
+            {isAr ? "اختر النوع: أسبوعي، شهري، أو ربع سنوي" : "Choose: Weekly, Monthly, or Quarterly report"}
           </Badge>
         </CardContent>
       </Card>
@@ -204,20 +296,37 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
           {insights && (
             <Card className="border-primary/10">
               <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
-                    <Brain className="h-3.5 w-3.5 text-primary" />
-                  </div>
-                  {isAr ? "نتائج التحليل" : "Analysis Results"}
-                  {isLoading && (
-                    <Badge variant="secondary" className="text-[10px] animate-pulse">
-                      {isAr ? "جاري التوليد..." : "Streaming..."}
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary/10">
+                      <Brain className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    {isAr ? "نتائج التحليل" : "Analysis Results"}
+                    <Badge variant="secondary" className="text-[10px]">
+                      {reportTypeLabel(reportType)}
                     </Badge>
+                    {isLoading && (
+                      <Badge variant="secondary" className="text-[10px] animate-pulse">
+                        {isAr ? "جاري التوليد..." : "Streaming..."}
+                      </Badge>
+                    )}
+                  </CardTitle>
+                  {!isLoading && insights && (
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={handleSaveReport} className="gap-1.5 text-xs">
+                        <FileText className="h-3.5 w-3.5" />
+                        {isAr ? "حفظ" : "Save"}
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleExportPDF} className="gap-1.5 text-xs">
+                        <Download className="h-3.5 w-3.5" />
+                        {isAr ? "تصدير PDF" : "Export PDF"}
+                      </Button>
+                    </div>
                   )}
-                </CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-sm dark:prose-invert max-w-none [&>h1]:text-lg [&>h2]:text-base [&>h2]:mt-6 [&>h2]:mb-2 [&>ul]:space-y-1 [&>ol]:space-y-1">
+                <div ref={reportRef} className="prose prose-sm dark:prose-invert max-w-none [&>h1]:text-lg [&>h2]:text-base [&>h2]:mt-6 [&>h2]:mb-2 [&>ul]:space-y-1 [&>ol]:space-y-1">
                   <ReactMarkdown>{insights}</ReactMarkdown>
                 </div>
               </CardContent>
@@ -258,23 +367,41 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
               <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
                 <FileText className="h-10 w-10 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  {isAr ? "لا توجد تقارير محفوظة بعد. سيتم إنشاء أول تقرير يوم الاثنين القادم." : "No saved reports yet. The first report will be generated next Monday."}
+                  {isAr ? "لا توجد تقارير محفوظة بعد." : "No saved reports yet."}
                 </p>
               </CardContent>
             </Card>
           ) : viewingReport ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setSelectedReport(null)}>
-                  ← {isAr ? "العودة" : "Back"}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => setSelectedReport(null)}>
+                    ← {isAr ? "العودة" : "Back"}
+                  </Button>
+                  <Badge variant="outline" className="text-[10px]">
+                    {reportTypeLabel(viewingReport.report_type)}
+                  </Badge>
+                  <Badge variant="outline" className="text-[10px]">
+                    {format(new Date(viewingReport.generated_at), "PPP p")}
+                  </Badge>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 text-xs"
+                  onClick={() => {
+                    const el = reportRef.current;
+                    if (!el) return;
+                    handleExportPDF();
+                  }}
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  {isAr ? "تصدير PDF" : "Export PDF"}
                 </Button>
-                <Badge variant="outline" className="text-[10px]">
-                  {format(new Date(viewingReport.generated_at), "PPP p")}
-                </Badge>
               </div>
               <Card className="border-primary/10">
                 <CardContent className="py-6">
-                  <div className="prose prose-sm dark:prose-invert max-w-none [&>h1]:text-lg [&>h2]:text-base [&>h2]:mt-6 [&>h2]:mb-2 [&>ul]:space-y-1 [&>ol]:space-y-1">
+                  <div ref={reportRef} className="prose prose-sm dark:prose-invert max-w-none [&>h1]:text-lg [&>h2]:text-base [&>h2]:mt-6 [&>h2]:mb-2 [&>ul]:space-y-1 [&>ol]:space-y-1">
                     <ReactMarkdown>{viewingReport.content}</ReactMarkdown>
                   </div>
                 </CardContent>
@@ -295,9 +422,9 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                       </div>
                       <div>
                         <p className="text-sm font-medium">
-                          {report.report_type === "weekly"
-                            ? isAr ? "تقرير أسبوعي" : "Weekly Report"
-                            : isAr ? "تقرير" : "Report"}
+                          {reportTypeLabel(report.report_type)}
+                          {" "}
+                          {isAr ? "تقرير" : "Report"}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(report.generated_at), "PPP p")}

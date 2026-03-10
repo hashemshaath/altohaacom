@@ -6,8 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-async function gatherPlatformData(supabase: any) {
+async function gatherPlatformData(supabase: any, reportType: string = "weekly") {
   const now = new Date();
+  const periodDays = reportType === "quarterly" ? 90 : reportType === "monthly" ? 30 : 7;
+  const periodAgo = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000).toISOString();
+  const prevPeriodAgo = new Date(now.getTime() - periodDays * 2 * 24 * 60 * 60 * 1000).toISOString();
+  // Keep 30-day windows for backward compat
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
   const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -229,12 +233,20 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { language = "en", saveReport = false } = body;
+    const { language = "en", saveReport = false, reportType = "weekly" } = body;
 
-    const { summary, snapshot } = await gatherPlatformData(supabase);
+    const { summary, snapshot } = await gatherPlatformData(supabase, reportType);
+    const periodLabel = reportType === "quarterly" ? "quarterly" : reportType === "monthly" ? "monthly" : "weekly";
+
+    const reportTypeLabels: Record<string, { en: string; ar: string }> = {
+      weekly: { en: "Weekly", ar: "أسبوعي" },
+      monthly: { en: "Monthly", ar: "شهري" },
+      quarterly: { en: "Quarterly", ar: "ربع سنوي" },
+    };
+    const rtLabel = reportTypeLabels[reportType] || reportTypeLabels.weekly;
 
     const systemPrompt = language === "ar"
-      ? `أنت محلل بيانات خبير لمنصة التُهاء للمسابقات الطهوية. قم بتحليل البيانات التالية وقدم تقريراً شاملاً:
+      ? `أنت محلل بيانات خبير لمنصة التُهاء للمسابقات الطهوية. هذا تقرير ${rtLabel.ar}. قم بتحليل البيانات التالية وقدم تقريراً شاملاً:
 
 1. **📊 ملخص تنفيذي** (4-5 جمل تلخص الوضع العام)
 2. **📈 اتجاهات النمو** (4-6 نقاط مع أرقام دقيقة ونسب مئوية)
@@ -246,7 +258,7 @@ serve(async (req) => {
 استخدم Markdown مع emoji. أجب باللغة العربية. كن محدداً وقدم أرقاماً. قارن بين الفترات الزمنية.
 
 ${summary}`
-      : `You are an expert data analyst for Altoha, a culinary competition & community platform. Analyze the following data and provide a comprehensive report:
+      : `You are an expert data analyst for Altoha, a culinary competition & community platform. This is a ${rtLabel.en} report. Analyze the following data and provide a comprehensive report:
 
 1. **📊 Executive Summary** (4-5 sentences summarizing overall health)
 2. **📈 Growth Trends** (4-6 bullet points with precise numbers and percentages)
@@ -291,7 +303,7 @@ ${summary}`;
 
       // Save to database
       const { error: insertError } = await supabase.from("ai_analytics_reports").insert({
-        report_type: "weekly",
+        report_type: periodLabel,
         language,
         content: reportContent,
         data_snapshot: snapshot,
