@@ -233,9 +233,10 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { language = "en", saveReport = false } = body;
+    const { language = "en", saveReport = false, reportType = "weekly" } = body;
 
-    const { summary, snapshot } = await gatherPlatformData(supabase);
+    const { summary, snapshot } = await gatherPlatformData(supabase, reportType);
+    const periodLabel = reportType === "quarterly" ? "quarterly" : reportType === "monthly" ? "monthly" : "weekly";
 
     const systemPrompt = language === "ar"
       ? `أنت محلل بيانات خبير لمنصة التُهاء للمسابقات الطهوية. قم بتحليل البيانات التالية وقدم تقريراً شاملاً:
