@@ -62,7 +62,7 @@ const AchievementsChallengesWidget = lazy(() => import("@/components/dashboard/A
 const SmartRecommendationsWidget = lazy(() => import("@/components/community/SmartRecommendations").then(m => ({ default: m.SmartRecommendations })));
 const PlatformScoreWidget = lazy(() => import("@/components/dashboard/PlatformScoreWidget").then(m => ({ default: m.PlatformScoreWidget })));
 const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendChart").then(m => ({ default: m.WeeklyTrendChart })));
-
+const JobAvailabilityWidget = lazy(() => import("@/components/dashboard/JobAvailabilityWidget").then(m => ({ default: m.JobAvailabilityWidget })));
 import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 
 function W({ children, lines, name }: { children: React.ReactNode; lines?: number; name?: string }) {
