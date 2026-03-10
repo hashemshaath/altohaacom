@@ -57,6 +57,7 @@ const SocialLinks = lazy(() => import("@/pages/SocialLinks"));
 const MembershipPlans = lazy(() => import("@/pages/MembershipPlans"));
 const MembershipRedeem = lazy(() => import("@/pages/MembershipRedeem"));
 const Jobs = lazy(() => import("@/pages/Jobs"));
+const JobSearch = lazy(() => import("@/pages/JobSearch"));
 const JobDetail = lazy(() => import("@/pages/JobDetail"));
 
 function LegacyLinksRedirect() {
@@ -123,6 +124,7 @@ export const publicRoutes = (
     <Route path="/membership" element={<MembershipPlans />} />
     <Route path="/membership/redeem" element={<MembershipRedeem />} />
     <Route path="/jobs" element={<Jobs />} />
+    <Route path="/jobs/search" element={<JobSearch />} />
     <Route path="/jobs/:id" element={<JobDetail />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
