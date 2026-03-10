@@ -141,6 +141,7 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
       <AccountTypeCard />
       <PersonalInfoSection form={form} update={update} isAr={isAr} />
       {!isFan && <ProfessionalInfoSection form={form} update={update} isAr={isAr} />}
+      {!isFan && <JobAvailabilitySection form={form} update={update} isAr={isAr} />}
       <LocationSection form={form} update={update} isAr={isAr} />
       <SocialMediaSection form={form} update={update} isAr={isAr} />
 
