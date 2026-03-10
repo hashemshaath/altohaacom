@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
+import { BackToTop } from "@/components/ui/back-to-top";
 import { cn } from "@/lib/utils";
 
 interface PageShellProps {
@@ -75,6 +76,7 @@ export const PageShell = memo(function PageShell({
         )}
       </main>
       {footer && <Footer />}
+      <BackToTop />
     </div>
   );
 });
