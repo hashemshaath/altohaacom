@@ -183,6 +183,9 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
   const filtered = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     return notifications.filter(n => {
+      const notifSnoozed = snoozedIds.has(n.id);
+      if (tab === "snoozed") return notifSnoozed;
+      if (notifSnoozed) return false; // Hide snoozed from other tabs
       if (tab === "unread" && n.is_read) return false;
       if (categoryFilter !== "all") {
         const cat = categoryMap[n.type || "system"] || "system";
@@ -194,10 +197,11 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
       }
       return true;
     });
-  }, [notifications, tab, categoryFilter, searchQuery]);
+  }, [notifications, tab, categoryFilter, searchQuery, snoozedIds]);
 
-  const unreadCount = useMemo(() => notifications.filter(n => !n.is_read).length, [notifications]);
+  const unreadCount = useMemo(() => notifications.filter(n => !n.is_read && !snoozedIds.has(n.id)).length, [notifications, snoozedIds]);
   const readCount = useMemo(() => notifications.filter(n => n.is_read).length, [notifications]);
+  const snoozedCount = snoozedIds.size;
   const grouped = useMemo(() => groupByDate(filtered, isAr), [filtered, isAr]);
 
   const categoryLabels: Record<CategoryFilter, { en: string; ar: string }> = {
