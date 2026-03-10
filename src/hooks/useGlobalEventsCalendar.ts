@@ -191,7 +191,7 @@ export function useGlobalEventsCalendar(filters?: {
       // 4. Fetch admin-managed global events
       const { data: globalEvents } = await (supabase as any)
         .from("global_events")
-        .select("id, title, title_ar, type, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, is_international, is_recurring, link, cover_image_url, logo_url, organizer_name, organizer_name_ar")
+        .select("id, title, title_ar, type, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, is_international, is_recurring, link, image_url, organizer, organizer_ar")
         .eq("status", "active");
 
       if (globalEvents) {
@@ -217,10 +217,9 @@ export function useGlobalEventsCalendar(filters?: {
             color: GLOBAL_EVENT_LABELS[geType]?.icon ? `chart-${(EVENT_TYPES_ORDER.indexOf(geType) % 5) + 1}` : "chart-4",
             icon: GLOBAL_EVENT_LABELS[geType]?.icon || "MoreHorizontal",
             source: "global_event",
-            cover_image_url: ge.cover_image_url,
-            logo_url: ge.logo_url,
-            organizer_name: ge.organizer_name,
-            organizer_name_ar: ge.organizer_name_ar,
+            cover_image_url: ge.image_url,
+            organizer_name: ge.organizer,
+            organizer_name_ar: ge.organizer_ar,
           });
         }
       }
