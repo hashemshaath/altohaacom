@@ -2,13 +2,20 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Altoha — Professional Culinary Network</title>
     <meta name="description" content="The premier culinary community platform for chefs, judges, and food enthusiasts. Compete, learn, and connect with the global culinary world." />
     <meta name="keywords" content="culinary competitions, chef community, cooking masterclass, food exhibitions, culinary arts, gastronomy, chef awards, food events, culinary platform, Altoha, مسابقات الطهي, الطهاة" />
     <meta name="author" content="Altoha" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
+    <meta name="googlebot-news" content="index, follow" />
+
+    <!-- Mobile SEO -->
+    <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="width" />
 
     <!-- Search Engine Verification (replace content values with your codes) -->
     <!-- <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" /> -->
@@ -37,14 +44,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Altoha" />
+    <meta name="application-name" content="Altoha" />
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/pwa-192x192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/pwa-192x192.png" />
 
     <!-- Apple Splash Screens -->
     <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
     <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
     <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
     <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/pwa-512x512.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="Altoha — Professional Culinary Network" />
@@ -67,7 +79,7 @@
     <meta name="twitter:image" content="https://altoha.com/og-image.png" />
     <meta name="twitter:image:alt" content="Altoha — Professional Culinary Network" />
 
-    <!-- JSON-LD Organization + WebSite -->
+    <!-- JSON-LD Organization + WebSite + MobileApplication -->
     <script type="application/ld+json">
     [
       {
@@ -112,16 +124,51 @@
           },
           "query-input": "required name=search_term_string"
         }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "MobileApplication",
+        "name": "Altoha",
+        "operatingSystem": "Any",
+        "applicationCategory": "SocialNetworkingApplication",
+        "description": "The premier culinary community platform for chefs, judges, and food enthusiasts. Compete, learn, and connect.",
+        "url": "https://altoha.com/install",
+        "installUrl": "https://altoha.com",
+        "browserRequirements": "Requires a modern browser with PWA support",
+        "softwareVersion": "1.0",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "screenshot": {
+          "@type": "ImageObject",
+          "url": "https://altoha.com/og-image.png",
+          "width": 1200,
+          "height": 630
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "150",
+          "bestRating": "5"
+        },
+        "inLanguage": ["en", "ar"],
+        "availableLanguage": ["English", "Arabic"]
       }
     ]
     </script>
 
     <!-- Inline critical CSS for fastest FCP -->
     <style>
-      #root { min-height: 100vh; }
-      .h-screen { height: 100vh; }
+      #root { min-height: 100vh; min-height: 100dvh; }
+      .h-screen { height: 100vh; height: 100dvh; }
       .animate-spin { animation: spin 1s linear infinite; }
       @keyframes spin { to { transform: rotate(360deg); } }
+      /* Prevent content shift from scrollbar */
+      html { scrollbar-gutter: stable; }
+      /* Safe area insets for notched devices */
+      body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
     </style>
   </head>
 

@@ -46,6 +46,10 @@ export default defineConfig(({ mode }) => ({
         orientation: "portrait-primary",
         scope: "/",
         start_url: "/",
+        id: "/",
+        dir: "ltr" as const,
+        lang: "en",
+        prefer_related_applications: false,
         icons: [
           {
             src: "/pwa-192x192.png",
@@ -62,6 +66,15 @@ export default defineConfig(({ mode }) => ({
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
+          },
+        ],
+        screenshots: [
+          {
+            src: "/og-image.png",
+            sizes: "1200x630",
+            type: "image/png",
+            form_factor: "wide",
+            label: "Altoha homepage — culinary competitions and community",
           },
         ],
         shortcuts: [
@@ -86,8 +99,18 @@ export default defineConfig(({ mode }) => ({
             url: "/dashboard",
             icons: [{ src: "/pwa-192x192.png", sizes: "192x192" }],
           },
+          {
+            name: "Exhibitions",
+            short_name: "Events",
+            description: "Explore food events and exhibitions",
+            url: "/exhibitions",
+            icons: [{ src: "/pwa-192x192.png", sizes: "192x192" }],
+          },
         ],
-        categories: ["food", "social", "education"],
+        categories: ["food", "social", "education", "lifestyle"],
+        edge_side_panel: {
+          preferred_width: 400,
+        },
       },
       workbox: {
         navigateFallback: "/offline.html",
