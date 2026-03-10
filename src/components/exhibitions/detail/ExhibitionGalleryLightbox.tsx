@@ -95,7 +95,7 @@ export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox
                 i === index ? "ring-2 ring-primary scale-105" : "opacity-60 hover:opacity-90"
               }`}
             >
-              <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
+              <img src={url} alt={`Gallery image ${i + 1}`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
             </button>
           ))}
         </div>

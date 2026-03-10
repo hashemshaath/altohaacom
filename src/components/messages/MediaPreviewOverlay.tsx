@@ -59,7 +59,7 @@ export const MediaPreviewOverlay = memo(function MediaPreviewOverlay({ open, onO
             {isVideo ? (
               <video src={current} controls className="max-h-[70vh] max-w-full rounded-xl" />
             ) : (
-              <img src={current} alt="" className="max-h-[70vh] max-w-full object-contain rounded-xl" />
+              <img src={current} alt="Media preview" className="max-h-[70vh] max-w-full object-contain rounded-xl" loading="eager" />
             )}
           </div>
 

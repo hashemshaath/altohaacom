@@ -284,7 +284,7 @@ export default function SocialLinks() {
       {/* Cover */}
       <div className="relative w-full" style={{ height: hasCover ? "280px" : "160px" }}>
         {hasCover ? (
-          <><img src={coverImage} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" /><div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 0%, ${isLight ? "#ffffff" : "#0a0a12"} 100%)` }} /></>
+          <><img src={coverImage} alt="Profile cover" className="absolute inset-0 w-full h-full object-cover" loading="eager" /><div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 0%, ${isLight ? "#ffffff" : "#0a0a12"} 100%)` }} /></>
         ) : (
           <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse at 50% 0%, ${theme.accentLight} 0%, transparent 60%)` }} />
         )}

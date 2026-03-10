@@ -234,7 +234,7 @@ export default function EvaluationReport() {
                 <div key={i} className="rounded-xl border border-border/30 p-4 flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                     {ev.profile?.avatar_url ? (
-                      <img src={ev.profile.avatar_url} className="h-10 w-10 rounded-full object-cover" alt="" />
+                      <img src={ev.profile.avatar_url} className="h-10 w-10 rounded-full object-cover" alt={ev.profile?.full_name || "Evaluator"} loading="lazy" decoding="async" />
                     ) : (
                       <ChefHat className="h-5 w-5 text-primary" />
                     )}

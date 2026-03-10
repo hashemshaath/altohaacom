@@ -156,7 +156,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
               <Card key={pos.id} className={`transition-all hover:shadow-sm ${!pos.is_active ? "opacity-50" : ""}`}>
                 <CardContent className="flex items-center gap-3 p-3">
                   {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="" className="h-10 w-10 rounded-full object-cover" loading="lazy" />
+                    <img src={profile.avatar_url} alt={profile?.full_name || "Team member"} className="h-10 w-10 rounded-full object-cover" loading="lazy" decoding="async" />
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                       <User className="h-5 w-5 text-primary" />

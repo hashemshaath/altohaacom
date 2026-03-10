@@ -100,7 +100,7 @@ export const ReviewStep = memo(function ReviewStep({ data }: ReviewStepProps) {
         <CardContent className="space-y-3">
           <div className="flex items-start gap-3">
             {data.coverImageUrl && (
-              <img src={data.coverImageUrl} alt="" className="h-16 w-24 flex-shrink-0 rounded-md object-cover" />
+              <img src={data.coverImageUrl} alt={data.title || "Competition cover"} className="h-16 w-24 flex-shrink-0 rounded-md object-cover" loading="lazy" />
             )}
             <div className="min-w-0 flex-1">
               <h3 className="font-semibold">{data.title || "Untitled"}</h3>

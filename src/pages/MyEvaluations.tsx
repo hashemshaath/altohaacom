@@ -159,7 +159,7 @@ export default function MyEvaluations() {
                   <div className="flex gap-2">
                     {inv.product_images.slice(0, 4).map((url, i) => (
                       <div key={i} className="h-16 w-16 rounded-xl overflow-hidden border border-border/40">
-                        <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                        <img src={url} alt={`Product image ${i + 1}`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                       </div>
                     ))}
                   </div>

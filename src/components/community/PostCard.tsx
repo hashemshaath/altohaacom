@@ -245,7 +245,7 @@ export const PostCard = memo(function PostCard({
             {/* Video */}
             {post.video_url && (
               <div className="mt-3 overflow-hidden rounded-2xl border border-border/30 shadow-sm transition-shadow duration-300 hover:shadow-md" onClick={(e) => e.stopPropagation()}>
-                <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" />
+                <video src={post.video_url} controls preload="metadata" className="w-full max-h-[512px]" aria-label={post.content?.slice(0, 100) || "Post video"} />
               </div>
             )}
 

@@ -440,7 +440,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
                     <div className="flex gap-2 flex-wrap">
                       {photoUrls.map((url, i) => (
                         <div key={i} className="relative h-16 w-16 rounded-xl overflow-hidden border border-border/50">
-                          <img src={url} alt="" className="h-full w-full object-cover" />
+                          <img src={url} alt={`Review photo ${i + 1}`} className="h-full w-full object-cover" />
                           <button onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-0.5 end-0.5 h-4 w-4 rounded-full bg-destructive/80 flex items-center justify-center">
                             <X className="h-2.5 w-2.5 text-destructive-foreground" />
                           </button>
@@ -549,7 +549,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
                     <div className="mt-3 flex gap-2 flex-wrap">
                       {review.photo_urls.map((url: string, i: number) => (
                         <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="h-20 w-20 rounded-xl overflow-hidden border border-border/40 hover:opacity-80 transition-opacity">
-                          <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                          <img src={url} alt={`Review photo ${i + 1}`} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                         </a>
                       ))}
                     </div>

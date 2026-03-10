@@ -121,7 +121,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
               <div className="absolute inset-0 flex items-center bg-gradient-to-r from-black/80 via-black/40 to-transparent p-4 sm:p-6">
                 <div className="max-w-md space-y-1.5">
                   {company?.logo_url && (
-                    <img src={company.logo_url} alt="" className="h-6 w-auto rounded-lg mb-2" />
+                    <img src={company.logo_url} alt={company?.name || "Sponsor"} className="h-6 w-auto rounded-lg mb-2" loading="lazy" />
                   )}
                   {title && <h3 className="text-sm sm:text-base font-bold text-foreground line-clamp-1">{title}</h3>}
                   {bodyText && <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{bodyText}</p>}
@@ -158,7 +158,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
       >
         <div className="flex items-center gap-3">
           {company?.logo_url && (
-            <img src={company.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0" />
+            <img src={company.logo_url} alt={company?.name || "Sponsor"} className="h-10 w-10 rounded-xl object-cover shrink-0" loading="lazy" />
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5">

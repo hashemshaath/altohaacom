@@ -90,7 +90,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           !event.cover_image_url && colors.bg
         )}>
           {event.cover_image_url ? (
-            <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
           ) : (
             <div className="flex items-center justify-center h-full">
               <IconComp className={cn("h-8 w-8 opacity-30", colors.text)} />
@@ -98,7 +98,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           )}
           {event.logo_url && (
             <div className="absolute bottom-1.5 start-1.5 h-8 w-8 rounded-xl bg-background/90 shadow-sm flex items-center justify-center overflow-hidden ring-1 ring-border/20">
-              <img src={event.logo_url} alt="" className="h-6 w-6 object-contain" loading="lazy" />
+              <img src={event.logo_url} alt={`${event.title || "Event"} logo`} className="h-6 w-6 object-contain" loading="lazy" decoding="async" />
             </div>
           )}
           {!countdown.past && (

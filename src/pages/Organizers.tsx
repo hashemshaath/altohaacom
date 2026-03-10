@@ -221,7 +221,7 @@ function OrganizerCard({ org, isAr, featured }: { org: any; isAr: boolean; featu
         {/* Cover */}
         <div className="h-36 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
           {org.cover_image_url ? (
-            <img src={org.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <img src={org.cover_image_url} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
           ) : null}
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
           {featured && (
