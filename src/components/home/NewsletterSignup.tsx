@@ -9,7 +9,7 @@ import { Mail, Sparkles, Shield } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 
-export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignup(_props, outerRef) {
+export const NewsletterSignup = function NewsletterSignup() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();

@@ -23,7 +23,7 @@ const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   interview: { en: "Interview", ar: "مقابلة" },
 };
 
-export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrendingContent(_props, ref) {
+export const HomeTrendingContent = function HomeTrendingContent() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [typeFilter, setTypeFilter] = useState<string | null>(null);

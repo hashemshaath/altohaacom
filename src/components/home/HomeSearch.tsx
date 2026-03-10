@@ -19,7 +19,7 @@ const categories = [
   { key: "shop", icon: Store, labelEn: "Shop", labelAr: "المتجر" },
 ];
 
-export const HomeSearch = memo(forwardRef<HTMLElement, Record<string, never>>(function HomeSearch(_, ref) {
+export const HomeSearch = memo(function HomeSearch() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
