@@ -57,6 +57,7 @@ const SocialLinks = lazy(() => import("@/pages/SocialLinks"));
 const MembershipPlans = lazy(() => import("@/pages/MembershipPlans"));
 const MembershipRedeem = lazy(() => import("@/pages/MembershipRedeem"));
 const Jobs = lazy(() => import("@/pages/Jobs"));
+const JobSearch = lazy(() => import("@/pages/JobSearch"));
 const JobDetail = lazy(() => import("@/pages/JobDetail"));
 
 function LegacyLinksRedirect() {
