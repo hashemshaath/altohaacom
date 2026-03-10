@@ -131,37 +131,63 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/membership?lang=en"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/membership?lang=ar"/>
   </url>
+  <url>
+    <loc>https://altoha.com/jobs</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/jobs?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/jobs?lang=ar"/>
+  </url>
+  <url>
+    <loc>https://altoha.com/search</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/search?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/search?lang=ar"/>
+  </url>
 
   <!-- Static / Info Pages -->
   <url>
     <loc>https://altoha.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/about?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/about?lang=ar"/>
   </url>
   <url>
     <loc>https://altoha.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/contact?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/contact?lang=ar"/>
   </url>
   <url>
     <loc>https://altoha.com/help</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/help?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/help?lang=ar"/>
   </url>
   <url>
     <loc>https://altoha.com/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/privacy?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/privacy?lang=ar"/>
   </url>
   <url>
     <loc>https://altoha.com/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/terms?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/terms?lang=ar"/>
   </url>
   <url>
     <loc>https://altoha.com/cookies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/cookies?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/cookies?lang=ar"/>
   </url>
 
   <!-- Landing Pages -->
@@ -197,6 +223,15 @@
   <!-- Certificate Verification -->
   <url>
     <loc>https://altoha.com/verify/certificate</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://altoha.com/verify/certificate?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://altoha.com/verify/certificate?lang=ar"/>
+  </url>
+
+  <!-- Install -->
+  <url>
+    <loc>https://altoha.com/install</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
