@@ -203,6 +203,7 @@ export default function AnalyticsDashboard() {
         <TabsContent value="heatmap"><ActivityHeatmap /></TabsContent>
         <TabsContent value="geographic"><GeographicDistribution /></TabsContent>
         <TabsContent value="funnel"><FunnelAnalysis /></TabsContent>
+        <TabsContent value="journey"><UserJourneyMapping /></TabsContent>
         <TabsContent value="anomaly"><AnomalyDetection /></TabsContent>
         <TabsContent value="ab-testing"><ABTestingDashboard /></TabsContent>
         <TabsContent value="reports"><CustomReportBuilder /></TabsContent>
