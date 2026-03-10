@@ -173,12 +173,22 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: "es2020",
-    cssMinify: true,
+    cssMinify: "lightningcss",
     cssCodeSplit: true,
     sourcemap: false,
     chunkSizeWarningLimit: 800,
     modulePreload: {
       polyfill: true,
+    },
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ["console.log", "console.debug", "console.info"],
+        passes: 2,
+      },
+      mangle: true,
     },
     rollupOptions: {
       output: {
@@ -190,6 +200,8 @@ export default defineConfig(({ mode }) => ({
           "vendor-ui-core": ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-popover", "@radix-ui/react-tabs", "@radix-ui/react-tooltip"],
           "vendor-ui-form": ["@radix-ui/react-select", "@radix-ui/react-checkbox", "@radix-ui/react-radio-group", "@radix-ui/react-switch", "@radix-ui/react-slider"],
           "vendor-ui-layout": ["@radix-ui/react-accordion", "@radix-ui/react-collapsible", "@radix-ui/react-scroll-area", "@radix-ui/react-separator"],
+          "vendor-ui-nav": ["@radix-ui/react-navigation-menu", "@radix-ui/react-menubar", "@radix-ui/react-context-menu"],
+          "vendor-ui-overlay": ["@radix-ui/react-alert-dialog", "@radix-ui/react-hover-card", "@radix-ui/react-toast"],
           "vendor-form": ["react-hook-form", "@hookform/resolvers", "zod"],
           "vendor-markdown": ["react-markdown"],
           "vendor-dates": ["date-fns"],
@@ -198,6 +210,7 @@ export default defineConfig(({ mode }) => ({
           "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
           "vendor-heavy": ["mammoth", "html2canvas"],
           "vendor-embla": ["embla-carousel-react"],
+          "vendor-panels": ["react-resizable-panels"],
         },
       },
     },

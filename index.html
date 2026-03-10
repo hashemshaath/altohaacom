@@ -78,7 +78,14 @@
           "height": 512
         },
         "description": "The premier culinary community platform for chefs, judges, and food enthusiasts.",
-        "sameAs": ["https://twitter.com/Altoha"],
+        "sameAs": [
+          "https://www.instagram.com/altohaglobal",
+          "https://www.facebook.com/altohaglobal",
+          "https://x.com/altohaglobal",
+          "https://www.linkedin.com/company/altoha",
+          "https://www.youtube.com/@altohaglobal",
+          "https://www.tiktok.com/@altohaglobal"
+        ],
         "contactPoint": {
           "@type": "ContactPoint",
           "contactType": "customer support",
@@ -105,8 +112,13 @@
     ]
     </script>
 
-    <!-- Preload critical resources -->
-    <link rel="preload" href="/src/main.tsx" as="script" crossorigin />
+    <!-- Inline critical CSS for fastest FCP -->
+    <style>
+      #root { min-height: 100vh; }
+      .h-screen { height: 100vh; }
+      .animate-spin { animation: spin 1s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
   </head>
 
   <body>
