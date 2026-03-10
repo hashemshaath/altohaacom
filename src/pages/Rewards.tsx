@@ -33,6 +33,7 @@ export default function Rewards() {
     <PageShell
       title={isAr ? "النقاط والمكافآت" : "Points & Rewards"}
       description="Earn and redeem points"
+      seoProps={{ noIndex: true }}
     >
       {/* Hero */}
       <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-chart-4/10 via-background to-primary/10 p-6 sm:p-8">

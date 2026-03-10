@@ -36,5 +36,10 @@ Disallow: /support
 Disallow: /company/
 Disallow: /judging
 Disallow: /company-login
+Disallow: /wallet
+Disallow: /referrals
+Disallow: /rewards
+Disallow: /settings
+Disallow: /membership-checkout
 
 Sitemap: https://altoha.com/sitemap.xml

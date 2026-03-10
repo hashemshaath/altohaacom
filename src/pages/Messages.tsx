@@ -22,7 +22,7 @@ export default function Messages() {
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   return (
-    <PageShell title="Messages" footer={false} padding="none" container={false}>
+    <PageShell title="Messages" footer={false} padding="none" container={false} seoProps={{ noIndex: true }}>
       {/* Compact Header - hidden on mobile when chat is open */}
       <section className={`border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/2 to-background ${data.selectedPartner || data.activeGroupId ? "hidden md:block" : ""}`}>
         <div className="container py-2 md:py-6">

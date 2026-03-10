@@ -141,7 +141,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <PageShell title="Dashboard" description="Your personal Altoha dashboard">
+    <PageShell title="Dashboard" description="Your personal Altoha dashboard" seoProps={{ noIndex: true }}>
       {/* Membership Expiry Banner */}
       <MembershipExpiryBanner className="mb-4" />
 

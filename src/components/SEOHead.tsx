@@ -127,10 +127,11 @@ export const SEOHead = memo(function SEOHead({
     altLink.setAttribute("hreflang", altHreflang);
     altLink.setAttribute("href", canonical || window.location.href);
 
-    // JSON-LD
+    // JSON-LD — only inject if useEnhancedSEO hasn't already set one
+    const enhancedLd = document.getElementById("enhanced-seo-jsonld");
     const existingLd = document.querySelector('script[data-seo-ld]');
     if (existingLd) existingLd.remove();
-    if (jsonLd) {
+    if (jsonLd && !enhancedLd) {
       const script = document.createElement("script");
       script.setAttribute("type", "application/ld+json");
       script.setAttribute("data-seo-ld", "true");
