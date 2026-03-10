@@ -124,8 +124,25 @@ export function useEnhancedSEO(language: string) {
     
     const jsonLdItems: any[] = [];
 
-    // Primary page schema
-    jsonLdItems.push({
+    // Related links for this page (SEO relatedLink signal)
+    const relatedLinks: Record<string, string[]> = {
+      "/": ["/competitions", "/recipes", "/news", "/exhibitions", "/rankings", "/jobs"],
+      "/competitions": ["/discover", "/rankings", "/events-calendar", "/masterclasses"],
+      "/recipes": ["/community", "/masterclasses", "/shop", "/competitions"],
+      "/news": ["/competitions", "/exhibitions", "/community", "/recipes"],
+      "/community": ["/recipes", "/news", "/mentorship", "/rankings"],
+      "/exhibitions": ["/competitions", "/events-calendar", "/organizers", "/pro-suppliers"],
+      "/masterclasses": ["/recipes", "/competitions", "/mentorship", "/community"],
+      "/rankings": ["/competitions", "/masterclasses", "/community", "/discover"],
+      "/establishments": ["/jobs", "/pro-suppliers", "/rankings", "/competitions"],
+      "/jobs": ["/establishments", "/rankings", "/community", "/membership"],
+      "/shop": ["/pro-suppliers", "/recipes", "/masterclasses"],
+      "/mentorship": ["/masterclasses", "/community", "/rankings", "/competitions"],
+      "/events-calendar": ["/competitions", "/exhibitions", "/organizers"],
+    };
+
+    // Primary page schema with relatedLink
+    const pageSchema: any = {
       "@context": "https://schema.org",
       "@type": meta.type || "WebPage",
       name: title,
@@ -137,7 +154,11 @@ export function useEnhancedSEO(language: string) {
         name: "Altoha",
         url: origin,
       },
-    });
+    };
+    if (relatedLinks[path]) {
+      pageSchema.relatedLink = relatedLinks[path].map(p => `${origin}${p}`);
+    }
+    jsonLdItems.push(pageSchema);
 
     // BreadcrumbList for non-homepage
     if (path !== "/") {
