@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { Link } from "react-router-dom";
-import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail, User, LayoutDashboard } from "lucide-react";
+import { Building2, Trophy, GraduationCap, Newspaper, Users, Globe, Mail, User, LayoutDashboard, Briefcase, CalendarDays, Medal, UtensilsCrossed } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 export const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(function Footer(_props, ref) {
