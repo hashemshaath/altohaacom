@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer, Route } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
