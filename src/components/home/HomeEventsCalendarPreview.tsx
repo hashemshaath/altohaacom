@@ -368,4 +368,4 @@ const HomeListEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent;
   );
 
   return event.link ? <Link to={event.link}>{card}</Link> : card;
-}
+});
