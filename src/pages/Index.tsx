@@ -145,7 +145,7 @@ const Index = () => {
       // No dedicated component → use GenericHomepageSection
       if (!Component) {
         return (
-          <Suspense key={key} fallback={<SectionSkeleton />}>
+          <Suspense key={key} fallback={getSectionSkeleton()}>
             <SectionKeyProvider sectionKey={key}>
               <HomepageSectionShell>
                 <GenericHomepageSection sectionKey={key} />
