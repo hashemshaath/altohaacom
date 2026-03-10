@@ -152,4 +152,4 @@ export const HomeTrendingContent = function HomeTrendingContent() {
       </section>
     </div>
   );
-});
+};

@@ -134,4 +134,4 @@ export const HomeTestimonials = function HomeTestimonials() {
       </section>
     </div>
   );
-});
+};

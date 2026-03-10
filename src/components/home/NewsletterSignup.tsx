@@ -89,4 +89,4 @@ export const NewsletterSignup = function NewsletterSignup() {
       </div>
     </section>
   );
-});
+};

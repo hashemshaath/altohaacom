@@ -150,4 +150,4 @@ export const HomeSearch = memo(function HomeSearch() {
       </div>
     </section>
   );
-}));
+});
