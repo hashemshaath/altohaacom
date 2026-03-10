@@ -303,7 +303,7 @@ ${summary}`;
 
       // Save to database
       const { error: insertError } = await supabase.from("ai_analytics_reports").insert({
-        report_type: "weekly",
+        report_type: periodLabel,
         language,
         content: reportContent,
         data_snapshot: snapshot,
