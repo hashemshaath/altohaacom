@@ -26,7 +26,7 @@ const GenericHomepageSection = memo(function GenericHomepageSection({ sectionKey
   const count = Math.min(section.item_count || 3, perRow * 2);
 
   return (
-    <section ref={ref} id={sectionKey}>
+    <section id={sectionKey}>
       <div className={cn(
         "container mx-auto px-4",
         section.container_width === "narrow" && "max-w-3xl",
