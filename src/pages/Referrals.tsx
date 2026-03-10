@@ -60,7 +60,7 @@ export default function Referrals() {
   if (!user) return null;
 
   return (
-    <PageShell title={isAr ? "نظام الإحالة" : "Referral Program"} description="Invite friends and earn rewards">
+    <PageShell title={isAr ? "نظام الإحالة" : "Referral Program"} description="Invite friends and earn rewards" seoProps={{ noIndex: true }}>
         {/* Hero */}
         <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-background to-chart-2/15 p-6 sm:p-10 border border-primary/10">
           <div className="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-[120px] animate-pulse" />

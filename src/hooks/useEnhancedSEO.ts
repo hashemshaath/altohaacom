@@ -109,7 +109,10 @@ export function useEnhancedSEO(language: string) {
     setMeta("name", "twitter:title", title);
     setMeta("name", "twitter:description", desc);
 
-    // Inject JSON-LD
+    // Inject JSON-LD (remove page-level SEOHead LD first to avoid duplicates)
+    const existingPageLd = document.querySelector('script[data-seo-ld]');
+    if (existingPageLd) existingPageLd.remove();
+    
     const ldId = "enhanced-seo-jsonld";
     let script = document.getElementById(ldId) as HTMLScriptElement;
     if (!script) {
