@@ -3,6 +3,15 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
+User-agent: Googlebot-Mobile
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /admin/
+
 User-agent: Bingbot
 Allow: /
 Disallow: /admin/

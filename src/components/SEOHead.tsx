@@ -85,7 +85,10 @@ export const SEOHead = memo(function SEOHead({
 
     setMeta("property", "og:url", canonical || window.location.href);
     setMeta("name", "twitter:card", effectiveOgImage ? "summary_large_image" : "summary");
+
+    // Mobile SEO signals
     setMeta("name", "theme-color", "#1a1a2e");
+    setMeta("name", "mobile-web-app-capable", "yes");
 
     // Keywords
     if (keywords) {

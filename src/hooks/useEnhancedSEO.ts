@@ -233,6 +233,11 @@ export function useEnhancedSEO(language: string) {
       });
     }
 
+    // Mobile-optimized page signals
+    if (meta.type) {
+      pageSchema.additionalType = `https://schema.org/${meta.type}`;
+    }
+
     script.textContent = JSON.stringify(
       jsonLdItems.length === 1 ? jsonLdItems[0] : jsonLdItems
     );
