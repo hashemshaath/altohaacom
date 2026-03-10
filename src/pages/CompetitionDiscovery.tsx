@@ -102,6 +102,7 @@ export default function CompetitionDiscovery() {
       <SEOHead
         title={isAr ? "استكشاف المسابقات" : "Discover Competitions"}
         description={isAr ? "استكشف مسابقات الطهي القادمة وسجّل للمشاركة" : "Explore upcoming culinary competitions and register to compete"}
+        keywords={isAr ? "استكشاف مسابقات, مسابقات قادمة, تسجيل مسابقة, طهي تنافسي" : "discover competitions, upcoming contests, competition registration, competitive cooking"}
       />
       {/* Hero */}
       <div className="border-b border-border/30 bg-gradient-to-b from-primary/5 to-transparent">

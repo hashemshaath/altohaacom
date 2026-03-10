@@ -144,9 +144,9 @@ export default function Recipes() {
 
   return (
     <PageShell
-      title={isAr ? "الوصفات — الطهاة" : "Recipe Database — Altoha"}
-      description={isAr ? "اكتشف وشارك وصفات الطهي" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
-      seoProps={{ jsonLd }}
+      title={isAr ? "وصفات الطهي" : "Culinary Recipe Database"}
+      description={isAr ? "اكتشف وشارك وصفات طهي احترافية مع المكونات والخطوات والقيم الغذائية" : "Discover and share culinary recipes with ingredients, steps, and nutritional data"}
+      seoProps={{ jsonLd, keywords: isAr ? "وصفات طهي, وصفات شيف, طبخ احترافي, وصفات حلويات, مقبلات, أطباق رئيسية" : "culinary recipes, chef recipes, professional cooking, dessert recipes, appetizers, main courses" }}
       container={false}
       padding="none"
     >

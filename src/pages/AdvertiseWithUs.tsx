@@ -152,8 +152,9 @@ export default function AdvertiseWithUs() {
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead
-        title={isAr ? "أعلن معنا — Altoha" : "Advertise With Us — Altoha"}
+        title={isAr ? "أعلن معنا" : "Advertise With Us"}
         description={isAr ? "وصّل علامتك التجارية لأكثر من 50,000 محترف طهي" : "Reach 50,000+ culinary professionals with targeted advertising on Altoha"}
+        keywords={isAr ? "إعلانات طهي, تسويق أغذية, إعلان مطاعم, رعاية فعاليات" : "culinary advertising, food marketing, restaurant ads, event sponsorship"}
       />
       <Header />
 

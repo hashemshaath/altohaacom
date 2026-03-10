@@ -75,6 +75,7 @@ export default function Install() {
       <SEOHead
         title={isAr ? "تثبيت التطبيق" : "Install Altoha App"}
         description={isAr ? "ثبّت تطبيق الطهاة على جهازك للوصول السريع والعمل بدون اتصال" : "Install the Altoha app on your device for quick access and offline support"}
+        keywords={isAr ? "تثبيت تطبيق, تطبيق طهاة, PWA, تطبيق جوال" : "install app, chef app, PWA, mobile app"}
       />
       <Header />
       <main className="flex-1">

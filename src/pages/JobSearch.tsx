@@ -327,8 +327,9 @@ export default function JobSearch() {
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
-        title={isAr ? "بحث الوظائف - Altoha" : "Job Search - Altoha"}
+        title={isAr ? "بحث الوظائف" : "Job Search"}
         description={isAr ? "ابحث وتصفح جميع وظائف الطهي والضيافة" : "Search and browse all culinary and hospitality jobs"}
+        keywords={isAr ? "بحث وظائف, وظائف طهي, وظائف ضيافة, فرص عمل, توظيف" : "job search, culinary jobs, hospitality jobs, career opportunities, recruitment"}
       />
       <Header />
       <main className="flex-1">

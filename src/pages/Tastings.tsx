@@ -41,7 +41,7 @@ export default function Tastings() {
 
   return (
     <>
-      <SEOHead title={isAr ? "التقييم والتذوق" : "Evaluation & Tasting"} description={isAr ? "جلسات تقييم المسابقات وتذوق المنتجات" : "Competition evaluation and product tasting sessions"} />
+      <SEOHead title={isAr ? "التقييم والتذوق" : "Evaluation & Tasting"} description={isAr ? "جلسات تقييم المسابقات وتذوق المنتجات" : "Competition evaluation and product tasting sessions"} keywords={isAr ? "تقييم طهي, تذوق منتجات, جلسات تحكيم, تقييم أغذية" : "culinary evaluation, product tasting, judging sessions, food assessment"} />
       <div className="min-h-screen bg-background">
         <Header />
         

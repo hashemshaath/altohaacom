@@ -114,6 +114,7 @@ export default function ProSuppliers() {
       <SEOHead
         title={isAr ? "دليل الموردين المحترفين" : "Pro Chef Suppliers Directory"}
         description={isAr ? "اكتشف أفضل موردي المنتجات الاحترافية للطهاة حول العالم" : "Discover the best professional product suppliers for chefs worldwide"}
+        keywords={isAr ? "موردين طهي, موردين أغذية, معدات مطاعم, مكونات احترافية, موردين محترفين" : "culinary suppliers, food suppliers, restaurant equipment, professional ingredients, chef suppliers"}
       />
       <Header />
       <main className="flex-1">

@@ -56,6 +56,7 @@ export default function Community() {
       <SEOHead
         title={isAr ? "مجتمع الطهاة" : "Culinary Community"}
         description={isAr ? "تواصل مع الطهاة وشارك الوصفات وانضم إلى المجموعات" : "Connect with chefs, share recipes, join groups on Altoha."}
+        keywords={isAr ? "مجتمع الطهاة, شبكة طهاة, وصفات مشتركة, مجموعات طهي, تواصل مهني" : "chef community, chef network, shared recipes, cooking groups, professional networking"}
       />
       <Header />
 

@@ -176,6 +176,7 @@ const Index = () => {
       <SEOHead
         title={language === "ar" ? "الطهاة — المجتمع الطهوي العالمي" : "Altoha — Global Culinary Community"}
         description={language === "ar" ? "المنصة الأولى للطهاة والحكام والمنظمين ومحترفي صناعة الأغذية حول العالم" : "The premier platform for chefs, judges, organizers, and food industry professionals worldwide"}
+        keywords={language === "ar" ? "طهاة, مسابقات طهي, وصفات, معارض أغذية, تصنيف الطهاة, مجتمع الطهاة, منصة طهي" : "chefs, culinary competitions, recipes, food exhibitions, chef rankings, culinary community, cooking platform"}
         ogImage="/pwa-512x512.png"
         lang={language}
         jsonLd={{

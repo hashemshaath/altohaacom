@@ -36,6 +36,7 @@ export default function Mentorship() {
     <PageShell
       title={isAr ? "برنامج الإرشاد المهني" : "Chef Mentorship Program"}
       description={isAr ? "تواصل مع طهاة محترفين للإرشاد والتوجيه المهني" : "Connect with professional chefs for career mentoring and guidance"}
+      seoProps={{ keywords: isAr ? "إرشاد طهاة, توجيه مهني, تدريب شيف, مرشد طهي, تطوير مهني" : "chef mentorship, career guidance, chef training, culinary mentor, professional development" }}
       container={false}
       padding="none"
     >

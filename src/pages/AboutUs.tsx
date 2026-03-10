@@ -24,7 +24,7 @@ export default function AboutUs() {
   ];
 
   return (
-    <PageShell title={isAr ? "من نحن" : "About Us"} description={isAr ? "تعرف على منصة الطهاة" : "Learn about Altoha"} container={false}>
+    <PageShell title={isAr ? "من نحن" : "About Us"} description={isAr ? "تعرف على منصة الطهاة ورؤيتنا ورسالتنا" : "Learn about Altoha, our vision, and mission"} seoProps={{ keywords: isAr ? "من نحن, منصة الطهاة, رؤية, رسالة, مجتمع طهوي" : "about us, culinary platform, vision, mission, chef community" }} container={false}>
       <section className="border-b border-border/40 bg-gradient-to-b from-primary/5 to-background">
         <div className="container py-10 md:py-14 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">

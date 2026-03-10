@@ -150,6 +150,7 @@ export default function MembershipPlans() {
       <SEOHead
         title={isAr ? "خطط العضوية" : "Membership Plans"}
         description={isAr ? "اختر خطة العضوية المناسبة واستمتع بمزايا حصرية للطهاة المحترفين" : "Choose the right membership plan and unlock exclusive benefits for professional chefs"}
+        keywords={isAr ? "عضوية طهاة, خطط اشتراك, مزايا حصرية, عضوية احترافية" : "chef membership, subscription plans, exclusive benefits, professional membership"}
       />
       {/* Trial Banner */}
       {trialInfo?.isInTrial && (

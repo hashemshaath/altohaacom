@@ -120,6 +120,7 @@ export default function KnowledgePortal() {
       <SEOHead
         title={language === "ar" ? "بوابة المعرفة" : "Knowledge Portal"}
         description={language === "ar" ? "موارد تعليمية ومعايير التحكيم والمراجع المهنية للطهاة" : "Educational resources, judging criteria, and professional references for chefs"}
+        keywords={language === "ar" ? "بوابة المعرفة, معايير التحكيم, موارد تعليمية, مراجع طهوية" : "knowledge portal, judging criteria, educational resources, culinary references"}
       />
       <Header />
       {/* Compact Hero */}

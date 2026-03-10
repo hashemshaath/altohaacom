@@ -56,6 +56,7 @@ export default function Establishments() {
     <PageShell
       title={isAr ? "دليل المنشآت الطهوية" : "Culinary Establishments Directory"}
       description={isAr ? "تصفح المطاعم والفنادق ومنشآت الأغذية حيث يعمل الطهاة ويتدربون" : "Browse restaurants, hotels, and food establishments where chefs work and train"}
+      seoProps={{ keywords: isAr ? "مطاعم, فنادق, مخابز, مقاهي, منشآت أغذية, مراكز تدريب طهي" : "restaurants, hotels, bakeries, cafes, food establishments, culinary training centers" }}
       container={false}
       padding="none"
     >
