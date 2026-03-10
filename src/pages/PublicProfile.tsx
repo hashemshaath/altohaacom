@@ -235,8 +235,7 @@ export default function PublicProfile() {
           description: bio || undefined,
           jobTitle: profile.job_title || undefined,
           worksFor: currentWork ? { "@type": "Organization", name: currentWork } : undefined,
-          nationality: profile.country ? { "@type": "Country", name: profile.country } : undefined,
-          sameAs: profile.website_url ? [profile.website_url] : undefined,
+          nationality: profile.country_code ? { "@type": "Country", name: profile.country_code } : undefined,
           memberOf: { "@type": "Organization", name: "Altoha", url: "https://altoha.com" },
         }}
       />
