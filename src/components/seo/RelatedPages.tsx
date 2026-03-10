@@ -91,6 +91,25 @@ export const RelatedPages = memo(function RelatedPages({
 }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const ref = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  // Defer rendering until near viewport
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const linkKeys = links || (currentPath ? PAGE_LINKS[currentPath] : null) || [];
   const pages = linkKeys
