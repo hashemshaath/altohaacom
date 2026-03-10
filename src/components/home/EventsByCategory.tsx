@@ -211,7 +211,7 @@ function renderFeaturedCompetition(item: any, isAr: boolean, statusBadge: (s: st
               <Trophy className="h-12 w-12 text-primary/30" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
           <div className="absolute end-3 top-3 flex flex-col items-end gap-1.5">
             {statusBadge(item.status)}
             {item.competition_start && <CountdownBadge targetDate={new Date(item.competition_start)} isAr={isAr} />}
