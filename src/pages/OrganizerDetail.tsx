@@ -968,7 +968,7 @@ export default function OrganizerDetail() {
                     <Link key={article.id} to={`/news/${article.slug}`} className="group">
                       <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (
-                          <img src={article.featured_image_url} alt="" className="w-full h-36 object-cover" loading="lazy" />
+                          <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} className="w-full h-36 object-cover" loading="lazy" decoding="async" />
                         )}
                         <CardContent className="p-3">
                           <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
