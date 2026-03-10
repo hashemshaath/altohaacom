@@ -256,6 +256,12 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
               <span className="text-primary font-medium">{unreadCount} {isAr ? "جديد" : "new"}</span>
               <span className="text-border">|</span>
               <span>{readCount} {isAr ? "مقروء" : "read"}</span>
+              {snoozedCount > 0 && (
+                <>
+                  <span className="text-border">|</span>
+                  <span className="text-chart-4 font-medium"><AlarmClock className="h-3 w-3 inline me-0.5" />{snoozedCount} {isAr ? "مؤجل" : "snoozed"}</span>
+                </>
+              )}
             </div>
           )}
         </SheetHeader>
