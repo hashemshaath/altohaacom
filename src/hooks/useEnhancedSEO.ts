@@ -172,9 +172,9 @@ export function useEnhancedSEO(language: string) {
         url: origin,
         logo: {
           "@type": "ImageObject",
-          url: `${origin}/pwa-512x512.png`,
-          width: 512,
-          height: 512,
+          url: `${origin}/og-image.png`,
+          width: 1200,
+          height: 630,
         },
         description: isAr
           ? "منصة الطهي الاحترافية الرائدة — مسابقات، معارض، تواصل بين الطهاة"
