@@ -11,7 +11,8 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
-  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi
+  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi,
+  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import {
