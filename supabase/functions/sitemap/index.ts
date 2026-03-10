@@ -80,29 +80,77 @@ serve(async (req) => {
   // Competitions
   (competitions || []).forEach(c => {
     const loc = `${origin}/competitions/${c.id}`;
-    urls.push(`<url><loc>${loc}</loc><lastmod>${c.updated_at?.substring(0, 10)}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`);
+    const arLoc = `${loc}?lang=ar`;
+    urls.push(`<url>
+  <loc>${loc}</loc>
+  <lastmod>${c.updated_at?.substring(0, 10)}</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+  <xhtml:link rel="alternate" hreflang="en" href="${loc}" />
+  <xhtml:link rel="alternate" hreflang="ar" href="${arLoc}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />
+</url>`);
   });
 
   // Exhibitions
   (exhibitions || []).forEach(e => {
     const slug = e.slug || e.id;
-    urls.push(`<url><loc>${origin}/exhibitions/${slug}</loc><lastmod>${e.updated_at?.substring(0, 10)}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>`);
+    const loc = `${origin}/exhibitions/${slug}`;
+    const arLoc = `${loc}?lang=ar`;
+    urls.push(`<url>
+  <loc>${loc}</loc>
+  <lastmod>${e.updated_at?.substring(0, 10)}</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.8</priority>
+  <xhtml:link rel="alternate" hreflang="en" href="${loc}" />
+  <xhtml:link rel="alternate" hreflang="ar" href="${arLoc}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />
+</url>`);
   });
 
   // Articles
   (articles || []).forEach(a => {
-    urls.push(`<url><loc>${origin}/news/${a.slug}</loc><lastmod>${a.updated_at?.substring(0, 10)}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>`);
+    const loc = `${origin}/news/${a.slug}`;
+    const arLoc = `${loc}?lang=ar`;
+    urls.push(`<url>
+  <loc>${loc}</loc>
+  <lastmod>${a.updated_at?.substring(0, 10)}</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.7</priority>
+  <xhtml:link rel="alternate" hreflang="en" href="${loc}" />
+  <xhtml:link rel="alternate" hreflang="ar" href="${arLoc}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />
+</url>`);
   });
 
   // Recipes
   (recipes || []).forEach(r => {
-    urls.push(`<url><loc>${origin}/recipes/${r.id}</loc><lastmod>${r.updated_at?.substring(0, 10)}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>`);
+    const loc = `${origin}/recipes/${r.id}`;
+    const arLoc = `${loc}?lang=ar`;
+    urls.push(`<url>
+  <loc>${loc}</loc>
+  <lastmod>${r.updated_at?.substring(0, 10)}</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.6</priority>
+  <xhtml:link rel="alternate" hreflang="en" href="${loc}" />
+  <xhtml:link rel="alternate" hreflang="ar" href="${arLoc}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />
+</url>`);
   });
 
   // Profiles
   (profiles || []).forEach(p => {
     if (p.username) {
-      urls.push(`<url><loc>${origin}/u/${p.username}</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>`);
+      const loc = `${origin}/u/${p.username}`;
+      const arLoc = `${loc}?lang=ar`;
+      urls.push(`<url>
+  <loc>${loc}</loc>
+  <changefreq>monthly</changefreq>
+  <priority>0.5</priority>
+  <xhtml:link rel="alternate" hreflang="en" href="${loc}" />
+  <xhtml:link rel="alternate" hreflang="ar" href="${arLoc}" />
+  <xhtml:link rel="alternate" hreflang="x-default" href="${loc}" />
+</url>`);
     }
   });
 
