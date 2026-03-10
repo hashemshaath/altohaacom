@@ -112,6 +112,17 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
       gender: form.gender || null,
       preferred_language: form.preferred_language || "ar",
       profile_completed: true,
+      // Job availability
+      is_open_to_work: form.is_open_to_work || false,
+      job_availability_visibility: form.job_availability_visibility || "private",
+      preferred_job_types: form.preferred_job_types || [],
+      preferred_work_locations: form.preferred_work_locations || [],
+      salary_range_min: form.salary_range_min ? Number(form.salary_range_min) : null,
+      salary_range_max: form.salary_range_max ? Number(form.salary_range_max) : null,
+      salary_currency: form.salary_currency || "SAR",
+      work_availability_note: form.work_availability_note || null,
+      work_availability_note_ar: form.work_availability_note_ar || null,
+      willing_to_relocate: form.willing_to_relocate || false,
     };
     const { error } = await supabase.from("profiles").update(payload).eq("user_id", userId);
     setSaving(false);
