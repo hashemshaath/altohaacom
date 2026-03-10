@@ -12,13 +12,14 @@ import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
   AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi,
-  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus
+  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus, Shield
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
   BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
 } from "recharts";
+import { SEOAuditPanel } from "@/components/admin/seo/SEOAuditPanel";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
@@ -526,6 +527,7 @@ export default function SEODashboard() {
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
+          <TabsTrigger value="audit" className="gap-1.5"><Shield className="h-3.5 w-3.5" />{isAr ? "تدقيق" : "Audit"}</TabsTrigger>
           <TabsTrigger value="crawl" className="gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "سجل الزحف" : "Crawl Log"}</TabsTrigger>
         </TabsList>
 
@@ -1284,6 +1286,11 @@ export default function SEODashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* SEO Audit */}
+        <TabsContent value="audit">
+          <SEOAuditPanel />
         </TabsContent>
 
         {/* Crawl Log */}

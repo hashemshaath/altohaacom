@@ -19086,6 +19086,95 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_audit_issues: {
+        Row: {
+          audit_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          is_resolved: boolean | null
+          issue_type: string
+          message: string
+          message_ar: string | null
+          page_path: string
+          resolved_at: string | null
+          severity: string
+        }
+        Insert: {
+          audit_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          is_resolved?: boolean | null
+          issue_type: string
+          message: string
+          message_ar?: string | null
+          page_path: string
+          resolved_at?: string | null
+          severity?: string
+        }
+        Update: {
+          audit_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          is_resolved?: boolean | null
+          issue_type?: string
+          message?: string
+          message_ar?: string | null
+          page_path?: string
+          resolved_at?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_audit_issues_audit_id_fkey"
+            columns: ["audit_id"]
+            isOneToOne: false
+            referencedRelation: "seo_audits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_audits: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          issues_found: number | null
+          score: number | null
+          started_at: string
+          status: string
+          summary: Json | null
+          total_pages: number | null
+          triggered_by: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          issues_found?: number | null
+          score?: number | null
+          started_at?: string
+          status?: string
+          summary?: Json | null
+          total_pages?: number | null
+          triggered_by?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          issues_found?: number | null
+          score?: number | null
+          started_at?: string
+          status?: string
+          summary?: Json | null
+          total_pages?: number | null
+          triggered_by?: string | null
+        }
+        Relationships: []
+      }
       seo_content_sources: {
         Row: {
           color: string | null
