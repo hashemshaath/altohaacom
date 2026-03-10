@@ -318,7 +318,7 @@ const HomeListEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent;
       <div className="flex">
         <div className={cn("w-24 sm:w-32 shrink-0 relative overflow-hidden", !event.cover_image_url && colors.bg)}>
           {event.cover_image_url ? (
-            <img src={event.cover_image_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+            <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
           ) : (
             <div className="flex items-center justify-center h-full">
               <IconComp className={cn("h-7 w-7 opacity-40", colors.text)} />
