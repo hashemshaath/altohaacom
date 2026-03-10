@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,9 +11,13 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
-  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap
+  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
+  BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
+} from "recharts";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
