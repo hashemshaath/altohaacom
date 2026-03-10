@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
-const StatsPartnersSection = forwardRef<HTMLElement>(function StatsPartnersSection(_, ref) {
+const StatsPartnersSection = memo(function StatsPartnersSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
