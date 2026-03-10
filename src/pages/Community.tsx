@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { CommunityFeed } from "@/components/community/CommunityFeed";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
@@ -115,6 +116,9 @@ export default function Community() {
           />
         </div>
       </main>
+      <div className="container">
+        <RelatedPages currentPath="/community" />
+      </div>
       <div className="pb-20 sm:pb-0" />
       <ScrollToTopFAB />
       <Footer />

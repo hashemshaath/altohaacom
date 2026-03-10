@@ -12,6 +12,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 
 const features = [
   {
@@ -314,6 +315,9 @@ export default function OrganizersLanding() {
             </div>
           </div>
         </section>
+        <div className="container">
+          <RelatedPages currentPath="/for-organizers" />
+        </div>
       </main>
       <Footer />
     </div>

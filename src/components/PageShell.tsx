@@ -1,7 +1,9 @@
 import { ReactNode, memo } from "react";
+import { useLocation } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 import { cn } from "@/lib/utils";
 
 interface PageShellProps {
@@ -23,6 +25,8 @@ interface PageShellProps {
   container?: boolean;
   /** Vertical padding preset */
   padding?: "none" | "sm" | "md" | "lg";
+  /** Whether to show related pages section for internal linking (default: true) */
+  relatedPages?: boolean;
 }
 
 const paddingMap = {
@@ -46,7 +50,11 @@ export const PageShell = memo(function PageShell({
   className,
   container = true,
   padding = "md",
+  relatedPages = true,
 }: PageShellProps) {
+  const location = useLocation();
+  const showRelated = relatedPages && !seoProps?.noIndex;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead title={title} description={description} {...seoProps} />
@@ -60,6 +68,11 @@ export const PageShell = memo(function PageShell({
         )}
       >
         {children}
+        {showRelated && (
+          <div className={cn(!container && "container")}>
+            <RelatedPages currentPath={location.pathname} />
+          </div>
+        )}
       </main>
       {footer && <Footer />}
     </div>

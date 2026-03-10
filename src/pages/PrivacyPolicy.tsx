@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 import { Separator } from "@/components/ui/separator";
 import { Shield, Calendar } from "lucide-react";
 
@@ -67,6 +68,9 @@ export default function PrivacyPolicy() {
               ))}
             </CardContent>
           </Card>
+        </div>
+        <div className="container">
+          <RelatedPages currentPath="/privacy" links={["competitions", "community", "membership"]} />
         </div>
       </main>
       <Footer />

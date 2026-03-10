@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, useMemo, useEffect } from "react";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 
 /** Thin wrapper to prevent React from attaching refs to lazy function components */
 function SectionWrapper({ Component }: { Component: React.LazyExoticComponent<any> }) {
@@ -197,6 +198,9 @@ const Index = () => {
       <main className="flex flex-col pb-20 sm:pb-0">
         {showHero && <HeroSection />}
         {renderedSections}
+        <div className="container">
+          <RelatedPages currentPath="/" />
+        </div>
       </main>
 
       <Footer />
