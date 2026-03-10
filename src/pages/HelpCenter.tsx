@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Search, BookOpen, HelpCircle, MessageSquare, ChevronRight, Ticket, Headphones } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
