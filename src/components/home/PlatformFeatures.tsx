@@ -186,7 +186,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               </div>
             </CardContent>
           </Card>
-          <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/5 to-transparent transition-all hover:shadow-xl">
+          <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/10 via-card to-card transition-all hover:shadow-xl">
             <CardContent className="relative p-6 md:p-8">
               <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
                 <Trophy className="h-5 w-5 text-accent" />
