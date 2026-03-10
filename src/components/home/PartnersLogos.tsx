@@ -55,7 +55,7 @@ export const PartnersLogos = memo(function PartnersLogos() {
   if (!hasContent) return null;
 
   return (
-    <section className="py-8 md:py-12" aria-labelledby="partners-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section aria-labelledby="partners-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionHeader
           icon={Building2}

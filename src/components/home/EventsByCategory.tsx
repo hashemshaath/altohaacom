@@ -109,7 +109,7 @@ export const EventsByCategory = memo(function EventsByCategory() {
   };
 
   return (
-    <section className="container py-8 md:py-12" aria-labelledby="events-cat-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section className="container" aria-labelledby="events-cat-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionHeader
         icon={Trophy}
         badge={isAr ? "الفعاليات" : "Events"}

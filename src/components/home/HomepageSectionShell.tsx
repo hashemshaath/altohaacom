@@ -75,7 +75,7 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
   if (!config) {
     return (
       <div ref={ref} className={SPACING_MAP.normal}>
-        {shouldRender ? children : <div className="min-h-[120px]" />}
+{shouldRender ? children : <div className="min-h-[60px]" />}
       </div>
     );
   }
@@ -93,7 +93,7 @@ export const HomepageSectionShell = memo(function HomepageSectionShell({ childre
       )}
       style={config.bg_color ? { backgroundColor: config.bg_color } : undefined}
     >
-      {shouldRender ? children : <div className="min-h-[120px]" />}
+      {shouldRender ? children : <div className="min-h-[60px]" />}
     </div>
   );
 });

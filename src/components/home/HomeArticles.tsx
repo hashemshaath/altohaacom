@@ -69,7 +69,7 @@ export const HomeArticles = memo(function HomeArticles() {
   };
 
   return (
-    <section className="container py-8 md:py-12" aria-labelledby="articles-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section className="container" aria-labelledby="articles-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionHeader
         icon={Newspaper}
         badge={isAr ? "أحدث المقالات" : "Latest Articles"}
