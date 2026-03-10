@@ -60,6 +60,17 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
     date_of_birth: profile?.date_of_birth || "",
     gender: profile?.gender || "",
     preferred_language: profile?.preferred_language || "ar",
+    // Job availability fields
+    is_open_to_work: profile?.is_open_to_work || false,
+    job_availability_visibility: profile?.job_availability_visibility || "private",
+    preferred_job_types: profile?.preferred_job_types || [],
+    preferred_work_locations: profile?.preferred_work_locations || [],
+    salary_range_min: profile?.salary_range_min || "",
+    salary_range_max: profile?.salary_range_max || "",
+    salary_currency: profile?.salary_currency || "SAR",
+    work_availability_note: profile?.work_availability_note || "",
+    work_availability_note_ar: profile?.work_availability_note_ar || "",
+    willing_to_relocate: profile?.willing_to_relocate || false,
   });
 
   const update = (k: string, v: any) => {
