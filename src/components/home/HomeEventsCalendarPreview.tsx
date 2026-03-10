@@ -55,7 +55,7 @@ export function HomeEventsCalendarPreview() {
   if (events.length === 0) return null;
 
   return (
-    <div ref={ref}>
+    <div>
     <TooltipProvider delayDuration={200}>
       <section className="container">
         <SectionHeader
