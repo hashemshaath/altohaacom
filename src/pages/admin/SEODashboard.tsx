@@ -1047,9 +1047,13 @@ export default function SEODashboard() {
               </CardContent>
             </Card>
 
-            <p className="text-xs text-muted-foreground px-1">
-              {isAr ? "💡 لتحديث المواقع تلقائياً، قم بربط Google Search Console API." : "💡 To auto-update positions, connect Google Search Console API."}
-            </p>
+            <div className="flex items-center gap-2 px-1">
+              <Button onClick={handleGSCSyncPerformance} disabled={gscSyncing === "performance"} size="sm" variant="outline" className="gap-1.5 text-xs">
+                <RefreshCw className={`h-3 w-3 ${gscSyncing === "performance" ? "animate-spin" : ""}`} />
+                {isAr ? "مزامنة من GSC" : "Sync from GSC"}
+              </Button>
+              <span className="text-[10px] text-muted-foreground">{isAr ? "يتطلب إعداد مفتاح حساب الخدمة" : "Requires Service Account key setup"}</span>
+            </div>
           </div>
         </TabsContent>
 
