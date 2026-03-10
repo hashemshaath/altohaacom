@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SEOHead } from "@/components/SEOHead";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import {
