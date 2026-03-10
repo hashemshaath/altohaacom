@@ -50,7 +50,6 @@ function isSnoozed(id: string): boolean {
   const snoozed = getSnoozed();
   return snoozed[id] ? snoozed[id] > Date.now() : false;
 }
-import { cn } from "@/lib/utils";
 
 interface Props {
   open: boolean;
