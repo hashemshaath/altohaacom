@@ -67,7 +67,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
   if (chefs.length === 0) return null;
 
   return (
-    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
+    <section dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <SectionHeader
           icon={ChefHat}
