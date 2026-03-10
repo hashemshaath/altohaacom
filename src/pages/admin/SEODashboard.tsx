@@ -19,6 +19,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
   BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
 } from "recharts";
+import { SEOAuditPanel } from "@/components/admin/seo/SEOAuditPanel";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
