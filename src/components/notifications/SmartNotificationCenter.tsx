@@ -262,9 +262,13 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
 
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <div className="px-4">
-            <TabsList className="w-full grid grid-cols-2">
+            <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="all">{isAr ? "الكل" : "All"}</TabsTrigger>
               <TabsTrigger value="unread">{isAr ? "غير مقروء" : "Unread"} {unreadCount > 0 && `(${unreadCount})`}</TabsTrigger>
+              <TabsTrigger value="snoozed" className="gap-1">
+                <AlarmClock className="h-3 w-3" />
+                {isAr ? "مؤجل" : "Snoozed"} {snoozedCount > 0 && `(${snoozedCount})`}
+              </TabsTrigger>
             </TabsList>
           </div>
 
