@@ -19,6 +19,7 @@ import { ActivityHeatmap } from "@/components/analytics/ActivityHeatmap";
 import { GeographicDistribution } from "@/components/analytics/GeographicDistribution";
 import { AIAnalyticsChat } from "@/components/analytics/AIAnalyticsChat";
 import { FunnelAnalysis } from "@/components/analytics/FunnelAnalysis";
+import { UserJourneyMapping } from "@/components/analytics/UserJourneyMapping";
 import { AnomalyDetection } from "@/components/analytics/AnomalyDetection";
 import { ABTestingDashboard } from "@/components/analytics/ABTestingDashboard";
 import { ExecutiveSummary } from "@/components/analytics/ExecutiveSummary";
