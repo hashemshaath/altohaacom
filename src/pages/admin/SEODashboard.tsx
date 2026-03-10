@@ -1141,9 +1141,17 @@ export default function SEODashboard() {
               </CardContent>
             </Card>
 
-            <p className="text-xs text-muted-foreground px-1">
-              {isAr ? "💡 لتحديث الحالة تلقائياً، قم بربط Google Search Console API (Indexing API)." : "💡 To auto-update status, connect Google Search Console API (Indexing API)."}
-            </p>
+            <div className="flex items-center gap-2 px-1 flex-wrap">
+              <Button onClick={handleGSCInspectUrls} disabled={gscSyncing === "inspect"} size="sm" variant="outline" className="gap-1.5 text-xs">
+                <Search className={`h-3 w-3 ${gscSyncing === "inspect" ? "animate-spin" : ""}`} />
+                {isAr ? "فحص الصفحات" : "Inspect URLs"}
+              </Button>
+              <Button onClick={() => handleGSCSubmitUrls()} disabled={gscSyncing === "submit"} size="sm" variant="outline" className="gap-1.5 text-xs">
+                <Send className={`h-3 w-3 ${gscSyncing === "submit" ? "animate-spin" : ""}`} />
+                {isAr ? "إرسال للفهرسة" : "Submit for Indexing"}
+              </Button>
+              <span className="text-[10px] text-muted-foreground">{isAr ? "يتطلب إعداد مفتاح حساب الخدمة" : "Requires Service Account key setup"}</span>
+            </div>
           </div>
         </TabsContent>
 
