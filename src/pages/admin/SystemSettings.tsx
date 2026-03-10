@@ -42,6 +42,8 @@ import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
 import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
 import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
+import { GenericSettingsEditor } from "@/components/admin/settings/GenericSettingsEditor";
+import { IntegrationsSecretsPanel } from "@/components/admin/settings/IntegrationsSecretsPanel";
 import { DatabaseOverviewWidget } from "@/components/admin/DatabaseOverviewWidget";
 import { RecentAdminActions } from "@/components/admin/RecentAdminActions";
 
