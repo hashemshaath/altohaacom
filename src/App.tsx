@@ -89,6 +89,7 @@ function AppContent() {
   useOfflineSync();
   const { language } = useLanguageHook();
   useEnhancedSEO(language);
+  useSEOTracking();
   return (
     <>
       <ScrollToTop />
