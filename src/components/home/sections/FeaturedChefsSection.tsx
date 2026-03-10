@@ -13,7 +13,7 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 
-const FeaturedChefsSection = forwardRef<HTMLElement>(function FeaturedChefsSection(_props, ref) {
+const FeaturedChefsSection = memo(function FeaturedChefsSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
