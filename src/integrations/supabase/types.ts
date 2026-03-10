@@ -19314,6 +19314,51 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_web_vitals: {
+        Row: {
+          cls: number | null
+          connection_type: string | null
+          created_at: string
+          device_type: string | null
+          fcp: number | null
+          id: string
+          inp: number | null
+          lcp: number | null
+          path: string
+          session_id: string | null
+          ttfb: number | null
+          user_agent: string | null
+        }
+        Insert: {
+          cls?: number | null
+          connection_type?: string | null
+          created_at?: string
+          device_type?: string | null
+          fcp?: number | null
+          id?: string
+          inp?: number | null
+          lcp?: number | null
+          path: string
+          session_id?: string | null
+          ttfb?: number | null
+          user_agent?: string | null
+        }
+        Update: {
+          cls?: number | null
+          connection_type?: string | null
+          created_at?: string
+          device_type?: string | null
+          fcp?: number | null
+          id?: string
+          inp?: number | null
+          lcp?: number | null
+          path?: string
+          session_id?: string | null
+          ttfb?: number | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       shop_categories: {
         Row: {
           created_at: string | null
