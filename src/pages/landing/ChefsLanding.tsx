@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
+import { RelatedPages } from "@/components/seo/RelatedPages";
 
 const benefits = [
   { icon: Trophy, titleEn: "Compete Globally", titleAr: "تنافس عالمياً", descEn: "Join culinary competitions worldwide and prove your skills against the best", descAr: "انضم إلى مسابقات طهي عالمية وأثبت مهاراتك أمام الأفضل" },
