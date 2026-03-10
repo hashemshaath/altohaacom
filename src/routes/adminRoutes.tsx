@@ -139,5 +139,6 @@ export const adminRoutes = (
     <Route path="audit" element={<AuditLog />} />
     <Route path="database" element={<DatabaseAdmin />} />
     <Route path="deduplication" element={<DeduplicationAdmin />} />
+    <Route path="seo" element={<SEODashboard />} />
   </Route>
 );
