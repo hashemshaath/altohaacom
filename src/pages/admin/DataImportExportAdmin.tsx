@@ -284,7 +284,7 @@ const ExportTab = memo(function ExportTab() {
       name: templateName.trim(),
       module: selectedModule,
       columns: Array.from(selectedColumns),
-      format,
+      format: exportFormat,
       createdAt: new Date().toISOString(),
     };
     const updated = [...templates, newTemplate];
