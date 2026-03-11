@@ -298,7 +298,7 @@ const ExportTab = memo(function ExportTab() {
   const handleLoadTemplate = (tpl: ExportTemplate) => {
     setSelectedModule(tpl.module);
     setSelectedColumns(new Set(tpl.columns));
-    setFormat(tpl.format);
+    setExportFormat(tpl.format);
     toast({ title: t(`Loaded: ${tpl.name}`, `تم تحميل: ${tpl.name}`) });
   };
 
