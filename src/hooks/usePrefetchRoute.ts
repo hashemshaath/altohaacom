@@ -35,10 +35,10 @@ const dataPrefetchers: Record<string, () => Promise<any>> = {
     await supabase.from("exhibitions").select("id,title,slug,start_date,end_date,venue,city,featured_image_url,status").in("status", ["active", "upcoming"]).order("start_date", { ascending: false }).limit(10);
   },
   "/recipes": async () => {
-    await supabase.from("recipes").select("id,title,slug,featured_image_url,prep_time,cook_time,difficulty").eq("status", "published").order("created_at", { ascending: false }).limit(12);
+    await (supabase.from("recipes").select("id,title,slug,featured_image_url") as any).eq("status", "published").order("created_at", { ascending: false }).limit(12);
   },
   "/shop": async () => {
-    await supabase.from("shop_products").select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12);
+    await (supabase.from("shop_products").select("id,name,slug,price,currency,images,status") as any).eq("status", "active").order("created_at", { ascending: false }).limit(12);
   },
 };
 
