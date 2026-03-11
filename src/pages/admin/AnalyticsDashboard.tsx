@@ -212,6 +212,7 @@ export default function AnalyticsDashboard() {
         <TabsContent value="executive"><ExecutiveSummary /></TabsContent>
         <TabsContent value="ai-insights"><AIInsightsPanel /></TabsContent>
         <TabsContent value="ai-chat"><AIAnalyticsChat /></TabsContent>
+        <TabsContent value="web-vitals"><WebVitalsWidget /></TabsContent>
       </Tabs>
     </div>
   );

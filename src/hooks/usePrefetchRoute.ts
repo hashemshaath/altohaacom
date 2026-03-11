@@ -1,7 +1,8 @@
 import { useCallback, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Prefetches route modules on hover/focus to speed up navigation.
+ * Prefetches route modules AND data on hover/focus to speed up navigation.
  * Uses requestIdleCallback to avoid blocking main thread.
  */
 const prefetched = new Set<string>();
@@ -22,6 +23,20 @@ const routeModules: Record<string, () => Promise<any>> = {
   "/events-calendar": () => import("@/pages/EventsCalendar"),
 };
 
+/** Warm the Supabase query cache alongside module prefetch */
+const dataPrefetchers: Record<string, () => Promise<any>> = {
+  "/competitions": () =>
+    supabase.from("competitions").select("id,title,slug,status,start_date,featured_image_url").eq("status", "published").order("start_date", { ascending: false }).limit(12),
+  "/news": () =>
+    supabase.from("articles").select("id,title,slug,excerpt,featured_image_url,published_at,type").eq("status", "published").order("published_at", { ascending: false }).limit(10),
+  "/exhibitions": () =>
+    supabase.from("exhibitions").select("id,title,slug,start_date,end_date,venue,city,featured_image_url,status").eq("status", "published").order("start_date", { ascending: false }).limit(10),
+  "/recipes": () =>
+    supabase.from("recipes").select("id,title,slug,featured_image_url,prep_time,cook_time,difficulty").eq("status", "published").order("created_at", { ascending: false }).limit(12),
+  "/shop": () =>
+    supabase.from("shop_products").select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12),
+};
+
 export function usePrefetchRoute() {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -38,17 +53,16 @@ export function usePrefetchRoute() {
       if (prefetched.has(path)) return;
       prefetched.add(path);
 
-      if ("requestIdleCallback" in window) {
-        (window as any).requestIdleCallback(() => {
-          routeModules[matchKey]().catch(() => {
-            prefetched.delete(path);
-          });
-        });
-      } else {
-        routeModules[matchKey]().catch(() => {
-          prefetched.delete(path);
-        });
-      }
+      const schedule = "requestIdleCallback" in window
+        ? (fn: () => void) => (window as any).requestIdleCallback(fn)
+        : (fn: () => void) => fn();
+
+      schedule(() => {
+        // Prefetch module
+        routeModules[matchKey]().catch(() => prefetched.delete(path));
+        // Prefetch data (fire-and-forget)
+        dataPrefetchers[matchKey]?.().catch(() => {});
+      });
     }, 150);
   }, []);
 
