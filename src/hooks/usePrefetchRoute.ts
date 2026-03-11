@@ -25,16 +25,21 @@ const routeModules: Record<string, () => Promise<any>> = {
 
 /** Warm the Supabase query cache alongside module prefetch */
 const dataPrefetchers: Record<string, () => Promise<any>> = {
-  "/competitions": () =>
-    supabase.from("competitions").select("id,title,slug,status,start_date,featured_image_url").in("status", ["registration_open", "upcoming"]).order("start_date", { ascending: false }).limit(12).then(),
-  "/news": () =>
-    supabase.from("articles").select("id,title,slug,excerpt,featured_image_url,published_at,type").eq("status", "published").order("published_at", { ascending: false }).limit(10).then(),
-  "/exhibitions": () =>
-    supabase.from("exhibitions").select("id,title,slug,start_date,end_date,venue,city,featured_image_url,status").in("status", ["active", "upcoming"]).order("start_date", { ascending: false }).limit(10).then(),
-  "/recipes": () =>
-    supabase.from("recipes").select("id,title,slug,featured_image_url,prep_time,cook_time,difficulty").eq("status", "published").order("created_at", { ascending: false }).limit(12).then(),
-  "/shop": () =>
-    supabase.from("shop_products").select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12).then(),
+  "/competitions": async () => {
+    await supabase.from("competitions").select("id,title,slug,status,start_date,featured_image_url").in("status", ["registration_open", "upcoming"]).order("start_date", { ascending: false }).limit(12);
+  },
+  "/news": async () => {
+    await supabase.from("articles").select("id,title,slug,excerpt,featured_image_url,published_at,type").eq("status", "published").order("published_at", { ascending: false }).limit(10);
+  },
+  "/exhibitions": async () => {
+    await supabase.from("exhibitions").select("id,title,slug,start_date,end_date,venue,city,featured_image_url,status").in("status", ["active", "upcoming"]).order("start_date", { ascending: false }).limit(10);
+  },
+  "/recipes": async () => {
+    await supabase.from("recipes").select("id,title,slug,featured_image_url,prep_time,cook_time,difficulty").eq("status", "published").order("created_at", { ascending: false }).limit(12);
+  },
+  "/shop": async () => {
+    await supabase.from("shop_products").select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12);
+  },
 };
 
 export function usePrefetchRoute() {
