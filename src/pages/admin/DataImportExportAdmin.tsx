@@ -386,7 +386,7 @@ const ExportTab = memo(function ExportTab() {
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
                 <Label className="text-xs">{t("Format", "التنسيق")}:</Label>
-                <Select value={format} onValueChange={(v: "csv" | "json") => setFormat(v)}>
+                <Select value={exportFormat} onValueChange={(v: "csv" | "json") => setExportFormat(v)}>
                   <SelectTrigger className="w-24 h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="csv">CSV</SelectItem>
