@@ -154,7 +154,7 @@ const DataImportExportAdmin = () => {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        icon={<Database className="h-6 w-6" />}
+        icon={Database}
         title={t("Data Import & Export", "استيراد وتصدير البيانات")}
         description={t(
           "Centralized hub for importing, exporting, and managing your platform data",
