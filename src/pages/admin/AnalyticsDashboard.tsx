@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer, Route } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer, Route, Gauge } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -27,6 +27,7 @@ import { FinancialForecasting } from "@/components/analytics/FinancialForecastin
 import { TaxComplianceAnalytics } from "@/components/analytics/TaxComplianceAnalytics";
 import { PredictiveChurnDashboard } from "@/components/analytics/PredictiveChurnDashboard";
 import { MultiMetricComparison } from "@/components/analytics/MultiMetricComparison";
+import { WebVitalsWidget } from "@/components/admin/WebVitalsWidget";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { AdvancedKPIDashboard } from "@/components/admin/AdvancedKPIDashboard";
 import { AdvancedExportWidget } from "@/components/admin/AdvancedExportWidget";
@@ -104,6 +105,7 @@ export default function AnalyticsDashboard() {
     { value: "executive", icon: FileBarChart, label: isAr ? "ملخص تنفيذي" : "Executive" },
     { value: "ai-insights", icon: Brain, label: isAr ? "ذكاء اصطناعي" : "AI Insights" },
     { value: "ai-chat", icon: MessageSquareText, label: isAr ? "محادثة ذكية" : "AI Chat" },
+    { value: "web-vitals", icon: Gauge, label: isAr ? "أداء الويب" : "Web Vitals" },
   ];
 
   return (
@@ -210,6 +212,7 @@ export default function AnalyticsDashboard() {
         <TabsContent value="executive"><ExecutiveSummary /></TabsContent>
         <TabsContent value="ai-insights"><AIInsightsPanel /></TabsContent>
         <TabsContent value="ai-chat"><AIAnalyticsChat /></TabsContent>
+        <TabsContent value="web-vitals"><WebVitalsWidget /></TabsContent>
       </Tabs>
     </div>
   );
