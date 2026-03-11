@@ -250,9 +250,9 @@ const ExportTab = memo(function ExportTab() {
       }
 
       const selectedColDefs = currentModule.columns.filter(c => selectedColumns.has(c.key));
-      const filename = `${selectedModule}_${format(new Date(), "yyyy-MM-dd_HHmm")}`;
+      const filename = `${selectedModule}_${fmtDate(new Date(), "yyyy-MM-dd_HHmm")}`;
 
-      if (format === "csv") {
+      if (exportFormat === "csv") {
         const headers = selectedColDefs.map(c => `"${isAr ? c.labelAr : c.label}"`).join(",");
         const rows = data.map((row: any) =>
           selectedColDefs.map(c => `"${String(row[c.key] ?? "").replace(/"/g, '""')}"`).join(",")
