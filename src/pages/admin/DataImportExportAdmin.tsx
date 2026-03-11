@@ -196,7 +196,7 @@ const ExportTab = memo(function ExportTab() {
 
   const [selectedModule, setSelectedModule] = useState("users");
   const [selectedColumns, setSelectedColumns] = useState<Set<string>>(new Set());
-  const [format, setFormat] = useState<"csv" | "json">("csv");
+  const [exportFormat, setExportFormat] = useState<"csv" | "json">("csv");
   const [exporting, setExporting] = useState(false);
   const [templates, setTemplates] = useState<ExportTemplate[]>(loadTemplates);
   const [templateName, setTemplateName] = useState("");
