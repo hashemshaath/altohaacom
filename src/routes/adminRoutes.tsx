@@ -142,5 +142,6 @@ export const adminRoutes = (
     <Route path="database" element={<DatabaseAdmin />} />
     <Route path="deduplication" element={<DeduplicationAdmin />} />
     <Route path="seo" element={<SEODashboard />} />
+    <Route path="data-import-export" element={<DataImportExportAdmin />} />
   </Route>
 );
