@@ -817,7 +817,7 @@ const HistoryTab = memo(function HistoryTab() {
               <TableBody>
                 {imports.map(imp => (
                   <TableRow key={imp.id}>
-                    <TableCell className="text-[11px]">{format(new Date(imp.created_at), "MMM dd, HH:mm")}</TableCell>
+                    <TableCell className="text-[11px]">{fmtDate(new Date(imp.created_at), "MMM dd, HH:mm")}</TableCell>
                     <TableCell><Badge variant="outline" className="text-[9px]">{imp.entity_type}</Badge></TableCell>
                     <TableCell className="text-[11px] max-w-[150px] truncate">{imp.file_name || "—"}</TableCell>
                     <TableCell>{statusBadge(imp.status)}</TableCell>
