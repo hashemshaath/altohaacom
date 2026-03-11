@@ -52,7 +52,7 @@ export function useHomepageSections() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("homepage_sections")
-        .select("id, section_key, section_number, title_en, title_ar, subtitle_en, subtitle_ar, is_visible, sort_order, custom_config, updated_at")
+        .select("*")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data || []) as unknown as HomepageSection[];
