@@ -54,6 +54,7 @@ const DesignIdentityAdmin = lazy(() => import("@/pages/admin/DesignIdentityAdmin
 const HeroSlidesAdmin = lazy(() => import("@/pages/admin/HeroSlidesAdmin"));
 const DeduplicationAdmin = lazy(() => import("@/pages/admin/DeduplicationAdmin"));
 const SEODashboard = lazy(() => import("@/pages/admin/SEODashboard"));
+const DataImportExportAdmin = lazy(() => import("@/pages/admin/DataImportExportAdmin"));
 
 const BrandIdentityPage = lazy(() => import("@/pages/admin/design/BrandIdentityPage"));
 
