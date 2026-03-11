@@ -24,7 +24,7 @@ import {
   Plus, RefreshCw, Settings2, History, ArrowDownToLine, ArrowUpFromLine,
   Filter, BookmarkPlus, Layers, Package,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format as fmtDate } from "date-fns";
 
 /* ─── Export Module Configs ─── */
 interface ExportModule {
