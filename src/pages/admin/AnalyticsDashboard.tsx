@@ -105,6 +105,7 @@ export default function AnalyticsDashboard() {
     { value: "executive", icon: FileBarChart, label: isAr ? "ملخص تنفيذي" : "Executive" },
     { value: "ai-insights", icon: Brain, label: isAr ? "ذكاء اصطناعي" : "AI Insights" },
     { value: "ai-chat", icon: MessageSquareText, label: isAr ? "محادثة ذكية" : "AI Chat" },
+    { value: "web-vitals", icon: Gauge, label: isAr ? "أداء الويب" : "Web Vitals" },
   ];
 
   return (
