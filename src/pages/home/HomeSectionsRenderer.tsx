@@ -11,69 +11,47 @@ interface HomeSectionsRendererProps {
   sections: HomepageSection[];
 }
 
-interface SectionRuntimeConfig {
+interface SectionEntry {
   section_key: string;
-  is_visible: boolean;
   sort_order: number;
 }
 
-function SectionShellBoundary({ sectionKey, index, children }: { sectionKey: string; index: number; children: React.ReactNode }) {
-  return (
-    <ErrorBoundary
-      fallback={
-        <div className="container py-4">
-          <div className="min-h-[60px]" />
-        </div>
-      }
-    >
-      <Suspense fallback={<HomeSectionSkeleton index={index} />}>
-        <SectionKeyProvider sectionKey={sectionKey}>
-          <HomepageSectionShell>{children}</HomepageSectionShell>
-        </SectionKeyProvider>
-      </Suspense>
-    </ErrorBoundary>
-  );
-}
+const SECTION_ERROR_FALLBACK = (
+  <div className="container py-4">
+    <div className="min-h-[60px]" />
+  </div>
+);
 
 export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
-  const orderedSections = useMemo<SectionRuntimeConfig[]>(() => {
+  const ordered = useMemo<SectionEntry[]>(() => {
     if (sections.length > 0) {
       return sections
-        .filter((section) => section.is_visible && section.section_key !== "hero")
+        .filter((s) => s.is_visible && s.section_key !== "hero")
         .sort((a, b) => a.sort_order - b.sort_order)
-        .map(({ section_key, is_visible, sort_order }) => ({
-          section_key,
-          is_visible,
-          sort_order,
-        }));
+        .map(({ section_key, sort_order }) => ({ section_key, sort_order }));
     }
-
-    return DEFAULT_HOME_SECTION_KEYS.map((section_key, i) => ({
-      section_key,
-      is_visible: true,
+    return DEFAULT_HOME_SECTION_KEYS.map((key, i) => ({
+      section_key: key,
       sort_order: i + 1,
     }));
   }, [sections]);
 
   return (
     <>
-      {orderedSections.map((section, index) => {
-        const sectionKey = section.section_key;
-        const SectionComponent = HOME_SECTION_COMPONENTS[sectionKey];
-        const renderKey = `${sectionKey}-${section.sort_order}-${index}`;
-
-        if (!SectionComponent) {
-          return (
-            <SectionShellBoundary key={renderKey} sectionKey={sectionKey} index={index}>
-              <GenericHomepageSection sectionKey={sectionKey} />
-            </SectionShellBoundary>
-          );
-        }
+      {ordered.map((entry, index) => {
+        const { section_key } = entry;
+        const Component = HOME_SECTION_COMPONENTS[section_key];
 
         return (
-          <SectionShellBoundary key={renderKey} sectionKey={sectionKey} index={index}>
-            <SectionComponent />
-          </SectionShellBoundary>
+          <ErrorBoundary key={`${section_key}-${entry.sort_order}`} fallback={SECTION_ERROR_FALLBACK}>
+            <Suspense fallback={<HomeSectionSkeleton index={index} />}>
+              <SectionKeyProvider sectionKey={section_key}>
+                <HomepageSectionShell>
+                  {Component ? <Component /> : <GenericHomepageSection sectionKey={section_key} />}
+                </HomepageSectionShell>
+              </SectionKeyProvider>
+            </Suspense>
+          </ErrorBoundary>
         );
       })}
     </>

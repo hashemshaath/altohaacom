@@ -18,27 +18,27 @@ const Index = () => {
 
   const showHero = useMemo(() => {
     if (dbSections.length === 0) return true;
-    return dbSections.find((section) => section.section_key === "hero")?.is_visible !== false;
+    return dbSections.find((s) => s.section_key === "hero")?.is_visible !== false;
   }, [dbSections]);
 
   const seo = useMemo(() => {
-    const title = language === "ar"
-      ? "الطهاة | المجتمع الطهوي العالمي"
-      : "Altoha | Global Culinary Community";
-
-    const description = language === "ar"
-      ? "المنصة الأولى للطهاة والحكام والمنظمين ومحترفي صناعة الأغذية حول العالم."
-      : "The premier platform for chefs, judges, organizers, and food industry professionals worldwide.";
-
-    const keywords = language === "ar"
-      ? "طهاة, مسابقات طهي, وصفات, معارض أغذية, تصنيف الطهاة, مجتمع الطهاة"
-      : "chefs, culinary competitions, recipes, food exhibitions, chef rankings, culinary community";
-
+    const title =
+      language === "ar"
+        ? "الطهاة | المجتمع الطهوي العالمي"
+        : "Altoha | Global Culinary Community";
+    const description =
+      language === "ar"
+        ? "المنصة الأولى للطهاة والحكام والمنظمين ومحترفي صناعة الأغذية حول العالم."
+        : "The premier platform for chefs, judges, organizers, and food industry professionals worldwide.";
+    const keywords =
+      language === "ar"
+        ? "طهاة, مسابقات طهي, وصفات, معارض أغذية, تصنيف الطهاة, مجتمع الطهاة"
+        : "chefs, culinary competitions, recipes, food exhibitions, chef rankings, culinary community";
     return { title, description, keywords };
   }, [language]);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background" role="document">
+    <div className="flex min-h-screen flex-col bg-background">
       <OfflineIndicator />
       <SEOHead
         title={seo.title}
@@ -63,21 +63,12 @@ const Index = () => {
 
       <Header />
 
-      <main className="relative flex flex-1 flex-col pb-20 sm:pb-0" aria-label="Homepage content">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.15),transparent_62%)]" />
-        <div className="pointer-events-none absolute inset-x-0 top-40 h-[30rem] bg-[radial-gradient(ellipse_at_center,hsl(var(--accent)/0.12),transparent_70%)]" />
-
-        <div className="relative z-10">
-          {showHero && <HeroSection />}
-        </div>
-
-        <section className="relative z-10">
-          <HomeSectionsRenderer sections={dbSections} />
-        </section>
-
-        <section className="relative z-10 container pb-10">
+      <main className="flex-1" aria-label="Homepage content">
+        {showHero && <HeroSection />}
+        <HomeSectionsRenderer sections={dbSections} />
+        <div className="container pb-10">
           <RelatedPages currentPath="/" />
-        </section>
+        </div>
       </main>
 
       <Footer />
@@ -86,4 +77,3 @@ const Index = () => {
 };
 
 export default Index;
-
