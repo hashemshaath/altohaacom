@@ -305,7 +305,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
 }
 
 /* ─── Home List Event Card ─── */
-const HomeListEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(function HomeListEventCard({ event, isAr }, ref) {
+function HomeListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
   const colors = GLOBAL_EVENT_COLORS[event.type];
   const label = GLOBAL_EVENT_LABELS[event.type];
   const IconComp = ICONS[label?.icon] || MoreHorizontal;
@@ -366,4 +366,5 @@ const HomeListEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent;
   );
 
   return event.link ? <Link to={event.link}>{card}</Link> : card;
-});
+}
+
