@@ -1,4 +1,4 @@
-import { type ReactNode, useRef, useEffect, useState } from "react";
+import { type MutableRefObject, type ReactNode, forwardRef, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "./SectionKeyContext";
 
@@ -25,22 +25,26 @@ const ANIMATION_INITIAL: Record<string, string> = {
   blur: "opacity-0 blur-sm",
 };
 
-export function HomepageSectionShell({ children }: { children: ReactNode }) {
+export const HomepageSectionShell = forwardRef<HTMLElement, { children: ReactNode }>(function HomepageSectionShell(
+  { children },
+  ref
+) {
   const config = useSectionConfig();
-  const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
+
+  const setSectionRef = (node: HTMLElement | null) => {
+    sectionRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) (ref as MutableRefObject<HTMLElement | null>).current = node;
+  };
 
   const animation = config?.animation || "none";
   const hasAnim = animation !== "none";
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) {
-      setVisible(true);
-      return;
-    }
-
-    if (!hasAnim) {
+    const el = sectionRef.current;
+    if (!el || !hasAnim) {
       setVisible(true);
       return;
     }
@@ -63,7 +67,7 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
 
   return (
     <section
-      ref={ref}
+      ref={setSectionRef}
       className={cn(
         spacing,
         config?.css_class,
@@ -79,4 +83,6 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
       {children}
     </section>
   );
-}
+});
+
+HomepageSectionShell.displayName = "HomepageSectionShell";

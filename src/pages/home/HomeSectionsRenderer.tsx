@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react";
+import { Suspense, forwardRef, useMemo } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
@@ -43,7 +43,7 @@ function normalizeEntries(entries: SectionEntry[]) {
   return Array.from(deduped.values()).sort((a, b) => a.sort_order - b.sort_order);
 }
 
-export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
+export const HomeSectionsRenderer = forwardRef<unknown, HomeSectionsRendererProps>(function HomeSectionsRenderer({ sections }, _ref) {
   const ordered = useMemo<SectionEntry[]>(() => {
     const configured = sections.length
       ? sections
@@ -81,5 +81,6 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
       })}
     </>
   );
-}
+});
 
+HomeSectionsRenderer.displayName = "HomeSectionsRenderer";
