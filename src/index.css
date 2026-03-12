@@ -55,14 +55,14 @@
 
     --radius: 0.5rem;
 
-    /* Sidebar — deep luxury */
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 40 15% 90%;
+    /* Sidebar — light */
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 220 16% 20%;
     --sidebar-primary: 40 72% 52%;
     --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 220 16% 18%;
-    --sidebar-accent-foreground: 40 12% 85%;
-    --sidebar-border: 220 14% 22%;
+    --sidebar-accent: 220 14% 95%;
+    --sidebar-accent-foreground: 220 16% 25%;
+    --sidebar-border: 220 14% 90%;
     --sidebar-ring: 40 72% 52%;
 
     /* Charts — warm luxury palette */
