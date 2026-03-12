@@ -44,7 +44,7 @@ export const moreLinks = [
 
 const HEADER_HEIGHT = "h-14";
 
-export const Header = memo(function Header() {
+export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { data: userRoles = [] } = useUserRoles();
@@ -62,6 +62,7 @@ export const Header = memo(function Header() {
   return (
     <>
       <header
+        ref={ref}
         role="banner"
         className={cn(
           "inset-x-0 top-0 z-50 transition-all duration-300 will-change-transform",
@@ -126,3 +127,5 @@ export const Header = memo(function Header() {
     </>
   );
 });
+
+Header.displayName = "Header";
