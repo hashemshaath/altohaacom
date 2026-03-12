@@ -30,7 +30,7 @@ const formatMessageTime = (createdAt: string, isArabic: boolean): string => {
   }
 };
 
-export function LiveChatWidget() {
+export const LiveChatWidget = forwardRef<HTMLDivElement, Record<string, never>>(function LiveChatWidget(_props, _ref) {
     const { user } = useAuth();
     const { language } = useLanguage();
     const isAr = language === "ar";
