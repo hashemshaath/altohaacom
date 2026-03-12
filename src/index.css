@@ -1,8 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:wght@400&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap");
-
-/* Font display optimization */
-@font-face { font-display: swap; }
+/* Fonts are configured via CSS variables with safe system fallbacks to avoid render-blocking imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
