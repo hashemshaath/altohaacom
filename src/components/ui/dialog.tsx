@@ -8,7 +8,11 @@ const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
-const DialogPortal = DialogPrimitive.Portal;
+const DialogPortal = React.forwardRef<
+  HTMLElement,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Portal>
+>(({ ...props }, _ref) => <DialogPrimitive.Portal {...props} />);
+DialogPortal.displayName = DialogPrimitive.Portal.displayName;
 
 const DialogClose = DialogPrimitive.Close;
 
@@ -31,7 +35,7 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, dir, ...props }, ref) => {
-  const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;
+  const resolvedDir = dir ?? (typeof document !== "undefined" ? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | null) ?? undefined : undefined);
   return (
     <DialogPortal>
       <DialogOverlay />
