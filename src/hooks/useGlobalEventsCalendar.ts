@@ -67,6 +67,14 @@ export const GLOBAL_EVENT_LABELS: Record<GlobalEventType, { en: string; ar: stri
   other:         { en: "Other", ar: "أخرى", icon: "MoreHorizontal" },
 };
 
+function normalizeGlobalEventType(value: unknown): GlobalEventType {
+  if (typeof value === "string" && Object.prototype.hasOwnProperty.call(GLOBAL_EVENT_COLORS, value)) {
+    return value as GlobalEventType;
+  }
+
+  return "other";
+}
+
 export function useGlobalEventsCalendar(filters?: {
   types?: GlobalEventType[];
   country?: string;
