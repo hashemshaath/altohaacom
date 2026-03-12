@@ -131,10 +131,12 @@ export function HomeEventsCalendarPreview() {
                 active={selectedFilter === null}
                 onClick={() => setSelectedFilter(null)}
               />
-              {FILTER_TYPES.map(type => {
+              {FILTER_TYPES.map((type) => {
                 const label = GLOBAL_EVENT_LABELS[type];
-                const count = events.filter(e => e.type === type && new Date(e.start_date) >= new Date()).length;
-                return (
+                const count = events.filter((event) => {
+                  const startsAt = Date.parse(event.start_date ?? "");
+                  return resolveEventType(event.type) === type && Number.isFinite(startsAt) && startsAt >= Date.now();
+                }).length;
                   <FilterChip
                     key={type}
                     label={isAr ? label?.ar : label?.en}
