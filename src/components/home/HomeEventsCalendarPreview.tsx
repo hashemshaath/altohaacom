@@ -137,6 +137,8 @@ export function HomeEventsCalendarPreview() {
                   const startsAt = Date.parse(event.start_date ?? "");
                   return resolveEventType(event.type) === type && Number.isFinite(startsAt) && startsAt >= Date.now();
                 }).length;
+
+                return (
                   <FilterChip
                     key={type}
                     label={isAr ? label?.ar : label?.en}
