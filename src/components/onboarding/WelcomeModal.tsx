@@ -212,5 +212,6 @@ export const WelcomeModal = forwardRef<HTMLDivElement, Record<string, never>>(fu
         </DialogContent>
       </Dialog>
     );
-}
+});
 
+WelcomeModal.displayName = "WelcomeModal";

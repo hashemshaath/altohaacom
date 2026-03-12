@@ -280,5 +280,6 @@ export const LiveChatWidget = forwardRef<HTMLDivElement, Record<string, never>>(
         )}
       </>
     );
-}
+});
 
+LiveChatWidget.displayName = "LiveChatWidget";

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, type ComponentType } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,45 +23,79 @@ import { useEnhancedSEO } from "@/hooks/useEnhancedSEO";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
 import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
 import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
-
-const AchievementCelebration = lazy(() => import("@/components/achievements/AchievementCelebration").then(m => ({ default: m.AchievementCelebration })));
+import { LiveChatWidget } from "@/components/support/LiveChatWidget";
+import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
 import { adminRoutes } from "@/routes/adminRoutes";
 import { companyRoutes } from "@/routes/companyRoutes";
 
-// Safe lazy loader that returns an empty component on import failure
-function safeLazy(
-  factory: () => Promise<{ default: any }>
-) {
-  return lazy(() =>
-    factory().catch(() => ({
-      default: () => null,
-    }))
-  );
+const AchievementCelebration = lazy(() =>
+  import("@/components/achievements/AchievementCelebration").then((m) => ({ default: m.AchievementCelebration }))
+);
+
+function safeLazy<T extends ComponentType<any>>(factory: () => Promise<{ default: T }>) {
+  return lazy(async () => {
+    try {
+      return await factory();
+    } catch {
+      return { default: (() => null) as T };
+    }
+  });
 }
 
-// Lazy-loaded non-critical shell components
-const FloatingHelpButton = safeLazy(() => import("@/components/FloatingHelpButton").then(m => ({ default: m.FloatingHelpButton as any })));
-const MobileBottomNav = safeLazy(() => import("@/components/mobile/MobileBottomNav").then(m => ({ default: m.MobileBottomNav as any })));
-const GoogleTrackingProvider = safeLazy(() => import("@/components/tracking/GoogleTrackingProvider").then(m => ({ default: m.GoogleTrackingProvider as any })));
-const TrackingScriptsInjector = safeLazy(() => import("@/components/tracking/TrackingScriptsInjector").then(m => ({ default: m.TrackingScriptsInjector as any })));
-const PageTracker = safeLazy(() => import("@/components/tracking/PageTracker").then(m => ({ default: m.PageTracker })));
-const SmartInstallBanner = safeLazy(() => import("@/components/pwa/SmartInstallBanner").then(m => ({ default: m.SmartInstallBanner as any })));
-const OfflineBanner = safeLazy(() => import("@/components/pwa/OfflineBanner").then(m => ({ default: m.OfflineBanner as any })));
-const UpdatePrompt = safeLazy(() => import("@/components/pwa/UpdatePrompt").then(m => ({ default: m.UpdatePrompt })));
-const IOSInstallGuide = safeLazy(() => import("@/components/pwa/IOSInstallGuide").then(m => ({ default: m.IOSInstallGuide as any })));
-const AnnouncementBanner = safeLazy(() => import("@/components/engagement/AnnouncementBanner").then(m => ({ default: m.AnnouncementBanner as any })));
-const ReEngagementPrompt = safeLazy(() => import("@/components/engagement/ReEngagementPrompt").then(m => ({ default: m.ReEngagementPrompt as any })));
-const PullToRefreshIndicator = lazy(() => import("@/components/pwa/PullToRefreshIndicator").then(m => ({ default: m.PullToRefreshIndicator })).catch(() => ({ default: ((_props: any) => null) as any })));
-const ScrollProgress = safeLazy(() => import("@/components/ui/scroll-progress").then(m => ({ default: m.ScrollProgress as any })));
-const BackToTop = safeLazy(() => import("@/components/ui/back-to-top").then(m => ({ default: m.BackToTop as any })));
-const RoutePrefetcher = safeLazy(() => import("@/components/ui/route-prefetcher").then(m => ({ default: m.RoutePrefetcher as any })));
-const LiveChatWidget = safeLazy(() => import("@/components/support/LiveChatWidget").then(m => ({ default: m.LiveChatWidget as any })));
-const WelcomeModal = safeLazy(() => import("@/components/onboarding/WelcomeModal").then(m => ({ default: m.WelcomeModal as any })));
-const GuidedTour = safeLazy(() => import("@/components/onboarding/GuidedTour").then(m => ({ default: m.GuidedTour as any })));
-const CommandPalette = safeLazy(() => import("@/components/search/CommandPalette").then(m => ({ default: m.CommandPalette as any })));
+const FloatingHelpButton = safeLazy(() =>
+  import("@/components/FloatingHelpButton").then((m) => ({ default: m.FloatingHelpButton }))
+);
+const MobileBottomNav = safeLazy(() =>
+  import("@/components/mobile/MobileBottomNav").then((m) => ({ default: m.MobileBottomNav }))
+);
+const GoogleTrackingProvider = safeLazy(() =>
+  import("@/components/tracking/GoogleTrackingProvider").then((m) => ({ default: m.GoogleTrackingProvider }))
+);
+const TrackingScriptsInjector = safeLazy(() =>
+  import("@/components/tracking/TrackingScriptsInjector").then((m) => ({ default: m.TrackingScriptsInjector }))
+);
+const PageTracker = safeLazy(() =>
+  import("@/components/tracking/PageTracker").then((m) => ({ default: m.PageTracker }))
+);
+const SmartInstallBanner = safeLazy(() =>
+  import("@/components/pwa/SmartInstallBanner").then((m) => ({ default: m.SmartInstallBanner }))
+);
+const OfflineBanner = safeLazy(() =>
+  import("@/components/pwa/OfflineBanner").then((m) => ({ default: m.OfflineBanner }))
+);
+const UpdatePrompt = safeLazy(() =>
+  import("@/components/pwa/UpdatePrompt").then((m) => ({ default: m.UpdatePrompt }))
+);
+const IOSInstallGuide = safeLazy(() =>
+  import("@/components/pwa/IOSInstallGuide").then((m) => ({ default: m.IOSInstallGuide }))
+);
+const AnnouncementBanner = safeLazy(() =>
+  import("@/components/engagement/AnnouncementBanner").then((m) => ({ default: m.AnnouncementBanner }))
+);
+const ReEngagementPrompt = safeLazy(() =>
+  import("@/components/engagement/ReEngagementPrompt").then((m) => ({ default: m.ReEngagementPrompt }))
+);
+const PullToRefreshIndicator = safeLazy(() =>
+  import("@/components/pwa/PullToRefreshIndicator").then((m) => ({ default: m.PullToRefreshIndicator }))
+);
+const ScrollProgress = safeLazy(() =>
+  import("@/components/ui/scroll-progress").then((m) => ({ default: m.ScrollProgress }))
+);
+const BackToTop = safeLazy(() =>
+  import("@/components/ui/back-to-top").then((m) => ({ default: m.BackToTop }))
+);
+const RoutePrefetcher = safeLazy(() =>
+  import("@/components/ui/route-prefetcher").then((m) => ({ default: m.RoutePrefetcher }))
+);
+const GuidedTour = safeLazy(() =>
+  import("@/components/onboarding/GuidedTour").then((m) => ({ default: m.GuidedTour }))
+);
+const CommandPalette = safeLazy(() =>
+  import("@/components/search/CommandPalette").then((m) => ({ default: m.CommandPalette }))
+);
 const NotFound = safeLazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -70,7 +104,6 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60 * 3,
       gcTime: 1000 * 60 * 15,
       retry: (failureCount, error: any) => {
-        // Don't retry on 4xx errors (client errors)
         if (error?.status >= 400 && error?.status < 500) return false;
         return failureCount < 1;
       },
@@ -84,15 +117,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppContent() {
-  const ptr = usePullToRefresh();
-  useRealtimeNotifications();
-  useOfflineSync();
-  const { language } = useLanguageHook();
-  useEnhancedSEO(language);
-  useSEOTracking();
-  useWebVitalsTracking();
-
+function AppBootMarker() {
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.setAttribute("data-app-boot", "ready");
@@ -100,80 +125,120 @@ function AppContent() {
       document.documentElement.removeAttribute("data-app-boot");
     };
   }, []);
+
+  return null;
+}
+
+function AppRoutesShell() {
+  return (
+    <MaintenanceGuard>
+      <ErrorBoundary>
+        <Suspense
+          fallback={
+            <div className="flex h-screen items-center justify-center" role="status" aria-label="Loading">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+              <span className="sr-only">Loading page...</span>
+            </div>
+          }
+        >
+          <div id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
+            <PageTransition>
+              <Routes>
+                {publicRoutes}
+                {protectedRoutes}
+                {adminRoutes}
+                {companyRoutes}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </PageTransition>
+          </div>
+        </Suspense>
+      </ErrorBoundary>
+    </MaintenanceGuard>
+  );
+}
+
+function AppEnhancements() {
+  return (
+    <ErrorBoundary fallback={null}>
+      <Suspense fallback={null}>
+        <FloatingHelpButton />
+        <LiveChatWidget />
+        <WelcomeModal />
+        <GuidedTour />
+        <CommandPalette />
+        <MobileBottomNav />
+        <ScrollProgress />
+        <BackToTop />
+        <SmartInstallBanner />
+        <IOSInstallGuide />
+        <OfflineBanner />
+        <UpdatePrompt />
+        <ReEngagementPrompt />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
+  const ptr = usePullToRefresh();
+  useRealtimeNotifications();
+  useOfflineSync();
+
+  const { language } = useLanguageHook();
+  useEnhancedSEO(language);
+  useSEOTracking();
+  useWebVitalsTracking();
+
   return (
     <>
+      <AppBootMarker />
       <ScrollToTop />
       <RouteAnnouncer />
       <SkipToContent />
+
       <Suspense fallback={null}>
-        <PullToRefreshIndicator {...ptr as any} />
+        <PullToRefreshIndicator
+          pulling={ptr.pulling}
+          pullDistance={ptr.pullDistance}
+          refreshing={ptr.refreshing}
+          progress={ptr.progress}
+        />
         <GoogleTrackingProvider />
         <TrackingScriptsInjector />
         <PageTracker />
+        <AnnouncementBanner />
       </Suspense>
-      <MaintenanceGuard>
-      <Suspense fallback={null}><AnnouncementBanner /></Suspense>
-      <ErrorBoundary>
-      <Suspense fallback={<div className="flex h-screen items-center justify-center" role="status" aria-label="Loading"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /><span className="sr-only">Loading page...</span></div>}>
-      <div id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
-      <PageTransition>
-      <Routes>
-        {publicRoutes}
-        {protectedRoutes}
-        {adminRoutes}
-        {companyRoutes}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      </PageTransition>
-      </div>
-      </Suspense>
-      </ErrorBoundary>
-      </MaintenanceGuard>
-      <ErrorBoundary fallback={null}>
-        <Suspense fallback={null}>
-          <FloatingHelpButton />
-          <LiveChatWidget />
-          <WelcomeModal />
-          <GuidedTour />
-          <CommandPalette />
-          <MobileBottomNav />
-          <ScrollProgress />
-          <BackToTop />
-          <SmartInstallBanner />
-          <IOSInstallGuide />
-          <OfflineBanner />
-          <UpdatePrompt />
-          <ReEngagementPrompt />
-        </Suspense>
-      </ErrorBoundary>
+
+      <AppRoutesShell />
+      <AppEnhancements />
     </>
   );
 }
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <LanguageProvider>
         <AuthProvider>
           <SiteSettingsProvider>
-          <ThemeApplicator />
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <Suspense fallback={null}><AchievementCelebration /></Suspense>
-            <BrowserRouter>
-              <ResourceHints />
-              <Suspense fallback={null}><RoutePrefetcher /></Suspense>
-              <ErrorBoundary>
-                <AppContent />
-              </ErrorBoundary>
-            </BrowserRouter>
-          </TooltipProvider>
+            <ThemeApplicator />
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Suspense fallback={null}>
+                <AchievementCelebration />
+              </Suspense>
+              <BrowserRouter>
+                <ResourceHints />
+                <Suspense fallback={null}>
+                  <RoutePrefetcher />
+                </Suspense>
+                <ErrorBoundary>
+                  <AppContent />
+                </ErrorBoundary>
+              </BrowserRouter>
+            </TooltipProvider>
           </SiteSettingsProvider>
         </AuthProvider>
       </LanguageProvider>
