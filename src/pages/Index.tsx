@@ -156,13 +156,15 @@ const Index = () => {
       }
 
       return (
-        <Suspense key={key} fallback={getSectionSkeleton()}>
-          <SectionKeyProvider sectionKey={key}>
-            <HomepageSectionShell>
-              {React.createElement(Component)}
-            </HomepageSectionShell>
-          </SectionKeyProvider>
-        </Suspense>
+        <ErrorBoundary fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
+          <Suspense key={key} fallback={getSectionSkeleton()}>
+            <SectionKeyProvider sectionKey={key}>
+              <HomepageSectionShell>
+                {React.createElement(Component)}
+              </HomepageSectionShell>
+            </SectionKeyProvider>
+          </Suspense>
+        </ErrorBoundary>
       );
     });
   }, [dbSections]);

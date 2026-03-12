@@ -30,8 +30,15 @@ export class ErrorBoundary extends React.Component<Props, State> {
     if (this.state.hasError) {
       if (this.props.fallback) return this.props.fallback;
 
+      let langFromStorage: string | null = null;
+      try {
+        langFromStorage = localStorage.getItem("altoha-lang");
+      } catch {
+        langFromStorage = null;
+      }
+
       const isAr = document.documentElement.lang === "ar" ||
-        localStorage.getItem("altoha-lang") === "ar";
+        langFromStorage === "ar";
 
       return (
         <div className="flex flex-col items-center justify-center gap-5 py-20 px-4 text-center animate-fade-in" role="alert">
