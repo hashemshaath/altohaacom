@@ -107,7 +107,16 @@ function scheduleBootWatchdog(): void {
       // no-op for restricted browsers
     }
 
-    await recoverFromStalePwaCache(true);
+    const recovered = await recoverFromStalePwaCache(true);
+    if (!recovered) {
+      const url = new URL(window.location.href);
+      const retriedForCurrentVersion = url.searchParams.get("boot-retry") === SW_RECOVERY_VERSION;
+      if (!retriedForCurrentVersion) {
+        url.searchParams.set("sw-reset", "1");
+        url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+        window.location.replace(url.toString());
+      }
+    }
   }, 7000);
 }
 
