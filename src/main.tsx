@@ -51,7 +51,12 @@ async function recoverFromStalePwaCache(force = false): Promise<boolean> {
   }
 }
 
-function scheduleBootWatchdog(root: HTMLElement): void {
+function isAppBootReady(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.getAttribute("data-app-boot") === "ready";
+}
+
+function scheduleBootWatchdog(): void {
   if (typeof window === "undefined") return;
 
   const watchdogKey = `altoha-boot-watchdog-${SW_RECOVERY_VERSION}`;
@@ -63,8 +68,7 @@ function scheduleBootWatchdog(root: HTMLElement): void {
   }
 
   window.setTimeout(async () => {
-    const hasRenderedContent = root.childElementCount > 0 || (root.textContent?.trim()?.length ?? 0) > 0;
-    if (hasRenderedContent) return;
+    if (isAppBootReady()) return;
 
     try {
       window.sessionStorage.setItem(watchdogKey, "triggered");
@@ -73,7 +77,7 @@ function scheduleBootWatchdog(root: HTMLElement): void {
     }
 
     await recoverFromStalePwaCache(true);
-  }, 4500);
+  }, 7000);
 }
 
 async function mountApp() {
