@@ -22,6 +22,31 @@ import { localizeCity } from "@/lib/localizeLocation";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 const FILTER_TYPES: GlobalEventType[] = ["competition", "exhibition", "conference", "tv_interview", "training", "chefs_table"];
+const EVENT_DATE_FALLBACK = { en: "Date TBD", ar: "تاريخ غير محدد" };
+
+function resolveEventType(type: string | null | undefined): GlobalEventType {
+  if (type && Object.prototype.hasOwnProperty.call(GLOBAL_EVENT_COLORS, type)) {
+    return type as GlobalEventType;
+  }
+  return "other";
+}
+
+function getEventMeta(event: GlobalEvent) {
+  const eventType = resolveEventType(event.type);
+  return {
+    colors: GLOBAL_EVENT_COLORS[eventType],
+    label: GLOBAL_EVENT_LABELS[eventType],
+  };
+}
+
+function formatEventDate(value: string, isAr: boolean) {
+  const parsed = parseISO(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return isAr ? EVENT_DATE_FALLBACK.ar : EVENT_DATE_FALLBACK.en;
+  }
+
+  return format(parsed, "d MMM yyyy", { locale: isAr ? ar : undefined });
+}
 
 export function HomeEventsCalendarPreview() {
   const { language } = useLanguage();
