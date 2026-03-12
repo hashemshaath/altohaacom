@@ -4,7 +4,7 @@ import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Calendar, MapPin, MoreHorizontal, Globe,
   ChevronLeft, ChevronRight, List, Timer, Building2,
@@ -56,7 +56,6 @@ export function HomeEventsCalendarPreview() {
 
   return (
     <div>
-    <TooltipProvider delayDuration={200}>
       <section className="container">
         <SectionHeader
           icon={Globe}
@@ -227,7 +226,6 @@ export function HomeEventsCalendarPreview() {
           </div>
         )}
       </section>
-    </TooltipProvider>
     </div>
   );
 }
