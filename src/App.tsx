@@ -144,6 +144,9 @@ function AppContent() {
   useOfflineSync();
 
   const { language } = useLanguageHook();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   useEnhancedSEO(language);
   useSEOTracking();
   useWebVitalsTracking();
@@ -155,21 +158,19 @@ function AppContent() {
       <RouteAnnouncer />
       <SkipToContent />
 
-      <Suspense fallback={null}>
-        <PullToRefreshIndicator
-          pulling={ptr.pulling}
-          pullDistance={ptr.pullDistance}
-          refreshing={ptr.refreshing}
-          progress={ptr.progress}
-        />
-        <GoogleTrackingProvider />
-        <TrackingScriptsInjector />
-        <PageTracker />
-        <AnnouncementBanner />
-      </Suspense>
+      <PullToRefreshIndicator
+        pulling={ptr.pulling}
+        pullDistance={ptr.pullDistance}
+        refreshing={ptr.refreshing}
+        progress={ptr.progress}
+      />
+      <GoogleTrackingProvider />
+      <TrackingScriptsInjector />
+      <PageTracker />
+      {!isHome && <AnnouncementBanner />}
 
       <AppRoutesShell />
-      <AppEnhancements />
+      <AppEnhancements isHome={isHome} />
     </>
   );
 }
