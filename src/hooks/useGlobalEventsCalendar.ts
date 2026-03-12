@@ -169,9 +169,12 @@ export function useGlobalEventsCalendar(filters?: {
 
       if (chefEvents) {
         for (const ce of chefEvents) {
+          if (!ce.start_date) continue;
+          const eventType = normalizeGlobalEventType(ce.event_type);
+
           events.push({
             id: ce.id,
-            type: ce.event_type as GlobalEventType,
+            type: eventType,
             title: ce.title,
             title_ar: ce.title_ar,
             start_date: ce.start_date,
@@ -186,7 +189,7 @@ export function useGlobalEventsCalendar(filters?: {
             is_recurring: ce.is_recurring ?? false,
             link: null,
             color: "chart-4",
-            icon: GLOBAL_EVENT_LABELS[ce.event_type as GlobalEventType]?.icon || "MoreHorizontal",
+            icon: GLOBAL_EVENT_LABELS[eventType]?.icon || "MoreHorizontal",
             source: "chef_schedule",
             participation_type: ce.participation_type,
             channel_name: ce.channel_name,
@@ -205,7 +208,8 @@ export function useGlobalEventsCalendar(filters?: {
       if (globalEvents) {
         for (const ge of globalEvents) {
           if (!ge.start_date) continue;
-          const geType = ge.type as GlobalEventType;
+          const geType = normalizeGlobalEventType(ge.type);
+
           events.push({
             id: ge.id,
             type: geType,
@@ -233,13 +237,13 @@ export function useGlobalEventsCalendar(filters?: {
       }
 
       // Apply type filter
-      let filtered = events;
+      let filtered = events.filter((event) => Number.isFinite(Date.parse(event.start_date ?? "")));
       if (filters?.types && filters.types.length > 0) {
-        filtered = filtered.filter(e => filters.types!.includes(e.type));
+        filtered = filtered.filter((event) => filters.types!.includes(event.type));
       }
 
       // Sort by start_date
-      filtered.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+      filtered.sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date));
 
       return filtered;
     },
