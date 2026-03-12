@@ -4,7 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
-import { useState, useEffect, useCallback, useRef, memo, forwardRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 const SLIDE_DURATION = 6000;
@@ -25,85 +25,38 @@ interface HeroSlide {
   sort_order: number;
 }
 
-/* ── Memoised slide background ── */
-const SlideBackground = memo(forwardRef<HTMLDivElement, {
-  slide: HeroSlide;
-  isActive: boolean;
-  isFirst: boolean;
-}>(function SlideBackground({ slide, isActive, isFirst }, ref) {
-  const [imageFailed, setImageFailed] = useState(false);
-  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.4);
+function useSwipe(onLeft: () => void, onRight: () => void) {
+  const start = useRef<{ x: number; y: number } | null>(null);
+  const end = useRef<{ x: number; y: number } | null>(null);
 
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        "absolute inset-0 transition-all duration-[1200ms] ease-in-out will-change-[opacity,transform]",
-        isActive ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
-      )}
-    >
-      {!imageFailed && (
-        <img
-          src={slide.image_url}
-          alt={slide.title}
-          className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
-          loading={isFirst ? "eager" : "lazy"}
-          decoding={isFirst ? "sync" : "async"}
-          onError={() => setImageFailed(true)}
-        />
-      )}
-
-      {imageFailed && (
-        <div className="absolute inset-0 bg-[linear-gradient(140deg,hsl(var(--primary)/0.25),hsl(var(--background))_65%)]" />
-      )}
-
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/5"
-        style={{ opacity }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 to-transparent" />
-    </div>
-  );
-}));
-
-/* ── Touch swipe hook ── */
-function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const touchEnd = useRef<{ x: number; y: number } | null>(null);
-
-  const onTouchStart = useCallback((e: React.TouchEvent) => {
-    touchEnd.current = null;
-    touchStart.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
-  }, []);
-
-  const onTouchMove = useCallback((e: React.TouchEvent) => {
-    touchEnd.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
-  }, []);
-
-  const onTouchEnd = useCallback(() => {
-    if (!touchStart.current || !touchEnd.current) return;
-    const dx = touchStart.current.x - touchEnd.current.x;
-    const dy = Math.abs(touchStart.current.y - touchEnd.current.y);
-    // Only horizontal swipes (ignore vertical scrolling)
-    if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > dy) {
-      if (dx > 0) onSwipeLeft();
-      else onSwipeRight();
-    }
-  }, [onSwipeLeft, onSwipeRight]);
-
-  return { onTouchStart, onTouchMove, onTouchEnd };
+  return {
+    onTouchStart: useCallback((e: React.TouchEvent) => {
+      end.current = null;
+      start.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+    }, []),
+    onTouchMove: useCallback((e: React.TouchEvent) => {
+      end.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+    }, []),
+    onTouchEnd: useCallback(() => {
+      if (!start.current || !end.current) return;
+      const dx = start.current.x - end.current.x;
+      const dy = Math.abs(start.current.y - end.current.y);
+      if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > dy) {
+        dx > 0 ? onLeft() : onRight();
+      }
+    }, [onLeft, onRight]),
+  };
 }
 
-export const HeroSection = memo(function HeroSection() {
+export function HeroSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const rafRef = useRef<number>(0);
+  const rafRef = useRef(0);
   const startRef = useRef(0);
-  const pausedAtRef = useRef(0);
+  const pausedRef = useRef(0);
 
   const { data: slides = [] } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides"],
@@ -134,32 +87,27 @@ export const HeroSection = memo(function HeroSection() {
     [current, slides.length, goTo]
   );
 
-  // Touch swipe (RTL-aware)
-  const swipeHandlers = useSwipe(
-    isAr ? prev : next,
-    isAr ? next : prev
-  );
+  const swipe = useSwipe(isAr ? prev : next, isAr ? next : prev);
 
-  // Auto-advance with pause support
+  // Auto-advance
   useEffect(() => {
     if (slides.length <= 1) return;
     startRef.current = performance.now();
 
     const tick = (now: number) => {
       if (isPaused) {
-        pausedAtRef.current = now;
+        pausedRef.current = now;
         rafRef.current = requestAnimationFrame(tick);
         return;
       }
-      // Adjust start time if resuming from pause
-      if (pausedAtRef.current > 0) {
-        startRef.current += now - pausedAtRef.current;
-        pausedAtRef.current = 0;
+      if (pausedRef.current > 0) {
+        startRef.current += now - pausedRef.current;
+        pausedRef.current = 0;
       }
       const pct = Math.min(((now - startRef.current) / SLIDE_DURATION) * 100, 100);
       setProgress(pct);
       if (pct >= 100) {
-        setCurrent(c => (c + 1) % slides.length);
+        setCurrent((c) => (c + 1) % slides.length);
         setProgress(0);
         startRef.current = now;
       }
@@ -170,7 +118,7 @@ export const HeroSection = memo(function HeroSection() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [slides.length, current, isPaused]);
 
-  // Keyboard navigation
+  // Keyboard
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
@@ -183,22 +131,22 @@ export const HeroSection = memo(function HeroSection() {
   /* ── Empty state ── */
   if (!slides.length) {
     return (
-      <section className="relative flex min-h-[55vh] sm:min-h-[60vh] items-center justify-center bg-muted/30 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
-        <div className="text-center space-y-6 px-4 relative">
+      <section className="relative flex min-h-[55vh] sm:min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
+        <div className="relative text-center space-y-6 px-4">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </span>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1] font-sans">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.1] text-foreground">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg font-sans">
+          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg">
             {isAr
               ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
               : "Join the finest chefs, judges, and organizers worldwide"}
           </p>
-          <Button size="lg" className="rounded-xl mt-2 shadow-[var(--shadow-md)]" asChild>
+          <Button size="lg" className="rounded-xl shadow-[var(--shadow-md)]" asChild>
             <Link to="/register">
               {isAr ? "ابدأ الآن" : "Get Started"}
               <ArrowRight className="ms-2 h-4 w-4" />
@@ -210,6 +158,7 @@ export const HeroSection = memo(function HeroSection() {
   }
 
   const slide = slides[current];
+  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.4);
 
   return (
     <section
@@ -217,11 +166,31 @@ export const HeroSection = memo(function HeroSection() {
       dir={isAr ? "rtl" : "ltr"}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      {...swipeHandlers}
+      {...swipe}
     >
       <div className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[75vh]">
+        {/* Slide backgrounds */}
         {slides.map((s, idx) => (
-          <SlideBackground key={s.id} slide={s} isActive={idx === current} isFirst={idx === 0} />
+          <div
+            key={s.id}
+            className={cn(
+              "absolute inset-0 transition-all duration-[1200ms] ease-in-out",
+              idx === current ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
+            )}
+          >
+            <img
+              src={s.image_url}
+              alt={s.title}
+              className="h-full w-full object-cover"
+              loading={idx === 0 ? "eager" : "lazy"}
+              decoding={idx === 0 ? "sync" : "async"}
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/5"
+              style={{ opacity }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
+          </div>
         ))}
 
         {/* Content */}
@@ -236,12 +205,12 @@ export const HeroSection = memo(function HeroSection() {
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-[hsl(var(--hero-foreground))] drop-shadow-lg font-sans">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md font-sans">
+              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
@@ -272,19 +241,19 @@ export const HeroSection = memo(function HeroSection() {
           </div>
         )}
 
-        {/* Navigation */}
+        {/* Navigation arrows */}
         {slides.length > 1 && (
           <>
             <button
               onClick={prev}
-              className="absolute start-2 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
+              className="absolute start-2 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:scale-105 active:scale-95"
               aria-label="Previous"
             >
               <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <button
               onClick={next}
-              className="absolute end-2 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:shadow-[var(--shadow-md)] hover:scale-105 active:scale-95 touch-manipulation"
+              className="absolute end-2 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:scale-105 active:scale-95"
               aria-label="Next"
             >
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
@@ -316,4 +285,4 @@ export const HeroSection = memo(function HeroSection() {
       </div>
     </section>
   );
-});
+}
