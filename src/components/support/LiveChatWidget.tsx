@@ -212,6 +212,7 @@ export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatW
                 {messages.map((msg, i) => {
                   const isMine = msg.sender_id === user?.id;
                   const isSystem = msg.message_type === "system";
+                  const relativeTime = formatMessageTime(msg.created_at, isAr);
                   const showAvatar = !isMine && !isSystem && (i === 0 || messages[i - 1]?.sender_id !== msg.sender_id || messages[i - 1]?.message_type === "system");
 
                   return (
