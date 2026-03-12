@@ -212,7 +212,5 @@ export function WelcomeModal() {
         </DialogContent>
       </Dialog>
     );
-});
-
-WelcomeModal.displayName = "WelcomeModal";
+}
 

@@ -280,7 +280,5 @@ export function LiveChatWidget() {
         )}
       </>
     );
-});
-
-LiveChatWidget.displayName = "LiveChatWidget";
+}
 
