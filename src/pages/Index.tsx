@@ -12,6 +12,7 @@ import { useAdTracking } from "@/hooks/useAdTracking";
 // Route prefetching handled by RoutePrefetcher component in App
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // ── Eager-loaded critical section ──
 import { HeroSection } from "@/components/home/sections/HeroSection";
@@ -142,24 +143,28 @@ const Index = () => {
       // No dedicated component → use GenericHomepageSection
       if (!Component) {
         return (
-          <Suspense key={key} fallback={getSectionSkeleton()}>
-            <SectionKeyProvider sectionKey={key}>
-              <HomepageSectionShell>
-                <GenericHomepageSection sectionKey={key} />
-              </HomepageSectionShell>
-            </SectionKeyProvider>
-          </Suspense>
+          <ErrorBoundary fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
+            <Suspense key={key} fallback={getSectionSkeleton()}>
+              <SectionKeyProvider sectionKey={key}>
+                <HomepageSectionShell>
+                  <GenericHomepageSection sectionKey={key} />
+                </HomepageSectionShell>
+              </SectionKeyProvider>
+            </Suspense>
+          </ErrorBoundary>
         );
       }
 
       return (
-        <Suspense key={key} fallback={getSectionSkeleton()}>
-          <SectionKeyProvider sectionKey={key}>
-            <HomepageSectionShell>
-              {React.createElement(Component)}
-            </HomepageSectionShell>
-          </SectionKeyProvider>
-        </Suspense>
+        <ErrorBoundary fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
+          <Suspense key={key} fallback={getSectionSkeleton()}>
+            <SectionKeyProvider sectionKey={key}>
+              <HomepageSectionShell>
+                {React.createElement(Component)}
+              </HomepageSectionShell>
+            </SectionKeyProvider>
+          </Suspense>
+        </ErrorBoundary>
       );
     });
   }, [dbSections]);
