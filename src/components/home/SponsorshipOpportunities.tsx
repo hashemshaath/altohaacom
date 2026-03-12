@@ -1,11 +1,9 @@
-import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Crown, Trophy, Calendar, MapPin, Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { localizeLocation } from "@/lib/localizeLocation";
@@ -23,7 +21,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   bronze: { en: "Bronze", ar: "برونزي", color: "bg-chart-2/10 text-chart-2 border-chart-2/30" },
 };
 
-export const SponsorshipOpportunities = memo(function SponsorshipOpportunities() {
+export function SponsorshipOpportunities() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const sectionConfig = useSectionConfig();
@@ -83,37 +81,32 @@ export const SponsorshipOpportunities = memo(function SponsorshipOpportunities()
           isAr={isAr}
         />
 
-        {/* Sponsorship Packages pills */}
         {opportunities[0]?.packages?.length > 0 && (
-          <div className="mb-4">
-            <ScrollArea className="w-full">
-              <div className="flex gap-2 pb-1" dir={isAr ? "rtl" : "ltr"}>
-                {opportunities[0].packages.map((pkg: any) => {
-                  const tier = TIER_LABELS[pkg.tier] || TIER_LABELS.bronze;
-                  return (
-                    <div
-                      key={pkg.id}
-                      className={cn("flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5", tier.color)}
-                    >
-                      <Crown className="h-3 w-3" />
-                      <span className="text-xs font-medium">
-                        {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
+          <div className="mb-4 overflow-x-auto">
+            <div className="flex min-w-max gap-2 pb-1" dir={isAr ? "rtl" : "ltr"}>
+              {opportunities[0].packages.map((pkg: any) => {
+                const tier = TIER_LABELS[pkg.tier] || TIER_LABELS.bronze;
+                return (
+                  <div
+                    key={pkg.id}
+                    className={cn("flex shrink-0 items-center gap-2 rounded-full border px-3.5 py-1.5", tier.color)}
+                  >
+                    <Crown className="h-3 w-3" />
+                    <span className="text-xs font-medium">
+                      {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
+                    </span>
+                    {pkg.price && (
+                      <span className="text-xs font-bold">
+                        {formatCurrency(Number(pkg.price), language as "en" | "ar")}
                       </span>
-                      {pkg.price && (
-                        <span className="text-xs font-bold">
-                          {formatCurrency(Number(pkg.price), language as "en" | "ar")}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* Competition Cards - horizontal scroll */}
         <HorizontalScrollRow isAr={isAr}>
           {opportunities.map((comp: any) => {
             const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
@@ -179,4 +172,4 @@ export const SponsorshipOpportunities = memo(function SponsorshipOpportunities()
       </div>
     </section>
   );
-});
+}
