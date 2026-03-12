@@ -236,9 +236,11 @@ export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatW
                               : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm hover:shadow-md"
                           )}>
                             <p className="whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
-                            <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
-                              {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                            </p>
+                            {formatMessageTime(msg.created_at, isAr) && (
+                              <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
+                                {formatMessageTime(msg.created_at, isAr)}
+                              </p>
+                            )}
                           </div>
                         </>
                       )}
