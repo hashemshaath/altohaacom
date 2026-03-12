@@ -94,7 +94,7 @@ function scheduleBootWatchdog(): void {
   try {
     if (window.sessionStorage.getItem(watchdogKey) === "triggered") return;
   } catch {
-    return;
+    // continue without persistent watchdog state
   }
 
   window.setTimeout(async () => {
