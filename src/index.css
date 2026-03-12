@@ -26,9 +26,9 @@
     --primary: 40 72% 52%;
     --primary-foreground: 220 20% 8%;
 
-    /* Dark surface secondary */
-    --secondary: 220 16% 20%;
-    --secondary-foreground: 40 12% 85%;
+    /* Light surface secondary */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 16% 25%;
 
     /* Muted dark */
     --muted: 220 14% 18%;
