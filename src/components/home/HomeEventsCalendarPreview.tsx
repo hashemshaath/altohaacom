@@ -56,7 +56,6 @@ export function HomeEventsCalendarPreview() {
 
   return (
     <div>
-    <TooltipProvider delayDuration={200}>
       <section className="container">
         <SectionHeader
           icon={Globe}
@@ -227,7 +226,6 @@ export function HomeEventsCalendarPreview() {
           </div>
         )}
       </section>
-    </TooltipProvider>
     </div>
   );
 }
