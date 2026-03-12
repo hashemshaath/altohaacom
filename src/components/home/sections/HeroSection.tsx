@@ -31,7 +31,8 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
   isActive: boolean;
   isFirst: boolean;
 }>(function SlideBackground({ slide, isActive, isFirst }, ref) {
-  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.55);
+  const [imageFailed, setImageFailed] = useState(false);
+  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.4);
 
   return (
     <div
@@ -41,20 +42,27 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
         isActive ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
       )}
     >
-      <img
-        src={slide.image_url}
-        alt={slide.title}
-        className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
-        loading={isFirst ? "eager" : "lazy"}
-        decoding={isFirst ? "sync" : "async"}
-        {...(isFirst ? { fetchPriority: "high" } : {})}
-      />
+      {!imageFailed && (
+        <img
+          src={slide.image_url}
+          alt={slide.title}
+          className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
+          loading={isFirst ? "eager" : "lazy"}
+          decoding={isFirst ? "sync" : "async"}
+          onError={() => setImageFailed(true)}
+        />
+      )}
+
+      {imageFailed && (
+        <div className="absolute inset-0 bg-[linear-gradient(140deg,hsl(var(--primary)/0.25),hsl(var(--background))_65%)]" />
+      )}
+
       <div
-        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10"
+        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/5"
         style={{ opacity }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 to-transparent" />
     </div>
   );
 }));
