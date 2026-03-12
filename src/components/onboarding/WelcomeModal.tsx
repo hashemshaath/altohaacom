@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo, forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -12,12 +12,28 @@ import {
 } from "@/components/ui/dialog";
 import {
   CheckCircle2, Circle, Camera, FileText, MapPin, Briefcase,
-  Globe, Sparkles, ArrowRight, X,
+  Globe, Sparkles, ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "altoha_welcome_dismissed";
+
+const safeStorageGet = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeStorageSet = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // no-op
+  }
+};
 
 interface ProfileField {
   key: string;
@@ -45,7 +61,7 @@ const FAN_FIELDS: ProfileField[] = [
   { key: "social", labelEn: "Social Links", labelAr: "روابط اجتماعية", icon: Globe, check: (p) => !!p?.instagram || !!p?.twitter || !!p?.linkedin, actionEn: "Connect social accounts", actionAr: "اربط حساباتك", link: "/profile?tab=edit" },
 ];
 
-export const WelcomeModal = memo(function WelcomeModal() {
+export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModal(_props, _ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
@@ -70,12 +86,15 @@ export const WelcomeModal = memo(function WelcomeModal() {
 
   useEffect(() => {
     if (!user || !profile) return;
-    const dismissed = localStorage.getItem(STORAGE_KEY);
+    const dismissed = safeStorageGet(STORAGE_KEY);
     if (dismissed) return;
 
     // Show only for new users (created within last 7 days) with incomplete profiles
     const createdAt = new Date(profile.created_at || "");
-    const daysSinceCreation = (Date.now() - createdAt.getTime()) / 86400000;
+    const createdAtTs = createdAt.getTime();
+    if (!Number.isFinite(createdAtTs)) return;
+
+    const daysSinceCreation = (Date.now() - createdAtTs) / 86400000;
     if (daysSinceCreation > 7) return;
 
     const completed = FIELDS.filter((f) => f.check(profile)).length;
@@ -84,11 +103,11 @@ export const WelcomeModal = memo(function WelcomeModal() {
       const timer = setTimeout(() => setOpen(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [user, profile]);
+  }, [user, profile, FIELDS]);
 
   const handleDismiss = () => {
     setOpen(false);
-    localStorage.setItem(STORAGE_KEY, "true");
+    safeStorageSet(STORAGE_KEY, "true");
   };
 
   if (!profile) return null;
@@ -191,4 +210,4 @@ export const WelcomeModal = memo(function WelcomeModal() {
       </DialogContent>
     </Dialog>
   );
-});
+}));

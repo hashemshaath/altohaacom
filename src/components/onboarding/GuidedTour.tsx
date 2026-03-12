@@ -10,6 +10,22 @@ import { cn } from "@/lib/utils";
 
 const TOUR_PREFIX = "altoha_tour_";
 
+const safeStorageGet = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeStorageSet = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // no-op
+  }
+};
+
 interface TourStep {
   targetSelector: string;
   titleEn: string;
@@ -225,7 +241,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
 
   useEffect(() => {
     if (!user) return;
-    const done = localStorage.getItem(tourStorageKey);
+    const done = safeStorageGet(tourStorageKey);
     if (done) return;
     const timer = setTimeout(() => setStep(0), 3000);
     return () => clearTimeout(timer);
@@ -243,7 +259,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
       if (nextIndex >= 0) {
         setStep(nextIndex);
       } else {
-        localStorage.setItem(tourStorageKey, "true");
+        safeStorageSet(tourStorageKey, "true");
         setStep(-1);
       }
       return;
@@ -298,7 +314,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
 
     if (step >= STEPS.length - 1) {
       setStep(-1);
-      localStorage.setItem(tourStorageKey, "true");
+      safeStorageSet(tourStorageKey, "true");
     } else {
       setStep(s => s + 1);
     }
@@ -309,7 +325,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
       e.classList.remove("ring-2", "ring-primary", "ring-offset-2", "rounded-lg", "z-[9999]", "relative");
     });
     setStep(-1);
-    localStorage.setItem(tourStorageKey, "true");
+    safeStorageSet(tourStorageKey, "true");
   };
 
   if (step < 0 || step >= STEPS.length) return null;

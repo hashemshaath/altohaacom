@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, memo } from "react";
+import { useState, useRef, useEffect, useCallback, memo, forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { MessageCircle, X, Send, Minimize2, Loader2, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Minimize2, Loader2, Bot } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 
@@ -19,7 +19,18 @@ interface ChatMessage {
   created_at: string;
 }
 
-export const LiveChatWidget = memo(function LiveChatWidget() {
+const formatMessageTime = (createdAt: string, isArabic: boolean): string => {
+  try {
+    return formatDistanceToNow(new Date(createdAt), {
+      addSuffix: true,
+      locale: isArabic ? ar : undefined,
+    });
+  } catch {
+    return "";
+  }
+};
+
+export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatWidget(_props, _ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -201,6 +212,7 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
                 {messages.map((msg, i) => {
                   const isMine = msg.sender_id === user?.id;
                   const isSystem = msg.message_type === "system";
+                  const relativeTime = formatMessageTime(msg.created_at, isAr);
                   const showAvatar = !isMine && !isSystem && (i === 0 || messages[i - 1]?.sender_id !== msg.sender_id || messages[i - 1]?.message_type === "system");
 
                   return (
@@ -225,9 +237,11 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
                               : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm hover:shadow-md"
                           )}>
                             <p className="whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
-                            <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
-                              {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
-                            </p>
+                            {relativeTime && (
+                              <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
+                                {relativeTime}
+                              </p>
+                            )}
                           </div>
                         </>
                       )}
@@ -266,4 +280,4 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
       )}
     </>
   );
-});
+}));
