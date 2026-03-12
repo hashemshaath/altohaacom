@@ -123,6 +123,7 @@ function AppContent() {
       </MaintenanceGuard>
       <ErrorBoundary fallback={null}>
         <Suspense fallback={null}>
+          <FloatingHelpButton />
           <LiveChatWidget />
           <WelcomeModal />
           <GuidedTour />
