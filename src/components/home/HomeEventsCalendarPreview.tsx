@@ -199,9 +199,8 @@ export function HomeEventsCalendarPreview() {
                         </div>
                         {hasEvents && isCurrentMonth && (
                           <div className="space-y-0.5">
-                            {dayEvts.slice(0, 2).map(ev => {
-                              const colors = GLOBAL_EVENT_COLORS[ev.type];
-                              const evLabel = GLOBAL_EVENT_LABELS[ev.type];
+                            {dayEvts.slice(0, 2).map((ev) => {
+                              const { colors, label: evLabel } = getEventMeta(ev);
                               const IconComp = ICONS[evLabel?.icon] || MoreHorizontal;
                               return (
                                 <Tooltip key={ev.id}>
