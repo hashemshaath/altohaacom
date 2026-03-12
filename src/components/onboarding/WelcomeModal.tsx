@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo, forwardRef } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -61,8 +61,7 @@ const FAN_FIELDS: ProfileField[] = [
   { key: "social", labelEn: "Social Links", labelAr: "روابط اجتماعية", icon: Globe, check: (p) => !!p?.instagram || !!p?.twitter || !!p?.linkedin, actionEn: "Connect social accounts", actionAr: "اربط حساباتك", link: "/profile?tab=edit" },
 ];
 
-export const WelcomeModal = memo(
-  forwardRef<HTMLDivElement>(function WelcomeModal(_props, _ref) {
+export const WelcomeModal = memo(function WelcomeModal() {
     const { user } = useAuth();
     const { language } = useLanguage();
     const { isFan } = useAccountType();
@@ -213,8 +212,7 @@ export const WelcomeModal = memo(
         </DialogContent>
       </Dialog>
     );
-  })
-);
+});
 
 WelcomeModal.displayName = "WelcomeModal";
 
