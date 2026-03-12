@@ -81,5 +81,6 @@ export const HomeSectionsRenderer = forwardRef<unknown, HomeSectionsRendererProp
       })}
     </>
   );
-}
+});
 
+HomeSectionsRenderer.displayName = "HomeSectionsRenderer";
