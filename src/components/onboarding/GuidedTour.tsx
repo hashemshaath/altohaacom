@@ -224,7 +224,7 @@ function selectTour(roles: string[], isFan: boolean): { key: string; steps: Tour
   return { key: "pro", steps: PRO_STEPS, label: "Welcome Tour", labelAr: "جولة ترحيبية" };
 }
 
-export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props, _ref) {
+export const GuidedTour = memo(function GuidedTour() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
