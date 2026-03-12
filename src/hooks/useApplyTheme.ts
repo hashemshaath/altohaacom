@@ -131,18 +131,6 @@ export function useApplyTheme() {
       applyAdminColorTemplate(adminTemplateId);
     }
 
-    // Temporary diagnostic override: force light backgrounds in all modes
-    // so we can verify whether the black screen is theme-related.
-    root.style.setProperty("--background", "0 0% 100%");
-    root.style.setProperty("--card", "0 0% 98%");
-    root.style.setProperty("--popover", "0 0% 100%");
-    root.style.setProperty("--secondary", "220 14% 96%");
-    root.style.setProperty("--muted", "220 14% 95%");
-    root.style.setProperty("--border", "220 14% 90%");
-    root.style.setProperty("--input", "220 14% 88%");
-    root.style.setProperty("--foreground", "220 20% 12%");
-    root.style.setProperty("--card-foreground", "220 20% 15%");
-    root.style.setProperty("--popover-foreground", "220 20% 15%");
   }, []);
 
   // Apply on mount and when settings change
