@@ -10,6 +10,22 @@ import { cn } from "@/lib/utils";
 
 const TOUR_PREFIX = "altoha_tour_";
 
+const safeStorageGet = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeStorageSet = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // no-op
+  }
+};
+
 interface TourStep {
   targetSelector: string;
   titleEn: string;
