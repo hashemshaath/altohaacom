@@ -1,11 +1,6 @@
 import React, { lazy, Suspense, useMemo, useEffect } from "react";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 
-/** Thin wrapper — renders a lazy component without forwarding refs (avoids React warning) */
-const SectionWrapper = React.memo(function SectionWrapper({ Component }: { Component: React.LazyExoticComponent<any> }) {
-  const Comp = Component;
-  return <Comp />;
-});
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
@@ -161,7 +156,7 @@ const Index = () => {
         <Suspense key={key} fallback={getSectionSkeleton()}>
           <SectionKeyProvider sectionKey={key}>
             <HomepageSectionShell>
-              <SectionWrapper Component={Component} />
+              {React.createElement(Component)}
             </HomepageSectionShell>
           </SectionKeyProvider>
         </Suspense>
