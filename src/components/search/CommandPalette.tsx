@@ -31,7 +31,7 @@ const TYPE_CONFIG = {
   entity: { icon: Building2, color: "text-chart-1", bg: "bg-chart-1/10", label: "Organization", labelAr: "جهة" },
 };
 
-export const CommandPalette = memo(function CommandPalette() {
+export const CommandPalette = memo(forwardRef<HTMLDivElement, Record<string, never>>(function CommandPalette(_props, forwardedRef) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
