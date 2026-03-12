@@ -279,4 +279,4 @@ export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatW
       )}
     </>
   );
-});
+}));
