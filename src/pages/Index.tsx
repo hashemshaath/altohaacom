@@ -156,7 +156,7 @@ const Index = () => {
         <Suspense key={key} fallback={getSectionSkeleton()}>
           <SectionKeyProvider sectionKey={key}>
             <HomepageSectionShell>
-              <SectionWrapper Component={Component} />
+              {React.createElement(Component)}
             </HomepageSectionShell>
           </SectionKeyProvider>
         </Suspense>
