@@ -19,8 +19,8 @@
     --card: 0 0% 98%;
     --card-foreground: 220 20% 15%;
 
-    --popover: 220 18% 17%;
-    --popover-foreground: 40 15% 90%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
 
     /* Warm gold primary */
     --primary: 40 72% 52%;
