@@ -92,6 +92,14 @@ function AppContent() {
   useEnhancedSEO(language);
   useSEOTracking();
   useWebVitalsTracking();
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.setAttribute("data-app-boot", "ready");
+    return () => {
+      document.documentElement.removeAttribute("data-app-boot");
+    };
+  }, []);
   return (
     <>
       <ScrollToTop />

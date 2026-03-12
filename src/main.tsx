@@ -92,7 +92,7 @@ async function mountApp() {
 
   const reactRoot = createRoot(root);
   reactRoot.render(<App />);
-  scheduleBootWatchdog(root);
+  scheduleBootWatchdog();
 
   // Report paint timing for debugging
   if (import.meta.env.DEV) {
