@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
@@ -59,7 +59,7 @@ const legalLinks = [
   { to: "/cookies", en: "Cookies", ar: "الكوكيز" },
 ];
 
-export const Footer = memo(function Footer() {
+export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isAr = language === "ar";
@@ -88,6 +88,7 @@ export const Footer = memo(function Footer() {
 
   return (
     <footer
+      ref={ref}
       id="site-footer"
       className="border-t border-border/40 bg-card/50 pb-20 md:pb-0"
       role="contentinfo"
@@ -181,3 +182,5 @@ export const Footer = memo(function Footer() {
     </footer>
   );
 });
+
+Footer.displayName = "Footer";
