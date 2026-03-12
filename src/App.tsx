@@ -102,7 +102,6 @@ function AppContent() {
         <GoogleTrackingProvider />
         <TrackingScriptsInjector />
         <PageTracker />
-        <FloatingHelpButton />
       </Suspense>
       <MaintenanceGuard>
       <Suspense fallback={null}><AnnouncementBanner /></Suspense>
