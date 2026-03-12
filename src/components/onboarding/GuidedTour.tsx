@@ -233,40 +233,53 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
 
   const updatePosition = useCallback(() => {
     if (step < 0 || step >= STEPS.length) return;
+
     const el = document.querySelector(STEPS[step].targetSelector);
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-      const tooltipHeight = 220;
+    if (!el) {
+      const nextIndex = STEPS.findIndex(
+        (candidate, idx) => idx > step && Boolean(document.querySelector(candidate.targetSelector))
+      );
 
-      if (spaceBelow >= tooltipHeight || spaceBelow >= spaceAbove) {
-        setTooltipSide("bottom");
-        setPosition({
-          top: Math.min(rect.bottom + 12, window.innerHeight - tooltipHeight),
-          left: Math.max(16, Math.min(rect.left, window.innerWidth - 330)),
-        });
+      if (nextIndex >= 0) {
+        setStep(nextIndex);
       } else {
-        setTooltipSide("top");
-        setPosition({
-          top: Math.max(16, rect.top - tooltipHeight - 12),
-          left: Math.max(16, Math.min(rect.left, window.innerWidth - 330)),
-        });
+        localStorage.setItem(tourStorageKey, "true");
+        setStep(-1);
       }
-
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      // Highlight target element
-      el.classList.add("ring-2", "ring-primary", "ring-offset-2", "rounded-lg", "z-[9999]", "relative");
+      return;
     }
+
+    const rect = el.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const tooltipHeight = 220;
+
+    if (spaceBelow >= tooltipHeight || spaceBelow >= spaceAbove) {
+      setTooltipSide("bottom");
+      setPosition({
+        top: Math.min(rect.bottom + 12, window.innerHeight - tooltipHeight),
+        left: Math.max(16, Math.min(rect.left, window.innerWidth - 330)),
+      });
+    } else {
+      setTooltipSide("top");
+      setPosition({
+        top: Math.max(16, rect.top - tooltipHeight - 12),
+        left: Math.max(16, Math.min(rect.left, window.innerWidth - 330)),
+      });
+    }
+
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    // Highlight target element
+    el.classList.add("ring-2", "ring-primary", "ring-offset-2", "rounded-lg", "z-[9999]", "relative");
 
     // Clean up previous highlights
     return () => {
-      document.querySelectorAll(".ring-primary.ring-2").forEach(e => {
+      document.querySelectorAll(".ring-primary.ring-2").forEach((e) => {
         e.classList.remove("ring-2", "ring-primary", "ring-offset-2", "rounded-lg", "z-[9999]", "relative");
       });
     };
-  }, [step, STEPS]);
+  }, [step, STEPS, tourStorageKey]);
 
   useEffect(() => {
     const cleanup = updatePosition();
@@ -307,12 +320,12 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-[9998] bg-background/50 backdrop-blur-[3px]" onClick={handleDismiss} />
+      <div className="fixed inset-0 z-[9998] bg-background/35 backdrop-blur-[2px] pointer-events-none" aria-hidden="true" />
 
       {/* Tooltip */}
       <Card
         className={cn(
-          "fixed z-[9999] w-[300px] sm:w-[340px] p-5 shadow-2xl border-primary/20",
+          "fixed z-[9999] w-[300px] sm:w-[340px] p-5 shadow-2xl border-primary/20 pointer-events-auto",
           "animate-in fade-in duration-300",
           tooltipSide === "bottom" ? "slide-in-from-top-2" : "slide-in-from-bottom-2"
         )}
