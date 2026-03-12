@@ -259,7 +259,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
       if (nextIndex >= 0) {
         setStep(nextIndex);
       } else {
-        localStorage.setItem(tourStorageKey, "true");
+        safeStorageSet(tourStorageKey, "true");
         setStep(-1);
       }
       return;
