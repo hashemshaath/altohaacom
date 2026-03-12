@@ -1,13 +1,12 @@
-import { memo } from "react";
+import { memo, type KeyboardEvent, type MouseEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Link } from "react-router-dom";
-import { MessageCircle, Heart, Repeat2, ArrowRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { MessageCircle, Heart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { MentionText } from "@/components/community/MentionText";
-import { cn } from "@/lib/utils";
 
 interface Props {
   userId: string;
@@ -17,6 +16,7 @@ interface Props {
 export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isOwnProfile }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const navigate = useNavigate();
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["profile-posts", userId],
@@ -67,7 +67,32 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
     if (days === 1) return isAr ? "أمس" : "Yesterday";
     if (days < 7) return `${days}${isAr ? "ي" : "d"}`;
     if (days < 30) return `${Math.floor(days / 7)}${isAr ? "أ" : "w"}`;
-    return toEnglishDigits(new Date(dateStr).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }));
+    return toEnglishDigits(
+      new Date(dateStr).toLocaleDateString(isAr ? "ar-SA" : "en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    );
+  };
+
+  const openPost = (postId: string) => {
+    navigate(`/community?post=${postId}`);
+  };
+
+  const isInteractiveTarget = (target: EventTarget | null) => {
+    if (!(target instanceof HTMLElement)) return false;
+    return Boolean(target.closest("a,button,input,textarea,select,[role='button']"));
+  };
+
+  const handlePostClick = (event: MouseEvent<HTMLElement>, postId: string) => {
+    if (isInteractiveTarget(event.target)) return;
+    openPost(postId);
+  };
+
+  const handlePostKeyDown = (event: KeyboardEvent<HTMLElement>, postId: string) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    openPost(postId);
   };
 
   return (
@@ -84,23 +109,37 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
           </Link>
         </Button>
       </div>
+
       <div className="divide-y divide-border">
         {posts.map((post) => (
-          <Link
+          <article
             key={post.id}
-            to={`/community?post=${post.id}`}
-            className="block px-4 py-3 hover:bg-muted/30 transition-colors"
+            role="link"
+            tabIndex={0}
+            aria-label={isAr ? "عرض تفاصيل المنشور" : "View post details"}
+            className="px-4 py-3 hover:bg-muted/30 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            onClick={(event) => handlePostClick(event, post.id)}
+            onKeyDown={(event) => handlePostKeyDown(event, post.id)}
           >
             <p className="text-sm leading-relaxed line-clamp-3 whitespace-pre-wrap break-words">
               <MentionText content={post.content} />
             </p>
+
             {(post.image_urls?.length > 0 || post.image_url) && (
               <div className="mt-2 flex gap-1 overflow-hidden rounded-xl">
                 {(post.image_urls?.length > 0 ? post.image_urls : [post.image_url!]).slice(0, 3).map((url, i) => (
-                  <img key={i} src={url} alt="" className="h-16 w-16 rounded object-cover" loading="lazy" />
+                  <img
+                    key={i}
+                    src={url}
+                    alt={isAr ? "صورة من المنشور" : "Post image"}
+                    className="h-16 w-16 rounded object-cover"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 ))}
               </div>
             )}
+
             <div className="mt-2 flex items-center gap-4 text-[11px] text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Heart className="h-3 w-3" />
@@ -112,7 +151,7 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
               </span>
               <span className="ms-auto">{formatTime(post.created_at)}</span>
             </div>
-          </Link>
+          </article>
         ))}
       </div>
     </div>
