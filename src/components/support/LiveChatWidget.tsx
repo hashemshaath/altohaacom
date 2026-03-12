@@ -237,9 +237,9 @@ export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatW
                               : "bg-muted/50 border border-border/20 rounded-bl-md shadow-sm hover:shadow-md"
                           )}>
                             <p className="whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
-                            {formatMessageTime(msg.created_at, isAr) && (
+                            {relativeTime && (
                               <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
-                                {formatMessageTime(msg.created_at, isAr)}
+                                {relativeTime}
                               </p>
                             )}
                           </div>
