@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v3";
+const SW_RECOVERY_VERSION = "2026-03-12-v4";
 
 function shouldForceRecovery(): boolean {
   if (typeof window === "undefined") return false;
@@ -51,6 +51,31 @@ async function recoverFromStalePwaCache(force = false): Promise<boolean> {
   }
 }
 
+function scheduleBootWatchdog(root: HTMLElement): void {
+  if (typeof window === "undefined") return;
+
+  const watchdogKey = `altoha-boot-watchdog-${SW_RECOVERY_VERSION}`;
+
+  try {
+    if (window.sessionStorage.getItem(watchdogKey) === "triggered") return;
+  } catch {
+    return;
+  }
+
+  window.setTimeout(async () => {
+    const hasRenderedContent = root.childElementCount > 0 || (root.textContent?.trim()?.length ?? 0) > 0;
+    if (hasRenderedContent) return;
+
+    try {
+      window.sessionStorage.setItem(watchdogKey, "triggered");
+    } catch {
+      // no-op for restricted browsers
+    }
+
+    await recoverFromStalePwaCache(true);
+  }, 4500);
+}
+
 async function mountApp() {
   const recoveryTriggered = await recoverFromStalePwaCache(shouldForceRecovery());
   if (recoveryTriggered) return;
@@ -63,6 +88,7 @@ async function mountApp() {
 
   const reactRoot = createRoot(root);
   reactRoot.render(<App />);
+  scheduleBootWatchdog(root);
 
   // Report paint timing for debugging
   if (import.meta.env.DEV) {
