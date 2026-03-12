@@ -7,6 +7,15 @@ const LOCAL_THEME_KEY = "altoha_theme_preset";
 const LOCAL_FONT_KEY = "altoha_body_font";
 const LOCAL_HEADING_FONT_KEY = "altoha_heading_font";
 
+const safeStorageGet = (key: string): string | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Applies theme CSS variables to the document root.
  * Priority: Seasonal Identity > Brand Identity custom colors > Theme Preset > defaults.
@@ -18,9 +27,11 @@ export function useApplyTheme() {
   settingsRef.current = settings;
 
   const applyTheme = useCallback(() => {
+    if (typeof document === "undefined") return;
+
     const currentSettings = settingsRef.current;
     const globalPresetId = (currentSettings.theme as any)?.preset || "gold";
-    const localPresetId = localStorage.getItem(LOCAL_THEME_KEY);
+    const localPresetId = safeStorageGet(LOCAL_THEME_KEY);
     const activePresetId = localPresetId || globalPresetId;
 
     const preset = THEME_PRESETS.find((p) => p.id === activePresetId);
@@ -113,8 +124,8 @@ export function useApplyTheme() {
 
     // Apply typography fonts
     const globalTypo = (currentSettings.typography as any) || {};
-    const localBodyFont = localStorage.getItem(LOCAL_FONT_KEY);
-    const localHeadingFont = localStorage.getItem(LOCAL_HEADING_FONT_KEY);
+    const localBodyFont = safeStorageGet(LOCAL_FONT_KEY);
+    const localHeadingFont = safeStorageGet(LOCAL_HEADING_FONT_KEY);
 
     const bodyFontId = localBodyFont || globalTypo.bodyFont || "dm-sans";
     const headingFontId = localHeadingFont || globalTypo.headingFont || "dm-serif";
@@ -126,11 +137,10 @@ export function useApplyTheme() {
     if (headingFont) root.style.setProperty("--font-serif", headingFont.family);
 
     // Re-apply admin color template on top (if active)
-    const adminTemplateId = localStorage.getItem(ADMIN_COLOR_STORAGE_KEY);
+    const adminTemplateId = safeStorageGet(ADMIN_COLOR_STORAGE_KEY);
     if (adminTemplateId && ADMIN_COLOR_TEMPLATES.find((t) => t.id === adminTemplateId)) {
       applyAdminColorTemplate(adminTemplateId);
     }
-
   }, []);
 
   // Apply on mount and when settings change
@@ -140,27 +150,43 @@ export function useApplyTheme() {
 
   // Watch for dark/light class changes and re-apply
   useEffect(() => {
+    if (typeof document === "undefined" || typeof window === "undefined") return;
+
     const observer = new MutationObserver(() => {
       // Small delay to ensure class is fully applied
       requestAnimationFrame(applyTheme);
     });
+
+    const onStorage = (e: StorageEvent) => {
+      if (
+        e.key === LOCAL_THEME_KEY ||
+        e.key === LOCAL_FONT_KEY ||
+        e.key === LOCAL_HEADING_FONT_KEY ||
+        e.key === ADMIN_COLOR_STORAGE_KEY
+      ) {
+        applyTheme();
+      }
+    };
+
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
+
     window.addEventListener("theme-change", applyTheme);
-    window.addEventListener("storage", (e) => {
-      if (e.key === LOCAL_THEME_KEY) applyTheme();
-    });
+    window.addEventListener("storage", onStorage);
+
     return () => {
       observer.disconnect();
       window.removeEventListener("theme-change", applyTheme);
+      window.removeEventListener("storage", onStorage);
     };
   }, [applyTheme]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (typeof document === "undefined") return;
       const root = document.documentElement;
       const preset = THEME_PRESETS[0];
       Object.keys(preset.light).forEach((prop) => root.style.removeProperty(prop));
