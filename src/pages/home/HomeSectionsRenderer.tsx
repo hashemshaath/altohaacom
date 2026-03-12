@@ -17,7 +17,16 @@ interface SectionRuntimeConfig {
   sort_order: number;
 }
 
-function SectionShellBoundary({ sectionKey, index, children }: { sectionKey: string; index: number; children: React.ReactNode }) {
+interface SectionShellBoundaryProps {
+  sectionKey: string;
+  index: number;
+  children: React.ReactNode;
+}
+
+const SectionShellBoundary = React.forwardRef<HTMLDivElement, SectionShellBoundaryProps>(function SectionShellBoundary(
+  { sectionKey, index, children },
+  _ref
+) {
   return (
     <ErrorBoundary
       fallback={
@@ -33,7 +42,9 @@ function SectionShellBoundary({ sectionKey, index, children }: { sectionKey: str
       </Suspense>
     </ErrorBoundary>
   );
-}
+});
+
+SectionShellBoundary.displayName = "SectionShellBoundary";
 
 export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
   const orderedSections = useMemo<SectionRuntimeConfig[]>(() => {
@@ -72,7 +83,7 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
 
         return (
           <SectionShellBoundary key={renderKey} sectionKey={sectionKey} index={index}>
-            {React.createElement(SectionComponent)}
+            <SectionComponent />
           </SectionShellBoundary>
         );
       })}
