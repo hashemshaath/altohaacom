@@ -81,7 +81,10 @@
     --shadow-md: 0 4px 8px -2px hsl(0 0% 0% / 0.28), 0 2px 4px -2px hsl(0 0% 0% / 0.18);
     --shadow-lg: 0 8px 20px -4px hsl(0 0% 0% / 0.35), 0 4px 8px -4px hsl(0 0% 0% / 0.20);
     --shadow-glow: 0 0 20px hsl(40 72% 52% / 0.15);
-  }
+
+    /* High-contrast text tokens for media-heavy surfaces (hero, video covers) */
+    --hero-foreground: 0 0% 98%;
+    --hero-muted-foreground: 0 0% 86%;
 
   .dark {
     /* ── Ultra-Dark Luxury ── */
