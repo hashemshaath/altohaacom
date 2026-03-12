@@ -365,6 +365,4 @@ export const CommandPalette = memo(function CommandPalette() {
       </DialogContent>
     </Dialog>
   );
-}));
-
-CommandPalette.displayName = "CommandPalette";
+});
