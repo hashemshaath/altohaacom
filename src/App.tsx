@@ -161,7 +161,9 @@ const App = () => (
             <BrowserRouter>
               <ResourceHints />
               <Suspense fallback={null}><RoutePrefetcher /></Suspense>
-              <AppContent />
+              <ErrorBoundary>
+                <AppContent />
+              </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
           </SiteSettingsProvider>
