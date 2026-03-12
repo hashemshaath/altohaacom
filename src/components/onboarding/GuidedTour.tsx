@@ -320,12 +320,12 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-[9998] bg-background/50 backdrop-blur-[3px]" onClick={handleDismiss} />
+      <div className="fixed inset-0 z-[9998] bg-background/35 backdrop-blur-[2px] pointer-events-none" aria-hidden="true" />
 
       {/* Tooltip */}
       <Card
         className={cn(
-          "fixed z-[9999] w-[300px] sm:w-[340px] p-5 shadow-2xl border-primary/20",
+          "fixed z-[9999] w-[300px] sm:w-[340px] p-5 shadow-2xl border-primary/20 pointer-events-auto",
           "animate-in fade-in duration-300",
           tooltipSide === "bottom" ? "slide-in-from-top-2" : "slide-in-from-bottom-2"
         )}
