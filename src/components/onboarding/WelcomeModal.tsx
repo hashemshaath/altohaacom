@@ -210,4 +210,4 @@ export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModa
       </DialogContent>
     </Dialog>
   );
-});
+}));
