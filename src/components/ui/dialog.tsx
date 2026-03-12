@@ -8,11 +8,7 @@ const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
-const DialogPortal = React.forwardRef<
-  HTMLElement,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Portal>
->(({ ...props }, _ref) => <DialogPrimitive.Portal {...props} />);
-DialogPortal.displayName = DialogPrimitive.Portal.displayName;
+const DialogPortal = DialogPrimitive.Portal;
 
 const DialogClose = DialogPrimitive.Close;
 

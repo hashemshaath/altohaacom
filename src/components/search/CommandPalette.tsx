@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, memo, forwardRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -31,7 +31,7 @@ const TYPE_CONFIG = {
   entity: { icon: Building2, color: "text-chart-1", bg: "bg-chart-1/10", label: "Organization", labelAr: "جهة" },
 };
 
-export const CommandPalette = memo(forwardRef<HTMLDivElement, Record<string, never>>(function CommandPalette(_props, forwardedRef) {
+export const CommandPalette = memo(function CommandPalette() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
@@ -233,7 +233,7 @@ export const CommandPalette = memo(forwardRef<HTMLDivElement, Record<string, nev
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent ref={forwardedRef} className="overflow-hidden p-0 sm:max-w-lg rounded-2xl border-border/60 shadow-2xl [&>button]:hidden">
+      <DialogContent className="overflow-hidden p-0 sm:max-w-lg rounded-2xl border-border/60 shadow-2xl [&>button]:hidden">
         <div className="flex items-center border-b border-border/40 px-4">
           <Search className="h-4 w-4 text-muted-foreground shrink-0" />
           <Input
@@ -365,6 +365,4 @@ export const CommandPalette = memo(forwardRef<HTMLDivElement, Record<string, nev
       </DialogContent>
     </Dialog>
   );
-}));
-
-CommandPalette.displayName = "CommandPalette";
+});
