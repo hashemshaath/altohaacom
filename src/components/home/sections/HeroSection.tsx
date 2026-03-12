@@ -71,6 +71,20 @@ export function HeroSection() {
     staleTime: 1000 * 60 * 10,
   });
 
+  useEffect(() => {
+    if (!slides.length) {
+      if (current !== 0) setCurrent(0);
+      setProgress(0);
+      return;
+    }
+
+    if (current > slides.length - 1) {
+      setCurrent(0);
+      setProgress(0);
+      startRef.current = performance.now();
+    }
+  }, [slides.length, current]);
+
   const goTo = useCallback((idx: number) => {
     setCurrent(idx);
     setProgress(0);
