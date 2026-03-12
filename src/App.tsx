@@ -25,6 +25,8 @@ import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
 import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
 import { LiveChatWidget } from "@/components/support/LiveChatWidget";
 import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
+import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
+import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
@@ -50,12 +52,6 @@ const FloatingHelpButton = safeLazy(() =>
 );
 const MobileBottomNav = safeLazy(() =>
   import("@/components/mobile/MobileBottomNav").then((m) => ({ default: m.MobileBottomNav }))
-);
-const GoogleTrackingProvider = safeLazy(() =>
-  import("@/components/tracking/GoogleTrackingProvider").then((m) => ({ default: m.GoogleTrackingProvider }))
-);
-const TrackingScriptsInjector = safeLazy(() =>
-  import("@/components/tracking/TrackingScriptsInjector").then((m) => ({ default: m.TrackingScriptsInjector }))
 );
 const PageTracker = safeLazy(() =>
   import("@/components/tracking/PageTracker").then((m) => ({ default: m.PageTracker }))
