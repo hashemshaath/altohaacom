@@ -86,12 +86,15 @@ export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModa
 
   useEffect(() => {
     if (!user || !profile) return;
-    const dismissed = localStorage.getItem(STORAGE_KEY);
+    const dismissed = safeStorageGet(STORAGE_KEY);
     if (dismissed) return;
 
     // Show only for new users (created within last 7 days) with incomplete profiles
     const createdAt = new Date(profile.created_at || "");
-    const daysSinceCreation = (Date.now() - createdAt.getTime()) / 86400000;
+    const createdAtTs = createdAt.getTime();
+    if (!Number.isFinite(createdAtTs)) return;
+
+    const daysSinceCreation = (Date.now() - createdAtTs) / 86400000;
     if (daysSinceCreation > 7) return;
 
     const completed = FIELDS.filter((f) => f.check(profile)).length;
@@ -100,11 +103,11 @@ export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModa
       const timer = setTimeout(() => setOpen(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [user, profile]);
+  }, [user, profile, FIELDS]);
 
   const handleDismiss = () => {
     setOpen(false);
-    localStorage.setItem(STORAGE_KEY, "true");
+    safeStorageSet(STORAGE_KEY, "true");
   };
 
   if (!profile) return null;
