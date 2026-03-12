@@ -30,9 +30,9 @@
     --secondary: 220 14% 96%;
     --secondary-foreground: 220 16% 25%;
 
-    /* Muted dark */
-    --muted: 220 14% 18%;
-    --muted-foreground: 220 10% 55%;
+    /* Muted light */
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 10% 45%;
 
     /* Champagne accent */
     --accent: 35 50% 58%;
