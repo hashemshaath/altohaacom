@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v14";
+const SW_RECOVERY_VERSION = "2026-03-12-v15";
 
 function safeStorageGet(storage: Storage, key: string): string | null {
   try {
@@ -23,7 +23,7 @@ function safeStorageSet(storage: Storage, key: string, value: string): void {
 function shouldForceRecovery(): boolean {
   if (typeof window === "undefined") return false;
   const params = new URLSearchParams(window.location.search);
-  return params.has("sw-reset") || params.has("reset-cache");
+  return params.has("sw-reset") || params.has("reset-cache") || params.has("boot-retry");
 }
 
 async function recoverFromStalePwaCache(force = false): Promise<boolean> {
@@ -56,6 +56,7 @@ async function recoverFromStalePwaCache(force = false): Promise<boolean> {
       const url = new URL(window.location.href);
       url.searchParams.delete("sw-reset");
       url.searchParams.delete("reset-cache");
+      url.searchParams.delete("boot-retry");
       window.location.replace(url.toString());
     } else {
       window.location.reload();
@@ -106,7 +107,16 @@ function scheduleBootWatchdog(): void {
       // no-op for restricted browsers
     }
 
-    await recoverFromStalePwaCache(true);
+    const recovered = await recoverFromStalePwaCache(true);
+    if (!recovered) {
+      const url = new URL(window.location.href);
+      const retriedForCurrentVersion = url.searchParams.get("boot-retry") === SW_RECOVERY_VERSION;
+      if (!retriedForCurrentVersion) {
+        url.searchParams.set("sw-reset", "1");
+        url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+        window.location.replace(url.toString());
+      }
+    }
   }, 7000);
 }
 
