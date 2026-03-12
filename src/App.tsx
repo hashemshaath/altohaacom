@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, forwardRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -113,7 +113,7 @@ function AppRoutesShell() {
   );
 }
 
-function AppEnhancements({ isHome }: { isHome: boolean }) {
+const AppEnhancements = forwardRef<HTMLDivElement, { isHome: boolean }>(function AppEnhancements({ isHome }, _ref) {
   return (
     <ErrorBoundary fallback={null}>
       <MobileBottomNav />
@@ -136,7 +136,9 @@ function AppEnhancements({ isHome }: { isHome: boolean }) {
       )}
     </ErrorBoundary>
   );
-}
+});
+
+AppEnhancements.displayName = "AppEnhancements";
 
 function AppContent() {
   const ptr = usePullToRefresh();

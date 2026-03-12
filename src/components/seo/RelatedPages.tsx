@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useEffect } from "react";
+import { forwardRef, useRef, useState, useEffect, type MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -81,22 +81,28 @@ interface Props {
   className?: string;
 }
 
-export const RelatedPages = memo(function RelatedPages({
+export const RelatedPages = forwardRef<HTMLElement, Props>(function RelatedPages({
   currentPath,
   links,
   max = 6,
   title,
   titleAr,
   className,
-}: Props) {
+}, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const ref = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
+
+  const setSectionRef = (node: HTMLElement | null) => {
+    sectionRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) (ref as MutableRefObject<HTMLElement | null>).current = node;
+  };
 
   // Defer rendering until near viewport
   useEffect(() => {
-    const el = ref.current;
+    const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -117,13 +123,13 @@ export const RelatedPages = memo(function RelatedPages({
     .filter(Boolean)
     .slice(0, max);
 
-  if (pages.length === 0) return <nav ref={ref} aria-hidden />;
+  if (pages.length === 0) return <nav ref={setSectionRef} aria-hidden />;
 
   const sectionTitle = title || (isAr ? (titleAr || "استكشف المزيد") : "Explore More");
 
   return (
     <nav
-      ref={ref}
+      ref={setSectionRef}
       aria-label={isAr ? "صفحات ذات صلة" : "Related pages"}
       className={cn("border-t border-border/40 mt-12 pt-8 pb-4 cv-auto-sm", className)}
     >
@@ -155,3 +161,5 @@ export const RelatedPages = memo(function RelatedPages({
     </nav>
   );
 });
+
+RelatedPages.displayName = "RelatedPages";

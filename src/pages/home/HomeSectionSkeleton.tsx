@@ -1,12 +1,13 @@
+import { forwardRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface HomeSectionSkeletonProps {
   index: number;
 }
 
-function GridSkeleton() {
+const GridSkeleton = forwardRef<HTMLDivElement>(function GridSkeleton(_, ref) {
   return (
-    <div className="container py-6 md:py-8 space-y-3">
+    <div ref={ref} className="container py-6 md:py-8 space-y-3">
       <Skeleton className="h-4 w-28 rounded-lg" />
       <Skeleton className="h-5 w-56 rounded-xl" />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
@@ -22,11 +23,11 @@ function GridSkeleton() {
       </div>
     </div>
   );
-}
+});
 
-function CarouselSkeleton() {
+const CarouselSkeleton = forwardRef<HTMLDivElement>(function CarouselSkeleton(_, ref) {
   return (
-    <div className="container py-6 md:py-8 space-y-3">
+    <div ref={ref} className="container py-6 md:py-8 space-y-3">
       <Skeleton className="h-4 w-32 rounded-lg" />
       <Skeleton className="h-5 w-48 rounded-xl" />
       <div className="flex gap-3 mt-3 overflow-hidden">
@@ -39,11 +40,11 @@ function CarouselSkeleton() {
       </div>
     </div>
   );
-}
+});
 
-function MetricsSkeleton() {
+const MetricsSkeleton = forwardRef<HTMLDivElement>(function MetricsSkeleton(_, ref) {
   return (
-    <div className="container py-4 md:py-6">
+    <div ref={ref} className="container py-4 md:py-6">
       <div className="flex gap-3 overflow-hidden">
         {[1, 2, 3, 4].map((i) => (
           <Skeleton key={i} className="h-16 flex-1 min-w-[120px] rounded-2xl" />
@@ -51,11 +52,13 @@ function MetricsSkeleton() {
       </div>
     </div>
   );
-}
+});
 
 const VARIANTS = [GridSkeleton, CarouselSkeleton, MetricsSkeleton] as const;
 
-export function HomeSectionSkeleton({ index }: HomeSectionSkeletonProps) {
+export const HomeSectionSkeleton = forwardRef<HTMLDivElement, HomeSectionSkeletonProps>(function HomeSectionSkeleton({ index }, ref) {
   const Variant = VARIANTS[index % VARIANTS.length];
-  return <Variant />;
-}
+  return <Variant ref={ref} />;
+});
+
+HomeSectionSkeleton.displayName = "HomeSectionSkeleton";
