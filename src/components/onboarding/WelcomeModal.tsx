@@ -212,8 +212,7 @@ export const WelcomeModal = memo(function WelcomeModal() {
         </DialogContent>
       </Dialog>
     );
-  })
-);
+});
 
 WelcomeModal.displayName = "WelcomeModal";
 

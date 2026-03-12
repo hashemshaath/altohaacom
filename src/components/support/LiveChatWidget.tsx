@@ -280,8 +280,7 @@ export const LiveChatWidget = memo(function LiveChatWidget() {
         )}
       </>
     );
-  })
-);
+});
 
 LiveChatWidget.displayName = "LiveChatWidget";
 
