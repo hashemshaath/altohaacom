@@ -15,8 +15,8 @@
     --background: 0 0% 100%;
     --foreground: 220 20% 12%;
 
-    /* Dark elevated cards */
-    --card: 220 18% 16%;
+    /* Light cards */
+    --card: 0 0% 98%;
     --card-foreground: 40 15% 90%;
 
     --popover: 220 18% 17%;
