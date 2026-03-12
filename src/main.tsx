@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v15";
+const SW_RECOVERY_VERSION = "2026-03-12-v16";
 
 function safeStorageGet(storage: Storage, key: string): string | null {
   try {
@@ -87,8 +87,17 @@ function hasRenderableHomeContent(): boolean {
   return hasHeight && hasContent;
 }
 
+function hasActiveLoadingFallback(): boolean {
+  if (typeof document === "undefined") return false;
+
+  const main = document.getElementById("main-content");
+  if (!main) return false;
+
+  return Boolean(main.querySelector('[role="status"][aria-label="Loading"], [aria-busy="true"]'));
+}
+
 function scheduleBootWatchdog(): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const watchdogKey = `altoha-boot-watchdog-${SW_RECOVERY_VERSION}`;
 
@@ -98,9 +107,7 @@ function scheduleBootWatchdog(): void {
     // continue without persistent watchdog state
   }
 
-  window.setTimeout(async () => {
-    if (isAppBootReady() && hasRenderableHomeContent()) return;
-
+  const attemptRecovery = async () => {
     try {
       window.sessionStorage.setItem(watchdogKey, "triggered");
     } catch {
@@ -117,8 +124,25 @@ function scheduleBootWatchdog(): void {
         window.location.replace(url.toString());
       }
     }
+  };
+
+  window.setTimeout(() => {
+    if (isAppBootReady() && hasRenderableHomeContent()) return;
+    if (document.visibilityState === "hidden") return;
+
+    if (hasActiveLoadingFallback()) {
+      window.setTimeout(() => {
+        if (isAppBootReady() && hasRenderableHomeContent()) return;
+        if (document.visibilityState === "hidden") return;
+        void attemptRecovery();
+      }, 5000);
+      return;
+    }
+
+    void attemptRecovery();
   }, 7000);
 }
+
 
 async function mountApp() {
   const recoveryTriggered = await recoverFromStalePwaCache(shouldForceRecovery());
