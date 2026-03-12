@@ -25,6 +25,8 @@ import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
 import { useLanguage as useLanguageHook } from "@/i18n/LanguageContext";
 import { LiveChatWidget } from "@/components/support/LiveChatWidget";
 import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
+import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
+import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";

@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
  * Injects Meta Pixel, TikTok Pixel, and Snapchat Pixel scripts
  * based on marketing_tracking_config table.
  */
-export const TrackingScriptsInjector = memo(function TrackingScriptsInjector() {
+export function TrackingScriptsInjector() {
   const injected = useRef(false);
 
   const { data: configs } = useQuery({
