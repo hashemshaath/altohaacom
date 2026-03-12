@@ -43,7 +43,7 @@ function normalizeEntries(entries: SectionEntry[]) {
   return Array.from(deduped.values()).sort((a, b) => a.sort_order - b.sort_order);
 }
 
-export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
+export const HomeSectionsRenderer = forwardRef<unknown, HomeSectionsRendererProps>(function HomeSectionsRenderer({ sections }, _ref) {
   const ordered = useMemo<SectionEntry[]>(() => {
     const configured = sections.length
       ? sections
