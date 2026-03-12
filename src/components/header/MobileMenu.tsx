@@ -16,7 +16,7 @@ import {
   MessageSquare, HelpCircle, ChevronDown,
   LayoutDashboard, Settings, Crown,
 } from "lucide-react";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, forwardRef } from "react";
 
 interface NavLink {
   to: string;
