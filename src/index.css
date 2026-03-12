@@ -11,28 +11,28 @@
   :root {
     /* ── Dark Luxury — Culinary Prestige ── */
 
-    /* Deep charcoal background */
-    --background: 220 20% 12%;
-    --foreground: 40 20% 92%;
+    /* White background for debugging */
+    --background: 0 0% 100%;
+    --foreground: 220 20% 12%;
 
-    /* Dark elevated cards */
-    --card: 220 18% 16%;
-    --card-foreground: 40 15% 90%;
+    /* Light cards */
+    --card: 0 0% 98%;
+    --card-foreground: 220 20% 15%;
 
-    --popover: 220 18% 17%;
-    --popover-foreground: 40 15% 90%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
 
     /* Warm gold primary */
     --primary: 40 72% 52%;
     --primary-foreground: 220 20% 8%;
 
-    /* Dark surface secondary */
-    --secondary: 220 16% 20%;
-    --secondary-foreground: 40 12% 85%;
+    /* Light surface secondary */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 16% 25%;
 
-    /* Muted dark */
-    --muted: 220 14% 18%;
-    --muted-foreground: 220 10% 55%;
+    /* Muted light */
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 10% 45%;
 
     /* Champagne accent */
     --accent: 35 50% 58%;
@@ -49,20 +49,20 @@
     --warning: 38 85% 55%;
     --warning-foreground: 220 20% 10%;
 
-    --border: 220 14% 24%;
-    --input: 220 14% 22%;
+    --border: 220 14% 90%;
+    --input: 220 14% 88%;
     --ring: 40 72% 52%;
 
     --radius: 0.5rem;
 
-    /* Sidebar — deep luxury */
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 40 15% 90%;
+    /* Sidebar — light */
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 220 16% 20%;
     --sidebar-primary: 40 72% 52%;
     --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 220 16% 18%;
-    --sidebar-accent-foreground: 40 12% 85%;
-    --sidebar-border: 220 14% 22%;
+    --sidebar-accent: 220 14% 95%;
+    --sidebar-accent-foreground: 220 16% 25%;
+    --sidebar-border: 220 14% 90%;
     --sidebar-ring: 40 72% 52%;
 
     /* Charts — warm luxury palette */
