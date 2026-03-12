@@ -365,4 +365,6 @@ export const CommandPalette = memo(forwardRef<HTMLDivElement, Record<string, nev
       </DialogContent>
     </Dialog>
   );
-});
+}));
+
+CommandPalette.displayName = "CommandPalette";

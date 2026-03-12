@@ -35,7 +35,7 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, dir, ...props }, ref) => {
-  const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;
+  const resolvedDir = dir ?? (typeof document !== "undefined" ? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | null) ?? undefined : undefined);
   return (
     <DialogPortal>
       <DialogOverlay />
