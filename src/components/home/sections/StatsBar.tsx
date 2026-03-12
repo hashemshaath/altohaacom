@@ -6,16 +6,15 @@ import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
-import { forwardRef, memo } from "react";
+import { memo } from "react";
 
-const StatItem = forwardRef<HTMLDivElement, {
+function StatItem({ value, label, icon: Icon, isVisible, delay }: {
   value: number; label: string; icon: any; isVisible: boolean; delay: number;
-}>(function StatItem({ value, label, icon: Icon, isVisible, delay }, ref) {
+}) {
   const count = useCountUp(value, isVisible);
 
   return (
     <div
-      ref={ref}
       className={cn(
         "group relative flex flex-col items-center gap-2 rounded-2xl border border-border/30 bg-card/50 backdrop-blur-sm p-5 transition-all duration-700 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
@@ -31,7 +30,8 @@ const StatItem = forwardRef<HTMLDivElement, {
       <p className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
     </div>
   );
-});
+}
+
 
 const StatsBar = memo(function StatsBar() {
   const { language } = useLanguage();
