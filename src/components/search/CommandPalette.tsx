@@ -233,7 +233,7 @@ export const CommandPalette = memo(forwardRef<HTMLDivElement, Record<string, nev
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="overflow-hidden p-0 sm:max-w-lg rounded-2xl border-border/60 shadow-2xl [&>button]:hidden">
+      <DialogContent ref={forwardedRef} className="overflow-hidden p-0 sm:max-w-lg rounded-2xl border-border/60 shadow-2xl [&>button]:hidden">
         <div className="flex items-center border-b border-border/40 px-4">
           <Search className="h-4 w-4 text-muted-foreground shrink-0" />
           <Input
