@@ -6,10 +6,26 @@ import { Button } from "@/components/ui/button";
 import { useLoginStreak } from "@/hooks/useLoginStreak";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Flame, Trophy, Sparkles, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const LAST_SEEN_KEY = "altoha_last_active";
 const REENGAGEMENT_COOLDOWN = 3 * 24 * 60 * 60 * 1000; // 3 days
+
+const safeStorageGet = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeStorageSet = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // no-op
+  }
+};
 
 /**
  * Shows a welcome-back modal when a user returns after 3+ days of inactivity.
@@ -19,34 +35,41 @@ export const ReEngagementPrompt = memo(function ReEngagementPrompt() {
   const isAr = language === "ar";
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentStreak } = useLoginStreak();
   const [open, setOpen] = useState(false);
   const [daysAway, setDaysAway] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || location.pathname === "/") return;
 
-    const lastSeen = localStorage.getItem(LAST_SEEN_KEY);
+    let timer: number | undefined;
     const now = Date.now();
+    const lastSeenRaw = safeStorageGet(LAST_SEEN_KEY);
+    const lastSeenTs = lastSeenRaw ? Number.parseInt(lastSeenRaw, 10) : Number.NaN;
 
-    if (lastSeen) {
-      const elapsed = now - parseInt(lastSeen);
+    if (Number.isFinite(lastSeenTs)) {
+      const elapsed = now - lastSeenTs;
       if (elapsed > REENGAGEMENT_COOLDOWN) {
         setDaysAway(Math.floor(elapsed / (24 * 60 * 60 * 1000)));
         // Small delay to not flash on page load
-        setTimeout(() => setOpen(true), 1500);
+        timer = window.setTimeout(() => setOpen(true), 1500);
       }
     }
 
-    localStorage.setItem(LAST_SEEN_KEY, now.toString());
-  }, [user?.id]);
+    safeStorageSet(LAST_SEEN_KEY, now.toString());
+
+    return () => {
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [user?.id, location.pathname]);
 
   const handleExplore = () => {
     setOpen(false);
     navigate("/competitions");
   };
 
-  if (!user) return null;
+  if (!user || location.pathname === "/" || !open) return null;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

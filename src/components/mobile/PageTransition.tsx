@@ -1,35 +1,40 @@
 import { useLocation } from "react-router-dom";
-import { useRef, useEffect, memo, type ReactNode } from "react";
+import { useEffect, memo, type ReactNode, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 /**
- * Lightweight mobile page transition – fades content in on route change.
- * Uses CSS animations only (no extra deps).
+ * Stable page transition that cannot get stuck invisible.
+ * Uses declarative class toggles + a timeout fallback.
  */
 export const PageTransition = memo(function PageTransition({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const ref = useRef<HTMLDivElement>(null);
-  const prevPath = useRef(pathname);
+  const isFirstRender = useRef(true);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (pathname !== prevPath.current && ref.current) {
-      ref.current.style.opacity = "0";
-      ref.current.style.transform = "translateY(4px)";
-      // Double rAF ensures the browser paints the "hidden" state first
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          if (ref.current) {
-            ref.current.style.transition = "opacity 0.25s cubic-bezier(0.22,1,0.36,1), transform 0.25s cubic-bezier(0.22,1,0.36,1)";
-            ref.current.style.opacity = "1";
-            ref.current.style.transform = "translateY(0)";
-          }
-        });
-      });
-      prevPath.current = pathname;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
+
+    setIsVisible(false);
+
+    const rafId = requestAnimationFrame(() => setIsVisible(true));
+    const fallbackTimer = window.setTimeout(() => setIsVisible(true), 140);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.clearTimeout(fallbackTimer);
+    };
   }, [pathname]);
 
   return (
-    <div ref={ref} style={{ opacity: 1, transform: "translateY(0)" }}>
+    <div
+      className={cn(
+        "transition-all duration-200 ease-out",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"
+      )}
+    >
       {children}
     </div>
   );

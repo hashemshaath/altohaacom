@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo, forwardRef } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -14,7 +14,7 @@ import {
   CheckCircle2, Circle, Camera, FileText, MapPin, Briefcase,
   Globe, Sparkles, ArrowRight,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "altoha_welcome_dismissed";
@@ -61,10 +61,11 @@ const FAN_FIELDS: ProfileField[] = [
   { key: "social", labelEn: "Social Links", labelAr: "روابط اجتماعية", icon: Globe, check: (p) => !!p?.instagram || !!p?.twitter || !!p?.linkedin, actionEn: "Connect social accounts", actionAr: "اربط حساباتك", link: "/profile?tab=edit" },
 ];
 
-export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModal(_props, _ref) {
+export const WelcomeModal = memo(function WelcomeModal() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
+  const location = useLocation();
   const isAr = language === "ar";
   const [open, setOpen] = useState(false);
   const FIELDS = useMemo(() => isFan ? FAN_FIELDS : PRO_FIELDS, [isFan]);
@@ -85,7 +86,8 @@ export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModa
   });
 
   useEffect(() => {
-    if (!user || !profile) return;
+    if (!user || !profile || location.pathname === "/") return;
+
     const dismissed = safeStorageGet(STORAGE_KEY);
     if (dismissed) return;
 
@@ -103,14 +105,14 @@ export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModa
       const timer = setTimeout(() => setOpen(true), 1500);
       return () => clearTimeout(timer);
     }
-  }, [user, profile, FIELDS]);
+  }, [user, profile, FIELDS, location.pathname]);
 
   const handleDismiss = () => {
     setOpen(false);
     safeStorageSet(STORAGE_KEY, "true");
   };
 
-  if (!profile) return null;
+  if (!profile || !open || location.pathname === "/") return null;
 
   const completed = FIELDS.filter((f) => f.check(profile)).length;
   const percent = Math.round((completed / FIELDS.length) * 100);
@@ -210,4 +212,4 @@ export const WelcomeModal = memo(forwardRef<HTMLDivElement>(function WelcomeModa
       </DialogContent>
     </Dialog>
   );
-}));
+});
