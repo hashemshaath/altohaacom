@@ -319,8 +319,8 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
 
   return (
     <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-[9998] bg-background/35 backdrop-blur-[2px] pointer-events-none" aria-hidden="true" />
+      {/* Backdrop (non-blocking, transparent to avoid dark-screen perception) */}
+      <div className="fixed inset-0 z-[9998] pointer-events-none" aria-hidden="true" />
 
       {/* Tooltip */}
       <Card
