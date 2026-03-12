@@ -126,7 +126,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
         )}
 
         <Link to="/profile">
-          <Button  rounded-xl active:scale-95 transition-allvariant="outline" size="sm" className="w-full gap-1.5 text-xs h-8">
+          <Button variant="outline" size="sm" className="w-full h-8 gap-1.5 rounded-xl text-xs transition-all active:scale-95">
             {isAr ? "عرض الملف" : "View Profile"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />
           </Button>
