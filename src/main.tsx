@@ -2,7 +2,23 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v13";
+const SW_RECOVERY_VERSION = "2026-03-12-v14";
+
+function safeStorageGet(storage: Storage, key: string): string | null {
+  try {
+    return storage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeStorageSet(storage: Storage, key: string, value: string): void {
+  try {
+    storage.setItem(key, value);
+  } catch {
+    // no-op for restricted environments
+  }
+}
 
 function shouldForceRecovery(): boolean {
   if (typeof window === "undefined") return false;
@@ -17,13 +33,13 @@ async function recoverFromStalePwaCache(force = false): Promise<boolean> {
   const recoveryKey = `altoha-sw-recovery-${SW_RECOVERY_VERSION}`;
 
   try {
-    if (!force && localStorage.getItem(recoveryKey) === "done") return false;
+    if (!force && safeStorageGet(window.localStorage, recoveryKey) === "done") return false;
 
     const registrations = await navigator.serviceWorker.getRegistrations();
     const hasRegistrations = registrations.length > 0;
 
     if (!hasRegistrations && !force) {
-      localStorage.setItem(recoveryKey, "done");
+      safeStorageSet(window.localStorage, recoveryKey, "done");
       return false;
     }
 
@@ -34,7 +50,7 @@ async function recoverFromStalePwaCache(force = false): Promise<boolean> {
     const cacheNames = await caches.keys();
     await Promise.allSettled(cacheNames.map((cacheName) => caches.delete(cacheName)));
 
-    localStorage.setItem(recoveryKey, "done");
+    safeStorageSet(window.localStorage, recoveryKey, "done");
 
     if (force) {
       const url = new URL(window.location.href);
@@ -78,7 +94,7 @@ function scheduleBootWatchdog(): void {
   try {
     if (window.sessionStorage.getItem(watchdogKey) === "triggered") return;
   } catch {
-    return;
+    // continue without persistent watchdog state
   }
 
   window.setTimeout(async () => {
