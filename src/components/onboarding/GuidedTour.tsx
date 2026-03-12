@@ -325,7 +325,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
       e.classList.remove("ring-2", "ring-primary", "ring-offset-2", "rounded-lg", "z-[9999]", "relative");
     });
     setStep(-1);
-    localStorage.setItem(tourStorageKey, "true");
+    safeStorageSet(tourStorageKey, "true");
   };
 
   if (step < 0 || step >= STEPS.length) return null;
