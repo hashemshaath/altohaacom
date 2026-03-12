@@ -12,6 +12,7 @@ import { useAdTracking } from "@/hooks/useAdTracking";
 // Route prefetching handled by RoutePrefetcher component in App
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // ── Eager-loaded critical section ──
 import { HeroSection } from "@/components/home/sections/HeroSection";
