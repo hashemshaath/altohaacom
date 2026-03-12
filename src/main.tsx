@@ -56,6 +56,7 @@ async function recoverFromStalePwaCache(force = false): Promise<boolean> {
       const url = new URL(window.location.href);
       url.searchParams.delete("sw-reset");
       url.searchParams.delete("reset-cache");
+      url.searchParams.delete("boot-retry");
       window.location.replace(url.toString());
     } else {
       window.location.reload();
