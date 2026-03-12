@@ -113,24 +113,27 @@ function AppRoutesShell() {
   );
 }
 
-function AppEnhancements() {
+function AppEnhancements({ isHome }: { isHome: boolean }) {
   return (
     <ErrorBoundary fallback={null}>
-      <Suspense fallback={null}>
-        <FloatingHelpButton />
-        <LiveChatWidget />
-        <WelcomeModal />
-        <GuidedTour />
-        <CommandPalette />
-        <MobileBottomNav />
-        <ScrollProgress />
-        <BackToTop />
-        <SmartInstallBanner />
-        <IOSInstallGuide />
-        <OfflineBanner />
-        <UpdatePrompt />
-        <ReEngagementPrompt />
-      </Suspense>
+      <MobileBottomNav />
+      <ScrollProgress />
+      <BackToTop />
+      <SmartInstallBanner />
+      <IOSInstallGuide />
+      <OfflineBanner />
+      <UpdatePrompt />
+
+      {!isHome && (
+        <>
+          <FloatingHelpButton />
+          <LiveChatWidget />
+          <WelcomeModal />
+          <GuidedTour />
+          <CommandPalette />
+          <ReEngagementPrompt />
+        </>
+      )}
     </ErrorBoundary>
   );
 }
