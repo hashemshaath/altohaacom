@@ -16,7 +16,7 @@ import {
   MessageSquare, HelpCircle, ChevronDown,
   LayoutDashboard, Settings, Crown,
 } from "lucide-react";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, forwardRef } from "react";
 
 interface NavLink {
   to: string;
@@ -91,7 +91,7 @@ const Section = memo(function Section({ label, count, defaultOpen = false, child
   );
 });
 
-export const MobileMenu = memo(function MobileMenu({ primaryNav, moreLinks }: MobileMenuProps) {
+export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function MobileMenu({ primaryNav, moreLinks }, ref) {
   const { user, signOut } = useAuth();
   const { t, language } = useLanguage();
   const { data: isAdmin } = useIsAdmin();
@@ -127,7 +127,7 @@ export const MobileMenu = memo(function MobileMenu({ primaryNav, moreLinks }: Mo
   const closeMenu = useCallback(() => setOpen(false), []);
 
   return (
-    <div className="lg:hidden">
+    <div ref={ref} className="lg:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="h-9 w-9 active:scale-90 transition-transform touch-manipulation">
@@ -259,3 +259,5 @@ export const MobileMenu = memo(function MobileMenu({ primaryNav, moreLinks }: Mo
     </div>
   );
 });
+
+MobileMenu.displayName = "MobileMenu";

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { forwardRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,10 @@ interface DesktopNavProps {
   isAr: boolean;
 }
 
-export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJudge, isAr }: DesktopNavProps) {
+export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function DesktopNav(
+  { primaryNav, moreLinks, isJudge, isAr },
+  ref
+) {
   const location = useLocation();
   const isActive = (path: string) =>
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
@@ -35,10 +38,10 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
   const col1 = moreLinks.slice(0, half);
   const col2 = moreLinks.slice(half);
 
-  const anyMoreActive = moreLinks.some(l => isActive(l.to));
+  const anyMoreActive = moreLinks.some((l) => isActive(l.to));
 
   return (
-    <nav className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Primary navigation">
+    <nav ref={ref} className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Primary navigation">
       {primaryNav.map((link) => {
         const active = isActive(link.to);
         return (
@@ -152,3 +155,5 @@ export const DesktopNav = memo(function DesktopNav({ primaryNav, moreLinks, isJu
     </nav>
   );
 });
+
+DesktopNav.displayName = "DesktopNav";
