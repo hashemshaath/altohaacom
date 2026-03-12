@@ -272,9 +272,9 @@ export function HomeEventsCalendarPreview() {
 
 /* ─── Mini Tooltip ─── */
 function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
-  const label = GLOBAL_EVENT_LABELS[event.type];
-  const colors = GLOBAL_EVENT_COLORS[event.type];
+  const { label, colors } = getEventMeta(event);
   const countdown = getCountdown(event.start_date, isAr);
+
   return (
     <div className="max-w-[240px] space-y-1">
       <div className="flex items-center gap-1.5">
@@ -291,7 +291,7 @@ function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
       <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <Calendar className="h-2.5 w-2.5" />
-          {format(parseISO(event.start_date), "MMM d, yyyy", { locale: isAr ? ar : undefined })}
+          {formatEventDate(event.start_date, isAr)}
         </span>
         {event.city && <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}</span>}
       </div>
@@ -300,107 +300,116 @@ function MiniTooltip({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
 }
 
 /* ─── Compact Event Card ─── */
-function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
-  const colors = GLOBAL_EVENT_COLORS[event.type];
-  const label = GLOBAL_EVENT_LABELS[event.type];
-  const IconComp = ICONS[label?.icon] || MoreHorizontal;
-  const countdown = getCountdown(event.start_date, isAr);
+const CompactEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
+  ({ event, isAr }, ref) => {
+    const { colors, label } = getEventMeta(event);
+    const IconComp = ICONS[label?.icon] || MoreHorizontal;
+    const countdown = getCountdown(event.start_date, isAr);
 
-  const content = (
-    <div className={cn("flex gap-3 p-3 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
-      {event.cover_image_url ? (
-        <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-muted">
-          <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover" loading="lazy" decoding="async" />
-        </div>
-      ) : (
-        <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
-          <IconComp className={cn("h-4 w-4", colors.text)} />
-        </div>
-      )}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <Badge variant="outline" className={cn("text-[9px] px-1 py-0 border", colors.bg, colors.text, colors.border)}>
-            {isAr ? label?.ar : label?.en}
-          </Badge>
-          {!countdown.past && (
-            <Badge variant={countdown.urgent ? "destructive" : "secondary"} className="text-[9px] px-1 py-0 gap-0.5">
-              <Timer className="h-2 w-2" />{countdown.text}
-            </Badge>
-          )}
-        </div>
-        <p className="text-xs font-bold line-clamp-1">{isAr && event.title_ar ? event.title_ar : event.title}</p>
-        <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
-          {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}</span>}
-          {event.organizer_name && <span className="flex items-center gap-0.5"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
-        </div>
-      </div>
-    </div>
-  );
-
-  return event.link ? <Link to={event.link} className="block">{content}</Link> : content;
-}
-
-/* ─── Home List Event Card ─── */
-function HomeListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
-  const colors = GLOBAL_EVENT_COLORS[event.type];
-  const label = GLOBAL_EVENT_LABELS[event.type];
-  const IconComp = ICONS[label?.icon] || MoreHorizontal;
-  const countdown = getCountdown(event.start_date, isAr);
-
-  const card = (
-    <Card className={cn("overflow-hidden transition-all hover:shadow-lg group border-border/40 rounded-2xl")}>
-      <div className="flex">
-        <div className={cn("w-24 sm:w-32 shrink-0 relative overflow-hidden", !event.cover_image_url && colors.bg)}>
-          {event.cover_image_url ? (
-            <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <IconComp className={cn("h-7 w-7 opacity-40", colors.text)} />
-            </div>
-          )}
-          {event.logo_url && (
-            <div className="absolute bottom-1.5 start-1.5 h-7 w-7 rounded-md bg-background/90 shadow-sm flex items-center justify-center overflow-hidden">
-              <img src={event.logo_url} alt={`${event.title || "Event"} logo`} className="h-5 w-5 object-contain" loading="lazy" decoding="async" />
-            </div>
-          )}
-          {!countdown.past && (
-            <div className={cn(
-              "absolute top-1.5 end-1.5 rounded-md px-1.5 py-0.5 text-[10px] font-bold shadow-sm",
-              countdown.urgent ? "bg-destructive text-destructive-foreground" : "bg-background/90 text-foreground"
-            )}>
-              <Timer className="h-2.5 w-2.5 inline me-0.5" />{countdown.text}
-            </div>
-          )}
-        </div>
-        <div className="flex-1 min-w-0 p-3 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 flex-wrap mb-1">
-              <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
-                <IconComp className="h-2.5 w-2.5" />
-                {isAr ? label?.ar : label?.en}
-              </Badge>
-            </div>
-            <h3 className="text-sm font-bold line-clamp-2 group-hover:text-primary transition-colors">
-              {isAr && event.title_ar ? event.title_ar : event.title}
-            </h3>
+    const content = (
+      <div className={cn("flex gap-3 p-3 rounded-xl border transition-all hover:shadow-md group", colors.border, "hover:bg-muted/20")}>
+        {event.cover_image_url ? (
+          <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-muted">
+            <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover" loading="lazy" decoding="async" />
           </div>
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-2">
-            <span className="flex items-center gap-1">
-              <Calendar className="h-3 w-3 text-primary/50" />
-              {format(parseISO(event.start_date), "d MMM yyyy", { locale: isAr ? ar : undefined })}
-            </span>
-            {event.city && (
-              <span className="flex items-center gap-1 truncate">
-                <MapPin className="h-3 w-3 text-primary/50 shrink-0" />
-                {localizeCity(event.city, isAr)}
-              </span>
+        ) : (
+          <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
+            <IconComp className={cn("h-4 w-4", colors.text)} />
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <Badge variant="outline" className={cn("text-[9px] px-1 py-0 border", colors.bg, colors.text, colors.border)}>
+              {isAr ? label?.ar : label?.en}
+            </Badge>
+            {!countdown.past && (
+              <Badge variant={countdown.urgent ? "destructive" : "secondary"} className="text-[9px] px-1 py-0 gap-0.5">
+                <Timer className="h-2 w-2" />{countdown.text}
+              </Badge>
             )}
           </div>
+          <p className="text-xs font-bold line-clamp-1">{isAr && event.title_ar ? event.title_ar : event.title}</p>
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+            {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}</span>}
+            {event.organizer_name && <span className="flex items-center gap-0.5"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
+          </div>
         </div>
       </div>
-    </Card>
-  );
+    );
 
-  return event.link ? <Link to={event.link}>{card}</Link> : card;
-}
+    return (
+      <div ref={ref}>
+        {event.link ? <Link to={event.link} className="block">{content}</Link> : content}
+      </div>
+    );
+  }
+);
+CompactEventCard.displayName = "CompactEventCard";
+
+/* ─── Home List Event Card ─── */
+const HomeListEventCard = React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
+  ({ event, isAr }, ref) => {
+    const { colors, label } = getEventMeta(event);
+    const IconComp = ICONS[label?.icon] || MoreHorizontal;
+    const countdown = getCountdown(event.start_date, isAr);
+
+    const card = (
+      <Card className={cn("overflow-hidden transition-all hover:shadow-lg group border-border/40 rounded-2xl")}>
+        <div className="flex">
+          <div className={cn("w-24 sm:w-32 shrink-0 relative overflow-hidden", !event.cover_image_url && colors.bg)}>
+            {event.cover_image_url ? (
+              <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <IconComp className={cn("h-7 w-7 opacity-40", colors.text)} />
+              </div>
+            )}
+            {event.logo_url && (
+              <div className="absolute bottom-1.5 start-1.5 h-7 w-7 rounded-md bg-background/90 shadow-sm flex items-center justify-center overflow-hidden">
+                <img src={event.logo_url} alt={`${event.title || "Event"} logo`} className="h-5 w-5 object-contain" loading="lazy" decoding="async" />
+              </div>
+            )}
+            {!countdown.past && (
+              <div className={cn(
+                "absolute top-1.5 end-1.5 rounded-md px-1.5 py-0.5 text-[10px] font-bold shadow-sm",
+                countdown.urgent ? "bg-destructive text-destructive-foreground" : "bg-background/90 text-foreground"
+              )}>
+                <Timer className="h-2.5 w-2.5 inline me-0.5" />{countdown.text}
+              </div>
+            )}
+          </div>
+          <div className="flex-1 min-w-0 p-3 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
+                  <IconComp className="h-2.5 w-2.5" />
+                  {isAr ? label?.ar : label?.en}
+                </Badge>
+              </div>
+              <h3 className="text-sm font-bold line-clamp-2 group-hover:text-primary transition-colors">
+                {isAr && event.title_ar ? event.title_ar : event.title}
+              </h3>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-2">
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3 text-primary/50" />
+                {formatEventDate(event.start_date, isAr)}
+              </span>
+              {event.city && (
+                <span className="flex items-center gap-1 truncate">
+                  <MapPin className="h-3 w-3 text-primary/50 shrink-0" />
+                  {localizeCity(event.city, isAr)}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </Card>
+    );
+
+    return <div ref={ref}>{event.link ? <Link to={event.link} className="block">{card}</Link> : card}</div>;
+  }
+);
+HomeListEventCard.displayName = "HomeListEventCard";
+
 
