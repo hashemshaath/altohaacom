@@ -85,6 +85,7 @@
     /* High-contrast text tokens for media-heavy surfaces (hero, video covers) */
     --hero-foreground: 0 0% 98%;
     --hero-muted-foreground: 0 0% 86%;
+  }
 
   .dark {
     /* ── Ultra-Dark Luxury ── */
