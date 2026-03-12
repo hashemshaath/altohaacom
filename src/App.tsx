@@ -122,20 +122,22 @@ function AppContent() {
       </Suspense>
       </ErrorBoundary>
       </MaintenanceGuard>
-      <Suspense fallback={null}>
-        <LiveChatWidget />
-        <WelcomeModal />
-        <GuidedTour />
-        <CommandPalette />
-        <MobileBottomNav />
-        <ScrollProgress />
-        <BackToTop />
-        <SmartInstallBanner />
-        <IOSInstallGuide />
-        <OfflineBanner />
-        <UpdatePrompt />
-        <ReEngagementPrompt />
-      </Suspense>
+      <ErrorBoundary fallback={null}>
+        <Suspense fallback={null}>
+          <LiveChatWidget />
+          <WelcomeModal />
+          <GuidedTour />
+          <CommandPalette />
+          <MobileBottomNav />
+          <ScrollProgress />
+          <BackToTop />
+          <SmartInstallBanner />
+          <IOSInstallGuide />
+          <OfflineBanner />
+          <UpdatePrompt />
+          <ReEngagementPrompt />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }
