@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
@@ -17,16 +17,7 @@ interface SectionRuntimeConfig {
   sort_order: number;
 }
 
-interface SectionShellBoundaryProps {
-  sectionKey: string;
-  index: number;
-  children: React.ReactNode;
-}
-
-const SectionShellBoundary = React.forwardRef<HTMLDivElement, SectionShellBoundaryProps>(function SectionShellBoundary(
-  { sectionKey, index, children },
-  _ref
-) {
+function SectionShellBoundary({ sectionKey, index, children }: { sectionKey: string; index: number; children: React.ReactNode }) {
   return (
     <ErrorBoundary
       fallback={
@@ -42,9 +33,7 @@ const SectionShellBoundary = React.forwardRef<HTMLDivElement, SectionShellBounda
       </Suspense>
     </ErrorBoundary>
   );
-});
-
-SectionShellBoundary.displayName = "SectionShellBoundary";
+}
 
 export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
   const orderedSections = useMemo<SectionRuntimeConfig[]>(() => {
