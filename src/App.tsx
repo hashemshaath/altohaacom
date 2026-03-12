@@ -40,7 +40,7 @@ function safeLazy<T extends ComponentType<any>>(factory: () => Promise<{ default
     try {
       return await factory();
     } catch {
-      return { default: (() => null) as T };
+      return { default: (() => null) as unknown as T };
     }
   });
 }
