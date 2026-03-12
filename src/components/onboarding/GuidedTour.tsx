@@ -241,7 +241,7 @@ export const GuidedTour = forwardRef<HTMLDivElement>(function GuidedTour(_props,
 
   useEffect(() => {
     if (!user) return;
-    const done = localStorage.getItem(tourStorageKey);
+    const done = safeStorageGet(tourStorageKey);
     if (done) return;
     const timer = setTimeout(() => setStep(0), 3000);
     return () => clearTimeout(timer);
