@@ -71,6 +71,20 @@ export function HeroSection() {
     staleTime: 1000 * 60 * 10,
   });
 
+  useEffect(() => {
+    if (!slides.length) {
+      if (current !== 0) setCurrent(0);
+      setProgress(0);
+      return;
+    }
+
+    if (current > slides.length - 1) {
+      setCurrent(0);
+      setProgress(0);
+      startRef.current = performance.now();
+    }
+  }, [slides.length, current]);
+
   const goTo = useCallback((idx: number) => {
     setCurrent(idx);
     setProgress(0);
@@ -157,8 +171,9 @@ export function HeroSection() {
     );
   }
 
-  const slide = slides[current];
-  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.4);
+  const safeCurrent = slides.length ? ((current % slides.length) + slides.length) % slides.length : 0;
+  const slide = slides[safeCurrent];
+  const opacity = Math.max(((slide?.overlay_opacity || 50) / 100), 0.4);
 
   return (
     <section
@@ -175,7 +190,7 @@ export function HeroSection() {
             key={s.id}
             className={cn(
               "absolute inset-0 transition-all duration-[1200ms] ease-in-out",
-              idx === current ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
+              idx === safeCurrent ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
             )}
           >
             <img
@@ -235,7 +250,7 @@ export function HeroSection() {
         {/* Slide counter */}
         {slides.length > 1 && (
           <div className="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1.5 rounded-full bg-card/40 backdrop-blur-xl border border-border/20 px-2.5 py-1 text-[10px] font-mono text-[hsl(var(--hero-foreground)/0.85)]">
-            <span className="font-bold">{String(current + 1).padStart(2, "0")}</span>
+            <span className="font-bold">{String(safeCurrent + 1).padStart(2, "0")}</span>
             <span className="text-[hsl(var(--hero-muted-foreground)/0.6)]">/</span>
             <span className="text-[hsl(var(--hero-muted-foreground)/0.85)]">{String(slides.length).padStart(2, "0")}</span>
           </div>
@@ -267,11 +282,11 @@ export function HeroSection() {
                   onClick={() => goTo(idx)}
                   className={cn(
                     "relative h-2 rounded-full transition-all duration-500 ease-out overflow-hidden",
-                    idx === current ? "w-8 bg-muted-foreground/15" : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
+                    idx === safeCurrent ? "w-8 bg-muted-foreground/15" : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
                   )}
                   aria-label={`Slide ${idx + 1}`}
                 >
-                  {idx === current && (
+                  {idx === safeCurrent && (
                     <span
                       className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-[var(--shadow-glow)]"
                       style={{ width: `${progress}%`, transition: "width 80ms linear" }}
