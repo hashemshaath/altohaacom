@@ -1,9 +1,9 @@
-import { Suspense, lazy, useEffect, type ComponentType } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -27,6 +27,21 @@ import { LiveChatWidget } from "@/components/support/LiveChatWidget";
 import { WelcomeModal } from "@/components/onboarding/WelcomeModal";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
+import { FloatingHelpButton } from "@/components/FloatingHelpButton";
+import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
+import { PageTracker } from "@/components/tracking/PageTracker";
+import { SmartInstallBanner } from "@/components/pwa/SmartInstallBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
+import { UpdatePrompt } from "@/components/pwa/UpdatePrompt";
+import { IOSInstallGuide } from "@/components/pwa/IOSInstallGuide";
+import { AnnouncementBanner } from "@/components/engagement/AnnouncementBanner";
+import { ReEngagementPrompt } from "@/components/engagement/ReEngagementPrompt";
+import { PullToRefreshIndicator } from "@/components/pwa/PullToRefreshIndicator";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { BackToTop } from "@/components/ui/back-to-top";
+import { RoutePrefetcher } from "@/components/ui/route-prefetcher";
+import { GuidedTour } from "@/components/onboarding/GuidedTour";
+import { CommandPalette } from "@/components/search/CommandPalette";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
@@ -36,63 +51,7 @@ import { companyRoutes } from "@/routes/companyRoutes";
 const AchievementCelebration = lazy(() =>
   import("@/components/achievements/AchievementCelebration").then((m) => ({ default: m.AchievementCelebration }))
 );
-
-function safeLazy<T extends ComponentType<any>>(factory: () => Promise<{ default: T }>) {
-  return lazy(async () => {
-    try {
-      return await factory();
-    } catch {
-      return { default: (() => null) as unknown as T };
-    }
-  });
-}
-
-const FloatingHelpButton = safeLazy(() =>
-  import("@/components/FloatingHelpButton").then((m) => ({ default: m.FloatingHelpButton }))
-);
-const MobileBottomNav = safeLazy(() =>
-  import("@/components/mobile/MobileBottomNav").then((m) => ({ default: m.MobileBottomNav }))
-);
-const PageTracker = safeLazy(() =>
-  import("@/components/tracking/PageTracker").then((m) => ({ default: m.PageTracker }))
-);
-const SmartInstallBanner = safeLazy(() =>
-  import("@/components/pwa/SmartInstallBanner").then((m) => ({ default: m.SmartInstallBanner }))
-);
-const OfflineBanner = safeLazy(() =>
-  import("@/components/pwa/OfflineBanner").then((m) => ({ default: m.OfflineBanner }))
-);
-const UpdatePrompt = safeLazy(() =>
-  import("@/components/pwa/UpdatePrompt").then((m) => ({ default: m.UpdatePrompt }))
-);
-const IOSInstallGuide = safeLazy(() =>
-  import("@/components/pwa/IOSInstallGuide").then((m) => ({ default: m.IOSInstallGuide }))
-);
-const AnnouncementBanner = safeLazy(() =>
-  import("@/components/engagement/AnnouncementBanner").then((m) => ({ default: m.AnnouncementBanner }))
-);
-const ReEngagementPrompt = safeLazy(() =>
-  import("@/components/engagement/ReEngagementPrompt").then((m) => ({ default: m.ReEngagementPrompt }))
-);
-const PullToRefreshIndicator = safeLazy(() =>
-  import("@/components/pwa/PullToRefreshIndicator").then((m) => ({ default: m.PullToRefreshIndicator }))
-);
-const ScrollProgress = safeLazy(() =>
-  import("@/components/ui/scroll-progress").then((m) => ({ default: m.ScrollProgress }))
-);
-const BackToTop = safeLazy(() =>
-  import("@/components/ui/back-to-top").then((m) => ({ default: m.BackToTop }))
-);
-const RoutePrefetcher = safeLazy(() =>
-  import("@/components/ui/route-prefetcher").then((m) => ({ default: m.RoutePrefetcher }))
-);
-const GuidedTour = safeLazy(() =>
-  import("@/components/onboarding/GuidedTour").then((m) => ({ default: m.GuidedTour }))
-);
-const CommandPalette = safeLazy(() =>
-  import("@/components/search/CommandPalette").then((m) => ({ default: m.CommandPalette }))
-);
-const NotFound = safeLazy(() => import("./pages/NotFound"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -154,24 +113,27 @@ function AppRoutesShell() {
   );
 }
 
-function AppEnhancements() {
+function AppEnhancements({ isHome }: { isHome: boolean }) {
   return (
     <ErrorBoundary fallback={null}>
-      <Suspense fallback={null}>
-        <FloatingHelpButton />
-        <LiveChatWidget />
-        <WelcomeModal />
-        <GuidedTour />
-        <CommandPalette />
-        <MobileBottomNav />
-        <ScrollProgress />
-        <BackToTop />
-        <SmartInstallBanner />
-        <IOSInstallGuide />
-        <OfflineBanner />
-        <UpdatePrompt />
-        <ReEngagementPrompt />
-      </Suspense>
+      <MobileBottomNav />
+      <ScrollProgress />
+      <BackToTop />
+      <SmartInstallBanner />
+      <IOSInstallGuide />
+      <OfflineBanner />
+      <UpdatePrompt />
+
+      {!isHome && (
+        <>
+          <FloatingHelpButton />
+          <LiveChatWidget />
+          <WelcomeModal />
+          <GuidedTour />
+          <CommandPalette />
+          <ReEngagementPrompt />
+        </>
+      )}
     </ErrorBoundary>
   );
 }
@@ -182,6 +144,9 @@ function AppContent() {
   useOfflineSync();
 
   const { language } = useLanguageHook();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   useEnhancedSEO(language);
   useSEOTracking();
   useWebVitalsTracking();
@@ -193,21 +158,19 @@ function AppContent() {
       <RouteAnnouncer />
       <SkipToContent />
 
-      <Suspense fallback={null}>
-        <PullToRefreshIndicator
-          pulling={ptr.pulling}
-          pullDistance={ptr.pullDistance}
-          refreshing={ptr.refreshing}
-          progress={ptr.progress}
-        />
-        <GoogleTrackingProvider />
-        <TrackingScriptsInjector />
-        <PageTracker />
-        <AnnouncementBanner />
-      </Suspense>
+      <PullToRefreshIndicator
+        pulling={ptr.pulling}
+        pullDistance={ptr.pullDistance}
+        refreshing={ptr.refreshing}
+        progress={ptr.progress}
+      />
+      <GoogleTrackingProvider />
+      <TrackingScriptsInjector />
+      <PageTracker />
+      {!isHome && <AnnouncementBanner />}
 
       <AppRoutesShell />
-      <AppEnhancements />
+      <AppEnhancements isHome={isHome} />
     </>
   );
 }

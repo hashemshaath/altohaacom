@@ -1,11 +1,10 @@
-import { useState, useRef, useMemo, memo } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, Calendar, MapPin, Trophy, Globe, Flame, Users } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -20,7 +19,7 @@ const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG",
 
 type FilterTab = "saudi" | "middle-east" | "global";
 
-export const RegionalEvents = memo(function RegionalEvents() {
+export function RegionalEvents() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [activeTab, setActiveTab] = useState<FilterTab>("middle-east");
@@ -36,7 +35,7 @@ export const RegionalEvents = memo(function RegionalEvents() {
         .select("id, title, title_ar, cover_image_url, status, competition_start, city, country, country_code, is_virtual")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
-        .limit(20);
+        .limit(itemCount);
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
@@ -115,7 +114,7 @@ export const RegionalEvents = memo(function RegionalEvents() {
       </div>
     </section>
   );
-});
+}
 
 function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
   const title = isAr && item.title_ar ? item.title_ar : item.title;

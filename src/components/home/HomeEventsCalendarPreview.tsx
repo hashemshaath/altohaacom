@@ -288,11 +288,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
             </Badge>
           )}
         </div>
-        {event.link ? (
-          <Link to={event.link} className="text-xs font-bold hover:text-primary transition-colors line-clamp-1 block">{isAr && event.title_ar ? event.title_ar : event.title}</Link>
-        ) : (
-          <p className="text-xs font-bold line-clamp-1">{isAr && event.title_ar ? event.title_ar : event.title}</p>
-        )}
+        <p className="text-xs font-bold line-clamp-1">{isAr && event.title_ar ? event.title_ar : event.title}</p>
         <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
           {event.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{localizeCity(event.city, isAr)}</span>}
           {event.organizer_name && <span className="flex items-center gap-0.5"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
@@ -301,7 +297,7 @@ function CompactEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }
     </div>
   );
 
-  return event.link ? <Link to={event.link}>{content}</Link> : content;
+  return event.link ? <Link to={event.link} className="block">{content}</Link> : content;
 }
 
 /* ─── Home List Event Card ─── */
