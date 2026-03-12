@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, memo, forwardRef } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,7 +30,7 @@ const formatMessageTime = (createdAt: string, isArabic: boolean): string => {
   }
 };
 
-export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatWidget(_props, _ref) {
+export const LiveChatWidget = memo(function LiveChatWidget() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -280,4 +280,4 @@ export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatW
       )}
     </>
   );
-}));
+});
