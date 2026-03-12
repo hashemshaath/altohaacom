@@ -56,6 +56,20 @@ function isAppBootReady(): boolean {
   return document.documentElement.getAttribute("data-app-boot") === "ready";
 }
 
+function hasRenderableHomeContent(): boolean {
+  if (typeof window === "undefined" || typeof document === "undefined") return true;
+  if (window.location.pathname !== "/") return true;
+
+  const main = document.getElementById("main-content");
+  if (!main) return false;
+
+  const rect = main.getBoundingClientRect();
+  const hasHeight = rect.height > 160;
+  const hasContent = (main.textContent?.trim().length || 0) > 20;
+
+  return hasHeight && hasContent;
+}
+
 function scheduleBootWatchdog(): void {
   if (typeof window === "undefined") return;
 
@@ -68,7 +82,7 @@ function scheduleBootWatchdog(): void {
   }
 
   window.setTimeout(async () => {
-    if (isAppBootReady()) return;
+    if (isAppBootReady() && hasRenderableHomeContent()) return;
 
     try {
       window.sessionStorage.setItem(watchdogKey, "triggered");
