@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
-import { memo } from "react";
 
 function StatItem({ value, label, icon: Icon, isVisible, delay }: {
   value: number; label: string; icon: any; isVisible: boolean; delay: number;
@@ -32,8 +31,7 @@ function StatItem({ value, label, icon: Icon, isVisible, delay }: {
   );
 }
 
-
-const StatsBar = memo(function StatsBar() {
+export default function StatsBar() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { ref, isVisible } = useScrollReveal({ threshold: 0.3 });
@@ -47,7 +45,7 @@ const StatsBar = memo(function StatsBar() {
         supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
         supabase.from("exhibitions").select("id", { count: "exact", head: true }),
       ]);
-      const getCount = (r: PromiseSettledResult<any>) => 
+      const getCount = (r: PromiseSettledResult<any>) =>
         r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
       return {
         members: getCount(results[0]),
@@ -86,6 +84,5 @@ const StatsBar = memo(function StatsBar() {
       </div>
     </section>
   );
-});
+}
 
-export default StatsBar;

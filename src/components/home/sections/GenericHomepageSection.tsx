@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSection } from "@/hooks/useHomepageSections";
 import { cn } from "@/lib/utils";
@@ -13,7 +12,7 @@ interface Props {
  * Generic placeholder for homepage sections that don't have a dedicated component yet.
  * Renders title/subtitle from DB config with a professional "coming soon" state.
  */
-const GenericHomepageSection = memo(function GenericHomepageSection({ sectionKey }: Props) {
+export default function GenericHomepageSection({ sectionKey }: Props) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const section = useHomepageSection(sectionKey);
@@ -66,6 +65,5 @@ const GenericHomepageSection = memo(function GenericHomepageSection({ sectionKey
       </div>
     </section>
   );
-});
+}
 
-export default GenericHomepageSection;

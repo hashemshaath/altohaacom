@@ -1,11 +1,11 @@
-import { memo, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
  * Floating "back to top" button that appears after scrolling down.
  */
-export const BackToTop = memo(function BackToTop({ className }: { className?: string }) {
+export function BackToTop({ className }: { className?: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -35,4 +35,4 @@ export const BackToTop = memo(function BackToTop({ className }: { className?: st
       <ArrowUp className="h-4 w-4" />
     </button>
   );
-});
+}

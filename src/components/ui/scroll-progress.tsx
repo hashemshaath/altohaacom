@@ -1,11 +1,11 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
  * A thin progress bar at the top of the viewport that shows scroll progress.
  * Professional touch for long pages.
  */
-export const ScrollProgress = memo(function ScrollProgress({
+export function ScrollProgress({
   className,
 }: {
   className?: string;
@@ -37,4 +37,4 @@ export const ScrollProgress = memo(function ScrollProgress({
       />
     </div>
   );
-});
+}

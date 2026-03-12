@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -224,7 +224,7 @@ function selectTour(roles: string[], isFan: boolean): { key: string; steps: Tour
   return { key: "pro", steps: PRO_STEPS, label: "Welcome Tour", labelAr: "جولة ترحيبية" };
 }
 
-export const GuidedTour = memo(function GuidedTour() {
+export function GuidedTour() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { isFan } = useAccountType();
@@ -419,4 +419,4 @@ export const GuidedTour = memo(function GuidedTour() {
       </Card>
     </>
   );
-});
+}
