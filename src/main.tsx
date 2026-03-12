@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v11";
+const SW_RECOVERY_VERSION = "2026-03-12-v12";
 
 function shouldForceRecovery(): boolean {
   if (typeof window === "undefined") return false;
