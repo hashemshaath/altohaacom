@@ -1,4 +1,4 @@
-import { memo, forwardRef } from "react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -7,13 +7,12 @@ interface FilterChipProps {
   active: boolean;
   count?: number;
   onClick: () => void;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
-export const FilterChip = memo(forwardRef<HTMLButtonElement, FilterChipProps>(function FilterChip({ label, active, count, onClick, icon }, ref) {
+export function FilterChip({ label, active, count, onClick, icon }: FilterChipProps) {
   return (
     <Button
-      ref={ref}
       variant={active ? "default" : "outline"}
       size="sm"
       className={cn(
@@ -25,13 +24,15 @@ export const FilterChip = memo(forwardRef<HTMLButtonElement, FilterChipProps>(fu
       {icon}
       {label}
       {typeof count === "number" && count > 0 && (
-        <span className={cn(
-          "text-[10px] tabular-nums",
-          active ? "opacity-80" : "opacity-50"
-        )}>
+        <span
+          className={cn(
+            "text-[10px] tabular-nums",
+            active ? "opacity-80" : "opacity-50"
+          )}
+        >
           ({count})
         </span>
       )}
     </Button>
   );
-}));
+}

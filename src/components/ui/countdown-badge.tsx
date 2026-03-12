@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, forwardRef } from "react";
+import { useState, useEffect } from "react";
 import { isPast, differenceInDays, differenceInHours } from "date-fns";
 import { Timer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,7 @@ interface Props {
   className?: string;
 }
 
-export const CountdownBadge = memo(forwardRef<HTMLDivElement, Props>(function CountdownBadge({ targetDate, isAr, className }, ref) {
+export function CountdownBadge({ targetDate, isAr, className }: Props) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -37,4 +37,4 @@ export const CountdownBadge = memo(forwardRef<HTMLDivElement, Props>(function Co
       {text}
     </Badge>
   );
-}));
+}
