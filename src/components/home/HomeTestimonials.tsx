@@ -26,7 +26,7 @@ export const HomeTestimonials = function HomeTestimonials() {
     queryFn: async () => {
       const { data } = await (supabase as any)
         .from("testimonials")
-        .select("id, name, name_ar, role, role_ar, content, content_ar, avatar_url, rating, sort_order")
+        .select("id, name, name_ar, role, role_ar, quote, quote_ar, avatar_url, rating, sort_order")
         .eq("is_active", true)
         .order("sort_order", { ascending: true })
         .limit(itemCount);
