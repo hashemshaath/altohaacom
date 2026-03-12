@@ -1,20 +1,22 @@
-import { memo } from "react";
+import { forwardRef, memo, type HTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-interface MentionTextProps {
+interface MentionTextProps extends HTMLAttributes<HTMLSpanElement> {
   content: string;
-  className?: string;
 }
 
 /**
  * Renders post content with clickable @mentions and #hashtags.
  */
-export const MentionText = memo(function MentionText({ content, className }: MentionTextProps) {
+const MentionTextComponent = forwardRef<HTMLSpanElement, MentionTextProps>(function MentionText(
+  { content, className, ...rest }: MentionTextProps,
+  ref
+) {
   const parts = content.split(/(@[\w\u0600-\u06FF]+|#[\w\u0600-\u06FF_]+)/g);
 
   return (
-    <span className={className}>
+    <span ref={ref} className={cn(className)} {...rest}>
       {parts.map((part, i) => {
         if (part.startsWith("@")) {
           const username = part.slice(1);
@@ -29,6 +31,7 @@ export const MentionText = memo(function MentionText({ content, className }: Men
             </Link>
           );
         }
+
         if (part.startsWith("#")) {
           return (
             <Link
@@ -41,8 +44,14 @@ export const MentionText = memo(function MentionText({ content, className }: Men
             </Link>
           );
         }
+
         return <span key={i}>{part}</span>;
       })}
     </span>
   );
 });
+
+MentionTextComponent.displayName = "MentionText";
+
+export const MentionText = memo(MentionTextComponent);
+MentionText.displayName = "MentionText";
