@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
