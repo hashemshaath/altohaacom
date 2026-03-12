@@ -11,9 +11,9 @@
   :root {
     /* ── Dark Luxury — Culinary Prestige ── */
 
-    /* Deep charcoal background */
-    --background: 220 20% 12%;
-    --foreground: 40 20% 92%;
+    /* White background for debugging */
+    --background: 0 0% 100%;
+    --foreground: 220 20% 12%;
 
     /* Dark elevated cards */
     --card: 220 18% 16%;
