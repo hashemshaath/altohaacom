@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   CheckCircle2, Circle, Camera, FileText, MapPin, Briefcase,
-  Globe, Sparkles, ArrowRight, X,
+  Globe, Sparkles, ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
