@@ -143,8 +143,8 @@ const Index = () => {
       // No dedicated component → use GenericHomepageSection
       if (!Component) {
         return (
-          <ErrorBoundary fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
-            <Suspense key={key} fallback={getSectionSkeleton()}>
+          <ErrorBoundary key={key} fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
+            <Suspense fallback={getSectionSkeleton()}>
               <SectionKeyProvider sectionKey={key}>
                 <HomepageSectionShell>
                   <GenericHomepageSection sectionKey={key} />
@@ -156,8 +156,8 @@ const Index = () => {
       }
 
       return (
-        <ErrorBoundary fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
-          <Suspense key={key} fallback={getSectionSkeleton()}>
+        <ErrorBoundary key={key} fallback={<div className="container py-4"><div className="min-h-[60px]" /></div>}>
+          <Suspense fallback={getSectionSkeleton()}>
             <SectionKeyProvider sectionKey={key}>
               <HomepageSectionShell>
                 {React.createElement(Component)}
