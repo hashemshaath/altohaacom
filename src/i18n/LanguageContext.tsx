@@ -8,17 +8,37 @@ interface LanguageContextType {
   dir: "ltr" | "rtl";
 }
 
+const LANGUAGE_STORAGE_KEY = "altoha-lang";
+
+const safeStorageGet = (key: string): string | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const safeStorageSet = (key: string, value: string): void => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // no-op for restricted browsers
+  }
+};
+
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem("altoha-lang");
+    const saved = safeStorageGet(LANGUAGE_STORAGE_KEY);
     return (saved === "ar" ? "ar" : "en") as Language;
   });
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem("altoha-lang", lang);
+    safeStorageSet(LANGUAGE_STORAGE_KEY, lang);
   }, []);
 
   const t = useCallback(
@@ -29,6 +49,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const dir = language === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     document.documentElement.setAttribute("dir", dir);
     document.documentElement.setAttribute("lang", language);
   }, [dir, language]);
