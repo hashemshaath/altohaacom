@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v14";
+const SW_RECOVERY_VERSION = "2026-03-12-v15";
 
 function safeStorageGet(storage: Storage, key: string): string | null {
   try {
@@ -23,7 +23,7 @@ function safeStorageSet(storage: Storage, key: string, value: string): void {
 function shouldForceRecovery(): boolean {
   if (typeof window === "undefined") return false;
   const params = new URLSearchParams(window.location.search);
-  return params.has("sw-reset") || params.has("reset-cache");
+  return params.has("sw-reset") || params.has("reset-cache") || params.has("boot-retry");
 }
 
 async function recoverFromStalePwaCache(force = false): Promise<boolean> {
