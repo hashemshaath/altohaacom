@@ -102,7 +102,6 @@ function AppContent() {
         <GoogleTrackingProvider />
         <TrackingScriptsInjector />
         <PageTracker />
-        <FloatingHelpButton />
       </Suspense>
       <MaintenanceGuard>
       <Suspense fallback={null}><AnnouncementBanner /></Suspense>
@@ -124,6 +123,7 @@ function AppContent() {
       </MaintenanceGuard>
       <ErrorBoundary fallback={null}>
         <Suspense fallback={null}>
+          <FloatingHelpButton />
           <LiveChatWidget />
           <WelcomeModal />
           <GuidedTour />
