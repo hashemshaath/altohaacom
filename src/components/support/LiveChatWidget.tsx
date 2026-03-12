@@ -19,6 +19,17 @@ interface ChatMessage {
   created_at: string;
 }
 
+const formatMessageTime = (createdAt: string, isArabic: boolean): string => {
+  try {
+    return formatDistanceToNow(new Date(createdAt), {
+      addSuffix: true,
+      locale: isArabic ? ar : undefined,
+    });
+  } catch {
+    return "";
+  }
+};
+
 export const LiveChatWidget = memo(forwardRef<HTMLDivElement>(function LiveChatWidget(_props, _ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
