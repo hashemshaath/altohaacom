@@ -53,12 +53,6 @@ const FloatingHelpButton = safeLazy(() =>
 const MobileBottomNav = safeLazy(() =>
   import("@/components/mobile/MobileBottomNav").then((m) => ({ default: m.MobileBottomNav }))
 );
-const GoogleTrackingProvider = safeLazy(() =>
-  import("@/components/tracking/GoogleTrackingProvider").then((m) => ({ default: m.GoogleTrackingProvider }))
-);
-const TrackingScriptsInjector = safeLazy(() =>
-  import("@/components/tracking/TrackingScriptsInjector").then((m) => ({ default: m.TrackingScriptsInjector }))
-);
 const PageTracker = safeLazy(() =>
   import("@/components/tracking/PageTracker").then((m) => ({ default: m.PageTracker }))
 );
