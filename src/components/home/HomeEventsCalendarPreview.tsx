@@ -60,8 +60,16 @@ export function HomeEventsCalendarPreview() {
   const itemCount = sectionConfig?.item_count || 6;
 
   const upcoming = useMemo(() => {
-    let filtered = events.filter(e => new Date(e.start_date) >= new Date());
-    if (selectedFilter) filtered = filtered.filter(e => e.type === selectedFilter);
+    const now = Date.now();
+    let filtered = events.filter((event) => {
+      const startsAt = Date.parse(event.start_date ?? "");
+      return Number.isFinite(startsAt) && startsAt >= now;
+    });
+
+    if (selectedFilter) {
+      filtered = filtered.filter((event) => resolveEventType(event.type) === selectedFilter);
+    }
+
     return filtered.slice(0, itemCount);
   }, [events, selectedFilter, itemCount]);
 
@@ -70,7 +78,11 @@ export function HomeEventsCalendarPreview() {
     ? ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"]
     : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const getEventsForDay = (day: Date) => events.filter(e => isSameDay(new Date(e.start_date), day));
+  const getEventsForDay = (day: Date) =>
+    events.filter((event) => {
+      const startsAt = Date.parse(event.start_date ?? "");
+      return Number.isFinite(startsAt) && isSameDay(new Date(startsAt), day);
+    });
 
   const selectedDayEvents = useMemo(() => {
     if (!selectedDay) return [];
