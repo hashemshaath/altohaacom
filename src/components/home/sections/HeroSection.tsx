@@ -31,7 +31,8 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
   isActive: boolean;
   isFirst: boolean;
 }>(function SlideBackground({ slide, isActive, isFirst }, ref) {
-  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.55);
+  const [imageFailed, setImageFailed] = useState(false);
+  const opacity = Math.max((slide.overlay_opacity || 50) / 100, 0.4);
 
   return (
     <div
@@ -41,20 +42,27 @@ const SlideBackground = memo(forwardRef<HTMLDivElement, {
         isActive ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
       )}
     >
-      <img
-        src={slide.image_url}
-        alt={slide.title}
-        className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
-        loading={isFirst ? "eager" : "lazy"}
-        decoding={isFirst ? "sync" : "async"}
-        {...(isFirst ? { fetchPriority: "high" } : {})}
-      />
+      {!imageFailed && (
+        <img
+          src={slide.image_url}
+          alt={slide.title}
+          className={cn("h-full w-full object-cover", isActive && "animate-ken-burns")}
+          loading={isFirst ? "eager" : "lazy"}
+          decoding={isFirst ? "sync" : "async"}
+          onError={() => setImageFailed(true)}
+        />
+      )}
+
+      {imageFailed && (
+        <div className="absolute inset-0 bg-[linear-gradient(140deg,hsl(var(--primary)/0.25),hsl(var(--background))_65%)]" />
+      )}
+
       <div
-        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/10"
+        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/5"
         style={{ opacity }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/65 to-transparent" />
     </div>
   );
 }));
@@ -223,17 +231,17 @@ export const HeroSection = memo(function HeroSection() {
             className="max-w-2xl space-y-4 sm:space-y-5"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 backdrop-blur-md border border-primary/25 px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-primary shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-foreground drop-shadow-lg font-sans">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-[hsl(var(--hero-foreground))] drop-shadow-lg font-sans">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-muted-foreground drop-shadow-md font-sans">
+              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md font-sans">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
@@ -257,10 +265,10 @@ export const HeroSection = memo(function HeroSection() {
 
         {/* Slide counter */}
         {slides.length > 1 && (
-          <div className="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1.5 rounded-full bg-card/40 backdrop-blur-xl border border-border/20 px-2.5 py-1 text-[10px] font-mono text-foreground/70">
+          <div className="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1.5 rounded-full bg-card/40 backdrop-blur-xl border border-border/20 px-2.5 py-1 text-[10px] font-mono text-[hsl(var(--hero-foreground)/0.85)]">
             <span className="font-bold">{String(current + 1).padStart(2, "0")}</span>
-            <span className="text-muted-foreground/50">/</span>
-            <span className="text-muted-foreground/70">{String(slides.length).padStart(2, "0")}</span>
+            <span className="text-[hsl(var(--hero-muted-foreground)/0.6)]">/</span>
+            <span className="text-[hsl(var(--hero-muted-foreground)/0.85)]">{String(slides.length).padStart(2, "0")}</span>
           </div>
         )}
 
