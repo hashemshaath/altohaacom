@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,13 @@ export interface SectionHeaderProps {
   className?: string;
 }
 
-export function SectionHeader(
-  { icon: Icon, badge, title, subtitle, viewAllHref, viewAllLabel, isAr = false, actions, filters, className }: SectionHeaderProps
+export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(function SectionHeader(
+  { icon: Icon, badge, title, subtitle, viewAllHref, viewAllLabel, isAr = false, actions, filters, className },
+  ref
 ) {
   return (
     <SectionReveal>
-      <div className={cn("mb-5", className)}>
+      <div ref={ref} className={cn("mb-5", className)}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -35,15 +36,15 @@ export function SectionHeader(
                 {badge}
               </Badge>
             </div>
-            <h2 className={cn(
-              "text-xl font-bold sm:text-2xl lg:text-3xl text-foreground tracking-tight leading-tight",
-              !isAr && "font-serif"
-            )}>
+            <h2
+              className={cn(
+                "text-xl font-bold sm:text-2xl lg:text-3xl text-foreground tracking-tight leading-tight",
+                !isAr && "font-serif"
+              )}
+            >
               {title}
             </h2>
-            {subtitle && (
-              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{subtitle}</p>
-            )}
+            {subtitle && <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{subtitle}</p>}
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {actions}
@@ -67,6 +68,7 @@ export function SectionHeader(
       </div>
     </SectionReveal>
   );
-}
+});
 
+SectionHeader.displayName = "SectionHeader";
 
