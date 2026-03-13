@@ -283,6 +283,24 @@ export default function PublicProfile() {
               </SectionReveal>
             )}
 
+            {/* Skills & Endorsements */}
+            {!isProfileFan && userSpecialties.length > 0 && (
+              <SectionReveal delay={175}>
+                <Card className="rounded-2xl border-border/25 p-4">
+                  <ProfileSkillsEndorsements userId={profile.user_id} userSpecialties={userSpecialties} isAr={isAr} />
+                </Card>
+              </SectionReveal>
+            )}
+
+            {/* Portfolio Gallery */}
+            {!isProfileFan && profile.user_id && (
+              <SectionReveal delay={185}>
+                <Card className="rounded-2xl border-border/25 p-4">
+                  <ProfilePortfolioGallery userId={profile.user_id} isAr={isAr} />
+                </Card>
+              </SectionReveal>
+            )}
+
             {/* Schedule - pro only */}
             {!isProfileFan && profile.user_id && <SectionReveal delay={200}><PublicProfileSchedule userId={profile.user_id} isAr={isAr} /></SectionReveal>}
 
