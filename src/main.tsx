@@ -1,8 +1,7 @@
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v16";
+const SW_RECOVERY_VERSION = "2026-03-13-v17";
 
 function safeStorageGet(storage: Storage, key: string): string | null {
   try {
@@ -226,6 +225,14 @@ function scheduleBootWatchdog(): void {
 }
 
 
+async function renderReactApp(root: HTMLElement): Promise<void> {
+  const appModule = await import("./App.tsx");
+  const App = appModule.default;
+  const reactRoot = createRoot(root);
+  reactRoot.render(<App />);
+  scheduleBootWatchdog();
+}
+
 async function mountApp() {
   registerChunkRecovery();
 
@@ -238,9 +245,22 @@ async function mountApp() {
     return;
   }
 
-  const reactRoot = createRoot(root);
-  reactRoot.render(<App />);
-  scheduleBootWatchdog();
+  try {
+    await renderReactApp(root);
+  } catch {
+    const url = new URL(window.location.href);
+    const retriedForCurrentVersion = url.searchParams.get("boot-retry") === SW_RECOVERY_VERSION;
+
+    if (!retriedForCurrentVersion) {
+      url.searchParams.set("sw-reset", "1");
+      url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+      window.location.replace(url.toString());
+      return;
+    }
+
+    showEmergencyStartupFallback();
+    return;
+  }
 
   // Report paint timing for debugging
   if (import.meta.env.DEV) {
