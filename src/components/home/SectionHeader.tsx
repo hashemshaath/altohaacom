@@ -1,4 +1,4 @@
-import { type ReactNode, forwardRef } from "react";
+import { type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,13 +21,12 @@ export interface SectionHeaderProps {
   className?: string;
 }
 
-export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(function SectionHeader(
-  { icon: Icon, badge, title, subtitle, viewAllHref, viewAllLabel, isAr = false, actions, filters, className },
-  ref
+export function SectionHeader(
+  { icon: Icon, badge, title, subtitle, viewAllHref, viewAllLabel, isAr = false, actions, filters, className }: SectionHeaderProps
 ) {
   return (
     <SectionReveal>
-      <div ref={ref} className={cn("mb-5", className)}>
+      <div className={cn("mb-5", className)}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -68,7 +67,6 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
       </div>
     </SectionReveal>
   );
-});
+}
 
-SectionHeader.displayName = "SectionHeader";
 

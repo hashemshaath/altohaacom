@@ -1,13 +1,12 @@
-import { forwardRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface HomeSectionSkeletonProps {
   index: number;
 }
 
-const GridSkeleton = forwardRef<HTMLDivElement>(function GridSkeleton(_, ref) {
+function GridSkeleton() {
   return (
-    <div ref={ref} className="container py-6 md:py-8 space-y-3">
+    <div className="container py-6 md:py-8 space-y-3">
       <Skeleton className="h-4 w-28 rounded-lg" />
       <Skeleton className="h-5 w-56 rounded-xl" />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
@@ -23,11 +22,11 @@ const GridSkeleton = forwardRef<HTMLDivElement>(function GridSkeleton(_, ref) {
       </div>
     </div>
   );
-});
+}
 
-const CarouselSkeleton = forwardRef<HTMLDivElement>(function CarouselSkeleton(_, ref) {
+function CarouselSkeleton() {
   return (
-    <div ref={ref} className="container py-6 md:py-8 space-y-3">
+    <div className="container py-6 md:py-8 space-y-3">
       <Skeleton className="h-4 w-32 rounded-lg" />
       <Skeleton className="h-5 w-48 rounded-xl" />
       <div className="flex gap-3 mt-3 overflow-hidden">
@@ -40,11 +39,11 @@ const CarouselSkeleton = forwardRef<HTMLDivElement>(function CarouselSkeleton(_,
       </div>
     </div>
   );
-});
+}
 
-const MetricsSkeleton = forwardRef<HTMLDivElement>(function MetricsSkeleton(_, ref) {
+function MetricsSkeleton() {
   return (
-    <div ref={ref} className="container py-4 md:py-6">
+    <div className="container py-4 md:py-6">
       <div className="flex gap-3 overflow-hidden">
         {[1, 2, 3, 4].map((i) => (
           <Skeleton key={i} className="h-16 flex-1 min-w-[120px] rounded-2xl" />
@@ -52,13 +51,11 @@ const MetricsSkeleton = forwardRef<HTMLDivElement>(function MetricsSkeleton(_, r
       </div>
     </div>
   );
-});
+}
 
 const VARIANTS = [GridSkeleton, CarouselSkeleton, MetricsSkeleton] as const;
 
-export const HomeSectionSkeleton = forwardRef<HTMLDivElement, HomeSectionSkeletonProps>(function HomeSectionSkeleton({ index }, ref) {
+export function HomeSectionSkeleton({ index }: HomeSectionSkeletonProps) {
   const Variant = VARIANTS[index % VARIANTS.length];
-  return <Variant ref={ref} />;
-});
-
-HomeSectionSkeleton.displayName = "HomeSectionSkeleton";
+  return <Variant />;
+}

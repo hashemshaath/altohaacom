@@ -1,4 +1,4 @@
-import { type MutableRefObject, type ReactNode, forwardRef, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "./SectionKeyContext";
 
@@ -25,19 +25,10 @@ const ANIMATION_INITIAL: Record<string, string> = {
   blur: "opacity-0 blur-sm",
 };
 
-export const HomepageSectionShell = forwardRef<HTMLElement, { children: ReactNode }>(function HomepageSectionShell(
-  { children },
-  ref
-) {
+export function HomepageSectionShell({ children }: { children: ReactNode }) {
   const config = useSectionConfig();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
-
-  const setSectionRef = (node: HTMLElement | null) => {
-    sectionRef.current = node;
-    if (typeof ref === "function") ref(node);
-    else if (ref) (ref as MutableRefObject<HTMLElement | null>).current = node;
-  };
 
   const animation = config?.animation || "none";
   const hasAnim = animation !== "none";
@@ -67,7 +58,7 @@ export const HomepageSectionShell = forwardRef<HTMLElement, { children: ReactNod
 
   return (
     <section
-      ref={setSectionRef}
+      ref={sectionRef}
       className={cn(
         spacing,
         config?.css_class,
@@ -83,6 +74,4 @@ export const HomepageSectionShell = forwardRef<HTMLElement, { children: ReactNod
       {children}
     </section>
   );
-});
-
-HomepageSectionShell.displayName = "HomepageSectionShell";
+}
