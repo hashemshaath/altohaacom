@@ -423,6 +423,27 @@ export default function PublicProfile() {
           {/* RIGHT */}
           <div className="hidden md:block">
             <div className="sticky top-20 space-y-4">
+              {/* Availability Card */}
+              {!isProfileFan && profile.is_open_to_work && (
+                <SectionReveal delay={180} direction="right">
+                  <ProfileAvailabilityCard profile={profile} isAr={isAr} />
+                </SectionReveal>
+              )}
+              {/* Resume Export */}
+              {!isProfileFan && (
+                <SectionReveal delay={190} direction="right">
+                  <ProfileResumeExport
+                    profile={profile}
+                    careerRecords={careerRecords}
+                    memberships={memberships}
+                    userAwards={userAwards}
+                    userSpecialties={userSpecialties}
+                    displayName={displayName}
+                    isAr={isAr}
+                    isOwnProfile={isOwnProfile}
+                  />
+                </SectionReveal>
+              )}
               <SectionReveal delay={200} direction="right">
                 <PublicProfileSidebar profile={profile} qrCode={qrCode} isAr={isAr} isVisible={isVisible} getCountryName={getCountryName} profileUrl={profileUrl} t={t} />
               </SectionReveal>
