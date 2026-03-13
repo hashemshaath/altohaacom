@@ -39,17 +39,20 @@ import { ReEngagementPrompt } from "@/components/engagement/ReEngagementPrompt";
 import { PullToRefreshIndicator } from "@/components/pwa/PullToRefreshIndicator";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { BackToTop } from "@/components/ui/back-to-top";
-import { RoutePrefetcher } from "@/components/ui/route-prefetcher";
 import { GuidedTour } from "@/components/onboarding/GuidedTour";
 import { CommandPalette } from "@/components/search/CommandPalette";
+import { safeLazy } from "@/lib/safeLazy";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
 import { adminRoutes } from "@/routes/adminRoutes";
 import { companyRoutes } from "@/routes/companyRoutes";
 
-const AchievementCelebration = lazy(() =>
+const AchievementCelebration = safeLazy(() =>
   import("@/components/achievements/AchievementCelebration").then((m) => ({ default: m.AchievementCelebration }))
+);
+const RoutePrefetcher = safeLazy(() =>
+  import("@/components/ui/route-prefetcher").then((m) => ({ default: m.RoutePrefetcher }))
 );
 const NotFound = lazy(() => import("./pages/NotFound"));
 
