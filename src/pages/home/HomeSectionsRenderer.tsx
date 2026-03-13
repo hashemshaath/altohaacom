@@ -80,5 +80,6 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
         );
       })}
     </>
+  );
 }
 
