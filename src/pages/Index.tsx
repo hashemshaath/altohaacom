@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -12,7 +12,14 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
+import {
+  HomepageLayoutSwitcher,
+  getStoredLayout,
+  type HomepageLayout,
+} from "@/pages/home/HomepageLayoutSwitcher";
 import { ArrowRight, Sparkles, Shield, Globe, Award } from "lucide-react";
+
+const EditorialHomepage = lazy(() => import("@/pages/home/EditorialHomepage"));
 
 /* ─── Emergency Fallbacks ─── */
 
@@ -55,7 +62,7 @@ function HomeEmergencySections({ language }: { language: string }) {
   );
 }
 
-/* ─── Trust Badges (new professional feature) ─── */
+/* ─── Trust Badges ─── */
 
 function TrustBadges({ isAr }: { isAr: boolean }) {
   const badges = [
@@ -101,17 +108,49 @@ function TrustBadges({ isAr }: { isAr: boolean }) {
 
 function useBootWatchdog() {
   const [booted, setBooted] = useState(false);
-
   useEffect(() => {
-    // Mark the app as booted
     const timer = setTimeout(() => {
       document.documentElement.setAttribute("data-app-boot", "ready");
       setBooted(true);
     }, 100);
     return () => clearTimeout(timer);
   }, []);
-
   return booted;
+}
+
+/* ─── Classic Layout (original) ─── */
+
+function ClassicLayout({
+  language,
+  isAr,
+  showHero,
+  dbSections,
+  isError,
+}: {
+  language: string;
+  isAr: boolean;
+  showHero: boolean;
+  dbSections: any[];
+  isError: boolean;
+}) {
+  return (
+    <>
+      <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
+        {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
+      </ErrorBoundary>
+      <TrustBadges isAr={isAr} />
+      <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
+        {isError ? (
+          <HomeEmergencySections language={language} />
+        ) : (
+          <HomeSectionsRenderer sections={dbSections} />
+        )}
+      </ErrorBoundary>
+      <div className="container pb-10">
+        <RelatedPages currentPath="/" />
+      </div>
+    </>
+  );
 }
 
 /* ─── Main Component ─── */
@@ -122,7 +161,9 @@ const Index = () => {
   useAdTracking();
   useBootWatchdog();
 
-  const { data: dbSections = [], isError, isLoading } = useHomepageSections();
+  const [layout, setLayout] = useState<HomepageLayout>(getStoredLayout);
+
+  const { data: dbSections = [], isError } = useHomepageSections();
 
   const showHero = useMemo(() => {
     if (dbSections.length === 0) return true;
@@ -169,30 +210,33 @@ const Index = () => {
       <Header />
 
       <main className="flex-1" aria-label="Homepage content">
-        {/* Hero */}
-        <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
-          {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
-        </ErrorBoundary>
-
-        {/* Trust Badges Strip */}
-        <TrustBadges isAr={isAr} />
-
-        {/* Dynamic Sections */}
-        <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
-          {isError ? (
-            <HomeEmergencySections language={language} />
-          ) : (
-            <HomeSectionsRenderer sections={dbSections} />
-          )}
-        </ErrorBoundary>
-
-        {/* Related Pages */}
-        <div className="container pb-10">
-          <RelatedPages currentPath="/" />
-        </div>
+        {layout === "editorial" ? (
+          <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
+            <Suspense
+              fallback={
+                <div className="min-h-[60vh] flex items-center justify-center">
+                  <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                </div>
+              }
+            >
+              <EditorialHomepage />
+            </Suspense>
+          </ErrorBoundary>
+        ) : (
+          <ClassicLayout
+            language={language}
+            isAr={isAr}
+            showHero={showHero}
+            dbSections={dbSections}
+            isError={isError}
+          />
+        )}
       </main>
 
       <Footer />
+
+      {/* Layout Switcher FAB */}
+      <HomepageLayoutSwitcher current={layout} onChange={setLayout} />
     </div>
   );
 };

@@ -226,16 +226,16 @@ function EditorialCategories({ isAr }: { isAr: boolean }) {
 
 /* ─── Featured Competitions ─── */
 function EditorialCompetitions({ isAr }: { isAr: boolean }) {
-  const { data: competitions = [] } = useQuery({
+  const { data: competitions = [] } = useQuery<any[]>({
     queryKey: ["editorial-competitions"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("competitions")
+        .from("competitions" as any)
         .select("id, title, title_ar, image_url, start_date, city, country, status")
         .eq("is_visible", true)
         .order("start_date", { ascending: true })
         .limit(4);
-      return data || [];
+      return (data || []) as any[];
     },
     staleTime: 1000 * 60 * 5,
   });
