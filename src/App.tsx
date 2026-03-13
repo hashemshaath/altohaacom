@@ -190,14 +190,18 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <Suspense fallback={null}>
-                <AchievementCelebration />
-              </Suspense>
+              <ErrorBoundary fallback={null}>
+                <Suspense fallback={null}>
+                  <AchievementCelebration />
+                </Suspense>
+              </ErrorBoundary>
               <BrowserRouter>
                 <ResourceHints />
-                <Suspense fallback={null}>
-                  <RoutePrefetcher />
-                </Suspense>
+                <ErrorBoundary fallback={null}>
+                  <Suspense fallback={null}>
+                    <RoutePrefetcher />
+                  </Suspense>
+                </ErrorBoundary>
                 <ErrorBoundary>
                   <AppContent />
                 </ErrorBoundary>

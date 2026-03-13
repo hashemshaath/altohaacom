@@ -185,6 +185,8 @@ function scheduleBootWatchdog(): void {
 
 
 async function mountApp() {
+  registerChunkRecovery();
+
   const recoveryTriggered = await recoverFromStalePwaCache(shouldForceRecovery());
   if (recoveryTriggered) return;
 
