@@ -268,9 +268,9 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                   className="group rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                 >
                   <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                    {comp.image_url ? (
+                    {comp.cover_image_url ? (
                       <img
-                        src={comp.image_url}
+                        src={comp.cover_image_url}
                         alt={isAr ? comp.title_ar : comp.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
