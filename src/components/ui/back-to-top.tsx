@@ -1,11 +1,18 @@
-import { useEffect, useState, useCallback } from "react";
+import { forwardRef, useEffect, useState, useCallback } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+interface BackToTopProps {
+  className?: string;
+}
 
 /**
  * Floating "back to top" button that appears after scrolling down.
  */
-export function BackToTop({ className }: { className?: string }) {
+export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(function BackToTop(
+  { className },
+  ref
+) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -20,6 +27,7 @@ export function BackToTop({ className }: { className?: string }) {
 
   return (
     <button
+      ref={ref}
       onClick={scrollUp}
       aria-label="Back to top"
       className={cn(
@@ -35,4 +43,4 @@ export function BackToTop({ className }: { className?: string }) {
       <ArrowUp className="h-4 w-4" />
     </button>
   );
-}
+});
