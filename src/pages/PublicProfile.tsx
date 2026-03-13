@@ -18,11 +18,10 @@ import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
 import { SEOHead } from "@/components/SEOHead";
 import { SectionReveal } from "@/components/ui/section-reveal";
 import {
-  User, Award, BadgeCheck, ArrowLeft, Briefcase, GraduationCap, Building2,
-  ExternalLink, Trophy, Medal, ImageIcon, Tv, Gavel, Users, Heart,
+  User, Award, BadgeCheck, ArrowLeft, Building2,
+  ExternalLink, Trophy, Medal, ImageIcon,
 } from "lucide-react";
 import { useAllCountries } from "@/hooks/useCountries";
-import { toEnglishDigits } from "@/lib/formatNumber";
 
 import { PublicProfileHero } from "@/components/public-profile/PublicProfileHero";
 import { PublicProfileStats } from "@/components/public-profile/PublicProfileStats";
@@ -43,67 +42,8 @@ import { ProfileAvailabilityCard } from "@/components/public-profile/ProfileAvai
 import { ProfilePortfolioGallery } from "@/components/public-profile/ProfilePortfolioGallery";
 import { ProfileResumeExport } from "@/components/public-profile/ProfileResumeExport";
 
-// ── Helpers ──
-const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
-const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
-
-const pickLocalizedText = (isAr: boolean, arText?: string | null, enText?: string | null) => {
-  const ar = (arText || "").trim();
-  const en = (enText || "").trim();
-  if (isAr) return ar || (en && containsArabic(en) ? en : en) || "";
-  if (en && !containsArabic(en)) return en;
-  if (ar && containsLatin(ar)) return ar;
-  return en || ar || "";
-};
-
-const formatDate = (date: string | null, isAr: boolean) => {
-  if (!date) return "";
-  return toEnglishDigits(new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
-};
-
-const formatPeriodRange = (startDate: string | null, endDate: string | null, isCurrent: boolean, isAr: boolean) => {
-  const fmt = (d: string | null) => {
-    if (!d) return "";
-    const parts = d.split("-");
-    return parts.length === 1 && parts[0].length === 4 ? parts[0] : formatDate(d, isAr);
-  };
-  const start = fmt(startDate);
-  const end = fmt(endDate);
-  if (!start && !end) return isCurrent ? (isAr ? "لا يزال مستمراً" : "Still ongoing") : "";
-  if (isCurrent) return `${start} – ${isAr ? "مستمر" : "Ongoing"}`;
-  if (start && end && start !== end) return `${start} – ${end}`;
-  return start || end || "";
-};
-
-// ── Section config for career rendering ──
-interface SectionDef {
-  key: string;
-  visKey: string;
-  icon: any;
-  iconBg: string;
-  iconColor: string;
-  labelEn: string;
-  labelAr: string;
-  defaultOpen: boolean;
-  showEmpty?: boolean;
-  emptyDescEn?: string;
-  emptyDescAr?: string;
-}
-
-const CAREER_SECTIONS: SectionDef[] = [
-  { key: "work", visKey: "career", icon: Briefcase, iconBg: "bg-chart-3/8", iconColor: "text-chart-3", labelEn: "Professional Experience", labelAr: "الخبرة المهنية", defaultOpen: true, showEmpty: true, emptyDescEn: "No experience added yet", emptyDescAr: "لم يتم إضافة خبرة مهنية بعد" },
-  { key: "judging", visKey: "career", icon: Gavel, iconBg: "bg-chart-5/8", iconColor: "text-chart-5", labelEn: "Judging", labelAr: "التحكيم", defaultOpen: true },
-  { key: "participation", visKey: "career", icon: Users, iconBg: "bg-chart-1/8", iconColor: "text-chart-1", labelEn: "Participation & Events", labelAr: "المشاركات والفعاليات", defaultOpen: false },
-  { key: "education", visKey: "education", icon: GraduationCap, iconBg: "bg-chart-2/8", iconColor: "text-chart-2", labelEn: "Education", labelAr: "التعليم", defaultOpen: true, showEmpty: true, emptyDescEn: "No education added yet", emptyDescAr: "لم يتم إضافة تعليم بعد" },
-  { key: "media", visKey: "career", icon: Tv, iconBg: "bg-chart-4/8", iconColor: "text-chart-4", labelEn: "Media Appearances", labelAr: "الظهور الإعلامي", defaultOpen: true },
-  { key: "certification", visKey: "career", icon: Award, iconBg: "bg-chart-5/8", iconColor: "text-chart-5", labelEn: "Professional Certifications", labelAr: "الشهادات المهنية", defaultOpen: true },
-];
-
-const roleLabels: Record<string, { en: string; ar: string }> = {
-  chef: { en: "Chef", ar: "طاهٍ" }, judge: { en: "Judge", ar: "حكم" },
-  organizer: { en: "Organizer", ar: "منظم" }, student: { en: "Student", ar: "طالب" },
-  sponsor: { en: "Sponsor", ar: "راعي" }, supervisor: { en: "Supervisor", ar: "مشرف" },
-};
+import { pickLocalizedText, formatPeriodRange, roleLabels } from "@/components/public-profile/profileHelpers";
+import { CAREER_SECTIONS, categorizeCareerRecords } from "@/components/public-profile/careerSections";
 
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
@@ -119,7 +59,6 @@ export default function PublicProfile() {
     followersList, userSpecialties, followPrivacy, pendingRequest,
   } = usePublicProfileData(username, followListOpen);
 
-  // Determine if this profile is a fan account (now available from profiles_public view)
   const isProfileFan = profile?.account_type === "fan";
 
   const getCountryName = useCallback((code: string | null) => {
@@ -131,27 +70,7 @@ export default function PublicProfile() {
   const pickText = useCallback((ar?: string | null, en?: string | null) => pickLocalizedText(isAr, ar, en), [isAr]);
   const fmtRange = useCallback((s: string | null, e: string | null, c: boolean) => formatPeriodRange(s, e, c, isAr), [isAr]);
 
-  // ── Split career records into categories ──
-  const categorizedRecords = useMemo(() => {
-    const isJudging = (r: any) => /Role:\s*Judge|Head.?Judge/i.test(r.description || "") || /Role:\s*Judge|Head.?Judge/i.test(r.description_ar || "");
-    const isMediaInWork = (r: any) => /^📺|^📻|^🎙️|^📰|^📖|^🌐|TV\b|Radio\b|Podcast\b|interview/i.test(r.description || "");
-    const isParticipation = (r: any) => /Role:\s*(Organizer|Participant)/i.test(r.description || "");
-
-    const allWork = careerRecords.filter((r: any) => r.record_type === "work");
-    const judging = allWork.filter(isJudging);
-    const mediaInWork = allWork.filter((r: any) => !isJudging(r) && isMediaInWork(r));
-    const participation = allWork.filter((r: any) => !isJudging(r) && !isMediaInWork(r) && isParticipation(r));
-    const work = allWork.filter((r: any) => !isJudging(r) && !isMediaInWork(r) && !isParticipation(r));
-
-    return {
-      work,
-      judging,
-      participation,
-      education: careerRecords.filter((r: any) => r.record_type === "education"),
-      media: [...careerRecords.filter((r: any) => r.record_type === "media"), ...mediaInWork],
-      certification: careerRecords.filter((r: any) => r.record_type === "certification"),
-    };
-  }, [careerRecords]);
+  const categorizedRecords = useMemo(() => categorizeCareerRecords(careerRecords), [careerRecords]);
 
   const isOwnProfile = user?.id === profile?.user_id;
   const visibility = profile?.section_visibility || {};
@@ -420,27 +339,20 @@ export default function PublicProfile() {
             </SectionReveal>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT SIDEBAR */}
           <div className="hidden md:block">
             <div className="sticky top-20 space-y-4">
-              {/* Availability Card */}
               {!isProfileFan && profile.is_open_to_work && (
                 <SectionReveal delay={180} direction="right">
                   <ProfileAvailabilityCard profile={profile} isAr={isAr} />
                 </SectionReveal>
               )}
-              {/* Resume Export */}
               {!isProfileFan && (
                 <SectionReveal delay={190} direction="right">
                   <ProfileResumeExport
-                    profile={profile}
-                    careerRecords={careerRecords}
-                    memberships={memberships}
-                    userAwards={userAwards}
-                    userSpecialties={userSpecialties}
-                    displayName={displayName}
-                    isAr={isAr}
-                    isOwnProfile={isOwnProfile}
+                    profile={profile} careerRecords={careerRecords} memberships={memberships}
+                    userAwards={userAwards} userSpecialties={userSpecialties}
+                    displayName={displayName} isAr={isAr} isOwnProfile={isOwnProfile}
                   />
                 </SectionReveal>
               )}
@@ -458,6 +370,8 @@ export default function PublicProfile() {
               </SectionReveal>
             </div>
           </div>
+
+          {/* Mobile sidebar */}
           <div className="md:hidden">
             <PublicProfileSidebar profile={profile} qrCode={qrCode} isAr={isAr} isVisible={isVisible} getCountryName={getCountryName} profileUrl={profileUrl} t={t} />
           </div>

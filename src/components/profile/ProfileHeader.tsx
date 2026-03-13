@@ -55,23 +55,85 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
 
   const uploadImage = async (file: File, type: "avatar" | "cover") => {
     if (!file) return;
-    setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `${userId}/${type}-${Date.now()}.${ext}`;
-    const { error: uploadErr } = await supabase.storage
-      .from("user-media")
-      .upload(path, file, { upsert: true });
-    if (uploadErr) {
-      toast({ variant: "destructive", title: "Error", description: uploadErr.message });
-      setUploading(false);
+
+    // Validate file
+    const maxSize = type === "avatar" ? 5 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast({
+        variant: "destructive",
+        title: isAr ? "الملف كبير جداً" : "File too large",
+        description: isAr
+          ? `الحد الأقصى ${type === "avatar" ? "5" : "10"} ميجابايت`
+          : `Maximum ${type === "avatar" ? "5" : "10"}MB allowed`,
+      });
       return;
     }
-    const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
-    const col = type === "avatar" ? "avatar_url" : "cover_image_url";
-    await supabase.from("profiles").update({ [col]: urlData.publicUrl }).eq("user_id", userId);
-    toast({ title: isAr ? "تم تحديث الصورة" : "Image updated" });
-    onProfileUpdate();
-    setUploading(false);
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        variant: "destructive",
+        title: isAr ? "نوع ملف غير صالح" : "Invalid file type",
+        description: isAr ? "يرجى اختيار صورة" : "Please select an image file",
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${userId}/${type}-${Date.now()}.${ext}`;
+
+      // Remove old file first (best-effort)
+      const oldUrl = type === "avatar" ? profile?.avatar_url : profile?.cover_image_url;
+      if (oldUrl?.includes("/user-media/")) {
+        const oldPath = oldUrl.split("/user-media/").pop();
+        if (oldPath) {
+          await supabase.storage.from("user-media").remove([decodeURIComponent(oldPath)]).catch(() => {});
+        }
+      }
+
+      const { error: uploadErr } = await supabase.storage
+        .from("user-media")
+        .upload(path, file, { upsert: true, contentType: file.type });
+
+      if (uploadErr) {
+        toast({
+          variant: "destructive",
+          title: isAr ? "فشل الرفع" : "Upload failed",
+          description: uploadErr.message,
+        });
+        return;
+      }
+
+      const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
+      const col = type === "avatar" ? "avatar_url" : "cover_image_url";
+      const { error: updateErr } = await supabase.from("profiles").update({ [col]: urlData.publicUrl }).eq("user_id", userId);
+
+      if (updateErr) {
+        toast({
+          variant: "destructive",
+          title: isAr ? "فشل التحديث" : "Update failed",
+          description: updateErr.message,
+        });
+        return;
+      }
+
+      toast({
+        title: isAr ? "تم تحديث الصورة بنجاح ✓" : "Image updated successfully ✓",
+      });
+      onProfileUpdate();
+    } catch (err: any) {
+      toast({
+        variant: "destructive",
+        title: isAr ? "حدث خطأ" : "Something went wrong",
+        description: err?.message || "Unknown error",
+      });
+    } finally {
+      setUploading(false);
+      // Reset input so same file can be re-selected
+      if (type === "avatar" && avatarInputRef.current) avatarInputRef.current.value = "";
+      if (type === "cover" && coverInputRef.current) coverInputRef.current.value = "";
+    }
   };
 
   const tierConfig: Record<string, { icon: any; label: string; labelAr: string; color: string }> = {
