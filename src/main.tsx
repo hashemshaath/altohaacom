@@ -106,7 +106,66 @@ function registerChunkRecovery(): void {
 }
 
 async function recoverFromStalePwaCache(force = false): Promise<boolean> {
-...
+  if (typeof window === "undefined") return false;
+  if (!("serviceWorker" in navigator) || !("caches" in window)) return false;
+
+  const recoveryKey = `altoha-sw-recovery-${SW_RECOVERY_VERSION}`;
+
+  try {
+    if (!force && safeStorageGet(window.localStorage, recoveryKey) === "done") return false;
+
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    const hasRegistrations = registrations.length > 0;
+
+    if (!hasRegistrations && !force) {
+      safeStorageSet(window.localStorage, recoveryKey, "done");
+      return false;
+    }
+
+    if (hasRegistrations) {
+      await Promise.allSettled(registrations.map((registration) => registration.unregister()));
+    }
+
+    const cacheNames = await caches.keys();
+    await Promise.allSettled(cacheNames.map((cacheName) => caches.delete(cacheName)));
+
+    safeStorageSet(window.localStorage, recoveryKey, "done");
+
+    if (force) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("sw-reset");
+      url.searchParams.delete("reset-cache");
+      url.searchParams.delete("boot-retry");
+      window.location.replace(url.toString());
+    } else {
+      window.location.reload();
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function isAppBootReady(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.documentElement.getAttribute("data-app-boot") === "ready";
+}
+
+function hasRenderableHomeContent(): boolean {
+  if (typeof window === "undefined" || typeof document === "undefined") return true;
+  if (window.location.pathname !== "/") return true;
+
+  const main = document.getElementById("main-content");
+  if (!main) return false;
+
+  const rect = main.getBoundingClientRect();
+  const hasHeight = rect.height > 160;
+  const hasContent = (main.textContent?.trim().length || 0) > 20;
+
+  return hasHeight && hasContent;
+}
+
 function hasActiveLoadingFallback(): boolean {
   if (typeof document === "undefined") return false;
 
