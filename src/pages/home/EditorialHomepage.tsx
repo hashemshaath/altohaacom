@@ -323,16 +323,16 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
 
 /* ─── Featured Chefs ─── */
 function EditorialChefs({ isAr }: { isAr: boolean }) {
-  const { data: chefs = [] } = useQuery({
+  const { data: chefs = [] } = useQuery<any[]>({
     queryKey: ["editorial-chefs"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
-        .select("id, full_name, full_name_ar, avatar_url, country, chef_rank")
+        .from("profiles" as any)
+        .select("id, full_name, full_name_ar, avatar_url, country_code")
         .not("avatar_url", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
-      return data || [];
+      return (data || []) as any[];
     },
     staleTime: 1000 * 60 * 5,
   });
