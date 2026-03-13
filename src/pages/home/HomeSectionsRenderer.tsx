@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, useCallback, useState, useEffect } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
@@ -16,9 +16,25 @@ interface SectionEntry {
   sort_order: number;
 }
 
+/** Suspense fallback with a built-in timeout to prevent infinite loading */
+function TimedSkeleton({ index }: { index: number }) {
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setTimedOut(true), 8000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (timedOut) {
+    return <div className="container py-4"><div className="min-h-[40px]" /></div>;
+  }
+
+  return <HomeSectionSkeleton index={index} />;
+}
+
 const SECTION_ERROR_FALLBACK = (
   <div className="container py-4">
-    <div className="min-h-[60px]" />
+    <div className="min-h-[40px]" />
   </div>
 );
 
@@ -69,7 +85,7 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
 
         return (
           <ErrorBoundary key={`${sectionKey}-${entry.sort_order}-${index}`} fallback={SECTION_ERROR_FALLBACK}>
-            <Suspense fallback={<HomeSectionSkeleton index={index} />}>
+            <Suspense fallback={<TimedSkeleton index={index} />}>
               <SectionKeyProvider sectionKey={sectionKey}>
                 <HomepageSectionShell>
                   {Component ? <Component /> : <GenericHomepageSection sectionKey={sectionKey} />}
@@ -82,4 +98,3 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
     </>
   );
 }
-
