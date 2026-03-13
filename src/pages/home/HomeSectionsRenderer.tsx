@@ -1,4 +1,4 @@
-import { Suspense, forwardRef, useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
