@@ -267,7 +267,7 @@ export const ExhibitionCard = memo(
             </CardContent>
 
             {/* Footer */}
-            <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:all duration-300 group-hover:bg-primary/5 group-hover:border-primary/10roup-hover:bg-primary/5">
+            <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:px-5 py-2.5 transition-all duration-300 group-hover:bg-primary/5 group-hover:border-primary/10">
               <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
                 {isAr ? "عرض التفاصيل" : "View Details"}
                 <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180" />
