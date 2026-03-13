@@ -231,9 +231,9 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions" as any)
-        .select("id, title, title_ar, image_url, start_date, city, country, status")
-        .eq("is_visible", true)
-        .order("start_date", { ascending: true })
+        .select("id, title, title_ar, cover_image_url, competition_start, city, country, country_code, status")
+        .in("status", ["registration_open", "upcoming", "in_progress"])
+        .order("competition_start", { ascending: true })
         .limit(4);
       return (data || []) as any[];
     },
@@ -268,9 +268,9 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                   className="group rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                 >
                   <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                    {comp.image_url ? (
+                    {comp.cover_image_url ? (
                       <img
-                        src={comp.image_url}
+                        src={comp.cover_image_url}
                         alt={isAr ? comp.title_ar : comp.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
@@ -291,10 +291,10 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                     <h3 className="font-semibold text-foreground line-clamp-2 text-sm">
                       {isAr ? comp.title_ar || comp.title : comp.title}
                     </h3>
-                    {(comp.city || comp.country) && (
+                    {(comp.city || comp.country || comp.country_code) && (
                       <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
-                        {[comp.city, comp.country].filter(Boolean).join(", ")}
+                        {[comp.city, comp.country || comp.country_code].filter(Boolean).join(", ")}
                       </p>
                     )}
                   </div>
@@ -323,16 +323,16 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
 
 /* ─── Featured Chefs ─── */
 function EditorialChefs({ isAr }: { isAr: boolean }) {
-  const { data: chefs = [] } = useQuery({
+  const { data: chefs = [] } = useQuery<any[]>({
     queryKey: ["editorial-chefs"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
-        .select("id, full_name, full_name_ar, avatar_url, country, chef_rank")
+        .from("profiles" as any)
+        .select("id, full_name, full_name_ar, avatar_url, country_code")
         .not("avatar_url", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
-      return data || [];
+      return (data || []) as any[];
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -366,8 +366,8 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
                   <p className="text-xs font-semibold text-foreground line-clamp-1">
                     {isAr ? chef.full_name_ar || chef.full_name : chef.full_name}
                   </p>
-                  {chef.country && (
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{chef.country}</p>
+                  {chef.country_code && (
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{chef.country_code}</p>
                   )}
                 </Link>
               ) : (

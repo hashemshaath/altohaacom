@@ -173,7 +173,14 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fff;font-family:system-ui,sans-serif">
+        <div style="text-align:center">
+          <div style="width:40px;height:40px;border:3px solid #e5e5e5;border-top-color:#b8860b;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto"></div>
+          <p style="margin-top:16px;color:#888;font-size:14px">Loading...</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
