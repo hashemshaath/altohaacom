@@ -225,6 +225,14 @@ function scheduleBootWatchdog(): void {
 }
 
 
+async function renderReactApp(root: HTMLElement): Promise<void> {
+  const appModule = await import("./App.tsx");
+  const App = appModule.default;
+  const reactRoot = createRoot(root);
+  reactRoot.render(<App />);
+  scheduleBootWatchdog();
+}
+
 async function mountApp() {
   registerChunkRecovery();
 
@@ -237,9 +245,22 @@ async function mountApp() {
     return;
   }
 
-  const reactRoot = createRoot(root);
-  reactRoot.render(<App />);
-  scheduleBootWatchdog();
+  try {
+    await renderReactApp(root);
+  } catch {
+    const url = new URL(window.location.href);
+    const retriedForCurrentVersion = url.searchParams.get("boot-retry") === SW_RECOVERY_VERSION;
+
+    if (!retriedForCurrentVersion) {
+      url.searchParams.set("sw-reset", "1");
+      url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+      window.location.replace(url.toString());
+      return;
+    }
+
+    showEmergencyStartupFallback();
+    return;
+  }
 
   // Report paint timing for debugging
   if (import.meta.env.DEV) {
