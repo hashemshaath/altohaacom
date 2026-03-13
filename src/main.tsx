@@ -33,6 +33,38 @@ function isChunkLoadFailure(error: unknown): boolean {
   );
 }
 
+function showEmergencyStartupFallback(): void {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
+  const root = document.getElementById("root");
+  if (!root || root.dataset.startupFallback === "shown") return;
+
+  root.dataset.startupFallback = "shown";
+  root.innerHTML = `
+    <main class="min-h-screen bg-background text-foreground flex items-center justify-center p-4" role="main" aria-live="polite">
+      <section class="w-full max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-[var(--shadow-lg)]">
+        <h1 class="text-2xl font-bold">We’re restoring the homepage</h1>
+        <p class="mt-2 text-sm text-muted-foreground">A startup error blocked rendering. You can retry now, or run a full cache reset.</p>
+        <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+          <button id="boot-reload-btn" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Retry</button>
+          <button id="boot-reset-btn" class="inline-flex items-center justify-center rounded-lg border border-border bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground">Reset cache</button>
+        </div>
+      </section>
+    </main>
+  `;
+
+  document.getElementById("boot-reload-btn")?.addEventListener("click", () => {
+    window.location.reload();
+  });
+
+  document.getElementById("boot-reset-btn")?.addEventListener("click", () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("sw-reset", "1");
+    url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+    window.location.replace(url.toString());
+  });
+}
+
 function registerChunkRecovery(): void {
   if (typeof window === "undefined") return;
 
@@ -51,9 +83,16 @@ function registerChunkRecovery(): void {
     const recovered = await recoverFromStalePwaCache(true);
     if (!recovered) {
       const url = new URL(window.location.href);
-      url.searchParams.set("sw-reset", "1");
-      url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
-      window.location.replace(url.toString());
+      const retriedForCurrentVersion = url.searchParams.get("boot-retry") === SW_RECOVERY_VERSION;
+
+      if (!retriedForCurrentVersion) {
+        url.searchParams.set("sw-reset", "1");
+        url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+        window.location.replace(url.toString());
+        return;
+      }
+
+      showEmergencyStartupFallback();
     }
   };
 
@@ -162,7 +201,10 @@ function scheduleBootWatchdog(): void {
         url.searchParams.set("sw-reset", "1");
         url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
         window.location.replace(url.toString());
+        return;
       }
+
+      showEmergencyStartupFallback();
     }
   };
 
