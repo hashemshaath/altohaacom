@@ -291,10 +291,10 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                     <h3 className="font-semibold text-foreground line-clamp-2 text-sm">
                       {isAr ? comp.title_ar || comp.title : comp.title}
                     </h3>
-                    {(comp.city || comp.country) && (
+                    {(comp.city || comp.country || comp.country_code) && (
                       <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
-                        {[comp.city, comp.country].filter(Boolean).join(", ")}
+                        {[comp.city, comp.country || comp.country_code].filter(Boolean).join(", ")}
                       </p>
                     )}
                   </div>
