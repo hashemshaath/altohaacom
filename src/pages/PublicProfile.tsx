@@ -38,6 +38,10 @@ import { CollapsibleProfileSection } from "@/components/public-profile/Collapsib
 import { CareerRecordCard } from "@/components/public-profile/CareerRecordCard";
 import { usePublicProfileData } from "@/hooks/usePublicProfileData";
 import { PublicProfileComments } from "@/components/public-profile/PublicProfileComments";
+import { ProfileSkillsEndorsements } from "@/components/public-profile/ProfileSkillsEndorsements";
+import { ProfileAvailabilityCard } from "@/components/public-profile/ProfileAvailabilityCard";
+import { ProfilePortfolioGallery } from "@/components/public-profile/ProfilePortfolioGallery";
+import { ProfileResumeExport } from "@/components/public-profile/ProfileResumeExport";
 
 // ── Helpers ──
 const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
