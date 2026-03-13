@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Trophy, Star, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ interface AchievementEvent {
   action?: string;
 }
 
-export const AchievementCelebration = memo(function AchievementCelebration() {
+export const AchievementCelebration = forwardRef<HTMLDivElement>(function AchievementCelebration(_props, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [event, setEvent] = useState<AchievementEvent | null>(null);
@@ -20,8 +20,6 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
     const detail = (e as CustomEvent).detail as AchievementEvent;
     setEvent(detail);
     setVisible(true);
-
-    // Auto-dismiss after 5s
     setTimeout(() => setVisible(false), 5000);
   }, []);
 
@@ -33,14 +31,11 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
   if (!visible || !event) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center">
-      {/* Backdrop */}
+    <div ref={ref} className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center">
       <div className="absolute inset-0 bg-background/60 backdrop-blur-sm animate-fade-in pointer-events-auto" onClick={() => setVisible(false)} />
-      
-      {/* Celebration card */}
+
       <div className="relative pointer-events-auto animate-scale-in z-10 mx-4 max-w-sm w-full">
         <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card shadow-2xl shadow-primary/10">
-          {/* Decorative particles */}
           <div className="absolute inset-0 overflow-hidden">
             {Array.from({ length: 12 }).map((_, i) => (
               <div
@@ -56,11 +51,9 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
             ))}
           </div>
 
-          {/* Glow effect */}
           <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-primary/20 blur-[60px]" />
 
           <div className="relative p-6 text-center space-y-4">
-            {/* Close button */}
             <Button
               variant="ghost"
               size="icon"
@@ -70,7 +63,6 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
               <X className="h-3.5 w-3.5" />
             </Button>
 
-            {/* Icon */}
             <div className="flex justify-center">
               <div className="relative">
                 <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center ring-4 ring-primary/10 animate-pulse">
@@ -91,7 +83,6 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
               </div>
             </div>
 
-            {/* Title */}
             <div>
               <div className="flex items-center justify-center gap-1.5 text-primary mb-1">
                 <Sparkles className="h-4 w-4" />
@@ -100,12 +91,9 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
                 </span>
                 <Sparkles className="h-4 w-4" />
               </div>
-              <h3 className="text-lg font-bold">
-                {event.badge || (isAr ? "تحدي مكتمل" : "Challenge Complete")}
-              </h3>
+              <h3 className="text-lg font-bold">{event.badge || (isAr ? "تحدي مكتمل" : "Challenge Complete")}</h3>
             </div>
 
-            {/* Points */}
             {event.points && (
               <div className="inline-flex items-center gap-2 rounded-2xl bg-primary/10 px-4 py-2">
                 <Star className="h-4 w-4 text-primary" />
@@ -114,11 +102,8 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
               </div>
             )}
 
-            {/* Action label */}
             {event.action && (
-              <p className="text-xs text-muted-foreground">
-                {isAr ? `الإجراء: ${event.action}` : `Action: ${event.action}`}
-              </p>
+              <p className="text-xs text-muted-foreground">{isAr ? `الإجراء: ${event.action}` : `Action: ${event.action}`}</p>
             )}
           </div>
         </div>
@@ -126,3 +111,5 @@ export const AchievementCelebration = memo(function AchievementCelebration() {
     </div>
   );
 });
+
+AchievementCelebration.displayName = "AchievementCelebration";
