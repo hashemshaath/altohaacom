@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-const SW_RECOVERY_VERSION = "2026-03-12-v16";
+const SW_RECOVERY_VERSION = "2026-03-13-v17";
 
 function safeStorageGet(storage: Storage, key: string): string | null {
   try {
