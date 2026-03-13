@@ -231,9 +231,9 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
     queryFn: async () => {
       const { data } = await supabase
         .from("competitions" as any)
-        .select("id, title, title_ar, image_url, start_date, city, country, status")
-        .eq("is_visible", true)
-        .order("start_date", { ascending: true })
+        .select("id, title, title_ar, cover_image_url, competition_start, city, country, country_code, status")
+        .in("status", ["registration_open", "upcoming", "in_progress"])
+        .order("competition_start", { ascending: true })
         .limit(4);
       return (data || []) as any[];
     },
