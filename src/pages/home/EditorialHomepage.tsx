@@ -366,8 +366,8 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
                   <p className="text-xs font-semibold text-foreground line-clamp-1">
                     {isAr ? chef.full_name_ar || chef.full_name : chef.full_name}
                   </p>
-                  {chef.country && (
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{chef.country}</p>
+                  {chef.country_code && (
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{chef.country_code}</p>
                   )}
                 </Link>
               ) : (
