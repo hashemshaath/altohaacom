@@ -33,6 +33,38 @@ function isChunkLoadFailure(error: unknown): boolean {
   );
 }
 
+function showEmergencyStartupFallback(): void {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
+  const root = document.getElementById("root");
+  if (!root || root.dataset.startupFallback === "shown") return;
+
+  root.dataset.startupFallback = "shown";
+  root.innerHTML = `
+    <main class="min-h-screen bg-background text-foreground flex items-center justify-center p-4" role="main" aria-live="polite">
+      <section class="w-full max-w-lg rounded-2xl border border-border bg-card p-6 text-center shadow-[var(--shadow-lg)]">
+        <h1 class="text-2xl font-bold">We’re restoring the homepage</h1>
+        <p class="mt-2 text-sm text-muted-foreground">A startup error blocked rendering. You can retry now, or run a full cache reset.</p>
+        <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+          <button id="boot-reload-btn" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Retry</button>
+          <button id="boot-reset-btn" class="inline-flex items-center justify-center rounded-lg border border-border bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground">Reset cache</button>
+        </div>
+      </section>
+    </main>
+  `;
+
+  document.getElementById("boot-reload-btn")?.addEventListener("click", () => {
+    window.location.reload();
+  });
+
+  document.getElementById("boot-reset-btn")?.addEventListener("click", () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("sw-reset", "1");
+    url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+    window.location.replace(url.toString());
+  });
+}
+
 function registerChunkRecovery(): void {
   if (typeof window === "undefined") return;
 
@@ -51,9 +83,16 @@ function registerChunkRecovery(): void {
     const recovered = await recoverFromStalePwaCache(true);
     if (!recovered) {
       const url = new URL(window.location.href);
-      url.searchParams.set("sw-reset", "1");
-      url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
-      window.location.replace(url.toString());
+      const retriedForCurrentVersion = url.searchParams.get("boot-retry") === SW_RECOVERY_VERSION;
+
+      if (!retriedForCurrentVersion) {
+        url.searchParams.set("sw-reset", "1");
+        url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+        window.location.replace(url.toString());
+        return;
+      }
+
+      showEmergencyStartupFallback();
     }
   };
 
@@ -67,66 +106,7 @@ function registerChunkRecovery(): void {
 }
 
 async function recoverFromStalePwaCache(force = false): Promise<boolean> {
-  if (typeof window === "undefined") return false;
-  if (!("serviceWorker" in navigator) || !("caches" in window)) return false;
-
-  const recoveryKey = `altoha-sw-recovery-${SW_RECOVERY_VERSION}`;
-
-  try {
-    if (!force && safeStorageGet(window.localStorage, recoveryKey) === "done") return false;
-
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    const hasRegistrations = registrations.length > 0;
-
-    if (!hasRegistrations && !force) {
-      safeStorageSet(window.localStorage, recoveryKey, "done");
-      return false;
-    }
-
-    if (hasRegistrations) {
-      await Promise.allSettled(registrations.map((registration) => registration.unregister()));
-    }
-
-    const cacheNames = await caches.keys();
-    await Promise.allSettled(cacheNames.map((cacheName) => caches.delete(cacheName)));
-
-    safeStorageSet(window.localStorage, recoveryKey, "done");
-
-    if (force) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("sw-reset");
-      url.searchParams.delete("reset-cache");
-      url.searchParams.delete("boot-retry");
-      window.location.replace(url.toString());
-    } else {
-      window.location.reload();
-    }
-
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function isAppBootReady(): boolean {
-  if (typeof document === "undefined") return false;
-  return document.documentElement.getAttribute("data-app-boot") === "ready";
-}
-
-function hasRenderableHomeContent(): boolean {
-  if (typeof window === "undefined" || typeof document === "undefined") return true;
-  if (window.location.pathname !== "/") return true;
-
-  const main = document.getElementById("main-content");
-  if (!main) return false;
-
-  const rect = main.getBoundingClientRect();
-  const hasHeight = rect.height > 160;
-  const hasContent = (main.textContent?.trim().length || 0) > 20;
-
-  return hasHeight && hasContent;
-}
-
+...
 function hasActiveLoadingFallback(): boolean {
   if (typeof document === "undefined") return false;
 
@@ -162,7 +142,10 @@ function scheduleBootWatchdog(): void {
         url.searchParams.set("sw-reset", "1");
         url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
         window.location.replace(url.toString());
+        return;
       }
+
+      showEmergencyStartupFallback();
     }
   };
 
