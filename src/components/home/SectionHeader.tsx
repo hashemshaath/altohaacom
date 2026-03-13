@@ -67,7 +67,6 @@ export function SectionHeader(
       </div>
     </SectionReveal>
   );
-});
+}
 
-SectionHeader.displayName = "SectionHeader";
 

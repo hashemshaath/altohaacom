@@ -80,7 +80,5 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
         );
       })}
     </>
-  );
-});
+}
 
-HomeSectionsRenderer.displayName = "HomeSectionsRenderer";

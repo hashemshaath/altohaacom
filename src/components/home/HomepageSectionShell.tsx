@@ -58,7 +58,7 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
 
   return (
     <section
-      ref={setSectionRef}
+      ref={sectionRef}
       className={cn(
         spacing,
         config?.css_class,
@@ -74,6 +74,4 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
       {children}
     </section>
   );
-});
-
-HomepageSectionShell.displayName = "HomepageSectionShell";
+}
