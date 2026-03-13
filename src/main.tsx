@@ -26,6 +26,46 @@ function shouldForceRecovery(): boolean {
   return params.has("sw-reset") || params.has("reset-cache") || params.has("boot-retry");
 }
 
+function isChunkLoadFailure(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return /ChunkLoadError|Loading chunk\s+\S+\s+failed|Failed to fetch dynamically imported module|Importing a module script failed|dynamically imported module/i.test(
+    message
+  );
+}
+
+function registerChunkRecovery(): void {
+  if (typeof window === "undefined") return;
+
+  const chunkRecoveryKey = `altoha-chunk-recovery-${SW_RECOVERY_VERSION}`;
+
+  const recover = async (reason: unknown) => {
+    if (!isChunkLoadFailure(reason)) return;
+
+    try {
+      if (window.sessionStorage.getItem(chunkRecoveryKey) === "triggered") return;
+      window.sessionStorage.setItem(chunkRecoveryKey, "triggered");
+    } catch {
+      // no-op for restricted browsers
+    }
+
+    const recovered = await recoverFromStalePwaCache(true);
+    if (!recovered) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("sw-reset", "1");
+      url.searchParams.set("boot-retry", SW_RECOVERY_VERSION);
+      window.location.replace(url.toString());
+    }
+  };
+
+  window.addEventListener("error", (event) => {
+    void recover(event.error ?? event.message);
+  });
+
+  window.addEventListener("unhandledrejection", (event) => {
+    void recover(event.reason);
+  });
+}
+
 async function recoverFromStalePwaCache(force = false): Promise<boolean> {
   if (typeof window === "undefined") return false;
   if (!("serviceWorker" in navigator) || !("caches" in window)) return false;
@@ -145,6 +185,8 @@ function scheduleBootWatchdog(): void {
 
 
 async function mountApp() {
+  registerChunkRecovery();
+
   const recoveryTriggered = await recoverFromStalePwaCache(shouldForceRecovery());
   if (recoveryTriggered) return;
 
