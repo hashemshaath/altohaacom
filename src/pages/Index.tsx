@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, lazy, Suspense } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -12,14 +12,13 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
+import EditorialHomepage from "@/pages/home/EditorialHomepage";
 import {
   HomepageLayoutSwitcher,
   getStoredLayout,
   type HomepageLayout,
 } from "@/pages/home/HomepageLayoutSwitcher";
-import { ArrowRight, Sparkles, Shield, Globe, Award } from "lucide-react";
-
-const EditorialHomepage = lazy(() => import("@/pages/home/EditorialHomepage"));
+import { Shield, Globe, Award } from "lucide-react";
 
 /* ─── Emergency Fallbacks ─── */
 
