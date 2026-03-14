@@ -28,6 +28,9 @@ import { NewsTagsFilter } from "@/components/news/NewsTagsFilter";
 import { NewsDateRangeFilter } from "@/components/news/NewsDateRangeFilter";
 import { NewsViewToggle, type ViewMode } from "@/components/news/NewsViewToggle";
 import { NewsMobileFilters } from "@/components/news/NewsMobileFilters";
+import { NewsActiveFilters } from "@/components/news/NewsActiveFilters";
+import { NewsArchiveWidget } from "@/components/news/NewsArchiveWidget";
+import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
 
 interface Category {
   id: string;
