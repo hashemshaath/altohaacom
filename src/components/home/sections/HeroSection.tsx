@@ -145,22 +145,22 @@ export function HeroSection() {
   /* ── Empty state ── */
   if (!slides.length) {
     return (
-      <section className="relative flex min-h-[55vh] sm:min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <section className="relative flex min-h-[50vh] sm:min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 safe-area-x">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
-        <div className="relative text-center space-y-6 px-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
+        <div className="relative text-center space-y-5 px-6">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-2 text-[13px] sm:text-sm font-medium text-primary">
+            <Sparkles className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </span>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+          <h1 className="text-[28px] font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.12] text-foreground">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg">
+          <p className="text-[15px] sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
             {isAr
               ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
               : "Join the finest chefs, judges, and organizers worldwide"}
           </p>
-          <Button size="lg" className="rounded-xl shadow-[var(--shadow-md)]" asChild>
+          <Button size="lg" className="rounded-xl shadow-[var(--shadow-md)] h-12 px-6 text-[15px]" asChild>
             <Link to="/register">
               {isAr ? "ابدأ الآن" : "Get Started"}
               <ArrowRight className="ms-2 h-4 w-4" />
