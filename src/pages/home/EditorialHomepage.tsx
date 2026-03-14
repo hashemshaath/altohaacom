@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { forwardRef, memo, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -24,37 +24,53 @@ import {
 
 /* ─── Intersection Observer Hook ─── */
 function useReveal(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.unobserve(el); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.unobserve(el);
+        }
+      },
       { threshold, rootMargin: "60px" }
     );
+
     obs.observe(el);
     return () => obs.disconnect();
   }, [threshold]);
+
   return { ref, visible };
 }
 
 /* ─── Section Wrapper ─── */
-function Section({
-  children,
-  className,
-  dark = false,
-  id,
-}: {
+const Section = forwardRef<HTMLElement, {
   children: React.ReactNode;
   className?: string;
   dark?: boolean;
   id?: string;
-}) {
-  const { ref, visible } = useReveal();
+}>(function Section({ children, className, dark = false, id }, forwardedRef) {
+  const { ref: revealRef, visible } = useReveal();
+
+  const setRef = (node: HTMLElement | null) => {
+    revealRef.current = node;
+    if (typeof forwardedRef === "function") {
+      forwardedRef(node);
+      return;
+    }
+    if (forwardedRef) {
+      forwardedRef.current = node;
+    }
+  };
+
   return (
     <section
-      ref={ref}
+      ref={setRef}
       id={id}
       className={cn(
         "transition-all duration-700 ease-out",
@@ -66,7 +82,8 @@ function Section({
       {children}
     </section>
   );
-}
+});
+Section.displayName = "Section";
 
 /* ─── Editorial Hero ─── */
 const EditorialHero = memo(function EditorialHero({ isAr }: { isAr: boolean }) {
