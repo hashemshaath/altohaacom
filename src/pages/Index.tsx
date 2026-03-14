@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -13,9 +13,11 @@ import { useAdTracking } from "@/hooks/useAdTracking";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 import EditorialHomepage from "@/pages/home/EditorialHomepage";
+import { EditorialFailoverBoundary } from "@/components/home/EditorialFailoverBoundary";
 import {
   HomepageLayoutSwitcher,
   getStoredLayout,
+  setStoredLayout,
   type HomepageLayout,
 } from "@/pages/home/HomepageLayoutSwitcher";
 import { Shield, Globe, Award } from "lucide-react";
