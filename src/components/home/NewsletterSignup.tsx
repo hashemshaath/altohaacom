@@ -59,10 +59,10 @@ export const NewsletterSignup = function NewsletterSignup() {
             <Sparkles className="h-3 w-3" />
             {isAr ? "لا تفوّت الجديد" : "Stay in the Loop"}
           </Badge>
-          <h2 className={cn("text-xl font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
+          <h2 className={cn("text-[20px] font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
             {isAr ? "اشترك في نشرتنا الإخبارية" : "Subscribe to Our Newsletter"}
           </h2>
-          <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+          <p className="mt-1.5 text-[14px] sm:text-sm text-muted-foreground leading-relaxed">
             {isAr
               ? "كن أول من يعرف عن المسابقات القادمة والمقالات الحصرية والفرص المميزة."
               : "Be the first to know about upcoming competitions, exclusive articles & special opportunities."}
