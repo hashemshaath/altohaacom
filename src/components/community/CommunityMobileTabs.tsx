@@ -41,39 +41,30 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
   }), [allTabs, enabledFeatures]);
 
   return (
-    <div className="sticky top-12 z-40 border-b border-border/40 bg-background/90 backdrop-blur-xl lg:hidden">
-      <div className="relative">
-        <div className="flex overflow-x-auto scrollbar-none snap-x snap-mandatory" role="tablist">
-          {tabs.filter(t => !t.requiresAuth || user).map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActiveTab(tab.id)}
-                className={cn(
-                  "snap-start flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 text-[10px] font-bold transition-all relative touch-manipulation active:scale-95",
-                  isActive ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                <div className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-xl transition-all duration-200",
-                  isActive && "bg-primary/10 scale-110"
-                )}>
-                  <Icon className={cn("h-4 w-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground/70")} />
-                </div>
-                <span className="whitespace-nowrap leading-none">{tab.label}</span>
-                {isActive && (
-                  <div className="absolute bottom-0 inset-x-2 h-0.5 rounded-full bg-primary shadow-sm shadow-primary/30" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-        {/* Right fade scroll hint */}
-        <div className="pointer-events-none absolute end-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background/90 to-transparent" />
+    <div className="sticky top-12 z-40 border-b border-border/30 bg-background/95 backdrop-blur-xl lg:hidden">
+      <div className="flex overflow-x-auto scrollbar-none" role="tablist">
+        {tabs.filter(t => !t.requiresAuth || user).map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "flex-shrink-0 flex items-center gap-1.5 px-4 py-3 text-xs font-semibold transition-all relative active:scale-95",
+                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground/60")} />
+              <span className="whitespace-nowrap">{tab.label}</span>
+              {isActive && (
+                <span className="absolute bottom-0 inset-x-3 h-[2px] rounded-full bg-primary" />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
