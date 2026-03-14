@@ -147,15 +147,15 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </p>
           </div>
         </SectionReveal>
-        <div className={cn("grid gap-3 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <div className={cn("grid gap-3.5 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {whyUs.map((item) => (
-            <Card key={item.title} className="border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1">
+            <Card key={item.title} className="border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1 active:scale-[0.98]">
               <CardContent className="flex flex-col items-center p-5">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                   <item.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-1 text-sm font-bold">{item.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                <h3 className="mb-1 text-[14px] sm:text-sm font-bold">{item.title}</h3>
+                <p className="text-[12px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
               </CardContent>
             </Card>
           ))}
