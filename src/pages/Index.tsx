@@ -218,10 +218,23 @@ const Index = () => {
       <Header />
 
       <main className="flex-1" aria-label="Homepage content">
-        {layout === "editorial" ? (
-          <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
-            <EditorialHomepage />
-          </ErrorBoundary>
+        {layout === "editorial" && !editorialFailed ? (
+          <EditorialFailoverBoundary
+            onError={fallbackToClassic}
+            fallback={
+              <ClassicLayout
+                language={language}
+                isAr={isAr}
+                showHero={showHero}
+                dbSections={dbSections}
+                isError={isError}
+              />
+            }
+          >
+            <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
+              <EditorialHomepage />
+            </ErrorBoundary>
+          </EditorialFailoverBoundary>
         ) : (
           <ClassicLayout
             language={language}
