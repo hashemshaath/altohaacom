@@ -58,10 +58,10 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               <Sparkles className="h-3 w-3" />
               {isAr ? "الخدمات" : "Services"}
             </Badge>
-            <h2 id="services-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+            <h2 id="services-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
             </h2>
-            <p className="mx-auto mt-1.5 max-w-xl text-sm text-muted-foreground leading-relaxed">
+            <p className="mx-auto mt-1.5 max-w-xl text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
               {isAr ? "منصة متكاملة صُممت لتمكين كل محترف في عالم الطهي" : "A comprehensive platform designed to empower every culinary professional"}
             </p>
           </div>
