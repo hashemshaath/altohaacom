@@ -100,7 +100,7 @@ export const HomeArticles = memo(function HomeArticles() {
 
       {featured ? (
         <SectionReveal delay={80}>
-          <div className="grid gap-3 lg:grid-cols-5">
+          <div className="grid gap-3.5 lg:grid-cols-5">
             {/* Featured article */}
             <Link to={`/news/${featured.slug}`} className="group block lg:col-span-3">
               <Card interactive className="h-full overflow-hidden border-border/40">
