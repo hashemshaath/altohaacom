@@ -82,7 +82,7 @@ export const HomeTestimonials = function HomeTestimonials() {
             <div className="absolute bottom-4 end-4 opacity-[0.04] rotate-180">
               <Quote className="h-16 w-16" />
             </div>
-            <CardContent className="p-5 sm:p-8 md:p-10 text-center relative">
+            <CardContent className="p-6 sm:p-8 md:p-10 text-center relative">
               {t.rating && (
                 <div className="flex items-center justify-center gap-0.5 mb-5">
                   {Array.from({ length: 5 }).map((_, i) => (
