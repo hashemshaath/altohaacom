@@ -93,11 +93,11 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative px-5 sm:px-6">
           <SectionReveal>
-            <div className="mb-8 text-center">
-              <h2 id="roles-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+            <div className="mb-6 sm:mb-8 text-center">
+              <h2 id="roles-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
                 {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
               </h2>
-              <p className="mx-auto mt-1.5 max-w-xl text-sm text-muted-foreground">
+              <p className="mx-auto mt-1.5 max-w-xl text-[13px] sm:text-sm text-muted-foreground">
                 {isAr ? "مصممة لخدمة كل دور في منظومة الطهي الاحترافية" : "Designed to serve every role in the professional culinary ecosystem"}
               </p>
             </div>
