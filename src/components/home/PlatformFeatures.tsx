@@ -223,13 +223,13 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                 : "Join for free and enjoy exclusive competitions, masterclasses, a global professional network, and much more."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
+              <Button size="lg" className="shadow-lg shadow-primary/20 h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/register">
                   {isAr ? "أنشئ حسابك المجاني" : "Create Your Free Account"}
                   <ArrowRight className="ms-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="outline" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
