@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { forwardRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const NewsletterCTA = memo(function NewsletterCTA({ isAr }: Props) {
+export const NewsletterCTA = forwardRef<HTMLDivElement, Props>(function NewsletterCTA({ isAr }, ref) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
@@ -17,7 +17,6 @@ export const NewsletterCTA = memo(function NewsletterCTA({ isAr }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes("@")) return;
-    // In the future this can connect to an edge function
     setSubmitted(true);
     toast({
       title: isAr ? "تم الاشتراك!" : "Subscribed!",
@@ -26,7 +25,7 @@ export const NewsletterCTA = memo(function NewsletterCTA({ isAr }: Props) {
   };
 
   return (
-    <Card className="rounded-2xl border-primary/20 bg-gradient-to-br from-primary/[0.06] via-primary/[0.02] to-transparent overflow-hidden">
+    <Card ref={ref} className="rounded-2xl border-primary/20 bg-gradient-to-br from-primary/[0.06] via-primary/[0.02] to-transparent overflow-hidden">
       <CardContent className="p-6">
         <div className="flex items-center gap-3 mb-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">

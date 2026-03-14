@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAdTracking } from "@/hooks/useAdTracking";
-import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, Sparkles, Filter, ArrowDown } from "lucide-react";
+import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, Sparkles, Filter, ArrowDown, SlidersHorizontal } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,17 @@ import { NewsHeroCard } from "@/components/news/NewsHeroCard";
 import { NewsArticleCard, type NewsArticle } from "@/components/news/NewsArticleCard";
 import { NewsTrendingSidebar } from "@/components/news/NewsTrendingSidebar";
 import { NewsletterCTA } from "@/components/news/NewsletterCTA";
+import { NewsTagsFilter } from "@/components/news/NewsTagsFilter";
+import { NewsDateRangeFilter } from "@/components/news/NewsDateRangeFilter";
 
 interface Category {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  slug: string;
+}
+
+interface ContentTag {
   id: string;
   name: string;
   name_ar: string | null;
@@ -47,6 +56,10 @@ export default function News() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [visibleCount, setVisibleCount] = useState(ARTICLES_PER_PAGE);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ["news-articles"],
@@ -71,6 +84,30 @@ export default function News() {
     staleTime: 1000 * 60 * 10,
   });
 
+  const { data: tags = [] } = useQuery({
+    queryKey: ["news-tags"],
+    queryFn: async () => {
+      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name");
+      return (data || []) as ContentTag[];
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
+  // Fetch article-tag mappings when tags are selected
+  const { data: articleTagMap = {} } = useQuery({
+    queryKey: ["article-tag-map"],
+    queryFn: async () => {
+      const { data } = await supabase.from("article_tags").select("article_id, tag_id");
+      const map: Record<string, string[]> = {};
+      (data || []).forEach((row) => {
+        if (!map[row.article_id]) map[row.article_id] = [];
+        map[row.article_id].push(row.tag_id);
+      });
+      return map;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
   const filteredArticles = useMemo(() => {
     let result = articles.filter((article) => {
       const matchesSearch =
@@ -80,19 +117,27 @@ export default function News() {
         (article.excerpt && article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesType = activeType === "all" || article.type === activeType;
       const matchesCategory = selectedCategory === "all" || article.category_id === selectedCategory;
-      return matchesSearch && matchesType && matchesCategory;
+
+      // Tag filter
+      const matchesTags = selectedTags.length === 0 ||
+        (articleTagMap[article.id] && selectedTags.some((t) => articleTagMap[article.id].includes(t)));
+
+      // Date range filter
+      const pubDate = article.published_at || article.created_at;
+      const matchesDateFrom = !dateFrom || pubDate >= dateFrom;
+      const matchesDateTo = !dateTo || pubDate <= dateTo + "T23:59:59";
+
+      return matchesSearch && matchesType && matchesCategory && matchesTags && matchesDateFrom && matchesDateTo;
     });
 
-    // Sort
     if (sortBy === "oldest") {
       result = [...result].sort((a, b) => new Date(a.published_at || a.created_at).getTime() - new Date(b.published_at || b.created_at).getTime());
     } else if (sortBy === "popular") {
       result = [...result].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
     }
-    // "newest" is default from query
 
     return result;
-  }, [articles, searchQuery, activeType, selectedCategory, sortBy]);
+  }, [articles, searchQuery, activeType, selectedCategory, sortBy, selectedTags, articleTagMap, dateFrom, dateTo]);
 
   const featuredArticles = useMemo(() => filteredArticles.filter((a) => a.is_featured), [filteredArticles]);
   const regularArticles = useMemo(() => filteredArticles.filter((a) => !a.is_featured), [filteredArticles]);
@@ -114,7 +159,6 @@ export default function News() {
     return isAr ? map[type]?.ar || type : map[type]?.en || type;
   }, [isAr]);
 
-  // Unique types from articles
   const articleTypes = useMemo(() => {
     const types = new Set(articles.map((a) => a.type));
     return Array.from(types);
@@ -150,11 +194,28 @@ export default function News() {
   const resultCount = filteredArticles.length;
 
   const handleLoadMore = () => setVisibleCount((prev) => prev + ARTICLES_PER_PAGE);
+  const resetPagination = () => setVisibleCount(ARTICLES_PER_PAGE);
 
-  // Reset pagination when filters change
-  const handleTypeChange = (v: string) => { setActiveType(v); setVisibleCount(ARTICLES_PER_PAGE); };
-  const handleCategoryChange = (v: string) => { setSelectedCategory(v); setVisibleCount(ARTICLES_PER_PAGE); };
-  const handleSortChange = (v: string) => { setSortBy(v); setVisibleCount(ARTICLES_PER_PAGE); };
+  const handleTypeChange = (v: string) => { setActiveType(v); resetPagination(); };
+  const handleCategoryChange = (v: string) => { setSelectedCategory(v); resetPagination(); };
+  const handleSortChange = (v: string) => { setSortBy(v); resetPagination(); };
+  const handleToggleTag = useCallback((tagId: string) => {
+    setSelectedTags((prev) => prev.includes(tagId) ? prev.filter((t) => t !== tagId) : [...prev, tagId]);
+    resetPagination();
+  }, []);
+
+  const activeFilterCount = selectedTags.length + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0);
+
+  const handleClearAll = () => {
+    setSearchQuery("");
+    setActiveType("all");
+    setSelectedCategory("all");
+    setSortBy("newest");
+    setSelectedTags([]);
+    setDateFrom("");
+    setDateTo("");
+    resetPagination();
+  };
 
   return (
     <PageShell
@@ -228,7 +289,7 @@ export default function News() {
                 <Input
                   placeholder={isAr ? "ابحث في الأخبار والمقالات..." : "Search news & articles..."}
                   value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); setVisibleCount(ARTICLES_PER_PAGE); }}
+                  onChange={(e) => { setSearchQuery(e.target.value); resetPagination(); }}
                   className="h-10 border-border/40 bg-muted/20 ps-10 rounded-xl focus:ring-primary/20"
                   aria-label={isAr ? "البحث" : "Search"}
                 />
@@ -258,7 +319,50 @@ export default function News() {
                   ))}
                 </SelectContent>
               </Select>
+              <Button
+                variant={showAdvancedFilters ? "default" : "outline"}
+                size="sm"
+                className="rounded-xl gap-1.5 h-10 shrink-0 relative"
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                {isAr ? "فلاتر" : "Filters"}
+                {activeFilterCount > 0 && (
+                  <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
             </div>
+
+            {/* Advanced Filters Panel */}
+            {showAdvancedFilters && (
+              <div className="mt-3 pt-3 border-t border-border/30 space-y-3">
+                {tags.length > 0 && (
+                  <NewsTagsFilter
+                    tags={tags}
+                    selectedTags={selectedTags}
+                    onToggleTag={handleToggleTag}
+                    isAr={isAr}
+                  />
+                )}
+                <div className="flex flex-wrap items-center gap-4">
+                  <NewsDateRangeFilter
+                    dateFrom={dateFrom}
+                    dateTo={dateTo}
+                    onDateFromChange={(v) => { setDateFrom(v); resetPagination(); }}
+                    onDateToChange={(v) => { setDateTo(v); resetPagination(); }}
+                    onClear={() => { setDateFrom(""); setDateTo(""); resetPagination(); }}
+                    isAr={isAr}
+                  />
+                  {(selectedTags.length > 0 || dateFrom || dateTo || searchQuery || selectedCategory !== "all") && (
+                    <Button variant="ghost" size="sm" className="rounded-xl text-xs text-muted-foreground hover:text-destructive" onClick={handleClearAll}>
+                      {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ─── Tabs ─── */}
@@ -275,7 +379,6 @@ export default function News() {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {/* Result count */}
               {!isLoading && (
                 <span className="hidden sm:inline text-xs text-muted-foreground shrink-0">
                   {resultCount} {isAr ? "نتيجة" : "results"}
@@ -305,13 +408,13 @@ export default function News() {
                     </div>
                     <h3 className="mb-1 text-lg font-semibold">{isAr ? "لا توجد مقالات" : "No articles found"}</h3>
                     <p className="max-w-sm text-sm text-muted-foreground">
-                      {searchQuery
-                        ? (isAr ? "جرّب كلمات بحث مختلفة" : "Try different search terms")
+                      {searchQuery || selectedTags.length > 0 || dateFrom || dateTo
+                        ? (isAr ? "جرّب تعديل الفلاتر أو كلمات البحث" : "Try adjusting your filters or search terms")
                         : (isAr ? "لا توجد مقالات منشورة حالياً" : "No published articles yet")}
                     </p>
-                    {searchQuery && (
-                      <Button variant="outline" size="sm" className="mt-4 rounded-xl" onClick={() => setSearchQuery("")}>
-                        {isAr ? "مسح البحث" : "Clear search"}
+                    {(searchQuery || selectedTags.length > 0 || dateFrom || dateTo) && (
+                      <Button variant="outline" size="sm" className="mt-4 rounded-xl" onClick={handleClearAll}>
+                        {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
                       </Button>
                     )}
                   </CardContent>
@@ -398,6 +501,35 @@ export default function News() {
                                   onClick={() => handleCategoryChange(selectedCategory === cat.id ? "all" : cat.id)}
                                 >
                                   {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                                </Badge>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Sidebar Tags */}
+                      {tags.length > 0 && (
+                        <Card className="rounded-2xl border-border/40">
+                          <CardContent className="p-5">
+                            <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+                              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                              {isAr ? "الوسوم" : "Tags"}
+                            </h3>
+                            <div className="flex flex-wrap gap-1.5">
+                              {tags.slice(0, 15).map((tag) => (
+                                <Badge
+                                  key={tag.id}
+                                  variant={selectedTags.includes(tag.id) ? "default" : "outline"}
+                                  className={cn(
+                                    "cursor-pointer rounded-lg text-[10px] transition-colors",
+                                    selectedTags.includes(tag.id)
+                                      ? "bg-primary text-primary-foreground"
+                                      : "border-border/40 hover:bg-primary/5"
+                                  )}
+                                  onClick={() => handleToggleTag(tag.id)}
+                                >
+                                  {isAr && tag.name_ar ? tag.name_ar : tag.name}
                                 </Badge>
                               ))}
                             </div>
