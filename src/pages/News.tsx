@@ -616,6 +616,7 @@ export default function News() {
                     {/* Sidebar */}
                     <aside className="hidden lg:block space-y-6">
                       <NewsTrendingSidebar articles={articles} isAr={isAr} />
+                      <NewsArchiveWidget articles={articles} isAr={isAr} onMonthClick={handleArchiveMonthClick} />
                       <NewsletterCTA isAr={isAr} />
 
                       {/* Category Quick Links */}
