@@ -27,7 +27,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
 ) {
   return (
     <SectionReveal>
-      <div ref={ref} className={cn("mb-5", className)}>
+      <div ref={ref} className={cn("mb-4 sm:mb-5", className)}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -38,18 +38,18 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
             </div>
             <h2
               className={cn(
-                "text-xl font-bold sm:text-2xl lg:text-3xl text-foreground tracking-tight leading-tight",
+                "text-[20px] font-bold sm:text-2xl lg:text-3xl text-foreground tracking-tight leading-tight",
                 !isAr && "font-serif"
               )}
             >
               {title}
             </h2>
-            {subtitle && <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{subtitle}</p>}
+            {subtitle && <p className="mt-1.5 text-[13px] sm:text-sm text-muted-foreground leading-relaxed">{subtitle}</p>}
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {actions}
             {viewAllHref && (
-              <Button variant="outline" size="sm" className="rounded-xl gap-1.5 font-semibold" asChild>
+              <Button variant="outline" size="sm" className="rounded-xl gap-1.5 font-semibold h-9 min-h-[44px] sm:min-h-0 sm:h-auto touch-manipulation" asChild>
                 <Link to={viewAllHref}>
                   {viewAllLabel || (isAr ? "عرض الكل" : "View All")}
                   <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />

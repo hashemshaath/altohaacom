@@ -148,12 +148,12 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               <h4 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
                 {l(col.titleEn, col.titleAr)}
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2 sm:space-y-1.5">
                 {col.links.map((link) => (
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      className="text-[14px] sm:text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-200 touch-manipulation inline-block py-0.5"
                     >
                       {l(link.en, link.ar)}
                     </Link>

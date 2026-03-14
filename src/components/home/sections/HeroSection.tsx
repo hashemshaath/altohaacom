@@ -275,7 +275,7 @@ export function HeroSection() {
             </button>
 
             {/* Progress dots */}
-            <div className="absolute bottom-4 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
+            <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3.5 py-2.5 shadow-[var(--shadow-sm)]">
               {slides.map((_, idx) => (
                 <button
                   key={idx}

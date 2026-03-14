@@ -134,7 +134,7 @@ const Index = () => {
 
       <Header />
 
-      <main className="flex-1" aria-label="Homepage content">
+      <main className="flex-1 safe-area-x" aria-label="Homepage content">
         <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
         </ErrorBoundary>
@@ -146,7 +146,7 @@ const Index = () => {
             <HomeSectionsRenderer sections={dbSections} />
           )}
         </ErrorBoundary>
-        <div className="container pb-10">
+        <div className="container px-5 sm:px-6 pb-10">
           <RelatedPages currentPath="/" />
         </div>
       </main>
