@@ -403,16 +403,16 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
       {/* Tag filter banner */}
       {tagFilter && (
-        <div className="flex items-center gap-2 border-b border-border px-4 py-3 bg-primary/5">
-          <span className="text-sm font-bold text-primary">#{tagFilter}</span>
-          <span className="text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
+        <div className="flex items-center gap-2 border-b border-border px-4 min-h-[44px] bg-primary/5">
+          <span className="text-[15px] sm:text-sm font-bold text-primary">#{tagFilter}</span>
+          <span className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 ms-auto rounded-full"
+            className="h-8 w-8 ms-auto rounded-full"
             onClick={() => navigate("/community")}
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
       )}
