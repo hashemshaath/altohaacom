@@ -282,7 +282,7 @@ export default function News() {
       padding="none"
     >
       <main className="flex-1">
-        {/* ─── Hero ─── */}
+        <NewsReadingProgress />
         <section className="relative overflow-hidden border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
           <div className="container relative py-10 md:py-14">
