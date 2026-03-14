@@ -166,11 +166,11 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       <section className="container px-5 sm:px-6" dir={isAr ? "rtl" : "ltr"}>
         <div className="grid gap-3.5 md:grid-cols-2">
           <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/10 via-card to-card transition-all hover:shadow-xl">
-            <CardContent className="relative p-6 md:p-8">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
-                <Star className="h-5 w-5 text-primary" />
+            <CardContent className="relative p-5 sm:p-6 md:p-8">
+              <div className="mb-3 flex h-12 w-12 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
+                <Star className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
               </div>
-              <h3 className={cn("mb-2 text-xl font-bold", !isAr && "font-serif")}>
+              <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "هل أنت راعٍ أو شركة؟" : "Sponsor or Company?"}
               </h3>
               <p className="mb-5 text-sm text-muted-foreground">
