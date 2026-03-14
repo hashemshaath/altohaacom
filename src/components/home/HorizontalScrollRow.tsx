@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,42 +11,61 @@ interface HorizontalScrollRowProps {
   showArrows?: boolean;
 }
 
-export function HorizontalScrollRow({
-  children,
-  className,
-  isAr = false,
-  showArrows = true,
-}: HorizontalScrollRowProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+export const HorizontalScrollRow = forwardRef<HTMLDivElement, HorizontalScrollRowProps>(function HorizontalScrollRow(
+  { children, className, isAr = false, showArrows = true }: HorizontalScrollRowProps,
+  ref
+) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const [canScrollStart, setCanScrollStart] = useState(false);
   const [canScrollEnd, setCanScrollEnd] = useState(false);
 
-  const checkScroll = () => {
+  const setScrollRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      scrollRef.current = node;
+      if (typeof ref === "function") {
+        ref(node);
+      } else if (ref) {
+        ref.current = node;
+      }
+    },
+    [ref]
+  );
+
+  const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
+
     const { scrollLeft, scrollWidth, clientWidth } = el;
     const atStart = Math.abs(scrollLeft) < 2;
     const atEnd = Math.abs(scrollLeft) + clientWidth >= scrollWidth - 2;
+
     setCanScrollStart(!atStart);
     setCanScrollEnd(!atEnd);
-  };
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    checkScroll();
+
+    const frame = requestAnimationFrame(checkScroll);
     el.addEventListener("scroll", checkScroll, { passive: true });
-    const ro = new ResizeObserver(checkScroll);
-    ro.observe(el);
+    window.addEventListener("resize", checkScroll, { passive: true });
+
+    const resizeObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(checkScroll) : null;
+    resizeObserver?.observe(el);
+
     return () => {
+      cancelAnimationFrame(frame);
       el.removeEventListener("scroll", checkScroll);
-      ro.disconnect();
+      window.removeEventListener("resize", checkScroll);
+      resizeObserver?.disconnect();
     };
-  }, [children]);
+  }, [checkScroll, children]);
 
   const scroll = (direction: "start" | "end") => {
     const el = scrollRef.current;
     if (!el) return;
+
     const amount = el.clientWidth * 0.7;
     const dir = direction === "end" ? 1 : -1;
     el.scrollBy({ left: dir * amount, behavior: "smooth" });
@@ -54,7 +73,6 @@ export function HorizontalScrollRow({
 
   return (
     <div className="relative group/scroll">
-      {/* Fade edges */}
       <div
         className={cn(
           "pointer-events-none absolute inset-y-0 start-0 z-10 w-6 sm:w-10 bg-gradient-to-e from-background to-transparent transition-opacity duration-300",
@@ -68,7 +86,6 @@ export function HorizontalScrollRow({
         )}
       />
 
-      {/* Arrow buttons - desktop only */}
       {showArrows && canScrollStart && (
         <Button
           variant="outline"
@@ -90,9 +107,8 @@ export function HorizontalScrollRow({
         </Button>
       )}
 
-      {/* Scroll container */}
       <div
-        ref={scrollRef}
+        ref={setScrollRef}
         dir={isAr ? "rtl" : "ltr"}
         className={cn(
           "flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 -mx-4 px-4 sm:-mx-0 sm:px-0",
@@ -104,5 +120,4 @@ export function HorizontalScrollRow({
       </div>
     </div>
   );
-}
-
+});
