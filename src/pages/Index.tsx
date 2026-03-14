@@ -139,6 +139,7 @@ const Index = () => {
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
         </ErrorBoundary>
         <TrustBadges isAr={isAr} />
+        <div className="py-5 sm:py-6" />
         <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
           {isError ? (
             <HomeEmergencySections language={language} />
@@ -146,7 +147,7 @@ const Index = () => {
             <HomeSectionsRenderer sections={dbSections} />
           )}
         </ErrorBoundary>
-        <div className="container px-5 sm:px-6 pb-10">
+        <div className="container px-5 sm:px-6 pb-12 pt-4">
           <RelatedPages currentPath="/" />
         </div>
       </main>

@@ -59,8 +59,8 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
   const useMarquee = displayLogos.length >= 4;
 
   return (
-    <section dir={isAr ? "rtl" : "ltr"}>
-      <div className="container">
+    <section dir={isAr ? "rtl" : "ltr"} className="py-2">
+      <div className="container px-5 sm:px-6">
         {showTitle && (
           <div className="text-center mb-10">
             <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
