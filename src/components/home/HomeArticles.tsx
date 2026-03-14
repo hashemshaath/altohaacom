@@ -144,10 +144,10 @@ export const HomeArticles = memo(function HomeArticles() {
 
             {/* Sidebar articles */}
             <div className="lg:col-span-2">
-              <div className="lg:hidden -mx-4 px-4 overflow-x-auto snap-x snap-mandatory scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
-                <div className="flex gap-3 pb-2" style={{ width: `${rest.length * 75}vw` }}>
+              <div className="lg:hidden -mx-5 px-5 overflow-x-auto snap-x snap-mandatory scrollbar-none touch-pan-x" dir={isAr ? "rtl" : "ltr"}>
+                <div className="flex gap-3.5 pb-2" style={{ width: `${rest.length * 75}vw` }}>
                   {rest.map((article: any) => (
-                    <Link key={article.id} to={`/news/${article.slug}`} className="group block snap-start" style={{ width: "72vw", flexShrink: 0 }}>
+                    <Link key={article.id} to={`/news/${article.slug}`} className="group block snap-start touch-manipulation" style={{ width: "72vw", flexShrink: 0 }}>
                       <Card interactive className="h-full overflow-hidden border-border/40">
                         <div className="flex gap-3 p-2.5">
                           <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
