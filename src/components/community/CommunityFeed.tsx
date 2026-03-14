@@ -463,7 +463,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
                   ? (isAr ? "لا توجد منشورات بعد" : "No posts yet")
                   : (isAr ? "لا توجد منشورات" : "No posts yet")}
             </h3>
-            <p className="text-xs text-muted-foreground max-w-[240px]">
+            <p className="text-sm sm:text-xs text-muted-foreground max-w-[280px] leading-relaxed">
               {feedFilter === "bookmarks"
                 ? (isAr ? "احفظ منشوراتك المفضلة لتجدها هنا" : "Save your favorite posts to find them here")
                 : feedFilter === "following"

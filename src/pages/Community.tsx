@@ -57,8 +57,8 @@ export default function Community() {
       />
       <Header />
 
-      <main className="container flex-1 px-0 sm:px-4 pt-2 sm:pt-4">
-        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-4">
+      <main className="flex-1 safe-area-x">
+        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-4 px-0 sm:px-4 pt-0 sm:pt-4">
           <CommunityLeftSidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
@@ -66,16 +66,16 @@ export default function Community() {
             setLeftSidebarOpen={setLeftSidebarOpen}
           />
 
-          <div className="flex-1 min-w-0 border-x border-border/20 min-h-screen bg-background">
+          <div className="flex-1 min-w-0 lg:border-x lg:border-border/20 min-h-screen bg-background">
             <CommunityMobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {(activeTab === "feed" || activeTab === "bookmarks") && <CommunityFeed />}
-            {activeTab === "chefs" && <Suspense fallback={<TabFallback />}><div className="p-4"><ChefsTab /></div></Suspense>}
-            {activeTab === "recipes" && <Suspense fallback={<TabFallback />}><div className="p-4"><RecipesTab /></div></Suspense>}
-            {activeTab === "groups" && <Suspense fallback={<TabFallback />}><div className="p-4"><GroupsTab /></div></Suspense>}
-            {activeTab === "events" && <Suspense fallback={<TabFallback />}><div className="p-4"><EventsTab /></div></Suspense>}
-            {activeTab === "live" && <FeatureGate feature="feature_live_sessions" showUpgrade upgradeVariant="card" featureName="Live Sessions" featureNameAr="الجلسات المباشرة"><Suspense fallback={<TabFallback />}><div className="p-4"><LiveSessionsTab /></div></Suspense></FeatureGate>}
-            {activeTab === "network" && user && <Suspense fallback={<TabFallback />}><div className="p-4"><NetworkTab /></div></Suspense>}
+            {activeTab === "chefs" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><ChefsTab /></div></Suspense>}
+            {activeTab === "recipes" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><RecipesTab /></div></Suspense>}
+            {activeTab === "groups" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><GroupsTab /></div></Suspense>}
+            {activeTab === "events" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><EventsTab /></div></Suspense>}
+            {activeTab === "live" && <FeatureGate feature="feature_live_sessions" showUpgrade upgradeVariant="card" featureName="Live Sessions" featureNameAr="الجلسات المباشرة"><Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><LiveSessionsTab /></div></Suspense></FeatureGate>}
+            {activeTab === "network" && user && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><NetworkTab /></div></Suspense>}
           </div>
 
           <CommunityRightSidebar
@@ -85,7 +85,7 @@ export default function Community() {
         </div>
       </main>
 
-      <div className="container">
+      <div className="container px-4">
         <RelatedPages currentPath="/community" />
       </div>
       <div className="pb-20 sm:pb-0" />
