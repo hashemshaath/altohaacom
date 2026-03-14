@@ -127,6 +127,9 @@ const AppEnhancements = forwardRef<HTMLDivElement, { isHome: boolean }>(function
       <IOSInstallGuide />
       <OfflineBanner />
       <UpdatePrompt />
+      <Suspense fallback={null}>
+        <AIChatbot />
+      </Suspense>
 
       {!isHome && (
         <>
