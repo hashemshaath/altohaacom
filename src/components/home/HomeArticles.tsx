@@ -129,7 +129,7 @@ export const HomeArticles = memo(function HomeArticles() {
                         </span>
                       )}
                     </div>
-                    <h3 className="line-clamp-2 text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                    <h3 className="line-clamp-2 text-[15px] sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                       {isAr && featured.title_ar ? featured.title_ar : featured.title}
                     </h3>
                     {(isAr ? featured.excerpt_ar : featured.excerpt) && (
