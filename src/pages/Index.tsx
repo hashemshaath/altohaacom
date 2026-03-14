@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -9,17 +9,8 @@ import { Button } from "@/components/ui/button";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { HeroSection } from "@/components/home/sections/HeroSection";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useAdTracking } from "@/hooks/useAdTracking";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
-import EditorialHomepage from "@/pages/home/EditorialHomepage";
-import { EditorialFailoverBoundary } from "@/components/home/EditorialFailoverBoundary";
-import {
-  HomepageLayoutSwitcher,
-  getStoredLayout,
-  setStoredLayout,
-  type HomepageLayout,
-} from "@/pages/home/HomepageLayoutSwitcher";
 import { Shield, Globe, Award } from "lucide-react";
 
 /* ─── Emergency Fallbacks ─── */
@@ -67,21 +58,9 @@ function HomeEmergencySections({ language }: { language: string }) {
 
 function TrustBadges({ isAr }: { isAr: boolean }) {
   const badges = [
-    {
-      icon: Shield,
-      label: isAr ? "منصة موثوقة" : "Trusted Platform",
-      sub: isAr ? "+50,000 طاهٍ" : "50,000+ Chefs",
-    },
-    {
-      icon: Globe,
-      label: isAr ? "تغطية عالمية" : "Global Coverage",
-      sub: isAr ? "+120 دولة" : "120+ Countries",
-    },
-    {
-      icon: Award,
-      label: isAr ? "مسابقات معتمدة" : "Certified Events",
-      sub: isAr ? "+500 مسابقة" : "500+ Competitions",
-    },
+    { icon: Shield, label: isAr ? "منصة موثوقة" : "Trusted Platform", sub: isAr ? "+50,000 طاهٍ" : "50,000+ Chefs" },
+    { icon: Globe, label: isAr ? "تغطية عالمية" : "Global Coverage", sub: isAr ? "+120 دولة" : "120+ Countries" },
+    { icon: Award, label: isAr ? "مسابقات معتمدة" : "Certified Events", sub: isAr ? "+500 مسابقة" : "500+ Competitions" },
   ];
 
   return (
@@ -105,74 +84,13 @@ function TrustBadges({ isAr }: { isAr: boolean }) {
   );
 }
 
-/* ─── Boot Watchdog ─── */
-
-function useBootWatchdog() {
-  const [booted, setBooted] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      document.documentElement.setAttribute("data-app-boot", "ready");
-      setBooted(true);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
-  return booted;
-}
-
-/* ─── Classic Layout (original) ─── */
-
-function ClassicLayout({
-  language,
-  isAr,
-  showHero,
-  dbSections,
-  isError,
-}: {
-  language: string;
-  isAr: boolean;
-  showHero: boolean;
-  dbSections: any[];
-  isError: boolean;
-}) {
-  return (
-    <>
-      <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
-        {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
-      </ErrorBoundary>
-      <TrustBadges isAr={isAr} />
-      <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
-        {isError ? (
-          <HomeEmergencySections language={language} />
-        ) : (
-          <HomeSectionsRenderer sections={dbSections} />
-        )}
-      </ErrorBoundary>
-      <div className="container pb-10">
-        <RelatedPages currentPath="/" />
-      </div>
-    </>
-  );
-}
-
 /* ─── Main Component ─── */
 
 const Index = () => {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  useAdTracking();
-  useBootWatchdog();
-
-  const [layout, setLayout] = useState<HomepageLayout>(() => {
-    const stored = getStoredLayout();
-    return stored === "editorial" ? "classic" : stored;
-  });
 
   const { data: dbSections = [], isError } = useHomepageSections();
-
-  const fallbackToClassic = useCallback(() => {
-    setLayout("classic");
-    setStoredLayout("classic");
-  }, []);
 
   const showHero = useMemo(() => {
     if (dbSections.length === 0) return true;
@@ -180,9 +98,7 @@ const Index = () => {
   }, [dbSections]);
 
   const seo = useMemo(() => {
-    const title = isAr
-      ? "الطهاة | المجتمع الطهوي العالمي"
-      : "Altoha | Global Culinary Community";
+    const title = isAr ? "الطهاة | المجتمع الطهوي العالمي" : "Altoha | Global Culinary Community";
     const description = isAr
       ? "المنصة الأولى للطهاة والحكام والمنظمين ومحترفي صناعة الأغذية حول العالم."
       : "The premier platform for chefs, judges, organizers, and food industry professionals worldwide.";
@@ -219,38 +135,23 @@ const Index = () => {
       <Header />
 
       <main className="flex-1" aria-label="Homepage content">
-        {layout === "editorial" ? (
-          <EditorialFailoverBoundary
-            onError={fallbackToClassic}
-            fallback={
-              <ClassicLayout
-                language={language}
-                isAr={isAr}
-                showHero={showHero}
-                dbSections={dbSections}
-                isError={isError}
-              />
-            }
-          >
-            <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
-              <EditorialHomepage />
-            </ErrorBoundary>
-          </EditorialFailoverBoundary>
-        ) : (
-          <ClassicLayout
-            language={language}
-            isAr={isAr}
-            showHero={showHero}
-            dbSections={dbSections}
-            isError={isError}
-          />
-        )}
+        <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
+          {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
+        </ErrorBoundary>
+        <TrustBadges isAr={isAr} />
+        <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
+          {isError ? (
+            <HomeEmergencySections language={language} />
+          ) : (
+            <HomeSectionsRenderer sections={dbSections} />
+          )}
+        </ErrorBoundary>
+        <div className="container pb-10">
+          <RelatedPages currentPath="/" />
+        </div>
       </main>
 
       <Footer />
-
-      {/* Layout Switcher FAB */}
-      <HomepageLayoutSwitcher current={layout} onChange={setLayout} />
     </div>
   );
 };
