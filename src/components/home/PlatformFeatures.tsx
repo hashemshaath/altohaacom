@@ -187,11 +187,11 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </CardContent>
           </Card>
           <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/10 via-card to-card transition-all hover:shadow-xl">
-            <CardContent className="relative p-6 md:p-8">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
-                <Trophy className="h-5 w-5 text-accent" />
+            <CardContent className="relative p-5 sm:p-6 md:p-8">
+              <div className="mb-3 flex h-12 w-12 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
+                <Trophy className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-accent" />
               </div>
-              <h3 className={cn("mb-2 text-xl font-bold", !isAr && "font-serif")}>
+              <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "تنظّم مسابقات طهي؟" : "Organizing Competitions?"}
               </h3>
               <p className="mb-5 text-sm text-muted-foreground">
