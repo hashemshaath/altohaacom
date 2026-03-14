@@ -194,7 +194,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "تنظّم مسابقات طهي؟" : "Organizing Competitions?"}
               </h3>
-              <p className="mb-5 text-sm text-muted-foreground">
+              <p className="mb-5 text-[13px] sm:text-sm text-muted-foreground">
                 {isAr ? "أدوات رقمية متكاملة لإنشاء وإدارة مسابقات طهوية احترافية بلا عناء." : "Integrated digital tools to create & manage professional culinary competitions effortlessly."}
               </p>
               <Button size="sm" variant="secondary" asChild>
