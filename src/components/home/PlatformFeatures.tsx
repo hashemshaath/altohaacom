@@ -210,14 +210,14 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
           <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.12),transparent_60%)]" />
-          <div className="container relative py-16 text-center md:py-24">
+           <div className="container relative py-14 text-center px-5 sm:px-6 md:py-24">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />
             </div>
-            <h2 className={cn("mb-3 text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
+            <h2 className={cn("mb-3 text-[20px] font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
               {isAr ? "رحلتك في عالم الطهي تبدأ هنا" : "Your Culinary Journey Starts Here"}
             </h2>
-            <p className="mx-auto mb-7 max-w-lg text-sm text-muted-foreground leading-relaxed">
+            <p className="mx-auto mb-7 max-w-lg text-[14px] sm:text-sm text-muted-foreground leading-relaxed">
               {isAr
                 ? "انضم مجاناً واستمتع بمسابقات حصرية، دروس متقدمة، شبكة مهنية عالمية، وأكثر."
                 : "Join for free and enjoy exclusive competitions, masterclasses, a global professional network, and much more."}
