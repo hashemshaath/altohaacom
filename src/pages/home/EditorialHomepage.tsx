@@ -1,4 +1,4 @@
-import { forwardRef, memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -22,14 +22,14 @@ import {
   MapPin,
 } from "lucide-react";
 
-/* ─── Intersection Observer Hook ─── */
-function useReveal(threshold = 0.1) {
-  const ref = useRef<HTMLElement>(null);
+/* ─── Reveal on scroll ─── */
+function useReveal(threshold = 0.08) {
+  const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el) { setVisible(true); return; }
 
     const obs = new IntersectionObserver(
       ([entry]) => {
@@ -38,9 +38,8 @@ function useReveal(threshold = 0.1) {
           obs.unobserve(el);
         }
       },
-      { threshold, rootMargin: "60px" }
+      { threshold, rootMargin: "80px" }
     );
-
     obs.observe(el);
     return () => obs.disconnect();
   }, [threshold]);
@@ -48,33 +47,21 @@ function useReveal(threshold = 0.1) {
   return { ref, visible };
 }
 
-/* ─── Section Wrapper ─── */
-const Section = forwardRef<HTMLElement, {
-  children: React.ReactNode;
+/* ─── Animated section shell ─── */
+function Section({ children, className, dark, id }: {
+  children: ReactNode;
   className?: string;
   dark?: boolean;
   id?: string;
-}>(function Section({ children, className, dark = false, id }, forwardedRef) {
-  const { ref: revealRef, visible } = useReveal();
-
-  const setRef = (node: HTMLElement | null) => {
-    revealRef.current = node;
-    if (typeof forwardedRef === "function") {
-      forwardedRef(node);
-      return;
-    }
-    if (forwardedRef) {
-      forwardedRef.current = node;
-    }
-  };
-
+}) {
+  const { ref, visible } = useReveal();
   return (
     <section
-      ref={setRef}
+      ref={ref as any}
       id={id}
       className={cn(
-        "transition-all duration-700 ease-out",
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8",
+        "transition-all duration-700 ease-out will-change-[opacity,transform]",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
         dark && "bg-foreground text-background",
         className
       )}
@@ -82,59 +69,50 @@ const Section = forwardRef<HTMLElement, {
       {children}
     </section>
   );
-});
-Section.displayName = "Section";
+}
 
 /* ─── Editorial Hero ─── */
 const EditorialHero = memo(function EditorialHero({ isAr }: { isAr: boolean }) {
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-foreground">
-      {/* Abstract background pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-0 w-[60%] h-full bg-gradient-to-l from-primary/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-[40%] h-[60%] bg-gradient-to-tr from-accent/20 to-transparent" />
+    <section className="relative min-h-[80vh] sm:min-h-[85vh] flex items-center overflow-hidden bg-foreground">
+      {/* Abstract background */}
+      <div className="absolute inset-0 opacity-[0.07]" aria-hidden>
+        <div className="absolute top-0 right-0 w-[60%] h-full bg-gradient-to-l from-primary/40 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-[40%] h-[60%] bg-gradient-to-tr from-accent/30 to-transparent" />
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.15) 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
+            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.2) 1px, transparent 0)`,
+            backgroundSize: "48px 48px",
           }}
         />
       </div>
 
-      <div className="container relative z-10 py-16 md:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left — Typography */}
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-xs font-bold tracking-widest uppercase">
+      <div className="container relative z-10 py-12 sm:py-16 md:py-24">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          {/* Typography */}
+          <div className="space-y-6 sm:space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/15 text-primary text-[11px] font-bold tracking-[0.15em] uppercase">
               <Sparkles className="h-3.5 w-3.5" />
               {isAr ? "المنصة الأولى عالمياً" : "World's #1 Platform"}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-[1.05] tracking-tight text-background">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] font-serif font-bold leading-[1.08] tracking-tight text-background">
               {isAr ? (
-                <>
-                  اصنع{" "}
-                  <span className="text-primary">مستقبلك</span>{" "}
-                  في عالم الطهي
-                </>
+                <>اصنع <span className="text-primary">مستقبلك</span> في عالم الطهي</>
               ) : (
-                <>
-                  Shape Your{" "}
-                  <span className="text-primary">Culinary</span>{" "}
-                  Future
-                </>
+                <>Shape Your <span className="text-primary">Culinary</span> Future</>
               )}
             </h1>
 
-            <p className="text-lg md:text-xl text-background/70 max-w-lg leading-relaxed font-light">
+            <p className="text-base sm:text-lg md:text-xl text-background/65 max-w-lg leading-relaxed font-light">
               {isAr
-                ? "انضم لأكبر مجتمع طهوي عالمي يضم أكثر من 50,000 طاهٍ من 120 دولة. سجّل في المسابقات، وتواصل مع الخبراء."
-                : "Join 50,000+ chefs across 120 countries. Compete in world-class events, connect with industry leaders, and elevate your craft."}
+                ? "انضم لأكبر مجتمع طهوي عالمي يضم أكثر من 50,000 طاهٍ من 120 دولة."
+                : "Join 50,000+ chefs across 120 countries. Compete, connect, and elevate your craft."}
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <Button asChild size="lg" className="rounded-xl text-base px-8 h-13 font-semibold">
+            <div className="flex flex-wrap gap-3 sm:gap-4">
+              <Button asChild size="lg" className="rounded-xl text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-13 font-semibold shadow-lg shadow-primary/20">
                 <Link to="/register">
                   {isAr ? "انضم الآن" : "Join Now"}
                   <ArrowRight className="ms-2 h-4 w-4" />
@@ -144,7 +122,7 @@ const EditorialHero = memo(function EditorialHero({ isAr }: { isAr: boolean }) {
                 asChild
                 variant="outline"
                 size="lg"
-                className="rounded-xl text-base px-8 h-13 border-background/20 text-background hover:bg-background/10 hover:text-background"
+                className="rounded-xl text-sm sm:text-base px-6 sm:px-8 h-12 sm:h-13 border-background/20 text-background hover:bg-background/10 hover:text-background"
               >
                 <Link to="/competitions">
                   {isAr ? "استكشف المسابقات" : "Explore Events"}
@@ -153,8 +131,8 @@ const EditorialHero = memo(function EditorialHero({ isAr }: { isAr: boolean }) {
             </div>
           </div>
 
-          {/* Right — Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {[
               { icon: Users, value: "50K+", label: isAr ? "طاهٍ مسجل" : "Registered Chefs" },
               { icon: Globe, value: "120+", label: isAr ? "دولة" : "Countries" },
@@ -163,14 +141,11 @@ const EditorialHero = memo(function EditorialHero({ isAr }: { isAr: boolean }) {
             ].map((stat, i) => (
               <div
                 key={i}
-                className={cn(
-                  "relative rounded-2xl border border-background/10 bg-background/5 backdrop-blur-sm p-6 transition-all duration-300 hover:bg-background/10 hover:border-primary/30 group",
-                  i === 0 && "col-span-2 sm:col-span-1"
-                )}
+                className="rounded-2xl border border-background/10 bg-background/5 backdrop-blur-sm p-4 sm:p-6 transition-all duration-300 hover:bg-background/10 hover:border-primary/30 group"
               >
-                <stat.icon className="h-6 w-6 text-primary mb-4 transition-transform duration-300 group-hover:scale-110" />
-                <p className="text-3xl md:text-4xl font-serif font-bold text-background">{stat.value}</p>
-                <p className="text-sm text-background/60 mt-1">{stat.label}</p>
+                <stat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary mb-3 sm:mb-4 transition-transform duration-300 group-hover:scale-110" />
+                <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-background">{stat.value}</p>
+                <p className="text-xs sm:text-sm text-background/55 mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -180,59 +155,59 @@ const EditorialHero = memo(function EditorialHero({ isAr }: { isAr: boolean }) {
   );
 });
 
-/* ─── Quick Search Bar ─── */
+/* ─── Quick Search ─── */
 function EditorialSearch({ isAr }: { isAr: boolean }) {
   return (
-    <Section className="py-0 -mt-7 relative z-20">
+    <div className="relative z-20 -mt-6 sm:-mt-7 mb-4">
       <div className="container">
         <Link
           to="/search"
-          className="flex items-center gap-4 rounded-2xl bg-card border border-border shadow-lg px-6 py-4 max-w-2xl mx-auto transition-all duration-300 hover:shadow-xl hover:border-primary/30 group"
+          className="flex items-center gap-3 sm:gap-4 rounded-2xl bg-card border border-border shadow-lg px-5 sm:px-6 py-3.5 sm:py-4 max-w-2xl mx-auto transition-all duration-300 hover:shadow-xl hover:border-primary/30 group"
         >
-          <Search className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
-          <span className="text-muted-foreground text-base">
+          <Search className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+          <span className="text-muted-foreground text-sm sm:text-base">
             {isAr ? "ابحث عن طهاة، مسابقات، وصفات..." : "Search chefs, competitions, recipes..."}
           </span>
-          <ArrowRight className="h-4 w-4 text-muted-foreground ms-auto group-hover:text-primary group-hover:translate-x-1 transition-all" />
+          <ArrowRight className="h-4 w-4 text-muted-foreground ms-auto group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
         </Link>
       </div>
-    </Section>
+    </div>
   );
 }
 
 /* ─── Category Cards ─── */
 function EditorialCategories({ isAr }: { isAr: boolean }) {
   const cats = [
-    { icon: Trophy, label: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "from-primary/20 to-primary/5" },
-    { icon: ChefHat, label: isAr ? "الطهاة" : "Chefs", href: "/chefs", color: "from-accent/20 to-accent/5" },
-    { icon: Calendar, label: isAr ? "الفعاليات" : "Events", href: "/events", color: "from-info/20 to-info/5" },
-    { icon: BookOpen, label: isAr ? "المقالات" : "Articles", href: "/articles", color: "from-success/20 to-success/5" },
-    { icon: Utensils, label: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "from-warning/20 to-warning/5" },
-    { icon: MapPin, label: isAr ? "المعارض" : "Exhibitions", href: "/exhibitions", color: "from-destructive/20 to-destructive/5" },
+    { icon: Trophy, label: isAr ? "المسابقات" : "Competitions", href: "/competitions", color: "from-primary/15 to-primary/5" },
+    { icon: ChefHat, label: isAr ? "الطهاة" : "Chefs", href: "/chefs", color: "from-accent/15 to-accent/5" },
+    { icon: Calendar, label: isAr ? "الفعاليات" : "Events", href: "/events", color: "from-blue-500/15 to-blue-500/5" },
+    { icon: BookOpen, label: isAr ? "المقالات" : "Articles", href: "/articles", color: "from-emerald-500/15 to-emerald-500/5" },
+    { icon: Utensils, label: isAr ? "الوصفات" : "Recipes", href: "/recipes", color: "from-amber-500/15 to-amber-500/5" },
+    { icon: MapPin, label: isAr ? "المعارض" : "Exhibitions", href: "/exhibitions", color: "from-rose-500/15 to-rose-500/5" },
   ];
 
   return (
-    <Section className="py-16 md:py-20">
+    <Section className="py-12 sm:py-16 md:py-20">
       <div className="container">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
             {isAr ? "استكشف المنصة" : "Explore the Platform"}
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-            {isAr ? "اكتشف كل ما تحتاجه لتطوير مسيرتك في عالم الطهي" : "Discover everything you need to elevate your culinary journey"}
+          <p className="mt-2 sm:mt-3 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
+            {isAr ? "اكتشف كل ما تحتاجه لتطوير مسيرتك في عالم الطهي" : "Everything you need to elevate your culinary journey"}
           </p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {cats.map((cat) => (
             <Link
               key={cat.href}
               to={cat.href}
-              className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-1"
+              className="group flex flex-col items-center gap-2 sm:gap-3 rounded-2xl border border-border bg-card p-4 sm:p-6 transition-all duration-300 hover:shadow-lg hover:border-primary/30 hover:-translate-y-1"
             >
-              <div className={cn("rounded-xl p-3 bg-gradient-to-br transition-transform duration-300 group-hover:scale-110", cat.color)}>
-                <cat.icon className="h-6 w-6 text-foreground" />
+              <div className={cn("rounded-xl p-2.5 sm:p-3 bg-gradient-to-br transition-transform duration-300 group-hover:scale-110", cat.color)}>
+                <cat.icon className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
               </div>
-              <span className="text-sm font-semibold text-foreground">{cat.label}</span>
+              <span className="text-xs sm:text-sm font-semibold text-foreground text-center">{cat.label}</span>
             </Link>
           ))}
         </div>
@@ -241,6 +216,7 @@ function EditorialCategories({ isAr }: { isAr: boolean }) {
   );
 }
 
+/* ─── Data types ─── */
 interface EditorialCompetition {
   id: string;
   title: string;
@@ -271,7 +247,6 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
         .limit(4);
-
       if (error) return [];
       return (data || []) as EditorialCompetition[];
     },
@@ -279,14 +254,14 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
   });
 
   return (
-    <Section className="py-16 md:py-24 bg-muted/30" id="competitions">
+    <Section className="py-12 sm:py-16 md:py-24 bg-muted/30" id="competitions">
       <div className="container">
-        <div className="flex items-end justify-between mb-10">
+        <div className="flex items-end justify-between mb-8 sm:mb-10">
           <div>
-            <p className="text-primary text-xs font-bold tracking-widest uppercase mb-2">
+            <p className="text-primary text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
               {isAr ? "قادم قريباً" : "Coming Up"}
             </p>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
               {isAr ? "المسابقات المميزة" : "Featured Competitions"}
             </h2>
           </div>
@@ -297,13 +272,13 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
           </Button>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {competitions.length > 0
-            ? competitions.map((comp) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+          {(competitions.length > 0 ? competitions : Array.from({ length: 4 })).map((comp: any, i) => (
+            <article key={comp?.id || i}>
+              {comp?.id ? (
                 <Link
-                  key={comp.id}
                   to={`/competition/${comp.id}`}
-                  className="group rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                  className="group block rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                 >
                   <div className="aspect-[4/3] bg-muted relative overflow-hidden">
                     {comp.cover_image_url ? (
@@ -316,41 +291,42 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                        <Trophy className="h-10 w-10 text-primary/40" />
+                        <Trophy className="h-8 w-8 sm:h-10 sm:w-10 text-primary/40" />
                       </div>
                     )}
                     {comp.status && (
-                      <span className="absolute top-3 start-3 bg-primary text-primary-foreground text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                        {comp.status}
+                      <span className="absolute top-2 sm:top-3 start-2 sm:start-3 bg-primary text-primary-foreground text-[9px] sm:text-[10px] font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
+                        {comp.status.replace(/_/g, " ")}
                       </span>
                     )}
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-foreground line-clamp-2 text-sm">
+                  <div className="p-3 sm:p-4">
+                    <h3 className="font-semibold text-foreground line-clamp-2 text-xs sm:text-sm">
                       {isAr ? comp.title_ar || comp.title : comp.title}
                     </h3>
                     {(comp.venue || comp.country_code) && (
-                      <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {[comp.venue, comp.country_code].filter(Boolean).join(" • ")}
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 sm:mt-1.5 flex items-center gap-1">
+                        <MapPin className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{[comp.venue, comp.country_code].filter(Boolean).join(" · ")}</span>
                       </p>
                     )}
                   </div>
                 </Link>
-              ))
-            : Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden animate-pulse">
+              ) : (
+                <div className="rounded-2xl border border-border bg-card overflow-hidden animate-pulse">
                   <div className="aspect-[4/3] bg-muted" />
-                  <div className="p-4 space-y-2">
+                  <div className="p-3 sm:p-4 space-y-2">
                     <div className="h-4 bg-muted rounded w-3/4" />
                     <div className="h-3 bg-muted rounded w-1/2" />
                   </div>
                 </div>
-              ))}
+              )}
+            </article>
+          ))}
         </div>
 
         <div className="sm:hidden mt-6 text-center">
-          <Button asChild variant="outline" className="rounded-xl">
+          <Button asChild variant="outline" className="rounded-xl text-sm">
             <Link to="/competitions">{isAr ? "عرض الكل" : "View All"}</Link>
           </Button>
         </div>
@@ -370,7 +346,6 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
         .not("avatar_url", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
-
       if (error) return [];
       return (data || []) as EditorialChef[];
     },
@@ -378,41 +353,41 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
   });
 
   return (
-    <Section className="py-16 md:py-24" id="chefs">
+    <Section className="py-12 sm:py-16 md:py-24" id="chefs">
       <div className="container">
-        <div className="text-center mb-10">
-          <p className="text-primary text-xs font-bold tracking-widest uppercase mb-2">
+        <div className="text-center mb-8 sm:mb-10">
+          <p className="text-primary text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
             {isAr ? "مجتمعنا" : "Our Community"}
           </p>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
             {isAr ? "طهاة مميزون" : "Featured Chefs"}
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-          {(chefs.length > 0 ? chefs : (Array.from({ length: 8 }) as EditorialChef[])).map((chef: EditorialChef, i) => (
+        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
+          {(chefs.length > 0 ? chefs : Array.from({ length: 8 })).map((chef: any, i) => (
             <div key={chef?.user_id || i} className="group text-center">
               {chef?.user_id ? (
                 <Link to={`/chef/${chef.user_id}`} className="block">
-                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-border group-hover:border-primary transition-colors duration-300 mb-2">
+                  <div className="mx-auto w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-border group-hover:border-primary transition-colors duration-300 mb-2">
                     <img
                       src={chef.avatar_url || ""}
-                      alt={isAr ? chef.full_name_ar || chef.full_name || "Chef" : chef.full_name || "Chef"}
+                      alt={isAr ? chef.full_name_ar || chef.full_name || "" : chef.full_name || ""}
                       className="w-full h-full object-cover"
                       loading="lazy"
                       decoding="async"
                     />
                   </div>
-                  <p className="text-xs font-semibold text-foreground line-clamp-1">
+                  <p className="text-[10px] sm:text-xs font-semibold text-foreground line-clamp-1">
                     {isAr ? chef.full_name_ar || chef.full_name : chef.full_name}
                   </p>
                   {chef.country_code && (
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{chef.country_code}</p>
+                    <p className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5">{chef.country_code}</p>
                   )}
                 </Link>
               ) : (
                 <div className="animate-pulse">
-                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted mb-2" />
+                  <div className="mx-auto w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-muted mb-2" />
                   <div className="h-3 bg-muted rounded w-2/3 mx-auto" />
                 </div>
               )}
@@ -420,8 +395,8 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
           ))}
         </div>
 
-        <div className="text-center mt-8">
-          <Button asChild variant="outline" className="rounded-xl">
+        <div className="text-center mt-6 sm:mt-8">
+          <Button asChild variant="outline" className="rounded-xl text-sm">
             <Link to="/chefs">
               {isAr ? "عرض جميع الطهاة" : "Browse All Chefs"} <ArrowRight className="ms-1 h-4 w-4" />
             </Link>
@@ -432,7 +407,7 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
   );
 }
 
-/* ─── Stats Band (dark inversion) ─── */
+/* ─── Stats Band ─── */
 function EditorialStats({ isAr }: { isAr: boolean }) {
   const stats = [
     { icon: TrendingUp, value: "1M+", label: isAr ? "زيارة شهرية" : "Monthly Visits" },
@@ -442,14 +417,14 @@ function EditorialStats({ isAr }: { isAr: boolean }) {
   ];
 
   return (
-    <section className="bg-foreground py-16 md:py-20">
+    <section className="bg-foreground py-12 sm:py-16 md:py-20">
       <div className="container">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-12">
           {stats.map((s, i) => (
             <div key={i} className="text-center group">
-              <s.icon className="h-7 w-7 text-primary mx-auto mb-3 transition-transform duration-300 group-hover:scale-110" />
-              <p className="text-3xl md:text-4xl font-serif font-bold text-background">{s.value}</p>
-              <p className="text-sm text-background/60 mt-1">{s.label}</p>
+              <s.icon className="h-6 w-6 sm:h-7 sm:w-7 text-primary mx-auto mb-2 sm:mb-3 transition-transform duration-300 group-hover:scale-110" />
+              <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-background">{s.value}</p>
+              <p className="text-xs sm:text-sm text-background/55 mt-1">{s.label}</p>
             </div>
           ))}
         </div>
@@ -458,7 +433,7 @@ function EditorialStats({ isAr }: { isAr: boolean }) {
   );
 }
 
-/* ─── Articles / Blog ─── */
+/* ─── Articles ─── */
 function EditorialArticles({ isAr }: { isAr: boolean }) {
   const { data: articles = [] } = useQuery({
     queryKey: ["editorial-articles"],
@@ -475,14 +450,14 @@ function EditorialArticles({ isAr }: { isAr: boolean }) {
   });
 
   return (
-    <Section className="py-16 md:py-24" id="articles">
+    <Section className="py-12 sm:py-16 md:py-24" id="articles">
       <div className="container">
-        <div className="flex items-end justify-between mb-10">
+        <div className="flex items-end justify-between mb-8 sm:mb-10">
           <div>
-            <p className="text-primary text-xs font-bold tracking-widest uppercase mb-2">
+            <p className="text-primary text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
               {isAr ? "آخر الأخبار" : "Latest News"}
             </p>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
               {isAr ? "المقالات والأخبار" : "Articles & Insights"}
             </h2>
           </div>
@@ -493,7 +468,7 @@ function EditorialArticles({ isAr }: { isAr: boolean }) {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {(articles.length > 0 ? articles : Array.from({ length: 3 })).map((article: any, i) => (
             <article key={article?.id || i}>
               {article?.id ? (
@@ -516,11 +491,11 @@ function EditorialArticles({ isAr }: { isAr: boolean }) {
                       </div>
                     )}
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-semibold text-foreground line-clamp-2 mb-2">
+                  <div className="p-4 sm:p-5">
+                    <h3 className="font-semibold text-foreground line-clamp-2 text-sm mb-1.5">
                       {isAr ? article.title_ar || article.title : article.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2">
+                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                       {isAr ? article.excerpt_ar || article.excerpt : article.excerpt}
                     </p>
                   </div>
@@ -528,13 +503,55 @@ function EditorialArticles({ isAr }: { isAr: boolean }) {
               ) : (
                 <div className="rounded-2xl border border-border bg-card overflow-hidden animate-pulse">
                   <div className="aspect-[16/9] bg-muted" />
-                  <div className="p-5 space-y-2">
+                  <div className="p-4 sm:p-5 space-y-2">
                     <div className="h-4 bg-muted rounded w-3/4" />
                     <div className="h-3 bg-muted rounded w-full" />
                   </div>
                 </div>
               )}
             </article>
+          ))}
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── Features ─── */
+function EditorialFeatures({ isAr }: { isAr: boolean }) {
+  const features = [
+    { icon: Trophy, title: isAr ? "مسابقات عالمية" : "Global Competitions", desc: isAr ? "شارك في أرقى المسابقات" : "Compete in world-class events" },
+    { icon: ChefHat, title: isAr ? "ملف احترافي" : "Professional Profile", desc: isAr ? "أنشئ ملفك الاحترافي" : "Build your portfolio" },
+    { icon: BookOpen, title: isAr ? "محتوى تعليمي" : "Learning Content", desc: isAr ? "دورات ومقالات حصرية" : "Exclusive courses & masterclasses" },
+    { icon: Users, title: isAr ? "تواصل مهني" : "Networking", desc: isAr ? "تواصل مع الخبراء" : "Connect with industry leaders" },
+    { icon: Award, title: isAr ? "شهادات معتمدة" : "Certifications", desc: isAr ? "احصل على شهادات رسمية" : "Earn verified certificates" },
+    { icon: Globe, title: isAr ? "تغطية عالمية" : "Global Reach", desc: isAr ? "حضور في 120+ دولة" : "Present in 120+ countries" },
+  ];
+
+  return (
+    <Section className="py-12 sm:py-16 md:py-24 bg-muted/30" id="features">
+      <div className="container">
+        <div className="text-center mb-8 sm:mb-12">
+          <p className="text-primary text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
+            {isAr ? "لماذا نحن" : "Why Choose Us"}
+          </p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
+            {isAr ? "مميزات المنصة" : "Platform Features"}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 max-w-5xl mx-auto">
+          {features.map((f, i) => (
+            <div
+              key={i}
+              className="rounded-2xl border border-border bg-card p-4 sm:p-6 transition-all duration-300 hover:shadow-lg hover:border-primary/30 group"
+            >
+              <div className="rounded-xl bg-primary/10 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center mb-3 sm:mb-4 transition-transform duration-300 group-hover:scale-110">
+                <f.icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              </div>
+              <h3 className="font-semibold text-foreground text-sm sm:text-base mb-0.5 sm:mb-1">{f.title}</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">{f.desc}</p>
+            </div>
           ))}
         </div>
       </div>
@@ -563,25 +580,25 @@ function EditorialTestimonials({ isAr }: { isAr: boolean }) {
   ];
 
   return (
-    <Section className="py-16 md:py-24 bg-muted/30" id="testimonials">
+    <Section className="py-12 sm:py-16 md:py-24 bg-muted/30" id="testimonials">
       <div className="container">
-        <div className="text-center mb-10">
-          <p className="text-primary text-xs font-bold tracking-widest uppercase mb-2">
+        <div className="text-center mb-8 sm:mb-10">
+          <p className="text-primary text-[11px] font-bold tracking-[0.15em] uppercase mb-1.5">
             {isAr ? "شهادات" : "Testimonials"}
           </p>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-foreground">
             {isAr ? "ماذا يقول الطهاة" : "What Chefs Say"}
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-border bg-card p-6 md:p-8 transition-all duration-300 hover:shadow-lg"
+              className="rounded-2xl border border-border bg-card p-5 sm:p-6 md:p-8 transition-all duration-300 hover:shadow-lg"
             >
-              <Star className="h-5 w-5 text-primary mb-4" />
-              <blockquote className="text-foreground font-medium leading-relaxed mb-6">
+              <Star className="h-5 w-5 text-primary mb-3 sm:mb-4" />
+              <blockquote className="text-foreground font-medium text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">
                 "{t.quote}"
               </blockquote>
               <div>
@@ -599,34 +616,35 @@ function EditorialTestimonials({ isAr }: { isAr: boolean }) {
 /* ─── Newsletter CTA ─── */
 function EditorialNewsletter({ isAr }: { isAr: boolean }) {
   return (
-    <Section className="py-16 md:py-24">
+    <Section className="py-12 sm:py-16 md:py-24">
       <div className="container">
-        <div className="max-w-3xl mx-auto text-center rounded-3xl bg-gradient-to-br from-foreground to-foreground/95 p-10 md:p-16 relative overflow-hidden">
+        <div className="max-w-3xl mx-auto text-center rounded-3xl bg-gradient-to-br from-foreground to-foreground/95 p-8 sm:p-10 md:p-16 relative overflow-hidden">
           <div
-            className="absolute inset-0 opacity-10"
+            className="absolute inset-0 opacity-[0.07]"
+            aria-hidden
             style={{
               backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.3) 1px, transparent 0)`,
               backgroundSize: "32px 32px",
             }}
           />
           <div className="relative z-10">
-            <Sparkles className="h-8 w-8 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-background mb-3">
+            <Sparkles className="h-7 w-7 sm:h-8 sm:w-8 text-primary mx-auto mb-3 sm:mb-4" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-background mb-2 sm:mb-3">
               {isAr ? "لا تفوّت أي تحديث" : "Never Miss an Update"}
             </h2>
-            <p className="text-background/60 mb-8 max-w-md mx-auto">
+            <p className="text-background/55 text-sm sm:text-base mb-6 sm:mb-8 max-w-md mx-auto">
               {isAr
-                ? "اشترك في نشرتنا الإخبارية واحصل على آخر الأخبار والمسابقات مباشرة."
-                : "Subscribe to our newsletter and get the latest competitions, news, and culinary insights delivered directly."}
+                ? "اشترك في نشرتنا الإخبارية واحصل على آخر الأخبار والمسابقات."
+                : "Subscribe to get the latest competitions, news, and culinary insights delivered directly."}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder={isAr ? "بريدك الإلكتروني" : "Your email address"}
-                className="flex-1 rounded-xl bg-background/10 border border-background/20 px-5 py-3 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                className="flex-1 rounded-xl bg-background/10 border border-background/20 px-4 sm:px-5 py-3 text-background placeholder:text-background/40 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                 dir={isAr ? "rtl" : "ltr"}
               />
-              <Button className="rounded-xl px-6 h-12 font-semibold">
+              <Button className="rounded-xl px-6 h-12 font-semibold shrink-0">
                 {isAr ? "اشترك" : "Subscribe"}
               </Button>
             </div>
@@ -637,49 +655,7 @@ function EditorialNewsletter({ isAr }: { isAr: boolean }) {
   );
 }
 
-/* ─── Platform Features ─── */
-function EditorialFeatures({ isAr }: { isAr: boolean }) {
-  const features = [
-    { icon: Trophy, title: isAr ? "مسابقات عالمية" : "Global Competitions", desc: isAr ? "شارك في أرقى المسابقات" : "Compete in world-class culinary events" },
-    { icon: ChefHat, title: isAr ? "ملف احترافي" : "Professional Profile", desc: isAr ? "أنشئ ملفك الاحترافي" : "Build your professional portfolio" },
-    { icon: BookOpen, title: isAr ? "محتوى تعليمي" : "Learning Content", desc: isAr ? "دورات ومقالات حصرية" : "Exclusive courses and masterclasses" },
-    { icon: Users, title: isAr ? "تواصل مهني" : "Networking", desc: isAr ? "تواصل مع الخبراء" : "Connect with industry leaders" },
-    { icon: Award, title: isAr ? "شهادات معتمدة" : "Certifications", desc: isAr ? "احصل على شهادات رسمية" : "Earn verified certificates" },
-    { icon: Globe, title: isAr ? "تغطية عالمية" : "Global Reach", desc: isAr ? "حضور في 120+ دولة" : "Present in 120+ countries" },
-  ];
-
-  return (
-    <Section className="py-16 md:py-24 bg-muted/30" id="features">
-      <div className="container">
-        <div className="text-center mb-12">
-          <p className="text-primary text-xs font-bold tracking-widest uppercase mb-2">
-            {isAr ? "لماذا نحن" : "Why Choose Us"}
-          </p>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">
-            {isAr ? "مميزات المنصة" : "Platform Features"}
-          </h2>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {features.map((f, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:shadow-lg hover:border-primary/30 group"
-            >
-              <div className="rounded-xl bg-primary/10 w-12 h-12 flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110">
-                <f.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-1">{f.title}</h3>
-              <p className="text-sm text-muted-foreground">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-/* ─── Main Editorial Homepage ─── */
+/* ─── Main ─── */
 const EditorialHomepage = memo(function EditorialHomepage() {
   const { language } = useLanguage();
   const isAr = language === "ar";
