@@ -91,7 +91,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       <section ref={rolesReveal.ref} className="relative overflow-hidden" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
         <div className="absolute inset-0 bg-muted/20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
-        <div className="container relative">
+        <div className="container relative px-5 sm:px-6">
           <SectionReveal>
             <div className="mb-8 text-center">
               <h2 id="roles-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
