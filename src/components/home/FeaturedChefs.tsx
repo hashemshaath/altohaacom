@@ -82,7 +82,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
     <section className="relative overflow-hidden" aria-labelledby="featured-chefs-heading">
       <div className="absolute inset-0 bg-muted/20" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.03),transparent_60%)]" />
-      <div className="container relative" dir={isAr ? "rtl" : "ltr"}>
+      <div className="container relative px-5 sm:px-6" dir={isAr ? "rtl" : "ltr"}>
         <SectionHeader
           icon={Award}
           badge={isAr ? "طهاة مميزون" : "Featured Chefs"}
