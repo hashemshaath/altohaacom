@@ -118,6 +118,17 @@ export default function News() {
     resetPagination();
   }, [setSearchParams]);
 
+  const handleArchiveMonthClick = useCallback((from: string, to: string) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("from", from);
+      next.set("to", to);
+      return next;
+    }, { replace: true });
+    setShowAdvancedFilters(true);
+    resetPagination();
+  }, [setSearchParams]);
+
   // Auto-show advanced filters if URL has them
   useEffect(() => {
     if (selectedTags.length > 0 || dateFrom || dateTo) setShowAdvancedFilters(true);
