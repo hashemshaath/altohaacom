@@ -66,16 +66,16 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </p>
           </div>
         </SectionReveal>
-        <div className={cn("grid gap-3 grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <div className={cn("grid gap-3.5 grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {services.map((s) => (
-            <Link key={s.title} to={s.href} className="group block">
-              <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                <CardContent className="flex flex-col p-3.5 sm:p-5">
-                  <div className={cn("mb-3 flex h-10 w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
-                    <s.icon className={cn("h-5 w-5", s.color)} />
+            <Link key={s.title} to={s.href} className="group block touch-manipulation">
+              <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                <CardContent className="flex flex-col p-4 sm:p-5">
+                  <div className={cn("mb-3 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
+                    <s.icon className={cn("h-[22px] w-[22px] sm:h-5 sm:w-5", s.color)} />
                   </div>
-                  <h3 className="font-bold mb-1 text-sm sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
-                  <p className="mb-3 flex-1 text-xs sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  <h3 className="font-bold mb-1 text-[14px] sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
+                  <p className="mb-3 flex-1 text-[12px] sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center text-xs font-medium text-primary">
                     {isAr ? "اكتشف المزيد" : "Explore"}
                     <ArrowRight className="ms-1 h-3 w-3" />
