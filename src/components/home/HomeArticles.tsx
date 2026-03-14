@@ -133,7 +133,7 @@ export const HomeArticles = memo(function HomeArticles() {
                       {isAr && featured.title_ar ? featured.title_ar : featured.title}
                     </h3>
                     {(isAr ? featured.excerpt_ar : featured.excerpt) && (
-                      <p className="mt-1.5 line-clamp-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      <p className="mt-1.5 line-clamp-2 text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
                         {isAr && featured.excerpt_ar ? featured.excerpt_ar : featured.excerpt}
                       </p>
                     )}
