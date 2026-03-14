@@ -131,7 +131,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex h-8 w-8 items-center justify-center rounded-xl text-muted-foreground/50 hover:text-primary hover:bg-primary/8 transition-all duration-200"
+                    className="flex h-10 w-10 sm:h-8 sm:w-8 items-center justify-center rounded-xl text-muted-foreground/50 hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
                   >
                     <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.icon} />
