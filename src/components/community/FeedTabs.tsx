@@ -23,7 +23,7 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
   ];
 
   return (
-    <div className="flex border-b border-border/40 sticky top-0 z-10 bg-background/95 backdrop-blur-md">
+    <div className="flex border-b border-border/40 sticky top-0 lg:top-0 z-10 bg-background/95 backdrop-blur-md">
       {tabs
         .filter((t) => !t.requiresAuth || isLoggedIn)
         .map((tab) => {
@@ -33,14 +33,14 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-semibold transition-all relative",
+                "flex-1 flex items-center justify-center gap-1.5 min-h-[44px] text-[15px] sm:text-sm font-semibold transition-colors relative touch-manipulation",
                 isActive
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
+                  : "text-muted-foreground active:text-foreground hover:bg-muted/20"
               )}
             >
-              <tab.icon className={cn("h-4 w-4", isActive && "text-primary")} />
-              <span className="hidden sm:inline">{tab.label}</span>
+              <tab.icon className={cn("h-[18px] w-[18px] sm:h-4 sm:w-4", isActive && "text-primary")} />
+              <span>{tab.label}</span>
               {isActive && (
                 <span className="absolute bottom-0 inset-x-6 h-[2.5px] rounded-full bg-primary" />
               )}

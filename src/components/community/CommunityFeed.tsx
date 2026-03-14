@@ -403,16 +403,16 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
       {/* Tag filter banner */}
       {tagFilter && (
-        <div className="flex items-center gap-2 border-b border-border px-4 py-3 bg-primary/5">
-          <span className="text-sm font-bold text-primary">#{tagFilter}</span>
-          <span className="text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
+        <div className="flex items-center gap-2 border-b border-border px-4 min-h-[44px] bg-primary/5">
+          <span className="text-[15px] sm:text-sm font-bold text-primary">#{tagFilter}</span>
+          <span className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 ms-auto rounded-full"
+            className="h-8 w-8 ms-auto rounded-full"
             onClick={() => navigate("/community")}
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
       )}
@@ -456,14 +456,14 @@ export const CommunityFeed = memo(function CommunityFeed() {
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-border/30">
               <MessageCircle className="h-8 w-8 text-muted-foreground/30" />
             </div>
-            <h3 className="text-sm font-semibold text-foreground/80 mb-1">
+            <h3 className="text-base sm:text-sm font-semibold text-foreground/80 mb-1">
               {feedFilter === "bookmarks"
                 ? (isAr ? "لا توجد منشورات محفوظة" : "No saved posts yet")
                 : feedFilter === "following"
                   ? (isAr ? "لا توجد منشورات بعد" : "No posts yet")
                   : (isAr ? "لا توجد منشورات" : "No posts yet")}
             </h3>
-            <p className="text-xs text-muted-foreground max-w-[240px]">
+            <p className="text-sm sm:text-xs text-muted-foreground max-w-[280px] leading-relaxed">
               {feedFilter === "bookmarks"
                 ? (isAr ? "احفظ منشوراتك المفضلة لتجدها هنا" : "Save your favorite posts to find them here")
                 : feedFilter === "following"
@@ -503,10 +503,10 @@ export const CommunityFeed = memo(function CommunityFeed() {
       </div>
 
       {/* Infinite scroll sentinel */}
-      <div ref={sentinelRef} className="py-4 flex justify-center">
+      <div ref={sentinelRef} className="py-6 flex justify-center safe-area-bottom">
         {loadingMore && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
         {!hasMore && posts.length > 0 && (
-          <p className="text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
+          <p className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
         )}
       </div>
 

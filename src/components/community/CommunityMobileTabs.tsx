@@ -41,8 +41,11 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
   }), [allTabs, enabledFeatures]);
 
   return (
-    <div className="sticky top-12 z-40 border-b border-border/30 bg-background/95 backdrop-blur-xl lg:hidden">
-      <div className="flex overflow-x-auto scrollbar-none" role="tablist">
+    <div className="sticky top-12 z-40 border-b border-border/30 bg-background/98 backdrop-blur-xl lg:hidden safe-area-x">
+      <div
+        className="flex overflow-x-auto scrollbar-none touch-pan-x"
+        role="tablist"
+      >
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -53,14 +56,19 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex-shrink-0 flex items-center gap-1.5 px-4 py-3 text-xs font-semibold transition-all relative active:scale-95",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                "flex-shrink-0 flex items-center gap-1.5 px-4 min-h-[44px] text-[13px] font-semibold transition-colors relative touch-manipulation",
+                isActive
+                  ? "text-primary"
+                  : "text-muted-foreground active:text-foreground"
               )}
             >
-              <Icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground/60")} />
+              <Icon className={cn(
+                "h-[18px] w-[18px]",
+                isActive ? "text-primary" : "text-muted-foreground/60"
+              )} />
               <span className="whitespace-nowrap">{tab.label}</span>
               {isActive && (
-                <span className="absolute bottom-0 inset-x-3 h-[2px] rounded-full bg-primary" />
+                <span className="absolute bottom-0 inset-x-3 h-[2.5px] rounded-full bg-primary" />
               )}
             </button>
           );
