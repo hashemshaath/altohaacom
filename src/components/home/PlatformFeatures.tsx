@@ -116,7 +116,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                 </Card>
               );
               return (
-                <div key={role.title} className="group">
+              <div key={role.title} className="group touch-manipulation">
                   {role.href ? <Link to={role.href} className="block">{content}</Link> : content}
                 </div>
               );
