@@ -241,18 +241,39 @@ function EditorialCategories({ isAr }: { isAr: boolean }) {
   );
 }
 
+interface EditorialCompetition {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  cover_image_url: string | null;
+  competition_start: string | null;
+  venue: string | null;
+  country_code: string | null;
+  status: string | null;
+}
+
+interface EditorialChef {
+  user_id: string;
+  full_name: string | null;
+  full_name_ar: string | null;
+  avatar_url: string | null;
+  country_code: string | null;
+}
+
 /* ─── Featured Competitions ─── */
 function EditorialCompetitions({ isAr }: { isAr: boolean }) {
-  const { data: competitions = [] } = useQuery<any[]>({
+  const { data: competitions = [] } = useQuery<EditorialCompetition[]>({
     queryKey: ["editorial-competitions"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("competitions" as any)
-        .select("id, title, title_ar, cover_image_url, competition_start, city, country, country_code, status")
+      const { data, error } = await supabase
+        .from("competitions")
+        .select("id, title, title_ar, cover_image_url, competition_start, venue, country_code, status")
         .in("status", ["registration_open", "upcoming", "in_progress"])
         .order("competition_start", { ascending: true })
         .limit(4);
-      return (data || []) as any[];
+
+      if (error) return [];
+      return (data || []) as EditorialCompetition[];
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -278,7 +299,7 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {competitions.length > 0
-            ? competitions.map((comp: any) => (
+            ? competitions.map((comp) => (
                 <Link
                   key={comp.id}
                   to={`/competition/${comp.id}`}
@@ -288,7 +309,7 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                     {comp.cover_image_url ? (
                       <img
                         src={comp.cover_image_url}
-                        alt={isAr ? comp.title_ar : comp.title}
+                        alt={isAr ? comp.title_ar || comp.title : comp.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                         decoding="async"
@@ -308,10 +329,10 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
                     <h3 className="font-semibold text-foreground line-clamp-2 text-sm">
                       {isAr ? comp.title_ar || comp.title : comp.title}
                     </h3>
-                    {(comp.city || comp.country || comp.country_code) && (
+                    {(comp.venue || comp.country_code) && (
                       <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
-                        {[comp.city, comp.country || comp.country_code].filter(Boolean).join(", ")}
+                        {[comp.venue, comp.country_code].filter(Boolean).join(" • ")}
                       </p>
                     )}
                   </div>
@@ -340,16 +361,18 @@ function EditorialCompetitions({ isAr }: { isAr: boolean }) {
 
 /* ─── Featured Chefs ─── */
 function EditorialChefs({ isAr }: { isAr: boolean }) {
-  const { data: chefs = [] } = useQuery<any[]>({
+  const { data: chefs = [] } = useQuery<EditorialChef[]>({
     queryKey: ["editorial-chefs"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles" as any)
-        .select("id, full_name, full_name_ar, avatar_url, country_code")
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, full_name_ar, avatar_url, country_code")
         .not("avatar_url", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
-      return (data || []) as any[];
+
+      if (error) return [];
+      return (data || []) as EditorialChef[];
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -367,14 +390,14 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-          {(chefs.length > 0 ? chefs : Array.from({ length: 8 })).map((chef: any, i) => (
-            <div key={chef?.id || i} className="group text-center">
-              {chef?.id ? (
-                <Link to={`/chef/${chef.id}`} className="block">
+          {(chefs.length > 0 ? chefs : Array.from({ length: 8 })).map((chef, i) => (
+            <div key={chef?.user_id || i} className="group text-center">
+              {chef?.user_id ? (
+                <Link to={`/chef/${chef.user_id}`} className="block">
                   <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-border group-hover:border-primary transition-colors duration-300 mb-2">
                     <img
-                      src={chef.avatar_url}
-                      alt={isAr ? chef.full_name_ar : chef.full_name}
+                      src={chef.avatar_url || ""}
+                      alt={isAr ? chef.full_name_ar || chef.full_name || "Chef" : chef.full_name || "Chef"}
                       className="w-full h-full object-cover"
                       loading="lazy"
                       decoding="async"
