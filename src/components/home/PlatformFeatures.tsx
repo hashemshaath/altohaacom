@@ -51,7 +51,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
   return (
     <div className="space-y-10 md:space-y-16">
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={servicesReveal.ref} className="container px-5 sm:px-6" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
           <div className="mb-8 text-center">
             <Badge variant="secondary" className="mb-2 gap-1">
