@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Eye, ArrowRight, BookOpen, Newspaper, TrendingUp, Award } from "lucide-react";
+import { ShareButton } from "@/components/ui/share-button";
 
 const TYPE_ICONS: Record<string, React.ElementType> = {
   news: Newspaper,
@@ -60,12 +61,20 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
             <TypeIcon className="h-3 w-3" />
             {typeBadgeLabel(article.type)}
           </Badge>
-          <div className="absolute top-4 end-4 flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-1 text-[10px] text-muted-foreground">
-            <BookOpen className="h-2.5 w-2.5" />
-            {readTime} {isAr ? "د" : "min"}
+          <div className="absolute top-4 end-4 flex items-center gap-2">
+            <div className="flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-1 text-[10px] text-muted-foreground">
+              <BookOpen className="h-2.5 w-2.5" />
+              {readTime} {isAr ? "د" : "min"}
+            </div>
+            <ShareButton title={title} url={`/news/${article.slug}`} isAr={isAr} />
           </div>
         </div>
         <div className="absolute bottom-0 inset-x-0 p-5 md:p-6">
+          {(article.view_count ?? 0) >= 100 && (
+            <Badge variant="secondary" className="text-[9px] px-2 py-0.5 rounded-lg gap-1 bg-chart-4/10 text-chart-4 border-0 mb-2">
+              🔥 {isAr ? "رائج" : "Trending"}
+            </Badge>
+          )}
           <h3 className="text-xl md:text-2xl font-bold line-clamp-2 mb-2 group-hover:text-primary transition-colors">{title}</h3>
           {excerpt && <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{excerpt}</p>}
           <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
