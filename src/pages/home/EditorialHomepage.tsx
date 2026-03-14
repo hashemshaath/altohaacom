@@ -390,7 +390,7 @@ function EditorialChefs({ isAr }: { isAr: boolean }) {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-          {(chefs.length > 0 ? chefs : Array.from({ length: 8 })).map((chef, i) => (
+          {(chefs.length > 0 ? chefs : (Array.from({ length: 8 }) as EditorialChef[])).map((chef: EditorialChef, i) => (
             <div key={chef?.user_id || i} className="group text-center">
               {chef?.user_id ? (
                 <Link to={`/chef/${chef.user_id}`} className="block">
