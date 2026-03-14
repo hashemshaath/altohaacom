@@ -135,10 +135,10 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                 <Link
                   key={chef.user_id || idx}
                   to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
-                  className="group block snap-start min-w-[11rem] shrink-0 sm:min-w-0 sm:shrink"
+                  className="group block snap-start min-w-[12rem] shrink-0 sm:min-w-0 sm:shrink touch-manipulation"
                 >
                   <Card className="h-full border-border/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/20 overflow-hidden active:scale-[0.98] rounded-2xl">
-                    <CardContent className="p-3 sm:p-4 text-center">
+                    <CardContent className="p-4 sm:p-4 text-center">
                       <div className="relative mx-auto mb-3 w-fit">
                         <Avatar className={cn(
                           "h-16 w-16 sm:h-16 sm:w-16 shadow-md transition-all duration-300 group-hover:scale-110",
