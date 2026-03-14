@@ -116,7 +116,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
 
         <SectionReveal delay={80}>
           <div
-            className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
+            className="flex gap-3.5 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0 -mx-5 px-5 sm:mx-0 sm:px-0 touch-pan-x"
             dir={isAr ? "rtl" : "ltr"}
             style={{ WebkitOverflowScrolling: "touch" }}
           >
