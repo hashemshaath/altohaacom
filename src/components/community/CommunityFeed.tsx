@@ -503,10 +503,10 @@ export const CommunityFeed = memo(function CommunityFeed() {
       </div>
 
       {/* Infinite scroll sentinel */}
-      <div ref={sentinelRef} className="py-4 flex justify-center">
+      <div ref={sentinelRef} className="py-6 flex justify-center safe-area-bottom">
         {loadingMore && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
         {!hasMore && posts.length > 0 && (
-          <p className="text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
+          <p className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
         )}
       </div>
 
