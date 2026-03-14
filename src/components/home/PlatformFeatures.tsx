@@ -102,16 +102,16 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               </p>
             </div>
           </SectionReveal>
-          <div className={cn("grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+          <div className={cn("grid gap-3.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
             {roles.map((role) => {
               const content = (
-                <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
-                  <CardContent className="p-4">
-                    <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <role.icon className="h-5 w-5 text-primary" />
+                <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                  <CardContent className="p-4 sm:p-4">
+                    <div className="mx-auto mb-2.5 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                      <role.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
                     </div>
-                    <h3 className="mb-0.5 text-sm font-bold">{role.title}</h3>
-                    <p className="text-[11px] text-muted-foreground leading-snug">{role.desc}</p>
+                    <h3 className="mb-0.5 text-[14px] sm:text-sm font-bold">{role.title}</h3>
+                    <p className="text-[11px] sm:text-[11px] text-muted-foreground leading-snug">{role.desc}</p>
                   </CardContent>
                 </Card>
               );
