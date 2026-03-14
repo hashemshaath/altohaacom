@@ -173,7 +173,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "هل أنت راعٍ أو شركة؟" : "Sponsor or Company?"}
               </h3>
-              <p className="mb-5 text-sm text-muted-foreground">
+              <p className="mb-5 text-[13px] sm:text-sm text-muted-foreground">
                 {isAr ? "اربط علامتك التجارية بالتميز الطهوي وانطلق مع شبكة عالمية من المحترفين." : "Align your brand with culinary excellence and tap into a global network of professionals."}
               </p>
               <div className="flex flex-wrap gap-2">
