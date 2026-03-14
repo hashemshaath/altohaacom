@@ -73,7 +73,7 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           isFixed && !headerVisible && "-translate-y-full"
         )}
       >
-        <div className={cn("container flex items-center gap-2", HEADER_HEIGHT)}>
+        <div className={cn("container flex items-center gap-2 px-4 sm:px-6", HEADER_HEIGHT)}>
           {/* Left: Mobile menu + Logo */}
           <div className="flex items-center gap-2 shrink-0">
             <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
