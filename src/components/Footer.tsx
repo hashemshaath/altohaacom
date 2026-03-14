@@ -90,10 +90,10 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     <footer
       ref={ref}
       id="site-footer"
-      className="border-t border-border/40 bg-card/50 pb-20 md:pb-0"
+      className="border-t border-border/40 bg-card/50 pb-24 sm:pb-0 safe-area-bottom"
       role="contentinfo"
     >
-      <div className="container">
+      <div className="container px-5 sm:px-6">
         {/* Main grid: Brand col + 3 nav columns */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-8 sm:grid-cols-3 lg:grid-cols-5">
           {/* Brand column — spans 2 cols on lg */}
@@ -131,7 +131,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex h-8 w-8 items-center justify-center rounded-xl text-muted-foreground/50 hover:text-primary hover:bg-primary/8 transition-all duration-200"
+                    className="flex h-10 w-10 sm:h-8 sm:w-8 items-center justify-center rounded-xl text-muted-foreground/50 hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
                   >
                     <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.icon} />
@@ -148,12 +148,12 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               <h4 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
                 {l(col.titleEn, col.titleAr)}
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2 sm:space-y-1.5">
                 {col.links.map((link) => (
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      className="text-[14px] sm:text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-200 touch-manipulation inline-block py-0.5"
                     >
                       {l(link.en, link.ar)}
                     </Link>

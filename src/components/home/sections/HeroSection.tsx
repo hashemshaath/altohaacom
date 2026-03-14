@@ -145,22 +145,22 @@ export function HeroSection() {
   /* ── Empty state ── */
   if (!slides.length) {
     return (
-      <section className="relative flex min-h-[55vh] sm:min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <section className="relative flex min-h-[50vh] sm:min-h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 safe-area-x">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.12),transparent_60%)]" />
-        <div className="relative text-center space-y-6 px-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-1.5 text-sm font-medium text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
+        <div className="relative text-center space-y-5 px-6">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-4 py-2 text-[13px] sm:text-sm font-medium text-primary">
+            <Sparkles className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
             {isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}
           </span>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.1] text-foreground">
+          <h1 className="text-[28px] font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.12] text-foreground">
             {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
           </h1>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto leading-relaxed sm:text-lg">
+          <p className="text-[15px] sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
             {isAr
               ? "انضم إلى أفضل الطهاة والحكام والمنظمين حول العالم"
               : "Join the finest chefs, judges, and organizers worldwide"}
           </p>
-          <Button size="lg" className="rounded-xl shadow-[var(--shadow-md)]" asChild>
+          <Button size="lg" className="rounded-xl shadow-[var(--shadow-md)] h-12 px-6 text-[15px]" asChild>
             <Link to="/register">
               {isAr ? "ابدأ الآن" : "Get Started"}
               <ArrowRight className="ms-2 h-4 w-4" />
@@ -183,7 +183,7 @@ export function HeroSection() {
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="relative min-h-[50vh] sm:min-h-[55vh] lg:min-h-[75vh]">
+      <div className="relative min-h-[48vh] sm:min-h-[55vh] lg:min-h-[75vh]">
         {/* Slide backgrounds */}
         {slides.map((s, idx) => (
           <div
@@ -209,23 +209,23 @@ export function HeroSection() {
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full min-h-[50vh] sm:min-h-[55vh] lg:min-h-[75vh] items-end pb-14 sm:pb-24 lg:pb-28">
+        <div className="container relative flex h-full min-h-[48vh] sm:min-h-[55vh] lg:min-h-[75vh] items-end pb-16 sm:pb-24 lg:pb-28 px-5 sm:px-6">
           <div
             key={slide.id}
-            className="max-w-2xl space-y-4 sm:space-y-5"
+            className="max-w-2xl space-y-3.5 sm:space-y-5"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-3 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-3 py-1.5 text-[11px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
+            <h1 className="text-[24px] font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.15] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-xs sm:text-base lg:text-lg max-w-lg leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md">
+              <p className="text-[14px] sm:text-base lg:text-lg max-w-lg leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
@@ -233,7 +233,7 @@ export function HeroSection() {
             {slide.link_url && (
               <Button
                 size="lg"
-                className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300"
+                className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300 h-11 sm:h-12 px-5 sm:px-6 text-[14px] sm:text-base touch-manipulation"
                 asChild
               >
                 <Link to={slide.link_url}>
@@ -275,7 +275,7 @@ export function HeroSection() {
             </button>
 
             {/* Progress dots */}
-            <div className="absolute bottom-4 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3 py-2 shadow-[var(--shadow-sm)]">
+            <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3.5 py-2.5 shadow-[var(--shadow-sm)]">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
