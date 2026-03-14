@@ -28,6 +28,9 @@ import { NewsTagsFilter } from "@/components/news/NewsTagsFilter";
 import { NewsDateRangeFilter } from "@/components/news/NewsDateRangeFilter";
 import { NewsViewToggle, type ViewMode } from "@/components/news/NewsViewToggle";
 import { NewsMobileFilters } from "@/components/news/NewsMobileFilters";
+import { NewsActiveFilters } from "@/components/news/NewsActiveFilters";
+import { NewsArchiveWidget } from "@/components/news/NewsArchiveWidget";
+import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
 
 interface Category {
   id: string;
@@ -112,6 +115,17 @@ export default function News() {
 
   const handleClearAll = useCallback(() => {
     setSearchParams({}, { replace: true });
+    resetPagination();
+  }, [setSearchParams]);
+
+  const handleArchiveMonthClick = useCallback((from: string, to: string) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("from", from);
+      next.set("to", to);
+      return next;
+    }, { replace: true });
+    setShowAdvancedFilters(true);
     resetPagination();
   }, [setSearchParams]);
 
@@ -279,7 +293,7 @@ export default function News() {
       padding="none"
     >
       <main className="flex-1">
-        {/* ─── Hero ─── */}
+        <NewsReadingProgress />
         <section className="relative overflow-hidden border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
           <div className="container relative py-10 md:py-14">
@@ -444,6 +458,23 @@ export default function News() {
             )}
           </div>
 
+          {/* ─── Active Filter Chips ─── */}
+          <NewsActiveFilters
+            isAr={isAr}
+            searchQuery={searchQuery}
+            onClearSearch={() => setParam("q", "")}
+            selectedCategory={selectedCategory}
+            categories={categories}
+            onClearCategory={() => handleCategoryChange("all")}
+            selectedTags={selectedTags}
+            tags={tags}
+            onRemoveTag={handleToggleTag}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onClearDates={handleDateClear}
+            onClearAll={handleClearAll}
+          />
+
           {/* ─── Tabs ─── */}
           <Tabs value={activeType} onValueChange={handleTypeChange} className="space-y-6">
             <div className="flex items-center justify-between gap-4">
@@ -585,6 +616,7 @@ export default function News() {
                     {/* Sidebar */}
                     <aside className="hidden lg:block space-y-6">
                       <NewsTrendingSidebar articles={articles} isAr={isAr} />
+                      <NewsArchiveWidget articles={articles} isAr={isAr} onMonthClick={handleArchiveMonthClick} />
                       <NewsletterCTA isAr={isAr} />
 
                       {/* Category Quick Links */}
