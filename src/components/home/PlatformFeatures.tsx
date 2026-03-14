@@ -123,8 +123,8 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             })}
           </div>
           {!user && (
-            <div className="mt-8 text-center">
-              <Button size="lg" asChild>
+             <div className="mt-8 text-center">
+              <Button size="lg" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/register">
                   {isAr ? "سجّل مجاناً وابدأ الآن" : "Sign Up Free & Get Started"}
                   <ArrowRight className="ms-2 h-4 w-4" />
