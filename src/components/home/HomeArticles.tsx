@@ -113,7 +113,7 @@ export const HomeArticles = memo(function HomeArticles() {
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
+                  <div className="absolute bottom-0 inset-x-0 p-5 sm:p-5">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       {typeTag(featured.type)}
                       {featured.published_at && (
