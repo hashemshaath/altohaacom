@@ -91,7 +91,7 @@ export const HomeTestimonials = function HomeTestimonials() {
                 </div>
               )}
 
-              <p className="text-base sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
+              <p className="text-[15px] sm:text-lg md:text-xl leading-relaxed text-foreground/85 mb-6 italic">
                 &ldquo;{quote}&rdquo;
               </p>
 
