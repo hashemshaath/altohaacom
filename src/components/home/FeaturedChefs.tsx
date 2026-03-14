@@ -82,7 +82,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
     <section className="relative overflow-hidden" aria-labelledby="featured-chefs-heading">
       <div className="absolute inset-0 bg-muted/20" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.03),transparent_60%)]" />
-      <div className="container relative" dir={isAr ? "rtl" : "ltr"}>
+      <div className="container relative px-5 sm:px-6" dir={isAr ? "rtl" : "ltr"}>
         <SectionHeader
           icon={Award}
           badge={isAr ? "طهاة مميزون" : "Featured Chefs"}
@@ -116,7 +116,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
 
         <SectionReveal delay={80}>
           <div
-            className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0"
+            className="flex gap-3.5 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 sm:grid sm:grid-cols-3 md:grid-cols-4 sm:overflow-visible sm:pb-0 -mx-5 px-5 sm:mx-0 sm:px-0 touch-pan-x"
             dir={isAr ? "rtl" : "ltr"}
             style={{ WebkitOverflowScrolling: "touch" }}
           >
@@ -135,10 +135,10 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                 <Link
                   key={chef.user_id || idx}
                   to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
-                  className="group block snap-start min-w-[11rem] shrink-0 sm:min-w-0 sm:shrink"
+                  className="group block snap-start min-w-[12rem] shrink-0 sm:min-w-0 sm:shrink touch-manipulation"
                 >
                   <Card className="h-full border-border/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1.5 hover:border-primary/20 overflow-hidden active:scale-[0.98] rounded-2xl">
-                    <CardContent className="p-3 sm:p-4 text-center">
+                    <CardContent className="p-4 sm:p-4 text-center">
                       <div className="relative mx-auto mb-3 w-fit">
                         <Avatar className={cn(
                           "h-16 w-16 sm:h-16 sm:w-16 shadow-md transition-all duration-300 group-hover:scale-110",
@@ -161,7 +161,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                           </div>
                         )}
                       </div>
-                      <h3 className="text-sm font-bold truncate text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="text-[13px] sm:text-sm font-bold truncate text-foreground group-hover:text-primary transition-colors">
                         {name || (isAr ? "طاهٍ" : "Chef")}
                       </h3>
                       {spec && (

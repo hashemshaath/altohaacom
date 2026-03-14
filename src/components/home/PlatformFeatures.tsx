@@ -51,31 +51,31 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
   return (
     <div className="space-y-10 md:space-y-16">
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={servicesReveal.ref} className="container px-5 sm:px-6" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
           <div className="mb-8 text-center">
             <Badge variant="secondary" className="mb-2 gap-1">
               <Sparkles className="h-3 w-3" />
               {isAr ? "الخدمات" : "Services"}
             </Badge>
-            <h2 id="services-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+            <h2 id="services-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
             </h2>
-            <p className="mx-auto mt-1.5 max-w-xl text-sm text-muted-foreground leading-relaxed">
+            <p className="mx-auto mt-1.5 max-w-xl text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
               {isAr ? "منصة متكاملة صُممت لتمكين كل محترف في عالم الطهي" : "A comprehensive platform designed to empower every culinary professional"}
             </p>
           </div>
         </SectionReveal>
-        <div className={cn("grid gap-3 grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <div className={cn("grid gap-3.5 grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {services.map((s) => (
-            <Link key={s.title} to={s.href} className="group block">
-              <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-                <CardContent className="flex flex-col p-3.5 sm:p-5">
-                  <div className={cn("mb-3 flex h-10 w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
-                    <s.icon className={cn("h-5 w-5", s.color)} />
+            <Link key={s.title} to={s.href} className="group block touch-manipulation">
+              <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                <CardContent className="flex flex-col p-4 sm:p-5">
+                  <div className={cn("mb-3 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
+                    <s.icon className={cn("h-[22px] w-[22px] sm:h-5 sm:w-5", s.color)} />
                   </div>
-                  <h3 className="font-bold mb-1 text-sm sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
-                  <p className="mb-3 flex-1 text-xs sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  <h3 className="font-bold mb-1 text-[14px] sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
+                  <p className="mb-3 flex-1 text-[12px] sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center text-xs font-medium text-primary">
                     {isAr ? "اكتشف المزيد" : "Explore"}
                     <ArrowRight className="ms-1 h-3 w-3" />
@@ -91,40 +91,40 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       <section ref={rolesReveal.ref} className="relative overflow-hidden" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
         <div className="absolute inset-0 bg-muted/20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
-        <div className="container relative">
+        <div className="container relative px-5 sm:px-6">
           <SectionReveal>
-            <div className="mb-8 text-center">
-              <h2 id="roles-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+            <div className="mb-6 sm:mb-8 text-center">
+              <h2 id="roles-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
                 {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
               </h2>
-              <p className="mx-auto mt-1.5 max-w-xl text-sm text-muted-foreground">
+              <p className="mx-auto mt-1.5 max-w-xl text-[13px] sm:text-sm text-muted-foreground">
                 {isAr ? "مصممة لخدمة كل دور في منظومة الطهي الاحترافية" : "Designed to serve every role in the professional culinary ecosystem"}
               </p>
             </div>
           </SectionReveal>
-          <div className={cn("grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+          <div className={cn("grid gap-3.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
             {roles.map((role) => {
               const content = (
-                <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
-                  <CardContent className="p-4">
-                    <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <role.icon className="h-5 w-5 text-primary" />
+                <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                  <CardContent className="p-4 sm:p-4">
+                    <div className="mx-auto mb-2.5 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                      <role.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
                     </div>
-                    <h3 className="mb-0.5 text-sm font-bold">{role.title}</h3>
-                    <p className="text-[11px] text-muted-foreground leading-snug">{role.desc}</p>
+                    <h3 className="mb-0.5 text-[14px] sm:text-sm font-bold">{role.title}</h3>
+                    <p className="text-[11px] sm:text-[11px] text-muted-foreground leading-snug">{role.desc}</p>
                   </CardContent>
                 </Card>
               );
               return (
-                <div key={role.title} className="group">
+              <div key={role.title} className="group touch-manipulation">
                   {role.href ? <Link to={role.href} className="block">{content}</Link> : content}
                 </div>
               );
             })}
           </div>
           {!user && (
-            <div className="mt-8 text-center">
-              <Button size="lg" asChild>
+             <div className="mt-8 text-center">
+              <Button size="lg" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/register">
                   {isAr ? "سجّل مجاناً وابدأ الآن" : "Sign Up Free & Get Started"}
                   <ArrowRight className="ms-2 h-4 w-4" />
@@ -136,26 +136,26 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       </section>
 
       {/* Why Altoha */}
-      <section ref={whyReveal.ref} className="container" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={whyReveal.ref} className="container px-5 sm:px-6" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
-          <div className="mb-8 text-center">
-            <h2 id="why-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+          <div className="mb-6 sm:mb-8 text-center">
+            <h2 id="why-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
             </h2>
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground">
+            <p className="mx-auto mt-1.5 max-w-md text-[13px] sm:text-sm text-muted-foreground">
               {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}
             </p>
           </div>
         </SectionReveal>
-        <div className={cn("grid gap-3 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <div className={cn("grid gap-3.5 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
           {whyUs.map((item) => (
-            <Card key={item.title} className="border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1">
+            <Card key={item.title} className="border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1 active:scale-[0.98]">
               <CardContent className="flex flex-col items-center p-5">
                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                   <item.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-1 text-sm font-bold">{item.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                <h3 className="mb-1 text-[14px] sm:text-sm font-bold">{item.title}</h3>
+                <p className="text-[12px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -163,17 +163,17 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       </section>
 
       {/* CTA Cards */}
-      <section className="container" dir={isAr ? "rtl" : "ltr"}>
-        <div className="grid gap-3 md:grid-cols-2">
+      <section className="container px-5 sm:px-6" dir={isAr ? "rtl" : "ltr"}>
+        <div className="grid gap-3.5 md:grid-cols-2">
           <Card className="group relative overflow-hidden border-primary/15 bg-gradient-to-br from-primary/10 via-card to-card transition-all hover:shadow-xl">
-            <CardContent className="relative p-6 md:p-8">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
-                <Star className="h-5 w-5 text-primary" />
+            <CardContent className="relative p-5 sm:p-6 md:p-8">
+              <div className="mb-3 flex h-12 w-12 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/15">
+                <Star className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
               </div>
-              <h3 className={cn("mb-2 text-xl font-bold", !isAr && "font-serif")}>
+              <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "هل أنت راعٍ أو شركة؟" : "Sponsor or Company?"}
               </h3>
-              <p className="mb-5 text-sm text-muted-foreground">
+              <p className="mb-5 text-[13px] sm:text-sm text-muted-foreground">
                 {isAr ? "اربط علامتك التجارية بالتميز الطهوي وانطلق مع شبكة عالمية من المحترفين." : "Align your brand with culinary excellence and tap into a global network of professionals."}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -187,14 +187,14 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </CardContent>
           </Card>
           <Card className="group relative overflow-hidden border-accent/15 bg-gradient-to-br from-accent/10 via-card to-card transition-all hover:shadow-xl">
-            <CardContent className="relative p-6 md:p-8">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
-                <Trophy className="h-5 w-5 text-accent" />
+            <CardContent className="relative p-5 sm:p-6 md:p-8">
+              <div className="mb-3 flex h-12 w-12 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-accent/15">
+                <Trophy className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-accent" />
               </div>
-              <h3 className={cn("mb-2 text-xl font-bold", !isAr && "font-serif")}>
+              <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "تنظّم مسابقات طهي؟" : "Organizing Competitions?"}
               </h3>
-              <p className="mb-5 text-sm text-muted-foreground">
+              <p className="mb-5 text-[13px] sm:text-sm text-muted-foreground">
                 {isAr ? "أدوات رقمية متكاملة لإنشاء وإدارة مسابقات طهوية احترافية بلا عناء." : "Integrated digital tools to create & manage professional culinary competitions effortlessly."}
               </p>
               <Button size="sm" variant="secondary" asChild>
@@ -210,30 +210,30 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
           <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.12),transparent_60%)]" />
-          <div className="container relative py-16 text-center md:py-24">
+           <div className="container relative py-14 text-center px-5 sm:px-6 md:py-24">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />
             </div>
-            <h2 className={cn("mb-3 text-xl font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
+            <h2 className={cn("mb-3 text-[20px] font-bold sm:text-2xl md:text-3xl", !isAr && "font-serif")}>
               {isAr ? "رحلتك في عالم الطهي تبدأ هنا" : "Your Culinary Journey Starts Here"}
             </h2>
-            <p className="mx-auto mb-7 max-w-lg text-sm text-muted-foreground leading-relaxed">
+            <p className="mx-auto mb-7 max-w-lg text-[14px] sm:text-sm text-muted-foreground leading-relaxed">
               {isAr
                 ? "انضم مجاناً واستمتع بمسابقات حصرية، دروس متقدمة، شبكة مهنية عالمية، وأكثر."
                 : "Join for free and enjoy exclusive competitions, masterclasses, a global professional network, and much more."}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button size="lg" className="shadow-lg shadow-primary/20" asChild>
+              <Button size="lg" className="shadow-lg shadow-primary/20 h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/register">
                   {isAr ? "أنشئ حسابك المجاني" : "Create Your Free Account"}
                   <ArrowRight className="ms-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="outline" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-[13px] sm:text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "مجاني بالكامل" : "Completely Free"}</div>
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "بدون بطاقة ائتمان" : "No Credit Card"}</div>
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "إعداد سريع" : "Quick Setup"}</div>

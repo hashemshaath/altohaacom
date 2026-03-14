@@ -44,8 +44,8 @@ export const NewsletterSignup = function NewsletterSignup() {
 
   return (
     <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
-      <div className="container relative">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-border/30 bg-gradient-to-br from-primary/10 via-card to-accent/10 px-6 py-10 md:py-12">
+      <div className="container relative px-5 sm:px-6">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-border/30 bg-gradient-to-br from-primary/10 via-card to-accent/10 px-6 py-10 sm:px-8 md:py-12">
         <div
           className={cn(
             "mx-auto max-w-xl text-center transition-all duration-700",
@@ -59,24 +59,24 @@ export const NewsletterSignup = function NewsletterSignup() {
             <Sparkles className="h-3 w-3" />
             {isAr ? "لا تفوّت الجديد" : "Stay in the Loop"}
           </Badge>
-          <h2 className={cn("text-xl font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
+          <h2 className={cn("text-[20px] font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
             {isAr ? "اشترك في نشرتنا الإخبارية" : "Subscribe to Our Newsletter"}
           </h2>
-          <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+          <p className="mt-1.5 text-[14px] sm:text-sm text-muted-foreground leading-relaxed">
             {isAr
               ? "كن أول من يعرف عن المسابقات القادمة والمقالات الحصرية والفرص المميزة."
               : "Be the first to know about upcoming competitions, exclusive articles & special opportunities."}
           </p>
-          <form onSubmit={handleSubmit} className="mt-5 flex gap-2 sm:mx-auto sm:max-w-md">
+          <form onSubmit={handleSubmit} className="mt-5 flex gap-2.5 sm:mx-auto sm:max-w-md">
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={isAr ? "بريدك الإلكتروني" : "Your email address"}
               required
-              className="flex-1 h-11"
+              className="flex-1 h-12 sm:h-11 text-base sm:text-sm rounded-xl"
             />
-            <Button type="submit" disabled={loading} className="h-11 px-6 shadow-sm shadow-primary/15">
+            <Button type="submit" disabled={loading} className="h-12 sm:h-11 px-6 shadow-sm shadow-primary/15 rounded-xl text-[14px] sm:text-sm touch-manipulation">
               {loading ? "..." : (isAr ? "اشتراك" : "Subscribe")}
             </Button>
           </form>

@@ -69,7 +69,7 @@ export const HomeArticles = memo(function HomeArticles() {
   };
 
   return (
-    <section className="container" aria-labelledby="articles-heading" dir={isAr ? "rtl" : "ltr"}>
+    <section className="container px-5 sm:px-6" aria-labelledby="articles-heading" dir={isAr ? "rtl" : "ltr"}>
       <SectionHeader
         icon={Newspaper}
         badge={isAr ? "أحدث المقالات" : "Latest Articles"}
@@ -100,7 +100,7 @@ export const HomeArticles = memo(function HomeArticles() {
 
       {featured ? (
         <SectionReveal delay={80}>
-          <div className="grid gap-3 lg:grid-cols-5">
+          <div className="grid gap-3.5 lg:grid-cols-5">
             {/* Featured article */}
             <Link to={`/news/${featured.slug}`} className="group block lg:col-span-3">
               <Card interactive className="h-full overflow-hidden border-border/40">
@@ -113,7 +113,7 @@ export const HomeArticles = memo(function HomeArticles() {
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
+                  <div className="absolute bottom-0 inset-x-0 p-5 sm:p-5">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       {typeTag(featured.type)}
                       {featured.published_at && (
@@ -129,11 +129,11 @@ export const HomeArticles = memo(function HomeArticles() {
                         </span>
                       )}
                     </div>
-                    <h3 className="line-clamp-2 text-base sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                    <h3 className="line-clamp-2 text-[15px] sm:text-lg font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                       {isAr && featured.title_ar ? featured.title_ar : featured.title}
                     </h3>
                     {(isAr ? featured.excerpt_ar : featured.excerpt) && (
-                      <p className="mt-1.5 line-clamp-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      <p className="mt-1.5 line-clamp-2 text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
                         {isAr && featured.excerpt_ar ? featured.excerpt_ar : featured.excerpt}
                       </p>
                     )}
@@ -144,12 +144,12 @@ export const HomeArticles = memo(function HomeArticles() {
 
             {/* Sidebar articles */}
             <div className="lg:col-span-2">
-              <div className="lg:hidden -mx-4 px-4 overflow-x-auto snap-x snap-mandatory scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
-                <div className="flex gap-3 pb-2" style={{ width: `${rest.length * 75}vw` }}>
+              <div className="lg:hidden -mx-5 px-5 overflow-x-auto snap-x snap-mandatory scrollbar-none touch-pan-x" dir={isAr ? "rtl" : "ltr"}>
+                <div className="flex gap-3.5 pb-2" style={{ width: `${rest.length * 75}vw` }}>
                   {rest.map((article: any) => (
-                    <Link key={article.id} to={`/news/${article.slug}`} className="group block snap-start" style={{ width: "72vw", flexShrink: 0 }}>
+                    <Link key={article.id} to={`/news/${article.slug}`} className="group block snap-start touch-manipulation" style={{ width: "72vw", flexShrink: 0 }}>
                       <Card interactive className="h-full overflow-hidden border-border/40">
-                        <div className="flex gap-3 p-2.5">
+                        <div className="flex gap-3.5 p-3">
                           <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-muted">
                             {article.featured_image_url ? (
                               <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} className="h-full w-full object-cover" loading="lazy" decoding="async" />
@@ -161,7 +161,7 @@ export const HomeArticles = memo(function HomeArticles() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5 mb-1 flex-wrap">{typeTag(article.type)}</div>
-                            <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                            <h3 className="line-clamp-2 text-[14px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                               {isAr && article.title_ar ? article.title_ar : article.title}
                             </h3>
                             <div className="mt-1 flex items-center gap-2">
