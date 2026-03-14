@@ -136,13 +136,13 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       </section>
 
       {/* Why Altoha */}
-      <section ref={whyReveal.ref} className="container" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section ref={whyReveal.ref} className="container px-5 sm:px-6" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
-          <div className="mb-8 text-center">
-            <h2 id="why-heading" className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
+          <div className="mb-6 sm:mb-8 text-center">
+            <h2 id="why-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
             </h2>
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground">
+            <p className="mx-auto mt-1.5 max-w-md text-[13px] sm:text-sm text-muted-foreground">
               {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}
             </p>
           </div>
