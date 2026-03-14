@@ -456,7 +456,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-border/30">
               <MessageCircle className="h-8 w-8 text-muted-foreground/30" />
             </div>
-            <h3 className="text-sm font-semibold text-foreground/80 mb-1">
+            <h3 className="text-base sm:text-sm font-semibold text-foreground/80 mb-1">
               {feedFilter === "bookmarks"
                 ? (isAr ? "لا توجد منشورات محفوظة" : "No saved posts yet")
                 : feedFilter === "following"
