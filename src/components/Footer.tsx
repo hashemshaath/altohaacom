@@ -90,10 +90,10 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     <footer
       ref={ref}
       id="site-footer"
-      className="border-t border-border/40 bg-card/50 pb-20 md:pb-0"
+      className="border-t border-border/40 bg-card/50 pb-24 sm:pb-0 safe-area-bottom"
       role="contentinfo"
     >
-      <div className="container">
+      <div className="container px-5 sm:px-6">
         {/* Main grid: Brand col + 3 nav columns */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-8 sm:grid-cols-3 lg:grid-cols-5">
           {/* Brand column — spans 2 cols on lg */}
