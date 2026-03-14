@@ -29,19 +29,34 @@ function useReveal(threshold = 0.08) {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) { setVisible(true); return; }
+    if (!el) {
+      setVisible(true);
+      return;
+    }
 
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          obs.unobserve(el);
-        }
-      },
-      { threshold, rootMargin: "80px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      setVisible(true);
+      return;
+    }
+
+    let obs: IntersectionObserver | null = null;
+
+    try {
+      obs = new window.IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            obs?.unobserve(el);
+          }
+        },
+        { threshold, rootMargin: "80px" }
+      );
+      obs.observe(el);
+    } catch {
+      setVisible(true);
+    }
+
+    return () => obs?.disconnect();
   }, [threshold]);
 
   return { ref, visible };
