@@ -1,7 +1,8 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { useAdTracking } from "@/hooks/useAdTracking";
-import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, Sparkles, Filter, ArrowDown, SlidersHorizontal } from "lucide-react";
+import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, Sparkles, Filter, ArrowDown, SlidersHorizontal, Home } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -19,10 +21,13 @@ import { cn } from "@/lib/utils";
 
 import { NewsHeroCard } from "@/components/news/NewsHeroCard";
 import { NewsArticleCard, type NewsArticle } from "@/components/news/NewsArticleCard";
+import { NewsListCard } from "@/components/news/NewsListCard";
 import { NewsTrendingSidebar } from "@/components/news/NewsTrendingSidebar";
 import { NewsletterCTA } from "@/components/news/NewsletterCTA";
 import { NewsTagsFilter } from "@/components/news/NewsTagsFilter";
 import { NewsDateRangeFilter } from "@/components/news/NewsDateRangeFilter";
+import { NewsViewToggle, type ViewMode } from "@/components/news/NewsViewToggle";
+import { NewsMobileFilters } from "@/components/news/NewsMobileFilters";
 
 interface Category {
   id: string;
@@ -49,17 +54,71 @@ const SORT_OPTIONS = [
 export default function News() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [searchParams, setSearchParams] = useSearchParams();
   useAdTracking();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeType, setActiveType] = useState("all");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
+  // URL-synced state
+  const searchQuery = searchParams.get("q") || "";
+  const activeType = searchParams.get("type") || "all";
+  const selectedCategory = searchParams.get("cat") || "all";
+  const sortBy = searchParams.get("sort") || "newest";
+  const selectedTags = useMemo(() => {
+    const t = searchParams.get("tags");
+    return t ? t.split(",").filter(Boolean) : [];
+  }, [searchParams]);
+  const dateFrom = searchParams.get("from") || "";
+  const dateTo = searchParams.get("to") || "";
+
   const [visibleCount, setVisibleCount] = useState(ARTICLES_PER_PAGE);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+
+  // URL setter helper
+  const setParam = useCallback((key: string, value: string, defaultVal = "") => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (value === defaultVal) {
+        next.delete(key);
+      } else {
+        next.set(key, value);
+      }
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
+
+  const resetPagination = () => setVisibleCount(ARTICLES_PER_PAGE);
+
+  const setSearchQueryParam = useCallback((v: string) => { setParam("q", v); resetPagination(); }, [setParam]);
+  const handleTypeChange = useCallback((v: string) => { setParam("type", v, "all"); resetPagination(); }, [setParam]);
+  const handleCategoryChange = useCallback((v: string) => { setParam("cat", v, "all"); resetPagination(); }, [setParam]);
+  const handleSortChange = useCallback((v: string) => { setParam("sort", v, "newest"); resetPagination(); }, [setParam]);
+  const handleToggleTag = useCallback((tagId: string) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      const current = (next.get("tags") || "").split(",").filter(Boolean);
+      const updated = current.includes(tagId) ? current.filter((t) => t !== tagId) : [...current, tagId];
+      if (updated.length === 0) next.delete("tags"); else next.set("tags", updated.join(","));
+      return next;
+    }, { replace: true });
+    resetPagination();
+  }, [setSearchParams]);
+
+  const handleDateFromChange = useCallback((v: string) => { setParam("from", v); resetPagination(); }, [setParam]);
+  const handleDateToChange = useCallback((v: string) => { setParam("to", v); resetPagination(); }, [setParam]);
+  const handleDateClear = useCallback(() => {
+    setSearchParams((prev) => { const n = new URLSearchParams(prev); n.delete("from"); n.delete("to"); return n; }, { replace: true });
+    resetPagination();
+  }, [setSearchParams]);
+
+  const handleClearAll = useCallback(() => {
+    setSearchParams({}, { replace: true });
+    resetPagination();
+  }, [setSearchParams]);
+
+  // Auto-show advanced filters if URL has them
+  useEffect(() => {
+    if (selectedTags.length > 0 || dateFrom || dateTo) setShowAdvancedFilters(true);
+  }, [selectedTags.length, dateFrom, dateTo]);
 
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ["news-articles"],
@@ -93,7 +152,6 @@ export default function News() {
     staleTime: 1000 * 60 * 10,
   });
 
-  // Fetch article-tag mappings when tags are selected
   const { data: articleTagMap = {} } = useQuery({
     queryKey: ["article-tag-map"],
     queryFn: async () => {
@@ -117,16 +175,11 @@ export default function News() {
         (article.excerpt && article.excerpt.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesType = activeType === "all" || article.type === activeType;
       const matchesCategory = selectedCategory === "all" || article.category_id === selectedCategory;
-
-      // Tag filter
       const matchesTags = selectedTags.length === 0 ||
         (articleTagMap[article.id] && selectedTags.some((t) => articleTagMap[article.id].includes(t)));
-
-      // Date range filter
       const pubDate = article.published_at || article.created_at;
       const matchesDateFrom = !dateFrom || pubDate >= dateFrom;
       const matchesDateTo = !dateTo || pubDate <= dateTo + "T23:59:59";
-
       return matchesSearch && matchesType && matchesCategory && matchesTags && matchesDateFrom && matchesDateTo;
     });
 
@@ -135,7 +188,6 @@ export default function News() {
     } else if (sortBy === "popular") {
       result = [...result].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
     }
-
     return result;
   }, [articles, searchQuery, activeType, selectedCategory, sortBy, selectedTags, articleTagMap, dateFrom, dateTo]);
 
@@ -180,6 +232,18 @@ export default function News() {
     return base;
   }, [articleTypes]);
 
+  // Type counts for badge display
+  const typeCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: articles.length };
+    articles.forEach((a) => { counts[a.type] = (counts[a.type] || 0) + 1; });
+    return counts;
+  }, [articles]);
+
+  const totalViews = useMemo(() => articles.reduce((sum, a) => sum + (a.view_count || 0), 0), [articles]);
+  const resultCount = filteredArticles.length;
+  const activeFilterCount = selectedTags.length + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0) + (selectedCategory !== "all" ? 1 : 0);
+
+  // Enhanced JSON-LD
   const jsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
@@ -188,34 +252,23 @@ export default function News() {
       ? "أحدث أخبار الطهاة والشركات والجمعيات في عالم فنون الطهي"
       : "Latest news about chefs, companies, and associations in the culinary world",
     url: `${window.location.origin}/news`,
-  }), [isAr]);
+    numberOfItems: articles.length,
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: articles.length,
+      itemListElement: articles.slice(0, 10).map((a, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${window.location.origin}/news/${a.slug}`,
+        name: a.title,
+      })),
+    },
+  }), [isAr, articles]);
 
-  const totalViews = useMemo(() => articles.reduce((sum, a) => sum + (a.view_count || 0), 0), [articles]);
-  const resultCount = filteredArticles.length;
-
-  const handleLoadMore = () => setVisibleCount((prev) => prev + ARTICLES_PER_PAGE);
-  const resetPagination = () => setVisibleCount(ARTICLES_PER_PAGE);
-
-  const handleTypeChange = (v: string) => { setActiveType(v); resetPagination(); };
-  const handleCategoryChange = (v: string) => { setSelectedCategory(v); resetPagination(); };
-  const handleSortChange = (v: string) => { setSortBy(v); resetPagination(); };
-  const handleToggleTag = useCallback((tagId: string) => {
-    setSelectedTags((prev) => prev.includes(tagId) ? prev.filter((t) => t !== tagId) : [...prev, tagId]);
-    resetPagination();
-  }, []);
-
-  const activeFilterCount = selectedTags.length + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0);
-
-  const handleClearAll = () => {
-    setSearchQuery("");
-    setActiveType("all");
-    setSelectedCategory("all");
-    setSortBy("newest");
-    setSelectedTags([]);
-    setDateFrom("");
-    setDateTo("");
-    resetPagination();
-  };
+  const breadcrumbItems = useMemo(() => [
+    { label: "Home", labelAr: "الرئيسية", href: "/" },
+    { label: "News & Articles", labelAr: "الأخبار والمقالات" },
+  ], []);
 
   return (
     <PageShell
@@ -230,6 +283,9 @@ export default function News() {
         <section className="relative overflow-hidden border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
           <div className="container relative py-10 md:py-14">
+            {/* Breadcrumbs */}
+            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="space-y-4 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm">
@@ -289,73 +345,96 @@ export default function News() {
                 <Input
                   placeholder={isAr ? "ابحث في الأخبار والمقالات..." : "Search news & articles..."}
                   value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); resetPagination(); }}
+                  onChange={(e) => setSearchQueryParam(e.target.value)}
                   className="h-10 border-border/40 bg-muted/20 ps-10 rounded-xl focus:ring-primary/20"
                   aria-label={isAr ? "البحث" : "Search"}
                 />
               </div>
-              <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-                <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44" aria-label={isAr ? "التصنيف" : "Category"}>
-                  <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="all">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {isAr && cat.name_ar ? cat.name_ar : cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={sortBy} onValueChange={handleSortChange}>
-                <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40" aria-label={isAr ? "ترتيب" : "Sort"}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  {SORT_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {isAr ? opt.ar : opt.en}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                variant={showAdvancedFilters ? "default" : "outline"}
-                size="sm"
-                className="rounded-xl gap-1.5 h-10 shrink-0 relative"
-                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                {isAr ? "فلاتر" : "Filters"}
-                {activeFilterCount > 0 && (
-                  <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </Button>
+
+              {/* Desktop-only dropdowns */}
+              <div className="hidden lg:contents">
+                <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44" aria-label={isAr ? "التصنيف" : "Category"}>
+                    <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="all">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {isAr && cat.name_ar ? cat.name_ar : cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={sortBy} onValueChange={handleSortChange}>
+                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40" aria-label={isAr ? "ترتيب" : "Sort"}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {SORT_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {isAr ? opt.ar : opt.en}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant={showAdvancedFilters ? "default" : "outline"}
+                  size="sm"
+                  className="rounded-xl gap-1.5 h-10 shrink-0 relative"
+                  onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                >
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  {isAr ? "فلاتر" : "Filters"}
+                  {activeFilterCount > 0 && (
+                    <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </div>
+
+              {/* Mobile filter sheet */}
+              <NewsMobileFilters
+                isAr={isAr}
+                activeFilterCount={activeFilterCount}
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={handleCategoryChange}
+                sortBy={sortBy}
+                onSortChange={handleSortChange}
+                sortOptions={SORT_OPTIONS}
+                tags={tags}
+                selectedTags={selectedTags}
+                onToggleTag={handleToggleTag}
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                onDateFromChange={handleDateFromChange}
+                onDateToChange={handleDateToChange}
+                onDateClear={handleDateClear}
+                onClearAll={handleClearAll}
+              />
+
+              {/* View Toggle */}
+              <NewsViewToggle mode={viewMode} onChange={setViewMode} />
             </div>
 
-            {/* Advanced Filters Panel */}
+            {/* Desktop Advanced Filters Panel */}
             {showAdvancedFilters && (
-              <div className="mt-3 pt-3 border-t border-border/30 space-y-3">
+              <div className="hidden lg:block mt-3 pt-3 border-t border-border/30 space-y-3">
                 {tags.length > 0 && (
-                  <NewsTagsFilter
-                    tags={tags}
-                    selectedTags={selectedTags}
-                    onToggleTag={handleToggleTag}
-                    isAr={isAr}
-                  />
+                  <NewsTagsFilter tags={tags} selectedTags={selectedTags} onToggleTag={handleToggleTag} isAr={isAr} />
                 )}
                 <div className="flex flex-wrap items-center gap-4">
                   <NewsDateRangeFilter
                     dateFrom={dateFrom}
                     dateTo={dateTo}
-                    onDateFromChange={(v) => { setDateFrom(v); resetPagination(); }}
-                    onDateToChange={(v) => { setDateTo(v); resetPagination(); }}
-                    onClear={() => { setDateFrom(""); setDateTo(""); resetPagination(); }}
+                    onDateFromChange={handleDateFromChange}
+                    onDateToChange={handleDateToChange}
+                    onClear={handleDateClear}
                     isAr={isAr}
                   />
-                  {(selectedTags.length > 0 || dateFrom || dateTo || searchQuery || selectedCategory !== "all") && (
+                  {activeFilterCount > 0 && (
                     <Button variant="ghost" size="sm" className="rounded-xl text-xs text-muted-foreground hover:text-destructive" onClick={handleClearAll}>
                       {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
                     </Button>
@@ -373,9 +452,12 @@ export default function News() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="rounded-xl px-4 py-2 text-xs font-semibold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-sm"
+                    className="rounded-xl px-4 py-2 text-xs font-semibold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-sm gap-1.5"
                   >
                     {isAr ? tab.ar : tab.en}
+                    {typeCounts[tab.value] != null && (
+                      <span className="text-[9px] opacity-60 tabular-nums">({typeCounts[tab.value]})</span>
+                    )}
                   </TabsTrigger>
                 ))}
               </TabsList>
@@ -388,15 +470,33 @@ export default function News() {
 
             <TabsContent value={activeType} className="mt-6">
               {isLoading ? (
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className={cn(
+                  viewMode === "grid"
+                    ? "grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                    : "space-y-4"
+                )}>
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <Card key={i} className="overflow-hidden rounded-2xl" aria-hidden>
-                      <Skeleton className="aspect-video w-full" />
-                      <CardContent className="space-y-2 p-5">
-                        <Skeleton className="h-5 w-3/4" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-3 w-1/3" />
-                      </CardContent>
+                      {viewMode === "grid" ? (
+                        <>
+                          <Skeleton className="aspect-video w-full" />
+                          <CardContent className="space-y-2 p-5">
+                            <Skeleton className="h-5 w-3/4" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-3 w-1/3" />
+                          </CardContent>
+                        </>
+                      ) : (
+                        <div className="flex gap-4 p-4">
+                          <Skeleton className="h-28 w-44 rounded-xl shrink-0 hidden sm:block" />
+                          <div className="flex-1 space-y-2">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-5 w-3/4" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-3 w-1/3" />
+                          </div>
+                        </div>
+                      )}
                     </Card>
                   ))}
                 </div>
@@ -412,7 +512,7 @@ export default function News() {
                         ? (isAr ? "جرّب تعديل الفلاتر أو كلمات البحث" : "Try adjusting your filters or search terms")
                         : (isAr ? "لا توجد مقالات منشورة حالياً" : "No published articles yet")}
                     </p>
-                    {(searchQuery || selectedTags.length > 0 || dateFrom || dateTo) && (
+                    {activeFilterCount > 0 && (
                       <Button variant="outline" size="sm" className="mt-4 rounded-xl" onClick={handleClearAll}>
                         {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
                       </Button>
@@ -450,12 +550,20 @@ export default function News() {
 
                   {/* ─── Main Content + Sidebar ─── */}
                   <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
-                    {/* Articles Grid */}
+                    {/* Articles */}
                     <div>
-                      <div className="grid gap-5 sm:grid-cols-2" role="list">
-                        {visibleArticles.map((article) => (
-                          <NewsArticleCard key={article.id} article={article} isAr={isAr} formatDate={formatDate} typeBadgeLabel={typeBadgeLabel} />
-                        ))}
+                      <div className={cn(
+                        viewMode === "grid"
+                          ? "grid gap-5 sm:grid-cols-2"
+                          : "space-y-4"
+                      )} role="list">
+                        {visibleArticles.map((article) =>
+                          viewMode === "grid" ? (
+                            <NewsArticleCard key={article.id} article={article} isAr={isAr} formatDate={formatDate} typeBadgeLabel={typeBadgeLabel} />
+                          ) : (
+                            <NewsListCard key={article.id} article={article} isAr={isAr} formatDate={formatDate} typeBadgeLabel={typeBadgeLabel} />
+                          )
+                        )}
                       </div>
 
                       {/* Load More */}
@@ -464,7 +572,7 @@ export default function News() {
                           <Button
                             variant="outline"
                             size="lg"
-                            onClick={handleLoadMore}
+                            onClick={() => setVisibleCount((prev) => prev + ARTICLES_PER_PAGE)}
                             className="rounded-2xl gap-2 px-8 border-border/40 hover:bg-primary/5"
                           >
                             <ArrowDown className="h-4 w-4" />
