@@ -216,7 +216,7 @@ const Index = () => {
       <Header />
 
       <main className="flex-1" aria-label="Homepage content">
-        {layout === "editorial" && !editorialFailed ? (
+        {layout === "editorial" ? (
           <EditorialFailoverBoundary
             onError={fallbackToClassic}
             fallback={
