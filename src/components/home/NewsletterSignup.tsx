@@ -67,16 +67,16 @@ export const NewsletterSignup = function NewsletterSignup() {
               ? "كن أول من يعرف عن المسابقات القادمة والمقالات الحصرية والفرص المميزة."
               : "Be the first to know about upcoming competitions, exclusive articles & special opportunities."}
           </p>
-          <form onSubmit={handleSubmit} className="mt-5 flex gap-2 sm:mx-auto sm:max-w-md">
+          <form onSubmit={handleSubmit} className="mt-5 flex gap-2.5 sm:mx-auto sm:max-w-md">
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={isAr ? "بريدك الإلكتروني" : "Your email address"}
               required
-              className="flex-1 h-11"
+              className="flex-1 h-12 sm:h-11 text-base sm:text-sm rounded-xl"
             />
-            <Button type="submit" disabled={loading} className="h-11 px-6 shadow-sm shadow-primary/15">
+            <Button type="submit" disabled={loading} className="h-12 sm:h-11 px-6 shadow-sm shadow-primary/15 rounded-xl text-[14px] sm:text-sm touch-manipulation">
               {loading ? "..." : (isAr ? "اشتراك" : "Subscribe")}
             </Button>
           </form>

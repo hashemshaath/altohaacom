@@ -233,7 +233,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-[13px] sm:text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "مجاني بالكامل" : "Completely Free"}</div>
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "بدون بطاقة ائتمان" : "No Credit Card"}</div>
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "إعداد سريع" : "Quick Setup"}</div>

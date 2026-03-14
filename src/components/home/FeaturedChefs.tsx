@@ -161,7 +161,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                           </div>
                         )}
                       </div>
-                      <h3 className="text-sm font-bold truncate text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="text-[13px] sm:text-sm font-bold truncate text-foreground group-hover:text-primary transition-colors">
                         {name || (isAr ? "طاهٍ" : "Chef")}
                       </h3>
                       {spec && (

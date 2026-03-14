@@ -161,7 +161,7 @@ export const HomeArticles = memo(function HomeArticles() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5 mb-1 flex-wrap">{typeTag(article.type)}</div>
-                            <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                            <h3 className="line-clamp-2 text-[14px] font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                               {isAr && article.title_ar ? article.title_ar : article.title}
                             </h3>
                             <div className="mt-1 flex items-center gap-2">

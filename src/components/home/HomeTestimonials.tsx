@@ -125,8 +125,8 @@ export const HomeTestimonials = function HomeTestimonials() {
                   />
                 ))}
               </div>
-              <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={next}>
-                <ChevronRight className="h-4 w-4" />
+              <Button variant="outline" size="icon" className="h-10 w-10 sm:h-8 sm:w-8 rounded-full touch-manipulation" onClick={next}>
+                <ChevronRight className="h-[18px] w-[18px] sm:h-4 sm:w-4" />
               </Button>
             </div>
           )}
