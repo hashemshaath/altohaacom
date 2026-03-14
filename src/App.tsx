@@ -48,6 +48,7 @@ import { protectedRoutes } from "@/routes/protectedRoutes";
 import { adminRoutes } from "@/routes/adminRoutes";
 import { companyRoutes } from "@/routes/companyRoutes";
 
+const AIChatbot = safeLazy(() => import("@/components/ai/AIChatbot"));
 const AchievementCelebration = safeLazy(() =>
   import("@/components/achievements/AchievementCelebration").then((m) => ({ default: m.AchievementCelebration }))
 );
@@ -126,6 +127,9 @@ const AppEnhancements = forwardRef<HTMLDivElement, { isHome: boolean }>(function
       <IOSInstallGuide />
       <OfflineBanner />
       <UpdatePrompt />
+      <Suspense fallback={null}>
+        <AIChatbot />
+      </Suspense>
 
       {!isHome && (
         <>
