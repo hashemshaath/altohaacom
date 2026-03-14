@@ -447,6 +447,23 @@ export default function News() {
             )}
           </div>
 
+          {/* ─── Active Filter Chips ─── */}
+          <NewsActiveFilters
+            isAr={isAr}
+            searchQuery={searchQuery}
+            onClearSearch={() => setParam("q", "")}
+            selectedCategory={selectedCategory}
+            categories={categories}
+            onClearCategory={() => handleCategoryChange("all")}
+            selectedTags={selectedTags}
+            tags={tags}
+            onRemoveTag={handleToggleTag}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onClearDates={handleDateClear}
+            onClearAll={handleClearAll}
+          />
+
           {/* ─── Tabs ─── */}
           <Tabs value={activeType} onValueChange={handleTypeChange} className="space-y-6">
             <div className="flex items-center justify-between gap-4">
