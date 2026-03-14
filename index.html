@@ -183,47 +183,15 @@
     </div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      (() => {
-        const RETRY_KEY = "altoha_boot_retry";
-        const MAX_WAIT_MS = 7000;
-
-        const isBooted = () =>
-          document.documentElement.getAttribute("data-app-boot") === "ready";
-
-        const showManualRecovery = () => {
-          const label = document.getElementById("boot-loader-text");
-          if (!label) return;
-          label.textContent = "Still loading — tap to retry";
-          label.style.cursor = "pointer";
-          label.onclick = () => window.location.reload();
-        };
-
-        window.addEventListener("load", () => {
-          setTimeout(() => {
-            if (isBooted()) {
-              try { sessionStorage.removeItem(RETRY_KEY); } catch {}
-              return;
-            }
-
-            try {
-              const alreadyRetried = sessionStorage.getItem(RETRY_KEY) === "1";
-              if (!alreadyRetried) {
-                sessionStorage.setItem(RETRY_KEY, "1");
-                const url = new URL(window.location.href);
-                url.searchParams.set("sw-reset", "1");
-                url.searchParams.set("_boot_retry", Date.now().toString());
-                window.location.replace(url.toString());
-                return;
-              }
-              sessionStorage.removeItem(RETRY_KEY);
-            } catch {
-              // noop
-            }
-
-            showManualRecovery();
-          }, MAX_WAIT_MS);
-        });
-      })();
+      // Minimal boot recovery — show retry after 10s if React hasn't mounted
+      setTimeout(function(){
+        var el=document.getElementById("boot-loader-text");
+        if(el&&document.documentElement.getAttribute("data-app-boot")!=="ready"){
+          el.textContent="Still loading — tap to retry";
+          el.style.cursor="pointer";
+          el.onclick=function(){location.reload()};
+        }
+      },10000);
     </script>
   </body>
 </html>
