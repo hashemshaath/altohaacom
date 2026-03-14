@@ -14,7 +14,6 @@ interface ActivityItem {
   actor_name: string;
   actor_avatar: string | null;
   created_at: string;
-  metadata: Record<string, any>;
 }
 
 const ICON_MAP: Record<string, { icon: any; color: string; bg: string }> = {
@@ -25,12 +24,19 @@ const ICON_MAP: Record<string, { icon: any; color: string; bg: string }> = {
   bookmark: { icon: Bookmark, color: "text-chart-4", bg: "bg-chart-4/10" },
 };
 
+const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
+  follow: { en: "followed you", ar: "بدأ بمتابعتك" },
+  reaction: { en: "reacted to your post", ar: "تفاعل مع منشورك" },
+  follow_request: { en: "wants to follow you", ar: "يريد متابعتك" },
+  story_view: { en: "viewed your story", ar: "شاهد قصتك" },
+};
+
 export const ActivitySidebar = memo(function ActivitySidebar() {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const { data: activities = [], isLoading } = useQuery({
+  const { data: activities = [] } = useQuery({
     queryKey: ["community-activity", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -65,7 +71,6 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
           actor_name: profile?.full_name || "Someone",
           actor_avatar: profile?.avatar_url || null,
           created_at: n.created_at,
-          metadata: meta || {},
         };
       });
     },
@@ -87,39 +92,37 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
-      <h3 className="px-4 pt-3 pb-2 text-base font-bold flex items-center gap-2">
-        <Bell className="h-4 w-4 text-primary" />
+    <div className="rounded-2xl border border-border/40 bg-card overflow-hidden">
+      <h3 className="px-4 pt-3 pb-2 text-sm font-bold flex items-center gap-2">
+        <Bell className="h-3.5 w-3.5 text-primary" />
         {isAr ? "النشاط" : "Activity"}
       </h3>
-      <div className="divide-y divide-border">
-        {activities.slice(0, 6).map((item) => {
+      <div className="divide-y divide-border/20">
+        {activities.slice(0, 5).map((item) => {
           const config = ICON_MAP[item.type] || ICON_MAP.like;
           const Icon = config.icon;
+          const label = TYPE_LABELS[item.type];
           return (
-            <div key={item.id} className="flex items-start gap-2.5 px-4 py-2.5 hover:bg-muted/30 transition-colors">
-              <div className="relative shrink-0">
-                <Avatar className="h-8 w-8">
+            <div key={item.id} className="flex items-start gap-2 px-4 py-2 hover:bg-muted/20 transition-colors">
+              <div className="relative shrink-0 mt-0.5">
+                <Avatar className="h-7 w-7">
                   <AvatarImage src={item.actor_avatar || undefined} />
-                  <AvatarFallback className="text-[10px] bg-muted">
+                  <AvatarFallback className="text-[9px] bg-muted">
                     {item.actor_name[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className={cn("absolute -bottom-0.5 -end-0.5 h-4 w-4 rounded-full flex items-center justify-center", config.bg)}>
-                  <Icon className={cn("h-2.5 w-2.5", config.color)} />
+                <div className={cn("absolute -bottom-0.5 -end-0.5 h-3.5 w-3.5 rounded-full flex items-center justify-center", config.bg)}>
+                  <Icon className={cn("h-2 w-2", config.color)} />
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs leading-relaxed">
+                <p className="text-[11px] leading-relaxed">
                   <span className="font-semibold">{item.actor_name}</span>{" "}
                   <span className="text-muted-foreground">
-                    {item.type === "follow" && (isAr ? "بدأ بمتابعتك" : "followed you")}
-                    {item.type === "reaction" && (isAr ? "تفاعل مع منشورك" : "reacted to your post")}
-                    {item.type === "follow_request" && (isAr ? "يريد متابعتك" : "wants to follow you")}
-                    {item.type === "story_view" && (isAr ? "شاهد قصتك" : "viewed your story")}
+                    {label ? (isAr ? label.ar : label.en) : ""}
                   </span>
                 </p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{formatTime(item.created_at)}</p>
+                <p className="text-[10px] text-muted-foreground/60">{formatTime(item.created_at)}</p>
               </div>
             </div>
           );

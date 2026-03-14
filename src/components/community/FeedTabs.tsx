@@ -23,27 +23,30 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
   ];
 
   return (
-    <div className="flex border-b border-border sticky top-0 z-10 bg-background/95 backdrop-blur-sm">
+    <div className="flex border-b border-border/40 sticky top-0 z-10 bg-background/95 backdrop-blur-md">
       {tabs
         .filter((t) => !t.requiresAuth || isLoggedIn)
-        .map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => onChange(tab.id)}
-            className={cn(
-              "flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-semibold transition-colors relative",
-              active === tab.id
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-            )}
-          >
-            <tab.icon className="h-4 w-4" />
-            <span className="hidden sm:inline">{tab.label}</span>
-            {active === tab.id && (
-              <span className="absolute bottom-0 inset-x-4 h-[3px] rounded-full bg-primary" />
-            )}
-          </button>
-        ))}
+        .map((tab) => {
+          const isActive = active === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onChange(tab.id)}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-semibold transition-all relative",
+                isActive
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/20"
+              )}
+            >
+              <tab.icon className={cn("h-4 w-4", isActive && "text-primary")} />
+              <span className="hidden sm:inline">{tab.label}</span>
+              {isActive && (
+                <span className="absolute bottom-0 inset-x-6 h-[2.5px] rounded-full bg-primary" />
+              )}
+            </button>
+          );
+        })}
     </div>
   );
 });

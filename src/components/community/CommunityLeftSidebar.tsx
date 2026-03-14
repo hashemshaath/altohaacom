@@ -3,13 +3,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { formatNumber } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
-  Activity, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark,
+  PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -89,15 +88,19 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
     return enabledFeatures.has(featureCode);
   }), [allTabs, enabledFeatures]);
 
+  const displayName = profile
+    ? (isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name
+    : null;
+
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col shrink-0 sticky top-12 self-start py-3 pe-1 transition-all duration-300 ease-in-out",
+      "hidden lg:flex flex-col shrink-0 sticky top-12 self-start py-3 pe-1 transition-all duration-300 ease-in-out max-h-[calc(100vh-3rem)] overflow-y-auto scrollbar-none",
       leftSidebarOpen ? "w-[220px]" : "w-[48px]"
     )}>
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 mb-2 self-end rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50"
+        className="h-7 w-7 mb-2 self-end rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
         onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
       >
         {leftSidebarOpen
@@ -106,25 +109,30 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
         }
       </Button>
 
+      {/* Profile card */}
       {user && profile && leftSidebarOpen && (
-        <Link to={`/${profile.username || user.id}`} className="block mb-3 rounded-2xl border border-border/30 bg-card/80 p-3.5 hover:bg-muted/30 hover:shadow-sm transition-all group">
+        <Link
+          to={`/${profile.username || user.id}`}
+          className="block mb-3 rounded-2xl border border-border/40 bg-gradient-to-b from-card to-muted/10 p-3 hover:shadow-md hover:border-primary/20 transition-all duration-200 group"
+        >
           <div className="flex items-center gap-3">
-            <Avatar className="h-11 w-11 rounded-xl ring-2 ring-primary/15 transition-transform group-hover:scale-105 shadow-sm">
+            <Avatar className="h-10 w-10 rounded-xl ring-2 ring-primary/10 transition-transform group-hover:scale-105 shadow-sm">
               <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
-              <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold">
-                {((isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name || "C")[0].toUpperCase()}
+              <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold text-sm">
+                {(displayName || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="min-w-0">
-              <p className="text-sm font-bold truncate">{(isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold truncate">{displayName}</p>
               {profile.username && (
-                <p className="text-xs text-muted-foreground">@{profile.username}</p>
+                <p className="text-[11px] text-muted-foreground">@{profile.username}</p>
               )}
             </div>
           </div>
         </Link>
       )}
 
+      {/* Navigation */}
       <nav className="space-y-0.5">
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
           <button
@@ -132,38 +140,36 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
             onClick={() => setActiveTab(tab.id)}
             title={!leftSidebarOpen ? tab.label : undefined}
             className={cn(
-              "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+              "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
               !leftSidebarOpen && "justify-center px-0",
               activeTab === tab.id
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/15"
-                : "text-foreground hover:bg-muted/50 active:scale-[0.98]"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/40 active:scale-[0.98]"
             )}
           >
-            <tab.icon className="h-5 w-5 shrink-0" />
-            {leftSidebarOpen && tab.label}
+            <tab.icon className="h-[18px] w-[18px] shrink-0" />
+            {leftSidebarOpen && <span className="truncate">{tab.label}</span>}
           </button>
         ))}
       </nav>
 
-      {leftSidebarOpen && <ProfileCompletionCard />}
+      {/* Profile completion */}
+      {leftSidebarOpen && <div className="mt-3"><ProfileCompletionCard /></div>}
 
+      {/* Stats */}
       {leftSidebarOpen && (
-        <div className="mt-4 rounded-2xl border border-border/30 bg-gradient-to-b from-card to-muted/15 p-4 shadow-sm">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-            <Activity className="h-3.5 w-3.5 text-primary" />
-            {isAr ? "إحصائيات المجتمع" : "Community Stats"}
-          </h3>
-          <OnlineCountBadge className="mb-3" />
-          <div className="space-y-3">
+        <div className="mt-3 rounded-2xl border border-border/40 bg-card p-3.5">
+          <OnlineCountBadge className="mb-2.5" />
+          <div className="grid grid-cols-2 gap-2">
             {[
               { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
               { label: isAr ? "منشور" : "Posts", value: stats.posts, color: "text-chart-2" },
               { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-3" },
               { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
             ].map((stat, i) => (
-              <div key={i} className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">{stat.label}</span>
-                <AnimatedCounter value={stat.value} className={cn("text-sm font-bold", stat.color)} />
+              <div key={i} className="rounded-xl bg-muted/30 p-2 text-center">
+                <AnimatedCounter value={stat.value} className={cn("text-sm font-bold tabular-nums", stat.color)} />
+                <p className="text-[10px] text-muted-foreground mt-0.5">{stat.label}</p>
               </div>
             ))}
           </div>
