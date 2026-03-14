@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useCallback, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
@@ -60,6 +60,12 @@ function normalizeEntries(entries: SectionEntry[]) {
 }
 
 export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
   const ordered = useMemo<SectionEntry[]>(() => {
     const configured = sections.length
       ? sections
@@ -76,6 +82,16 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
       sort_order: index + 1,
     }));
   }, [sections]);
+
+  if (!hasMounted) {
+    return (
+      <>
+        {[0, 1, 2].map((index) => (
+          <HomeSectionSkeleton key={`home-boot-skeleton-${index}`} index={index} />
+        ))}
+      </>
+    );
+  }
 
   return (
     <>

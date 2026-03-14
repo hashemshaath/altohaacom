@@ -67,8 +67,8 @@ const RouteSpinner = (
 /** All application routes */
 function AppRoutes() {
   return (
-    <MaintenanceGuard>
-      <ErrorBoundary>
+    <ErrorBoundary>
+      <MaintenanceGuard>
         <Suspense fallback={RouteSpinner}>
           <div id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
             <PageTransition>
@@ -82,8 +82,8 @@ function AppRoutes() {
             </PageTransition>
           </div>
         </Suspense>
-      </ErrorBoundary>
-    </MaintenanceGuard>
+      </MaintenanceGuard>
+    </ErrorBoundary>
   );
 }
 
@@ -92,11 +92,13 @@ function AppOverlays({ isHome }: { isHome: boolean }) {
   return (
     <ErrorBoundary fallback={null}>
       <MobileBottomNav />
-      <ScrollProgress />
+      {!isHome && <ScrollProgress />}
       <BackToTop />
-      <Suspense fallback={null}>
-        <AIChatbot />
-      </Suspense>
+      {!isHome && (
+        <Suspense fallback={null}>
+          <AIChatbot />
+        </Suspense>
+      )}
     </ErrorBoundary>
   );
 }
@@ -121,25 +123,27 @@ function AppContent() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <LanguageProvider>
-        <AuthProvider>
-          <SiteSettingsProvider>
-            <ThemeApplicator />
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <ResourceHints />
-                <ErrorBoundary>
-                  <AppContent />
-                </ErrorBoundary>
-              </BrowserRouter>
-            </TooltipProvider>
-          </SiteSettingsProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <LanguageProvider>
+          <AuthProvider>
+            <SiteSettingsProvider>
+              <ThemeApplicator />
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <ResourceHints />
+                  <ErrorBoundary>
+                    <AppContent />
+                  </ErrorBoundary>
+                </BrowserRouter>
+              </TooltipProvider>
+            </SiteSettingsProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   </QueryClientProvider>
 );
 
