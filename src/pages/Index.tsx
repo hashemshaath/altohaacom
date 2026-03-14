@@ -162,7 +162,10 @@ const Index = () => {
   useAdTracking();
   useBootWatchdog();
 
-  const [layout, setLayout] = useState<HomepageLayout>(getStoredLayout);
+  const [layout, setLayout] = useState<HomepageLayout>(() => {
+    const stored = getStoredLayout();
+    return stored === "editorial" ? "classic" : stored;
+  });
 
   const { data: dbSections = [], isError } = useHomepageSections();
 
