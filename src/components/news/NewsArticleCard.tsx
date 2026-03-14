@@ -109,9 +109,12 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
               <TypeIcon className="h-2.5 w-2.5" />
               {typeBadgeLabel(article.type)}
             </Badge>
-            <div className="absolute bottom-3 end-3 flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[10px] text-muted-foreground">
-              <BookOpen className="h-2.5 w-2.5" />
-              {readTime} {isAr ? "د" : "min"}
+            <div className="absolute top-3 end-3 flex items-center gap-1.5">
+              <div className="flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[10px] text-muted-foreground">
+                <BookOpen className="h-2.5 w-2.5" />
+                {readTime} {isAr ? "د" : "min"}
+              </div>
+              <ShareButton title={title} url={`/news/${article.slug}`} isAr={isAr} className="opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           </div>
           <CardContent className="flex flex-1 flex-col p-5">
