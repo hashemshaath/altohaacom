@@ -163,8 +163,15 @@ const Index = () => {
   useBootWatchdog();
 
   const [layout, setLayout] = useState<HomepageLayout>(getStoredLayout);
+  const [editorialFailed, setEditorialFailed] = useState(false);
 
   const { data: dbSections = [], isError } = useHomepageSections();
+
+  const fallbackToClassic = useCallback(() => {
+    setEditorialFailed(true);
+    setLayout("classic");
+    setStoredLayout("classic");
+  }, []);
 
   const showHero = useMemo(() => {
     if (dbSections.length === 0) return true;
