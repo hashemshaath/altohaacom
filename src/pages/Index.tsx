@@ -56,7 +56,7 @@ function HomeEmergencySections({ language }: { language: string }) {
 
 /* ─── Trust Badges ─── */
 
-function TrustBadges({ isAr }: { isAr: boolean }) {
+function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   const badges = [
     { icon: Shield, label: isAr ? "منصة موثوقة" : "Trusted Platform", sub: isAr ? "+50,000 طاهٍ" : "50,000+ Chefs" },
     { icon: Globe, label: isAr ? "تغطية عالمية" : "Global Coverage", sub: isAr ? "+120 دولة" : "120+ Countries" },
