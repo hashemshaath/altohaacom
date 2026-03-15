@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { forwardRef, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
 import { Badge } from "@/components/ui/badge";
@@ -116,7 +116,7 @@ export function HomeEventsCalendarPreview() {
 }
 
 /* ─── Calendar Event Card ─── */
-function CalendarEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
+const CalendarEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(function CalendarEventCard({ event, isAr }, ref) {
   const { colors, label } = getEventMeta(event);
   const IconComp = ICONS[label?.icon] || MoreHorizontal;
   const countdown = getCountdown(event.start_date, isAr);
@@ -179,8 +179,8 @@ function CalendarEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean 
   );
 
   return (
-    <div className="snap-start shrink-0 w-[80vw] sm:w-[48vw] md:w-[38vw] lg:w-[30vw] xl:w-[24vw]">
+    <div ref={ref} className="snap-start shrink-0 w-[80vw] sm:w-[48vw] md:w-[38vw] lg:w-[30vw] xl:w-[24vw]">
       {event.link ? <Link to={event.link} className="block h-full">{card}</Link> : card}
     </div>
   );
-}
+});
