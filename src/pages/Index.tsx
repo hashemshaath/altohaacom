@@ -56,7 +56,7 @@ function HomeEmergencySections({ language }: { language: string }) {
 
 /* ─── Trust Badges ─── */
 
-function TrustBadges({ isAr }: { isAr: boolean }) {
+function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   const badges = [
     { icon: Shield, label: isAr ? "منصة موثوقة" : "Trusted Platform", sub: isAr ? "+50,000 طاهٍ" : "50,000+ Chefs" },
     { icon: Globe, label: isAr ? "تغطية عالمية" : "Global Coverage", sub: isAr ? "+120 دولة" : "120+ Countries" },
@@ -64,7 +64,7 @@ function TrustBadges({ isAr }: { isAr: boolean }) {
   ];
 
   return (
-    <section className="border-y border-border/40 bg-muted/30">
+    <section className="border-y border-border/40 bg-muted/30" dir={dir}>
       <div className="container px-5 sm:px-6 py-4 sm:py-5">
         <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-10 md:gap-14">
           {badges.map((b, i) => (
@@ -138,7 +138,7 @@ const Index = () => {
         <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
         </ErrorBoundary>
-        <TrustBadges isAr={isAr} />
+        <TrustBadges isAr={isAr} dir={isAr ? "rtl" : "ltr"} />
         <div className="py-5 sm:py-6" />
         <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
           {isError ? (

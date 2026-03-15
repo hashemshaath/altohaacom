@@ -92,12 +92,12 @@ export const SponsorCarousel = memo(function SponsorCarousel() {
         {platinums.length > 0 && (
           <div className="mb-8">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="h-px flex-1 bg-gradient-to-e from-transparent to-chart-4/30" />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-chart-4/30" />
               <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1 text-[10px] uppercase tracking-widest">
                 <Crown className="h-3 w-3" />
                 {isAr ? "الرعاة البلاتينيون" : "Platinum Sponsors"}
               </Badge>
-              <div className="h-px flex-1 bg-gradient-to-s from-transparent to-chart-4/30" />
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-chart-4/30" />
             </div>
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
               {platinums.map(sponsor => (
@@ -121,8 +121,8 @@ export const SponsorCarousel = memo(function SponsorCarousel() {
         {/* Scrolling marquee for other sponsors */}
         {nonPlatinum.length > 0 && (
           <div className="relative overflow-hidden">
-            <div className="absolute inset-y-0 start-0 w-16 sm:w-20 z-10 pointer-events-none bg-gradient-to-e from-background to-transparent" />
-            <div className="absolute inset-y-0 end-0 w-16 sm:w-20 z-10 pointer-events-none bg-gradient-to-s from-background to-transparent" />
+            <div className="absolute inset-y-0 start-0 w-16 sm:w-20 z-10 pointer-events-none bg-gradient-to-r rtl:bg-gradient-to-l from-background to-transparent" />
+            <div className="absolute inset-y-0 end-0 w-16 sm:w-20 z-10 pointer-events-none bg-gradient-to-l rtl:bg-gradient-to-r from-background to-transparent" />
             <style>{`@keyframes marquee-ltr { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 @keyframes marquee-rtl { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }`}</style>
             <div

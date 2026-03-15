@@ -83,7 +83,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                 </button>
               ))}
             </div>
-            <div className="pointer-events-none absolute end-0 top-0 bottom-0 w-8 bg-gradient-to-s from-card/90 to-transparent" />
+            <div className="pointer-events-none absolute end-0 top-0 bottom-0 w-8 bg-gradient-to-l rtl:bg-gradient-to-r from-card/90 to-transparent" />
           </div>
 
           <form onSubmit={handleSearch} className="relative flex gap-2.5">
