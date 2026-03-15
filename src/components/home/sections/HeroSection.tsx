@@ -183,7 +183,7 @@ export function HeroSection() {
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/9] max-h-[55vh] sm:max-h-[65vh]">
+      <div className="relative aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/9]">
         {/* Slide backgrounds */}
         {slides.map((s, idx) => (
           <div
@@ -209,10 +209,10 @@ export function HeroSection() {
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full items-end pb-10 sm:pb-16 lg:pb-20 px-5 sm:px-6">
+        <div className="container relative flex h-full items-end pb-14 sm:pb-16 lg:pb-20 px-5 sm:px-6">
           <div
             key={slide.id}
-            className="max-w-xl space-y-3 sm:space-y-4"
+            className="max-w-xl space-y-2 sm:space-y-3"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
             <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/20 backdrop-blur-md border border-primary/30 px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
@@ -220,7 +220,7 @@ export function HeroSection() {
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-[22px] font-bold tracking-tight sm:text-3xl lg:text-5xl leading-[1.15] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
+            <h1 className="text-xl font-bold tracking-tight sm:text-3xl lg:text-5xl leading-[1.15] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
