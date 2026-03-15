@@ -209,10 +209,10 @@ export function HeroSection() {
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full items-end pb-10 sm:pb-16 lg:pb-20 px-5 sm:px-6">
+        <div className="container relative flex h-full items-end pb-14 sm:pb-16 lg:pb-20 px-5 sm:px-6">
           <div
             key={slide.id}
-            className="max-w-xl space-y-3 sm:space-y-4"
+            className="max-w-xl space-y-2 sm:space-y-3"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
             <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/20 backdrop-blur-md border border-primary/30 px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
