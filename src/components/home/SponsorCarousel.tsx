@@ -97,7 +97,7 @@ export const SponsorCarousel = memo(function SponsorCarousel() {
                 <Crown className="h-3 w-3" />
                 {isAr ? "الرعاة البلاتينيون" : "Platinum Sponsors"}
               </Badge>
-              <div className="h-px flex-1 bg-gradient-to-s from-transparent to-chart-4/30" />
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-chart-4/30" />
             </div>
             <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
               {platinums.map(sponsor => (
