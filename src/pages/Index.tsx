@@ -139,7 +139,6 @@ const Index = () => {
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
         </ErrorBoundary>
         <TrustBadges isAr={isAr} dir={isAr ? "rtl" : "ltr"} />
-        <div className="py-5 sm:py-6" />
         <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
           {isError ? (
             <HomeEmergencySections language={language} />
