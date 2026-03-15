@@ -1,0 +1,2 @@
+UPDATE homepage_sections SET spacing = 'compact' WHERE section_key IN ('search', 'stats');
+UPDATE homepage_sections SET spacing = 'compact' WHERE section_key IN ('events_by_category', 'events_calendar', 'regional_events');
