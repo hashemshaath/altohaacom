@@ -1,120 +1,186 @@
-import { memo } from "react";
+import { memo, useContext, createContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { SectionHeader } from "@/components/home/SectionHeader";
+import { Handshake, Award, ExternalLink } from "lucide-react";
+import { useHomepageSection } from "@/hooks/useHomepageSections";
+
+/** Reads the current section key from context to distinguish sponsors vs partners */
+function useSectionKey() {
+  // Access the raw section key from provider
+  const config = useSectionConfig();
+  // Infer from config title or fallback
+  return config;
+}
+
+interface LogoItem {
+  id: string;
+  name: string;
+  logo_url: string;
+  website_url: string | null;
+  category: string;
+}
 
 const StatsPartnersSection = memo(function StatsPartnersSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
 
-  const itemCount = config?.item_count || 12;
   const title = config
-    ? (isAr ? config.title_ar || "بثقة من الأفضل" : config.title_en || "Trusted by the Best")
-    : (isAr ? "بثقة من الأفضل" : "Trusted by the Best");
+    ? (isAr ? config.title_ar || config.title_en : config.title_en || "")
+    : "";
   const showTitle = config?.show_title ?? true;
+  const showViewAll = config?.show_view_all ?? false;
+  const itemCount = config?.item_count || 12;
 
-  const { data: partners = [] } = useQuery({
-    queryKey: ["partner-logos"],
+  // Determine if this is sponsors or partners based on section key in config
+  const sectionKey = config?.section_key || "sponsors";
+  const isSponsors = sectionKey === "sponsors";
+
+  const defaultTitle = isSponsors
+    ? (isAr ? "الرعاة" : "Sponsors")
+    : (isAr ? "الشركاء" : "Partners");
+
+  const defaultBadge = isSponsors
+    ? (isAr ? "رعاتنا" : "Our Sponsors")
+    : (isAr ? "شركاؤنا" : "Our Partners");
+
+  const SectionIcon = isSponsors ? Award : Handshake;
+
+  const { data: logos = [] } = useQuery({
+    queryKey: ["section-logos", sectionKey, itemCount],
     queryFn: async () => {
-      const { data } = await supabase
+      // Fetch partner_logos filtered by category
+      const query = supabase
         .from("partner_logos")
-        .select("id, name, name_ar, logo_url, website_url, sort_order, is_active")
+        .select("id, name, name_ar, logo_url, website_url, category, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
-      return data || [];
+
+      if (isSponsors) {
+        query.eq("category", "sponsor");
+      } else {
+        query.neq("category", "sponsor");
+      }
+
+      const { data } = await query.limit(itemCount);
+
+      // If no category-filtered results, fall back to all logos
+      if (!data?.length) {
+        const { data: allData } = await supabase
+          .from("partner_logos")
+          .select("id, name, name_ar, logo_url, website_url, category, sort_order, is_active")
+          .eq("is_active", true)
+          .order("sort_order")
+          .limit(itemCount);
+        return (allData || []).map((p: any) => ({
+          id: p.id,
+          name: isAr ? p.name_ar || p.name : p.name,
+          logo_url: p.logo_url,
+          website_url: p.website_url,
+          category: p.category,
+        })) as LogoItem[];
+      }
+
+      return (data || []).map((p: any) => ({
+        id: p.id,
+        name: isAr ? p.name_ar || p.name : p.name,
+        logo_url: p.logo_url,
+        website_url: p.website_url,
+        category: p.category,
+      })) as LogoItem[];
     },
     staleTime: 1000 * 60 * 10,
   });
 
+  // Also fetch culinary entities as additional partners (only for partners section)
   const { data: entities = [] } = useQuery({
-    queryKey: ["home-entity-logos", itemCount],
+    queryKey: ["section-entity-logos", sectionKey, itemCount],
+    enabled: !isSponsors,
     queryFn: async () => {
       const { data } = await supabase
         .from("culinary_entities")
-        .select("id, name, name_ar, logo_url, slug, is_verified, is_visible")
+        .select("id, name, name_ar, logo_url, slug, is_verified")
         .eq("status", "active")
         .eq("is_visible", true)
         .not("logo_url", "is", null)
         .order("name")
         .limit(itemCount);
-      return data || [];
+      return (data || []).map((e: any) => ({
+        id: e.id,
+        name: isAr ? e.name_ar || e.name : e.name,
+        logo_url: e.logo_url,
+        website_url: null,
+        category: "entity",
+      })) as LogoItem[];
     },
     staleTime: 1000 * 60 * 10,
   });
 
-  const allLogos = [
-    ...partners.map((p: any) => ({ id: p.id, name: isAr ? p.name_ar || p.name : p.name, logo: p.logo_url })),
-    ...entities.map((e: any) => ({ id: e.id, name: isAr ? e.name_ar || e.name : e.name, logo: e.logo_url })),
-  ].filter(l => l.logo);
+  const allLogos = isSponsors
+    ? logos
+    : [...logos, ...entities].slice(0, itemCount);
 
   if (allLogos.length === 0) return null;
 
-  const displayLogos = allLogos.slice(0, itemCount);
-  // Duplicate logos for seamless infinite scroll effect
-  const marqueeLogos = displayLogos.length >= 4 ? [...displayLogos, ...displayLogos] : displayLogos;
-  const useMarquee = displayLogos.length >= 4;
-
   return (
-    <section dir={isAr ? "rtl" : "ltr"} className="py-2">
-      <div className="container px-5 sm:px-6">
-        {showTitle && (
-          <div className="text-center mb-10">
-            <Badge variant="secondary" className="mb-3 px-3 py-1 text-xs font-semibold uppercase tracking-widest">
-              {isAr ? "شركاؤنا" : "Our Partners"}
-            </Badge>
-            <h2 className={cn("text-2xl font-bold sm:text-3xl text-foreground tracking-tight", !isAr && "font-serif")}>
-              {title}
-            </h2>
-          </div>
-        )}
+    <section dir={isAr ? "rtl" : "ltr"}>
+      <div className="container">
+        <SectionHeader
+          icon={SectionIcon}
+          badge={defaultBadge}
+          title={showTitle ? (title || defaultTitle) : defaultTitle}
+          viewAllHref={showViewAll ? (isSponsors ? "/sponsors" : "/partners") : undefined}
+          isAr={isAr}
+        />
 
-        {useMarquee ? (
-          <div className="relative overflow-hidden">
-            <div
-              className={cn(
-                "flex items-center gap-10 sm:gap-14",
-                isAr ? "animate-marquee-rtl" : "animate-marquee"
-              )}
-              style={{ width: "max-content" }}
-            >
-              {marqueeLogos.map((item, idx) => (
-                <div
-                  key={`${item.id}-${idx}`}
-                  className="flex h-12 shrink-0 items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
-                  title={item.name}
-                >
+        <div
+          className={cn(
+            "grid gap-3",
+            allLogos.length <= 4
+              ? "grid-cols-2 sm:grid-cols-4"
+              : "grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
+          )}
+        >
+          {allLogos.map((item) => {
+            const Wrapper = item.website_url ? "a" : "div";
+            const linkProps = item.website_url
+              ? { href: item.website_url, target: "_blank", rel: "noopener noreferrer" }
+              : {};
+
+            return (
+              <Wrapper
+                key={item.id}
+                {...linkProps}
+                className={cn(
+                  "group relative flex flex-col items-center justify-center gap-2 rounded-2xl border border-border/40 bg-card p-4 transition-all duration-300",
+                  "hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
+                  "active:scale-[0.98] touch-manipulation",
+                  "aspect-[4/3] sm:aspect-[3/2]"
+                )}
+              >
+                <div className="flex h-10 sm:h-12 items-center justify-center">
                   <img
-                    src={item.logo}
+                    src={item.logo_url}
                     alt={item.name}
-                    className="h-full max-w-[120px] object-contain"
+                    className="h-full max-w-[100px] sm:max-w-[120px] object-contain opacity-70 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                     loading="lazy"
                   />
                 </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
-            {displayLogos.map((item) => (
-              <div
-                key={item.id}
-                className="flex h-12 items-center justify-center grayscale opacity-60 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
-                title={item.name}
-              >
-                <img
-                  src={item.logo}
-                  alt={item.name}
-                  className="h-full max-w-[120px] object-contain"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+                <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground text-center line-clamp-1 leading-tight transition-colors group-hover:text-foreground">
+                  {item.name}
+                </p>
+                {item.website_url && (
+                  <ExternalLink className="absolute top-2 end-2 h-3 w-3 text-muted-foreground/0 transition-all group-hover:text-muted-foreground/60" />
+                )}
+              </Wrapper>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
