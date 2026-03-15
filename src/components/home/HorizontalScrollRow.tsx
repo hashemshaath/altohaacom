@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 interface HorizontalScrollRowProps {
   children: ReactNode;
   className?: string;
-  itemClassName?: string;
   isAr?: boolean;
   showArrows?: boolean;
 }
