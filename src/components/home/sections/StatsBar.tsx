@@ -68,8 +68,8 @@ export default function StatsBar() {
 
   return (
     <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
-      <div className="container px-5 sm:px-6">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+      <div className="container px-3 sm:px-6">
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
           {items.map((item, idx) => (
             <StatItem
               key={item.label}
