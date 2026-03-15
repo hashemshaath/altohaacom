@@ -4,9 +4,9 @@ import { useSectionConfig } from "./SectionKeyContext";
 
 const SPACING: Record<string, string> = {
   none: "py-0",
-  compact: "py-5 sm:py-6 md:py-8",
-  normal: "py-6 sm:py-8 md:py-10",
-  relaxed: "py-8 sm:py-10 md:py-14",
+  compact: "py-4 sm:py-5 md:py-6",
+  normal: "py-5 sm:py-6 md:py-8",
+  relaxed: "py-6 sm:py-8 md:py-10",
 };
 
 const ANIMATION_ACTIVE: Record<string, string> = {
