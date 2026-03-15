@@ -107,13 +107,13 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                 </button>
               )}
             </div>
-            <Button type="submit" size="default" className="h-10 px-5 shadow-sm shadow-primary/10 rounded-lg shrink-0 font-semibold text-[13px]">
+            <Button type="submit" size="sm" className="h-9 px-4 shadow-sm shadow-primary/10 rounded-md shrink-0 font-semibold text-[12px]">
               {isAr ? "بحث" : "Search"}
             </Button>
           </form>
 
           {showSuggestions && !query && trending.length > 0 && (
-            <div className="mt-2 rounded-xl border border-border/30 bg-card p-3 shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200">
+            <div className="mt-1.5 rounded-lg border border-border/30 bg-card p-2.5 shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200">
               <div className="flex items-center gap-1.5 mb-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 <TrendingUp className="h-3 w-3" />
                 {isAr ? "الأكثر رواجاً" : "Trending"}
