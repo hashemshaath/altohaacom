@@ -64,17 +64,17 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   ];
 
   return (
-    <section className="border-y border-border/40 bg-muted/30" dir={dir}>
-      <div className="container px-3 sm:px-6 py-3 sm:py-4">
-        <div className="grid grid-cols-3 gap-2 sm:gap-6">
+    <section className="border-y border-border/30 bg-muted/20" dir={dir}>
+      <div className="container px-5 sm:px-6 py-3.5 sm:py-4">
+        <div className="flex items-center justify-between gap-3">
           {badges.map((b, i) => (
-            <div key={i} className="flex flex-col items-center gap-1.5 text-center">
-              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <b.icon className="h-4 w-4" />
+            <div key={i} className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <b.icon className="h-3.5 w-3.5" />
               </div>
-              <div>
-                <p className="text-[11px] sm:text-xs font-bold text-foreground leading-tight">{b.label}</p>
-                <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">{b.sub}</p>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold text-foreground leading-tight truncate">{b.label}</p>
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight truncate">{b.sub}</p>
               </div>
             </div>
           ))}
