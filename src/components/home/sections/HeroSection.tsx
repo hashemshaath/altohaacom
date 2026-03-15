@@ -232,15 +232,15 @@ export function HeroSection() {
 
             {slide.link_url && (
               <Button
-                size="default"
-                className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300 h-10 sm:h-11 px-5 text-[13px] sm:text-sm touch-manipulation"
+                size="sm"
+                className="group rounded-xl shadow-sm transition-all duration-300 h-9 px-4 text-[12px] sm:text-[13px] touch-manipulation active:scale-[0.98]"
                 asChild
               >
                 <Link to={slide.link_url}>
                   {isAr
                     ? slide.link_label_ar || slide.link_label || "اكتشف المزيد"
                     : slide.link_label || "Learn More"}
-                  <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight className="ms-1.5 h-3.5 w-3.5 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-0.5" />
                 </Link>
               </Button>
             )}
