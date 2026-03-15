@@ -64,7 +64,7 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   ];
 
   return (
-    <section className="border-y border-border/40 bg-muted/30">
+    <section className="border-y border-border/40 bg-muted/30" dir={dir}>
       <div className="container px-5 sm:px-6 py-4 sm:py-5">
         <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-10 md:gap-14">
           {badges.map((b, i) => (
