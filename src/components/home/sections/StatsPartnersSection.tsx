@@ -75,8 +75,8 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
         {useMarquee ? (
           <div className="relative overflow-hidden">
             {/* Fade edges */}
-            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-16 bg-gradient-to-e from-background to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-16 bg-gradient-to-s from-background to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-16 bg-gradient-to-r rtl:bg-gradient-to-l from-background to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-16 bg-gradient-to-l rtl:bg-gradient-to-r from-background to-transparent" />
             <div
               className={cn(
                 "flex items-center gap-10 sm:gap-14",

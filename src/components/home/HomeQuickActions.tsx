@@ -20,7 +20,7 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
   const isAr = language === "ar";
 
   return (
-    <section className="container px-5 sm:px-6 py-1" aria-label={isAr ? "إجراءات سريعة" : "Quick actions"}>
+    <section className="container px-5 sm:px-6 py-1" dir={isAr ? "rtl" : "ltr"} aria-label={isAr ? "إجراءات سريعة" : "Quick actions"}>
       <div
         className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:overflow-visible sm:pb-0 -mx-5 px-5 sm:mx-0 sm:px-0 touch-pan-x"
         dir={isAr ? "rtl" : "ltr"}
