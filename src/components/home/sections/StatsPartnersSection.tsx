@@ -177,3 +177,4 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
 });
 
 export default StatsPartnersSection;
+
