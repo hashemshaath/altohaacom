@@ -15,18 +15,18 @@ function StatItem({ value, label, icon: Icon, isVisible, delay }: {
   return (
     <div
       className={cn(
-        "group relative flex flex-col items-center gap-2 rounded-2xl border border-border/30 bg-card/50 backdrop-blur-sm p-5 transition-all duration-700 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
+        "group relative flex flex-col items-center gap-1 sm:gap-2 rounded-xl border border-border/30 bg-card/50 backdrop-blur-sm p-2.5 sm:p-4 transition-all duration-700 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       )}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/15">
-        <Icon className="h-5 w-5 text-primary" />
+      <div className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary/10 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/15">
+        <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
       </div>
-      <p className="text-2xl sm:text-3xl font-black tracking-tight tabular-nums text-foreground">
+      <p className="text-lg sm:text-2xl font-black tracking-tight tabular-nums text-foreground">
         <AnimatedCounter value={count} className="inline" />+
       </p>
-      <p className="text-[10px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
+      <p className="text-[9px] sm:text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
     </div>
   );
 }
@@ -68,8 +68,8 @@ export default function StatsBar() {
 
   return (
     <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
-      <div className="container px-5 sm:px-6">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+      <div className="container px-3 sm:px-6">
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
           {items.map((item, idx) => (
             <StatItem
               key={item.label}
