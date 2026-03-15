@@ -1,4 +1,4 @@
-import { memo, useContext, createContext } from "react";
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,15 +7,6 @@ import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { Handshake, Award, ExternalLink } from "lucide-react";
-import { useHomepageSection } from "@/hooks/useHomepageSections";
-
-/** Reads the current section key from context to distinguish sponsors vs partners */
-function useSectionKey() {
-  // Access the raw section key from provider
-  const config = useSectionConfig();
-  // Infer from config title or fallback
-  return config;
-}
 
 interface LogoItem {
   id: string;
