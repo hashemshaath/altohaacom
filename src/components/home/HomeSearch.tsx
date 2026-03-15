@@ -95,7 +95,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                 onChange={(e) => { setQuery(e.target.value); setShowSuggestions(true); }}
                 onFocus={() => setShowSuggestions(true)}
                 placeholder={isAr ? "ابحث عن مسابقات، طهاة، معارض..." : "Search competitions, chefs, exhibitions..."}
-                className="ps-9 h-10 text-[13px] rounded-lg border-border/30 bg-muted/20 focus:bg-background transition-colors"
+                className="ps-9 h-9 text-[13px] rounded-md border-border/30 bg-muted/20 focus:bg-background transition-colors"
               />
               {query && (
                 <button
