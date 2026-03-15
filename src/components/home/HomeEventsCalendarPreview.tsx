@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { forwardRef, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
 import { Badge } from "@/components/ui/badge";
