@@ -54,9 +54,9 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, [hasAnim]);
 
-  const sectionKey = config?.section_key;
-  const defaultSpacing = sectionKey === "search" ? "none" : "normal";
-  const spacing = SPACING[config?.spacing || defaultSpacing];
+  const sectionKey = useSectionKey();
+  const noShellSpacing = sectionKey === "search";
+  const spacing = noShellSpacing ? SPACING.none : SPACING[config?.spacing || "normal"];
 
   return (
     <section
