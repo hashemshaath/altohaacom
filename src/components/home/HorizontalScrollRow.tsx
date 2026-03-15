@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 interface HorizontalScrollRowProps {
   children: ReactNode;
   className?: string;
-  itemClassName?: string;
   isAr?: boolean;
   showArrows?: boolean;
 }
@@ -98,7 +97,7 @@ export const HorizontalScrollRow = forwardRef<HTMLDivElement, HorizontalScrollRo
         ref={setScrollRef}
         dir={isAr ? "rtl" : "ltr"}
         className={cn(
-          "flex gap-3.5 sm:gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 -mx-5 px-5 sm:-mx-0 sm:px-0 touch-pan-x",
+          "flex gap-3.5 sm:gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1 touch-pan-x",
           className
         )}
         style={{ WebkitOverflowScrolling: "touch" }}
