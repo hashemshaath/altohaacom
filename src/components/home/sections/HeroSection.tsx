@@ -183,7 +183,7 @@ export function HeroSection() {
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="relative min-h-[48vh] sm:min-h-[55vh] lg:min-h-[75vh]">
+      <div className="relative aspect-[9/14] sm:aspect-[16/9] lg:aspect-[21/9] max-h-[65vh] sm:max-h-[70vh]">
         {/* Slide backgrounds */}
         {slides.map((s, idx) => (
           <div
@@ -201,39 +201,39 @@ export function HeroSection() {
               decoding={idx === 0 ? "sync" : "async"}
             />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/5"
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5"
               style={{ opacity }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent rtl:bg-gradient-to-l" />
           </div>
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full min-h-[48vh] sm:min-h-[55vh] lg:min-h-[75vh] items-end pb-16 sm:pb-24 lg:pb-28 px-5 sm:px-6">
+        <div className="container relative flex h-full items-end pb-14 sm:pb-20 lg:pb-24 px-5 sm:px-6">
           <div
             key={slide.id}
-            className="max-w-2xl space-y-3.5 sm:space-y-5"
+            className="max-w-xl space-y-3 sm:space-y-4"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 px-3 py-1.5 text-[11px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/20 backdrop-blur-md border border-primary/30 px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-[24px] font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.15] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
+            <h1 className="text-[22px] font-bold tracking-tight sm:text-3xl lg:text-5xl leading-[1.15] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-[14px] sm:text-base lg:text-lg max-w-lg leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md">
+              <p className="text-[13px] sm:text-sm lg:text-base max-w-md leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md line-clamp-2">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
 
             {slide.link_url && (
               <Button
-                size="lg"
-                className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300 h-11 sm:h-12 px-5 sm:px-6 text-[14px] sm:text-base touch-manipulation"
+                size="default"
+                className="group rounded-xl shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] transition-all duration-300 h-10 sm:h-11 px-5 text-[13px] sm:text-sm touch-manipulation"
                 asChild
               >
                 <Link to={slide.link_url}>
@@ -249,7 +249,7 @@ export function HeroSection() {
 
         {/* Slide counter */}
         {slides.length > 1 && (
-          <div className="absolute top-4 end-4 sm:top-6 sm:end-6 flex items-center gap-1.5 rounded-full bg-card/40 backdrop-blur-xl border border-border/20 px-2.5 py-1 text-[10px] font-mono text-[hsl(var(--hero-foreground)/0.85)]">
+          <div className="absolute top-3 end-3 sm:top-5 sm:end-5 flex items-center gap-1.5 rounded-lg bg-card/30 backdrop-blur-xl border border-border/20 px-2 py-1 text-[10px] font-mono text-[hsl(var(--hero-foreground)/0.85)]">
             <span className="font-bold">{String(safeCurrent + 1).padStart(2, "0")}</span>
             <span className="text-[hsl(var(--hero-muted-foreground)/0.6)]">/</span>
             <span className="text-[hsl(var(--hero-muted-foreground)/0.85)]">{String(slides.length).padStart(2, "0")}</span>
@@ -261,28 +261,28 @@ export function HeroSection() {
           <>
             <button
               onClick={prev}
-              className="absolute start-2 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:scale-105 active:scale-95"
+              className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-10 w-10 items-center justify-center rounded-xl bg-card/50 backdrop-blur-xl border border-border/30 text-foreground shadow-sm transition-all duration-300 hover:bg-card/80 hover:scale-105 active:scale-95"
               aria-label="Previous"
             >
               <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
             <button
               onClick={next}
-              className="absolute end-2 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-card/60 backdrop-blur-xl border border-border/40 text-foreground shadow-[var(--shadow-sm)] transition-all duration-300 hover:bg-card/90 hover:scale-105 active:scale-95"
+              className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-10 w-10 items-center justify-center rounded-xl bg-card/50 backdrop-blur-xl border border-border/30 text-foreground shadow-sm transition-all duration-300 hover:bg-card/80 hover:scale-105 active:scale-95"
               aria-label="Next"
             >
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
             </button>
 
             {/* Progress dots */}
-            <div className="absolute bottom-5 sm:bottom-7 start-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-card/50 backdrop-blur-xl border border-border/30 px-3.5 py-2.5 shadow-[var(--shadow-sm)]">
+            <div className="absolute bottom-4 sm:bottom-6 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-xl bg-card/40 backdrop-blur-xl border border-border/20 px-3 py-2 shadow-sm">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => goTo(idx)}
                   className={cn(
-                    "relative h-2 rounded-full transition-all duration-500 ease-out overflow-hidden",
-                    idx === safeCurrent ? "w-8 bg-muted-foreground/15" : "w-2 bg-muted-foreground/25 hover:bg-muted-foreground/50"
+                    "relative h-1.5 rounded-full transition-all duration-500 ease-out overflow-hidden",
+                    idx === safeCurrent ? "w-7 bg-muted-foreground/15" : "w-1.5 bg-muted-foreground/25 hover:bg-muted-foreground/50"
                   )}
                   aria-label={`Slide ${idx + 1}`}
                 >
