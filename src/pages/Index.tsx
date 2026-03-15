@@ -65,16 +65,16 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
 
   return (
     <section className="border-y border-border/40 bg-muted/30" dir={dir}>
-      <div className="container px-5 sm:px-6 py-4 sm:py-5">
-        <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-10 md:gap-14">
+      <div className="container px-3 sm:px-6 py-3 sm:py-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-6">
           {badges.map((b, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <div className="flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <b.icon className="h-[18px] w-[18px] sm:h-4 sm:w-4" />
+            <div key={i} className="flex flex-col items-center gap-1.5 text-center">
+              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <b.icon className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[13px] sm:text-xs font-bold text-foreground leading-tight">{b.label}</p>
-                <p className="text-[11px] sm:text-[10px] text-muted-foreground mt-0.5">{b.sub}</p>
+                <p className="text-[11px] sm:text-xs font-bold text-foreground leading-tight">{b.label}</p>
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-0.5">{b.sub}</p>
               </div>
             </div>
           ))}
