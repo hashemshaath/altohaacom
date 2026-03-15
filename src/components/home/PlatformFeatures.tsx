@@ -10,9 +10,9 @@ import {
   Globe, Scale, Award, ShieldCheck, ArrowRight, CheckCircle, ChefHat, Star,
   Coffee, BookOpen, Sparkles,
 } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
+import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
 export const PlatformFeatures = memo(function PlatformFeatures() {
   const { language } = useLanguage();
@@ -44,16 +44,12 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
     { icon: ShieldCheck, title: isAr ? "آمن وموثوق" : "Secure & Trusted", desc: isAr ? "حماية احترافية لبياناتك وخصوصيتك" : "Enterprise-grade protection for your data & privacy" },
   ];
 
-  const servicesReveal = useScrollReveal();
-  const rolesReveal = useScrollReveal();
-  const whyReveal = useScrollReveal();
-
   return (
-    <div className="space-y-10 md:space-y-16">
+    <div className="space-y-8 md:space-y-12">
       {/* Services */}
-      <section ref={servicesReveal.ref} className="container px-5 sm:px-6" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section className="container px-5 sm:px-6" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
-          <div className="mb-8 text-center">
+          <div className="mb-5 text-center">
             <Badge variant="secondary" className="mb-2 gap-1">
               <Sparkles className="h-3 w-3" />
               {isAr ? "الخدمات" : "Services"}
@@ -66,9 +62,9 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </p>
           </div>
         </SectionReveal>
-        <div className={cn("grid gap-3.5 grid-cols-2 lg:grid-cols-3 transition-all duration-700", servicesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <HorizontalScrollRow isAr={isAr}>
           {services.map((s) => (
-            <Link key={s.title} to={s.href} className="group block touch-manipulation">
+            <Link key={s.title} to={s.href} className="group block snap-start shrink-0 w-[56vw] sm:w-[38vw] md:w-[28vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
               <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
                 <CardContent className="flex flex-col p-4 sm:p-5">
                   <div className={cn("mb-3 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
@@ -84,16 +80,16 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               </Card>
             </Link>
           ))}
-        </div>
+        </HorizontalScrollRow>
       </section>
 
       {/* Roles */}
-      <section ref={rolesReveal.ref} className="relative overflow-hidden" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section className="relative overflow-hidden" aria-labelledby="roles-heading" dir={isAr ? "rtl" : "ltr"}>
         <div className="absolute inset-0 bg-muted/20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)]" />
         <div className="container relative px-5 sm:px-6">
           <SectionReveal>
-            <div className="mb-6 sm:mb-8 text-center">
+            <div className="mb-5 text-center">
               <h2 id="roles-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
                 {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
               </h2>
@@ -102,11 +98,11 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               </p>
             </div>
           </SectionReveal>
-          <div className={cn("grid gap-3.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 transition-all duration-700", rolesReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+          <HorizontalScrollRow isAr={isAr}>
             {roles.map((role) => {
               const content = (
                 <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
-                  <CardContent className="p-4 sm:p-4">
+                  <CardContent className="p-4">
                     <div className="mx-auto mb-2.5 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
                       <role.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
                     </div>
@@ -116,14 +112,14 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                 </Card>
               );
               return (
-              <div key={role.title} className="group touch-manipulation">
+                <div key={role.title} className="group snap-start shrink-0 w-[40vw] sm:w-[28vw] md:w-[22vw] lg:w-[15vw] touch-manipulation">
                   {role.href ? <Link to={role.href} className="block">{content}</Link> : content}
                 </div>
               );
             })}
-          </div>
+          </HorizontalScrollRow>
           {!user && (
-             <div className="mt-8 text-center">
+            <div className="mt-6 text-center">
               <Button size="lg" className="h-12 px-6 text-[15px] sm:text-base touch-manipulation" asChild>
                 <Link to="/register">
                   {isAr ? "سجّل مجاناً وابدأ الآن" : "Sign Up Free & Get Started"}
@@ -136,9 +132,9 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
       </section>
 
       {/* Why Altoha */}
-      <section ref={whyReveal.ref} className="container px-5 sm:px-6" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
+      <section className="container px-5 sm:px-6" aria-labelledby="why-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
-          <div className="mb-6 sm:mb-8 text-center">
+          <div className="mb-5 text-center">
             <h2 id="why-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
             </h2>
@@ -147,19 +143,21 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             </p>
           </div>
         </SectionReveal>
-        <div className={cn("grid gap-3.5 grid-cols-2 lg:grid-cols-4 transition-all duration-700", whyReveal.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8")}>
+        <HorizontalScrollRow isAr={isAr}>
           {whyUs.map((item) => (
-            <Card key={item.title} className="border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1 active:scale-[0.98]">
-              <CardContent className="flex flex-col items-center p-5">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                  <item.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="mb-1 text-[14px] sm:text-sm font-bold">{item.title}</h3>
-                <p className="text-[12px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
-              </CardContent>
-            </Card>
+            <div key={item.title} className="snap-start shrink-0 w-[56vw] sm:w-[38vw] md:w-[24vw] lg:w-[22vw]">
+              <Card className="h-full border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1 active:scale-[0.98]">
+                <CardContent className="flex flex-col items-center p-5">
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                    <item.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="mb-1 text-[14px] sm:text-sm font-bold">{item.title}</h3>
+                  <p className="text-[12px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </CardContent>
+              </Card>
+            </div>
           ))}
-        </div>
+        </HorizontalScrollRow>
       </section>
 
       {/* CTA Cards */}
@@ -210,7 +208,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <section className="relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
           <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.12),transparent_60%)]" />
-           <div className="container relative py-14 text-center px-5 sm:px-6 md:py-24">
+          <div className="container relative py-14 text-center px-5 sm:px-6 md:py-24">
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/10">
               <ChefHat className="h-8 w-8 text-primary" />
             </div>
