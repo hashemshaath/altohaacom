@@ -62,7 +62,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
   };
 
   return (
-    <section ref={ref} className="relative z-30 px-5 sm:px-6 py-3 sm:py-4" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="relative z-30 px-5 sm:px-6 py-2.5 sm:py-3" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
         <div ref={wrapperRef} className="mx-auto max-w-2xl rounded-2xl border border-border/30 bg-card/90 backdrop-blur-xl p-3 shadow-lg shadow-primary/5 ring-1 ring-primary/5 sm:p-4">
           <div className="relative mb-2.5">
