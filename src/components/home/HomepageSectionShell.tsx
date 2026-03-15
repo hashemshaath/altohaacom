@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useSectionConfig } from "./SectionKeyContext";
+import { useSectionConfig, useSectionKey } from "./SectionKeyContext";
 
 const SPACING: Record<string, string> = {
   none: "py-0",
