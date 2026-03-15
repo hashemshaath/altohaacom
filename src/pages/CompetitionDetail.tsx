@@ -224,6 +224,9 @@ export default function CompetitionDetail() {
     enabled: !!user,
   });
 
+  const supervisors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole === "supervisor") || [], [supervisingBodies]);
+  const accreditors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [], [supervisingBodies]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
