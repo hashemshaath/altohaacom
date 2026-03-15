@@ -7,6 +7,10 @@ export function SectionKeyProvider({ sectionKey, children }: { sectionKey: strin
   return <SectionKeyContext.Provider value={sectionKey}>{children}</SectionKeyContext.Provider>;
 }
 
+export function useSectionKey(): string | null {
+  return useContext(SectionKeyContext);
+}
+
 export function useSectionConfig(): HomepageSection | null {
   const key = useContext(SectionKeyContext);
   return useHomepageSection(key || "");

@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useSectionConfig } from "./SectionKeyContext";
+import { useSectionConfig, useSectionKey } from "./SectionKeyContext";
 
 const SPACING: Record<string, string> = {
   none: "py-0",
@@ -54,7 +54,9 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, [hasAnim]);
 
-  const spacing = SPACING[config?.spacing || "normal"];
+  const sectionKey = useSectionKey();
+  const noShellSpacing = sectionKey === "search";
+  const spacing = noShellSpacing ? SPACING.none : SPACING[config?.spacing || "normal"];
 
   return (
     <section
