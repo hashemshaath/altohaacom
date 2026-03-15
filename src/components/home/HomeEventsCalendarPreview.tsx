@@ -179,8 +179,8 @@ const CalendarEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr:
   );
 
   return (
-    <div className="snap-start shrink-0 w-[80vw] sm:w-[48vw] md:w-[38vw] lg:w-[30vw] xl:w-[24vw]">
+    <div ref={ref} className="snap-start shrink-0 w-[80vw] sm:w-[48vw] md:w-[38vw] lg:w-[30vw] xl:w-[24vw]">
       {event.link ? <Link to={event.link} className="block h-full">{card}</Link> : card}
     </div>
   );
-}
+});
