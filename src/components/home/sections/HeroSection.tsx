@@ -183,7 +183,7 @@ export function HeroSection() {
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="relative aspect-[9/14] sm:aspect-[16/9] lg:aspect-[21/9] max-h-[65vh] sm:max-h-[70vh]">
+      <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/9] max-h-[55vh] sm:max-h-[65vh]">
         {/* Slide backgrounds */}
         {slides.map((s, idx) => (
           <div
