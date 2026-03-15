@@ -209,7 +209,7 @@ export function HeroSection() {
         ))}
 
         {/* Content */}
-        <div className="container relative flex h-full items-end pb-14 sm:pb-20 lg:pb-24 px-5 sm:px-6">
+        <div className="container relative flex h-full items-end pb-10 sm:pb-16 lg:pb-20 px-5 sm:px-6">
           <div
             key={slide.id}
             className="max-w-xl space-y-3 sm:space-y-4"
