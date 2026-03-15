@@ -105,7 +105,11 @@ export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview
   const scroll = (dir: "start" | "end") => {
     const el = scrollRef.current;
     if (!el) return;
-    el.scrollBy({ left: (dir === "end" ? 1 : -1) * el.clientWidth * 0.7, behavior: "smooth" });
+    const amount = el.clientWidth * 0.7;
+    // In RTL, scrollLeft is negative, so "end" (logical) means scrolling left (negative)
+    const physicalDir = dir === "end" ? 1 : -1;
+    const rtlFlip = isAr ? -1 : 1;
+    el.scrollBy({ left: physicalDir * rtlFlip * amount, behavior: "smooth" });
   };
 
   if (events.length === 0) return null;
