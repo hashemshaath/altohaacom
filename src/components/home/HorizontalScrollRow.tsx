@@ -75,7 +75,7 @@ export const HorizontalScrollRow = forwardRef<HTMLDivElement, HorizontalScrollRo
     <div className="relative group/scroll">
       <div
         className={cn(
-          "pointer-events-none absolute inset-y-0 start-0 z-10 w-6 sm:w-10 bg-gradient-to-e from-background to-transparent transition-opacity duration-300",
+          "pointer-events-none absolute inset-y-0 start-0 z-10 w-6 sm:w-10 bg-gradient-to-r rtl:bg-gradient-to-l from-background to-transparent transition-opacity duration-300",
           canScrollStart ? "opacity-100" : "opacity-0"
         )}
       />
