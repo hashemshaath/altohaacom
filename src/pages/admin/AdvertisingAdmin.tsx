@@ -291,7 +291,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
               </TabsTrigger>
             ))}
           </TabsList>
-          <div className="pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-s from-background to-transparent sm:hidden" />
+          <div className="pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l rtl:bg-gradient-to-r from-background to-transparent sm:hidden" />
         </div>
 
         <TabsContent value="requests">
