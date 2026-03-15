@@ -116,7 +116,7 @@ export function HomeEventsCalendarPreview() {
 }
 
 /* ─── Calendar Event Card ─── */
-function CalendarEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
+const CalendarEventCard = forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(function CalendarEventCard({ event, isAr }, ref) {
   const { colors, label } = getEventMeta(event);
   const IconComp = ICONS[label?.icon] || MoreHorizontal;
   const countdown = getCountdown(event.start_date, isAr);
