@@ -111,7 +111,7 @@ export const HomeTestimonials = function HomeTestimonials() {
           {testimonials.length > 1 && (
             <div className="flex items-center justify-center gap-3 mt-4">
               <Button variant="outline" size="icon" className="h-10 w-10 sm:h-8 sm:w-8 rounded-full touch-manipulation" onClick={prev}>
-                <ChevronLeft className="h-[18px] w-[18px] sm:h-4 sm:w-4" />
+                <ChevronLeft className="h-[18px] w-[18px] sm:h-4 sm:w-4 rtl:rotate-180" />
               </Button>
               <div className="flex gap-1.5">
                 {testimonials.map((_: any, i: number) => (
