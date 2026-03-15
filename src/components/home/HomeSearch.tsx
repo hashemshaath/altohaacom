@@ -62,17 +62,17 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
   };
 
   return (
-    <section ref={ref} className="relative z-30 px-5 sm:px-6 py-2.5 sm:py-3" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
+    <section ref={ref} className="relative z-30 px-3 sm:px-5 py-1.5 sm:py-2" aria-label={isAr ? "البحث السريع" : "Quick search"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container">
-        <div ref={wrapperRef} className="mx-auto max-w-2xl rounded-2xl border border-border/30 bg-card/90 backdrop-blur-xl p-3 shadow-lg shadow-primary/5 ring-1 ring-primary/5 sm:p-4">
-          <div className="relative mb-2.5">
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
+        <div ref={wrapperRef} className="mx-auto max-w-2xl rounded-xl border border-border/30 bg-card/90 backdrop-blur-xl p-2.5 shadow-lg shadow-primary/5 ring-1 ring-primary/5 sm:p-3.5">
+          <div className="relative mb-1.5">
+            <div className="flex gap-1 overflow-x-auto scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
               {categories.map((cat) => (
                 <button
                   key={cat.key}
                   onClick={() => setActiveCategory(cat.key)}
                   className={cn(
-                    "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-semibold transition-all duration-200 touch-manipulation",
+                    "inline-flex shrink-0 items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold transition-all duration-200 touch-manipulation",
                     activeCategory === cat.key
                       ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                       : "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -86,7 +86,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
             <div className="pointer-events-none absolute end-0 top-0 bottom-0 w-6 bg-gradient-to-l rtl:bg-gradient-to-r from-card/90 to-transparent" />
           </div>
 
-          <form onSubmit={handleSearch} className="relative flex gap-2">
+          <form onSubmit={handleSearch} className="relative flex gap-1.5">
             <div className="relative flex-1">
               <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/40" />
               <Input
