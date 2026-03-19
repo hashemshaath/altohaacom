@@ -1,4 +1,4 @@
-import { memo, useState, useMemo, useRef } from "react";
+import React, { memo, useState, useMemo, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useGlobalEventsCalendar,
@@ -265,13 +265,8 @@ function FilterPill({
 }
 
 /* ─── Event Card ─── */
-const EventCard = memo(function EventCard({
-  event,
-  isAr,
-}: {
-  event: GlobalEvent;
-  isAr: boolean;
-}) {
+const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
+  function EventCard({ event, isAr }, ref) {
   const eventType = resolveEventType(event.type);
   const colors = GLOBAL_EVENT_COLORS[eventType];
   const label = GLOBAL_EVENT_LABELS[eventType];
@@ -389,4 +384,4 @@ const EventCard = memo(function EventCard({
       )}
     </div>
   );
-});
+}));
