@@ -384,4 +384,4 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
       )}
     </div>
   );
-});
+}));
