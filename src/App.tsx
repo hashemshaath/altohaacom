@@ -51,7 +51,10 @@ const queryClient = new QueryClient({
 function AppBootMarker() {
   useEffect(() => {
     document.documentElement.setAttribute("data-app-boot", "ready");
-    return () => { document.documentElement.removeAttribute("data-app-boot"); };
+    (window as Window & { __markBootReady?: () => void }).__markBootReady?.();
+    return () => {
+      document.documentElement.removeAttribute("data-app-boot");
+    };
   }, []);
   return null;
 }
