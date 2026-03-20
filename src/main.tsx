@@ -54,6 +54,24 @@ window.addEventListener("unhandledrejection", (event) => {
   handleBootFailure(reason);
 });
 
+window.addEventListener("vite:preloadError", (event: Event) => {
+  const viteEvent = event as Event & { payload?: unknown; preventDefault?: () => void };
+  viteEvent.preventDefault?.();
+
+  if (!getChunkReloaded()) {
+    setChunkReloaded(true);
+    window.location.reload();
+    return;
+  }
+
+  const message =
+    viteEvent.payload instanceof Error
+      ? viteEvent.payload.message
+      : "Failed to load the latest app files.";
+
+  handleBootFailure(message);
+});
+
 const cleanupLegacyRuntime = async () => {
   const cleanups: Promise<unknown>[] = [];
 
