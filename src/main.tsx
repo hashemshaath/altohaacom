@@ -4,6 +4,13 @@ import "./index.css";
 
 const root = document.getElementById("root");
 const CHUNK_RELOAD_KEY = "altoha-chunk-reload-once";
+const BOOT_STATE_ATTR = "data-app-boot";
+
+if (document.documentElement.getAttribute(BOOT_STATE_ATTR) !== "ready") {
+  document.documentElement.setAttribute(BOOT_STATE_ATTR, "starting");
+}
+
+(window as Window & { __markBootScriptLoaded?: () => void }).__markBootScriptLoaded?.();
 
 const getChunkReloaded = () => {
   try {
@@ -41,7 +48,7 @@ const mountEmergencyFallback = (message: string) => {
 };
 
 const handleBootFailure = (message: string) => {
-  if (document.documentElement.getAttribute("data-app-boot") === "ready") return;
+  if (document.documentElement.getAttribute(BOOT_STATE_ATTR) === "ready") return;
   mountEmergencyFallback(message);
 };
 
@@ -99,5 +106,10 @@ void cleanupLegacyRuntime();
 if (!root) {
   console.error("[boot] #root element not found");
 } else {
-  createRoot(root).render(<App />);
+  try {
+    createRoot(root).render(<App />);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to initialize the application.";
+    handleBootFailure(message);
+  }
 }
