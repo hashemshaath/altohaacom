@@ -3,6 +3,27 @@ import App from "./App";
 import "./index.css";
 
 const root = document.getElementById("root");
+const CHUNK_RELOAD_KEY = "altoha-chunk-reload-once";
+
+const getChunkReloaded = () => {
+  try {
+    return window.sessionStorage.getItem(CHUNK_RELOAD_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+
+const setChunkReloaded = (value: boolean) => {
+  try {
+    if (value) {
+      window.sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
+    } else {
+      window.sessionStorage.removeItem(CHUNK_RELOAD_KEY);
+    }
+  } catch {
+    // Ignore restricted storage environments
+  }
+};
 
 const mountEmergencyFallback = (message: string) => {
   if (!root) return;
