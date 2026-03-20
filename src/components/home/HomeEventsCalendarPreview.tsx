@@ -225,44 +225,46 @@ export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview
 });
 
 /* ─── Filter Pill ─── */
-function FilterPill({
-  label,
-  active,
-  count,
-  onClick,
-  dotColor,
-}: {
+interface FilterPillProps {
   label: string;
   active: boolean;
   count: number;
   onClick: () => void;
   dotColor?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full text-sm font-semibold transition-all duration-200 touch-manipulation active:scale-95",
-        active
-          ? "bg-primary text-primary-foreground shadow-sm"
-          : "bg-muted/50 text-muted-foreground hover:bg-muted border border-border/30"
-      )}
-    >
-      {dotColor && !active && <span className={cn("h-2 w-2 rounded-full shrink-0", dotColor)} />}
-      {label}
-      {count > 0 && (
-        <span
-          className={cn(
-            "text-[11px] tabular-nums",
-            active ? "opacity-80" : "opacity-50"
-          )}
-        >
-          ({count})
-        </span>
-      )}
-    </button>
-  );
 }
+
+const FilterPill = memo(
+  React.forwardRef<HTMLButtonElement, FilterPillProps>(function FilterPill(
+    { label, active, count, onClick, dotColor },
+    ref
+  ) {
+    return (
+      <button
+        ref={ref}
+        onClick={onClick}
+        className={cn(
+          "shrink-0 flex items-center gap-1.5 h-9 px-4 rounded-full text-sm font-semibold transition-all duration-200 touch-manipulation active:scale-95",
+          active
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "bg-muted/50 text-muted-foreground hover:bg-muted border border-border/30"
+        )}
+      >
+        {dotColor && !active && <span className={cn("h-2 w-2 rounded-full shrink-0", dotColor)} />}
+        {label}
+        {count > 0 && (
+          <span
+            className={cn(
+              "text-[11px] tabular-nums",
+              active ? "opacity-80" : "opacity-50"
+            )}
+          >
+            ({count})
+          </span>
+        )}
+      </button>
+    );
+  })
+);
 
 /* ─── Event Card ─── */
 const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
@@ -374,7 +376,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
   );
 
   return (
-    <div className="snap-start shrink-0 w-[75vw] sm:w-[46vw] md:w-[36vw] lg:w-[28vw] xl:w-[22vw]">
+    <div ref={ref} className="snap-start shrink-0 w-[75vw] sm:w-[46vw] md:w-[36vw] lg:w-[28vw] xl:w-[22vw]">
       {event.link ? (
         <Link to={event.link} className="block h-full">
           {card}
