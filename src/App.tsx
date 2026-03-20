@@ -57,9 +57,6 @@ function AppBootMarker() {
     } catch {
       // Ignore restricted storage environments
     }
-    return () => {
-      document.documentElement.removeAttribute("data-app-boot");
-    };
   }, []);
   return null;
 }

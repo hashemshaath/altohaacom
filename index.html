@@ -183,27 +183,11 @@
     </div>
     <script>
       (function () {
-        var BOOT_RETRY_KEY = "altoha-boot-retries";
-        var MAX_AUTO_RETRIES = 1;
+        var BOOT_TIMEOUT_MS = 25000;
+        var BOOT_STATE_ATTR = "data-app-boot";
 
         function getBootTextEl() {
           return document.getElementById("boot-loader-text");
-        }
-
-        function getRetries() {
-          try {
-            return Number(window.sessionStorage.getItem(BOOT_RETRY_KEY) || "0");
-          } catch {
-            return 0;
-          }
-        }
-
-        function setRetries(value) {
-          try {
-            window.sessionStorage.setItem(BOOT_RETRY_KEY, String(value));
-          } catch {
-            // Ignore restricted storage environments
-          }
         }
 
         async function hardReload() {
@@ -225,42 +209,59 @@
           window.location.replace(url.toString());
         }
 
-        function bindRetry(text) {
+        function normalReload() {
+          var url = new URL(window.location.href);
+          url.searchParams.set("__boot_retry", String(Date.now()));
+          window.location.replace(url.toString());
+        }
+
+        function bindRetry(text, mode) {
           var el = getBootTextEl();
           if (!el) return;
           el.textContent = text;
           el.style.cursor = "pointer";
-          el.onclick = function () { hardReload(); };
+          el.onclick = function () {
+            if (mode === "hard") {
+              hardReload();
+              return;
+            }
+            normalReload();
+          };
         }
 
         window.__handleBootScriptError = function () {
-          bindRetry("App failed to start — tap to refresh");
+          bindRetry("App files failed to load — tap to refresh", "hard");
+        };
+
+        window.__markBootScriptLoaded = function () {
+          if (document.documentElement.getAttribute(BOOT_STATE_ATTR) !== "ready") {
+            document.documentElement.setAttribute(BOOT_STATE_ATTR, "starting");
+          }
         };
 
         window.__markBootReady = function () {
-          setRetries(0);
+          document.documentElement.setAttribute(BOOT_STATE_ATTR, "ready");
         };
 
         setTimeout(function () {
-          if (document.documentElement.getAttribute("data-app-boot") === "ready") {
-            setRetries(0);
+          var bootState = document.documentElement.getAttribute(BOOT_STATE_ATTR);
+
+          if (bootState === "ready") {
             return;
           }
 
           if (!navigator.onLine) {
-            bindRetry("You appear offline — reconnect and tap to retry");
+            bindRetry("You appear offline — reconnect and tap to retry", "normal");
             return;
           }
 
-          var retries = getRetries();
-          if (retries < MAX_AUTO_RETRIES) {
-            setRetries(retries + 1);
-            hardReload();
+          if (bootState === "starting") {
+            bindRetry("App is taking longer than expected — tap to reload", "normal");
             return;
           }
 
-          bindRetry("Still loading — tap to retry");
-        }, 10000);
+          bindRetry("Still loading — tap to retry", "normal");
+        }, BOOT_TIMEOUT_MS);
       })();
     </script>
     <script type="module" src="/src/main.tsx" onerror="window.__handleBootScriptError && window.__handleBootScriptError(event)"></script>
