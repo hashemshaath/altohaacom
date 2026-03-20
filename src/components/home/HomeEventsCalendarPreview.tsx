@@ -376,7 +376,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
   );
 
   return (
-    <div className="snap-start shrink-0 w-[75vw] sm:w-[46vw] md:w-[36vw] lg:w-[28vw] xl:w-[22vw]">
+    <div ref={ref} className="snap-start shrink-0 w-[75vw] sm:w-[46vw] md:w-[36vw] lg:w-[28vw] xl:w-[22vw]">
       {event.link ? (
         <Link to={event.link} className="block h-full">
           {card}
