@@ -51,7 +51,15 @@ const queryClient = new QueryClient({
 function AppBootMarker() {
   useEffect(() => {
     document.documentElement.setAttribute("data-app-boot", "ready");
-    return () => { document.documentElement.removeAttribute("data-app-boot"); };
+    (window as Window & { __markBootReady?: () => void }).__markBootReady?.();
+    try {
+      window.sessionStorage.removeItem("altoha-chunk-reload-once");
+    } catch {
+      // Ignore restricted storage environments
+    }
+    return () => {
+      document.documentElement.removeAttribute("data-app-boot");
+    };
   }, []);
   return null;
 }

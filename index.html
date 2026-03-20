@@ -181,17 +181,88 @@
         </div>
       </div>
     </div>
-    <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Minimal boot recovery — show retry after 10s if React hasn't mounted
-      setTimeout(function(){
-        var el=document.getElementById("boot-loader-text");
-        if(el&&document.documentElement.getAttribute("data-app-boot")!=="ready"){
-          el.textContent="Still loading — tap to retry";
-          el.style.cursor="pointer";
-          el.onclick=function(){location.reload()};
+      (function () {
+        var BOOT_RETRY_KEY = "altoha-boot-retries";
+        var MAX_AUTO_RETRIES = 1;
+
+        function getBootTextEl() {
+          return document.getElementById("boot-loader-text");
         }
-      },10000);
+
+        function getRetries() {
+          try {
+            return Number(window.sessionStorage.getItem(BOOT_RETRY_KEY) || "0");
+          } catch {
+            return 0;
+          }
+        }
+
+        function setRetries(value) {
+          try {
+            window.sessionStorage.setItem(BOOT_RETRY_KEY, String(value));
+          } catch {
+            // Ignore restricted storage environments
+          }
+        }
+
+        async function hardReload() {
+          try {
+            if ("serviceWorker" in navigator) {
+              var regs = await navigator.serviceWorker.getRegistrations();
+              await Promise.allSettled(regs.map(function (r) { return r.unregister(); }));
+            }
+            if ("caches" in window) {
+              var keys = await caches.keys();
+              await Promise.allSettled(keys.map(function (k) { return caches.delete(k); }));
+            }
+          } catch {
+            // Ignore cleanup failures and continue reload
+          }
+
+          var url = new URL(window.location.href);
+          url.searchParams.set("__boot_retry", String(Date.now()));
+          window.location.replace(url.toString());
+        }
+
+        function bindRetry(text) {
+          var el = getBootTextEl();
+          if (!el) return;
+          el.textContent = text;
+          el.style.cursor = "pointer";
+          el.onclick = function () { hardReload(); };
+        }
+
+        window.__handleBootScriptError = function () {
+          bindRetry("App failed to start — tap to refresh");
+        };
+
+        window.__markBootReady = function () {
+          setRetries(0);
+        };
+
+        setTimeout(function () {
+          if (document.documentElement.getAttribute("data-app-boot") === "ready") {
+            setRetries(0);
+            return;
+          }
+
+          if (!navigator.onLine) {
+            bindRetry("You appear offline — reconnect and tap to retry");
+            return;
+          }
+
+          var retries = getRetries();
+          if (retries < MAX_AUTO_RETRIES) {
+            setRetries(retries + 1);
+            hardReload();
+            return;
+          }
+
+          bindRetry("Still loading — tap to retry");
+        }, 10000);
+      })();
     </script>
+    <script type="module" src="/src/main.tsx" onerror="window.__handleBootScriptError && window.__handleBootScriptError(event)"></script>
   </body>
 </html>
