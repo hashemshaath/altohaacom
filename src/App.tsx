@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useLayoutEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -49,7 +49,7 @@ const queryClient = new QueryClient({
 
 /** Marks the app as booted for the index.html watchdog */
 function AppBootMarker() {
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.setAttribute("data-app-boot", "ready");
     (window as Window & { __markBootReady?: () => void }).__markBootReady?.();
     try {
