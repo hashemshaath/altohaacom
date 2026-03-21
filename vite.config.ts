@@ -221,7 +221,6 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           "vendor-react": ["react", "react-dom", "react-router-dom"],
           "vendor-supabase": ["@supabase/supabase-js"],
-          "vendor-query": ["@tanstack/react-query"],
           "vendor-charts": ["recharts"],
           "vendor-ui": [
             "@radix-ui/react-accordion",
