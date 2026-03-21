@@ -185,12 +185,35 @@
       (function () {
         var BOOT_TIMEOUT_MS = 25000;
         var BOOT_STATE_ATTR = "data-app-boot";
+        var BOOT_HARD_RELOAD_ONCE_KEY = "altoha-boot-hard-reload-once";
 
         function getBootTextEl() {
           return document.getElementById("boot-loader-text");
         }
 
+        function getHardReloaded() {
+          try {
+            return window.sessionStorage.getItem(BOOT_HARD_RELOAD_ONCE_KEY) === "1";
+          } catch {
+            return false;
+          }
+        }
+
+        function setHardReloaded(value) {
+          try {
+            if (value) {
+              window.sessionStorage.setItem(BOOT_HARD_RELOAD_ONCE_KEY, "1");
+              return;
+            }
+            window.sessionStorage.removeItem(BOOT_HARD_RELOAD_ONCE_KEY);
+          } catch {
+            // Ignore restricted storage environments
+          }
+        }
+
         async function hardReload() {
+          setHardReloaded(true);
+
           try {
             if ("serviceWorker" in navigator) {
               var regs = await navigator.serviceWorker.getRegistrations();
@@ -210,6 +233,8 @@
         }
 
         function normalReload() {
+          setHardReloaded(false);
+
           var url = new URL(window.location.href);
           url.searchParams.set("__boot_retry", String(Date.now()));
           window.location.replace(url.toString());
@@ -241,6 +266,7 @@
 
         window.__markBootReady = function () {
           document.documentElement.setAttribute(BOOT_STATE_ATTR, "ready");
+          setHardReloaded(false);
         };
 
         setTimeout(function () {
@@ -255,12 +281,22 @@
             return;
           }
 
-          if (bootState === "starting") {
-            bindRetry("App is taking longer than expected — tap to reload", "normal");
+          if (!bootState) {
+            if (!getHardReloaded()) {
+              hardReload();
+              return;
+            }
+
+            bindRetry("Still loading — tap to hard reload", "hard");
             return;
           }
 
-          bindRetry("Still loading — tap to retry", "normal");
+          if (bootState === "starting") {
+            bindRetry("App is taking longer than expected — tap to hard reload", "hard");
+            return;
+          }
+
+          bindRetry("Still loading — tap to hard reload", "hard");
         }, BOOT_TIMEOUT_MS);
       })();
     </script>
