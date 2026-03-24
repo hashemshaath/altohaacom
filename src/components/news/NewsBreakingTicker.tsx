@@ -18,7 +18,7 @@ interface BreakingArticle {
 export const NewsBreakingTicker = memo(function NewsBreakingTicker({ isAr }: { isAr: boolean }) {
   const [dismissed, setDismissed] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data: breakingArticles } = useQuery({
     queryKey: ["breaking-news-ticker"],
