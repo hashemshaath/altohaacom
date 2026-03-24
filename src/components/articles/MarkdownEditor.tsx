@@ -3,11 +3,12 @@ import { MarkdownToolbar } from "./MarkdownToolbar";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
-import { Hash, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
+import { Hash, ChevronRight, Maximize2, Minimize2, Languages, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   value: string;
@@ -17,6 +18,8 @@ interface Props {
   minRows?: number;
   isAr?: boolean;
   className?: string;
+  contentLang?: "en" | "ar";
+  onTranslateContent?: (translated: string) => void;
 }
 
 interface TOCItem {
@@ -37,12 +40,14 @@ function extractTOC(content: string): TOCItem[] {
   return items;
 }
 
-export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, minRows = 16, isAr, className }: Props) {
+export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, minRows = 16, isAr, className, contentLang, onTranslateContent }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [preview, setPreview] = useState(false);
   const [direction, setDirection] = useState<"ltr" | "rtl" | "auto">(initialDir as any || "auto");
   const [expanded, setExpanded] = useState(false);
   const [showOutline, setShowOutline] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const { toast } = useToast();
 
   const effectiveDir = direction === "auto" ? (isAr ? "rtl" : "ltr") : direction;
 
@@ -74,29 +79,21 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
       if (e.key === "i") { e.preventDefault(); handleInsert("_", "_"); }
       if (e.key === "k") { e.preventDefault(); handleInsert("[", "](url)"); }
     }
-    if (e.key === "Tab") {
-      e.preventDefault();
-      handleInsert("  ");
-    }
-    // Auto-continue lists
+    if (e.key === "Tab") { e.preventDefault(); handleInsert("  "); }
     if (e.key === "Enter") {
       const ta = textareaRef.current;
       if (!ta) return;
       const pos = ta.selectionStart;
       const lineStart = value.lastIndexOf("\n", pos - 1) + 1;
       const currentLine = value.substring(lineStart, pos);
-      
       const bulletMatch = currentLine.match(/^(\s*[-*+] )(\[[ x]\] )?/);
       const numberMatch = currentLine.match(/^(\s*)(\d+)\.\s/);
-      
       if (bulletMatch && currentLine.trim() !== "-" && currentLine.trim() !== "*" && currentLine.trim() !== "+") {
         e.preventDefault();
-        const prefix = bulletMatch[1] + (bulletMatch[2] ? "[ ] " : "");
-        handleInsert("\n" + prefix);
+        handleInsert("\n" + bulletMatch[1] + (bulletMatch[2] ? "[ ] " : ""));
       } else if (numberMatch && currentLine.trim() !== `${numberMatch[2]}.`) {
         e.preventDefault();
-        const nextNum = parseInt(numberMatch[2]) + 1;
-        handleInsert(`\n${numberMatch[1]}${nextNum}. `);
+        handleInsert(`\n${numberMatch[1]}${parseInt(numberMatch[2]) + 1}. `);
       }
     }
   }, [handleInsert, value]);
@@ -106,17 +103,33 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
     if (!ta) return;
     const lines = value.split("\n");
     let pos = 0;
-    for (let i = 0; i < line && i < lines.length; i++) {
-      pos += lines[i].length + 1;
-    }
+    for (let i = 0; i < line && i < lines.length; i++) pos += lines[i].length + 1;
     ta.focus();
     ta.setSelectionRange(pos, pos);
-    // Scroll into view
-    const lineHeight = 20;
-    ta.scrollTop = Math.max(0, line * lineHeight - 100);
+    ta.scrollTop = Math.max(0, line * 20 - 100);
     setPreview(false);
     setShowOutline(false);
   }, [value]);
+
+  const handleTranslateAll = useCallback(async () => {
+    if (!value.trim() || !contentLang || !onTranslateContent) return;
+    setTranslating(true);
+    try {
+      const targetLang = contentLang === "en" ? "ar" : "en";
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
+        body: { text: value, source_lang: contentLang, target_lang: targetLang, optimize_seo: true, field_type: "body" },
+      });
+      if (error) throw error;
+      if (data?.translated) {
+        onTranslateContent(data.translated);
+        toast({ title: isAr ? "تمت ترجمة المحتوى بالكامل" : "Full content translated" });
+      }
+    } catch (err: any) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } finally {
+      setTranslating(false);
+    }
+  }, [value, contentLang, onTranslateContent, isAr, toast]);
 
   return (
     <div className={cn("rounded-2xl", expanded && "fixed inset-4 z-50 bg-background shadow-2xl flex flex-col", className)}>
@@ -129,17 +142,11 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
         onDirectionChange={setDirection}
         currentDirection={direction}
       />
-      
-      {/* Secondary bar: outline toggle, word count, expand */}
-      <div className="flex items-center gap-2 px-3 py-1 border-x border-border/40 bg-muted/20 text-[10px] text-muted-foreground">
+
+      {/* Secondary bar */}
+      <div className="flex items-center gap-2 px-3 py-1.5 border-x border-border/40 bg-muted/20 text-[10px] text-muted-foreground">
         {toc.length > 0 && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-5 px-1.5 text-[10px] rounded gap-1"
-            onClick={() => setShowOutline(!showOutline)}
-          >
+          <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] rounded gap-1" onClick={() => setShowOutline(!showOutline)}>
             <Hash className="h-2.5 w-2.5" />
             {isAr ? `${toc.length} أقسام` : `${toc.length} sections`}
           </Button>
@@ -153,14 +160,22 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
             <span>{Math.max(1, Math.ceil(wordCount / 200))} {isAr ? "د قراءة" : "min read"}</span>
           </>
         )}
-        <div className="ms-auto">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-5 w-5 p-0 rounded"
-            onClick={() => setExpanded(!expanded)}
-          >
+        <div className="ms-auto flex items-center gap-1">
+          {/* Translate full content button */}
+          {onTranslateContent && value.trim() && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-5 px-2 text-[10px] rounded gap-1 text-primary hover:text-primary"
+              onClick={handleTranslateAll}
+              disabled={translating}
+            >
+              {translating ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Languages className="h-2.5 w-2.5" />}
+              {isAr ? `← ترجمة الكل EN` : `→ Translate All AR`}
+            </Button>
+          )}
+          <Button type="button" variant="ghost" size="sm" className="h-5 w-5 p-0 rounded" onClick={() => setExpanded(!expanded)}>
             {expanded ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
           </Button>
         </div>
@@ -229,10 +244,7 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
         </div>
       </div>
 
-      {/* Expanded overlay backdrop */}
-      {expanded && (
-        <div className="fixed inset-0 bg-black/20 -z-10" onClick={() => setExpanded(false)} />
-      )}
+      {expanded && <div className="fixed inset-0 bg-black/20 -z-10" onClick={() => setExpanded(false)} />}
     </div>
   );
 }
