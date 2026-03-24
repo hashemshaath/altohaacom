@@ -75,7 +75,7 @@ export default function CompanyPortalDashboard() {
   // Profile completion score
   const completionScore = useMemo(() => {
     if (!company) return 0;
-    const fields = [company.name, company.description, company.logo_url, company.cover_image_url, company.email, company.phone, company.website, company.tax_number, company.address_line1, company.city];
+    const fields = [company.name, company.description, company.logo_url, company.cover_image_url, company.email, company.phone, company.website, company.tax_number, company.address, company.city];
     return Math.round((fields.filter(Boolean).length / fields.length) * 100);
   }, [company]);
 
