@@ -30,6 +30,9 @@ import { SEOCompetitorTracker } from "@/components/admin/seo/SEOCompetitorTracke
 import { SEOBacklinkMonitor } from "@/components/admin/seo/SEOBacklinkMonitor";
 import { SEOKeywordGapAnalyzer } from "@/components/admin/seo/SEOKeywordGapAnalyzer";
 import { SEOTechnicalChecklist } from "@/components/admin/seo/SEOTechnicalChecklist";
+import { SEOCrawlAnalytics } from "@/components/admin/seo/SEOCrawlAnalytics";
+import { SEOInternalLinkAnalyzer } from "@/components/admin/seo/SEOInternalLinkAnalyzer";
+import { SEOPageSpeedMonitor } from "@/components/admin/seo/SEOPageSpeedMonitor";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
@@ -559,6 +562,9 @@ export default function SEODashboard() {
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
           <TabsTrigger value="audit" className="gap-1.5"><Shield className="h-3.5 w-3.5" />{isAr ? "تدقيق" : "Audit"}</TabsTrigger>
           <TabsTrigger value="crawl" className="gap-1.5"><Globe className="h-3.5 w-3.5" />{isAr ? "سجل الزحف" : "Crawl Log"}</TabsTrigger>
+          <TabsTrigger value="crawl-analytics" className="gap-1.5"><Bot className="h-3.5 w-3.5" />{isAr ? "تحليل الزحف" : "Crawl Analytics"}</TabsTrigger>
+          <TabsTrigger value="internal-links" className="gap-1.5"><Link2 className="h-3.5 w-3.5" />{isAr ? "الروابط الداخلية" : "Internal Links"}</TabsTrigger>
+          <TabsTrigger value="page-speed" className="gap-1.5"><Zap className="h-3.5 w-3.5" />{isAr ? "سرعة الصفحات" : "Page Speed"}</TabsTrigger>
         </TabsList>
 
         {/* Web Vitals */}
@@ -1409,6 +1415,21 @@ export default function SEODashboard() {
         {/* Technical Checklist */}
         <TabsContent value="technical">
           <SEOTechnicalChecklist isAr={isAr} />
+        </TabsContent>
+
+        {/* Crawl Analytics */}
+        <TabsContent value="crawl-analytics">
+          <SEOCrawlAnalytics isAr={isAr} range={range} />
+        </TabsContent>
+
+        {/* Internal Link Analyzer */}
+        <TabsContent value="internal-links">
+          <SEOInternalLinkAnalyzer isAr={isAr} />
+        </TabsContent>
+
+        {/* Page Speed Monitor */}
+        <TabsContent value="page-speed">
+          <SEOPageSpeedMonitor isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>
