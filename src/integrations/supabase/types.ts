@@ -19301,6 +19301,90 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_backlinks: {
+        Row: {
+          anchor_text: string | null
+          created_at: string
+          domain_authority: number | null
+          first_seen: string
+          id: string
+          is_dofollow: boolean
+          last_checked: string | null
+          link_type: string
+          source_domain: string
+          source_url: string
+          status: string
+          target_path: string
+        }
+        Insert: {
+          anchor_text?: string | null
+          created_at?: string
+          domain_authority?: number | null
+          first_seen?: string
+          id?: string
+          is_dofollow?: boolean
+          last_checked?: string | null
+          link_type?: string
+          source_domain: string
+          source_url: string
+          status?: string
+          target_path?: string
+        }
+        Update: {
+          anchor_text?: string | null
+          created_at?: string
+          domain_authority?: number | null
+          first_seen?: string
+          id?: string
+          is_dofollow?: boolean
+          last_checked?: string | null
+          link_type?: string
+          source_domain?: string
+          source_url?: string
+          status?: string
+          target_path?: string
+        }
+        Relationships: []
+      }
+      seo_competitors: {
+        Row: {
+          backlinks: number | null
+          created_at: string
+          da_score: number | null
+          domain: string
+          id: string
+          last_checked: string | null
+          name: string
+          notes: string | null
+          organic_keywords: number | null
+          organic_traffic: number | null
+        }
+        Insert: {
+          backlinks?: number | null
+          created_at?: string
+          da_score?: number | null
+          domain: string
+          id?: string
+          last_checked?: string | null
+          name: string
+          notes?: string | null
+          organic_keywords?: number | null
+          organic_traffic?: number | null
+        }
+        Update: {
+          backlinks?: number | null
+          created_at?: string
+          da_score?: number | null
+          domain?: string
+          id?: string
+          last_checked?: string | null
+          name?: string
+          notes?: string | null
+          organic_keywords?: number | null
+          organic_traffic?: number | null
+        }
+        Relationships: []
+      }
       seo_content_sources: {
         Row: {
           color: string | null
