@@ -630,7 +630,7 @@ export default function UserManagement() {
   const [showAnalytics, setShowAnalytics] = useState(false);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Quick User Search Command */}
       <UserSearchCommand
         open={userSearchOpen}
@@ -640,40 +640,42 @@ export default function UserManagement() {
           setDrawerOpen(true);
         }}
       />
-      <AdminPageHeader
-        icon={Users}
-        title={isAr ? "إدارة المستخدمين" : "User Management"}
-        description={isAr ? "تحكم كامل بإدارة الحسابات والأدوار والمجموعات والتخصصات" : "Manage accounts, roles, groups, specialties and media"}
-        actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline" className="text-sm">
-              {usersData?.totalCount || 0} {isAr ? "مستخدم" : "users"}
-            </Badge>
-            <UserStatsQuickView language={language} />
-          </div>
-        }
-      />
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <AdminPageHeader
+          icon={Users}
+          title={isAr ? "إدارة المستخدمين" : "User Management"}
+          description={isAr ? "إدارة الحسابات والأدوار والمجموعات" : "Manage accounts, roles & groups"}
+          actions={
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-sm tabular-nums">
+                <AnimatedCounter value={usersData?.totalCount || 0} className="inline" /> {isAr ? "مستخدم" : "users"}
+              </Badge>
+              <UserStatsQuickView language={language} />
+            </div>
+          }
+        />
+      </div>
 
       {/* Compact Stats Bar */}
       <UserStatsBar />
 
       {/* Analytics Toggle */}
-      <div className="flex items-center gap-2">
-        <Button
-          variant={showAnalytics ? "secondary" : "outline"}
-          size="sm"
-          className="gap-1.5 text-xs rounded-xl"
-          onClick={() => setShowAnalytics(!showAnalytics)}
-        >
-          <BarChart3 className="h-3.5 w-3.5" />
-          {isAr ? "التحليلات والإحصائيات" : "Analytics & Insights"}
-          {showAnalytics ? <X className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-        </Button>
-      </div>
+      <Button
+        variant={showAnalytics ? "secondary" : "outline"}
+        size="sm"
+        className="gap-1.5 text-xs rounded-xl"
+        onClick={() => setShowAnalytics(!showAnalytics)}
+      >
+        <BarChart3 className="h-3.5 w-3.5" />
+        {isAr ? "التحليلات" : "Analytics"}
+        {showAnalytics ? <X className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+      </Button>
 
       {/* Collapsible Analytics Section */}
       {showAnalytics && (
-        <div className="space-y-4 rounded-2xl border border-border/40 bg-muted/20 p-5 animate-in slide-in-from-top-2 duration-300">
+        <div className="space-y-4 rounded-2xl border border-border/40 bg-muted/20 p-4 animate-in slide-in-from-top-2 duration-300">
           <UsersLiveStatsWidget />
           <UserActivityTimeline />
           <UserGrowthTrendWidget />
@@ -687,22 +689,22 @@ export default function UserManagement() {
         </div>
       )}
 
-      {/* Action Toolbar */}
+      {/* Unified Action Toolbar */}
       <Card className="border-border/40 rounded-2xl">
-        <CardContent className="p-3.5 flex flex-wrap items-center gap-2.5">
+        <CardContent className="p-3 flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5 rounded-xl">
-            <Search className="h-3.5 w-3.5" />{isAr ? "بحث سريع" : "Quick Search"}
-            <kbd className="text-[9px] bg-muted px-1.5 py-0.5 rounded-md font-mono">⌘U</kbd>
+            <Search className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "بحث" : "Search"}</span>
+            <kbd className="text-[9px] bg-muted px-1.5 py-0.5 rounded-md font-mono hidden sm:inline">⌘U</kbd>
           </Button>
 
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl"><UserPlus className="me-1.5 h-3.5 w-3.5" />{isAr ? "إنشاء مستخدم" : "Create User"}</Button>
+              <Button size="sm" className="rounded-xl gap-1.5"><UserPlus className="h-3.5 w-3.5" />{isAr ? "إنشاء" : "Create"}</Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>{isAr ? "إنشاء حساب جديد" : "Create New Account"}</DialogTitle>
-                <DialogDescription>{isAr ? "أنشئ حساب مستخدم جديد مع بيانات الدخول الأولية" : "Create a new user account with initial login credentials"}</DialogDescription>
+                <DialogDescription>{isAr ? "أنشئ حساب مستخدم جديد" : "Create a new user account"}</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -723,27 +725,23 @@ export default function UserManagement() {
                     <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
                   </div>
                   <div className="space-y-2">
-                    <Label>{isAr ? "رقم الهاتف" : "Phone"}</Label>
-                    <Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="+966..." dir="ltr" />
+                    <Label>{isAr ? "الدور" : "Role"}</Label>
+                    <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {ALL_ROLES.map((role) => (
+                          <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>{isAr ? "الدور" : "Role"}</Label>
-                  <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {ALL_ROLES.map((role) => (
-                        <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
                 <Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>
                   {createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                  {isAr ? "إنشاء الحساب" : "Create Account"}
+                  {isAr ? "إنشاء" : "Create"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -751,12 +749,12 @@ export default function UserManagement() {
 
           <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="rounded-xl"><Mail className="me-1.5 h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}</Button>
+              <Button variant="outline" size="sm" className="rounded-xl gap-1.5"><Mail className="h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}</Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
-                <DialogTitle>{isAr ? "إرسال دعوة بالبريد الإلكتروني" : "Send Email Invitation"}</DialogTitle>
-                <DialogDescription>{isAr ? "أرسل دعوة للمستخدم لتفعيل حسابه وتعيين كلمة مرور جديدة" : "Invite user to activate their account and set a new password"}</DialogDescription>
+                <DialogTitle>{isAr ? "إرسال دعوة" : "Send Invitation"}</DialogTitle>
+                <DialogDescription>{isAr ? "أرسل دعوة للمستخدم" : "Invite user to activate account"}</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -768,22 +766,19 @@ export default function UserManagement() {
                 <Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
                 <Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>
                   {inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                  {isAr ? "إرسال الدعوة" : "Send Invitation"}
+                  {isAr ? "إرسال" : "Send"}
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
-          <Separator orientation="vertical" className="h-6 mx-1" />
+          <Separator orientation="vertical" className="h-5 mx-0.5" />
 
           <Button variant="outline" size="sm" onClick={() => setShowBulkImport(!showBulkImport)} className="gap-1.5 rounded-xl">
-            <FileSpreadsheet className="h-3.5 w-3.5" />
-            {isAr ? "استيراد" : "Import"}
+            <FileSpreadsheet className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "استيراد" : "Import"}</span>
           </Button>
-
           <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers || [])} className="gap-1.5 rounded-xl">
-            <Download className="h-3.5 w-3.5" />
-            {isAr ? "تصدير" : "Export"}
+            <Download className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "تصدير" : "Export"}</span>
           </Button>
 
           <UserAdvancedFilters
