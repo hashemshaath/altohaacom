@@ -384,6 +384,8 @@ export default function ArticleDetail() {
                       <Eye className="h-3.5 w-3.5" />
                       {(article.view_count || 0).toLocaleString()} {isAr ? "مشاهدة" : "views"}
                     </span>
+                    <span className="w-1 h-1 rounded-full bg-white/25 hidden sm:block" />
+                    <ArticleLiveReaders articleId={article.id} isAr={isAr} />
                   </div>
                 </div>
               </div>
@@ -671,39 +673,19 @@ export default function ArticleDetail() {
                 />
               )}
 
-              {/* ─── Reactions Card ─── */}
+              {/* ─── Mood Reactions ─── */}
               <div className="mt-10 pt-8 border-t border-border/30">
-                <div className="rounded-2xl bg-gradient-to-br from-muted/40 to-muted/20 border border-border/20 p-6 sm:p-8">
-                  <div className="flex items-start gap-3 mb-5">
-                    <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                      <Heart className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{isAr ? "هل أعجبك هذا المقال؟" : "Did you enjoy this article?"}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "أخبرنا برأيك وساعد الآخرين" : "Your feedback helps others discover great content"}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <ReactionButton
-                      icon={Heart}
-                      label={isAr ? "أعجبني" : "Like"}
-                      count={liked ? likeCount + 1 : likeCount}
-                      active={liked}
-                      onClick={() => setLiked(!liked)}
-                    />
-                    <ReactionButton
-                      icon={ThumbsUp}
-                      label={isAr ? "مفيد" : "Helpful"}
-                      count={Math.floor(likeCount * 0.6)}
-                      active={helpful}
-                      onClick={() => {
-                        setHelpful(!helpful);
-                        if (!helpful) toast({ title: isAr ? "شكراً لتقييمك!" : "Thanks for your feedback!" });
-                      }}
-                    />
-                  </div>
-                </div>
+                <ArticleMoodReactions articleId={article.id} isAr={isAr} />
               </div>
+
+              {/* ─── Smart Recommendations ─── */}
+              <ArticleSmartRecommendations
+                currentArticleId={article.id}
+                articleType={article.type}
+                categoryId={article.category_id}
+                tags={tags}
+                isAr={isAr}
+              />
 
               {/* ─── Newsletter CTA ─── */}
               <div className="mt-8 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/15 p-6 sm:p-8">
@@ -730,6 +712,7 @@ export default function ArticleDetail() {
             {/* ─── Sidebar ─── */}
             <aside className="hidden lg:block">
               <div className="sticky top-14 space-y-5 pt-1">
+                <ArticleEngagementHeatmap content={content} isAr={isAr} />
                 <ArticleTableOfContents content={content} isAr={isAr} />
 
                 {/* Article Stats */}
