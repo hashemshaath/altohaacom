@@ -156,11 +156,12 @@ export default function Auth() {
   // ── Google Sign In ──
   const handleGoogleSignIn = async () => {
     setLoading(true);
+    setFormError("");
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
     if (error) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
+      setFormError(error.message);
     }
     setLoading(false);
   };
