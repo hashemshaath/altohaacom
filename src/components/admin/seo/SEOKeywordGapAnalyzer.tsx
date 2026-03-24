@@ -18,9 +18,10 @@ interface TrackedKeyword {
   keyword: string;
   target_page: string | null;
   current_position: number | null;
-  impressions: number | null;
-  clicks: number | null;
-  ctr: number | null;
+  impressions?: number | null;
+  clicks?: number | null;
+  ctr?: number | null;
+  search_volume?: number | null;
 }
 
 interface GapOpportunity {
@@ -54,7 +55,7 @@ export const SEOKeywordGapAnalyzer = memo(function SEOKeywordGapAnalyzer({ isAr 
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
       const { data } = await supabase.from("seo_tracked_keywords").select("*").order("current_position", { ascending: true });
-      return (data || []) as TrackedKeyword[];
+      return (data || []) as unknown as TrackedKeyword[];
     },
   });
 
