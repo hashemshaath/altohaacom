@@ -143,12 +143,16 @@ export const adminNavSections: NavSection[] = [
     ],
   },
 
-  /* ── 7. Content ── */
+  /* ── 7. Content & SEO ── */
   {
-    titleEn: "Content",
-    titleAr: "المحتوى",
+    titleEn: "Content & SEO",
+    titleAr: "المحتوى والسيو",
     items: [
       { to: "/admin/articles", icon: Newspaper, labelEn: "Articles", labelAr: "المقالات" },
+      { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الرئيسية" },
+      { to: "/admin/hero-slides", icon: ImagePlay, labelEn: "Hero Slides", labelAr: "شرائح البانر" },
+      { to: "/admin/design/covers", icon: Layers, labelEn: "Covers", labelAr: "الأغلفة" },
+      { to: "/admin/seo", icon: Search, labelEn: "SEO Dashboard", labelAr: "لوحة SEO" },
       { to: "/admin/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
       { to: "/admin/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدورات" },
       { to: "/admin/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
@@ -182,17 +186,14 @@ export const adminNavSections: NavSection[] = [
     ],
   },
 
-  /* ── 10. Design ── */
+  /* ── 10. Design & Branding ── */
   {
-    titleEn: "Design",
-    titleAr: "التصميم",
+    titleEn: "Design & Branding",
+    titleAr: "التصميم والهوية",
     items: [
       { to: "/admin/design", icon: Palette, labelEn: "Overview", labelAr: "نظرة عامة", end: true },
       { to: "/admin/design/brand-identity", icon: Sparkles, labelEn: "Branding", labelAr: "الهوية" },
       { to: "/admin/design/header-footer", icon: PanelTop, labelEn: "Header & Footer", labelAr: "الرأس والتذييل" },
-      { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الرئيسية" },
-      { to: "/admin/hero-slides", icon: ImagePlay, labelEn: "Hero Slides", labelAr: "شرائح البانر" },
-      { to: "/admin/design/covers", icon: Layers, labelEn: "Covers", labelAr: "الأغلفة" },
       { to: "/admin/design/layout", icon: LayoutGrid, labelEn: "Layout", labelAr: "التخطيط" },
       { to: "/admin/design/custom-css", icon: Code, labelEn: "Custom CSS", labelAr: "CSS مخصص" },
     ],
