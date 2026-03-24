@@ -35,6 +35,7 @@ import { ArticleHighlightShare } from "@/components/articles/ArticleHighlightSha
 import { ArticleEstimatedTimeLeft } from "@/components/articles/ArticleEstimatedTimeLeft";
 import { ArticleAnnotations } from "@/components/articles/ArticleAnnotations";
 import { ArticleCopyProtect } from "@/components/articles/ArticleCopyProtect";
+import { trackArticleRead } from "@/components/news/NewsReadingStats";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
