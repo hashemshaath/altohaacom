@@ -53,7 +53,7 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
 
       setLoading(true);
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(emailValue, {
-        redirectTo: `${window.location.origin}/auth?tab=reset`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
       setLoading(false);
 
