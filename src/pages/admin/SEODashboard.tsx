@@ -12,7 +12,8 @@ import {
   Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
   TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
   AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi,
-  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus, Shield
+  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus, Shield,
+  Settings2, FileText, Sparkles, Code2, Lightbulb,
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import {
@@ -20,6 +21,11 @@ import {
   BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
 } from "recharts";
 import { SEOAuditPanel } from "@/components/admin/seo/SEOAuditPanel";
+import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
+import { SEOMetaConfigurator } from "@/components/admin/seo/SEOMetaConfigurator";
+import { SEOContentAnalysis } from "@/components/admin/seo/SEOContentAnalysis";
+import { SEORecommendations } from "@/components/admin/seo/SEORecommendations";
+import { SEOStructuredData } from "@/components/admin/seo/SEOStructuredData";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
@@ -518,12 +524,28 @@ export default function SEODashboard() {
         </Card>
       </div>
 
+      {/* SEO Score Gauge */}
+      <SEOScoreGauge
+        score={(() => { const a = (trackedKeywords || []) as any[]; return a.length > 0 ? Math.min(100, Math.round(65 + (vitalsAgg ? 10 : 0) + (indexingStatus?.filter((s: any) => s.status === "indexed").length ? 10 : 0))) : null; })()}
+        previousScore={null}
+        vitalsPass={vitalsAgg ? (["lcp", "inp", "cls", "fcp", "ttfb"] as const).filter(m => vitalsAgg[m] != null && getVitalStatus(m, vitalsAgg[m]!) === "good").length : 0}
+        vitalsTotal={5}
+        indexedPages={indexingStatus?.filter((s: any) => s.status === "indexed").length || 0}
+        totalPages={indexingStatus?.length || PUBLIC_ROUTES.length}
+        issueCount={0}
+        isAr={isAr}
+      />
+
       <Tabs defaultValue="vitals" className="space-y-4">
         <TabsList className="flex-wrap">
           <TabsTrigger value="vitals" className="gap-1.5"><Gauge className="h-3.5 w-3.5" />{isAr ? "Web Vitals" : "Web Vitals"}</TabsTrigger>
           <TabsTrigger value="crawlers" className="gap-1.5"><Bot className="h-3.5 w-3.5" />{isAr ? "الزواحف" : "Crawlers"}</TabsTrigger>
           <TabsTrigger value="keywords" className="gap-1.5"><Target className="h-3.5 w-3.5" />{isAr ? "الكلمات المفتاحية" : "Keywords"}</TabsTrigger>
           <TabsTrigger value="indexing" className="gap-1.5"><FileSearch className="h-3.5 w-3.5" />{isAr ? "الفهرسة" : "Indexing"}</TabsTrigger>
+          <TabsTrigger value="content" className="gap-1.5"><FileText className="h-3.5 w-3.5" />{isAr ? "جودة المحتوى" : "Content Quality"}</TabsTrigger>
+          <TabsTrigger value="meta" className="gap-1.5"><Settings2 className="h-3.5 w-3.5" />{isAr ? "إعدادات Meta" : "Meta Config"}</TabsTrigger>
+          <TabsTrigger value="schema" className="gap-1.5"><Code2 className="h-3.5 w-3.5" />{isAr ? "البيانات المنظمة" : "Schema"}</TabsTrigger>
+          <TabsTrigger value="recommendations" className="gap-1.5"><Lightbulb className="h-3.5 w-3.5" />{isAr ? "توصيات AI" : "AI Insights"}</TabsTrigger>
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
           <TabsTrigger value="health" className="gap-1.5"><CheckCircle2 className="h-3.5 w-3.5" />{isAr ? "صحة SEO" : "SEO Health"}</TabsTrigger>
@@ -1286,6 +1308,33 @@ export default function SEODashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Content Quality */}
+        <TabsContent value="content">
+          <SEOContentAnalysis isAr={isAr} />
+        </TabsContent>
+
+        {/* Meta Configurator */}
+        <TabsContent value="meta">
+          <SEOMetaConfigurator isAr={isAr} />
+        </TabsContent>
+
+        {/* Structured Data */}
+        <TabsContent value="schema">
+          <SEOStructuredData isAr={isAr} />
+        </TabsContent>
+
+        {/* AI Recommendations */}
+        <TabsContent value="recommendations">
+          <SEORecommendations isAr={isAr} seoData={{
+            totalViews, bounceRate, avgDuration,
+            topPages, vitalsPass: vitalsAgg ? (["lcp", "inp", "cls", "fcp", "ttfb"] as const).filter(m => vitalsAgg[m] != null && getVitalStatus(m, vitalsAgg[m]!) === "good").length : 0,
+            vitalsTotal: 5,
+            indexedPages: indexingStatus?.filter((s: any) => s.status === "indexed").length || 0,
+            totalPages: indexingStatus?.length || PUBLIC_ROUTES.length,
+            issueCount: 0, keywords: trackedKeywords || [],
+          }} />
         </TabsContent>
 
         {/* SEO Audit */}
