@@ -29,6 +29,10 @@ import {
 import { cn } from "@/lib/utils";
 import { ArticleReadingProgress } from "@/components/articles/ArticleReadingProgress";
 import { ArticleTableOfContents } from "@/components/articles/ArticleTableOfContents";
+import { ArticleTextToSpeech } from "@/components/articles/ArticleTextToSpeech";
+import { ArticleImageLightbox, ZoomIn } from "@/components/articles/ArticleImageLightbox";
+import { ArticleHighlightShare } from "@/components/articles/ArticleHighlightShare";
+import { ArticleEstimatedTimeLeft } from "@/components/articles/ArticleEstimatedTimeLeft";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
