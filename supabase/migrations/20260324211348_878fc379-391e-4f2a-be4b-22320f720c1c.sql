@@ -1,0 +1,2 @@
+ALTER TABLE public.articles DROP CONSTRAINT articles_type_check;
+ALTER TABLE public.articles ADD CONSTRAINT articles_type_check CHECK (type = ANY (ARRAY['news'::text, 'blog'::text, 'article'::text, 'exhibition'::text]));
