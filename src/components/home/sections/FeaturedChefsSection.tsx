@@ -163,7 +163,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                 </div>
               </Link>
             );
-          }))}
+          })}
         </HorizontalScrollRow>
       </div>
     </section>
