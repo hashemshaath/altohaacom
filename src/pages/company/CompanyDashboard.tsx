@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useCompanyRoles, COMPANY_ROLES } from "@/hooks/useCompanyRoles";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import {
   BarChart3,
@@ -24,8 +25,11 @@ import {
   Crown,
   Trophy,
   Calendar,
+  CheckCircle,
+  Star,
 } from "lucide-react";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { CompanyAnalyticsCharts } from "@/components/company/CompanyAnalyticsCharts";
 import { CompanyRecentOrdersWidget } from "@/components/company/CompanyRecentOrdersWidget";
@@ -66,22 +70,30 @@ export default function CompanyPortalDashboard() {
   });
 
   const isLoading = companyLoading || statsLoading;
+  const isAr = language === "ar";
+
+  // Profile completion score
+  const completionScore = useMemo(() => {
+    if (!company) return 0;
+    const fields = [company.name, company.description, company.logo_url, company.cover_image_url, company.email, company.phone, company.website, company.tax_number, company.address_line1, company.city];
+    return Math.round((fields.filter(Boolean).length / fields.length) * 100);
+  }, [company]);
 
   const getStatusBadge = (status: string | null) => {
     switch (status) {
       case "active":
-        return <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">{language === "ar" ? "نشط" : "Active"}</Badge>;
+        return <Badge className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">{isAr ? "نشط" : "Active"}</Badge>;
       case "suspended":
-        return <Badge variant="destructive">{language === "ar" ? "معلّق" : "Suspended"}</Badge>;
+        return <Badge variant="destructive">{isAr ? "معلّق" : "Suspended"}</Badge>;
       default:
-        return <Badge variant="secondary">{language === "ar" ? "قيد المراجعة" : "Pending"}</Badge>;
+        return <Badge variant="secondary">{isAr ? "قيد المراجعة" : "Pending"}</Badge>;
     }
   };
 
   return (
-    <div className="space-y-8">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-8 text-primary-foreground dark:from-primary/80 dark:via-primary/90 dark:to-primary/70">
+    <div className="space-y-6">
+      {/* Hero Banner — Refined */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-6 sm:p-8 text-primary-foreground">
         <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-foreground/10 blur-3xl" />
         <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-primary-foreground/5 blur-2xl" />
         <div className="relative z-10">
@@ -91,39 +103,44 @@ export default function CompanyPortalDashboard() {
               <Skeleton className="mt-3 h-5 w-48 bg-primary-foreground/20" />
             </>
           ) : (
-            <>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur-sm">
-                  <Building2 className="h-6 w-6" />
-                </div>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                {company?.logo_url ? (
+                  <img src={company.logo_url} alt="" className="h-14 w-14 rounded-xl object-cover border-2 border-primary-foreground/20" />
+                ) : (
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur-sm">
+                    <Building2 className="h-7 w-7" />
+                  </div>
+                )}
                 <div>
-                  <h1 className="text-2xl font-bold md:text-3xl">{company?.name}</h1>
-                  {company?.name_ar && language !== "ar" && (
+                  <h1 className="text-xl font-bold sm:text-2xl">{isAr && company?.name_ar ? company.name_ar : company?.name}</h1>
+                  {company?.name_ar && !isAr && (
                     <p className="text-sm text-primary-foreground/70">{company.name_ar}</p>
                   )}
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {getStatusBadge(company?.status || null)}
+                    {company?.company_number && (
+                      <span className="text-xs text-primary-foreground/60 font-mono">#{company.company_number}</span>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                {getStatusBadge(company?.status || null)}
-                {companyRoles.filter(r => r.is_active).length > 0 ? (
-                  companyRoles.filter(r => r.is_active).map(r => {
-                    const roleDef = COMPANY_ROLES.find(cr => cr.value === r.role);
-                    return (
-                      <Badge key={r.id} variant="outline" className="border-primary-foreground/30 text-primary-foreground">
-                        {roleDef ? (language === "ar" ? roleDef.labelAr : roleDef.label) : r.role}
-                      </Badge>
-                    );
-                  })
-                ) : (
-                  <Badge variant="outline" className="border-primary-foreground/30 text-primary-foreground">
-                    {company?.type}
-                  </Badge>
-                )}
-                {company?.company_number && (
-                  <span className="text-sm text-primary-foreground/70">#{company.company_number}</span>
-                )}
+
+              {/* Profile Completion Ring */}
+              <div className="flex items-center gap-3 rounded-xl bg-primary-foreground/10 backdrop-blur-sm px-4 py-3">
+                <div className="relative h-12 w-12">
+                  <svg viewBox="0 0 36 36" className="h-12 w-12 -rotate-90">
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary-foreground/20" />
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray={`${completionScore} ${100 - completionScore}`} className="text-primary-foreground transition-all duration-700" strokeLinecap="round" />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">{completionScore}%</span>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold">{isAr ? "اكتمال الملف" : "Profile"}</p>
+                  <p className="text-[10px] text-primary-foreground/70">{completionScore === 100 ? (isAr ? "مكتمل ✓" : "Complete ✓") : (isAr ? "أكمل ملفك" : "Complete it")}</p>
+                </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
@@ -132,89 +149,60 @@ export default function CompanyPortalDashboard() {
       <CompanyQuickActions />
 
       {/* Quick Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          icon={ShoppingCart}
-          label={language === "ar" ? "إجمالي الطلبيات" : "Total Orders"}
-          value={stats?.totalOrders || 0}
-          subLabel={language === "ar" ? "قيد الانتظار" : "pending"}
-          subValue={stats?.pendingOrders || 0}
-          accent="border-s-primary"
-          isLoading={isLoading}
-        />
-        <StatCard
-          icon={FileText}
-          label={language === "ar" ? "الدعوات" : "Invitations"}
-          value={stats?.totalInvitations || 0}
-          subLabel={language === "ar" ? "قيد الانتظار" : "pending"}
-          subValue={stats?.pendingInvitations || 0}
-          accent="border-s-chart-4"
-          isLoading={isLoading}
-        />
-        <StatCard
-          icon={Users}
-          label={language === "ar" ? "أعضاء الفريق" : "Team Members"}
-          value={stats?.totalContacts || 0}
-          accent="border-s-accent"
-          isLoading={isLoading}
-        />
-        <StatCard
-          icon={BarChart3}
-          label={language === "ar" ? "المعاملات" : "Transactions"}
-          value={stats?.totalTransactions || 0}
-          accent="border-s-chart-5"
-          isLoading={isLoading}
-        />
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        {[
+          { icon: ShoppingCart, label: isAr ? "الطلبيات" : "Orders", value: stats?.totalOrders || 0, sub: stats?.pendingOrders || 0, subLabel: isAr ? "معلقة" : "pending", color: "text-primary", bg: "bg-primary/10" },
+          { icon: FileText, label: isAr ? "الدعوات" : "Invitations", value: stats?.totalInvitations || 0, sub: stats?.pendingInvitations || 0, subLabel: isAr ? "معلقة" : "pending", color: "text-chart-4", bg: "bg-chart-4/10" },
+          { icon: Users, label: isAr ? "الفريق" : "Team", value: stats?.totalContacts || 0, color: "text-accent", bg: "bg-accent/10" },
+          { icon: BarChart3, label: isAr ? "المعاملات" : "Transactions", value: stats?.totalTransactions || 0, color: "text-chart-5", bg: "bg-chart-5/10" },
+        ].map((stat) => (
+          <Card key={stat.label} className="rounded-xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  {isLoading ? (
+                    <Skeleton className="h-7 w-14 mb-1" />
+                  ) : (
+                    <p className="text-2xl font-bold tabular-nums">
+                      <AnimatedCounter value={stat.value} />
+                    </p>
+                  )}
+                  <p className="text-[11px] text-muted-foreground font-medium mt-0.5">{stat.label}</p>
+                  {stat.sub !== undefined && stat.sub > 0 && (
+                    <p className="text-[10px] text-muted-foreground/70 mt-0.5">
+                      {stat.sub} {stat.subLabel}
+                    </p>
+                  )}
+                </div>
+                <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl", stat.bg)}>
+                  <stat.icon className={cn("h-4 w-4", stat.color)} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Financial Overview */}
       {!isLoading && company && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-            <CardContent className="flex items-center gap-4 pt-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                <CreditCard className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "حد الائتمان" : "Credit Limit"}
-                </p>
-                <p className="text-xl font-bold">
-                  {formatCurrency(company.credit_limit || 0, language as "en" | "ar")}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style={{ animationDelay: "0.05s" }}>
-            <CardContent className="flex items-center gap-4 pt-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-chart-5/10">
-                <TrendingUp className="h-6 w-6 text-chart-5" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "إجمالي المبالغ" : "Total Volume"}
-                </p>
-                <p className="text-xl font-bold">
-                  {formatCurrency(stats?.totalAmount || 0, language as "en" | "ar")}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5" style={{ animationDelay: "0.1s" }}>
-            <CardContent className="flex items-center gap-4 pt-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
-                <Clock className="h-6 w-6 text-chart-4" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {language === "ar" ? "شروط الدفع" : "Payment Terms"}
-                </p>
-                <p className="text-xl font-bold">
-                  {company.payment_terms || 0} {language === "ar" ? "يوم" : "days"}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+          {[
+            { icon: CreditCard, label: isAr ? "حد الائتمان" : "Credit Limit", value: formatCurrency(company.credit_limit || 0, language as "en" | "ar"), color: "text-primary", bg: "bg-primary/10" },
+            { icon: TrendingUp, label: isAr ? "إجمالي المبالغ" : "Total Volume", value: formatCurrency(stats?.totalAmount || 0, language as "en" | "ar"), color: "text-chart-5", bg: "bg-chart-5/10" },
+            { icon: Clock, label: isAr ? "شروط الدفع" : "Payment Terms", value: `${company.payment_terms || 0} ${isAr ? "يوم" : "days"}`, color: "text-chart-4", bg: "bg-chart-4/10" },
+          ].map((item, i) => (
+            <Card key={item.label} className="rounded-xl animate-fade-in" style={{ animationDelay: `${i * 0.05}s` }}>
+              <CardContent className="flex items-center gap-3.5 p-4">
+                <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", item.bg)}>
+                  <item.icon className={cn("h-5 w-5", item.color)} />
+                </div>
+                <div>
+                  <p className="text-[11px] text-muted-foreground font-medium">{item.label}</p>
+                  <p className="text-lg font-bold">{item.value}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 
