@@ -226,24 +226,28 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
   const currentExcerpt = contentLang === "ar" ? form.excerpt_ar : form.excerpt;
   const currentContent = contentLang === "ar" ? form.content_ar : form.content;
 
+  const wordCount = (form.content + " " + form.content_ar).trim().split(/\s+/).filter(Boolean).length;
+
   return (
     <div className="space-y-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between gap-3 flex-wrap bg-card border border-border/40 rounded-2xl px-4 py-3">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={onBack} className="rounded-xl gap-1.5">
-            <ArrowLeft className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onBack} className="rounded-xl gap-1.5 h-8">
+            <ArrowLeft className="h-3.5 w-3.5" />
             {t("Back", "رجوع")}
           </Button>
-          <h1 className="font-serif text-lg font-bold">
-            {articleId ? t("Edit Article", "تعديل المقال") : t("New Article", "مقال جديد")}
-          </h1>
-          {form.status === "draft" && <Badge variant="secondary" className="rounded-xl text-[10px]">{t("Draft", "مسودة")}</Badge>}
-          {form.status === "published" && <Badge className="rounded-xl bg-chart-2/10 text-chart-2 border-chart-2/20 text-[10px]">{t("Published", "منشور")}</Badge>}
+          <div className="hidden sm:flex items-center gap-2">
+            <h1 className="font-serif text-base font-bold">
+              {articleId ? t("Edit Article", "تعديل المقال") : t("New Article", "مقال جديد")}
+            </h1>
+            {form.status === "draft" && <Badge variant="secondary" className="rounded-xl text-[10px]">{t("Draft", "مسودة")}</Badge>}
+            {form.status === "published" && <Badge className="rounded-xl bg-chart-2/10 text-chart-2 border-chart-2/20 text-[10px]">{t("Published", "منشور")}</Badge>}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {articleId && (
-            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <div className="hidden sm:flex items-center gap-1.5 text-[10px] text-muted-foreground">
               {autoSaving ? (
                 <><Loader2 className="h-3 w-3 animate-spin" />{t("Saving...", "جاري الحفظ...")}</>
               ) : lastSaved ? (
@@ -251,10 +255,11 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
               ) : null}
             </div>
           )}
-          <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs" onClick={() => window.open(`/news/${form.slug}`, "_blank")} disabled={!form.slug}>
-            <Eye className="h-3.5 w-3.5" /> {t("Preview", "معاينة")}
+          <span className="hidden md:inline text-[10px] text-muted-foreground tabular-nums">{wordCount} {t("كلمة", "words")}</span>
+          <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs h-8" onClick={() => window.open(`/news/${form.slug}`, "_blank")} disabled={!form.slug}>
+            <Eye className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{t("Preview", "معاينة")}</span>
           </Button>
-          <Button size="sm" className="rounded-xl gap-1.5 text-xs" onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending || (!form.title && !form.title_ar)}>
+          <Button size="sm" className="rounded-xl gap-1.5 text-xs h-8" onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending || (!form.title && !form.title_ar)}>
             {saveMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
             {t("Save", "حفظ")}
           </Button>
