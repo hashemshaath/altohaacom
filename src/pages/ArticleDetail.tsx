@@ -252,7 +252,16 @@ export default function ArticleDetail() {
   return (
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <ArticleReadingProgress />
-      <SEOHead
+      <ArticleHighlightShare articleUrl={currentUrl} isAr={isAr} />
+      {lightboxIdx !== null && article?.gallery_urls && (
+        <ArticleImageLightbox
+          images={article.gallery_urls}
+          currentIndex={lightboxIdx}
+          onClose={() => setLightboxIdx(null)}
+          onNavigate={setLightboxIdx}
+          title={title}
+        />
+      )}
         title={title}
         description={excerpt || `${title} - Altoha`}
         ogImage={article.featured_image_url || undefined}
