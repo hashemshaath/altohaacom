@@ -33,6 +33,7 @@ import { NewsArchiveWidget } from "@/components/news/NewsArchiveWidget";
 import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
 import { NewsBreakingTicker } from "@/components/news/NewsBreakingTicker";
 import { NewsReadingStats } from "@/components/news/NewsReadingStats";
+import { NewsWeeklyDigest } from "@/components/news/NewsWeeklyDigest";
 
 interface Category {
   id: string;
