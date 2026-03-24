@@ -23,7 +23,7 @@ import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Phone, Mail, KeyRound, Gift, ChefHat, Heart,
+  Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
@@ -94,6 +94,7 @@ export default function Auth() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState("");
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
 
@@ -155,11 +156,12 @@ export default function Auth() {
   // ── Google Sign In ──
   const handleGoogleSignIn = async () => {
     setLoading(true);
+    setFormError("");
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
     if (error) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
+      setFormError(error.message);
     }
     setLoading(false);
   };
@@ -167,19 +169,9 @@ export default function Auth() {
   // ── Sign In with Email ──
   const handleSignInEmail = async () => {
     setErrors({});
+    setFormError("");
 
-    // Rate limiting check
-    if (isLockedOut) {
-      const remainingSec = Math.ceil(((lockoutUntil || 0) - Date.now()) / 1000);
-      toast({
-        variant: "destructive",
-        title: isAr ? "محاولات كثيرة" : "Too many attempts",
-        description: isAr
-          ? `يرجى الانتظار ${remainingSec} ثانية قبل المحاولة مجدداً`
-          : `Please wait ${remainingSec} seconds before trying again`,
-      });
-      return;
-    }
+    if (isLockedOut) return;
 
     const errs: Record<string, string> = {};
     const emailVal = signInEmail.trim();
@@ -200,13 +192,6 @@ export default function Auth() {
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
         setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
         setLoginAttempts(0);
-        toast({
-          variant: "destructive",
-          title: isAr ? "تم قفل الحساب مؤقتاً" : "Account temporarily locked",
-          description: isAr
-            ? "محاولات كثيرة. يرجى الانتظار 5 دقائق"
-            : "Too many failed attempts. Please wait 5 minutes",
-        });
         return;
       }
 
@@ -218,7 +203,7 @@ export default function Auth() {
           ? `بيانات الدخول غير صحيحة. (${MAX_LOGIN_ATTEMPTS - newAttempts} محاولات متبقية)`
           : `Invalid credentials. (${MAX_LOGIN_ATTEMPTS - newAttempts} attempts remaining)`;
       }
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
+      setFormError(msg);
     } else {
       setLoginAttempts(0);
       setLockoutUntil(null);
@@ -236,11 +221,7 @@ export default function Auth() {
 
     if (!profile) {
       setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number",
-      });
+      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
       setSignInPhoneStep("phone");
       return;
     }
@@ -251,18 +232,9 @@ export default function Auth() {
 
   const handleSignInPhonePassword = async () => {
     setErrors({});
+    setFormError("");
 
-    if (isLockedOut) {
-      const remainingSec = Math.ceil(((lockoutUntil || 0) - Date.now()) / 1000);
-      toast({
-        variant: "destructive",
-        title: isAr ? "محاولات كثيرة" : "Too many attempts",
-        description: isAr
-          ? `يرجى الانتظار ${remainingSec} ثانية`
-          : `Please wait ${remainingSec} seconds`,
-      });
-      return;
-    }
+    if (isLockedOut) return;
 
     if (signInPassword.length < 6) {
       setErrors({ signInPassword: isAr ? "كلمة المرور قصيرة جداً" : "Password too short" });
@@ -279,22 +251,14 @@ export default function Auth() {
 
     if (!profile) {
       setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number",
-      });
+      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
       return;
     }
 
     const accountEmail = profile.email;
     if (!accountEmail) {
       setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لا يوجد بريد إلكتروني مرتبط بهذا الحساب" : "No email linked to this account",
-      });
+      setFormError(isAr ? "لا يوجد بريد إلكتروني مرتبط بهذا الحساب" : "No email linked to this account");
       return;
     }
 
@@ -308,11 +272,6 @@ export default function Auth() {
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
         setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
         setLoginAttempts(0);
-        toast({
-          variant: "destructive",
-          title: isAr ? "تم قفل الحساب مؤقتاً" : "Account temporarily locked",
-          description: isAr ? "محاولات كثيرة. يرجى الانتظار 5 دقائق" : "Too many failed attempts. Please wait 5 minutes",
-        });
         return;
       }
 
@@ -324,7 +283,7 @@ export default function Auth() {
       } else if (error.message.includes("Email not confirmed")) {
         msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
       }
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
+      setFormError(msg);
     } else {
       setLoginAttempts(0);
       setLockoutUntil(null);
@@ -332,8 +291,10 @@ export default function Auth() {
   };
 
   // ── Password Reset ──
+  const [resetSuccess, setResetSuccess] = useState(false);
   const handleResetPassword = async () => {
     setErrors({});
+    setFormError("");
     const errs: Record<string, string> = {};
     if (resetPassword.length < 8) errs.resetPassword = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
     if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
@@ -345,13 +306,10 @@ export default function Auth() {
     setLoading(false);
 
     if (error) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+      setFormError(error.message);
     } else {
-      toast({
-        title: isAr ? "تم تحديث كلمة المرور" : "Password Updated",
-        description: isAr ? "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة" : "You can now sign in with your new password",
-      });
-      navigate("/login", { replace: true });
+      setResetSuccess(true);
+      setTimeout(() => navigate("/login", { replace: true }), 2000);
     }
   };
 
@@ -568,23 +526,46 @@ export default function Auth() {
               </p>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
-              <Input type="password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
-              <PasswordStrengthMeter password={resetPassword} />
-              {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
-            </div>
+            {resetSuccess ? (
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 text-center space-y-2 animate-in fade-in duration-300">
+                <CheckCircle className="mx-auto h-8 w-8 text-primary" />
+                <p className="text-sm font-medium text-primary">
+                  {isAr ? "تم تحديث كلمة المرور بنجاح!" : "Password updated successfully!"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {isAr ? "جاري إعادة التوجيه..." : "Redirecting..."}
+                </p>
+              </div>
+            ) : (
+              <>
+                {formError && (
+                  <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
+                    <p className="flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                      {formError}
+                    </p>
+                  </div>
+                )}
 
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-              <Input type="password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
-              {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
-            </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
+                  <Input type="password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
+                  <PasswordStrengthMeter password={resetPassword} />
+                  {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
+                </div>
 
-            <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
-              {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-              {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
-            </Button>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+                  <Input type="password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
+                  {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
+                </div>
+
+                <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
+                  {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                  {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
+                </Button>
+              </>
+            )}
           </div>
         </Card>
       </AuthLayout>
@@ -1157,6 +1138,7 @@ export default function Auth() {
                       onChange={(e) => {
                         setSignInEmail(e.target.value);
                         if (errors.signInEmail) setErrors((prev) => ({ ...prev, signInEmail: "" }));
+                        if (formError) setFormError("");
                       }}
                       placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
                       onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
@@ -1184,6 +1166,7 @@ export default function Auth() {
                       onChange={(e) => {
                         setSignInPassword(e.target.value);
                         if (errors.signInPassword) setErrors((prev) => ({ ...prev, signInPassword: "" }));
+                        if (formError) setFormError("");
                       }}
                       placeholder="••••••••"
                       onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
@@ -1193,6 +1176,16 @@ export default function Auth() {
                     />
                     {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
                   </div>
+
+                  {/* Inline form error */}
+                  {formError && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
+                      <p className="flex items-center gap-1.5 text-xs text-destructive">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                        {formError}
+                      </p>
+                    </div>
+                  )}
 
                   <Button className="w-full gap-2" size="lg" disabled={loading || isLockedOut} onClick={handleSignInEmail}>
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}

@@ -1,7 +1,6 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2, Mail, CheckCircle, Phone } from "lucide-react";
+import { Loader2, Mail, CheckCircle, Phone, AlertCircle } from "lucide-react";
 import { z } from "zod";
 
 interface ForgotPasswordDialogProps {
@@ -21,28 +20,30 @@ interface ForgotPasswordDialogProps {
 }
 
 type RecoveryMethod = "email" | "phone";
-type Step = "method" | "input" | "sent";
+type Step = "input" | "sent";
 
 export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialogProps) {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const { toast } = useToast();
 
   const [step, setStep] = useState<Step>("input");
   const [method, setMethod] = useState<RecoveryMethod>("email");
   const [emailValue, setEmailValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
   const handleReset = () => {
     setStep("input");
     setMethod("email");
     setEmailValue("");
     setError("");
+    setSubmitError("");
   };
 
   const handleSubmit = async () => {
     setError("");
+    setSubmitError("");
 
     if (method === "email") {
       const result = z.string().email().safeParse(emailValue);
@@ -53,22 +54,17 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
 
       setLoading(true);
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(emailValue, {
-        redirectTo: `${window.location.origin}/auth?tab=reset`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
       setLoading(false);
 
       if (resetError) {
-        toast({
-          variant: "destructive",
-          title: isAr ? "خطأ" : "Error",
-          description: resetError.message,
-        });
+        setSubmitError(resetError.message);
         return;
       }
 
       setStep("sent");
     } else {
-      // Phone recovery - show instructions
       setStep("sent");
     }
   };
@@ -138,11 +134,20 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
                   id="recoveryEmail"
                   type="email"
                   value={emailValue}
-                  onChange={(e) => setEmailValue(e.target.value)}
+                  onChange={(e) => {
+                    setEmailValue(e.target.value);
+                    if (error) setError("");
+                    if (submitError) setSubmitError("");
+                  }}
                   placeholder={isAr ? "أدخل بريدك الإلكتروني" : "Enter your email"}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 />
-                {error && <p className="text-xs text-destructive">{error}</p>}
+                {error && (
+                  <p className="flex items-center gap-1 text-xs text-destructive animate-in slide-in-from-top-1 duration-200">
+                    <AlertCircle className="h-3 w-3 shrink-0" />
+                    {error}
+                  </p>
+                )}
               </div>
             ) : (
               <div className="rounded-xl border border-muted bg-muted/30 p-4 text-center space-y-2">
@@ -151,6 +156,16 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
                   {isAr
                     ? "استعادة الحساب عبر الهاتف ستكون متاحة قريباً. يرجى استخدام البريد الإلكتروني حالياً."
                     : "Phone recovery will be available soon. Please use email recovery for now."}
+                </p>
+              </div>
+            )}
+
+            {/* Inline submit error */}
+            {submitError && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
+                <p className="flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                  {submitError}
                 </p>
               </div>
             )}
