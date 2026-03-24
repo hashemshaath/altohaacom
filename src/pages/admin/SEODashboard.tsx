@@ -1310,6 +1310,33 @@ export default function SEODashboard() {
           </Card>
         </TabsContent>
 
+        {/* Content Quality */}
+        <TabsContent value="content">
+          <SEOContentAnalysis isAr={isAr} />
+        </TabsContent>
+
+        {/* Meta Configurator */}
+        <TabsContent value="meta">
+          <SEOMetaConfigurator isAr={isAr} />
+        </TabsContent>
+
+        {/* Structured Data */}
+        <TabsContent value="schema">
+          <SEOStructuredData isAr={isAr} />
+        </TabsContent>
+
+        {/* AI Recommendations */}
+        <TabsContent value="recommendations">
+          <SEORecommendations isAr={isAr} seoData={{
+            totalViews, bounceRate, avgDuration,
+            topPages, vitalsPass: vitalsAgg ? (["lcp", "inp", "cls", "fcp", "ttfb"] as const).filter(m => vitalsAgg[m] != null && getVitalStatus(m, vitalsAgg[m]!) === "good").length : 0,
+            vitalsTotal: 5,
+            indexedPages: indexingStatus?.filter((s: any) => s.status === "indexed").length || 0,
+            totalPages: indexingStatus?.length || PUBLIC_ROUTES.length,
+            issueCount: 0, keywords: trackedKeywords || [],
+          }} />
+        </TabsContent>
+
         {/* SEO Audit */}
         <TabsContent value="audit">
           <SEOAuditPanel />
