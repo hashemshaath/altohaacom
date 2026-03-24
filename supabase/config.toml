@@ -1,73 +1,53 @@
 project_id = "pbjhffdnzlekprmxfbnt"
 
-[functions.ai-knowledge]
-verify_jwt = false
-
-[functions.send-notification]
-verify_jwt = false
-
-[functions.judge-ai-assistant]
-verify_jwt = false
-
-[functions.firecrawl-scrape]
-verify_jwt = false
-
-[functions.process-email-queue]
-verify_jwt = true
-
-[functions.broadcast-notification]
-verify_jwt = false
-
-[functions.ai-analytics]
-verify_jwt = false
-
-[functions.ai-requirements]
-verify_jwt = false
-
-[functions.ai-verify-document]
-verify_jwt = false
-
-[functions.admin-user-management]
-verify_jwt = false
-
-[functions.lifecycle-triggers]
-verify_jwt = false
-
-[functions.marketing-automation]
-verify_jwt = false
-
-[functions.ad-lifecycle-manager]
-verify_jwt = false
-
-[functions.moderate-content]
-verify_jwt = false
-
-[functions.recommend-feed]
-verify_jwt = false
-
-[functions.ml-insights]
-verify_jwt = false
-
-[functions.ai-analytics-chat]
-verify_jwt = false
-
-[functions.parse-cv]
-verify_jwt = false
-
-[functions.smart-translate]
-verify_jwt = false
-
-[functions.trial-expiry-reminders]
-verify_jwt = false
-
-[functions.membership-expiry-check]
-verify_jwt = false
-
-[functions.smart-import]
-verify_jwt = false
-
-[functions.smart-recommendations]
-verify_jwt = false
-
-[functions.personal-analytics]
-verify_jwt = false
+[functions]
+  [functions.ad-lifecycle-manager]
+    verify_jwt = false
+  [functions.admin-user-management]
+    verify_jwt = false
+  [functions.ai-analytics]
+    verify_jwt = false
+  [functions.ai-analytics-chat]
+    verify_jwt = false
+  [functions.ai-knowledge]
+    verify_jwt = false
+  [functions.ai-requirements]
+    verify_jwt = false
+  [functions.ai-verify-document]
+    verify_jwt = false
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.broadcast-notification]
+    verify_jwt = false
+  [functions.firecrawl-scrape]
+    verify_jwt = false
+  [functions.judge-ai-assistant]
+    verify_jwt = false
+  [functions.lifecycle-triggers]
+    verify_jwt = false
+  [functions.marketing-automation]
+    verify_jwt = false
+  [functions.membership-expiry-check]
+    verify_jwt = false
+  [functions.ml-insights]
+    verify_jwt = false
+  [functions.moderate-content]
+    verify_jwt = false
+  [functions.parse-cv]
+    verify_jwt = false
+  [functions.personal-analytics]
+    verify_jwt = false
+  [functions.process-email-queue]
+    verify_jwt = true
+  [functions.recommend-feed]
+    verify_jwt = false
+  [functions.send-notification]
+    verify_jwt = false
+  [functions.smart-import]
+    verify_jwt = false
+  [functions.smart-recommendations]
+    verify_jwt = false
+  [functions.smart-translate]
+    verify_jwt = false
+  [functions.trial-expiry-reminders]
+    verify_jwt = false
