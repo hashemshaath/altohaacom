@@ -169,19 +169,9 @@ export default function Auth() {
   // ── Sign In with Email ──
   const handleSignInEmail = async () => {
     setErrors({});
+    setFormError("");
 
-    // Rate limiting check
-    if (isLockedOut) {
-      const remainingSec = Math.ceil(((lockoutUntil || 0) - Date.now()) / 1000);
-      toast({
-        variant: "destructive",
-        title: isAr ? "محاولات كثيرة" : "Too many attempts",
-        description: isAr
-          ? `يرجى الانتظار ${remainingSec} ثانية قبل المحاولة مجدداً`
-          : `Please wait ${remainingSec} seconds before trying again`,
-      });
-      return;
-    }
+    if (isLockedOut) return;
 
     const errs: Record<string, string> = {};
     const emailVal = signInEmail.trim();
@@ -202,13 +192,6 @@ export default function Auth() {
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
         setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
         setLoginAttempts(0);
-        toast({
-          variant: "destructive",
-          title: isAr ? "تم قفل الحساب مؤقتاً" : "Account temporarily locked",
-          description: isAr
-            ? "محاولات كثيرة. يرجى الانتظار 5 دقائق"
-            : "Too many failed attempts. Please wait 5 minutes",
-        });
         return;
       }
 
@@ -220,7 +203,7 @@ export default function Auth() {
           ? `بيانات الدخول غير صحيحة. (${MAX_LOGIN_ATTEMPTS - newAttempts} محاولات متبقية)`
           : `Invalid credentials. (${MAX_LOGIN_ATTEMPTS - newAttempts} attempts remaining)`;
       }
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
+      setFormError(msg);
     } else {
       setLoginAttempts(0);
       setLockoutUntil(null);
