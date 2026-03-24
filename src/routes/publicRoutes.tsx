@@ -59,6 +59,7 @@ const MembershipRedeem = lazy(() => import("@/pages/MembershipRedeem"));
 const Jobs = lazy(() => import("@/pages/Jobs"));
 const JobSearch = lazy(() => import("@/pages/JobSearch"));
 const JobDetail = lazy(() => import("@/pages/JobDetail"));
+const Unsubscribe = lazy(() => import("@/pages/Unsubscribe"));
 
 function LegacyLinksRedirect() {
   const { username } = useParams<{ username: string }>();
@@ -126,6 +127,7 @@ export const publicRoutes = (
     <Route path="/jobs" element={<Jobs />} />
     <Route path="/jobs/search" element={<JobSearch />} />
     <Route path="/jobs/:id" element={<JobDetail />} />
+    <Route path="/unsubscribe" element={<Unsubscribe />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
     <Route path="/:username/links" element={<LegacyLinksRedirect />} />
