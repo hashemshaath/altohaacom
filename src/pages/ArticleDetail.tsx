@@ -16,9 +16,10 @@ import {
   Share2, Twitter, Facebook, Linkedin, Link2, Check,
   FileText, Sparkles, BookOpen, ChevronUp, Printer,
   Bookmark, BookmarkCheck, Type, Minus, Plus,
-  Heart, MessageCircle, ThumbsUp, Tag,
+  Heart, ThumbsUp, Tag, ArrowUpRight, Quote,
+  BarChart3, Users, TrendingUp,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -33,11 +34,24 @@ function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
 }
 
-const FONT_SIZES = ["prose-sm", "prose-base", "prose-lg"] as const;
+function countWords(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
 
-const MetaChip = memo(function MetaChip({ icon: Icon, children }: { icon: typeof Calendar; children: React.ReactNode }) {
+const FONT_SIZES = ["prose-sm", "prose-base", "prose-lg"] as const;
+const FONT_LABELS = ["S", "M", "L"] as const;
+
+const TYPE_LABELS: Record<string, { en: string; ar: string; color: string }> = {
+  news: { en: "News", ar: "أخبار", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" },
+  blog: { en: "Blog", ar: "مدونة", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" },
+  article: { en: "Article", ar: "مقال", color: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20" },
+  exhibition: { en: "Exhibition", ar: "معرض", color: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" },
+  interview: { en: "Interview", ar: "مقابلة", color: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20" },
+};
+
+const MetaChip = memo(function MetaChip({ icon: Icon, children, className }: { icon: typeof Calendar; children: React.ReactNode; className?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/80">
+    <span className={cn("inline-flex items-center gap-1.5 text-xs text-muted-foreground/80", className)}>
       <Icon className="h-3.5 w-3.5 shrink-0" />
       {children}
     </span>
@@ -51,16 +65,28 @@ const ReactionButton = memo(function ReactionButton({
     <button
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-200 active:scale-95 touch-manipulation border",
+        "inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-medium transition-all duration-200 active:scale-95 touch-manipulation border",
         active
-          ? "bg-primary/10 text-primary border-primary/20"
+          ? "bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/10"
           : "bg-card text-muted-foreground border-border/40 hover:bg-muted/60 hover:text-foreground"
       )}
     >
-      <Icon className={cn("h-3.5 w-3.5", active && "fill-primary")} />
+      <Icon className={cn("h-4 w-4", active && "fill-primary")} />
       <span>{label}</span>
-      {count > 0 && <span className="text-[10px] opacity-70">{count}</span>}
+      {count > 0 && <span className="text-[10px] opacity-60 tabular-nums">{count}</span>}
     </button>
+  );
+});
+
+const StatRow = memo(function StatRow({ icon: Icon, label, value }: { icon: typeof Eye; label: string; value: string | number }) {
+  return (
+    <div className="flex items-center justify-between text-xs py-2">
+      <span className="text-muted-foreground flex items-center gap-2">
+        <Icon className="h-3.5 w-3.5" />
+        {label}
+      </span>
+      <span className="font-semibold tabular-nums">{value}</span>
+    </div>
   );
 });
 
@@ -75,6 +101,7 @@ export default function ArticleDetail() {
   const [fontSizeIdx, setFontSizeIdx] = useState(1);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [helpful, setHelpful] = useState(false);
   const isAr = language === "ar";
 
   const { data: article, isLoading } = useQuery({
@@ -93,7 +120,6 @@ export default function ArticleDetail() {
     enabled: !!slug,
   });
 
-  // Fetch article tags
   const { data: articleTags } = useQuery({
     queryKey: ["article-tags", article?.id],
     queryFn: async () => {
@@ -114,7 +140,7 @@ export default function ArticleDetail() {
   }, [article?.id]);
 
   useEffect(() => {
-    const onScroll = () => setShowScrollTop(window.scrollY > 500);
+    const onScroll = () => setShowScrollTop(window.scrollY > 600);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -131,7 +157,7 @@ export default function ArticleDetail() {
         .neq("id", article!.id)
         .or(`type.eq.${article!.type}${article!.category_id ? `,category_id.eq.${article!.category_id}` : ""}`)
         .order("published_at", { ascending: false })
-        .limit(3);
+        .limit(4);
       return data || [];
     },
     enabled: !!article?.id,
@@ -142,9 +168,11 @@ export default function ArticleDetail() {
   const excerpt = article ? (isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt) : "";
   const eventLocation = article ? (isAr && article.event_location_ar ? article.event_location_ar : article.event_location) : "";
   const readingTime = useMemo(() => calculateReadingTime(content), [content]);
+  const wordCount = useMemo(() => countWords(content), [content]);
 
   const formatDate = (date: string) => format(new Date(date), "d MMMM yyyy", { locale: isAr ? ar : enUS });
   const formatTime = (date: string) => format(new Date(date), "h:mm a", { locale: isAr ? ar : enUS });
+  const relativeDate = (date: string) => formatDistanceToNow(new Date(date), { addSuffix: true, locale: isAr ? ar : enUS });
 
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -168,20 +196,22 @@ export default function ArticleDetail() {
   const makeId = (text: React.ReactNode) =>
     String(text).toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").slice(0, 60);
 
-  // Loading
+  const typeMeta = article ? (TYPE_LABELS[article.type] || TYPE_LABELS.news) : TYPE_LABELS.news;
+
+  // ─── Loading skeleton ───
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">
-          <div className="relative w-full aspect-[21/9] max-h-[520px] bg-muted animate-pulse" />
-          <div className="container max-w-3xl mx-auto px-4 py-10 space-y-4">
+          <div className="relative w-full aspect-[2.2/1] max-h-[600px] bg-muted animate-pulse" />
+          <div className="container max-w-4xl mx-auto px-4 py-12 space-y-5">
             <Skeleton className="h-10 w-3/4 rounded-xl" />
             <Skeleton className="h-5 w-1/2 rounded-xl" />
-            <div className="space-y-3 pt-6">
-              <Skeleton className="h-4 w-full rounded-lg" />
-              <Skeleton className="h-4 w-5/6 rounded-lg" />
-              <Skeleton className="h-4 w-4/6 rounded-lg" />
+            <div className="space-y-3 pt-8">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-4 rounded-lg" style={{ width: `${90 - i * 8}%` }} />
+              ))}
             </div>
           </div>
         </main>
@@ -212,9 +242,7 @@ export default function ArticleDetail() {
   }
 
   const hasHeroImage = article.featured_image_url && !imageFailed;
-  const tags = (articleTags || [])
-    .map((t: any) => t.content_tags)
-    .filter(Boolean);
+  const tags = (articleTags || []).map((t: any) => t.content_tags).filter(Boolean);
 
   return (
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
@@ -232,15 +260,16 @@ export default function ArticleDetail() {
           image: article.featured_image_url || undefined,
           datePublished: article.published_at || article.created_at,
           dateModified: article.updated_at,
+          wordCount,
         }}
       />
       <Header />
 
       <main className="flex-1">
-        {/* ─── Cinematic Full-Bleed Hero ─── */}
+        {/* ─── Immersive Full-Bleed Hero ─── */}
         <section className="relative w-full overflow-hidden bg-card">
           {hasHeroImage ? (
-            <div className="relative w-full aspect-[2/1] sm:aspect-[21/9] max-h-[560px]">
+            <div className="relative w-full aspect-[2/1] sm:aspect-[2.4/1] max-h-[600px]">
               <img
                 src={article.featured_image_url!}
                 alt={title}
@@ -249,48 +278,68 @@ export default function ArticleDetail() {
                 loading="eager"
                 fetchPriority="high"
               />
-              {/* Multi-layer cinematic gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/5" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
-              <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
+              {/* 4-layer cinematic gradient for depth */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+              <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute inset-0 bg-black/10" />
 
-              {/* Content over hero */}
+              {/* Hero content overlay */}
               <div className="absolute inset-x-0 bottom-0 z-10">
-                <div className="container max-w-4xl mx-auto px-4 sm:px-6 pb-8 md:pb-10">
-                  {/* Breadcrumb + badges */}
-                  <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all">
+                <div className="container max-w-5xl mx-auto px-5 sm:px-8 pb-10 md:pb-14">
+                  {/* Breadcrumb trail */}
+                  <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
+                    <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
                       <Link to="/news">
                         <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
                         {isAr ? "الأخبار" : "News"}
                       </Link>
                     </Button>
-                    <span className="text-white/30">/</span>
-                    <Badge variant="secondary" className="capitalize rounded-xl text-[10px] px-2.5 py-0.5 bg-white/15 text-white border-white/20 backdrop-blur-sm">{article.type}</Badge>
+                    <span className="text-white/25 text-sm">/</span>
+                    <Badge className={cn("capitalize rounded-xl text-[10px] px-2.5 py-0.5 border backdrop-blur-sm", typeMeta.color)}>
+                      {isAr ? typeMeta.ar : typeMeta.en}
+                    </Badge>
                     {article.is_featured && (
-                      <Badge className="rounded-xl text-[10px] px-2 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30 gap-1 backdrop-blur-sm">
+                      <Badge className="rounded-xl text-[10px] px-2.5 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30 gap-1 backdrop-blur-sm">
                         <Sparkles className="h-2.5 w-2.5" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
                     )}
-                  </div>
+                    {(article.view_count || 0) >= 100 && (
+                      <Badge className="rounded-xl text-[10px] px-2.5 py-0.5 bg-orange-500/20 text-orange-300 border-orange-500/30 gap-1 backdrop-blur-sm">
+                        🔥 {isAr ? "رائج" : "Trending"}
+                      </Badge>
+                    )}
+                  </nav>
 
                   {/* Title */}
-                  <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold leading-[1.15] tracking-tight text-white text-balance mb-4 drop-shadow-lg max-w-3xl">
+                  <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white text-balance mb-5 max-w-4xl drop-shadow-2xl">
                     {title}
                   </h1>
 
-                  {/* Meta */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs text-white/70">
+                  {/* Subtitle / excerpt on hero */}
+                  {excerpt && (
+                    <p className="text-sm sm:text-base text-white/70 font-light max-w-2xl mb-6 line-clamp-2 leading-relaxed">
+                      {excerpt}
+                    </p>
+                  )}
+
+                  {/* Meta row */}
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                    <span className="inline-flex items-center gap-1.5 text-[13px] text-white/75">
                       <Calendar className="h-3.5 w-3.5" />
                       {formatDate(article.published_at || article.created_at)}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-xs text-white/70">
+                    <span className="hidden sm:inline-flex items-center gap-1.5 text-[13px] text-white/60" title={formatDate(article.published_at || article.created_at)}>
+                      ({relativeDate(article.published_at || article.created_at)})
+                    </span>
+                    <span className="w-1 h-1 rounded-full bg-white/25 hidden sm:block" />
+                    <span className="inline-flex items-center gap-1.5 text-[13px] text-white/75">
                       <BookOpen className="h-3.5 w-3.5" />
                       {readingTime} {isAr ? "دقيقة قراءة" : "min read"}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 text-xs text-white/70">
+                    <span className="w-1 h-1 rounded-full bg-white/25 hidden sm:block" />
+                    <span className="inline-flex items-center gap-1.5 text-[13px] text-white/75">
                       <Eye className="h-3.5 w-3.5" />
                       {(article.view_count || 0).toLocaleString()} {isAr ? "مشاهدة" : "views"}
                     </span>
@@ -300,28 +349,35 @@ export default function ArticleDetail() {
             </div>
           ) : (
             /* No-image fallback header */
-            <div className="relative bg-gradient-to-br from-primary/10 via-background to-muted/30">
-              <div className="container max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-10 md:pt-10 md:pb-12">
-                <div className="flex items-center gap-2 mb-5 flex-wrap">
+            <div className="relative bg-gradient-to-br from-primary/10 via-background to-muted/30 border-b border-border/20">
+              <div className="container max-w-5xl mx-auto px-5 sm:px-8 pt-8 pb-10 md:pt-10 md:pb-14">
+                <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
                   <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 hover:bg-muted/80 active:scale-95 transition-all">
                     <Link to="/news">
                       <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
                       {isAr ? "الأخبار" : "News"}
                     </Link>
                   </Button>
-                  <span className="text-muted-foreground/30">/</span>
-                  <Badge variant="secondary" className="capitalize rounded-xl text-[10px] px-2.5 py-0.5">{article.type}</Badge>
+                  <span className="text-muted-foreground/30 text-sm">/</span>
+                  <Badge className={cn("capitalize rounded-xl text-[10px] px-2.5 py-0.5 border", typeMeta.color)}>
+                    {isAr ? typeMeta.ar : typeMeta.en}
+                  </Badge>
                   {article.is_featured && (
-                    <Badge className="rounded-xl text-[10px] px-2 py-0.5 bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1">
+                    <Badge className="rounded-xl text-[10px] px-2.5 py-0.5 bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1">
                       <Sparkles className="h-2.5 w-2.5" />
                       {isAr ? "مميز" : "Featured"}
                     </Badge>
                   )}
-                </div>
-                <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] font-bold leading-[1.15] tracking-tight text-balance mb-4 max-w-3xl">
+                </nav>
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-balance mb-5 max-w-4xl">
                   {title}
                 </h1>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                {excerpt && (
+                  <p className="text-sm sm:text-base text-muted-foreground font-light max-w-2xl mb-6 leading-relaxed">
+                    {excerpt}
+                  </p>
+                )}
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                   <MetaChip icon={Calendar}>{formatDate(article.published_at || article.created_at)}</MetaChip>
                   <MetaChip icon={BookOpen}>{readingTime} {isAr ? "دقيقة قراءة" : "min read"}</MetaChip>
                   <MetaChip icon={Eye}>{(article.view_count || 0).toLocaleString()} {isAr ? "مشاهدة" : "views"}</MetaChip>
@@ -331,22 +387,24 @@ export default function ArticleDetail() {
           )}
         </section>
 
-        {/* ─── Toolbar Strip ─── */}
-        <div className="border-b border-border/30 bg-card/80 backdrop-blur-xl sticky top-0 z-30 shadow-sm shadow-black/[0.03]">
-          <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center gap-2 py-2 flex-wrap">
+        {/* ─── Sticky Toolbar ─── */}
+        <div className="border-b border-border/30 bg-background/80 backdrop-blur-xl sticky top-0 z-30 shadow-[0_1px_3px_rgb(0_0_0/0.04)]">
+          <div className="container max-w-5xl mx-auto px-5 sm:px-8">
+            <div className="flex items-center gap-1.5 sm:gap-2 py-2 overflow-x-auto scrollbar-hide">
+              {/* Print */}
               <Button
                 variant="ghost" size="sm"
-                className="rounded-xl h-8 w-8 p-0 hover:bg-muted/80"
+                className="rounded-xl h-8 w-8 p-0 hover:bg-muted/80 shrink-0"
                 onClick={() => window.print()}
                 title={isAr ? "طباعة" : "Print"}
               >
                 <Printer className="h-3.5 w-3.5" />
               </Button>
 
+              {/* Bookmark */}
               <Button
                 variant="ghost" size="sm"
-                className={cn("rounded-xl h-8 w-8 p-0 hover:bg-muted/80", bookmarked && "text-primary")}
+                className={cn("rounded-xl h-8 w-8 p-0 hover:bg-muted/80 shrink-0", bookmarked && "text-primary bg-primary/5")}
                 onClick={() => {
                   setBookmarked(!bookmarked);
                   toast({ title: bookmarked ? (isAr ? "تم إزالة الحفظ" : "Removed") : (isAr ? "تم الحفظ" : "Bookmarked!") });
@@ -356,12 +414,25 @@ export default function ArticleDetail() {
                 {bookmarked ? <BookmarkCheck className="h-3.5 w-3.5" /> : <Bookmark className="h-3.5 w-3.5" />}
               </Button>
 
+              {/* Like inline */}
+              <Button
+                variant="ghost" size="sm"
+                className={cn("rounded-xl h-8 px-2.5 gap-1 text-xs shrink-0", liked && "text-primary bg-primary/5")}
+                onClick={() => setLiked(!liked)}
+              >
+                <Heart className={cn("h-3.5 w-3.5", liked && "fill-primary")} />
+                <span className="tabular-nums">{liked ? likeCount + 1 : likeCount}</span>
+              </Button>
+
+              <Separator orientation="vertical" className="h-5 mx-1 hidden sm:block" />
+
+              {/* Share */}
               {shareLinks && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5 rounded-xl border-border/40 text-xs h-8 active:scale-95 transition-all">
+                    <Button variant="outline" size="sm" className="gap-1.5 rounded-xl border-border/40 text-xs h-8 active:scale-95 transition-all shrink-0">
                       <Share2 className="h-3 w-3" />
-                      {isAr ? "مشاركة" : "Share"}
+                      <span className="hidden sm:inline">{isAr ? "مشاركة" : "Share"}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align={isAr ? "start" : "end"} className="w-44 rounded-xl">
@@ -383,64 +454,49 @@ export default function ArticleDetail() {
                 </DropdownMenu>
               )}
 
-              {/* Font size control */}
-              <div className="flex items-center gap-0.5 ms-auto border border-border/30 rounded-xl overflow-hidden">
-                <button
-                  onClick={() => setFontSizeIdx(Math.max(0, fontSizeIdx - 1))}
-                  disabled={fontSizeIdx === 0}
-                  className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted/60 disabled:opacity-30 transition-colors"
-                  title={isAr ? "تصغير الخط" : "Smaller text"}
-                >
-                  <Minus className="h-3 w-3" />
-                </button>
-                <span className="h-8 w-8 flex items-center justify-center text-xs text-muted-foreground border-x border-border/20">
-                  <Type className="h-3.5 w-3.5" />
-                </span>
-                <button
-                  onClick={() => setFontSizeIdx(Math.min(2, fontSizeIdx + 1))}
-                  disabled={fontSizeIdx === 2}
-                  className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted/60 disabled:opacity-30 transition-colors"
-                  title={isAr ? "تكبير الخط" : "Larger text"}
-                >
-                  <Plus className="h-3 w-3" />
-                </button>
+              {/* Font size control — pushed to end */}
+              <div className="flex items-center gap-0.5 ms-auto border border-border/30 rounded-xl overflow-hidden shrink-0">
+                {FONT_LABELS.map((label, idx) => (
+                  <button
+                    key={label}
+                    onClick={() => setFontSizeIdx(idx)}
+                    className={cn(
+                      "h-8 w-8 flex items-center justify-center text-[11px] font-medium transition-colors",
+                      idx === fontSizeIdx
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted/60"
+                    )}
+                    title={`${isAr ? "حجم الخط" : "Font size"}: ${label}`}
+                  >
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* ─── Excerpt Callout ─── */}
-        {excerpt && (
-          <div className="container max-w-4xl mx-auto px-4 sm:px-6 mt-8">
-            <blockquote className="rounded-2xl bg-primary/[0.04] border border-primary/10 p-5 sm:p-6">
-              <p className="text-sm sm:text-base text-muted-foreground leading-[1.8] font-medium border-s-[3px] border-primary/30 ps-4">
-                {excerpt}
-              </p>
-            </blockquote>
-          </div>
-        )}
-
-        {/* ─── Event Info ─── */}
+        {/* ─── Event Info Banner ─── */}
         {article.type === "exhibition" && article.event_start && (
-          <div className="container max-w-4xl mx-auto px-4 sm:px-6 mt-6">
-            <Card className="rounded-2xl border-accent/20 bg-accent/5">
-              <CardContent className="p-4 sm:p-5">
-                <h3 className="font-semibold mb-3 flex items-center gap-2 text-sm">
+          <div className="container max-w-5xl mx-auto px-5 sm:px-8 mt-8">
+            <Card className="rounded-2xl border-accent/20 bg-accent/5 overflow-hidden">
+              <CardContent className="p-5 sm:p-6">
+                <h3 className="font-semibold mb-3.5 flex items-center gap-2 text-sm">
                   <Sparkles className="h-4 w-4 text-primary" />
                   {isAr ? "معلومات الحدث" : "Event Details"}
                 </h3>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <div className="flex items-center gap-2 text-xs rounded-xl bg-background/60 px-3 py-2.5">
-                    <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <div className="grid gap-2.5 sm:grid-cols-2">
+                  <div className="flex items-center gap-2.5 text-xs rounded-xl bg-background/60 px-4 py-3">
+                    <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                     <span>{formatDate(article.event_start)}{article.event_end && ` – ${formatDate(article.event_end)}`}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs rounded-xl bg-background/60 px-3 py-2.5">
-                    <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                  <div className="flex items-center gap-2.5 text-xs rounded-xl bg-background/60 px-4 py-3">
+                    <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
                     <span>{formatTime(article.event_start)}</span>
                   </div>
                   {eventLocation && (
-                    <div className="flex items-center gap-2 text-xs sm:col-span-2 rounded-xl bg-background/60 px-3 py-2.5">
-                      <MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    <div className="flex items-center gap-2.5 text-xs sm:col-span-2 rounded-xl bg-background/60 px-4 py-3">
+                      <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                       <span>{eventLocation}</span>
                     </div>
                   )}
@@ -451,40 +507,47 @@ export default function ArticleDetail() {
         )}
 
         {/* ─── Content + Sidebar ─── */}
-        <div className="container max-w-5xl mx-auto px-4 sm:px-8 pt-10 pb-12">
-          <div className="grid gap-10 lg:grid-cols-[1fr_230px]">
-            {/* Main Article Content */}
-            <div>
+        <div className="container max-w-5xl mx-auto px-5 sm:px-8 pt-10 pb-14">
+          <div className="grid gap-12 lg:grid-cols-[1fr_240px]">
+            {/* ─── Main Article ─── */}
+            <div className="min-w-0">
               <article
                 className={cn(
                   "prose max-w-none dark:prose-invert",
                   FONT_SIZES[fontSizeIdx],
                   "prose-headings:font-serif prose-headings:scroll-mt-24 prose-headings:tracking-tight",
-                  "prose-p:leading-[1.85] prose-p:text-muted-foreground/90",
+                  "prose-p:leading-[1.9] prose-p:text-muted-foreground/90",
                   "prose-img:rounded-2xl prose-img:shadow-md prose-img:my-8",
                   "prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium",
-                  "prose-blockquote:border-primary/30 prose-blockquote:bg-muted/20 prose-blockquote:rounded-e-xl prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:not-italic",
+                  "prose-blockquote:border-primary/30 prose-blockquote:bg-muted/20 prose-blockquote:rounded-e-2xl prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:not-italic prose-blockquote:my-8",
                   "prose-li:leading-relaxed prose-li:marker:text-primary/50",
-                  "prose-hr:border-border/30 prose-hr:my-10",
+                  "prose-hr:border-border/30 prose-hr:my-12",
                   "prose-strong:text-foreground",
                   "prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-sm prose-code:before:content-none prose-code:after:content-none",
-                  "prose-pre:rounded-xl prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border/30",
-                  "prose-table:rounded-xl prose-th:bg-muted/40 prose-th:px-3 prose-th:py-2 prose-td:px-3 prose-td:py-2",
-                  "prose-h2:text-xl prose-h2:md:text-2xl prose-h3:text-lg",
+                  "prose-pre:rounded-2xl prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border/30",
+                  "prose-table:rounded-xl prose-th:bg-muted/40 prose-th:px-4 prose-th:py-2.5 prose-td:px-4 prose-td:py-2.5",
+                  "prose-h2:text-xl prose-h2:md:text-2xl prose-h2:mt-14 prose-h2:mb-5",
+                  "prose-h3:text-lg prose-h3:mt-10 prose-h3:mb-4",
                 )}
               >
                 <ReactMarkdown
                   components={{
                     h1: ({ children, ...props }) => <h1 id={makeId(children)} {...props}>{children}</h1>,
-                    h2: ({ children, ...props }) => <h2 id={makeId(children)} className="mt-12 mb-4" {...props}>{children}</h2>,
-                    h3: ({ children, ...props }) => <h3 id={makeId(children)} className="mt-8 mb-3" {...props}>{children}</h3>,
+                    h2: ({ children, ...props }) => <h2 id={makeId(children)} {...props}>{children}</h2>,
+                    h3: ({ children, ...props }) => <h3 id={makeId(children)} {...props}>{children}</h3>,
                     img: ({ src, alt, ...props }) => (
-                      <figure className="my-8 not-prose">
-                        <img src={src} alt={alt || ""} className="w-full rounded-2xl shadow-md" loading="lazy" decoding="async" {...props} />
+                      <figure className="my-10 not-prose">
+                        <img src={src} alt={alt || ""} className="w-full rounded-2xl shadow-lg" loading="lazy" decoding="async" {...props} />
                         {alt && alt !== "image" && (
                           <figcaption className="text-center text-xs text-muted-foreground mt-3 italic">{alt}</figcaption>
                         )}
                       </figure>
+                    ),
+                    blockquote: ({ children, ...props }) => (
+                      <blockquote className="relative" {...props}>
+                        <Quote className="absolute -top-2 -start-1 h-6 w-6 text-primary/15" />
+                        {children}
+                      </blockquote>
                     ),
                   }}
                 >
@@ -494,8 +557,8 @@ export default function ArticleDetail() {
                 {/* Gallery */}
                 {article.gallery_urls && article.gallery_urls.length > 0 && (
                   <>
-                    <Separator className="my-10" />
-                    <h3 className="font-semibold mb-4 flex items-center gap-2 not-prose text-sm">
+                    <Separator className="my-12" />
+                    <h3 className="font-semibold mb-5 flex items-center gap-2 not-prose text-sm">
                       <Sparkles className="h-4 w-4 text-primary" />
                       {isAr ? "معرض الصور" : "Photo Gallery"}
                     </h3>
@@ -517,14 +580,14 @@ export default function ArticleDetail() {
 
               {/* ─── Tags ─── */}
               {tags.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-border/30">
+                <div className="mt-10 pt-6 border-t border-border/30">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Tag className="h-3.5 w-3.5 text-muted-foreground" />
+                    <Tag className="h-4 w-4 text-muted-foreground" />
                     {tags.map((tag: any) => (
                       <Badge
                         key={tag.id}
                         variant="secondary"
-                        className="rounded-xl text-[11px] px-2.5 py-1 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
+                        className="rounded-xl text-[11px] px-3 py-1.5 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
                       >
                         {isAr && tag.name_ar ? tag.name_ar : tag.name}
                       </Badge>
@@ -533,12 +596,19 @@ export default function ArticleDetail() {
                 </div>
               )}
 
-              {/* ─── Reactions & Engagement ─── */}
+              {/* ─── Reactions Card ─── */}
               <div className="mt-10 pt-8 border-t border-border/30">
-                <div className="rounded-2xl bg-muted/30 border border-border/20 p-5 sm:p-6">
-                  <p className="text-sm font-semibold mb-1">{isAr ? "هل أعجبك هذا المقال؟" : "Did you enjoy this article?"}</p>
-                  <p className="text-xs text-muted-foreground mb-4">{isAr ? "أخبرنا برأيك" : "Let us know what you think"}</p>
-                  <div className="flex items-center gap-2.5 flex-wrap">
+                <div className="rounded-2xl bg-gradient-to-br from-muted/40 to-muted/20 border border-border/20 p-6 sm:p-8">
+                  <div className="flex items-start gap-3 mb-5">
+                    <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <Heart className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{isAr ? "هل أعجبك هذا المقال؟" : "Did you enjoy this article?"}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "أخبرنا برأيك وساعد الآخرين" : "Your feedback helps others discover great content"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 flex-wrap">
                     <ReactionButton
                       icon={Heart}
                       label={isAr ? "أعجبني" : "Like"}
@@ -550,59 +620,81 @@ export default function ArticleDetail() {
                       icon={ThumbsUp}
                       label={isAr ? "مفيد" : "Helpful"}
                       count={Math.floor(likeCount * 0.6)}
-                      onClick={() => toast({ title: isAr ? "شكراً لتقييمك!" : "Thanks for your feedback!" })}
+                      active={helpful}
+                      onClick={() => {
+                        setHelpful(!helpful);
+                        if (!helpful) toast({ title: isAr ? "شكراً لتقييمك!" : "Thanks for your feedback!" });
+                      }}
                     />
                   </div>
                 </div>
               </div>
 
               {/* ─── Newsletter CTA ─── */}
-              <div className="mt-8 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/15 p-5 sm:p-6 text-center">
-                <Sparkles className="h-6 w-6 text-primary mx-auto mb-3" />
-                <h3 className="font-serif font-bold text-base mb-1.5">{isAr ? "لا تفوّت المقالات الجديدة" : "Don't miss new articles"}</h3>
-                <p className="text-xs text-muted-foreground mb-4 max-w-sm mx-auto">
-                  {isAr ? "تابعنا للحصول على أحدث المقالات والأخبار في عالم الطهي" : "Stay updated with the latest articles and culinary news"}
-                </p>
-                <Button asChild size="sm" className="rounded-xl shadow-md shadow-primary/15">
-                  <Link to="/news">{isAr ? "تصفح المزيد" : "Browse More"}</Link>
-                </Button>
+              <div className="mt-8 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/15 p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-start">
+                  <div className="h-14 w-14 rounded-3xl bg-primary/10 flex items-center justify-center shrink-0">
+                    <Sparkles className="h-7 w-7 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-serif font-bold text-base mb-1">{isAr ? "لا تفوّت المقالات الجديدة" : "Don't miss new articles"}</h3>
+                    <p className="text-xs text-muted-foreground max-w-sm">
+                      {isAr ? "تابعنا للحصول على أحدث المقالات والأخبار في عالم الطهي" : "Stay updated with the latest articles and culinary news"}
+                    </p>
+                  </div>
+                  <Button asChild size="sm" className="rounded-xl shadow-md shadow-primary/15 gap-1.5 shrink-0">
+                    <Link to="/news">
+                      {isAr ? "تصفح المزيد" : "Browse More"}
+                      <ArrowUpRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
 
             {/* ─── Sidebar ─── */}
             <aside className="hidden lg:block">
-              <div className="sticky top-14 space-y-4 pt-1">
+              <div className="sticky top-14 space-y-5 pt-1">
                 <ArticleTableOfContents content={content} isAr={isAr} />
-                
-                {/* Quick Stats Card */}
-                <div className="rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-4 space-y-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    {isAr ? "إحصائيات" : "Stats"}
+
+                {/* Article Stats */}
+                <div className="rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-5">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5 mb-1">
+                    <BarChart3 className="h-3 w-3" />
+                    {isAr ? "إحصائيات المقال" : "Article Stats"}
                   </p>
-                  <div className="space-y-2.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground flex items-center gap-1.5">
-                        <Eye className="h-3 w-3" />
-                        {isAr ? "مشاهدات" : "Views"}
-                      </span>
-                      <span className="font-semibold">{(article.view_count || 0).toLocaleString()}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground flex items-center gap-1.5">
-                        <BookOpen className="h-3 w-3" />
-                        {isAr ? "وقت القراءة" : "Read time"}
-                      </span>
-                      <span className="font-semibold">{readingTime} {isAr ? "د" : "min"}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground flex items-center gap-1.5">
-                        <Heart className="h-3 w-3" />
-                        {isAr ? "إعجابات" : "Likes"}
-                      </span>
-                      <span className="font-semibold">{liked ? likeCount + 1 : likeCount}</span>
-                    </div>
+                  <Separator className="my-3" />
+                  <div className="divide-y divide-border/20">
+                    <StatRow icon={Eye} label={isAr ? "مشاهدات" : "Views"} value={(article.view_count || 0).toLocaleString()} />
+                    <StatRow icon={BookOpen} label={isAr ? "وقت القراءة" : "Read time"} value={`${readingTime} ${isAr ? "د" : "min"}`} />
+                    <StatRow icon={FileText} label={isAr ? "عدد الكلمات" : "Words"} value={wordCount.toLocaleString()} />
+                    <StatRow icon={Heart} label={isAr ? "إعجابات" : "Likes"} value={liked ? likeCount + 1 : likeCount} />
+                    <StatRow icon={Calendar} label={isAr ? "نُشر" : "Published"} value={relativeDate(article.published_at || article.created_at)} />
                   </div>
                 </div>
+
+                {/* Quick Share */}
+                {shareLinks && (
+                  <div className="rounded-2xl border border-border/40 bg-card/80 backdrop-blur-sm p-5">
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
+                      {isAr ? "شارك المقال" : "Share Article"}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => window.open(shareLinks.twitter, "_blank")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="Twitter">
+                        <Twitter className="h-3.5 w-3.5" />
+                      </button>
+                      <button onClick={() => window.open(shareLinks.facebook, "_blank")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="Facebook">
+                        <Facebook className="h-3.5 w-3.5" />
+                      </button>
+                      <button onClick={() => window.open(shareLinks.linkedin, "_blank")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="LinkedIn">
+                        <Linkedin className="h-3.5 w-3.5" />
+                      </button>
+                      <button onClick={handleCopyLink} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title={isAr ? "نسخ" : "Copy"}>
+                        {copied ? <Check className="h-3.5 w-3.5 text-chart-2" /> : <Link2 className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </aside>
           </div>
@@ -611,32 +703,46 @@ export default function ArticleDetail() {
         {/* ─── Related Articles ─── */}
         {relatedArticles && relatedArticles.length > 0 && (
           <section className="border-t border-border/20 bg-muted/10">
-            <div className="container max-w-5xl mx-auto px-4 sm:px-6 py-14">
-              <div className="flex items-center gap-3 mb-8">
+            <div className="container max-w-5xl mx-auto px-5 sm:px-8 py-16">
+              <div className="flex items-center gap-3 mb-10">
+                <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                </div>
                 <h2 className="font-serif text-xl font-bold">{isAr ? "مقالات ذات صلة" : "Related Articles"}</h2>
                 <div className="h-px flex-1 bg-border/30" />
+                <Button variant="ghost" size="sm" asChild className="rounded-xl text-xs gap-1 text-muted-foreground hover:text-primary">
+                  <Link to="/news">
+                    {isAr ? "عرض الكل" : "View All"}
+                    <ArrowUpRight className="h-3 w-3" />
+                  </Link>
+                </Button>
               </div>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {relatedArticles.map((r) => {
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
+                {relatedArticles.slice(0, 4).map((r) => {
                   const rTitle = isAr && r.title_ar ? r.title_ar : r.title;
+                  const rExcerpt = isAr && r.excerpt_ar ? r.excerpt_ar : r.excerpt;
                   return (
                     <Link key={r.id} to={`/news/${r.slug}`} className="group">
-                      <Card className="overflow-hidden rounded-2xl border-border/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
+                      <Card className="overflow-hidden rounded-2xl border-border/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-row">
                         {r.featured_image_url ? (
-                          <div className="aspect-video relative overflow-hidden">
+                          <div className="w-36 sm:w-44 relative overflow-hidden shrink-0">
                             <img src={r.featured_image_url} alt={rTitle} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                            <Badge className="absolute top-3 start-3 text-[10px] rounded-xl bg-white/15 text-white border-white/20 backdrop-blur-sm capitalize">{r.type}</Badge>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-card/10" />
                           </div>
                         ) : (
-                          <div className="aspect-video bg-gradient-to-br from-primary/10 to-muted flex items-center justify-center">
+                          <div className="w-36 sm:w-44 bg-gradient-to-br from-primary/10 to-muted flex items-center justify-center shrink-0">
                             <FileText className="h-8 w-8 text-muted-foreground/20" />
                           </div>
                         )}
-                        <CardContent className="p-4 flex-1 flex flex-col">
-                          <h3 className="font-semibold line-clamp-2 mb-2 group-hover:text-primary transition-colors text-sm">{rTitle}</h3>
-                          <p className="text-xs text-muted-foreground line-clamp-2 flex-1">{isAr && r.excerpt_ar ? r.excerpt_ar : r.excerpt}</p>
-                          <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/20 text-[10px] text-muted-foreground">
+                        <CardContent className="p-4 sm:p-5 flex-1 flex flex-col justify-between min-w-0">
+                          <div>
+                            <Badge className={cn("text-[9px] rounded-lg px-2 py-0.5 mb-2.5 capitalize border", TYPE_LABELS[r.type]?.color || typeMeta.color)}>
+                              {isAr ? (TYPE_LABELS[r.type]?.ar || r.type) : (TYPE_LABELS[r.type]?.en || r.type)}
+                            </Badge>
+                            <h3 className="font-semibold line-clamp-2 mb-1.5 group-hover:text-primary transition-colors text-sm">{rTitle}</h3>
+                            {rExcerpt && <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{rExcerpt}</p>}
+                          </div>
+                          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/20 text-[10px] text-muted-foreground">
                             {r.published_at && (
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-2.5 w-2.5" />
@@ -665,7 +771,7 @@ export default function ArticleDetail() {
       <button
         onClick={scrollToTop}
         className={cn(
-          "fixed bottom-6 end-6 z-50 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300 active:scale-90 touch-manipulation",
+          "fixed bottom-6 end-6 z-50 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300 active:scale-90 touch-manipulation",
           showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
         )}
         aria-label="Scroll to top"
