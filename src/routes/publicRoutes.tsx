@@ -127,6 +127,7 @@ export const publicRoutes = (
     <Route path="/jobs" element={<Jobs />} />
     <Route path="/jobs/search" element={<JobSearch />} />
     <Route path="/jobs/:id" element={<JobDetail />} />
+    <Route path="/unsubscribe" element={<Unsubscribe />} />
     <Route path="/profile/:username" element={<PublicProfile />} />
     <Route path="/offline" element={<OfflinePage />} />
     <Route path="/:username/links" element={<LegacyLinksRedirect />} />

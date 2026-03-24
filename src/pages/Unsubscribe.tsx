@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { CheckCircle, AlertCircle, Loader2, MailOff } from "lucide-react";
+import { CheckCircle, AlertCircle, Loader2, MailX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Status = "loading" | "valid" | "already" | "invalid" | "confirming" | "done" | "error";
@@ -69,7 +69,7 @@ export default function Unsubscribe() {
 
         {status === "valid" && (
           <>
-            <MailOff className="h-12 w-12 text-muted-foreground mx-auto" />
+            <MailX className="h-12 w-12 text-muted-foreground mx-auto" />
             <h1 className="text-2xl font-bold text-foreground">Unsubscribe from emails</h1>
             <p className="text-muted-foreground">
               You will no longer receive app emails from Altoha. Auth emails (password resets, etc.) are not affected.
