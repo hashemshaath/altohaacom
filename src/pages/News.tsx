@@ -31,6 +31,8 @@ import { NewsMobileFilters } from "@/components/news/NewsMobileFilters";
 import { NewsActiveFilters } from "@/components/news/NewsActiveFilters";
 import { NewsArchiveWidget } from "@/components/news/NewsArchiveWidget";
 import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
+import { NewsBreakingTicker } from "@/components/news/NewsBreakingTicker";
+import { NewsReadingStats } from "@/components/news/NewsReadingStats";
 
 interface Category {
   id: string;
