@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,7 +39,7 @@ import { cn } from "@/lib/utils";
 import { 
   Plus, Pencil, Trash2, Eye, FileText, X, Save, ArrowLeft,
   Calendar, Clock, Star, Download, BarChart3, TrendingUp, ToggleLeft, ToggleRight,
-  Timer,
+  Timer, ExternalLink,
 } from "lucide-react";
 
 type ViewMode = "list" | "create" | "edit";
@@ -52,6 +53,8 @@ export default function ArticlesAdmin() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
+  const isAr = language === "ar";
+  const t = (en: string, ar: string) => isAr ? ar : en;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -77,7 +80,7 @@ export default function ArticlesAdmin() {
         .order("created_at", { ascending: false });
 
       if (search) {
-        query = query.or(`title.ilike.%${search}%,title_ar.ilike.%${search}%`);
+        query = query.or(`title.ilike.%${search}%,title_ar.ilike.%${search}%,slug.ilike.%${search}%`);
       }
       if (statusFilter !== "all") {
         query = query.eq("status", statusFilter);
@@ -105,9 +108,12 @@ export default function ArticlesAdmin() {
       setViewMode("list");
       resetForm();
       toast({
-        title: language === "ar" ? "تم الإنشاء" : "Created",
-        description: language === "ar" ? "تم إنشاء المقال بنجاح" : "Article created successfully",
+        title: t("تم الإنشاء", "Created"),
+        description: t("تم إنشاء المقال بنجاح", "Article created successfully"),
       });
+    },
+    onError: (err: any) => {
+      toast({ variant: "destructive", title: t("فشل الإنشاء", "Creation failed"), description: err.message });
     },
   });
 
@@ -122,9 +128,12 @@ export default function ArticlesAdmin() {
       setEditingArticleId(null);
       resetForm();
       toast({
-        title: language === "ar" ? "تم التحديث" : "Updated",
-        description: language === "ar" ? "تم تحديث المقال بنجاح" : "Article updated successfully",
+        title: t("تم التحديث", "Updated"),
+        description: t("تم تحديث المقال بنجاح", "Article updated successfully"),
       });
+    },
+    onError: (err: any) => {
+      toast({ variant: "destructive", title: t("فشل التحديث", "Update failed"), description: err.message });
     },
   });
 
@@ -136,9 +145,12 @@ export default function ArticlesAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
       toast({
-        title: language === "ar" ? "تم الحذف" : "Deleted",
-        description: language === "ar" ? "تم حذف المقال" : "Article deleted",
+        title: t("تم الحذف", "Deleted"),
+        description: t("تم حذف المقال", "Article deleted"),
       });
+    },
+    onError: (err: any) => {
+      toast({ variant: "destructive", title: t("فشل الحذف", "Delete failed"), description: err.message });
     },
   });
 
@@ -227,7 +239,7 @@ export default function ArticlesAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
       bulk.clearSelection();
-      toast({ title: language === "ar" ? "تم حذف المقالات" : "Articles deleted" });
+      toast({ title: t("تم حذف المقالات", "Articles deleted") });
     },
   });
 
@@ -239,7 +251,7 @@ export default function ArticlesAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
       bulk.clearSelection();
-      toast({ title: language === "ar" ? "تم تحديث الحالة" : "Status updated" });
+      toast({ title: t("تم تحديث الحالة", "Status updated") });
     },
   });
 
@@ -249,22 +261,15 @@ export default function ArticlesAdmin() {
     resetForm();
   };
 
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-      published: "default",
-      draft: "secondary",
-      archived: "outline",
-    };
-    return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
-  };
-
   const getTypeBadge = (type: string) => {
-    const colors: Record<string, string> = {
-      news: "bg-primary/10 text-primary",
-      article: "bg-chart-3/10 text-chart-3",
-      exhibition: "bg-chart-5/10 text-chart-5",
+    const config: Record<string, { bg: string; label: string; labelAr: string }> = {
+      news: { bg: "bg-primary/10 text-primary border-primary/20", label: "News", labelAr: "أخبار" },
+      article: { bg: "bg-chart-3/10 text-chart-3 border-chart-3/20", label: "Article", labelAr: "مقال" },
+      blog: { bg: "bg-chart-2/10 text-chart-2 border-chart-2/20", label: "Blog", labelAr: "مدونة" },
+      exhibition: { bg: "bg-chart-5/10 text-chart-5 border-chart-5/20", label: "Exhibition", labelAr: "معرض" },
     };
-    return <Badge variant="outline" className={colors[type] || ""}>{type}</Badge>;
+    const c = config[type] || { bg: "", label: type, labelAr: type };
+    return <Badge variant="outline" className={cn("text-[10px]", c.bg)}>{isAr ? c.labelAr : c.label}</Badge>;
   };
 
   // Create/Edit Form View — now uses professional editor
@@ -283,16 +288,16 @@ export default function ArticlesAdmin() {
     <div className="space-y-6">
       <AdminPageHeader
         icon={FileText}
-        title={language === "ar" ? "إدارة المقالات والأخبار" : "Articles & News Management"}
-        description={language === "ar" ? "إنشاء وتعديل المحتوى" : "Create and manage content"}
+        title={t("إدارة المقالات والأخبار", "Articles & News Management")}
+        description={t("إنشاء وتعديل المحتوى", "Create and manage content")}
         actions={
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => exportArticlesCSV(articles || [])} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportArticlesCSV(articles || [])} className="gap-1.5 rounded-xl">
               <Download className="h-3.5 w-3.5" /> CSV
             </Button>
-            <Button onClick={() => setViewMode("create")}>
+            <Button onClick={() => setViewMode("create")} className="rounded-xl">
               <Plus className="me-2 h-4 w-4" />
-              {language === "ar" ? "مقال جديد" : "New Article"}
+              {t("مقال جديد", "New Article")}
             </Button>
           </div>
         }
@@ -323,18 +328,18 @@ export default function ArticlesAdmin() {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {[
-          { icon: FileText, value: stats.total, label: language === "ar" ? "إجمالي" : "Total", color: "text-primary", bg: "bg-primary/10" },
-          { icon: TrendingUp, value: stats.published, label: language === "ar" ? "منشور" : "Published", color: "text-chart-2", bg: "bg-chart-2/10" },
-          { icon: Clock, value: stats.drafts, label: language === "ar" ? "مسودات" : "Drafts", color: "text-chart-4", bg: "bg-chart-4/10" },
-          { icon: BarChart3, value: stats.totalViews.toLocaleString(), label: language === "ar" ? "مشاهدات" : "Views", color: "text-chart-3", bg: "bg-chart-3/10" },
-          { icon: Star, value: stats.featured, label: language === "ar" ? "مميز" : "Featured", color: "text-chart-1", bg: "bg-chart-1/10" },
+          { icon: FileText, value: stats.total, label: t("إجمالي", "Total"), color: "text-primary", bg: "bg-primary/10" },
+          { icon: TrendingUp, value: stats.published, label: t("منشور", "Published"), color: "text-chart-2", bg: "bg-chart-2/10" },
+          { icon: Clock, value: stats.drafts, label: t("مسودات", "Drafts"), color: "text-chart-4", bg: "bg-chart-4/10" },
+          { icon: BarChart3, value: stats.totalViews, label: t("مشاهدات", "Views"), color: "text-chart-3", bg: "bg-chart-3/10" },
+          { icon: Star, value: stats.featured, label: t("مميز", "Featured"), color: "text-chart-1", bg: "bg-chart-1/10" },
         ].map((stat) => (
           <Card key={stat.label} className="rounded-2xl border-border/40 group hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
             <CardContent className="p-4 text-center">
               <div className={cn("mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", stat.bg)}>
                 <stat.icon className={cn("h-4 w-4", stat.color)} />
               </div>
-              <AnimatedCounter value={typeof stat.value === "number" ? stat.value : Number(stat.value) || 0} className="text-xl font-bold" />
+              <AnimatedCounter value={stat.value} className="text-xl font-bold" />
               <p className="text-[10px] text-muted-foreground">{stat.label}</p>
             </CardContent>
           </Card>
@@ -345,28 +350,29 @@ export default function ArticlesAdmin() {
       <AdminFilterBar
         searchValue={search}
         onSearchChange={setSearch}
-        searchPlaceholder={language === "ar" ? "بحث..." : "Search..."}
+        searchPlaceholder={t("ابحث بالعنوان أو الرابط...", "Search by title or slug...")}
       >
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[150px] rounded-xl h-9 text-sm">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder={t("الحالة", "Status")} />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="all">{language === "ar" ? "الكل" : "All Status"}</SelectItem>
-            <SelectItem value="draft">{language === "ar" ? "مسودة" : "Draft"}</SelectItem>
-            <SelectItem value="published">{language === "ar" ? "منشور" : "Published"}</SelectItem>
-            <SelectItem value="archived">{language === "ar" ? "مؤرشف" : "Archived"}</SelectItem>
+            <SelectItem value="all">{t("الكل", "All Status")}</SelectItem>
+            <SelectItem value="draft">{t("مسودة", "Draft")}</SelectItem>
+            <SelectItem value="published">{t("منشور", "Published")}</SelectItem>
+            <SelectItem value="archived">{t("مؤرشف", "Archived")}</SelectItem>
           </SelectContent>
         </Select>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
           <SelectTrigger className="w-[150px] rounded-xl h-9 text-sm">
-            <SelectValue placeholder="Type" />
+            <SelectValue placeholder={t("النوع", "Type")} />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="all">{language === "ar" ? "الكل" : "All Types"}</SelectItem>
-            <SelectItem value="news">{language === "ar" ? "أخبار" : "News"}</SelectItem>
-            <SelectItem value="article">{language === "ar" ? "مقال" : "Article"}</SelectItem>
-            <SelectItem value="exhibition">{language === "ar" ? "معرض" : "Exhibition"}</SelectItem>
+            <SelectItem value="all">{t("الكل", "All Types")}</SelectItem>
+            <SelectItem value="news">{t("أخبار", "News")}</SelectItem>
+            <SelectItem value="blog">{t("مدونة", "Blog")}</SelectItem>
+            <SelectItem value="article">{t("مقال", "Article")}</SelectItem>
+            <SelectItem value="exhibition">{t("معرض", "Exhibition")}</SelectItem>
           </SelectContent>
         </Select>
       </AdminFilterBar>
@@ -376,7 +382,7 @@ export default function ArticlesAdmin() {
         count={bulk.count}
         onClear={bulk.clearSelection}
         onDelete={() => {
-          if (confirm(language === "ar" ? "حذف المقالات المحددة؟" : "Delete selected articles?")) {
+          if (confirm(t("حذف المقالات المحددة؟", "Delete selected articles?"))) {
             bulkDeleteMutation.mutate(bulk.selectedItems.map(i => i.id));
           }
         }}
@@ -390,14 +396,14 @@ export default function ArticlesAdmin() {
             <TableHeader>
                <TableRow>
                 <TableHead className="w-10 bg-muted/30">
-                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} aria-label={t("تحديد الكل", "Select all")} />
                 </TableHead>
-                <SortableTableHead column="title" label={language === "ar" ? "العنوان" : "Title"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
-                <SortableTableHead column="type" label={language === "ar" ? "النوع" : "Type"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
-                <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
-                <SortableTableHead column="view_count" label={language === "ar" ? "المشاهدات" : "Views"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
-                <SortableTableHead column="created_at" label={language === "ar" ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
-                <TableHead className="w-[120px] bg-muted/30">{language === "ar" ? "الإجراءات" : "Actions"}</TableHead>
+                <SortableTableHead column="title" label={t("العنوان", "Title")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="type" label={t("النوع", "Type")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="status" label={t("الحالة", "Status")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="view_count" label={t("المشاهدات", "Views")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <SortableTableHead column="created_at" label={t("التاريخ", "Date")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="bg-muted/30" />
+                <TableHead className="w-[140px] bg-muted/30">{t("الإجراءات", "Actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -408,8 +414,8 @@ export default function ArticlesAdmin() {
                     <TableCell><div className="space-y-1.5"><Skeleton className="h-4 w-32" /><Skeleton className="h-3 w-20" /></div></TableCell>
                     <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
                     <TableCell><Skeleton className="h-5 w-14 rounded-full" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                     <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                     <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
                   </TableRow>
                 ))
@@ -437,6 +443,7 @@ export default function ArticlesAdmin() {
                       <Checkbox
                         checked={bulk.isSelected(article.id)}
                         onCheckedChange={() => bulk.toggleOne(article.id)}
+                        aria-label={`Select ${article.title}`}
                       />
                     </TableCell>
                     <TableCell>
@@ -444,27 +451,36 @@ export default function ArticlesAdmin() {
                         {article.featured_image_url ? (
                           <img 
                             src={article.featured_image_url} 
-                            alt="" 
+                            alt={article.title}
                             className="h-10 w-14 rounded-xl object-cover ring-1 ring-border/40 group-hover:ring-primary/30 transition-all"
+                            loading="lazy"
                           />
                         ) : (
                           <div className="flex h-10 w-14 items-center justify-center rounded-xl bg-primary/5">
                             <FileText className="h-4 w-4 text-primary/40" />
                           </div>
                         )}
-                        <div>
+                        <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
                             <p className="font-medium line-clamp-1">
-                              {language === "ar" && article.title_ar ? article.title_ar : article.title}
+                              {isAr && article.title_ar ? article.title_ar : article.title}
                             </p>
                             {article.is_featured && <Star className="h-3 w-3 text-chart-1 fill-chart-1 shrink-0" />}
                           </div>
                           <div className="flex items-center gap-2">
-                            <p className="text-xs text-muted-foreground">/{article.slug}</p>
+                            <a
+                              href={`/news/${article.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-muted-foreground hover:text-primary hover:underline transition-colors truncate max-w-[200px]"
+                              title={`/news/${article.slug}`}
+                            >
+                              /{article.slug}
+                            </a>
                             {isScheduled && (
                               <Badge variant="outline" className="text-[8px] gap-0.5 px-1 py-0 text-chart-4 border-chart-4/30">
                                 <Timer className="h-2 w-2" />
-                                {language === "ar" ? "مجدول" : "Scheduled"}
+                                {t("مجدول", "Scheduled")}
                               </Badge>
                             )}
                           </div>
@@ -474,55 +490,87 @@ export default function ArticlesAdmin() {
                     <TableCell>{getTypeBadge(article.type)}</TableCell>
                     <TableCell><AdminStatusBadge status={article.status || "draft"} /></TableCell>
                     <TableCell>
-                      <span className="font-mono text-xs">{(article.view_count || 0).toLocaleString()}</span>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(article.created_at), "MMM d, yyyy")}
+                      <span className="font-mono text-xs tabular-nums">{(article.view_count || 0).toLocaleString()}</span>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-1">
+                      <div className="text-sm text-muted-foreground">
+                        {format(new Date(article.created_at), "MMM d, yyyy")}
+                        {article.published_at && article.status === "published" && (
+                          <p className="text-[10px] text-chart-2">
+                            {t("نُشر", "Published")} {format(new Date(article.published_at), "MMM d")}
+                          </p>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-0.5">
                         {/* Quick publish toggle */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          title={article.status === "published" ? "Unpublish" : "Publish now"}
-                          onClick={() => {
-                            const newStatus = article.status === "published" ? "draft" : "published";
-                            updateMutation.mutate({
-                              id: article.id,
-                              data: {
-                                status: newStatus,
-                                ...(newStatus === "published" && !article.published_at ? { published_at: new Date().toISOString() } : {}),
-                              } as any,
-                            });
-                          }}
-                          className="text-muted-foreground hover:text-foreground"
-                        >
-                          {article.status === "published" ? (
-                            <ToggleRight className="h-4 w-4 text-chart-2" />
-                          ) : (
-                            <ToggleLeft className="h-4 w-4" />
-                          )}
-                        </Button>
-                        <Button variant="ghost" size="sm" asChild>
-                          <a href={`/news/${article.slug}`} target="_blank" rel="noopener noreferrer">
-                            <Eye className="h-4 w-4" />
-                          </a>
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(article)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            if (confirm(language === "ar" ? "هل أنت متأكد من الحذف؟" : "Are you sure you want to delete?")) {
-                              deleteMutation.mutate(article.id);
-                            }
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={() => {
+                                const newStatus = article.status === "published" ? "draft" : "published";
+                                updateMutation.mutate({
+                                  id: article.id,
+                                  data: {
+                                    status: newStatus,
+                                    ...(newStatus === "published" && !article.published_at ? { published_at: new Date().toISOString() } : {}),
+                                  } as any,
+                                });
+                              }}
+                            >
+                              {article.status === "published" ? (
+                                <ToggleRight className="h-4 w-4 text-chart-2" />
+                              ) : (
+                                <ToggleLeft className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="text-xs">
+                            {article.status === "published" ? t("إلغاء النشر", "Unpublish") : t("نشر الآن", "Publish now")}
+                          </TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
+                              <a href={`/news/${article.slug}`} target="_blank" rel="noopener noreferrer">
+                                <Eye className="h-4 w-4 text-muted-foreground" />
+                              </a>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="text-xs">{t("معاينة", "Preview")}</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleEdit(article)}>
+                              <Pencil className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="text-xs">{t("تعديل", "Edit")}</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                              onClick={() => {
+                                if (confirm(t("هل أنت متأكد من حذف هذا المقال؟", "Are you sure you want to delete this article?"))) {
+                                  deleteMutation.mutate(article.id);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="text-xs">{t("حذف", "Delete")}</TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>

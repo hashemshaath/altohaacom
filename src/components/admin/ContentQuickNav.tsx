@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { href: "/admin/articles", icon: FileText, labelEn: "Articles", labelAr: "المقالات", countKey: "draft" },
   { href: "/admin/media", icon: Image, labelEn: "Media", labelAr: "الوسائط" },
   { href: "/admin/masterclasses", icon: BookOpen, labelEn: "Masterclasses", labelAr: "دروس الطهي" },
-  { href: "/admin/content-moderation", icon: ShieldCheck, labelEn: "Moderation", labelAr: "الإشراف" },
+  { href: "/admin/moderation", icon: ShieldCheck, labelEn: "Moderation", labelAr: "الإشراف" },
   { href: "/admin/knowledge", icon: Tag, labelEn: "Knowledge", labelAr: "المعرفة" },
 ];
 
