@@ -158,6 +158,9 @@
     @apply bg-background text-foreground antialiased text-base leading-relaxed;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   [dir="rtl"] {
     font-family: 'Noto Sans Arabic', 'DM Sans', ui-sans-serif, system-ui, sans-serif;

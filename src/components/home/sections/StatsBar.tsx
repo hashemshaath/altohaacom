@@ -57,7 +57,8 @@ export default function StatsBar() {
     staleTime: 1000 * 60 * 10,
   });
 
-  if (!stats || (stats.members === 0 && stats.competitions === 0)) return null;
+  const isLoading = !stats;
+  if (!isLoading && stats.members === 0 && stats.competitions === 0) return null;
 
   const items = [
     { value: stats.members, label: isAr ? "عضو" : "Members", icon: Users },
@@ -68,9 +69,19 @@ export default function StatsBar() {
 
   return (
     <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
-      <div className="container px-3 sm:px-6">
+      <div className="container px-5 sm:px-6">
         <div className="grid grid-cols-4 gap-2 sm:gap-4">
-          {items.map((item, idx) => (
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="rounded-xl border border-border/30 bg-card/50 p-2.5 sm:p-4 animate-pulse">
+                <div className="flex flex-col items-center gap-1 sm:gap-2">
+                  <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-lg bg-muted" />
+                  <div className="h-5 w-12 bg-muted rounded" />
+                  <div className="h-2 w-10 bg-muted rounded" />
+                </div>
+              </div>
+            ))
+          ) : items.map((item, idx) => (
             <StatItem
               key={item.label}
               value={item.value}
