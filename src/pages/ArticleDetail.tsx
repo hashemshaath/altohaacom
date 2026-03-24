@@ -437,9 +437,12 @@ export default function ArticleDetail() {
               >
                 <Heart className={cn("h-3.5 w-3.5", liked && "fill-primary")} />
                 <span className="tabular-nums">{liked ? likeCount + 1 : likeCount}</span>
-              </Button>
+               </Button>
 
               <Separator orientation="vertical" className="h-5 mx-1 hidden sm:block" />
+
+              {/* Text to Speech */}
+              <ArticleTextToSpeech text={content} isAr={isAr} />
 
               {/* Share */}
               {shareLinks && (
@@ -468,6 +471,9 @@ export default function ArticleDetail() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
+
+              {/* Estimated time left */}
+              <ArticleEstimatedTimeLeft totalReadingTime={readingTime} isAr={isAr} />
 
               {/* Font size control — pushed to end */}
               <div className="flex items-center gap-0.5 ms-auto border border-border/30 rounded-xl overflow-hidden shrink-0">
