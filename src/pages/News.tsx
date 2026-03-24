@@ -33,6 +33,7 @@ import { NewsArchiveWidget } from "@/components/news/NewsArchiveWidget";
 import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
 import { NewsBreakingTicker } from "@/components/news/NewsBreakingTicker";
 import { NewsReadingStats } from "@/components/news/NewsReadingStats";
+import { NewsWeeklyDigest } from "@/components/news/NewsWeeklyDigest";
 
 interface Category {
   id: string;
@@ -621,6 +622,7 @@ export default function News() {
                     {/* Sidebar */}
                     <aside className="hidden lg:block space-y-6">
                       <NewsReadingStats isAr={isAr} />
+                      <NewsWeeklyDigest articles={articles} isAr={isAr} />
                       <NewsTrendingSidebar articles={articles} isAr={isAr} />
                       <NewsArchiveWidget articles={articles} isAr={isAr} onMonthClick={handleArchiveMonthClick} />
                       <NewsletterCTA isAr={isAr} />

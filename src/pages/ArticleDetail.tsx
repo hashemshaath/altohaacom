@@ -36,6 +36,8 @@ import { ArticleEstimatedTimeLeft } from "@/components/articles/ArticleEstimated
 import { ArticleAnnotations } from "@/components/articles/ArticleAnnotations";
 import { ArticleCopyProtect } from "@/components/articles/ArticleCopyProtect";
 import { trackArticleRead } from "@/components/news/NewsReadingStats";
+import { ArticleAISummary } from "@/components/articles/ArticleAISummary";
+import { NewsRelatedTopics } from "@/components/articles/ArticleRelatedTopics";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
@@ -557,6 +559,11 @@ export default function ArticleDetail() {
           <div className="grid gap-12 lg:grid-cols-[1fr_240px]">
             {/* ─── Main Article ─── */}
             <div className="min-w-0">
+              {/* AI Summary */}
+              <div className="mb-8">
+                <ArticleAISummary content={content} title={title} isAr={isAr} />
+              </div>
+
               <article
                 className={cn(
                   "prose max-w-none dark:prose-invert",
@@ -649,6 +656,15 @@ export default function ArticleDetail() {
                     ))}
                   </div>
                 </div>
+              )}
+
+              {/* ─── Related Topics ─── */}
+              {tags.length > 0 && (
+                <NewsRelatedTopics
+                  currentArticleId={article.id}
+                  articleTags={tags}
+                  isAr={isAr}
+                />
               )}
 
               {/* ─── Reactions Card ─── */}
