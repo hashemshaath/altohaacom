@@ -291,8 +291,10 @@ export default function Auth() {
   };
 
   // ── Password Reset ──
+  const [resetSuccess, setResetSuccess] = useState(false);
   const handleResetPassword = async () => {
     setErrors({});
+    setFormError("");
     const errs: Record<string, string> = {};
     if (resetPassword.length < 8) errs.resetPassword = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
     if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
@@ -304,13 +306,10 @@ export default function Auth() {
     setLoading(false);
 
     if (error) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+      setFormError(error.message);
     } else {
-      toast({
-        title: isAr ? "تم تحديث كلمة المرور" : "Password Updated",
-        description: isAr ? "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة" : "You can now sign in with your new password",
-      });
-      navigate("/login", { replace: true });
+      setResetSuccess(true);
+      setTimeout(() => navigate("/login", { replace: true }), 2000);
     }
   };
 
