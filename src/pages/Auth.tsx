@@ -221,11 +221,7 @@ export default function Auth() {
 
     if (!profile) {
       setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number",
-      });
+      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
       setSignInPhoneStep("phone");
       return;
     }
