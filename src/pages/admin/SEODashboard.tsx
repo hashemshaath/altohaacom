@@ -26,6 +26,10 @@ import { SEOMetaConfigurator } from "@/components/admin/seo/SEOMetaConfigurator"
 import { SEOContentAnalysis } from "@/components/admin/seo/SEOContentAnalysis";
 import { SEORecommendations } from "@/components/admin/seo/SEORecommendations";
 import { SEOStructuredData } from "@/components/admin/seo/SEOStructuredData";
+import { SEOCompetitorTracker } from "@/components/admin/seo/SEOCompetitorTracker";
+import { SEOBacklinkMonitor } from "@/components/admin/seo/SEOBacklinkMonitor";
+import { SEOKeywordGapAnalyzer } from "@/components/admin/seo/SEOKeywordGapAnalyzer";
+import { SEOTechnicalChecklist } from "@/components/admin/seo/SEOTechnicalChecklist";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
@@ -541,10 +545,14 @@ export default function SEODashboard() {
           <TabsTrigger value="vitals" className="gap-1.5"><Gauge className="h-3.5 w-3.5" />{isAr ? "Web Vitals" : "Web Vitals"}</TabsTrigger>
           <TabsTrigger value="crawlers" className="gap-1.5"><Bot className="h-3.5 w-3.5" />{isAr ? "الزواحف" : "Crawlers"}</TabsTrigger>
           <TabsTrigger value="keywords" className="gap-1.5"><Target className="h-3.5 w-3.5" />{isAr ? "الكلمات المفتاحية" : "Keywords"}</TabsTrigger>
+          <TabsTrigger value="keyword-gaps" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" />{isAr ? "فجوات الكلمات" : "Keyword Gaps"}</TabsTrigger>
+          <TabsTrigger value="competitors" className="gap-1.5"><Users className="h-3.5 w-3.5" />{isAr ? "المنافسون" : "Competitors"}</TabsTrigger>
+          <TabsTrigger value="backlinks" className="gap-1.5"><Link2 className="h-3.5 w-3.5" />{isAr ? "الروابط الخلفية" : "Backlinks"}</TabsTrigger>
           <TabsTrigger value="indexing" className="gap-1.5"><FileSearch className="h-3.5 w-3.5" />{isAr ? "الفهرسة" : "Indexing"}</TabsTrigger>
           <TabsTrigger value="content" className="gap-1.5"><FileText className="h-3.5 w-3.5" />{isAr ? "جودة المحتوى" : "Content Quality"}</TabsTrigger>
           <TabsTrigger value="meta" className="gap-1.5"><Settings2 className="h-3.5 w-3.5" />{isAr ? "إعدادات Meta" : "Meta Config"}</TabsTrigger>
           <TabsTrigger value="schema" className="gap-1.5"><Code2 className="h-3.5 w-3.5" />{isAr ? "البيانات المنظمة" : "Schema"}</TabsTrigger>
+          <TabsTrigger value="technical" className="gap-1.5"><Shield className="h-3.5 w-3.5" />{isAr ? "تدقيق تقني" : "Technical"}</TabsTrigger>
           <TabsTrigger value="recommendations" className="gap-1.5"><Lightbulb className="h-3.5 w-3.5" />{isAr ? "توصيات AI" : "AI Insights"}</TabsTrigger>
           <TabsTrigger value="pages" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الصفحات" : "Pages"}</TabsTrigger>
           <TabsTrigger value="devices" className="gap-1.5"><Smartphone className="h-3.5 w-3.5" />{isAr ? "الأجهزة" : "Devices"}</TabsTrigger>
@@ -1381,6 +1389,26 @@ export default function SEODashboard() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Keyword Gap Analyzer */}
+        <TabsContent value="keyword-gaps">
+          <SEOKeywordGapAnalyzer isAr={isAr} />
+        </TabsContent>
+
+        {/* Competitor Tracker */}
+        <TabsContent value="competitors">
+          <SEOCompetitorTracker isAr={isAr} />
+        </TabsContent>
+
+        {/* Backlink Monitor */}
+        <TabsContent value="backlinks">
+          <SEOBacklinkMonitor isAr={isAr} />
+        </TabsContent>
+
+        {/* Technical Checklist */}
+        <TabsContent value="technical">
+          <SEOTechnicalChecklist isAr={isAr} />
         </TabsContent>
       </Tabs>
     </div>
