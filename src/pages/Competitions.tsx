@@ -307,15 +307,30 @@ export default function Competitions() {
             </div>
           </div>
 
+          {/* Results Count */}
+          {!isLoading && filtered && filtered.length > 0 && (
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">
+                {isAr ? `${filtered.length} مسابقة` : `${filtered.length} competition${filtered.length !== 1 ? "s" : ""}`}
+                {hasActiveFilters && (
+                  <button onClick={clearAll} className="ms-2 text-primary hover:underline">
+                    {isAr ? "مسح الفلاتر" : "Clear filters"}
+                  </button>
+                )}
+              </p>
+            </div>
+          )}
+
           {/* Grid */}
           {isLoading ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
               {Array.from({ length: 6 }, (_, i) => (
-                <Card key={i} className="overflow-hidden rounded-2xl border-border/20">
+                <Card key={i} className="overflow-hidden rounded-2xl border-border/20 animate-pulse">
                   <Skeleton className="aspect-[16/10] w-full" />
-                  <CardContent className="space-y-2 p-3">
+                  <CardContent className="space-y-2.5 p-3.5">
                     <Skeleton className="h-4 w-3/4 rounded-lg" />
                     <Skeleton className="h-3 w-1/2 rounded-lg" />
+                    <Skeleton className="h-3 w-1/3 rounded-lg" />
                   </CardContent>
                 </Card>
               ))}
@@ -376,7 +391,10 @@ export default function Competitions() {
 
           {/* Stats Footer */}
           {competitions && competitions.length > 0 && (
-            <section className="border-t border-border/10 pt-6">
+            <section className="border-t border-border/10 pt-8 mt-4">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4 text-center">
+                {isAr ? "نظرة عامة" : "Overview"}
+              </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
                   { label: isAr ? "إجمالي المسابقات" : "Total Competitions", value: counts.all, icon: Trophy, color: "text-primary", bg: "bg-primary/10" },
@@ -385,9 +403,9 @@ export default function Competitions() {
                   { label: isAr ? "الدول" : "Countries", value: countryCodes.length, icon: Globe, color: "text-chart-4", bg: "bg-chart-4/10" },
                 ].map((stat) => (
                   <Card key={stat.label} className="border-border/10 bg-card/50 rounded-2xl group hover:shadow-md hover:border-primary/10 transition-all duration-200">
-                    <CardContent className="p-3.5 flex flex-col items-center text-center gap-1.5">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} ring-1 ring-border/10 transition-transform group-hover:scale-110`}>
-                        <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
+                    <CardContent className="p-4 flex flex-col items-center text-center gap-2">
+                      <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${stat.bg} ring-1 ring-border/10 transition-transform group-hover:scale-110`}>
+                        <stat.icon className={`h-5 w-5 ${stat.color}`} />
                       </div>
                       <AnimatedCounter value={stat.value} className="text-xl font-extrabold text-foreground sm:text-2xl tabular-nums" />
                       <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</p>
