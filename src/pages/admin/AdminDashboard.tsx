@@ -213,15 +213,28 @@ export default function AdminDashboard() {
     );
   };
 
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return isAr ? "صباح الخير" : "Good morning";
+    if (hour < 17) return isAr ? "مساء الخير" : "Good afternoon";
+    return isAr ? "مساء الخير" : "Good evening";
+  }, [isAr]);
+
   return (
     <div className="space-y-5 pb-20 md:pb-0">
-      {/* Page Header — compact */}
+      {/* Page Header — with greeting */}
       <div className="flex items-center justify-between">
-        <AdminPageHeader
-          icon={LayoutDashboard}
-          title={isAr ? "لوحة التحكم" : "Dashboard"}
-          description={isAr ? "نظرة شاملة على النظام" : "System overview at a glance"}
-        />
+        <div>
+          <h1 className="text-xl font-bold tracking-tight flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+              <LayoutDashboard className="h-4.5 w-4.5 text-primary" />
+            </div>
+            {greeting} 👋
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {isAr ? "نظرة شاملة على المنصة" : "Platform overview at a glance"} · {format(new Date(), "EEEE, MMM d")}
+          </p>
+        </div>
         <div className="hidden sm:flex items-center gap-2">
           <ActivityPulse status="live" label={isAr ? "مباشر" : "Live"} size="md" />
           <AdminRealtimeNotificationBell />
@@ -356,46 +369,68 @@ export default function AdminDashboard() {
       {/* Command Bar */}
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
 
-      {/* ── Pending Actions + Account Types ── */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <AdminPendingActionsWidget />
+      {/* ── Pending Actions + Account Types + System Health ── */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <AdminPendingActionsWidget />
+        </div>
 
-        {/* Account Type Breakdown */}
-        <Card className="rounded-xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Users className="h-4 w-4 text-chart-3" />
-              {isAr ? "أنواع الحسابات" : "Account Types"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary" },
-                { label: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4" },
-              ].map((type) => {
-                const pct = stats?.totalUsers ? Math.round((type.value / stats.totalUsers) * 100) : 0;
-                return (
-                  <div key={type.label} className="flex items-center gap-3">
-                    <type.icon className={cn("h-4 w-4 shrink-0", type.color)} />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-medium">{type.label}</span>
-                        <span className={cn("text-sm font-bold tabular-nums", type.color)}>
-                          <AnimatedCounter value={type.value} />
-                          <span className="text-[10px] text-muted-foreground ms-1">{pct}%</span>
-                        </span>
-                      </div>
-                      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                        <div className={cn("h-full rounded-full transition-all duration-700", type.bg)} style={{ width: `${pct}%` }} />
+        {/* Account Type Breakdown + System Health */}
+        <div className="space-y-4">
+          <Card className="rounded-xl">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Users className="h-4 w-4 text-chart-3" />
+                {isAr ? "أنواع الحسابات" : "Account Types"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="space-y-3">
+                {[
+                  { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary" },
+                  { label: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4" },
+                ].map((type) => {
+                  const pct = stats?.totalUsers ? Math.round((type.value / stats.totalUsers) * 100) : 0;
+                  return (
+                    <div key={type.label} className="flex items-center gap-3">
+                      <type.icon className={cn("h-4 w-4 shrink-0", type.color)} />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium">{type.label}</span>
+                          <span className={cn("text-sm font-bold tabular-nums", type.color)}>
+                            <AnimatedCounter value={type.value} />
+                            <span className="text-[10px] text-muted-foreground ms-1">{pct}%</span>
+                          </span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                          <div className={cn("h-full rounded-full transition-all duration-700", type.bg)} style={{ width: `${pct}%` }} />
+                        </div>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* System Health Pulse */}
+          <Card className="rounded-xl border-chart-5/20 bg-chart-5/5">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/15">
+                    <Shield className="h-5 w-5 text-chart-5" />
                   </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                  <div className="absolute -top-0.5 -end-0.5 h-3 w-3 rounded-full bg-chart-5 border-2 border-background animate-pulse" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-chart-5">{isAr ? "النظام يعمل بشكل طبيعي" : "System Healthy"}</p>
+                  <p className="text-[11px] text-muted-foreground">{isAr ? "جميع الخدمات تعمل" : "All services operational"}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* ── Lazy Widgets ── */}
