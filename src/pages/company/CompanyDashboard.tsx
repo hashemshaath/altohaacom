@@ -94,8 +94,9 @@ export default function CompanyPortalDashboard() {
     <div className="space-y-6">
       {/* Hero Banner — Refined */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-6 sm:p-8 text-primary-foreground">
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-foreground/10 blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-primary-foreground/5 blur-2xl" />
+        <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-primary-foreground/8 blur-3xl" />
+        <div className="absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-primary-foreground/5 blur-2xl" />
+        <div className="absolute right-1/4 top-1/3 h-24 w-24 rounded-full bg-primary-foreground/5 blur-2xl" />
         <div className="relative z-10">
           {isLoading ? (
             <>
@@ -151,12 +152,12 @@ export default function CompanyPortalDashboard() {
       {/* Quick Stats */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {[
-          { icon: ShoppingCart, label: isAr ? "الطلبيات" : "Orders", value: stats?.totalOrders || 0, sub: stats?.pendingOrders || 0, subLabel: isAr ? "معلقة" : "pending", color: "text-primary", bg: "bg-primary/10" },
+          { icon: ShoppingCart, label: isAr ? "الطلبيات" : "Orders", value: stats?.totalOrders || 0, sub: stats?.pendingOrders || 0, subLabel: isAr ? "معلقة" : "pending", color: "text-primary", bg: "bg-primary/10", trend: stats?.completedOrders || 0, trendLabel: isAr ? "مكتملة" : "completed" },
           { icon: FileText, label: isAr ? "الدعوات" : "Invitations", value: stats?.totalInvitations || 0, sub: stats?.pendingInvitations || 0, subLabel: isAr ? "معلقة" : "pending", color: "text-chart-4", bg: "bg-chart-4/10" },
           { icon: Users, label: isAr ? "الفريق" : "Team", value: stats?.totalContacts || 0, color: "text-accent", bg: "bg-accent/10" },
           { icon: BarChart3, label: isAr ? "المعاملات" : "Transactions", value: stats?.totalTransactions || 0, color: "text-chart-5", bg: "bg-chart-5/10" },
-        ].map((stat) => (
-          <Card key={stat.label} className="rounded-xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+        ].map((stat, idx) => (
+          <Card key={stat.label} className="rounded-xl transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group animate-fade-in" style={{ animationDelay: `${idx * 0.05}s` }}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div>
@@ -169,13 +170,16 @@ export default function CompanyPortalDashboard() {
                   )}
                   <p className="text-[11px] text-muted-foreground font-medium mt-0.5">{stat.label}</p>
                   {stat.sub !== undefined && stat.sub > 0 && (
-                    <p className="text-[10px] text-muted-foreground/70 mt-0.5">
-                      {stat.sub} {stat.subLabel}
-                    </p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <div className="h-1 w-1 rounded-full bg-chart-4 animate-pulse" />
+                      <p className="text-[10px] text-chart-4 font-medium">
+                        {stat.sub} {stat.subLabel}
+                      </p>
+                    </div>
                   )}
                 </div>
-                <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl", stat.bg)}>
-                  <stat.icon className={cn("h-4 w-4", stat.color)} />
+                <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", stat.bg)}>
+                  <stat.icon className={cn("h-4.5 w-4.5", stat.color)} />
                 </div>
               </div>
             </CardContent>

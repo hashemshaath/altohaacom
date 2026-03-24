@@ -240,18 +240,19 @@ export default function ArticleDetail() {
         {/* ─── Cinematic Full-Bleed Hero ─── */}
         <section className="relative w-full overflow-hidden bg-card">
           {hasHeroImage ? (
-            <div className="relative w-full aspect-[21/9] max-h-[520px]">
+            <div className="relative w-full aspect-[2/1] sm:aspect-[21/9] max-h-[560px]">
               <img
                 src={article.featured_image_url!}
                 alt={title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover will-change-transform"
                 onError={() => setImageFailed(true)}
                 loading="eager"
                 fetchPriority="high"
               />
-              {/* Cinematic gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+              {/* Multi-layer cinematic gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/5" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+              <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
 
               {/* Content over hero */}
               <div className="absolute inset-x-0 bottom-0 z-10">
@@ -331,9 +332,9 @@ export default function ArticleDetail() {
         </section>
 
         {/* ─── Toolbar Strip ─── */}
-        <div className="border-b border-border/30 bg-card/80 backdrop-blur-sm sticky top-0 z-30">
+        <div className="border-b border-border/30 bg-card/80 backdrop-blur-xl sticky top-0 z-30 shadow-sm shadow-black/[0.03]">
           <div className="container max-w-4xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center gap-2 py-2.5 flex-wrap">
+            <div className="flex items-center gap-2 py-2 flex-wrap">
               <Button
                 variant="ghost" size="sm"
                 className="rounded-xl h-8 w-8 p-0 hover:bg-muted/80"
@@ -450,8 +451,8 @@ export default function ArticleDetail() {
         )}
 
         {/* ─── Content + Sidebar ─── */}
-        <div className="container max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-10">
-          <div className="grid gap-8 lg:grid-cols-[1fr_220px]">
+        <div className="container max-w-5xl mx-auto px-4 sm:px-8 pt-10 pb-12">
+          <div className="grid gap-10 lg:grid-cols-[1fr_230px]">
             {/* Main Article Content */}
             <div>
               <article
@@ -532,30 +533,45 @@ export default function ArticleDetail() {
                 </div>
               )}
 
-              {/* ─── Reactions ─── */}
-              <div className="mt-8 pt-6 border-t border-border/30">
-                <p className="text-xs text-muted-foreground mb-3">{isAr ? "هل أعجبك هذا المقال؟" : "Did you enjoy this article?"}</p>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <ReactionButton
-                    icon={Heart}
-                    label={isAr ? "أعجبني" : "Like"}
-                    count={liked ? likeCount + 1 : likeCount}
-                    active={liked}
-                    onClick={() => setLiked(!liked)}
-                  />
-                  <ReactionButton
-                    icon={ThumbsUp}
-                    label={isAr ? "مفيد" : "Helpful"}
-                    count={Math.floor(likeCount * 0.6)}
-                    onClick={() => toast({ title: isAr ? "شكراً لتقييمك!" : "Thanks for your feedback!" })}
-                  />
+              {/* ─── Reactions & Engagement ─── */}
+              <div className="mt-10 pt-8 border-t border-border/30">
+                <div className="rounded-2xl bg-muted/30 border border-border/20 p-5 sm:p-6">
+                  <p className="text-sm font-semibold mb-1">{isAr ? "هل أعجبك هذا المقال؟" : "Did you enjoy this article?"}</p>
+                  <p className="text-xs text-muted-foreground mb-4">{isAr ? "أخبرنا برأيك" : "Let us know what you think"}</p>
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <ReactionButton
+                      icon={Heart}
+                      label={isAr ? "أعجبني" : "Like"}
+                      count={liked ? likeCount + 1 : likeCount}
+                      active={liked}
+                      onClick={() => setLiked(!liked)}
+                    />
+                    <ReactionButton
+                      icon={ThumbsUp}
+                      label={isAr ? "مفيد" : "Helpful"}
+                      count={Math.floor(likeCount * 0.6)}
+                      onClick={() => toast({ title: isAr ? "شكراً لتقييمك!" : "Thanks for your feedback!" })}
+                    />
+                  </div>
                 </div>
+              </div>
+
+              {/* ─── Newsletter CTA ─── */}
+              <div className="mt-8 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/15 p-5 sm:p-6 text-center">
+                <Sparkles className="h-6 w-6 text-primary mx-auto mb-3" />
+                <h3 className="font-serif font-bold text-base mb-1.5">{isAr ? "لا تفوّت المقالات الجديدة" : "Don't miss new articles"}</h3>
+                <p className="text-xs text-muted-foreground mb-4 max-w-sm mx-auto">
+                  {isAr ? "تابعنا للحصول على أحدث المقالات والأخبار في عالم الطهي" : "Stay updated with the latest articles and culinary news"}
+                </p>
+                <Button asChild size="sm" className="rounded-xl shadow-md shadow-primary/15">
+                  <Link to="/news">{isAr ? "تصفح المزيد" : "Browse More"}</Link>
+                </Button>
               </div>
             </div>
 
             {/* ─── Sidebar ─── */}
             <aside className="hidden lg:block">
-              <div className="sticky top-16 space-y-5">
+              <div className="sticky top-14 space-y-4 pt-1">
                 <ArticleTableOfContents content={content} isAr={isAr} />
                 
                 {/* Quick Stats Card */}
