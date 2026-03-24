@@ -658,6 +658,15 @@ export default function ArticleDetail() {
                 </div>
               )}
 
+              {/* ─── Related Topics ─── */}
+              {tags.length > 0 && (
+                <NewsRelatedTopics
+                  currentArticleId={article.id}
+                  articleTags={tags}
+                  isAr={isAr}
+                />
+              )}
+
               {/* ─── Reactions Card ─── */}
               <div className="mt-10 pt-8 border-t border-border/30">
                 <div className="rounded-2xl bg-gradient-to-br from-muted/40 to-muted/20 border border-border/20 p-6 sm:p-8">
