@@ -33,6 +33,9 @@ import { ArticleTextToSpeech } from "@/components/articles/ArticleTextToSpeech";
 import { ArticleImageLightbox, ZoomIn } from "@/components/articles/ArticleImageLightbox";
 import { ArticleHighlightShare } from "@/components/articles/ArticleHighlightShare";
 import { ArticleEstimatedTimeLeft } from "@/components/articles/ArticleEstimatedTimeLeft";
+import { ArticleAnnotations } from "@/components/articles/ArticleAnnotations";
+import { ArticleCopyProtect } from "@/components/articles/ArticleCopyProtect";
+import { trackArticleRead } from "@/components/news/NewsReadingStats";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
@@ -175,6 +178,22 @@ export default function ArticleDetail() {
   const readingTime = useMemo(() => calculateReadingTime(content), [content]);
   const wordCount = useMemo(() => countWords(content), [content]);
 
+  // Track reading stats after 60% scroll
+  useEffect(() => {
+    if (!article?.id) return;
+    let tracked = false;
+    const handleScroll = () => {
+      if (tracked) return;
+      const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPct > 0.6) {
+        tracked = true;
+        trackArticleRead(article.type, readingTime, wordCount);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [article?.id, article?.type, readingTime, wordCount]);
+
   const formatDate = (date: string) => format(new Date(date), "d MMMM yyyy", { locale: isAr ? ar : enUS });
   const formatTime = (date: string) => format(new Date(date), "h:mm a", { locale: isAr ? ar : enUS });
   const relativeDate = (date: string) => formatDistanceToNow(new Date(date), { addSuffix: true, locale: isAr ? ar : enUS });
@@ -253,6 +272,7 @@ export default function ArticleDetail() {
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <ArticleReadingProgress />
       <ArticleHighlightShare articleUrl={currentUrl} isAr={isAr} />
+      <ArticleCopyProtect articleTitle={title} articleUrl={currentUrl} isAr={isAr} />
       {lightboxIdx !== null && article?.gallery_urls && (
         <ArticleImageLightbox
           images={article.gallery_urls}
@@ -474,6 +494,11 @@ export default function ArticleDetail() {
 
               {/* Estimated time left */}
               <ArticleEstimatedTimeLeft totalReadingTime={readingTime} isAr={isAr} />
+
+              <Separator orientation="vertical" className="h-5 mx-0.5 hidden sm:block" />
+
+              {/* Annotations */}
+              <ArticleAnnotations articleId={article.id} isAr={isAr} />
 
               {/* Font size control — pushed to end */}
               <div className="flex items-center gap-0.5 ms-auto border border-border/30 rounded-xl overflow-hidden shrink-0">

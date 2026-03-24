@@ -31,6 +31,8 @@ import { NewsMobileFilters } from "@/components/news/NewsMobileFilters";
 import { NewsActiveFilters } from "@/components/news/NewsActiveFilters";
 import { NewsArchiveWidget } from "@/components/news/NewsArchiveWidget";
 import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
+import { NewsBreakingTicker } from "@/components/news/NewsBreakingTicker";
+import { NewsReadingStats } from "@/components/news/NewsReadingStats";
 
 interface Category {
   id: string;
@@ -350,6 +352,9 @@ export default function News() {
           </div>
         </section>
 
+        {/* Breaking News Ticker */}
+        <NewsBreakingTicker isAr={isAr} />
+
         <div className="container py-5 md:py-6">
           {/* ─── Sticky Filters ─── */}
           <div className="sticky top-12 z-40 -mx-4 mb-6 border-y border-border/30 bg-background/70 px-4 py-2.5 backdrop-blur-xl md:rounded-2xl md:border md:px-4 md:shadow-sm">
@@ -615,6 +620,7 @@ export default function News() {
 
                     {/* Sidebar */}
                     <aside className="hidden lg:block space-y-6">
+                      <NewsReadingStats isAr={isAr} />
                       <NewsTrendingSidebar articles={articles} isAr={isAr} />
                       <NewsArchiveWidget articles={articles} isAr={isAr} onMonthClick={handleArchiveMonthClick} />
                       <NewsletterCTA isAr={isAr} />
