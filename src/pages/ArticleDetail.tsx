@@ -38,6 +38,10 @@ import { ArticleCopyProtect } from "@/components/articles/ArticleCopyProtect";
 import { trackArticleRead } from "@/components/news/NewsReadingStats";
 import { ArticleAISummary } from "@/components/articles/ArticleAISummary";
 import { NewsRelatedTopics } from "@/components/articles/ArticleRelatedTopics";
+import { ArticleEngagementHeatmap } from "@/components/articles/ArticleEngagementHeatmap";
+import { ArticleLiveReaders } from "@/components/articles/ArticleLiveReaders";
+import { ArticleMoodReactions } from "@/components/articles/ArticleMoodReactions";
+import { ArticleSmartRecommendations } from "@/components/articles/ArticleSmartRecommendations";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
