@@ -559,6 +559,11 @@ export default function ArticleDetail() {
           <div className="grid gap-12 lg:grid-cols-[1fr_240px]">
             {/* ─── Main Article ─── */}
             <div className="min-w-0">
+              {/* AI Summary */}
+              <div className="mb-8">
+                <ArticleAISummary content={content} title={title} isAr={isAr} />
+              </div>
+
               <article
                 className={cn(
                   "prose max-w-none dark:prose-invert",
