@@ -69,6 +69,7 @@ export default function ArticlesAdmin() {
     featured_image_url: "",
     is_featured: false,
     published_at: "",
+    category_id: "",
   });
 
   const { data: articles, isLoading } = useQuery({
@@ -76,7 +77,7 @@ export default function ArticlesAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("articles")
-        .select("id, title, title_ar, slug, excerpt, excerpt_ar, content, content_ar, type, status, featured_image_url, is_featured, published_at, view_count, created_at, updated_at")
+        .select("id, title, title_ar, slug, excerpt, excerpt_ar, content, content_ar, type, status, featured_image_url, is_featured, published_at, view_count, created_at, updated_at, category_id")
         .order("created_at", { ascending: false });
 
       if (search) {
@@ -168,6 +169,7 @@ export default function ArticlesAdmin() {
       featured_image_url: "",
       is_featured: false,
       published_at: "",
+      category_id: "",
     });
   };
 
@@ -186,6 +188,7 @@ export default function ArticlesAdmin() {
       featured_image_url: article.featured_image_url || "",
       is_featured: article.is_featured || false,
       published_at: article.published_at || "",
+      category_id: article.category_id || "",
     });
     setViewMode("edit");
   };
