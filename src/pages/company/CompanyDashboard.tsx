@@ -242,50 +242,6 @@ export default function CompanyPortalDashboard() {
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  subLabel,
-  subValue,
-  accent,
-  isLoading,
-}: {
-  icon: any;
-  label: string;
-  value: number;
-  subLabel?: string;
-  subValue?: number;
-  accent: string;
-  isLoading: boolean;
-}) {
-  return (
-    <Card className={`border-s-[3px] ${accent} animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5`}>
-      <CardContent className="pt-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">{label}</p>
-            {isLoading ? (
-              <Skeleton className="mt-2 h-8 w-16" />
-            ) : (
-              <>
-                <p className="mt-1 text-3xl font-bold tabular-nums">{value}</p>
-                {subLabel && subValue !== undefined && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {subValue} {subLabel}
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-          <div className="rounded-xl bg-muted p-2.5">
-            <Icon className="h-5 w-5 text-muted-foreground" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 function SponsorshipWidget({ companyId, language }: { companyId: string | null; language: string }) {
   const isAr = language === "ar";
