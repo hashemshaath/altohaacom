@@ -58,13 +58,12 @@ export default function StatsBar() {
   });
 
   const isLoading = !stats;
-  if (!isLoading && stats.members === 0 && stats.competitions === 0) return null;
 
   const items = [
-    { value: stats.members, label: isAr ? "عضو" : "Members", icon: Users },
-    { value: stats.competitions, label: isAr ? "مسابقة" : "Competitions", icon: Trophy },
-    { value: stats.entities, label: isAr ? "جهة" : "Organizations", icon: Building2 },
-    { value: stats.exhibitions, label: isAr ? "معرض" : "Exhibitions", icon: Globe },
+    { value: stats?.members ?? 0, label: isAr ? "عضو" : "Members", icon: Users },
+    { value: stats?.competitions ?? 0, label: isAr ? "مسابقة" : "Competitions", icon: Trophy },
+    { value: stats?.entities ?? 0, label: isAr ? "جهة" : "Organizations", icon: Building2 },
+    { value: stats?.exhibitions ?? 0, label: isAr ? "معرض" : "Exhibitions", icon: Globe },
   ];
 
   return (
