@@ -169,6 +169,7 @@ export default function ArticlesAdmin() {
       featured_image_url: "",
       is_featured: false,
       published_at: "",
+      category_id: "",
     });
   };
 
