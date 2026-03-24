@@ -189,8 +189,8 @@ export function HeroSection() {
           <div
             key={s.id}
             className={cn(
-              "absolute inset-0 transition-all duration-[1200ms] ease-in-out",
-              idx === safeCurrent ? "opacity-100 scale-100" : "opacity-0 scale-[1.04] pointer-events-none"
+              "absolute inset-0 transition-all duration-[1200ms] ease-in-out will-change-[opacity,transform]",
+              idx === safeCurrent ? "opacity-100 scale-100" : "opacity-0 scale-[1.03] pointer-events-none"
             )}
           >
             <img
@@ -199,12 +199,13 @@ export function HeroSection() {
               className="h-full w-full object-cover"
               loading={idx === 0 ? "eager" : "lazy"}
               decoding={idx === 0 ? "sync" : "async"}
+              fetchPriority={idx === 0 ? "high" : undefined}
             />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5"
+              className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/5"
               style={{ opacity }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent rtl:bg-gradient-to-l" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent rtl:bg-gradient-to-l" />
           </div>
         ))}
 
@@ -212,20 +213,20 @@ export function HeroSection() {
         <div className="container relative flex h-full items-end pb-14 sm:pb-16 lg:pb-20 px-5 sm:px-6">
           <div
             key={slide.id}
-            className="max-w-xl space-y-2 sm:space-y-3"
+            className="max-w-xl space-y-2.5 sm:space-y-3"
             style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/20 backdrop-blur-md border border-primary/30 px-2.5 py-1 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[hsl(var(--hero-foreground))] shadow-sm">
-              <Sparkles className="h-3 w-3" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/25 backdrop-blur-lg border border-primary/30 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-[hsl(var(--hero-foreground))] shadow-md">
+              <Sparkles className="h-3 w-3 animate-pulse" />
               {isAr ? "مميّز" : "Featured"}
             </span>
 
-            <h1 className="text-xl font-bold tracking-tight sm:text-3xl lg:text-5xl leading-[1.15] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
+            <h1 className="text-2xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl leading-[1.1] text-[hsl(var(--hero-foreground))] drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
 
             {(slide.subtitle || slide.subtitle_ar) && (
-              <p className="text-[13px] sm:text-sm lg:text-base max-w-md leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md line-clamp-2">
+              <p className="text-[13px] sm:text-base lg:text-lg max-w-md leading-relaxed text-[hsl(var(--hero-muted-foreground))] drop-shadow-md line-clamp-2 font-light">
                 {isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle}
               </p>
             )}
@@ -233,14 +234,14 @@ export function HeroSection() {
             {slide.link_url && (
               <Button
                 size="sm"
-                className="group rounded-xl shadow-sm transition-all duration-300 h-9 px-4 text-[12px] sm:text-[13px] touch-manipulation active:scale-[0.98]"
+                className="group rounded-xl shadow-lg shadow-primary/25 transition-all duration-300 h-10 px-5 text-[13px] sm:text-sm touch-manipulation active:scale-[0.97] hover:shadow-xl hover:shadow-primary/30"
                 asChild
               >
                 <Link to={slide.link_url}>
                   {isAr
                     ? slide.link_label_ar || slide.link_label || "اكتشف المزيد"
                     : slide.link_label || "Learn More"}
-                  <ArrowRight className="ms-1.5 h-3.5 w-3.5 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-0.5" />
+                  <ArrowRight className="ms-1.5 h-3.5 w-3.5 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </Button>
             )}
