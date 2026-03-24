@@ -232,18 +232,9 @@ export default function Auth() {
 
   const handleSignInPhonePassword = async () => {
     setErrors({});
+    setFormError("");
 
-    if (isLockedOut) {
-      const remainingSec = Math.ceil(((lockoutUntil || 0) - Date.now()) / 1000);
-      toast({
-        variant: "destructive",
-        title: isAr ? "محاولات كثيرة" : "Too many attempts",
-        description: isAr
-          ? `يرجى الانتظار ${remainingSec} ثانية`
-          : `Please wait ${remainingSec} seconds`,
-      });
-      return;
-    }
+    if (isLockedOut) return;
 
     if (signInPassword.length < 6) {
       setErrors({ signInPassword: isAr ? "كلمة المرور قصيرة جداً" : "Password too short" });
@@ -260,22 +251,14 @@ export default function Auth() {
 
     if (!profile) {
       setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number",
-      });
+      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
       return;
     }
 
     const accountEmail = profile.email;
     if (!accountEmail) {
       setLoading(false);
-      toast({
-        variant: "destructive",
-        title: isAr ? "خطأ" : "Error",
-        description: isAr ? "لا يوجد بريد إلكتروني مرتبط بهذا الحساب" : "No email linked to this account",
-      });
+      setFormError(isAr ? "لا يوجد بريد إلكتروني مرتبط بهذا الحساب" : "No email linked to this account");
       return;
     }
 
@@ -289,11 +272,6 @@ export default function Auth() {
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
         setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
         setLoginAttempts(0);
-        toast({
-          variant: "destructive",
-          title: isAr ? "تم قفل الحساب مؤقتاً" : "Account temporarily locked",
-          description: isAr ? "محاولات كثيرة. يرجى الانتظار 5 دقائق" : "Too many failed attempts. Please wait 5 minutes",
-        });
         return;
       }
 
@@ -305,7 +283,7 @@ export default function Auth() {
       } else if (error.message.includes("Email not confirmed")) {
         msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
       }
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: msg });
+      setFormError(msg);
     } else {
       setLoginAttempts(0);
       setLockoutUntil(null);
