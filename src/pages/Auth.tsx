@@ -1138,6 +1138,7 @@ export default function Auth() {
                       onChange={(e) => {
                         setSignInEmail(e.target.value);
                         if (errors.signInEmail) setErrors((prev) => ({ ...prev, signInEmail: "" }));
+                        if (formError) setFormError("");
                       }}
                       placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
                       onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
