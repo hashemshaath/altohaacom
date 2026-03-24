@@ -59,6 +59,7 @@ const MembershipRedeem = lazy(() => import("@/pages/MembershipRedeem"));
 const Jobs = lazy(() => import("@/pages/Jobs"));
 const JobSearch = lazy(() => import("@/pages/JobSearch"));
 const JobDetail = lazy(() => import("@/pages/JobDetail"));
+const Unsubscribe = lazy(() => import("@/pages/Unsubscribe"));
 
 function LegacyLinksRedirect() {
   const { username } = useParams<{ username: string }>();
