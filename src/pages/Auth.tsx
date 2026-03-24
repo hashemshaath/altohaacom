@@ -463,6 +463,18 @@ export default function Auth() {
         }
       }
 
+      // Send welcome email (fire-and-forget)
+      try {
+        supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "welcome",
+            recipientEmail: accountEmail,
+            idempotencyKey: `welcome-${data.user.id}`,
+            templateData: { name: fullName },
+          },
+        }).catch(() => {});
+      } catch {}
+
       // Track signup conversion (fire-and-forget)
       try {
         const { sendGoogleConversion, pushToDataLayer } = await import("@/hooks/useGoogleTracking");
