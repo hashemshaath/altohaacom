@@ -23,7 +23,7 @@ import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
 import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
-  Phone, Mail, KeyRound, Gift, ChefHat, Heart,
+  Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
 const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
