@@ -1,11 +1,8 @@
 import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Clock, FileText, Hash, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
+import { Search, Clock, FileText, Hash, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -27,15 +24,74 @@ function calculateWordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
-function calculateSEOScore(title: string, excerpt: string, slug: string, content: string): { score: number; checks: { label: string; passed: boolean }[] } {
+function getKeywordDensity(content: string, title: string): { keyword: string; density: number; count: number }[] {
+  if (!content || !title) return [];
+  const words = title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  const contentLower = content.toLowerCase();
+  const totalWords = calculateWordCount(content);
+  if (totalWords === 0) return [];
+  
+  return words.slice(0, 5).map(word => {
+    const regex = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gi");
+    const matches = contentLower.match(regex);
+    const count = matches ? matches.length : 0;
+    return { keyword: word, density: Math.round((count / totalWords) * 1000) / 10, count };
+  }).filter(k => k.count > 0).sort((a, b) => b.count - a.count);
+}
+
+function calculateSEOScore(title: string, excerpt: string, slug: string, content: string): { score: number; checks: { label: string; labelAr: string; passed: boolean; tip?: string; tipAr?: string }[] } {
+  const wordCount = calculateWordCount(content);
   const checks = [
-    { label: "Title length (30-60 chars)", passed: title.length >= 30 && title.length <= 60 },
-    { label: "Meta description (50-160 chars)", passed: excerpt.length >= 50 && excerpt.length <= 160 },
-    { label: "URL slug is set", passed: slug.length > 3 },
-    { label: "Content length (300+ words)", passed: calculateWordCount(content) >= 300 },
-    { label: "Has headings in content", passed: /^#{1,3}\s/m.test(content) },
-    { label: "Has images in content", passed: /!\[.*\]\(.*\)/.test(content) },
-    { label: "No duplicate title in slug", passed: !slug.includes("undefined") && !slug.includes("null") },
+    { 
+      label: "Title length (30-60 chars)", labelAr: "طول العنوان (30-60 حرف)",
+      passed: title.length >= 30 && title.length <= 60,
+      tip: `Currently ${title.length} chars`, tipAr: `حالياً ${title.length} حرف`
+    },
+    { 
+      label: "Meta description (50-160 chars)", labelAr: "الوصف التعريفي (50-160 حرف)",
+      passed: excerpt.length >= 50 && excerpt.length <= 160,
+      tip: excerpt.length === 0 ? "Missing — add one!" : `Currently ${excerpt.length} chars`,
+      tipAr: excerpt.length === 0 ? "مفقود — أضف واحداً!" : `حالياً ${excerpt.length} حرف`
+    },
+    { 
+      label: "URL slug is clean", labelAr: "الرابط نظيف",
+      passed: slug.length > 3 && !slug.includes("undefined") && !slug.includes("null") && slug.length <= 75,
+      tip: slug.length > 75 ? "Too long — keep under 75 chars" : undefined,
+      tipAr: slug.length > 75 ? "طويل — اجعله أقل من 75 حرف" : undefined
+    },
+    { 
+      label: "Content 300+ words", labelAr: "المحتوى 300+ كلمة",
+      passed: wordCount >= 300,
+      tip: `${wordCount} words`, tipAr: `${wordCount} كلمة`
+    },
+    { 
+      label: "Has H2/H3 headings", labelAr: "يحتوي عناوين فرعية",
+      passed: /^#{2,3}\s/m.test(content),
+      tip: "Structure with headings for readability", tipAr: "نظّم بالعناوين للقراءة"
+    },
+    { 
+      label: "Has internal/external links", labelAr: "يحتوي روابط",
+      passed: /\[.*?\]\(.*?\)/.test(content),
+    },
+    { 
+      label: "Has images with alt text", labelAr: "يحتوي صور مع نص بديل",
+      passed: /!\[[^\]]+\]\(.*?\)/.test(content),
+      tip: "Add descriptive alt text to all images", tipAr: "أضف نص بديل وصفي لكل صورة"
+    },
+    { 
+      label: "Title keywords in slug", labelAr: "كلمات العنوان في الرابط",
+      passed: (() => {
+        if (!title || !slug) return false;
+        const titleWords = title.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        return titleWords.some(w => slug.includes(w));
+      })(),
+    },
+    { 
+      label: "Optimal content length (600+)", labelAr: "طول محتوى مثالي (600+)",
+      passed: wordCount >= 600,
+      tip: wordCount < 600 ? `Add ${600 - wordCount} more words for better ranking` : "Great length!",
+      tipAr: wordCount < 600 ? `أضف ${600 - wordCount} كلمة إضافية` : "طول ممتاز!"
+    },
   ];
   const passed = checks.filter(c => c.passed).length;
   return { score: Math.round((passed / checks.length) * 100), checks };
@@ -46,9 +102,12 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({ title, excerpt, s
   const readingTime = useMemo(() => calculateReadingTime(content), [content]);
   const wordCount = useMemo(() => calculateWordCount(content), [content]);
   const seo = useMemo(() => calculateSEOScore(title, excerpt, slug, content), [title, excerpt, slug, content]);
+  const keywords = useMemo(() => getKeywordDensity(content, title), [content, title]);
 
   const scoreColor = seo.score >= 80 ? "text-chart-2" : seo.score >= 50 ? "text-chart-4" : "text-destructive";
+  const scoreBg = seo.score >= 80 ? "bg-chart-2/10" : seo.score >= 50 ? "bg-chart-4/10" : "bg-destructive/10";
   const ScoreIcon = seo.score >= 80 ? CheckCircle2 : seo.score >= 50 ? AlertTriangle : XCircle;
+  const scoreLabel = seo.score >= 80 ? t("Good", "جيد") : seo.score >= 50 ? t("Needs Work", "يحتاج تحسين") : t("Poor", "ضعيف");
 
   return (
     <div className="space-y-4">
@@ -76,9 +135,11 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({ title, excerpt, s
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Hash className="h-3 w-3" />
-            {content.split("\n").filter(l => l.startsWith("#")).length} {t("headings", "عناوين")}
+            {content.split("\n").filter(l => /^#{1,6}\s/.test(l)).length} {t("headings", "عناوين")}
             <span className="mx-1">•</span>
             {(content.match(/!\[/g) || []).length} {t("images", "صور")}
+            <span className="mx-1">•</span>
+            {(content.match(/\[.*?\]\(.*?\)/g) || []).length} {t("links", "روابط")}
           </div>
         </CardContent>
       </Card>
@@ -88,7 +149,10 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({ title, excerpt, s
         <CardHeader className="pb-3 px-4 pt-4">
           <CardTitle className="text-sm flex items-center gap-2">
             <Search className="h-4 w-4 text-primary" />
-            {t("SEO Score", "نقاط تحسين محركات البحث")}
+            {t("SEO Analysis", "تحليل السيو")}
+            <Badge variant="secondary" className={cn("text-[9px] ms-auto rounded-lg", scoreBg, scoreColor)}>
+              {scoreLabel}
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
@@ -99,51 +163,58 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({ title, excerpt, s
             </div>
             <Progress value={seo.score} className="flex-1 h-2" />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             {seo.checks.map((check) => (
-              <div key={check.label} className="flex items-center gap-2 text-xs">
-                {check.passed ? (
-                  <CheckCircle2 className="h-3.5 w-3.5 text-chart-2 shrink-0" />
-                ) : (
-                  <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+              <div key={check.label} className="group">
+                <div className="flex items-center gap-2 text-xs py-0.5">
+                  {check.passed ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 text-chart-2 shrink-0" />
+                  ) : (
+                    <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+                  )}
+                  <span className={cn("flex-1", !check.passed && "text-muted-foreground")}>
+                    {isAr ? check.labelAr : check.label}
+                  </span>
+                </div>
+                {!check.passed && (check.tip || check.tipAr) && (
+                  <p className="text-[10px] text-muted-foreground/70 ps-6 pb-0.5 italic">
+                    💡 {isAr ? (check.tipAr || check.tip) : check.tip}
+                  </p>
                 )}
-                <span className={cn(!check.passed && "text-muted-foreground")}>{check.label}</span>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Slug */}
-      <Card className="rounded-2xl border-border/40">
-        <CardContent className="p-4 space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs">{t("URL Slug", "الرابط")}</Label>
-            <Input
-              value={slug}
-              onChange={(e) => onSlugChange(e.target.value)}
-              placeholder="my-article-title"
-              className="rounded-xl text-xs font-mono"
-            />
-            <p className="text-[10px] text-muted-foreground truncate">/news/{slug || "..."}</p>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs flex items-center justify-between">
-              {t("Meta Description", "الوصف التعريفي")}
-              <Badge variant={excerpt.length > 160 ? "destructive" : "secondary"} className="text-[10px]">
-                {excerpt.length}/160
-              </Badge>
-            </Label>
-            <Textarea
-              rows={3}
-              value={excerpt}
-              onChange={(e) => onExcerptChange(e.target.value)}
-              placeholder={t("Brief description for search engines...", "وصف موجز لمحركات البحث...")}
-              className="rounded-xl text-xs resize-none"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      {/* Keyword Density */}
+      {keywords.length > 0 && (
+        <Card className="rounded-2xl border-border/40">
+          <CardHeader className="pb-2 px-4 pt-4">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              {t("Keyword Density", "كثافة الكلمات المفتاحية")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4 pb-4">
+            <div className="space-y-2">
+              {keywords.map(kw => (
+                <div key={kw.keyword} className="flex items-center gap-2 text-xs">
+                  <span className="font-mono bg-muted/50 px-1.5 py-0.5 rounded text-[10px]">{kw.keyword}</span>
+                  <Progress value={Math.min(kw.density * 20, 100)} className="flex-1 h-1.5" />
+                  <span className={cn("text-[10px] font-medium tabular-nums", kw.density >= 1 && kw.density <= 3 ? "text-chart-2" : "text-muted-foreground")}>
+                    {kw.density}%
+                  </span>
+                </div>
+              ))}
+              <p className="text-[9px] text-muted-foreground flex items-center gap-1 mt-1">
+                <Lightbulb className="h-2.5 w-2.5" />
+                {t("Aim for 1-3% density per keyword", "استهدف 1-3% كثافة لكل كلمة")}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 });
