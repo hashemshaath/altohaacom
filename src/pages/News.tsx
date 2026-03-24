@@ -296,53 +296,50 @@ export default function News() {
         <NewsReadingProgress />
         <section className="relative overflow-hidden border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
-          <div className="container relative py-10 md:py-14">
-            {/* Breadcrumbs */}
-            <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+          <div className="container relative py-8 md:py-10">
+            <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/20 backdrop-blur-sm">
-                  <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-3 max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
                     {isAr ? "مركز الأخبار" : "News Center"}
                   </span>
                 </div>
-                <h1 id="news-heading" className="font-serif text-3xl font-bold tracking-tight md:text-5xl">
+                <h1 id="news-heading" className="font-serif text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
                   {isAr ? "أخبار ومقالات عالم الطهي" : "Culinary News & Insights"}
                 </h1>
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl">
+                <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
                   {isAr
-                    ? "اكتشف آخر أخبار الطهاة، الشركات، والجمعيات المهنية مع مقالات ملهمة وقصص نجاح من مختلف أنحاء العالم."
-                    : "Discover the latest about chefs, companies, and culinary associations — with inspiring articles and success stories from around the globe."}
+                    ? "اكتشف آخر أخبار الطهاة، الشركات، والجمعيات المهنية مع مقالات ملهمة وقصص نجاح."
+                    : "Discover the latest about chefs, companies, and culinary associations — with inspiring articles and success stories."}
                 </p>
               </div>
 
-              {/* Quick Stats */}
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 {[
                   { icon: Newspaper, value: articles.length, label: isAr ? "مقال" : "Articles" },
                   { icon: Eye, value: totalViews.toLocaleString(), label: isAr ? "مشاهدة" : "Views" },
                   { icon: Sparkles, value: featuredArticles.length, label: isAr ? "مميز" : "Featured" },
                 ].map((stat) => (
-                  <div key={stat.label} className="flex flex-col items-center rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-3 min-w-[80px]">
-                    <stat.icon className="h-4 w-4 text-primary/60 mb-1" />
-                    <span className="text-lg font-bold">{stat.value}</span>
-                    <span className="text-[9px] text-muted-foreground">{stat.label}</span>
+                  <div key={stat.label} className="flex flex-col items-center rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-3.5 py-2.5 min-w-[72px]">
+                    <stat.icon className="h-3.5 w-3.5 text-primary/60 mb-1" />
+                    <span className="text-base font-bold leading-none">{stat.value}</span>
+                    <span className="text-[9px] text-muted-foreground mt-0.5">{stat.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Topic pills */}
-            <div className="flex flex-wrap gap-2 mt-6">
+            <div className="flex flex-wrap gap-1.5 mt-5">
               {[
                 { icon: ChefHat, en: "Chefs", ar: "الطهاة" },
                 { icon: Building2, en: "Companies", ar: "الشركات" },
                 { icon: Award, en: "Associations", ar: "الجمعيات" },
               ].map((topic) => (
-                <Badge key={topic.en} variant="outline" className="gap-1.5 px-3 py-1.5 text-xs rounded-xl border-border/40 bg-background/60 backdrop-blur-sm cursor-default hover:bg-primary/5 transition-colors">
-                  <topic.icon className="h-3 w-3" />
+                <Badge key={topic.en} variant="outline" className="gap-1 px-2.5 py-1 text-[10px] rounded-lg border-border/40 bg-background/60 cursor-default">
+                  <topic.icon className="h-2.5 w-2.5" />
                   {isAr ? topic.ar : topic.en}
                 </Badge>
               ))}
@@ -350,9 +347,9 @@ export default function News() {
           </div>
         </section>
 
-        <div className="container py-6 md:py-8">
+        <div className="container py-5 md:py-6">
           {/* ─── Sticky Filters ─── */}
-          <div className="sticky top-12 z-40 -mx-4 mb-8 border-y border-border/30 bg-background/70 px-4 py-3 backdrop-blur-xl md:rounded-2xl md:border md:px-5 md:shadow-sm">
+          <div className="sticky top-12 z-40 -mx-4 mb-6 border-y border-border/30 bg-background/70 px-4 py-2.5 backdrop-blur-xl md:rounded-2xl md:border md:px-4 md:shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">
                 <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
