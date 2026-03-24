@@ -164,19 +164,20 @@ export default function Competitions() {
           <AdBanner placementSlug="competitions-top-banner" className="w-full aspect-[5/1]" />
         </div>
 
-        {/* Editorial Hero — compact & clean */}
-        <section className="relative overflow-hidden">
+        {/* Editorial Hero — compact & refined */}
+        <section className="relative overflow-hidden border-b border-border/10">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.08),transparent_60%)]" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           <div className="container relative py-6 md:py-10">
             <div className="flex items-end justify-between gap-4">
               <div className="space-y-2.5 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/15">
-                  <Sparkles className="h-3 w-3 text-primary" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 ring-1 ring-primary/15">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
                     {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
                   </span>
                 </div>
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight md:text-4xl">
+                <h1 className="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight md:text-4xl">
                   {isAr ? "المسابقات" : "Competitions"}
                 </h1>
                 <p className="hidden sm:block text-muted-foreground text-sm leading-relaxed max-w-lg">
@@ -186,14 +187,15 @@ export default function Competitions() {
                 </p>
 
                 {/* Stats chips */}
-                <div className="flex items-center gap-2 sm:gap-4 pt-1">
+                <div className="flex items-center gap-2 sm:gap-3 pt-1">
                   {[
-                    { numValue: counts.all, label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3" /> },
-                    { numValue: counts.active, label: isAr ? "نشطة" : "Live", icon: <Flame className="h-3 w-3" />, live: counts.active > 0 },
-                    { numValue: countryCodes.length, label: isAr ? "دول" : "Countries", icon: <Globe className="h-3 w-3" /> },
+                    { numValue: counts.all, label: isAr ? "المسابقات" : "Total", icon: <Trophy className="h-3 w-3" />, color: "text-primary" },
+                    { numValue: counts.active, label: isAr ? "نشطة" : "Live", icon: <Flame className="h-3 w-3" />, color: "text-chart-3", live: counts.active > 0 },
+                    { numValue: countryCodes.length, label: isAr ? "دول" : "Countries", icon: <Globe className="h-3 w-3" />, color: "text-chart-4" },
                   ].map((stat, i) => (
-                    <div key={i} className="flex items-center gap-1.5 rounded-full bg-muted/40 px-2.5 py-1.5 ring-1 ring-border/30">
-                      <span className={stat.live ? "text-chart-3" : "text-primary"}>{stat.icon}</span>
+                    <div key={i} className="group flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 ring-1 ring-border/40 shadow-sm transition-all hover:shadow-md hover:ring-primary/20">
+                      <span className={stat.color}>{stat.icon}</span>
+                      {stat.live && <span className="h-1.5 w-1.5 rounded-full bg-chart-3 animate-pulse" />}
                       <AnimatedCounter value={stat.numValue} className="text-sm font-bold tabular-nums" />
                       <span className="text-[10px] text-muted-foreground font-medium hidden sm:inline">{stat.label}</span>
                     </div>
@@ -377,18 +379,18 @@ export default function Competitions() {
             <section className="border-t border-border/10 pt-6">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
-                  { label: isAr ? "إجمالي المسابقات" : "Total Competitions", value: counts.all, icon: Trophy, color: "text-primary" },
-                  { label: isAr ? "نشطة الآن" : "Active Now", value: counts.active, icon: Flame, color: "text-chart-3" },
-                  { label: isAr ? "المسجلين" : "Registrations", value: totalRegistrations, icon: Users, color: "text-chart-1" },
-                  { label: isAr ? "الدول" : "Countries", value: countryCodes.length, icon: Globe, color: "text-accent-foreground" },
+                  { label: isAr ? "إجمالي المسابقات" : "Total Competitions", value: counts.all, icon: Trophy, color: "text-primary", bg: "bg-primary/10" },
+                  { label: isAr ? "نشطة الآن" : "Active Now", value: counts.active, icon: Flame, color: "text-chart-3", bg: "bg-chart-3/10" },
+                  { label: isAr ? "المسجلين" : "Registrations", value: totalRegistrations, icon: Users, color: "text-chart-1", bg: "bg-chart-1/10" },
+                  { label: isAr ? "الدول" : "Countries", value: countryCodes.length, icon: Globe, color: "text-chart-4", bg: "bg-chart-4/10" },
                 ].map((stat) => (
-                  <Card key={stat.label} className="border-border/10 bg-card/50 rounded-2xl">
-                    <CardContent className="p-3.5 flex flex-col items-center text-center gap-1">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/30">
-                        <stat.icon className={`h-4 w-4 ${stat.color} opacity-50`} />
+                  <Card key={stat.label} className="border-border/10 bg-card/50 rounded-2xl group hover:shadow-md hover:border-primary/10 transition-all duration-200">
+                    <CardContent className="p-3.5 flex flex-col items-center text-center gap-1.5">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} ring-1 ring-border/10 transition-transform group-hover:scale-110`}>
+                        <stat.icon className={`h-4.5 w-4.5 ${stat.color}`} />
                       </div>
-                      <AnimatedCounter value={stat.value} className="text-xl font-bold text-foreground sm:text-2xl tabular-nums" />
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
+                      <AnimatedCounter value={stat.value} className="text-xl font-extrabold text-foreground sm:text-2xl tabular-nums" />
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</p>
                     </CardContent>
                   </Card>
                 ))}

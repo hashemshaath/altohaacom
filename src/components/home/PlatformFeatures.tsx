@@ -45,7 +45,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
   ];
 
   return (
-    <div className="space-y-8 md:space-y-12">
+    <div className="space-y-10 md:space-y-14">
       {/* Services */}
       <section className="container px-5 sm:px-6" aria-labelledby="services-heading" dir={isAr ? "rtl" : "ltr"}>
         <SectionReveal>
@@ -65,16 +65,16 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <HorizontalScrollRow isAr={isAr}>
           {services.map((s) => (
             <Link key={s.title} to={s.href} className="group block snap-start shrink-0 w-[56vw] sm:w-[38vw] md:w-[28vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
-              <Card className="h-full border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+              <Card className="h-full border-border/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/20 active:scale-[0.98] group-hover:ring-1 group-hover:ring-primary/10">
                 <CardContent className="flex flex-col p-4 sm:p-5">
-                  <div className={cn("mb-3 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-xl transition-all group-hover:scale-110", s.bg)}>
-                    <s.icon className={cn("h-[22px] w-[22px] sm:h-5 sm:w-5", s.color)} />
+                  <div className={cn("mb-3.5 flex h-12 w-12 sm:h-11 sm:w-11 items-center justify-center rounded-xl ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md", s.bg)}>
+                    <s.icon className={cn("h-[22px] w-[22px] sm:h-5 sm:w-5 transition-colors", s.color)} />
                   </div>
-                  <h3 className="font-bold mb-1 text-[14px] sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
-                  <p className="mb-3 flex-1 text-[12px] sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                  <span className="inline-flex items-center text-xs font-medium text-primary">
+                  <h3 className="font-bold mb-1.5 text-[14px] sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
+                  <p className="mb-4 flex-1 text-[12px] sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  <span className="inline-flex items-center text-xs font-semibold text-primary group-hover:gap-2 transition-all">
                     {isAr ? "اكتشف المزيد" : "Explore"}
-                    <ArrowRight className="ms-1 h-3 w-3" />
+                    <ArrowRight className="ms-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </CardContent>
               </Card>

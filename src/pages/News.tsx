@@ -294,20 +294,21 @@ export default function News() {
     >
       <main className="flex-1">
         <NewsReadingProgress />
-        <section className="relative overflow-hidden border-b border-border/30 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
+        <section className="relative overflow-hidden border-b border-border/20 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           <div className="container relative py-8 md:py-10">
             <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 
             <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
               <div className="space-y-3 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 ring-1 ring-primary/20">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
                     {isAr ? "مركز الأخبار" : "News Center"}
                   </span>
                 </div>
-                <h1 id="news-heading" className="font-serif text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">
+                <h1 id="news-heading" className="font-serif text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
                   {isAr ? "أخبار ومقالات عالم الطهي" : "Culinary News & Insights"}
                 </h1>
                 <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
@@ -317,16 +318,18 @@ export default function News() {
                 </p>
               </div>
 
-              <div className="flex gap-2.5">
+              <div className="flex gap-2">
                 {[
-                  { icon: Newspaper, value: articles.length, label: isAr ? "مقال" : "Articles" },
-                  { icon: Eye, value: totalViews.toLocaleString(), label: isAr ? "مشاهدة" : "Views" },
-                  { icon: Sparkles, value: featuredArticles.length, label: isAr ? "مميز" : "Featured" },
+                  { icon: Newspaper, value: articles.length, label: isAr ? "مقال" : "Articles", color: "text-primary", bg: "bg-primary/10" },
+                  { icon: Eye, value: totalViews.toLocaleString(), label: isAr ? "مشاهدة" : "Views", color: "text-chart-2", bg: "bg-chart-2/10" },
+                  { icon: Sparkles, value: featuredArticles.length, label: isAr ? "مميز" : "Featured", color: "text-chart-4", bg: "bg-chart-4/10" },
                 ].map((stat) => (
-                  <div key={stat.label} className="flex flex-col items-center rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-3.5 py-2.5 min-w-[72px]">
-                    <stat.icon className="h-3.5 w-3.5 text-primary/60 mb-1" />
-                    <span className="text-base font-bold leading-none">{stat.value}</span>
-                    <span className="text-[9px] text-muted-foreground mt-0.5">{stat.label}</span>
+                  <div key={stat.label} className="group flex flex-col items-center rounded-2xl border border-border/30 bg-card/70 backdrop-blur-sm px-3.5 py-2.5 min-w-[72px] transition-all hover:shadow-md hover:border-primary/15">
+                    <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${stat.bg} mb-1 transition-transform group-hover:scale-110`}>
+                      <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+                    </div>
+                    <span className="text-base font-extrabold leading-none">{stat.value}</span>
+                    <span className="text-[9px] text-muted-foreground mt-0.5 font-medium">{stat.label}</span>
                   </div>
                 ))}
               </div>
@@ -338,8 +341,8 @@ export default function News() {
                 { icon: Building2, en: "Companies", ar: "الشركات" },
                 { icon: Award, en: "Associations", ar: "الجمعيات" },
               ].map((topic) => (
-                <Badge key={topic.en} variant="outline" className="gap-1 px-2.5 py-1 text-[10px] rounded-lg border-border/40 bg-background/60 cursor-default">
-                  <topic.icon className="h-2.5 w-2.5" />
+                <Badge key={topic.en} variant="outline" className="gap-1.5 px-2.5 py-1 text-[10px] rounded-lg border-border/30 bg-card/50 backdrop-blur-sm cursor-default hover:bg-primary/5 transition-colors">
+                  <topic.icon className="h-2.5 w-2.5 text-primary/60" />
                   {isAr ? topic.ar : topic.en}
                 </Badge>
               ))}
