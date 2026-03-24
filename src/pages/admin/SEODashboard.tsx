@@ -20,6 +20,11 @@ import {
   BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
 } from "recharts";
 import { SEOAuditPanel } from "@/components/admin/seo/SEOAuditPanel";
+import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
+import { SEOMetaConfigurator } from "@/components/admin/seo/SEOMetaConfigurator";
+import { SEOContentAnalysis } from "@/components/admin/seo/SEOContentAnalysis";
+import { SEORecommendations } from "@/components/admin/seo/SEORecommendations";
+import { SEOStructuredData } from "@/components/admin/seo/SEOStructuredData";
 
 // SEO route registry for health checks
 const PUBLIC_ROUTES = [
