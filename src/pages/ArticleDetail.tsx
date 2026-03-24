@@ -262,6 +262,7 @@ export default function ArticleDetail() {
           title={title}
         />
       )}
+      <SEOHead
         title={title}
         description={excerpt || `${title} - Altoha`}
         ogImage={article.featured_image_url || undefined}
