@@ -29,6 +29,10 @@ import {
 import { cn } from "@/lib/utils";
 import { ArticleReadingProgress } from "@/components/articles/ArticleReadingProgress";
 import { ArticleTableOfContents } from "@/components/articles/ArticleTableOfContents";
+import { ArticleTextToSpeech } from "@/components/articles/ArticleTextToSpeech";
+import { ArticleImageLightbox, ZoomIn } from "@/components/articles/ArticleImageLightbox";
+import { ArticleHighlightShare } from "@/components/articles/ArticleHighlightShare";
+import { ArticleEstimatedTimeLeft } from "@/components/articles/ArticleEstimatedTimeLeft";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
@@ -102,6 +106,7 @@ export default function ArticleDetail() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [helpful, setHelpful] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const isAr = language === "ar";
 
   const { data: article, isLoading } = useQuery({
@@ -247,6 +252,16 @@ export default function ArticleDetail() {
   return (
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <ArticleReadingProgress />
+      <ArticleHighlightShare articleUrl={currentUrl} isAr={isAr} />
+      {lightboxIdx !== null && article?.gallery_urls && (
+        <ArticleImageLightbox
+          images={article.gallery_urls}
+          currentIndex={lightboxIdx}
+          onClose={() => setLightboxIdx(null)}
+          onNavigate={setLightboxIdx}
+          title={title}
+        />
+      )}
       <SEOHead
         title={title}
         description={excerpt || `${title} - Altoha`}
@@ -422,9 +437,12 @@ export default function ArticleDetail() {
               >
                 <Heart className={cn("h-3.5 w-3.5", liked && "fill-primary")} />
                 <span className="tabular-nums">{liked ? likeCount + 1 : likeCount}</span>
-              </Button>
+               </Button>
 
               <Separator orientation="vertical" className="h-5 mx-1 hidden sm:block" />
+
+              {/* Text to Speech */}
+              <ArticleTextToSpeech text={content} isAr={isAr} />
 
               {/* Share */}
               {shareLinks && (
@@ -453,6 +471,9 @@ export default function ArticleDetail() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
+
+              {/* Estimated time left */}
+              <ArticleEstimatedTimeLeft totalReadingTime={readingTime} isAr={isAr} />
 
               {/* Font size control — pushed to end */}
               <div className="flex items-center gap-0.5 ms-auto border border-border/30 rounded-xl overflow-hidden shrink-0">
@@ -561,17 +582,26 @@ export default function ArticleDetail() {
                     <h3 className="font-semibold mb-5 flex items-center gap-2 not-prose text-sm">
                       <Sparkles className="h-4 w-4 text-primary" />
                       {isAr ? "معرض الصور" : "Photo Gallery"}
+                      <span className="text-[10px] text-muted-foreground ms-1">({article.gallery_urls.length})</span>
                     </h3>
                     <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 not-prose">
                       {article.gallery_urls.map((url, i) => (
-                        <img
+                        <button
                           key={i}
-                          src={url}
-                          alt={`${title} - ${i + 1}`}
-                          className="aspect-video rounded-2xl object-cover ring-1 ring-border/20 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-zoom-in"
-                          loading="lazy"
-                          decoding="async"
-                        />
+                          onClick={() => setLightboxIdx(i)}
+                          className="group relative aspect-video rounded-2xl overflow-hidden ring-1 ring-border/20 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-zoom-in"
+                        >
+                          <img
+                            src={url}
+                            alt={`${title} - ${i + 1}`}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                            <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                          </div>
+                        </button>
                       ))}
                     </div>
                   </>
