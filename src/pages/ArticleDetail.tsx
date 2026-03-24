@@ -106,6 +106,7 @@ export default function ArticleDetail() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [helpful, setHelpful] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const isAr = language === "ar";
 
   const { data: article, isLoading } = useQuery({
