@@ -64,7 +64,26 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
     staleTime: 1000 * 60 * 10,
   });
 
-  if (!isLoading && chefs.length === 0) return null;
+  if (!isLoading && chefs.length === 0) {
+    return (
+      <section dir={isAr ? "rtl" : "ltr"}>
+        <div className="container px-5 sm:px-6">
+          <SectionHeader
+            icon={ChefHat}
+            badge={isAr ? "طهاة مميزون" : "Featured Chefs"}
+            title={title}
+            subtitle={showSubtitle ? subtitle : undefined}
+            viewAllHref={showViewAll ? "/community" : undefined}
+            viewAllLabel={isAr ? "عرض جميع الطهاة" : "View All Chefs"}
+            isAr={isAr}
+          />
+          <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+            {isAr ? "انضم إلى مجتمعنا لتظهر هنا!" : "Join our community to be featured here!"}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
