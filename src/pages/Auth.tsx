@@ -526,23 +526,46 @@ export default function Auth() {
               </p>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
-              <Input type="password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
-              <PasswordStrengthMeter password={resetPassword} />
-              {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
-            </div>
+            {resetSuccess ? (
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 text-center space-y-2 animate-in fade-in duration-300">
+                <CheckCircle className="mx-auto h-8 w-8 text-primary" />
+                <p className="text-sm font-medium text-primary">
+                  {isAr ? "تم تحديث كلمة المرور بنجاح!" : "Password updated successfully!"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {isAr ? "جاري إعادة التوجيه..." : "Redirecting..."}
+                </p>
+              </div>
+            ) : (
+              <>
+                {formError && (
+                  <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
+                    <p className="flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                      {formError}
+                    </p>
+                  </div>
+                )}
 
-            <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-              <Input type="password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
-              {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
-            </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
+                  <Input type="password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
+                  <PasswordStrengthMeter password={resetPassword} />
+                  {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
+                </div>
 
-            <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
-              {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-              {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
-            </Button>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
+                  <Input type="password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
+                  {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
+                </div>
+
+                <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
+                  {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                  {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
+                </Button>
+              </>
+            )}
           </div>
         </Card>
       </AuthLayout>
