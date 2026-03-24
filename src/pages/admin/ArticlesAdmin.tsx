@@ -77,7 +77,7 @@ export default function ArticlesAdmin() {
     queryFn: async () => {
       let query = supabase
         .from("articles")
-        .select("id, title, title_ar, slug, excerpt, excerpt_ar, content, content_ar, type, status, featured_image_url, is_featured, published_at, view_count, created_at, updated_at")
+        .select("id, title, title_ar, slug, excerpt, excerpt_ar, content, content_ar, type, status, featured_image_url, is_featured, published_at, view_count, created_at, updated_at, category_id")
         .order("created_at", { ascending: false });
 
       if (search) {
