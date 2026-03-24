@@ -69,6 +69,7 @@ export default function ArticlesAdmin() {
     featured_image_url: "",
     is_featured: false,
     published_at: "",
+    category_id: "",
   });
 
   const { data: articles, isLoading } = useQuery({
@@ -186,6 +187,7 @@ export default function ArticlesAdmin() {
       featured_image_url: article.featured_image_url || "",
       is_featured: article.is_featured || false,
       published_at: article.published_at || "",
+      category_id: article.category_id || "",
     });
     setViewMode("edit");
   };
