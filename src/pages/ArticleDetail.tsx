@@ -582,17 +582,26 @@ export default function ArticleDetail() {
                     <h3 className="font-semibold mb-5 flex items-center gap-2 not-prose text-sm">
                       <Sparkles className="h-4 w-4 text-primary" />
                       {isAr ? "معرض الصور" : "Photo Gallery"}
+                      <span className="text-[10px] text-muted-foreground ms-1">({article.gallery_urls.length})</span>
                     </h3>
                     <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 not-prose">
                       {article.gallery_urls.map((url, i) => (
-                        <img
+                        <button
                           key={i}
-                          src={url}
-                          alt={`${title} - ${i + 1}`}
-                          className="aspect-video rounded-2xl object-cover ring-1 ring-border/20 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-zoom-in"
-                          loading="lazy"
-                          decoding="async"
-                        />
+                          onClick={() => setLightboxIdx(i)}
+                          className="group relative aspect-video rounded-2xl overflow-hidden ring-1 ring-border/20 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-zoom-in"
+                        >
+                          <img
+                            src={url}
+                            alt={`${title} - ${i + 1}`}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                            <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                          </div>
+                        </button>
                       ))}
                     </div>
                   </>
