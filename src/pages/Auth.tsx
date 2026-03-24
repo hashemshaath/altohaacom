@@ -1166,6 +1166,7 @@ export default function Auth() {
                       onChange={(e) => {
                         setSignInPassword(e.target.value);
                         if (errors.signInPassword) setErrors((prev) => ({ ...prev, signInPassword: "" }));
+                        if (formError) setFormError("");
                       }}
                       placeholder="••••••••"
                       onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
