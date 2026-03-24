@@ -147,22 +147,6 @@ export default function ArticleDetail() {
     }
   }, [article?.id]);
 
-  // Track reading stats after 60% scroll
-  useEffect(() => {
-    if (!article?.id) return;
-    let tracked = false;
-    const handleScroll = () => {
-      if (tracked) return;
-      const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      if (scrollPct > 0.6) {
-        tracked = true;
-        trackArticleRead(article.type, readingTime, wordCount);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [article?.id, article?.type, readingTime, wordCount]);
-
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 600);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -193,6 +177,22 @@ export default function ArticleDetail() {
   const eventLocation = article ? (isAr && article.event_location_ar ? article.event_location_ar : article.event_location) : "";
   const readingTime = useMemo(() => calculateReadingTime(content), [content]);
   const wordCount = useMemo(() => countWords(content), [content]);
+
+  // Track reading stats after 60% scroll
+  useEffect(() => {
+    if (!article?.id) return;
+    let tracked = false;
+    const handleScroll = () => {
+      if (tracked) return;
+      const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPct > 0.6) {
+        tracked = true;
+        trackArticleRead(article.type, readingTime, wordCount);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [article?.id, article?.type, readingTime, wordCount]);
 
   const formatDate = (date: string) => format(new Date(date), "d MMMM yyyy", { locale: isAr ? ar : enUS });
   const formatTime = (date: string) => format(new Date(date), "h:mm a", { locale: isAr ? ar : enUS });
