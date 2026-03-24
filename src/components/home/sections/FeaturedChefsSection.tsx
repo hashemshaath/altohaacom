@@ -30,7 +30,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: chefs = [] } = useQuery({
+  const { data: chefs = [], isLoading } = useQuery({
     queryKey: ["featured-chefs-home", itemCount],
     queryFn: async () => {
       const { data: ranked } = await supabase
@@ -64,11 +64,11 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
     staleTime: 1000 * 60 * 10,
   });
 
-  if (chefs.length === 0) return null;
+  if (!isLoading && chefs.length === 0) return null;
 
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
-      <div className="container">
+      <div className="container px-5 sm:px-6">
         <SectionHeader
           icon={ChefHat}
           badge={isAr ? "طهاة مميزون" : "Featured Chefs"}
@@ -80,7 +80,19 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
         />
 
         <HorizontalScrollRow isAr={isAr}>
-          {chefs.map((chef: any, idx: number) => {
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={`skeleton-${i}`} className="snap-start shrink-0 w-[36vw] sm:w-[28vw] md:w-[20vw] lg:w-[14vw] xl:w-[12vw]">
+                <div className="flex flex-col items-center gap-2 rounded-2xl border border-border/30 bg-card/50 p-4 h-full animate-pulse">
+                  <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-muted" />
+                  <div className="w-full space-y-1.5">
+                    <div className="h-3 bg-muted rounded w-3/4 mx-auto" />
+                    <div className="h-2 bg-muted rounded w-1/2 mx-auto" />
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : chefs.map((chef: any, idx: number) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
             const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
@@ -151,7 +163,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                 </div>
               </Link>
             );
-          })}
+          }))}
         </HorizontalScrollRow>
       </div>
     </section>

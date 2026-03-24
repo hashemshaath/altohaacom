@@ -68,7 +68,7 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
         hasAnim && (visible ? ANIMATION_ACTIVE[animation] : ANIMATION_INITIAL[animation])
       )}
       style={
-        config?.bg_color && !document.documentElement.classList.contains("dark")
+        config?.bg_color && typeof window !== "undefined" && !document.documentElement.classList.contains("dark")
           ? { backgroundColor: config.bg_color }
           : undefined
       }
