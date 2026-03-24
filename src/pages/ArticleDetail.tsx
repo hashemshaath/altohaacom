@@ -33,6 +33,8 @@ import { ArticleTextToSpeech } from "@/components/articles/ArticleTextToSpeech";
 import { ArticleImageLightbox, ZoomIn } from "@/components/articles/ArticleImageLightbox";
 import { ArticleHighlightShare } from "@/components/articles/ArticleHighlightShare";
 import { ArticleEstimatedTimeLeft } from "@/components/articles/ArticleEstimatedTimeLeft";
+import { ArticleAnnotations } from "@/components/articles/ArticleAnnotations";
+import { ArticleCopyProtect } from "@/components/articles/ArticleCopyProtect";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
@@ -253,6 +255,7 @@ export default function ArticleDetail() {
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
       <ArticleReadingProgress />
       <ArticleHighlightShare articleUrl={currentUrl} isAr={isAr} />
+      <ArticleCopyProtect articleTitle={title} articleUrl={currentUrl} isAr={isAr} />
       {lightboxIdx !== null && article?.gallery_urls && (
         <ArticleImageLightbox
           images={article.gallery_urls}
@@ -474,6 +477,11 @@ export default function ArticleDetail() {
 
               {/* Estimated time left */}
               <ArticleEstimatedTimeLeft totalReadingTime={readingTime} isAr={isAr} />
+
+              <Separator orientation="vertical" className="h-5 mx-0.5 hidden sm:block" />
+
+              {/* Annotations */}
+              <ArticleAnnotations articleId={article.id} isAr={isAr} />
 
               {/* Font size control — pushed to end */}
               <div className="flex items-center gap-0.5 ms-auto border border-border/30 rounded-xl overflow-hidden shrink-0">
