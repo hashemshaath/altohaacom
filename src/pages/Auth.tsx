@@ -1175,6 +1175,16 @@ export default function Auth() {
                     {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
                   </div>
 
+                  {/* Inline form error */}
+                  {formError && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
+                      <p className="flex items-center gap-1.5 text-xs text-destructive">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                        {formError}
+                      </p>
+                    </div>
+                  )}
+
                   <Button className="w-full gap-2" size="lg" disabled={loading || isLockedOut} onClick={handleSignInEmail}>
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
                     {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
