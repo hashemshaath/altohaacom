@@ -2,6 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * Checks if the current user has any admin-level role (supervisor, organizer, content_writer).
+ * Uses server-side RPC (is_admin) — cannot be bypassed client-side.
+ */
 export function useIsAdmin() {
   const { user } = useAuth();
 
@@ -14,7 +18,7 @@ export function useIsAdmin() {
       return data as boolean;
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 }
 
@@ -24,18 +28,15 @@ export function useAdminStats() {
   return useQuery({
     queryKey: ["adminStats"],
     queryFn: async () => {
-      // Get total users count
       const { count: totalUsers } = await supabase
         .from("profiles")
         .select("*", { count: "exact", head: true });
 
-      // Get active users count
       const { count: activeMembers } = await supabase
         .from("profiles")
         .select("*", { count: "exact", head: true })
         .eq("account_status", "active");
 
-      // Get pending reports count
       const { count: pendingReports } = await supabase
         .from("content_reports")
         .select("*", { count: "exact", head: true })
@@ -48,6 +49,6 @@ export function useAdminStats() {
       };
     },
     enabled: !!isAdmin,
-    staleTime: 1000 * 60, // Cache for 1 minute
+    staleTime: 1000 * 60,
   });
 }
