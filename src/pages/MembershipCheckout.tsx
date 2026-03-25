@@ -54,6 +54,7 @@ export default function MembershipCheckout() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [step, setStep] = useState<"plan" | "confirm" | "processing" | "success">("plan");
   const [showDowngradeDialog, setShowDowngradeDialog] = useState(false);
+  const { trackMembershipAction } = useEcommerceTracking();
 
   const { data: profile } = useQuery({
     queryKey: ["checkout-profile", user?.id],
