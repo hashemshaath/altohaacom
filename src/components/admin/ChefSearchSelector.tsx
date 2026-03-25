@@ -35,6 +35,7 @@ export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valu
       const { data, error } = await supabase
         .from("profiles")
         .select("id, user_id, full_name, full_name_ar, avatar_url, experience_level, specialization")
+        .eq("is_chef_visible", true)
         .or(`full_name.ilike.%${search}%,full_name_ar.ilike.%${search}%`)
         .limit(15);
       if (error) throw error;
