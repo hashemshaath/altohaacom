@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer, Route, Gauge } from "lucide-react";
+import { BarChart3, Trophy, Users, DollarSign, Brain, Activity, UserMinus, TrendingUp, Megaphone, Wifi, Cpu, FileText, Flame, Globe, MessageSquareText, Filter, AlertTriangle, FlaskConical, FileBarChart, Landmark, PiggyBank, Layers, Bookmark, Download, Printer, Route, Gauge, Zap } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PlatformOverview from "@/components/analytics/PlatformOverview";
 import CompetitionAnalytics from "@/components/analytics/CompetitionAnalytics";
@@ -31,6 +31,7 @@ import { WebVitalsWidget } from "@/components/admin/WebVitalsWidget";
 import { AnalyticsDateRange, getPresetRange, type DateRange } from "@/components/analytics/AnalyticsDateRange";
 import { AdvancedKPIDashboard } from "@/components/admin/AdvancedKPIDashboard";
 import { AdvancedExportWidget } from "@/components/admin/AdvancedExportWidget";
+import { EventsMonitoring } from "@/components/analytics/EventsMonitoring";
 import { toast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -106,6 +107,7 @@ export default function AnalyticsDashboard() {
     { value: "ai-insights", icon: Brain, label: isAr ? "ذكاء اصطناعي" : "AI Insights" },
     { value: "ai-chat", icon: MessageSquareText, label: isAr ? "محادثة ذكية" : "AI Chat" },
     { value: "web-vitals", icon: Gauge, label: isAr ? "أداء الويب" : "Web Vitals" },
+    { value: "events", icon: Zap, label: isAr ? "مراقبة الأحداث" : "Events" },
   ];
 
   return (
@@ -213,6 +215,7 @@ export default function AnalyticsDashboard() {
         <TabsContent value="ai-insights"><AIInsightsPanel /></TabsContent>
         <TabsContent value="ai-chat"><AIAnalyticsChat /></TabsContent>
         <TabsContent value="web-vitals"><WebVitalsWidget /></TabsContent>
+        <TabsContent value="events"><EventsMonitoring /></TabsContent>
       </Tabs>
     </div>
   );
