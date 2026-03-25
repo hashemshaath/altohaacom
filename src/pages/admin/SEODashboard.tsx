@@ -423,19 +423,17 @@ export default function SEODashboard() {
       const { data, error } = await supabase.functions.invoke("seo-sitemap-ping", { headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       const results = data?.results || [];
-      const hasError = results.some((r: any) => r.status === "error");
-      const hasSuccess = results.some((r: any) => r.status === "success");
+      const sitemapOk = results.some((r: any) => r.engine === "Sitemap" && r.status === "success");
+      const allOk = results.every((r: any) => ["success", "info"].includes(r.status));
       const desc = results.map((r: any) => {
         const icon = r.status === "success" ? "✓" : r.status === "info" ? "ℹ" : "✗";
         const msg = r.message ? ` (${r.message})` : "";
         return `${r.engine}: ${icon}${msg}`;
       }).join("\n");
-      if (hasError) {
-        toast.error(isAr ? "فشل إرسال خريطة الموقع" : "Sitemap ping failed", { description: desc });
-      } else if (hasSuccess) {
-        toast.success(isAr ? "تم إرسال خريطة الموقع بنجاح" : "Sitemap submitted successfully", { description: desc });
+      if (sitemapOk || allOk) {
+        toast.success(isAr ? "خريطة الموقع متاحة ومسجلة" : "Sitemap is accessible & registered", { description: desc });
       } else {
-        toast.info(isAr ? "تم تسجيل خريطة الموقع" : "Sitemap registered", { description: desc });
+        toast.error(isAr ? "فشل التحقق من خريطة الموقع" : "Sitemap verification failed", { description: desc });
       }
     } catch (e: any) { toast.error(e.message); } finally { setPinging(false); }
   };
