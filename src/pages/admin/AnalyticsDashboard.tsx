@@ -169,16 +169,16 @@ export default function AnalyticsDashboard() {
       </Dialog>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
-          <TabsList className="inline-flex w-auto min-w-full flex-wrap gap-0.5 bg-card border border-border p-1 h-auto rounded-lg">
+        <div className="overflow-x-auto scrollbar-none -mx-1 px-1 pb-1">
+          <TabsList className="inline-flex w-max gap-1 bg-card border border-border/60 p-1.5 h-auto rounded-xl">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="gap-1.5 min-w-max rounded-md text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm px-2.5 py-1.5 transition-all"
+                className="flex items-center gap-1.5 whitespace-nowrap rounded-lg text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm px-3 py-2 transition-all shrink-0 touch-manipulation active:scale-95"
               >
-                <tab.icon className="h-3.5 w-3.5" />
-                <span className="hidden md:inline">{tab.label}</span>
+                <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                <span>{tab.label}</span>
               </TabsTrigger>
             ))}
           </TabsList>
