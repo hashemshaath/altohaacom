@@ -13,6 +13,7 @@ import { useState } from "react";
 import type { useCart } from "@/hooks/useCart";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 
 interface CartSheetProps {
   open: boolean;
@@ -27,6 +28,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
   const navigate = useNavigate();
   const [isPlacing, setIsPlacing] = useState(false);
   const [isApplyingCode, setIsApplyingCode] = useState(false);
+  const { trackPurchase, trackRemoveFromCart } = useEcommerceTracking();
 
   const handleApplyDiscount = async () => {
     if (!cart.discountCode.trim()) return;
@@ -122,24 +124,11 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
           .eq("code", cart.appliedDiscount.code);
       }
 
+      // Track purchase via centralized tracking
+      trackPurchase(order.id, order.order_number, cart.totalPrice, items.length, "SAR", "quick_checkout");
+
       cart.clearCart();
       onOpenChange(false);
-
-      // Track purchase conversion
-      try {
-        const { sendGoogleConversion, pushToDataLayer } = await import("@/hooks/useGoogleTracking");
-        sendGoogleConversion("purchase", { value: cart.totalPrice, currency: "SAR", transaction_id: order.id });
-        pushToDataLayer("purchase", { value: cart.totalPrice, currency: "SAR", order_id: order.id });
-        await supabase.from("conversion_events").insert([{
-          user_id: user.id,
-          event_name: "purchase",
-          event_category: "ecommerce",
-          event_value: cart.totalPrice,
-          currency: "SAR",
-          session_id: sessionStorage.getItem("ad_session_id") || null,
-          metadata: { order_id: order.id, order_number: order.order_number, items_count: items.length } as any,
-        }]);
-      } catch {}
 
       toast({
         title: isAr ? "تم تقديم الطلب بنجاح!" : "Order placed successfully!",
@@ -219,7 +208,10 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => cart.removeItem(item.product_id)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => {
+                          trackRemoveFromCart({ product_id: item.product_id, title: item.title, price: item.price, quantity: item.quantity });
+                          cart.removeItem(item.product_id);
+                        }}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
