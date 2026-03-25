@@ -77,7 +77,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
     { icon: CreditCard, label: isAr ? "الرصيد" : "Balance", value: `${user?.wallet?.balance ?? 0} SAR` },
   ] : [];
 
-  const allRoles = ["supervisor", "organizer", "judge", "chef", "viewer"];
+  const allRoles = ["supervisor", "organizer", "content_writer", "judge", "chef", "viewer"];
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

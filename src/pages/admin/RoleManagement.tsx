@@ -23,6 +23,7 @@ import {
   Shield, ChefHat, Award, Users, Hand, Heart, Headphones, Eye, Save, Loader2, Lock,
   Search, UserPlus, UserMinus, CheckCircle2, XCircle, BarChart3, Grid3X3, UserCog,
   ShieldCheck, ShieldOff, ChevronDown, ChevronUp, AlertTriangle, Activity, Download,
+  PenTool,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { format } from "date-fns";
@@ -38,9 +39,10 @@ const ROLE_META: Record<AppRole, { icon: typeof Shield; color: string; labelEn: 
   sponsor: { icon: Heart, color: "bg-chart-1/10 text-chart-1", labelEn: "Sponsor", labelAr: "راعي", descEn: "Corporate sponsors and partners", descAr: "الرعاة والشركاء" },
   assistant: { icon: Headphones, color: "bg-accent text-accent-foreground", labelEn: "Assistant", labelAr: "مساعد", descEn: "Support assistants", descAr: "مساعدو الدعم" },
   supervisor: { icon: Eye, color: "bg-chart-4/10 text-chart-4", labelEn: "Supervisor", labelAr: "مشرف", descEn: "Full platform supervisors (admin)", descAr: "مشرفو المنصة (مدراء)" },
+  content_writer: { icon: PenTool, color: "bg-chart-1/10 text-chart-1", labelEn: "Content Writer", labelAr: "كاتب محتوى", descEn: "Content creators, editors, and SEO specialists", descAr: "منشئو المحتوى والمحررون ومتخصصو السيو" },
 };
 
-const ALL_ROLES: AppRole[] = ["supervisor", "organizer", "judge", "chef", "student", "volunteer", "sponsor", "assistant"];
+const ALL_ROLES: AppRole[] = ["supervisor", "organizer", "content_writer", "judge", "chef", "student", "volunteer", "sponsor", "assistant"];
 
 export default function RoleManagement() {
   const { language } = useLanguage();

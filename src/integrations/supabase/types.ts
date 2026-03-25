@@ -23313,6 +23313,7 @@ export type Database = {
         | "sponsor"
         | "assistant"
         | "supervisor"
+        | "content_writer"
       badge_type:
         | "gold_winner"
         | "silver_winner"
@@ -23591,6 +23592,7 @@ export const Constants = {
         "sponsor",
         "assistant",
         "supervisor",
+        "content_writer",
       ],
       badge_type: [
         "gold_winner",
