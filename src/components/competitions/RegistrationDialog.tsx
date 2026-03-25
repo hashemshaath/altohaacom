@@ -77,6 +77,7 @@ export const RegistrationForm = memo(function RegistrationForm({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const awardPoints = useAwardPoints();
+  const { trackCompetitionRegistration } = useEcommerceTracking();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isAr = language === "ar";
 
