@@ -625,8 +625,47 @@ export default function SEODashboard() {
           <Card>
             <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "أداء الصفحات (P75)" : "Page Performance (P75)"}</CardTitle></CardHeader>
             <CardContent>
-              <div className="text-center text-sm text-muted-foreground py-4">
-                {isAr ? "لا توجد بيانات بعد. ستظهر البيانات بعد زيارات المستخدمين." : "No data yet. Data will appear after user visits."}
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border/40 text-xs text-muted-foreground">
+                      <th className="text-start py-2 pe-3 font-medium">{isAr ? "الصفحة" : "Page"}</th>
+                      <th className="text-end py-2 px-2 font-medium">LCP</th>
+                      <th className="text-end py-2 px-2 font-medium">CLS</th>
+                      <th className="text-end py-2 px-2 font-medium">INP</th>
+                      <th className="text-end py-2 ps-2 font-medium">{isAr ? "عينات" : "Samples"}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pageVitals.slice(0, 20).map(pv => (
+                      <tr key={pv.path} className="border-b border-border/20 last:border-0">
+                        <td className="py-2 pe-3 font-mono text-xs truncate max-w-[200px]">{pv.path}</td>
+                        <td className="py-2 px-2 text-end tabular-nums">
+                          {pv.lcp != null ? (
+                            <span className={getVitalStatus("lcp", pv.lcp) === "good" ? "text-chart-2" : getVitalStatus("lcp", pv.lcp) === "needs-improvement" ? "text-chart-4" : "text-destructive"}>
+                              {Math.round(pv.lcp)}ms
+                            </span>
+                          ) : "—"}
+                        </td>
+                        <td className="py-2 px-2 text-end tabular-nums">
+                          {pv.cls != null ? (
+                            <span className={getVitalStatus("cls", pv.cls) === "good" ? "text-chart-2" : getVitalStatus("cls", pv.cls) === "needs-improvement" ? "text-chart-4" : "text-destructive"}>
+                              {pv.cls.toFixed(3)}
+                            </span>
+                          ) : "—"}
+                        </td>
+                        <td className="py-2 px-2 text-end tabular-nums">
+                          {pv.inp != null ? (
+                            <span className={getVitalStatus("inp", pv.inp) === "good" ? "text-chart-2" : getVitalStatus("inp", pv.inp) === "needs-improvement" ? "text-chart-4" : "text-destructive"}>
+                              {Math.round(pv.inp)}ms
+                            </span>
+                          ) : "—"}
+                        </td>
+                        <td className="py-2 ps-2 text-end text-xs text-muted-foreground tabular-nums">{pv.samples}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </CardContent>
           </Card>
@@ -959,6 +998,27 @@ export default function SEODashboard() {
         </div>
       </div>
 
+      {/* Mobile Navigation - outside flex */}
+      <div className="lg:hidden mb-4">
+        <div className="flex overflow-x-auto gap-1 pb-2 scrollbar-hide">
+          {NAV_GROUPS.flatMap(g => g.items).map(item => (
+            <button
+              key={item.key}
+              onClick={() => setActiveSection(item.key)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-colors shrink-0",
+                activeSection === item.key
+                  ? "bg-primary text-primary-foreground font-medium"
+                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              )}
+            >
+              <item.icon className="h-3 w-3" />
+              {isAr ? item.labelAr : item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Main Layout: Sidebar + Content */}
       <div className="flex gap-5">
         {/* Sidebar Navigation */}
@@ -989,27 +1049,6 @@ export default function SEODashboard() {
             ))}
           </div>
         </nav>
-
-        {/* Mobile Navigation */}
-        <div className="lg:hidden mb-4 w-full">
-          <div className="flex overflow-x-auto gap-1 pb-2 scrollbar-hide">
-            {NAV_GROUPS.flatMap(g => g.items).map(item => (
-              <button
-                key={item.key}
-                onClick={() => setActiveSection(item.key)}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-colors shrink-0",
-                  activeSection === item.key
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : "bg-muted/50 text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <item.icon className="h-3 w-3" />
-                {isAr ? item.labelAr : item.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Content Area */}
         <div className="flex-1 min-w-0">
