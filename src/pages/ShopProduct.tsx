@@ -105,6 +105,19 @@ export default function ShopProduct() {
   const isOutOfStock = product.product_type === "physical" && (product.stock_quantity ?? 0) <= 0;
   const maxQty = product.product_type === "physical" ? (product.stock_quantity ?? 999) : 999;
 
+  // Track product view
+  useEffect(() => {
+    if (product) {
+      trackProductView({
+        product_id: product.id,
+        title: product.title,
+        price: Number(product.price),
+        currency: product.currency || "SAR",
+        category: product.category,
+      });
+    }
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleAddToCart = () => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
@@ -119,6 +132,14 @@ export default function ShopProduct() {
       currency: product.currency || "SAR",
       stock_quantity: product.stock_quantity ?? 999,
     }, qty);
+    trackAddToCart({
+      product_id: product.id,
+      title: product.title,
+      price: Number(product.price),
+      currency: product.currency || "SAR",
+      quantity: qty,
+      category: product.category,
+    });
     toast({ title: isAr ? `تمت إضافة "${title}" إلى السلة` : `"${title}" added to cart` });
     setCartOpen(true);
   };
