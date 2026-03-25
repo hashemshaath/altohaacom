@@ -423,15 +423,19 @@ export default function SEODashboard() {
       const { data, error } = await supabase.functions.invoke("seo-sitemap-ping", { headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       const results = data?.results || [];
-      const allOk = results.every((r: any) => r.status === "success");
-      const someOk = results.some((r: any) => r.status === "success");
-      const desc = results.map((r: any) => `${r.engine}: ${r.status === "success" ? "✓" : "✗"}`).join(", ");
-      if (allOk) {
-        toast.success(isAr ? "تم إرسال خريطة الموقع بنجاح" : "Sitemap pinged successfully", { description: desc });
-      } else if (someOk) {
-        toast.warning(isAr ? "تم الإرسال جزئياً" : "Partial success", { description: desc });
-      } else {
+      const hasError = results.some((r: any) => r.status === "error");
+      const hasSuccess = results.some((r: any) => r.status === "success");
+      const desc = results.map((r: any) => {
+        const icon = r.status === "success" ? "✓" : r.status === "info" ? "ℹ" : "✗";
+        const msg = r.message ? ` (${r.message})` : "";
+        return `${r.engine}: ${icon}${msg}`;
+      }).join("\n");
+      if (hasError) {
         toast.error(isAr ? "فشل إرسال خريطة الموقع" : "Sitemap ping failed", { description: desc });
+      } else if (hasSuccess) {
+        toast.success(isAr ? "تم إرسال خريطة الموقع بنجاح" : "Sitemap submitted successfully", { description: desc });
+      } else {
+        toast.info(isAr ? "تم تسجيل خريطة الموقع" : "Sitemap registered", { description: desc });
       }
     } catch (e: any) { toast.error(e.message); } finally { setPinging(false); }
   };
