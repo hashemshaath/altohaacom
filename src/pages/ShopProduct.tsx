@@ -15,9 +15,10 @@ import { ArrowLeft, ShoppingCart, ShoppingBag, Package, User, Minus, Plus } from
 import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +29,7 @@ export default function ShopProduct() {
   const [cartOpen, setCartOpen] = useState(false);
   const [qty, setQty] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const { trackProductView, trackAddToCart } = useEcommerceTracking();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["shop-product", id],
@@ -55,6 +57,19 @@ export default function ShopProduct() {
     },
     enabled: !!product?.seller_id,
   });
+
+  // Track product view (must be before early returns)
+  useEffect(() => {
+    if (product) {
+      trackProductView({
+        product_id: product.id,
+        title: product.title,
+        price: Number(product.price),
+        currency: product.currency || "SAR",
+        category: product.category,
+      });
+    }
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (
@@ -117,6 +132,14 @@ export default function ShopProduct() {
       currency: product.currency || "SAR",
       stock_quantity: product.stock_quantity ?? 999,
     }, qty);
+    trackAddToCart({
+      product_id: product.id,
+      title: product.title,
+      price: Number(product.price),
+      currency: product.currency || "SAR",
+      quantity: qty,
+      category: product.category,
+    });
     toast({ title: isAr ? `تمت إضافة "${title}" إلى السلة` : `"${title}" added to cart` });
     setCartOpen(true);
   };
