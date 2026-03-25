@@ -239,6 +239,72 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
     };
   }, [pageViews, prevPageViews, behaviorEvents, adClicks, adImpressions]);
 
+  // ── E-Commerce Metrics ──
+  const ecomMetrics = useMemo(() => {
+    const bv = behaviorEvents || [];
+    const carts = abandonedCarts || [];
+    const orders = shopOrders || [];
+
+    // Funnel events
+    const addToCartEvents = bv.filter(e => e.event_type === "add_to_cart").length;
+    const beginCheckoutEvents = bv.filter(e => e.event_type === "begin_checkout").length;
+    const purchaseEvents = bv.filter(e => e.event_type === "purchase").length;
+    const productViews = bv.filter(e => e.event_type === "view_item").length;
+    const listViews = bv.filter(e => e.event_type === "view_item_list").length;
+    const removeFromCartEvents = bv.filter(e => e.event_type === "remove_from_cart").length;
+
+    // Abandoned carts
+    const activeCarts = carts.filter(c => c.recovery_status === "active");
+    const recoveredCarts = carts.filter(c => c.recovery_status === "recovered");
+    const abandonedValue = activeCarts.reduce((s, c) => s + (c.total_amount || 0), 0);
+    const recoveryRate = carts.length > 0 ? Math.round((recoveredCarts.length / carts.length) * 100) : 0;
+
+    // Orders
+    const completedOrders = orders.filter(o => o.payment_status === "paid" || o.payment_status === "completed");
+    const totalRevenue = completedOrders.reduce((s, o) => s + (o.total_amount || 0), 0);
+    const avgOrderValue = completedOrders.length > 0 ? Math.round(totalRevenue / completedOrders.length) : 0;
+
+    // Conversion rates
+    const cartToCheckoutRate = addToCartEvents > 0 ? Math.round((beginCheckoutEvents / addToCartEvents) * 100) : 0;
+    const checkoutToPayRate = beginCheckoutEvents > 0 ? Math.round((purchaseEvents / beginCheckoutEvents) * 100) : 0;
+    const overallConversion = productViews > 0 ? +((purchaseEvents / productViews) * 100).toFixed(2) : 0;
+
+    // Funnel data for chart
+    const funnel = [
+      { stage: "Product Views", stageAr: "مشاهدة المنتج", value: productViews },
+      { stage: "Add to Cart", stageAr: "إضافة للسلة", value: addToCartEvents },
+      { stage: "Begin Checkout", stageAr: "بدء الدفع", value: beginCheckoutEvents },
+      { stage: "Purchase", stageAr: "شراء", value: purchaseEvents },
+    ];
+
+    // Cart status breakdown
+    const cartStatus = [
+      { name: "Active", nameAr: "نشطة", value: activeCarts.length },
+      { name: "Recovered", nameAr: "مستردة", value: recoveredCarts.length },
+    ].filter(c => c.value > 0);
+
+    // Revenue over time
+    const revenueTimeline: Record<string, number> = {};
+    orders.forEach(o => {
+      const key = format(parseISO(o.created_at), "MM/dd");
+      revenueTimeline[key] = (revenueTimeline[key] || 0) + (o.total_amount || 0);
+    });
+    const revenueData = Object.entries(revenueTimeline).map(([date, revenue]) => ({ date, revenue: Math.round(revenue) })).sort((a, b) => a.date.localeCompare(b.date));
+
+    // Membership events
+    const membershipEvents = bv.filter(e => e.event_type.startsWith("membership_"));
+    const competitionRegs = bv.filter(e => e.event_type === "competition_registration").length;
+    const bookingEvents = bv.filter(e => e.event_type === "booking_created").length;
+
+    return {
+      addToCartEvents, beginCheckoutEvents, purchaseEvents, productViews, listViews, removeFromCartEvents,
+      activeCarts: activeCarts.length, recoveredCarts: recoveredCarts.length, abandonedValue, recoveryRate,
+      totalRevenue, avgOrderValue, completedOrders: completedOrders.length, totalOrders: orders.length,
+      cartToCheckoutRate, checkoutToPayRate, overallConversion,
+      funnel, cartStatus, revenueData, membershipEvents: membershipEvents.length, competitionRegs, bookingEvents,
+    };
+  }, [behaviorEvents, abandonedCarts, shopOrders]);
+
   // ── Timeline ──
   const timelineData = useMemo(() => {
     const pv = pageViews || [];
