@@ -53,9 +53,6 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
 
         // Get user's own reactions
         const sessionId = getSessionId();
-        const userFilter = user?.id
-          ? { column: "user_id", value: user.id }
-          : { column: "session_id", value: sessionId };
 
         let userQuery = supabase
           .from("article_reactions")
