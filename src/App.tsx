@@ -24,6 +24,8 @@ import { safeLazy } from "@/lib/safeLazy";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
 import { PageTracker } from "@/components/tracking/PageTracker";
+import { useSEOTracking } from "@/hooks/useSEOTracking";
+import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
@@ -115,6 +117,10 @@ function AppOverlays({ isHome }: { isHome: boolean }) {
 function AppContent() {
   const location = useLocation();
   const isHome = location.pathname === "/";
+
+  // SEO analytics tracking hooks (page views + Core Web Vitals)
+  useSEOTracking();
+  useWebVitalsTracking();
 
   return (
     <>
