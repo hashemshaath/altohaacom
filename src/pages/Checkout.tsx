@@ -74,6 +74,14 @@ export default function Checkout() {
 
   const stepIndex = STEPS.indexOf(step);
 
+  // Track checkout steps
+  useEffect(() => {
+    if (step === "cart") {
+      trackCheckoutBegin(cart.totalPrice, cart.totalItems);
+    }
+    trackCheckoutStep(step, stepIndex, cart.totalPrice, cart.totalItems);
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const fieldLabel = (en: string, ar: string) => (isAr ? ar : en);
 
   const handlePlaceOrder = async () => {
