@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +18,8 @@ import { toast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { ArrowLeft, ShoppingBag, MapPin, CreditCard, CheckCircle, Package, Loader2, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
+import { useAbandonedCartTracker } from "@/hooks/useAbandonedCartTracker";
 
 const STEPS = ["cart", "address", "payment", "confirm"] as const;
 type Step = typeof STEPS[number];
@@ -47,10 +49,14 @@ export default function Checkout() {
   const isAr = language === "ar";
   const navigate = useNavigate();
   const cart = useCart();
+  const { trackCheckoutStep, trackCheckoutBegin, trackPurchase, trackRemoveFromCart } = useEcommerceTracking();
 
   const [step, setStep] = useState<Step>("cart");
   const [isPlacing, setIsPlacing] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<{ id: string; order_number: string } | null>(null);
+
+  // Abandoned cart tracking
+  useAbandonedCartTracker(cart.items, cart.totalPrice, !!completedOrder);
 
   const [address, setAddress] = useState({
     full_name: "",
@@ -67,6 +73,14 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("card");
 
   const stepIndex = STEPS.indexOf(step);
+
+  // Track checkout steps
+  useEffect(() => {
+    if (step === "cart") {
+      trackCheckoutBegin(cart.totalPrice, cart.totalItems);
+    }
+    trackCheckoutStep(step, stepIndex, cart.totalPrice, cart.totalItems);
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fieldLabel = (en: string, ar: string) => (isAr ? ar : en);
 
@@ -106,6 +120,7 @@ export default function Checkout() {
       const { error: itemsError } = await supabase.from("shop_order_items").insert(items);
       if (itemsError) throw itemsError;
 
+      trackPurchase(order.id, order.order_number, cart.totalPrice, cart.totalItems, cart.items[0]?.currency || "SAR", paymentMethod);
       cart.clearCart();
       setCompletedOrder(order);
       setStep("confirm");

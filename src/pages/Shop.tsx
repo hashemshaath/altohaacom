@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +14,8 @@ import { ShopFilters, type SortOption } from "@/components/shop/ShopFilters";
 import { ShopProductCard } from "@/components/shop/ShopProductCard";
 import { ShopEmptyState } from "@/components/shop/ShopEmptyState";
 import { toast } from "@/hooks/use-toast";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
+import { useAbandonedCartTracker } from "@/hooks/useAbandonedCartTracker";
 
 export default function Shop() {
   const { language } = useLanguage();
@@ -25,6 +27,8 @@ export default function Shop() {
   const cart = useCart();
   const [cartOpen, setCartOpen] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const { trackAddToCart, trackProductListView } = useEcommerceTracking();
+  useAbandonedCartTracker(cart.items, cart.totalPrice, false);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["shop-products"],
@@ -73,6 +77,18 @@ export default function Shop() {
     return result;
   }, [products, search, categoryFilter, typeFilter, sortBy, isAr]);
 
+  // Track product list view when filtered results change
+  useEffect(() => {
+    if (filtered.length > 0) {
+      trackProductListView("shop_main", filtered.slice(0, 10).map((p: any) => ({
+        product_id: p.id,
+        title: p.title,
+        price: p.price,
+        category: p.category,
+      })));
+    }
+  }, [filtered.length, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleAddToCart = useCallback((product: any) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
@@ -92,8 +108,16 @@ export default function Shop() {
       tax_rate: product.tax_rate || 0,
       tax_inclusive: product.tax_inclusive || false,
     });
+    trackAddToCart({
+      product_id: product.id,
+      title: product.title,
+      price: product.price,
+      currency: product.currency || "SAR",
+      quantity: 1,
+      category: product.category,
+    });
     toast({ title: isAr ? `تمت إضافة "${title}" إلى السلة` : `"${title}" added to cart` });
-  }, [user, isAr, cart]);
+  }, [user, isAr, cart, trackAddToCart]);
 
   return (
     <PageShell
