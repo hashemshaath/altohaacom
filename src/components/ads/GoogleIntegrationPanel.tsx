@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { BarChart3, Globe, Tag, Target, Save, CheckCircle } from "lucide-react";
+import { BarChart3, Globe, Tag, Target, Save, CheckCircle, Search } from "lucide-react";
 
 interface IntegrationConfig {
   integration_type: string;
@@ -67,6 +67,17 @@ const googleIntegrations = [
     ],
   },
   {
+    type: "google_search_console",
+    icon: Search,
+    nameEn: "Google Search Console",
+    nameAr: "أدوات مشرفي المواقع",
+    descEn: "Verify site ownership for Google Search Console and indexing",
+    descAr: "التحقق من ملكية الموقع لأدوات مشرفي المواقع والفهرسة",
+    fields: [
+      { key: "verification_code", labelEn: "Verification Code", labelAr: "رمز التحقق", placeholder: "e.g. abc123XYZ..." },
+    ],
+  },
+  {
     type: "google_places",
     icon: Globe,
     nameEn: "Google Places API",
@@ -105,7 +116,6 @@ export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
         is_active: s.is_active,
       };
     });
-    // Fill defaults
     googleIntegrations.forEach(g => {
       if (!map[g.type]) {
         map[g.type] = { integration_type: g.type, config: {}, is_active: false };
@@ -118,7 +128,6 @@ export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
     mutationFn: async (type: string) => {
       const cfg = configs[type];
       if (!cfg) return;
-      // Save to integration_settings
       const { error } = await supabase.from("integration_settings").upsert({
         integration_type: type,
         config: cfg.config as any,
@@ -126,28 +135,11 @@ export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
         updated_at: new Date().toISOString(),
       }, { onConflict: "integration_type" });
       if (error) throw error;
-
-      // Also sync to marketing_tracking_config for script injection
-      const platformMap: Record<string, string> = {
-        google_analytics: "google_analytics_4",
-        google_tag_manager: "google_tag_manager",
-        google_ads: "google_ads",
-      };
-      const platform = platformMap[type];
-      if (platform) {
-        const trackingIdKey = type === "google_analytics" ? "measurement_id"
-          : type === "google_tag_manager" ? "container_id"
-          : "conversion_id";
-        await supabase.from("marketing_tracking_config").update({
-          tracking_id: cfg.config?.[trackingIdKey] || null,
-          is_active: cfg.is_active,
-          config: cfg.config as any,
-          updated_at: new Date().toISOString(),
-        }).eq("platform", platform);
-      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["integration-settings-google"] });
+      // Also invalidate the active query used by useGoogleTracking so scripts inject immediately
+      qc.invalidateQueries({ queryKey: ["integration-settings-google-active"] });
       toast({ title: isAr ? "تم الحفظ" : "Saved successfully" });
     },
     onError: () => toast({ title: isAr ? "حدث خطأ" : "Error", variant: "destructive" }),
@@ -175,7 +167,7 @@ export const GoogleIntegrationPanel = memo(function GoogleIntegrationPanel() {
       <div className="mb-2">
         <h3 className="text-lg font-semibold">{isAr ? "تكاملات جوجل" : "Google Integrations"}</h3>
         <p className="text-sm text-muted-foreground">
-          {isAr ? "ربط منصتك مع خدمات جوجل للتحليلات والإعلانات" : "Connect your platform with Google services for analytics and advertising"}
+          {isAr ? "ربط منصتك مع خدمات جوجل للتحليلات والإعلانات والتتبع" : "Connect your platform with Google services for analytics, ads, and tracking"}
         </p>
       </div>
 

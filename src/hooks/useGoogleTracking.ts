@@ -3,19 +3,31 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Dynamically injects Google Analytics 4, GTM, and Google Ads scripts
- * based on admin-configured marketing_tracking_config.
+ * Reads active Google integrations from `integration_settings`
+ * and dynamically injects the appropriate scripts.
+ *
+ * Supported: GA4, GTM, Google Ads, AdSense, Google Search Console (meta tag).
  */
+
+const GOOGLE_TYPES = [
+  "google_analytics",
+  "google_tag_manager",
+  "google_ads",
+  "google_adsense",
+  "google_search_console",
+];
+
 export function useGoogleTracking() {
   const injected = useRef(false);
 
   const { data: configs } = useQuery({
-    queryKey: ["marketing-tracking-configs"],
+    queryKey: ["integration-settings-google-active"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("marketing_tracking_config")
-        .select("platform, tracking_id, is_active")
-        .eq("is_active", true);
+        .from("integration_settings")
+        .select("integration_type, config, is_active")
+        .eq("is_active", true)
+        .in("integration_type", GOOGLE_TYPES);
       return data || [];
     },
     staleTime: 5 * 60 * 1000,
@@ -25,25 +37,31 @@ export function useGoogleTracking() {
     if (!configs || configs.length === 0 || injected.current) return;
     injected.current = true;
 
-    configs.forEach((cfg: any) => {
-      const trackingId = cfg.tracking_id;
-      if (!trackingId) return;
+    configs.forEach((row: any) => {
+      const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
 
-      switch (cfg.platform) {
-        case "google_analytics_4":
-          injectGA4(trackingId);
+      switch (row.integration_type) {
+        case "google_analytics":
+          if (cfg.measurement_id) injectGA4(cfg.measurement_id);
           break;
         case "google_tag_manager":
-          injectGTM(trackingId);
+          if (cfg.container_id) injectGTM(cfg.container_id);
           break;
         case "google_ads":
-          injectGoogleAds(trackingId);
+          if (cfg.conversion_id) injectGoogleAds(cfg.conversion_id);
+          break;
+        case "google_adsense":
+          if (cfg.publisher_id) injectAdSense(cfg.publisher_id);
+          break;
+        case "google_search_console":
+          if (cfg.verification_code) injectSearchConsoleVerification(cfg.verification_code);
           break;
       }
     });
   }, [configs]);
 }
 
+/* ── GA4 ── */
 function injectGA4(measurementId: string) {
   if (document.querySelector(`script[src*="gtag/js?id=${measurementId}"]`)) return;
 
@@ -62,6 +80,7 @@ function injectGA4(measurementId: string) {
   document.head.appendChild(inline);
 }
 
+/* ── GTM ── */
 function injectGTM(containerId: string) {
   if (document.querySelector(`script[src*="gtm.js?id=${containerId}"]`)) return;
 
@@ -87,6 +106,7 @@ function injectGTM(containerId: string) {
   document.body.insertBefore(noscript, document.body.firstChild);
 }
 
+/* ── Google Ads ── */
 function injectGoogleAds(conversionId: string) {
   if (document.querySelector(`script[src*="gtag/js?id=${conversionId}"]`)) return;
 
@@ -105,14 +125,38 @@ function injectGoogleAds(conversionId: string) {
   document.head.appendChild(inline);
 }
 
-// Helper to send conversion events to Google
+/* ── AdSense ── */
+function injectAdSense(publisherId: string) {
+  if (document.querySelector(`script[data-ad-client="${publisherId}"]`)) return;
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.crossOrigin = "anonymous";
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`;
+  script.setAttribute("data-ad-client", publisherId);
+  document.head.appendChild(script);
+}
+
+/* ── Search Console Verification ── */
+function injectSearchConsoleVerification(code: string) {
+  if (document.querySelector('meta[name="google-site-verification"]')) return;
+
+  const meta = document.createElement("meta");
+  meta.name = "google-site-verification";
+  meta.content = code;
+  document.head.appendChild(meta);
+}
+
+/* ── Helpers ── */
+
+/** Send conversion events to Google gtag */
 export function sendGoogleConversion(eventName: string, params?: Record<string, unknown>) {
   if (typeof window !== "undefined" && (window as any).gtag) {
     (window as any).gtag("event", eventName, params);
   }
 }
 
-// Helper to push events to GTM dataLayer
+/** Push events to GTM dataLayer */
 export function pushToDataLayer(event: string, data?: Record<string, unknown>) {
   if (typeof window !== "undefined") {
     (window as any).dataLayer = (window as any).dataLayer || [];
