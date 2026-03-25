@@ -185,7 +185,7 @@ export default function JobSearch() {
         .select("user_id, full_name, full_name_ar, username, avatar_url, specialization, specialization_ar, job_title, job_title_ar, country_code, city, years_of_experience, experience_level, work_availability_note, work_availability_note_ar, preferred_job_types, preferred_work_locations, willing_to_relocate, is_verified")
         .eq("is_open_to_work", true)
         .eq("job_availability_visibility", "public")
-        .eq("account_type", "professional")
+        .eq("is_chef_visible", true)
         .order("updated_at", { ascending: false })
         .limit(50);
       if (error) throw error;
