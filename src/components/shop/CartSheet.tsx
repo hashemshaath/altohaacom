@@ -208,7 +208,10 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => cart.removeItem(item.product_id)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => {
+                          trackRemoveFromCart({ product_id: item.product_id, title: item.title, price: item.price, quantity: item.quantity });
+                          cart.removeItem(item.product_id);
+                        }}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
