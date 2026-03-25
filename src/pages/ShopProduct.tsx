@@ -29,6 +29,7 @@ export default function ShopProduct() {
   const [cartOpen, setCartOpen] = useState(false);
   const [qty, setQty] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const { trackProductView, trackAddToCart } = useEcommerceTracking();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["shop-product", id],
