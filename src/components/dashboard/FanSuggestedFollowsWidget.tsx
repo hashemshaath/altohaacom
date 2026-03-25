@@ -28,7 +28,7 @@ export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget
       const { data: profiles } = await supabase
         .from("profiles")
         .select("user_id, full_name, avatar_url, username, account_type, specialization")
-        .eq("account_type", "professional")
+        .eq("is_chef_visible", true)
         .neq("user_id", user.id)
         .order("view_count", { ascending: false })
         .limit(20);

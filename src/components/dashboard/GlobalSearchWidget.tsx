@@ -43,7 +43,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
         supabase.from("competitions").select("id, title, title_ar, country_code").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).limit(3),
         supabase.from("recipes").select("id, title, title_ar, category").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).eq("is_published", true).limit(3),
         supabase.from("articles").select("id, title, title_ar, slug, type").or(`title.ilike.%${debouncedQuery}%,title_ar.ilike.%${debouncedQuery}%`).eq("status", "published").limit(3),
-        supabase.from("profiles").select("user_id, full_name, full_name_ar, username, specialization").or(`full_name.ilike.%${debouncedQuery}%,full_name_ar.ilike.%${debouncedQuery}%,username.ilike.%${debouncedQuery}%`).eq("account_type", "professional").limit(3),
+        supabase.from("profiles").select("user_id, full_name, full_name_ar, username, specialization").or(`full_name.ilike.%${debouncedQuery}%,full_name_ar.ilike.%${debouncedQuery}%,username.ilike.%${debouncedQuery}%`).eq("is_chef_visible", true).limit(3),
       ]);
 
       comps.data?.forEach(c => searchResults.push({

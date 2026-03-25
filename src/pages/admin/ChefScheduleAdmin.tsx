@@ -68,7 +68,7 @@ export default function ChefScheduleAdmin() {
   const { data: profiles = [] } = useQuery({
     queryKey: ["admin-chef-profiles"],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("user_id, full_name, full_name_ar, avatar_url").limit(500);
+      const { data } = await supabase.from("profiles").select("user_id, full_name, full_name_ar, avatar_url").eq("is_chef_visible", true).limit(500);
       return data || [];
     },
   });
