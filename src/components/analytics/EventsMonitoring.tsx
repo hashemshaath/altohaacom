@@ -27,6 +27,7 @@ import {
   Gauge, Crosshair, Fingerprint, Route, AlertTriangle, Flame,
   Target, PieChart as PieChartIcon, Radar as RadarIcon, LayoutGrid,
   Hash, Percent, ArrowUpRight, ArrowDownRight, Minus,
+  ShoppingCart, DollarSign, PackageX, CreditCard,
 } from "lucide-react";
 import { format, subDays, subHours, parseISO, differenceInMinutes, getHours, getDay } from "date-fns";
 
