@@ -422,7 +422,17 @@ export default function SEODashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("seo-sitemap-ping", { headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
-      toast.success(isAr ? "تم إرسال خريطة الموقع بنجاح" : "Sitemap pinged successfully", { description: data?.results?.map((r: any) => `${r.engine}: ${r.status}`).join(", ") });
+      const results = data?.results || [];
+      const allOk = results.every((r: any) => r.status === "success");
+      const someOk = results.some((r: any) => r.status === "success");
+      const desc = results.map((r: any) => `${r.engine}: ${r.status === "success" ? "✓" : "✗"}`).join(", ");
+      if (allOk) {
+        toast.success(isAr ? "تم إرسال خريطة الموقع بنجاح" : "Sitemap pinged successfully", { description: desc });
+      } else if (someOk) {
+        toast.warning(isAr ? "تم الإرسال جزئياً" : "Partial success", { description: desc });
+      } else {
+        toast.error(isAr ? "فشل إرسال خريطة الموقع" : "Sitemap ping failed", { description: desc });
+      }
     } catch (e: any) { toast.error(e.message); } finally { setPinging(false); }
   };
 
