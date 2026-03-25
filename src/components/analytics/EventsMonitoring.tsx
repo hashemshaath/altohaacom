@@ -1,4 +1,4 @@
-import { memo, useState, useMemo } from "react";
+import { memo, useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Progress } from "@/components/ui/progress";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { downloadCSV, printableReport } from "@/lib/exportUtils";
+import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -27,7 +31,7 @@ import {
   Gauge, Crosshair, Fingerprint, Route, AlertTriangle, Flame,
   Target, PieChart as PieChartIcon, Radar as RadarIcon, LayoutGrid,
   Hash, Percent, ArrowUpRight, ArrowDownRight, Minus,
-  ShoppingCart, DollarSign, PackageX, CreditCard,
+  ShoppingCart, DollarSign, PackageX, CreditCard, Download, Printer,
 } from "lucide-react";
 import { format, subDays, subHours, parseISO, differenceInMinutes, getHours, getDay } from "date-fns";
 
