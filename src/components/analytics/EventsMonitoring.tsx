@@ -572,6 +572,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
               { value: "sessions", icon: Route, label: isAr ? "الجلسات" : "Sessions" },
               { value: "engagement", icon: Flame, label: isAr ? "التفاعل" : "Engagement" },
               { value: "heatmap", icon: LayoutGrid, label: isAr ? "خريطة حرارية" : "Heatmap" },
+              { value: "ecommerce", icon: ShoppingCart, label: isAr ? "التجارة" : "E-Commerce" },
               { value: "feed", icon: Activity, label: isAr ? "البث المباشر" : "Live Feed" },
             ].map(tab => (
               <TabsTrigger key={tab.value} value={tab.value} className="gap-1 text-xs px-2.5 py-1.5 rounded-md data-[state=active]:bg-primary data-[state=active]:text-primary-foreground min-w-max">
