@@ -8,12 +8,22 @@ import {
 } from "@/components/ui/command";
 import { Search } from "lucide-react";
 import { adminNavSections } from "@/config/adminNavSections";
+import { useAdminRole } from "@/hooks/useAdminRole";
 
 export const AdminSearchCommand = memo(function AdminSearchCommand() {
   const [open, setOpen] = useState(false);
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
+  const { isFullAdmin } = useAdminRole();
+
+  const filteredSections = useMemo(() => {
+    if (isFullAdmin) return adminNavSections;
+    return adminNavSections
+      .filter((s) => !s.fullAdminOnly)
+      .map((s) => ({ ...s, items: s.items.filter((i) => !i.fullAdminOnly) }))
+      .filter((s) => s.items.length > 0);
+  }, [isFullAdmin]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -51,7 +61,7 @@ export const AdminSearchCommand = memo(function AdminSearchCommand() {
         <CommandInput placeholder={isAr ? "ابحث عن صفحة أو إعداد..." : "Search pages & settings..."} />
         <CommandList>
           <CommandEmpty>{isAr ? "لا توجد نتائج" : "No results found"}</CommandEmpty>
-          {adminNavSections.map((section) => (
+          {filteredSections.map((section) => (
             <CommandGroup key={section.titleEn} heading={isAr ? section.titleAr : section.titleEn}>
               {section.items.map((item) => {
                 const Icon = item.icon;

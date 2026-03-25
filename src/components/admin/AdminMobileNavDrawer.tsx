@@ -1,23 +1,32 @@
-import { useState, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, ChevronDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { adminNavSections } from "@/config/adminNavSections";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
 
 export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { isFullAdmin } = useAdminRole();
 
-  const filteredSections = adminNavSections
+  const roleSections = useMemo(() => {
+    if (isFullAdmin) return adminNavSections;
+    return adminNavSections
+      .filter((s) => !s.fullAdminOnly)
+      .map((s) => ({ ...s, items: s.items.filter((i) => !i.fullAdminOnly) }))
+      .filter((s) => s.items.length > 0);
+  }, [isFullAdmin]);
+
+  const filteredSections = roleSections
     .map((section) => ({
       ...section,
       items: section.items.filter(
@@ -86,9 +95,7 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
                           )
                         }
                       >
-                        <div className={cn(
-                          "flex h-7 w-7 items-center justify-center rounded-lg shrink-0 transition-colors",
-                        )}>
+                        <div className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0 transition-colors">
                           <item.icon className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover/nav:scale-110" />
                         </div>
                         <span className="truncate">{isAr ? item.labelAr : item.labelEn}</span>
