@@ -885,6 +885,33 @@ export type Database = {
         }
         Relationships: []
       }
+      article_reactions: {
+        Row: {
+          article_id: string
+          created_at: string
+          id: string
+          reaction_type: string
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          id?: string
+          reaction_type: string
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          id?: string
+          reaction_type?: string
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       article_tags: {
         Row: {
           article_id: string
