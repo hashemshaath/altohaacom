@@ -64,12 +64,16 @@ export interface NavItem {
   labelEn: string;
   labelAr: string;
   end?: boolean;
+  /** If true, only full admins (supervisor/organizer) can see this item */
+  fullAdminOnly?: boolean;
 }
 
 export interface NavSection {
   titleEn: string;
   titleAr: string;
   items: NavItem[];
+  /** If true, the entire section is full-admin only */
+  fullAdminOnly?: boolean;
 }
 
 export const adminNavSections: NavSection[] = [
@@ -79,7 +83,7 @@ export const adminNavSections: NavSection[] = [
     titleAr: "نظرة عامة",
     items: [
       { to: "/admin", icon: LayoutDashboard, labelEn: "Dashboard", labelAr: "لوحة التحكم", end: true },
-      { to: "/admin/analytics", icon: BarChart3, labelEn: "Analytics", labelAr: "التحليلات" },
+      { to: "/admin/analytics", icon: BarChart3, labelEn: "Analytics", labelAr: "التحليلات", fullAdminOnly: true },
     ],
   },
 
@@ -87,6 +91,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Users",
     titleAr: "المستخدمين",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/users", icon: Users, labelEn: "All Users", labelAr: "جميع المستخدمين" },
       { to: "/admin/roles", icon: Shield, labelEn: "Roles", labelAr: "الأدوار" },
@@ -103,7 +108,7 @@ export const adminNavSections: NavSection[] = [
     items: [
       { to: "/admin/companies", icon: Building, labelEn: "Companies", labelAr: "الشركات" },
       { to: "/admin/establishments", icon: Building2, labelEn: "Establishments", labelAr: "المنشآت" },
-      { to: "/admin/organizers", icon: Landmark, labelEn: "Organizers", labelAr: "المنظمين" },
+      { to: "/admin/organizers", icon: Landmark, labelEn: "Organizers", labelAr: "المنظمين", fullAdminOnly: true },
     ],
   },
 
@@ -111,6 +116,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "CRM & Marketing",
     titleAr: "العلاقات والتسويق",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/crm", icon: Activity, labelEn: "CRM", labelAr: "إدارة العلاقات" },
       { to: "/admin/leads", icon: UserSearch, labelEn: "Leads", labelAr: "العملاء المحتملين" },
@@ -124,6 +130,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Competitions",
     titleAr: "المسابقات",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
       { to: "/admin/evaluation", icon: ClipboardCheck, labelEn: "Evaluation", labelAr: "التقييم" },
@@ -137,6 +144,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Events",
     titleAr: "الفعاليات",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions", labelAr: "المعارض" },
       { to: "/admin/global-events", icon: CalendarRange, labelEn: "Global Events", labelAr: "التقويم العالمي" },
@@ -155,7 +163,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/seo", icon: Search, labelEn: "SEO Dashboard", labelAr: "لوحة SEO" },
       { to: "/admin/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
       { to: "/admin/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدورات" },
-      { to: "/admin/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد" },
+      { to: "/admin/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد", fullAdminOnly: true },
       { to: "/admin/media", icon: Image, labelEn: "Media", labelAr: "الوسائط" },
       { to: "/admin/moderation", icon: Flag, labelEn: "Moderation", labelAr: "الإشراف" },
       { to: "/admin/qr-codes", icon: QrCode, labelEn: "QR Codes", labelAr: "رموز QR" },
@@ -166,6 +174,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Finance",
     titleAr: "المالية",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/orders", icon: Package, labelEn: "Orders", labelAr: "الطلبات" },
       { to: "/admin/invoices", icon: FileText, labelEn: "Invoices", labelAr: "الفواتير" },
@@ -177,6 +186,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Communications",
     titleAr: "التواصل",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/support-tickets", icon: Ticket, labelEn: "Tickets", labelAr: "التذاكر" },
       { to: "/admin/live-chat", icon: Headphones, labelEn: "Live Chat", labelAr: "الدعم المباشر" },
@@ -190,6 +200,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Design & Branding",
     titleAr: "التصميم والهوية",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/design", icon: Palette, labelEn: "Overview", labelAr: "نظرة عامة", end: true },
       { to: "/admin/design/brand-identity", icon: Sparkles, labelEn: "Branding", labelAr: "الهوية" },
@@ -204,11 +215,11 @@ export const adminNavSections: NavSection[] = [
     titleEn: "System",
     titleAr: "النظام",
     items: [
-      { to: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات" },
-      { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان" },
+      { to: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات", fullAdminOnly: true },
+      { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان", fullAdminOnly: true },
       { to: "/admin/localization", icon: Globe, labelEn: "Languages", labelAr: "اللغات" },
-      { to: "/admin/countries", icon: MapPin, labelEn: "Countries", labelAr: "الدول" },
-      { to: "/admin/integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات" },
+      { to: "/admin/countries", icon: MapPin, labelEn: "Countries", labelAr: "الدول", fullAdminOnly: true },
+      { to: "/admin/integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات", fullAdminOnly: true },
     ],
   },
 
@@ -216,6 +227,7 @@ export const adminNavSections: NavSection[] = [
   {
     titleEn: "Tools",
     titleAr: "الأدوات",
+    fullAdminOnly: true,
     items: [
       { to: "/admin/smart-import", icon: Upload, labelEn: "Smart Import", labelAr: "استيراد ذكي" },
       { to: "/admin/deduplication", icon: ScanSearch, labelEn: "Deduplication", labelAr: "التكرارات" },
