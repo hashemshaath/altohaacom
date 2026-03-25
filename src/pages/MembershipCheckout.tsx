@@ -248,6 +248,8 @@ export default function MembershipCheckout() {
       }
     },
     onSuccess: () => {
+      const action = isRenewal ? "renew" : isUpgrade ? "upgrade" : isDowngrade ? "downgrade" : "subscribe";
+      trackMembershipAction(action, selectedTier, price);
       queryClient.invalidateQueries({ queryKey: ["checkout-profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-tier"] });
       queryClient.invalidateQueries({ queryKey: ["membership"] });
