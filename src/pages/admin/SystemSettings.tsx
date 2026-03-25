@@ -261,35 +261,7 @@ export default function SystemSettings() {
             <TabsContent value="tracking" className="mt-0">
               <div className="space-y-6">
                 <GoogleIntegrationPanel />
-                <Card className="border-border/50">
-                  <CardContent className="p-4">
-                    <h4 className="text-sm font-semibold mb-1">
-                      {isAr ? "منصات التتبع المدعومة" : "Supported Tracking Platforms"}
-                    </h4>
-                    <p className="text-xs text-muted-foreground mb-3">
-                      {isAr
-                        ? "جميع أكواد التتبع والتحليلات تُدار من صفحة الإعلانات والتكاملات. الحالة أدناه توضح ما تم تكوينه."
-                        : "All tracking codes and analytics are managed from the Advertising & Integrations page. Status below reflects what's configured."}
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {[
-                        { name: "Google Analytics 4", status: true },
-                        { name: "Google Tag Manager", status: true },
-                        { name: "Google Ads", status: true },
-                        { name: "Google AdSense", status: true },
-                        { name: "Meta Pixel", status: true },
-                        { name: "TikTok Pixel", status: true },
-                        { name: "Snapchat Pixel", status: true },
-                        { name: "Microsoft Clarity", status: false },
-                      ].map(p => (
-                        <div key={p.name} className="flex items-center gap-1.5 rounded-xl border border-border/40 p-2.5 transition-colors hover:bg-muted/50">
-                          <div className={`h-2 w-2 rounded-full shrink-0 ${p.status ? "bg-green-500" : "bg-muted-foreground/30"}`} />
-                          <span className="text-[11px] font-medium">{p.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                <TrackingStatusCard />
               </div>
             </TabsContent>
 
