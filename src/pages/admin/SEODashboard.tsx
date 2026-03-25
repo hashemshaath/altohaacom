@@ -507,8 +507,74 @@ export default function SEODashboard() {
 
   // ── Web Vitals Section ──
   function renderVitals() {
+    const handleCollectVitals = async () => {
+      try {
+        // Collect current page's vitals immediately
+        const path = window.location.pathname;
+        const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+        const ttfb = navEntries[0] ? Math.round(navEntries[0].responseStart - navEntries[0].requestStart) : null;
+        
+        // Get paint entries
+        const paintEntries = performance.getEntriesByType("paint");
+        const fcpEntry = paintEntries.find(e => e.name === "first-contentful-paint");
+        const fcp = fcpEntry ? Math.round(fcpEntry.startTime) : null;
+        
+        // Get LCP from performance entries
+        let lcp: number | null = null;
+        try {
+          const lcpEntries = performance.getEntriesByType("largest-contentful-paint") as any[];
+          if (lcpEntries.length) lcp = Math.round(lcpEntries[lcpEntries.length - 1].startTime);
+        } catch {}
+        
+        // Get CLS
+        let cls: number | null = null;
+        try {
+          const layoutShiftEntries = performance.getEntriesByType("layout-shift") as any[];
+          if (layoutShiftEntries.length) {
+            cls = Math.round(layoutShiftEntries.reduce((sum, e) => sum + (e.hadRecentInput ? 0 : e.value), 0) * 1000) / 1000;
+          }
+        } catch {}
+
+        const payload = {
+          path,
+          lcp,
+          inp: null,
+          cls,
+          fcp,
+          ttfb,
+          device_type: window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop",
+          connection_type: (navigator as any)?.connection?.effectiveType || null,
+          session_id: "manual-collect-" + Date.now().toString(36),
+          user_agent: navigator.userAgent.slice(0, 200),
+        };
+
+        const { error } = await supabase.from("seo_web_vitals").insert(payload);
+        if (error) throw error;
+        toast.success(isAr ? "تم جمع بيانات الأداء" : "Performance data collected successfully");
+        // Refetch vitals data
+        window.location.reload();
+      } catch (e: any) {
+        toast.error(e.message || "Failed to collect vitals");
+      }
+    };
+
     return (
       <div className="space-y-4">
+        {/* Action Bar */}
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h3 className="text-base font-semibold flex items-center gap-2">
+              <Gauge className="h-4 w-4 text-primary" />
+              {isAr ? "مقاييس الأداء الأساسية" : "Core Web Vitals"}
+            </h3>
+            <p className="text-xs text-muted-foreground">{isAr ? "مقاييس Google P75 للأداء" : "Google's P75 performance metrics"}</p>
+          </div>
+          <Button onClick={handleCollectVitals} size="sm" className="gap-1.5">
+            <Zap className="h-3.5 w-3.5" />
+            {isAr ? "جمع الآن" : "Collect Now"}
+          </Button>
+        </div>
+
         {/* P75 Vitals Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {(["lcp", "inp", "cls", "fcp", "ttfb"] as const).map(metric => {
@@ -532,7 +598,7 @@ export default function SEODashboard() {
                       <p className="text-[9px] text-muted-foreground mt-1">P75 · ≤{metric === "cls" ? t.good : t.good + t.unit}</p>
                     </>
                   ) : (
-                    <p className="text-sm text-muted-foreground">{isAr ? "لا بيانات" : "No data"}</p>
+                    <p className="text-sm text-muted-foreground">{isAr ? "لا بيانات — اضغط جمع الآن" : "No data — click Collect Now"}</p>
                   )}
                 </CardContent>
               </Card>
@@ -671,31 +737,29 @@ export default function SEODashboard() {
           </Card>
         )}
 
-        {/* Device comparison & connection distribution */}
-        {(deviceVitalsComparison.length > 0 || connectionDistribution.length > 0) && (
+        {/* Device vitals comparison */}
+        {deviceVitalsComparison.length > 0 && (
           <div className="grid md:grid-cols-2 gap-4">
-            {deviceVitalsComparison.length > 0 && (
-              <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "مقارنة الأجهزة" : "Device Comparison"}</CardTitle></CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={deviceVitalsComparison}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                      <XAxis dataKey="device" tick={{ fontSize: 11 }} />
-                      <YAxis tick={{ fontSize: 10 }} />
-                      <RechartsTooltip contentStyle={{ fontSize: 11, borderRadius: 8 }} />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="LCP" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="FCP" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="TTFB" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            )}
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "مقارنة الأداء حسب الجهاز (P75)" : "Device Performance Comparison (P75)"}</CardTitle></CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={deviceVitalsComparison} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis dataKey="device" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                    <RechartsTooltip contentStyle={{ fontSize: 11, borderRadius: 8, backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))" }} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    <Bar dataKey="LCP" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="FCP" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="TTFB" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
             {connectionDistribution.length > 0 && (
               <Card>
-                <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "أنواع الاتصال" : "Connection Types"}</CardTitle></CardHeader>
+                <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "توزيع نوع الاتصال" : "Connection Type Distribution"}</CardTitle></CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
@@ -710,6 +774,25 @@ export default function SEODashboard() {
               </Card>
             )}
           </div>
+        )}
+
+        {/* Empty state with guidance */}
+        {!vitalsAgg && (
+          <Card className="border-dashed border-2 border-border/50">
+            <CardContent className="p-8 text-center">
+              <Gauge className="h-10 w-10 text-muted-foreground/50 mx-auto mb-3" />
+              <h3 className="text-sm font-semibold mb-1">{isAr ? "لم يتم جمع بيانات أداء بعد" : "No Web Vitals data collected yet"}</h3>
+              <p className="text-xs text-muted-foreground mb-4 max-w-md mx-auto">
+                {isAr
+                  ? "اضغط على زر 'جمع الآن' أعلاه لجمع مقاييس الأداء الحالية، أو انتظر حتى يبدأ الزوار الحقيقيون بالتصفح."
+                  : "Click 'Collect Now' above to capture current performance metrics, or wait for real visitors to browse your site. Data will appear automatically."}
+              </p>
+              <Button onClick={handleCollectVitals} size="sm" className="gap-1.5">
+                <Zap className="h-3.5 w-3.5" />
+                {isAr ? "جمع البيانات" : "Collect Performance Data"}
+              </Button>
+            </CardContent>
+          </Card>
         )}
       </div>
     );
