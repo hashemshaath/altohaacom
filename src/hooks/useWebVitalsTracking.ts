@@ -43,9 +43,6 @@ export function useWebVitalsTracking() {
   const observersRef = useRef<PerformanceObserver[]>([]);
 
   useEffect(() => {
-    // Skip in dev
-    if (import.meta.env.DEV) return;
-
     // Reset for new route
     vitalsRef.current = { lcp: null, inp: null, cls: null, fcp: null, ttfb: null };
     sentRef.current = false;
@@ -147,15 +144,8 @@ export function useWebVitalsTracking() {
       };
 
       try {
-        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-        const sent = navigator.sendBeacon(
-          url,
-          new Blob([JSON.stringify(payload)], { type: "application/json" })
-        );
-        // Fallback to fetch if sendBeacon fails
-        if (!sent) {
-          fetch(url, { method: "POST", headers, body: JSON.stringify(payload), keepalive: true }).catch(() => {});
-        }
+        // Use fetch with keepalive for reliable delivery with auth headers
+        fetch(url, { method: "POST", headers, body: JSON.stringify(payload), keepalive: true }).catch(() => {});
       } catch {
         // Silent fail — vitals are non-critical
       }
