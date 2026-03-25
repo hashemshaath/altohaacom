@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -76,6 +77,7 @@ export const RegistrationForm = memo(function RegistrationForm({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const awardPoints = useAwardPoints();
+  const { trackCompetitionRegistration } = useEcommerceTracking();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isAr = language === "ar";
 
@@ -262,12 +264,12 @@ export const RegistrationForm = memo(function RegistrationForm({
       // Award points for competition registration
       awardPoints.mutate({ actionType: "competition_register", referenceType: "competition", referenceId: competitionId });
       
-      // Track competition registration conversion
+      // Track competition registration
+      trackCompetitionRegistration(competitionId, competitionTitle, {
+        entry_type: entryType,
+        dish_name: dishName,
+      });
       try {
-        import("@/hooks/useGoogleTracking").then(({ sendGoogleConversion, pushToDataLayer }) => {
-          sendGoogleConversion("competition_registration", { event_category: "engagement", competition_id: competitionId });
-          pushToDataLayer("competition_registration", { competition_id: competitionId });
-        });
         supabase.from("conversion_events").insert([{
           event_name: "competition_registration",
           event_category: "engagement",

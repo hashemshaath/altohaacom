@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { MembershipReceipt } from "@/components/membership/MembershipReceipt";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 
 const ALL_TIERS = [
   { id: "basic", icon: Zap, color: "text-muted-foreground", bg: "bg-muted/30", monthly: 0, yearly: 0 },
@@ -53,6 +54,7 @@ export default function MembershipCheckout() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [step, setStep] = useState<"plan" | "confirm" | "processing" | "success">("plan");
   const [showDowngradeDialog, setShowDowngradeDialog] = useState(false);
+  const { trackMembershipAction } = useEcommerceTracking();
 
   const { data: profile } = useQuery({
     queryKey: ["checkout-profile", user?.id],
@@ -246,6 +248,8 @@ export default function MembershipCheckout() {
       }
     },
     onSuccess: () => {
+      const action = isRenewal ? "renew" : isUpgrade ? "upgrade" : isDowngrade ? "downgrade" : "subscribe";
+      trackMembershipAction(action, selectedTier, price);
       queryClient.invalidateQueries({ queryKey: ["checkout-profile"] });
       queryClient.invalidateQueries({ queryKey: ["user-tier"] });
       queryClient.invalidateQueries({ queryKey: ["membership"] });
