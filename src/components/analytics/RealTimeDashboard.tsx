@@ -22,39 +22,49 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
   const [metrics, setMetrics] = useState<LiveMetric[]>([
-    { label: "Online Users", labelAr: "المستخدمين المتصلين", value: 0, icon: Users, color: "primary", borderColor: "border-s-primary", history: [] },
+    { label: "Active Users (5m)", labelAr: "مستخدمين نشطين (5د)", value: 0, icon: Users, color: "primary", borderColor: "border-s-primary", history: [] },
     { label: "New Signups", labelAr: "تسجيلات جديدة", value: 0, icon: Activity, color: "chart-2", borderColor: "border-s-chart-2", history: [] },
     { label: "Messages", labelAr: "الرسائل", value: 0, icon: MessageSquare, color: "chart-3", borderColor: "border-s-chart-3", history: [] },
     { label: "Competitions", labelAr: "المسابقات", value: 0, icon: Trophy, color: "chart-4", borderColor: "border-s-chart-4", history: [] },
     { label: "Certificates", labelAr: "الشهادات", value: 0, icon: Award, color: "chart-5", borderColor: "border-s-chart-5", history: [] },
   ]);
 
-  const fetchInitialCounts = useCallback(async () => {
+  const fetchCounts = useCallback(async () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayISO = today.toISOString();
+    const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
 
     const [
+      { count: activeUsers },
       { count: todaySignups },
       { count: todayMessages },
       { count: todayComps },
       { count: todayCerts },
     ] = await Promise.all([
+      // Real active users: distinct sessions in ad_user_behaviors in last 5 minutes
+      supabase.from("ad_user_behaviors").select("session_id", { count: "exact", head: true }).gte("created_at", fiveMinAgo),
       supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
       supabase.from("messages").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
       supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
       supabase.from("certificates").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
     ]);
 
-    setMetrics(prev => prev.map((m, i) => {
-      const values = [0, todaySignups || 0, todayMessages || 0, todayComps || 0, todayCerts || 0];
-      return { ...m, value: values[i], history: [...m.history, values[i]].slice(-20) };
-    }));
+    const values = [activeUsers || 0, todaySignups || 0, todayMessages || 0, todayComps || 0, todayCerts || 0];
+
+    setMetrics(prev => prev.map((m, i) => ({
+      ...m,
+      value: values[i],
+      history: [...m.history, values[i]].slice(-20),
+    })));
     setLastUpdate(new Date());
   }, []);
 
   useEffect(() => {
-    fetchInitialCounts();
+    fetchCounts();
+
+    // Refresh active users every 30 seconds
+    const refreshInterval = setInterval(fetchCounts, 30000);
 
     const channel = supabase
       .channel("realtime-analytics")
@@ -86,28 +96,11 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
         setIsConnected(status === "SUBSCRIBED");
       });
 
-    // Simulate online users pulse every 15s
-    const pulse = setInterval(() => {
-      setMetrics(prev => prev.map((m, i) => {
-        if (i === 0) {
-          const jitter = Math.floor(Math.random() * 5) - 2;
-          const newVal = Math.max(1, m.value + jitter || Math.floor(Math.random() * 10) + 3);
-          return { ...m, value: newVal, history: [...m.history, newVal].slice(-20) };
-        }
-        return m;
-      }));
-    }, 15000);
-
-    // Set initial online users estimate
-    setMetrics(prev => prev.map((m, i) =>
-      i === 0 ? { ...m, value: Math.floor(Math.random() * 10) + 3, history: [Math.floor(Math.random() * 10) + 3] } : m
-    ));
-
     return () => {
       supabase.removeChannel(channel);
-      clearInterval(pulse);
+      clearInterval(refreshInterval);
     };
-  }, [fetchInitialCounts]);
+  }, [fetchCounts]);
 
   const timeSince = () => {
     const secs = Math.floor((Date.now() - lastUpdate.getTime()) / 1000);

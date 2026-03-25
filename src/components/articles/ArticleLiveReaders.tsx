@@ -1,6 +1,7 @@
 import { useState, useEffect, memo } from "react";
 import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   articleId: string;
@@ -8,39 +9,38 @@ interface Props {
 }
 
 /**
- * Social proof widget showing simulated "live readers" count.
- * Uses a deterministic seed from articleId + time window for consistency.
+ * Shows real recent readers count based on page view events
+ * from the last 5 minutes in ad_user_behaviors.
  */
 export const ArticleLiveReaders = memo(function ArticleLiveReaders({ articleId, isAr }: Props) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Seed from article ID for consistency
-    let seed = 0;
-    for (let i = 0; i < articleId.length; i++) seed += articleId.charCodeAt(i);
-    
-    const base = (seed % 8) + 2; // 2–9 base readers
-    const hourVariance = new Date().getHours() % 4;
-    const initial = base + hourVariance;
-    
-    setCount(initial);
-    // Show after a brief delay for natural feel
-    const showTimer = setTimeout(() => setVisible(true), 2000);
+    async function fetchRecentReaders() {
+      const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      
+      const { count: readerCount } = await supabase
+        .from("ad_user_behaviors")
+        .select("*", { count: "exact", head: true })
+        .eq("event_type", "page_view")
+        .like("page_url", `%${articleId}%`)
+        .gte("created_at", fiveMinAgo);
 
-    // Simulate fluctuation every 15-30s
-    const interval = setInterval(() => {
-      setCount(prev => {
-        const delta = Math.random() > 0.5 ? 1 : -1;
-        return Math.max(1, Math.min(prev + delta, initial + 5));
-      });
-    }, 15000 + Math.random() * 15000);
+      if (readerCount && readerCount > 0) {
+        setCount(readerCount);
+        setTimeout(() => setVisible(true), 1000);
+      }
+    }
 
-    return () => {
-      clearTimeout(showTimer);
-      clearInterval(interval);
-    };
+    fetchRecentReaders();
+
+    // Refresh every 60 seconds
+    const interval = setInterval(fetchRecentReaders, 60000);
+    return () => clearInterval(interval);
   }, [articleId]);
+
+  if (count === null || count === 0) return null;
 
   return (
     <div

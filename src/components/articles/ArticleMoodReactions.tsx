@@ -1,6 +1,8 @@
-import { useState, memo, useCallback } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Props {
   articleId: string;
@@ -16,54 +18,111 @@ const REACTIONS = [
   { emoji: "😮", labelEn: "Wow", labelAr: "مذهل", key: "wow" },
 ];
 
-const STORAGE_KEY = "article-mood-reactions";
-
-function getStored(articleId: string): Record<string, boolean> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    const all = JSON.parse(raw);
-    return all[articleId] || {};
-  } catch { return {}; }
-}
-
-function setStored(articleId: string, reactions: Record<string, boolean>) {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const all = raw ? JSON.parse(raw) : {};
-    all[articleId] = reactions;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-  } catch {}
+function getSessionId(): string {
+  let sid = sessionStorage.getItem("reaction_session_id");
+  if (!sid) {
+    sid = crypto.randomUUID();
+    sessionStorage.setItem("reaction_session_id", sid);
+  }
+  return sid;
 }
 
 export const ArticleMoodReactions = memo(function ArticleMoodReactions({ articleId, isAr }: Props) {
-  const [selected, setSelected] = useState<Record<string, boolean>>(() => getStored(articleId));
+  const { user } = useAuth();
+  const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const [animating, setAnimating] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Simulate counts from article ID seed
-  const baseCounts = REACTIONS.reduce((acc, r) => {
-    let seed = 0;
-    for (let i = 0; i < articleId.length; i++) seed += articleId.charCodeAt(i);
-    acc[r.key] = ((seed * (r.key.charCodeAt(0) + 1)) % 30) + 3;
-    return acc;
-  }, {} as Record<string, number>);
+  // Fetch real reaction counts and user's own reactions from DB
+  useEffect(() => {
+    async function fetchReactions() {
+      try {
+        // Get all reaction counts for this article
+        const { data: allReactions } = await supabase
+          .from("article_reactions")
+          .select("reaction_type")
+          .eq("article_id", articleId);
 
-  const handleReaction = useCallback((key: string) => {
-    const next = { ...selected, [key]: !selected[key] };
-    setSelected(next);
-    setStored(articleId, next);
-    setAnimating(key);
-    setTimeout(() => setAnimating(null), 600);
-    
-    if (!selected[key]) {
-      const reaction = REACTIONS.find(r => r.key === key);
-      if (reaction) {
-        toast(isAr ? `${reaction.emoji} شكراً لتفاعلك!` : `${reaction.emoji} Thanks for reacting!`, {
-          duration: 1500,
+        const reactionCounts: Record<string, number> = {};
+        REACTIONS.forEach(r => { reactionCounts[r.key] = 0; });
+        (allReactions || []).forEach((r: any) => {
+          reactionCounts[r.reaction_type] = (reactionCounts[r.reaction_type] || 0) + 1;
         });
+        setCounts(reactionCounts);
+
+        // Get user's own reactions
+        const sessionId = getSessionId();
+        const userFilter = user?.id
+          ? { column: "user_id", value: user.id }
+          : { column: "session_id", value: sessionId };
+
+        const { data: userReactions } = await supabase
+          .from("article_reactions")
+          .select("reaction_type")
+          .eq("article_id", articleId)
+          .eq(userFilter.column, userFilter.value);
+
+        const userSelected: Record<string, boolean> = {};
+        (userReactions || []).forEach((r: any) => {
+          userSelected[r.reaction_type] = true;
+        });
+        setSelected(userSelected);
+      } catch (err) {
+        console.error("Failed to fetch reactions:", err);
+      } finally {
+        setLoading(false);
       }
     }
-  }, [selected, articleId, isAr]);
+    fetchReactions();
+  }, [articleId, user?.id]);
+
+  const handleReaction = useCallback(async (key: string) => {
+    const isActive = !!selected[key];
+    const sessionId = getSessionId();
+
+    // Optimistic update
+    setSelected(prev => ({ ...prev, [key]: !isActive }));
+    setCounts(prev => ({ ...prev, [key]: Math.max(0, (prev[key] || 0) + (isActive ? -1 : 1)) }));
+    setAnimating(key);
+    setTimeout(() => setAnimating(null), 600);
+
+    try {
+      if (isActive) {
+        // Remove reaction
+        const query = supabase
+          .from("article_reactions")
+          .delete()
+          .eq("article_id", articleId)
+          .eq("reaction_type", key);
+
+        if (user?.id) {
+          await query.eq("user_id", user.id);
+        } else {
+          await query.eq("session_id", sessionId).is("user_id", null);
+        }
+      } else {
+        // Add reaction
+        await supabase.from("article_reactions").insert({
+          article_id: articleId,
+          reaction_type: key,
+          user_id: user?.id || null,
+          session_id: user?.id ? null : sessionId,
+        });
+
+        const reaction = REACTIONS.find(r => r.key === key);
+        if (reaction) {
+          toast(isAr ? `${reaction.emoji} شكراً لتفاعلك!` : `${reaction.emoji} Thanks for reacting!`, {
+            duration: 1500,
+          });
+        }
+      }
+    } catch (err) {
+      // Revert on error
+      setSelected(prev => ({ ...prev, [key]: isActive }));
+      setCounts(prev => ({ ...prev, [key]: Math.max(0, (prev[key] || 0) + (isActive ? 1 : -1)) }));
+    }
+  }, [selected, articleId, isAr, user?.id]);
 
   return (
     <div className="rounded-2xl bg-gradient-to-br from-muted/30 to-muted/10 border border-border/20 p-6">
@@ -77,17 +136,19 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
       <div className="flex flex-wrap gap-2">
         {REACTIONS.map((r) => {
           const isActive = !!selected[r.key];
-          const count = baseCounts[r.key] + (isActive ? 1 : 0);
+          const count = counts[r.key] || 0;
           
           return (
             <button
               key={r.key}
               onClick={() => handleReaction(r.key)}
+              disabled={loading}
               className={cn(
                 "group flex flex-col items-center gap-1.5 rounded-2xl border px-4 py-3 min-w-[72px] transition-all duration-200 active:scale-90 touch-manipulation",
                 isActive
                   ? "border-primary/25 bg-primary/8 shadow-sm shadow-primary/10"
-                  : "border-border/30 bg-card hover:border-border/50 hover:bg-muted/30"
+                  : "border-border/30 bg-card hover:border-border/50 hover:bg-muted/30",
+                loading && "opacity-50"
               )}
             >
               <span
@@ -105,12 +166,14 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
               )}>
                 {isAr ? r.labelAr : r.labelEn}
               </span>
-              <span className={cn(
-                "text-[9px] tabular-nums",
-                isActive ? "text-primary/70" : "text-muted-foreground/50"
-              )}>
-                {count}
-              </span>
+              {count > 0 && (
+                <span className={cn(
+                  "text-[9px] tabular-nums",
+                  isActive ? "text-primary/70" : "text-muted-foreground/50"
+                )}>
+                  {count}
+                </span>
+              )}
             </button>
           );
         })}
