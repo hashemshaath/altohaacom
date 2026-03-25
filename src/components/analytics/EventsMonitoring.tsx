@@ -270,7 +270,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
           />
         </div>
         <Badge variant="outline" className="gap-1 text-[10px]">
-          <Activity className="h-3 w-3 text-green-500 animate-pulse" />
+          <Activity className="h-3 w-3 text-chart-2 animate-pulse" />
           {isAr ? "مباشر" : "Live"}
         </Badge>
       </div>
@@ -486,7 +486,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Activity className="h-4 w-4 text-green-500" />
+                <Activity className="h-4 w-4 text-chart-2" />
                 {isAr ? "بث الأحداث المباشر" : "Live Event Stream"}
                 <Badge variant="outline" className="text-[10px] ms-auto">{eventFeed.length} {isAr ? "حدث" : "events"}</Badge>
               </CardTitle>
