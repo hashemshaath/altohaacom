@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, memo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useFadeIn, useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
@@ -46,6 +48,70 @@ import { GenericSettingsEditor } from "@/components/admin/settings/GenericSettin
 import { IntegrationsSecretsPanel } from "@/components/admin/settings/IntegrationsSecretsPanel";
 import { DatabaseOverviewWidget } from "@/components/admin/DatabaseOverviewWidget";
 import { RecentAdminActions } from "@/components/admin/RecentAdminActions";
+
+const ALL_TRACKING_TYPES = [
+  "google_analytics", "google_tag_manager", "google_ads", "google_adsense",
+  "google_search_console", "google_places",
+  "facebook_pixel", "meta_capi", "facebook_catalog", "instagram_shopping",
+  "tiktok_pixel", "tiktok_events_api",
+  "snapchat_pixel", "snapchat_capi",
+];
+
+const TRACKING_DISPLAY = [
+  { type: "google_analytics", name: "Google Analytics 4" },
+  { type: "google_tag_manager", name: "Google Tag Manager" },
+  { type: "google_ads", name: "Google Ads" },
+  { type: "google_adsense", name: "Google AdSense" },
+  { type: "google_search_console", name: "Search Console" },
+  { type: "facebook_pixel", name: "Meta Pixel" },
+  { type: "tiktok_pixel", name: "TikTok Pixel" },
+  { type: "snapchat_pixel", name: "Snapchat Pixel" },
+];
+
+const TrackingStatusCard = memo(function TrackingStatusCard() {
+  const { language } = useLanguage();
+  const isAr = language === "ar";
+
+  const { data: activeTypes = [] } = useQuery({
+    queryKey: ["integration-settings-tracking-status"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("integration_settings")
+        .select("integration_type, is_active")
+        .in("integration_type", ALL_TRACKING_TYPES);
+      return (data || [])
+        .filter((r: any) => r.is_active)
+        .map((r: any) => r.integration_type);
+    },
+    staleTime: 30_000,
+  });
+
+  return (
+    <Card className="border-border/50">
+      <CardContent className="p-4">
+        <h4 className="text-sm font-semibold mb-1">
+          {isAr ? "حالة منصات التتبع" : "Tracking Platform Status"}
+        </h4>
+        <p className="text-xs text-muted-foreground mb-3">
+          {isAr
+            ? "الحالة الحية لجميع أكواد التتبع والتحليلات المُكوّنة."
+            : "Live status of all configured tracking and analytics codes."}
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {TRACKING_DISPLAY.map(p => {
+            const isActive = activeTypes.includes(p.type);
+            return (
+              <div key={p.type} className="flex items-center gap-1.5 rounded-xl border border-border/40 p-2.5 transition-colors hover:bg-muted/50">
+                <div className={`h-2 w-2 rounded-full shrink-0 ${isActive ? "bg-green-500" : "bg-muted-foreground/30"}`} />
+                <span className="text-[11px] font-medium">{p.name}</span>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+});
 
 
 const tabs = [
@@ -261,35 +327,7 @@ export default function SystemSettings() {
             <TabsContent value="tracking" className="mt-0">
               <div className="space-y-6">
                 <GoogleIntegrationPanel />
-                <Card className="border-border/50">
-                  <CardContent className="p-4">
-                    <h4 className="text-sm font-semibold mb-1">
-                      {isAr ? "منصات التتبع المدعومة" : "Supported Tracking Platforms"}
-                    </h4>
-                    <p className="text-xs text-muted-foreground mb-3">
-                      {isAr
-                        ? "جميع أكواد التتبع والتحليلات تُدار من صفحة الإعلانات والتكاملات. الحالة أدناه توضح ما تم تكوينه."
-                        : "All tracking codes and analytics are managed from the Advertising & Integrations page. Status below reflects what's configured."}
-                    </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {[
-                        { name: "Google Analytics 4", status: true },
-                        { name: "Google Tag Manager", status: true },
-                        { name: "Google Ads", status: true },
-                        { name: "Google AdSense", status: true },
-                        { name: "Meta Pixel", status: true },
-                        { name: "TikTok Pixel", status: true },
-                        { name: "Snapchat Pixel", status: true },
-                        { name: "Microsoft Clarity", status: false },
-                      ].map(p => (
-                        <div key={p.name} className="flex items-center gap-1.5 rounded-xl border border-border/40 p-2.5 transition-colors hover:bg-muted/50">
-                          <div className={`h-2 w-2 rounded-full shrink-0 ${p.status ? "bg-green-500" : "bg-muted-foreground/30"}`} />
-                          <span className="text-[11px] font-medium">{p.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                <TrackingStatusCard />
               </div>
             </TabsContent>
 
