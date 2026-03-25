@@ -53,6 +53,11 @@ export function useWebVitalsTracking() {
 
     const path = location.pathname;
 
+    // Track only public routes for SEO analytics
+    if (path.startsWith("/admin") || path.startsWith("/auth") || path.startsWith("/api")) {
+      return;
+    }
+
     try {
       // LCP
       const lcpObs = new PerformanceObserver((list) => {

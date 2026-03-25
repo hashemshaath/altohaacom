@@ -1,5 +1,5 @@
-import { useState, useMemo, lazy, Suspense } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo, lazy, Suspense, useEffect, useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +20,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
   BarChart, Bar, Cell, PieChart, Pie, CartesianGrid, Legend, ReferenceLine,
 } from "recharts";
+import { useSearchParams } from "react-router-dom";
 import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
 import { cn } from "@/lib/utils";
 
@@ -133,6 +134,13 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
+const SECTION_KEYS = new Set<SectionKey>(NAV_GROUPS.flatMap((group) => group.items.map((item) => item.key)));
+
+function resolveSectionParam(value: string | null): SectionKey {
+  if (value && SECTION_KEYS.has(value as SectionKey)) return value as SectionKey;
+  return "overview";
+}
+
 function SectionSkeleton() {
   return <div className="flex items-center justify-center py-16"><div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>;
 }
@@ -140,14 +148,32 @@ function SectionSkeleton() {
 export default function SEODashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [activeSection, setActiveSection] = useState<SectionKey>("overview");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+  const [activeSection, setActiveSectionState] = useState<SectionKey>(() => resolveSectionParam(searchParams.get("section")));
   const [pinging, setPinging] = useState(false);
+  const [collectingVitals, setCollectingVitals] = useState(false);
   const [range, setRange] = useState(7);
 
   const fromDate = startOfDay(subDays(new Date(), range)).toISOString();
+  const sectionFromQuery = resolveSectionParam(searchParams.get("section"));
+
+  const setActiveSection = useCallback((section: SectionKey) => {
+    setActiveSectionState(section);
+    const nextParams = new URLSearchParams(searchParams);
+    if (section === "overview") nextParams.delete("section");
+    else nextParams.set("section", section);
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (sectionFromQuery !== activeSection) {
+      setActiveSectionState(sectionFromQuery);
+    }
+  }, [sectionFromQuery, activeSection]);
 
   // ── Data Queries ──
-  const { data: pageViews, isLoading: loadingViews } = useQuery({
+  const { data: pageViews, isLoading: loadingViews, error: pageViewsError } = useQuery({
     queryKey: ["seo-page-views", range],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -161,7 +187,7 @@ export default function SEODashboard() {
     },
   });
 
-  const { data: vitalsData, isLoading: loadingVitals } = useQuery({
+  const { data: vitalsData, isLoading: loadingVitals, error: vitalsDataError } = useQuery({
     queryKey: ["seo-web-vitals", range],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -175,37 +201,48 @@ export default function SEODashboard() {
     },
   });
 
-  const { data: crawlLog } = useQuery({
+  const { data: crawlLog, error: crawlLogError } = useQuery({
     queryKey: ["seo-crawl-log"],
     queryFn: async () => {
-      const { data } = await supabase.from("seo_crawl_log").select("*").order("created_at", { ascending: false }).limit(20);
+      const { data, error } = await supabase.from("seo_crawl_log").select("*").order("created_at", { ascending: false }).limit(20);
+      if (error) throw error;
       return data || [];
     },
   });
 
-  const { data: crawlerVisits } = useQuery({
+  const { data: crawlerVisits, error: crawlerVisitsError } = useQuery({
     queryKey: ["seo-crawler-visits", range],
     queryFn: async () => {
-      const { data } = await supabase.from("seo_crawler_visits").select("path, crawler_name, crawler_type, created_at").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("seo_crawler_visits").select("path, crawler_name, crawler_type, created_at").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(500);
+      if (error) throw error;
       return data || [];
     },
   });
 
-  const { data: trackedKeywords, refetch: refetchKeywords } = useQuery({
+  const { data: trackedKeywords, refetch: refetchKeywords, error: trackedKeywordsError } = useQuery({
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
-      const { data } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
       return data || [];
     },
   });
 
-  const { data: indexingStatus, refetch: refetchIndexing } = useQuery({
+  const { data: indexingStatus, refetch: refetchIndexing, error: indexingStatusError } = useQuery({
     queryKey: ["seo-indexing-status"],
     queryFn: async () => {
-      const { data } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false });
+      const { data, error } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false });
+      if (error) throw error;
       return data || [];
     },
   });
+
+  const firstQueryError = pageViewsError || vitalsDataError || crawlLogError || crawlerVisitsError || trackedKeywordsError || indexingStatusError;
+  useEffect(() => {
+    if (firstQueryError) {
+      toast.error((firstQueryError as any)?.message || (isAr ? "تعذر تحميل بيانات SEO" : "Failed to load SEO data"));
+    }
+  }, [firstQueryError, isAr]);
 
   // ── Keyword Form ──
   const [newKeyword, setNewKeyword] = useState("");
@@ -508,6 +545,8 @@ export default function SEODashboard() {
   // ── Web Vitals Section ──
   function renderVitals() {
     const handleCollectVitals = async () => {
+      if (collectingVitals) return;
+      setCollectingVitals(true);
       try {
         // Collect current page's vitals immediately
         const path = window.location.pathname;
@@ -550,11 +589,17 @@ export default function SEODashboard() {
 
         const { error } = await supabase.from("seo_web_vitals").insert(payload);
         if (error) throw error;
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["seo-web-vitals"] }),
+          queryClient.invalidateQueries({ queryKey: ["seo-speed-current"] }),
+          queryClient.invalidateQueries({ queryKey: ["seo-speed-prev"] }),
+          queryClient.invalidateQueries({ queryKey: ["admin-web-vitals-summary"] }),
+        ]);
         toast.success(isAr ? "تم جمع بيانات الأداء" : "Performance data collected successfully");
-        // Refetch vitals data
-        window.location.reload();
       } catch (e: any) {
         toast.error(e.message || "Failed to collect vitals");
+      } finally {
+        setCollectingVitals(false);
       }
     };
 
@@ -569,9 +614,9 @@ export default function SEODashboard() {
             </h3>
             <p className="text-xs text-muted-foreground">{isAr ? "مقاييس Google P75 للأداء" : "Google's P75 performance metrics"}</p>
           </div>
-          <Button onClick={handleCollectVitals} size="sm" className="gap-1.5">
+          <Button onClick={handleCollectVitals} disabled={collectingVitals} size="sm" className="gap-1.5">
             <Zap className="h-3.5 w-3.5" />
-            {isAr ? "جمع الآن" : "Collect Now"}
+            {collectingVitals ? (isAr ? "جارٍ الجمع..." : "Collecting...") : (isAr ? "جمع الآن" : "Collect Now")}
           </Button>
         </div>
 
@@ -787,9 +832,9 @@ export default function SEODashboard() {
                   ? "اضغط على زر 'جمع الآن' أعلاه لجمع مقاييس الأداء الحالية، أو انتظر حتى يبدأ الزوار الحقيقيون بالتصفح."
                   : "Click 'Collect Now' above to capture current performance metrics, or wait for real visitors to browse your site. Data will appear automatically."}
               </p>
-              <Button onClick={handleCollectVitals} size="sm" className="gap-1.5">
+              <Button onClick={handleCollectVitals} disabled={collectingVitals} size="sm" className="gap-1.5">
                 <Zap className="h-3.5 w-3.5" />
-                {isAr ? "جمع البيانات" : "Collect Performance Data"}
+                {collectingVitals ? (isAr ? "جارٍ الجمع..." : "Collecting...") : (isAr ? "جمع البيانات" : "Collect Performance Data")}
               </Button>
             </CardContent>
           </Card>
