@@ -23,6 +23,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { MembershipReceipt } from "@/components/membership/MembershipReceipt";
+import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 
 const ALL_TIERS = [
   { id: "basic", icon: Zap, color: "text-muted-foreground", bg: "bg-muted/30", monthly: 0, yearly: 0 },
