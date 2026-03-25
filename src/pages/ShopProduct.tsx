@@ -58,6 +58,19 @@ export default function ShopProduct() {
     enabled: !!product?.seller_id,
   });
 
+  // Track product view (must be before early returns)
+  useEffect(() => {
+    if (product) {
+      trackProductView({
+        product_id: product.id,
+        title: product.title,
+        price: Number(product.price),
+        currency: product.currency || "SAR",
+        category: product.category,
+      });
+    }
+  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -104,19 +117,6 @@ export default function ShopProduct() {
   const description = isAr && product.description_ar ? product.description_ar : product.description;
   const isOutOfStock = product.product_type === "physical" && (product.stock_quantity ?? 0) <= 0;
   const maxQty = product.product_type === "physical" ? (product.stock_quantity ?? 999) : 999;
-
-  // Track product view
-  useEffect(() => {
-    if (product) {
-      trackProductView({
-        product_id: product.id,
-        title: product.title,
-        price: Number(product.price),
-        currency: product.currency || "SAR",
-        category: product.category,
-      });
-    }
-  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAddToCart = () => {
     if (!user) {
