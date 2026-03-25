@@ -6,7 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
  * Reads active Google integrations from `integration_settings`
  * and dynamically injects the appropriate scripts.
  *
- * Supported: GA4, GTM, Google Ads, AdSense, Google Search Console (meta tag).
+ * NOTE: GTM (GTM-M76WXJCC) and GA4 (G-F96L8LZWR7) are hardcoded in index.html
+ * for crawler/verification compatibility. This hook handles any *additional*
+ * IDs configured via admin and other platforms (Ads, AdSense, Search Console).
  */
 
 const GOOGLE_TYPES = [
@@ -63,6 +65,7 @@ export function useGoogleTracking() {
 
 /* ── GA4 ── */
 function injectGA4(measurementId: string) {
+  // Skip if already present (hardcoded or previously injected)
   if (document.querySelector(`script[src*="gtag/js?id=${measurementId}"]`)) return;
 
   const script = document.createElement("script");
@@ -82,6 +85,7 @@ function injectGA4(measurementId: string) {
 
 /* ── GTM ── */
 function injectGTM(containerId: string) {
+  // Skip if already present (hardcoded or previously injected)
   if (document.querySelector(`script[src*="gtm.js?id=${containerId}"]`)) return;
 
   const script = document.createElement("script");
@@ -94,7 +98,6 @@ function injectGTM(containerId: string) {
   `;
   document.head.appendChild(script);
 
-  // noscript fallback
   const noscript = document.createElement("noscript");
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.googletagmanager.com/ns.html?id=${containerId}`;
