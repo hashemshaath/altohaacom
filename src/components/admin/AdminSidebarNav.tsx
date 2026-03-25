@@ -3,7 +3,8 @@ import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { adminNavSections } from "@/config/adminNavSections";
+import { adminNavSections, type NavItem, type NavSection } from "@/config/adminNavSections";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import { ChevronRight } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -13,14 +14,32 @@ interface AdminSidebarNavProps {
   onItemClick?: () => void;
 }
 
+/** Filter nav sections & items based on admin role */
+function useFilteredNav(): NavSection[] {
+  const { isFullAdmin } = useAdminRole();
+
+  return useMemo(() => {
+    if (isFullAdmin) return adminNavSections;
+
+    return adminNavSections
+      .filter((section) => !section.fullAdminOnly)
+      .map((section) => ({
+        ...section,
+        items: section.items.filter((item) => !item.fullAdminOnly),
+      }))
+      .filter((section) => section.items.length > 0);
+  }, [isFullAdmin]);
+}
+
 export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false, isMobile = false, onItemClick }: AdminSidebarNavProps) {
   const { language } = useLanguage();
   const location = useLocation();
   const isAr = language === "ar";
+  const filteredSections = useFilteredNav();
 
   const initialOpen = useMemo(() => {
     const open: Record<number, boolean> = { 0: true };
-    adminNavSections.forEach((section, idx) => {
+    filteredSections.forEach((section, idx) => {
       if (section.items.some((item) => item.end ? location.pathname === item.to : location.pathname.startsWith(item.to))) {
         open[idx] = true;
       }
@@ -38,7 +57,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
   return (
     <ScrollArea className="flex-1">
       <nav className="px-2 py-2 space-y-0.5">
-        {adminNavSections.map((section, idx) => {
+        {filteredSections.map((section, idx) => {
           const isOpen = openSections[idx] ?? false;
           const sectionLabel = isAr ? section.titleAr : section.titleEn;
           const hasActiveItem = section.items.some((item) =>
