@@ -120,6 +120,7 @@ export default function Checkout() {
       const { error: itemsError } = await supabase.from("shop_order_items").insert(items);
       if (itemsError) throw itemsError;
 
+      trackPurchase(order.id, order.order_number, cart.totalPrice, cart.totalItems, cart.items[0]?.currency || "SAR", paymentMethod);
       cart.clearCart();
       setCompletedOrder(order);
       setStep("confirm");
