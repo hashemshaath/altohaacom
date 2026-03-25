@@ -57,11 +57,18 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
           ? { column: "user_id", value: user.id }
           : { column: "session_id", value: sessionId };
 
-        const { data: userReactions } = await supabase
+        let userQuery = supabase
           .from("article_reactions")
           .select("reaction_type")
-          .eq("article_id", articleId)
-          .eq(userFilter.column, userFilter.value);
+          .eq("article_id", articleId);
+        
+        if (user?.id) {
+          userQuery = userQuery.eq("user_id", user.id);
+        } else {
+          userQuery = userQuery.eq("session_id", sessionId).is("user_id", null);
+        }
+        
+        const { data: userReactions } = await userQuery;
 
         const userSelected: Record<string, boolean> = {};
         (userReactions || []).forEach((r: any) => {
