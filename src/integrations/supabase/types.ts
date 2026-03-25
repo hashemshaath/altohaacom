@@ -17094,6 +17094,7 @@ export type Database = {
           id: string
           instagram: string | null
           interests: string[] | null
+          is_chef_visible: boolean
           is_open_to_work: boolean
           is_verified: boolean | null
           job_availability_visibility: string
@@ -17191,6 +17192,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           interests?: string[] | null
+          is_chef_visible?: boolean
           is_open_to_work?: boolean
           is_verified?: boolean | null
           job_availability_visibility?: string
@@ -17290,6 +17292,7 @@ export type Database = {
           id?: string
           instagram?: string | null
           interests?: string[] | null
+          is_chef_visible?: boolean
           is_open_to_work?: boolean
           is_verified?: boolean | null
           job_availability_visibility?: string
@@ -23183,6 +23186,7 @@ export type Database = {
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      is_valid_chef: { Args: { p_user_id: string }; Returns: boolean }
       log_feature_access: {
         Args: {
           p_feature_code: string
@@ -23245,6 +23249,7 @@ export type Database = {
         Args: { p_duration_days?: number; p_tier?: string; p_user_id: string }
         Returns: Json
       }
+      sync_chef_visibility: { Args: { p_user_id: string }; Returns: undefined }
       user_has_feature: {
         Args: { p_feature_code: string; p_user_id: string }
         Returns: boolean
