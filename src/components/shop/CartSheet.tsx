@@ -28,6 +28,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
   const navigate = useNavigate();
   const [isPlacing, setIsPlacing] = useState(false);
   const [isApplyingCode, setIsApplyingCode] = useState(false);
+  const { trackPurchase, trackRemoveFromCart } = useEcommerceTracking();
 
   const handleApplyDiscount = async () => {
     if (!cart.discountCode.trim()) return;
@@ -123,24 +124,11 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
           .eq("code", cart.appliedDiscount.code);
       }
 
+      // Track purchase via centralized tracking
+      trackPurchase(order.id, order.order_number, cart.totalPrice, items.length, "SAR", "quick_checkout");
+
       cart.clearCart();
       onOpenChange(false);
-
-      // Track purchase conversion
-      try {
-        const { sendGoogleConversion, pushToDataLayer } = await import("@/hooks/useGoogleTracking");
-        sendGoogleConversion("purchase", { value: cart.totalPrice, currency: "SAR", transaction_id: order.id });
-        pushToDataLayer("purchase", { value: cart.totalPrice, currency: "SAR", order_id: order.id });
-        await supabase.from("conversion_events").insert([{
-          user_id: user.id,
-          event_name: "purchase",
-          event_category: "ecommerce",
-          event_value: cart.totalPrice,
-          currency: "SAR",
-          session_id: sessionStorage.getItem("ad_session_id") || null,
-          metadata: { order_id: order.id, order_number: order.order_number, items_count: items.length } as any,
-        }]);
-      } catch {}
 
       toast({
         title: isAr ? "تم تقديم الطلب بنجاح!" : "Order placed successfully!",
