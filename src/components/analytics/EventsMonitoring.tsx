@@ -524,8 +524,94 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
     { label: isAr ? "CTR" : "CTR", value: metrics.ctr, icon: Target, color: "text-primary", suffix: "%", isDecimal: true },
   ];
 
+  // ── Export Handlers ──
+  const exportEventsCSV = useCallback(() => {
+    const data = eventFeed.map(ev => ({
+      timestamp: ev.time,
+      event_type: ev.type,
+      label: ev.label,
+      device: ev.device || "",
+      country: ev.country || "",
+    }));
+    downloadCSV(data, `events_${timeRange}_${format(new Date(), "yyyyMMdd")}`, [
+      { key: "timestamp", label: isAr ? "الوقت" : "Timestamp" },
+      { key: "event_type", label: isAr ? "نوع الحدث" : "Event Type" },
+      { key: "label", label: isAr ? "التفاصيل" : "Details" },
+      { key: "device", label: isAr ? "الجهاز" : "Device" },
+      { key: "country", label: isAr ? "البلد" : "Country" },
+    ]);
+    toast({ title: isAr ? "تم تصدير الأحداث" : "Events exported", description: `${data.length} ${isAr ? "حدث" : "events"}` });
+  }, [eventFeed, timeRange, isAr]);
+
+  const exportEcommerceCSV = useCallback(() => {
+    const orders = shopOrders || [];
+    const data = orders.map(o => ({
+      order_number: o.order_number,
+      amount: o.total_amount,
+      currency: o.currency,
+      payment_status: o.payment_status,
+      date: o.created_at,
+    }));
+    downloadCSV(data, `ecommerce_orders_${timeRange}_${format(new Date(), "yyyyMMdd")}`, [
+      { key: "order_number", label: isAr ? "رقم الطلب" : "Order Number" },
+      { key: "amount", label: isAr ? "المبلغ" : "Amount" },
+      { key: "currency", label: isAr ? "العملة" : "Currency" },
+      { key: "payment_status", label: isAr ? "حالة الدفع" : "Payment Status" },
+      { key: "date", label: isAr ? "التاريخ" : "Date" },
+    ]);
+    toast({ title: isAr ? "تم تصدير الطلبات" : "Orders exported", description: `${data.length} ${isAr ? "طلب" : "orders"}` });
+  }, [shopOrders, timeRange, isAr]);
+
+  const exportTopPagesCSV = useCallback(() => {
+    downloadCSV(topPages.map(p => ({
+      page: p.path,
+      views: p.views,
+      unique_visitors: p.uniqueVisitors,
+      avg_duration_s: p.avgDuration,
+      bounce_rate: `${p.bounceRate}%`,
+      engagement: p.engagementScore,
+    })), `top_pages_${timeRange}_${format(new Date(), "yyyyMMdd")}`, [
+      { key: "page", label: isAr ? "الصفحة" : "Page" },
+      { key: "views", label: isAr ? "المشاهدات" : "Views" },
+      { key: "unique_visitors", label: isAr ? "الزوار" : "Unique Visitors" },
+      { key: "avg_duration_s", label: isAr ? "المدة (ثانية)" : "Avg Duration (s)" },
+      { key: "bounce_rate", label: isAr ? "الارتداد" : "Bounce Rate" },
+      { key: "engagement", label: isAr ? "التفاعل" : "Engagement" },
+    ]);
+    toast({ title: isAr ? "تم تصدير الصفحات" : "Pages exported" });
+  }, [topPages, timeRange, isAr]);
+
+  const exportAbandonedCartsCSV = useCallback(() => {
+    const carts = abandonedCarts || [];
+    const data = carts.map(c => ({
+      id: c.id,
+      total_amount: c.total_amount,
+      currency: c.currency,
+      status: c.recovery_status,
+      items: JSON.stringify(c.items),
+      created_at: c.created_at,
+      updated_at: c.updated_at,
+    }));
+    downloadCSV(data, `abandoned_carts_${timeRange}_${format(new Date(), "yyyyMMdd")}`, [
+      { key: "id", label: "ID" },
+      { key: "total_amount", label: isAr ? "المبلغ" : "Amount" },
+      { key: "currency", label: isAr ? "العملة" : "Currency" },
+      { key: "status", label: isAr ? "الحالة" : "Status" },
+      { key: "items", label: isAr ? "المنتجات" : "Items" },
+      { key: "created_at", label: isAr ? "التاريخ" : "Created" },
+    ]);
+    toast({ title: isAr ? "تم تصدير السلات المتروكة" : "Abandoned carts exported", description: `${data.length} ${isAr ? "سلة" : "carts"}` });
+  }, [abandonedCarts, timeRange, isAr]);
+
+  const handlePrintReport = useCallback(() => {
+    printableReport("events-monitoring-content", isAr ? "تقرير مراقبة الأحداث" : "Events Monitoring Report", {
+      subtitle: `${isAr ? "الفترة" : "Period"}: ${timeRange} | ${format(new Date(), "yyyy-MM-dd HH:mm")}`,
+      orientation: "landscape",
+    });
+  }, [timeRange, isAr]);
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" id="events-monitoring-content">
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3">
         <Select value={timeRange} onValueChange={(v) => setTimeRange(v as TimeRange)}>
