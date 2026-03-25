@@ -632,6 +632,38 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
           <Activity className="h-3 w-3 text-chart-2 animate-pulse" />
           {isAr ? "مباشر" : "Live"}
         </Badge>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+              <Download className="h-3.5 w-3.5" />
+              {isAr ? "تصدير" : "Export"}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={exportEventsCSV} className="text-xs gap-2">
+              <FileText className="h-3.5 w-3.5" />
+              {isAr ? "تصدير الأحداث (CSV)" : "Export Events (CSV)"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={exportTopPagesCSV} className="text-xs gap-2">
+              <BarChart3 className="h-3.5 w-3.5" />
+              {isAr ? "تصدير الصفحات (CSV)" : "Export Top Pages (CSV)"}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={exportEcommerceCSV} className="text-xs gap-2">
+              <ShoppingCart className="h-3.5 w-3.5" />
+              {isAr ? "تصدير الطلبات (CSV)" : "Export Orders (CSV)"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={exportAbandonedCartsCSV} className="text-xs gap-2">
+              <PackageX className="h-3.5 w-3.5" />
+              {isAr ? "تصدير السلات المتروكة (CSV)" : "Export Abandoned Carts (CSV)"}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handlePrintReport} className="text-xs gap-2">
+              <Printer className="h-3.5 w-3.5" />
+              {isAr ? "طباعة التقرير" : "Print Report"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* KPI Grid with Deltas */}
