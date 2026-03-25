@@ -135,8 +135,20 @@ export function useSEOTracking() {
     const handleUnload = () => {
       if (lastViewId.current) {
         const duration = Math.round((Date.now() - startTime.current) / 1000);
+        const isBounce = duration < 10;
         const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/seo_page_views?id=eq.${lastViewId.current}`;
-        navigator.sendBeacon?.(url);
+        const headers = {
+          "Content-Type": "application/json",
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Prefer: "return=minimal",
+        };
+        fetch(url, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({ duration_seconds: duration, is_bounce: isBounce }),
+          keepalive: true,
+        }).catch(() => {});
       }
     };
 
