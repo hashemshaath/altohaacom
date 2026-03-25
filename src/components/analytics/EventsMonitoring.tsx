@@ -166,6 +166,36 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
     staleTime: 30_000,
   });
 
+  // ── Abandoned Carts ──
+  const { data: abandonedCarts } = useQuery({
+    queryKey: ["events-abandoned-carts", timeRange],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("abandoned_carts")
+        .select("id, total_amount, currency, recovery_status, items, created_at, updated_at")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      return data || [];
+    },
+    staleTime: 30_000,
+  });
+
+  // ── Shop Orders ──
+  const { data: shopOrders } = useQuery({
+    queryKey: ["events-shop-orders", timeRange],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("shop_orders")
+        .select("id, total_amount, currency, payment_status, created_at, order_number")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(500);
+      return data || [];
+    },
+    staleTime: 30_000,
+  });
+
   // ── Computed Metrics with Period Comparison ──
   const metrics = useMemo(() => {
     const pv = pageViews || [];
