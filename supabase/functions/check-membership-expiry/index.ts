@@ -235,6 +235,15 @@ Deno.serve(async (req) => {
         link: "/membership",
       });
 
+      // Send trial expired email
+      try {
+        await fetch(`${supabaseUrl}/functions/v1/send-membership-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${serviceKey}` },
+          body: JSON.stringify({ type: "trial_expired", user_id: trial.user_id, data: { tier: trial.membership_tier } }),
+        });
+      } catch (e) { console.error("Trial email failed:", e); }
+
       trialsExpired++;
       notificationsCreated++;
     }
