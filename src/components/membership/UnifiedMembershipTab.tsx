@@ -252,6 +252,16 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
       setCancelReason("");
       setCancelFeedback("");
       setCancelReasonType("too_expensive");
+
+      // Send notifications
+      import("@/lib/notificationTriggers").then((triggers) => {
+        triggers.notifyMembershipCancellationSubmitted({ userId, tier: profile?.membership_tier || "basic" });
+        triggers.notifyAdminMembershipCancellation({
+          userName: profile?.full_name || "User",
+          tier: profile?.membership_tier || "basic",
+          reason: cancelReasonType === "other" ? cancelReason : cancelReasonType,
+        });
+      });
     },
     onError: (err: any) => {
       toast({ variant: "destructive", title: "Error", description: err.message });
