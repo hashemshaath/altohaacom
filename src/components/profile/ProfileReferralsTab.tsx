@@ -166,16 +166,16 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
               {isAr ? "شارك عبر" : "Share via"}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <Button variant="outline" size="sm" onClick={shareViaWhatsApp} className="gap-1.5 text-xs border-green-500/20 hover:bg-green-500/5 hover:border-green-500/40 transition-all">
-                <MessageCircle className="h-3.5 w-3.5 text-green-600" />
+              <Button variant="outline" size="sm" onClick={shareViaWhatsApp} className="gap-1.5 text-xs border-chart-2/20 hover:bg-chart-2/5 hover:border-chart-2/40 transition-all">
+                <MessageCircle className="h-3.5 w-3.5 text-chart-2" />
                 WhatsApp
               </Button>
-              <Button variant="outline" size="sm" onClick={shareViaTwitter} className="gap-1.5 text-xs border-sky-500/20 hover:bg-sky-500/5 hover:border-sky-500/40 transition-all">
-                <Twitter className="h-3.5 w-3.5 text-sky-500" />
+              <Button variant="outline" size="sm" onClick={shareViaTwitter} className="gap-1.5 text-xs border-chart-1/20 hover:bg-chart-1/5 hover:border-chart-1/40 transition-all">
+                <Twitter className="h-3.5 w-3.5 text-chart-1" />
                 X / Twitter
               </Button>
-              <Button variant="outline" size="sm" onClick={shareViaTelegram} className="gap-1.5 text-xs border-blue-500/20 hover:bg-blue-500/5 hover:border-blue-500/40 transition-all">
-                <Send className="h-3.5 w-3.5 text-blue-500" />
+              <Button variant="outline" size="sm" onClick={shareViaTelegram} className="gap-1.5 text-xs border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all">
+                <Send className="h-3.5 w-3.5 text-primary" />
                 Telegram
               </Button>
               <Button
