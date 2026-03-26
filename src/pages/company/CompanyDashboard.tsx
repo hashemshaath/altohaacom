@@ -94,9 +94,9 @@ export default function CompanyPortalDashboard() {
     <div className="space-y-6">
       {/* Hero Banner — Refined */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-6 sm:p-8 text-primary-foreground">
-        <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-primary-foreground/8 blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 h-36 w-36 rounded-full bg-primary-foreground/5 blur-2xl" />
-        <div className="absolute right-1/4 top-1/3 h-24 w-24 rounded-full bg-primary-foreground/5 blur-2xl" />
+        <div className="absolute -end-10 -top-10 h-48 w-48 rounded-full bg-primary-foreground/8 blur-3xl" />
+        <div className="absolute -bottom-10 -start-10 h-36 w-36 rounded-full bg-primary-foreground/5 blur-2xl" />
+        <div className="absolute end-1/4 top-1/3 h-24 w-24 rounded-full bg-primary-foreground/5 blur-2xl" />
         <div className="relative z-10">
           {isLoading ? (
             <>

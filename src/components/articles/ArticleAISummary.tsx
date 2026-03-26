@@ -128,7 +128,7 @@ export const ArticleAISummary = memo(function ArticleAISummary({
             <div
               className={cn(
                 "text-xs leading-relaxed text-muted-foreground whitespace-pre-line",
-                lang === "ar" && "text-right"
+                lang === "ar" && "text-end"
               )}
               dir={lang === "ar" ? "rtl" : "ltr"}
             >

@@ -172,7 +172,7 @@ const EngagementMetrics = memo(function EngagementMetrics() {
     <div className="space-y-6 mt-4">
       {/* Engagement Score Hero */}
       <Card className="relative overflow-hidden">
-        <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -end-10 -top-10 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
         <CardContent className="flex items-center gap-6 py-6">
           <div className="relative flex h-24 w-24 shrink-0 items-center justify-center">
             <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">

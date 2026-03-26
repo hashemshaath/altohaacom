@@ -124,7 +124,7 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
                   </Badge>
                   <span className="text-xs font-medium truncate max-w-[120px]">{w.name}</span>
                 </div>
-                <div className="text-right">
+                <div className="text-end">
                   <p className="text-xs font-mono font-bold">{w.balance?.toFixed(2)} SAR</p>
                   <p className="text-[9px] text-muted-foreground">{w.points_balance || 0} pts</p>
                 </div>

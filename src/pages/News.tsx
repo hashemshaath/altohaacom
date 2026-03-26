@@ -299,7 +299,7 @@ export default function News() {
         <NewsReadingProgress />
         <section className="relative overflow-hidden border-b border-border/20 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+          <div className="absolute bottom-0 start-0 end-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
           <div className="container relative py-8 md:py-10">
             <Breadcrumbs items={breadcrumbItems} className="mb-4" />
 

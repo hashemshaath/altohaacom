@@ -29,7 +29,7 @@ export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard()
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["churn-predictions"],
     queryFn: async () => {
-      const { data: result, error } = await supabase.functions.invoke("ml-insights", {
+      const { data: result, error } = await supabase.functions.invoke("ms-insights", {
         body: { language },
       });
       if (error) throw error;

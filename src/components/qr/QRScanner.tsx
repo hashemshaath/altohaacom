@@ -120,10 +120,10 @@ export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
           {/* Scanning overlay */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-48 h-48 border-2 border-primary/60 rounded-xl relative">
-              <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-primary rounded-tl-lg" />
-              <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-primary rounded-tr-lg" />
-              <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-primary rounded-bl-lg" />
-              <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-primary rounded-br-lg" />
+              <div className="absolute top-0 start-0 w-6 h-6 border-t-2 border-s-2 border-primary rounded-tl-lg" />
+              <div className="absolute top-0 end-0 w-6 h-6 border-t-2 border-e-2 border-primary rounded-tr-lg" />
+              <div className="absolute bottom-0 start-0 w-6 h-6 border-b-2 border-s-2 border-primary rounded-bl-lg" />
+              <div className="absolute bottom-0 end-0 w-6 h-6 border-b-2 border-e-2 border-primary rounded-br-lg" />
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full h-0.5 bg-primary/40 animate-pulse" />
               </div>

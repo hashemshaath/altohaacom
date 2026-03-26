@@ -159,12 +159,12 @@ const SecurityDashboard = memo(function SecurityDashboard() {
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={t("Search events...", "بحث في الأحداث...")}
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="pl-9 h-9"
+                className="ps-9 h-9"
               />
             </div>
             <Select value={severityFilter} onValueChange={setSeverityFilter}>

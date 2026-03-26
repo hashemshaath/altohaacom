@@ -126,7 +126,7 @@ export default function CompanyPortalLayout() {
         {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "sticky top-0 hidden h-[calc(100vh-64px)] shrink-0 border-r bg-card transition-all duration-300 md:block",
+            "sticky top-0 hidden h-[calc(100vh-64px)] shrink-0 border-e bg-card transition-all duration-300 md:block",
             collapsed ? "w-16" : "w-64"
           )}
         >

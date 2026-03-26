@@ -414,8 +414,8 @@ export default function InvoicesAdmin() {
                         <TableRow>
                           <TableHead>{language === "ar" ? "الصنف" : "Item"}</TableHead>
                           <TableHead className="text-center">{language === "ar" ? "الكمية" : "Qty"}</TableHead>
-                          <TableHead className="text-right">{language === "ar" ? "السعر" : "Price"}</TableHead>
-                          <TableHead className="text-right">{language === "ar" ? "المجموع" : "Total"}</TableHead>
+                          <TableHead className="text-end">{language === "ar" ? "السعر" : "Price"}</TableHead>
+                          <TableHead className="text-end">{language === "ar" ? "المجموع" : "Total"}</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -426,8 +426,8 @@ export default function InvoicesAdmin() {
                               {item.description && <p className="text-xs text-muted-foreground">{item.description}</p>}
                             </TableCell>
                             <TableCell className="text-center"><AnimatedCounter value={item.quantity} className="inline" format={false} /></TableCell>
-                            <TableCell className="text-right"><AnimatedCounter value={Math.round(Number(item.unit_price))} className="inline" format /></TableCell>
-                            <TableCell className="text-right font-medium"><AnimatedCounter value={Math.round(item.quantity * item.unit_price)} className="inline" format /></TableCell>
+                            <TableCell className="text-end"><AnimatedCounter value={Math.round(Number(item.unit_price))} className="inline" format /></TableCell>
+                            <TableCell className="text-end font-medium"><AnimatedCounter value={Math.round(item.quantity * item.unit_price)} className="inline" format /></TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -724,7 +724,7 @@ export default function InvoicesAdmin() {
                     <TableHead>{language === "ar" ? "العنوان" : "Title"}</TableHead>
                     <TableHead>{language === "ar" ? "الشركة" : "Company"}</TableHead>
                     <SortableTableHead column="status" label={language === "ar" ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                    <SortableTableHead column="amount" label={language === "ar" ? "المبلغ" : "Amount"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="text-right" />
+                    <SortableTableHead column="amount" label={language === "ar" ? "المبلغ" : "Amount"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} className="text-end" />
                     <SortableTableHead column="due_date" label={language === "ar" ? "الاستحقاق" : "Due"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
                     <TableHead></TableHead>
                   </TableRow>
@@ -745,7 +745,7 @@ export default function InvoicesAdmin() {
                       <TableCell>
                         <AdminStatusBadge status={inv.status || "draft"} label={getStatusLabel(inv.status || "draft")} />
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="text-end font-medium">
                         <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" format /> {inv.currency}
                       </TableCell>
                       <TableCell>

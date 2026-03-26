@@ -174,12 +174,12 @@ export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
       {/* Compact toolbar */}
       <div className="flex items-center gap-1.5 flex-wrap rounded-xl border border-border/40 bg-muted/20 p-2">
         <div className="relative flex-1 min-w-[140px] max-w-[200px]">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+          <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
           <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={isAr ? "بحث..." : "Search..."}
-            className="h-7 text-[10px] pl-7"
+            className="h-7 text-[10px] ps-7"
           />
         </div>
 

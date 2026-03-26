@@ -191,8 +191,8 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
     <div className="space-y-6 mt-4">
       {/* Hero CTA */}
       <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-background to-chart-3/5">
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-chart-3/5 blur-2xl" />
+        <div className="absolute -end-10 -top-10 h-40 w-40 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -bottom-10 -start-10 h-32 w-32 rounded-full bg-chart-3/5 blur-2xl" />
         <CardContent className="relative z-10 flex flex-col items-center gap-4 py-10 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20">
             <Brain className="h-8 w-8 text-primary" />

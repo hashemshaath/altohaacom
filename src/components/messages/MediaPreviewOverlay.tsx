@@ -65,7 +65,7 @@ export const MediaPreviewOverlay = memo(function MediaPreviewOverlay({ open, onO
 
           {/* Counter */}
           {urls.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-background/60 backdrop-blur text-xs font-medium">
+            <div className="absolute bottom-4 start-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-background/60 backdrop-blur text-xs font-medium">
               {index + 1} / {urls.length}
             </div>
           )}

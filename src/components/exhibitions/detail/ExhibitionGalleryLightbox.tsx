@@ -86,7 +86,7 @@ export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox
 
       {/* Thumbnail strip */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 p-2 rounded-xl bg-muted/80 backdrop-blur-sm max-w-[80vw] overflow-x-auto scrollbar-none">
+        <div className="absolute bottom-4 start-1/2 -translate-x-1/2 flex gap-1.5 p-2 rounded-xl bg-muted/80 backdrop-blur-sm max-w-[80vw] overflow-x-auto scrollbar-none">
           {images.map((url, i) => (
             <button
               key={i}

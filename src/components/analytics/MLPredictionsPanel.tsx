@@ -72,9 +72,9 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
   const isAr = language === "ar";
 
   const { data, isLoading, refetch, isFetching } = useQuery<MLInsightsData>({
-    queryKey: ["ml-insights-ai"],
+    queryKey: ["ms-insights-ai"],
     queryFn: async () => {
-      const { data: result, error } = await supabase.functions.invoke("ml-insights", {
+      const { data: result, error } = await supabase.functions.invoke("ms-insights", {
         body: { language },
       });
       if (error) throw error;
