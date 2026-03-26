@@ -45,7 +45,7 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
-  const { settings, isLoading, updateSetting } = useSiteSettings();
+  const { settings, isLoading, saveSetting } = useSiteSettings();
   const [policy, setPolicy] = useState<PolicyConfig>(DEFAULT_POLICY);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
