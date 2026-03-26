@@ -723,6 +723,81 @@ export default function UserManagement() {
         </CardContent>
       </Card>
 
+      {/* Create User Inline */}
+      <InlinePanel
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        title={isAr ? "إنشاء حساب جديد" : "Create New Account"}
+        description={isAr ? "أنشئ حساب مستخدم جديد" : "Create a new user account"}
+        icon={<UserPlus className="h-4 w-4 text-primary" />}
+        size="md"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>
+              {createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+              {isAr ? "إنشاء" : "Create"}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
+            <Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} placeholder={isAr ? "أدخل الاسم الكامل" : "Enter full name"} />
+          </div>
+          <div className="space-y-2">
+            <Label>{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
+            <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
+          </div>
+          <div className="space-y-2">
+            <Label>{isAr ? "كلمة المرور" : "Password"} *</Label>
+            <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الأولية" : "Initial password"} dir="ltr" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
+              <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
+            </div>
+            <div className="space-y-2">
+              <Label>{isAr ? "الدور" : "Role"}</Label>
+              <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {ALL_ROLES.map((role) => (
+                    <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </InlinePanel>
+
+      {/* Invite Inline */}
+      <InlinePanel
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        title={isAr ? "إرسال دعوة" : "Send Invitation"}
+        description={isAr ? "أرسل دعوة للمستخدم" : "Invite user to activate account"}
+        icon={<Mail className="h-4 w-4 text-primary" />}
+        size="md"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>
+              {inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+              {isAr ? "إرسال" : "Send"}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-2">
+          <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+          <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
+        </div>
+      </InlinePanel>
+
       {/* Bulk Action Bar */}
       <BulkActionBar
         count={bulkCount}
