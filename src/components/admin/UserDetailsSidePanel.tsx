@@ -62,7 +62,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
   });
 
   const statusMutation = useMutation({
-    mutationFn: async ({ status }: { status: string }) => {
+    mutationFn: async ({ status }: { status: Database["public"]["Enums"]["account_status"] }) => {
       const { error } = await supabase.from("profiles").update({
         account_status: status,
         suspended_reason: status === "suspended" || status === "banned" ? "Admin action" : null,
