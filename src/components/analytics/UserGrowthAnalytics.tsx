@@ -12,10 +12,10 @@ import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
 import { linearRegression } from "@/lib/trendPrediction";
 
-const COLORS = CHART_COLORS;
-  const isAr = language === "ar";
+
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
   const { language } = useLanguage();
+  const isAr = language === "ar";
 
   const { data, isLoading } = useQuery({
     queryKey: ["userGrowthAnalytics"],
