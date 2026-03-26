@@ -172,6 +172,11 @@ export default function Dashboard() {
         <div className="mb-6"><W lines={1}><QuickStatsWidget /></W></div>
       )}
 
+      {/* Weekly Overview */}
+      {user && isVisible("weekly-overview") && (
+        <div className="mb-6"><W lines={2}><WeeklyOverviewWidget /></W></div>
+      )}
+
       {/* Achievements Summary */}
       {user && isVisible("achievements") && (
         <div className="mb-6"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
