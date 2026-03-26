@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
+} from "recharts";
+import {
   Users, CreditCard, Star, TrendingUp, AlertTriangle, Clock,
   ArrowUpCircle, UserCheck, UserX, RefreshCw, Play, Loader2, CheckCircle2
 } from "lucide-react";
