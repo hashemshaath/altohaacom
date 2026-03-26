@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { translateRole } from "@/lib/chartConfig";
 import {
   Shield, ShieldAlert, ShieldCheck, Activity, Ban, Monitor,
   Search, RefreshCw, Loader2, AlertTriangle, Eye, Clock, Users,
@@ -427,7 +428,7 @@ function PermissionsOverview() {
           {sortedRoles.map(([role, count]) => (
             <div key={role} className="flex items-center gap-3">
               <Badge variant="outline" className="text-xs min-w-[80px] justify-center">
-                {role}
+                {translateRole(role, isAr)}
               </Badge>
               <div className="flex-1">
                 <div className="h-2 bg-muted rounded-full overflow-hidden">

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users, UserCheck, UserPlus, Shield, Crown, Globe, TrendingUp, Activity } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
+import { translateRole, getTooltipStyle } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
@@ -122,7 +123,7 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
               <AreaChart data={data.trendData}>
                 <XAxis dataKey="date" tick={{ fontSize: 9 }} />
                 <YAxis tick={{ fontSize: 9 }} allowDecimals={false} />
-                <Tooltip contentStyle={{ fontSize: 11 }} />
+                <Tooltip contentStyle={getTooltipStyle(isAr)} />
                 <Area type="monotone" dataKey="signups" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} name={isAr ? "تسجيلات" : "Signups"} />
                 <Area type="monotone" dataKey="verified" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.2} name={isAr ? "موثقون" : "Verified"} />
               </AreaChart>
@@ -137,10 +138,10 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
             {data.roleData.length > 0 ? (
               <ResponsiveContainer width="100%" height={140}>
                 <PieChart>
-                  <Pie data={data.roleData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50} innerRadius={25}>
+                  <Pie data={data.roleData.map(d => ({ ...d, label: translateRole(d.name, isAr) }))} dataKey="value" nameKey="label" cx="50%" cy="50%" outerRadius={50} innerRadius={25}>
                     {data.roleData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ fontSize: 11 }} />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (

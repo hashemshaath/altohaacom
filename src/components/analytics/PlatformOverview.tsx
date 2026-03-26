@@ -11,6 +11,7 @@ import { SparklineCard } from "./SparklineCard";
 import {
   CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
   GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, CHART_HEIGHT, getNoDataText,
+  translateRole, translateStatus, getTooltipStyle,
 } from "@/lib/chartConfig";
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
@@ -135,11 +136,11 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
             {stats?.roleData && stats.roleData.length > 0 ? (
               <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
                 <PieChart>
-                  <Pie data={stats.roleData} cx="50%" cy="50%" outerRadius={90} innerRadius={45} dataKey="value" paddingAngle={3} strokeWidth={0}
-                    label={({ name, value }) => `${name} (${value})`} labelLine={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}>
+                  <Pie data={stats.roleData.map(d => ({ ...d, label: translateRole(d.name, isAr) }))} cx="50%" cy="50%" outerRadius={90} innerRadius={45} dataKey="value" nameKey="label" paddingAngle={3} strokeWidth={0}
+                    label={({ label, value }) => `${label} (${value})`} labelLine={{ stroke: "hsl(var(--muted-foreground))", strokeWidth: 1 }}>
                     {stats.roleData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
                   </Pie>
-                  <Tooltip contentStyle={TOOLTIP_STYLE} />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                   <Legend wrapperStyle={LEGEND_STYLE} />
                 </PieChart>
               </ResponsiveContainer>
@@ -156,11 +157,11 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
           <CardContent>
             {stats?.statusData && stats.statusData.length > 0 ? (
               <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
-                <BarChart data={stats.statusData}>
+                <BarChart data={stats.statusData.map(d => ({ ...d, label: translateStatus(d.name, isAr) }))}>
                   <CartesianGrid {...GRID_PROPS} />
-                  <XAxis dataKey="name" {...X_AXIS_PROPS} />
+                  <XAxis dataKey="label" {...X_AXIS_PROPS} />
                   <YAxis {...Y_AXIS_PROPS} />
-                  <Tooltip contentStyle={TOOLTIP_STYLE} />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                   <Bar dataKey="value" fill={CHART_COLORS[0]} radius={BAR_RADIUS} name={isAr ? "العدد" : "Count"} />
                 </BarChart>
               </ResponsiveContainer>

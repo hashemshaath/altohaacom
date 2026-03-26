@@ -6,15 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCheck, UserX, Shield, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { translateRole, getTooltipStyle, TOOLTIP_STYLE, CHART_COLORS, LEGEND_STYLE, CHART_HEIGHT, GRID_PROPS, X_AXIS_PROPS, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
 import { linearRegression } from "@/lib/trendPrediction";
 
-const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
   const { language } = useLanguage();
+  const isAr = language === "ar";
 
   const { data, isLoading } = useQuery({
     queryKey: ["userGrowthAnalytics"],
@@ -130,17 +131,17 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
             {data?.roleData && data.roleData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
-                  <Pie data={data.roleData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, value }) => `${name} (${value})`}>
+                  <Pie data={data.roleData.map(d => ({ ...d, label: translateRole(d.name, isAr) }))} cx="50%" cy="50%" outerRadius={100} dataKey="value" nameKey="label" label={({ label, value }) => `${label} (${value})`}>
                     {data.roleData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                      <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <p className="py-12 text-center text-muted-foreground">{language === "ar" ? "لا توجد بيانات" : "No data available"}</p>
+              <p className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد بيانات" : "No data available"}</p>
             )}
           </CardContent>
         </Card>

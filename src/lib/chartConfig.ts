@@ -82,3 +82,57 @@ export const CHART_HEIGHT = {
 export function getNoDataText(isAr: boolean): string {
   return isAr ? "لا توجد بيانات متاحة" : "No data available";
 }
+
+/** Translate platform role keys to display labels */
+const ROLE_TRANSLATIONS: Record<string, { en: string; ar: string }> = {
+  admin: { en: "Admin", ar: "مدير" },
+  moderator: { en: "Moderator", ar: "مشرف" },
+  user: { en: "User", ar: "مستخدم" },
+  judge: { en: "Judge", ar: "حَكَم" },
+  chef: { en: "Chef", ar: "طاهٍ" },
+  supervisor: { en: "Supervisor", ar: "مشرف" },
+  viewer: { en: "Viewer", ar: "مشاهد" },
+  editor: { en: "Editor", ar: "محرر" },
+  manager: { en: "Manager", ar: "مدير" },
+  owner: { en: "Owner", ar: "مالك" },
+  contestant: { en: "Contestant", ar: "متسابق" },
+  participant: { en: "Participant", ar: "مشارك" },
+  sponsor: { en: "Sponsor", ar: "راعي" },
+  organizer: { en: "Organizer", ar: "منظم" },
+};
+
+export function translateRole(role: string, isAr: boolean): string {
+  const t = ROLE_TRANSLATIONS[role.toLowerCase()];
+  return t ? (isAr ? t.ar : t.en) : role;
+}
+
+/** Translate competition/entity status keys */
+const STATUS_TRANSLATIONS: Record<string, { en: string; ar: string }> = {
+  active: { en: "Active", ar: "نشط" },
+  inactive: { en: "Inactive", ar: "غير نشط" },
+  draft: { en: "Draft", ar: "مسودة" },
+  published: { en: "Published", ar: "منشور" },
+  completed: { en: "Completed", ar: "مكتمل" },
+  cancelled: { en: "Cancelled", ar: "ملغي" },
+  pending: { en: "Pending", ar: "قيد الانتظار" },
+  in_progress: { en: "In Progress", ar: "قيد التنفيذ" },
+  closed: { en: "Closed", ar: "مغلق" },
+  open: { en: "Open", ar: "مفتوح" },
+  upcoming: { en: "Upcoming", ar: "قادم" },
+  suspended: { en: "Suspended", ar: "موقوف" },
+  unknown: { en: "Unknown", ar: "غير معروف" },
+};
+
+export function translateStatus(status: string, isAr: boolean): string {
+  const t = STATUS_TRANSLATIONS[status.toLowerCase()];
+  return t ? (isAr ? t.ar : t.en) : status;
+}
+
+/** RTL-aware tooltip style */
+export function getTooltipStyle(isAr: boolean): React.CSSProperties {
+  return {
+    ...TOOLTIP_STYLE,
+    direction: isAr ? "rtl" : "ltr",
+    textAlign: isAr ? "right" : "left",
+  };
+}

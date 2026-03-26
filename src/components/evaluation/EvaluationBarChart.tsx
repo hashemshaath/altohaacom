@@ -42,6 +42,8 @@ export const EvaluationBarChart = memo(function EvaluationBarChart({ title, data
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "8px",
                 fontSize: 12,
+                direction: isAr ? "rtl" : "ltr",
+                textAlign: isAr ? "right" : "left",
               }}
               formatter={(value: number) => [`${value.toFixed(1)} / 10`, isAr ? "الدرجة" : "Score"]}
             />

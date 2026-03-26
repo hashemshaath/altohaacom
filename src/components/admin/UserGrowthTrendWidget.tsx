@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Users, TrendingUp, UserCheck, UserX, Globe, Shield } from "lucide-react";
+import { translateRole } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 
@@ -146,7 +147,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
             <div className="space-y-1">
               {data.roleDistribution.map((r, i) => (
                 <div key={r.name} className="flex items-center justify-between text-[10px]">
-                  <span className="capitalize">{r.name}</span>
+                  <span className="capitalize">{translateRole(r.name, isAr)}</span>
                   <Badge variant="outline" className="text-[9px] h-4">{r.value}</Badge>
                 </div>
               ))}

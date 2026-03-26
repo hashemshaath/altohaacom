@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { countryFlag } from "@/lib/countryFlag";
 import { Globe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { CHART_COLORS, TOOLTIP_STYLE, CHART_HEIGHT, H_BAR_RADIUS } from "@/lib/chartConfig";
+import { CHART_COLORS, TOOLTIP_STYLE, CHART_HEIGHT, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
 
 interface CountryBreakdownChartProps {
   metric: "users" | "competitions" | "companies";
@@ -74,7 +74,7 @@ export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metri
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickLine={false} axisLine={false} width={100}
                   tickFormatter={(value, index) => { const item = chartData[index]; return item ? `${item.flag} ${value}` : value; }}
                 />
-                <Tooltip contentStyle={TOOLTIP_STYLE} formatter={(value: number) => [value, isAr ? "العدد" : "Count"]} />
+                <Tooltip contentStyle={getTooltipStyle(isAr)} formatter={(value: number) => [value, isAr ? "العدد" : "Count"]} />
                 <Bar dataKey="count" radius={H_BAR_RADIUS}>
                   {chartData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
                 </Bar>

@@ -14,6 +14,7 @@ import {
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
+import { translateStatus, getTooltipStyle } from "@/lib/chartConfig";
 import { TrendForecastChart } from "./TrendForecastChart";
 
 const COLORS = ["hsl(var(--chart-2))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))", "hsl(var(--primary))"];
@@ -284,7 +285,7 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
                   <XAxis dataKey="bucket" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip
-                    contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }}
+                    contentStyle={getTooltipStyle(isAr)}
                     formatter={(value: number) => [formatCurrency(value, language as "en" | "ar"), isAr ? "المبلغ" : "Amount"]}
                   />
                   <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
@@ -317,13 +318,13 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={data.statusPie} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value"
-                    label={({ name, value }) => `${name} (${value})`}>
+                  <Pie data={data.statusPie.map((d: any) => ({ ...d, label: translateStatus(d.name, isAr) }))} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" nameKey="label"
+                    label={({ label, value }) => `${label} (${value})`}>
                     {data.statusPie.map((_: any, i: number) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
