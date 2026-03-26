@@ -1,13 +1,13 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { StatsCard } from "@/components/ui/stats-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { AdminExportButton } from "@/components/admin/AdminExportButton";
+import { useAdminExport } from "@/hooks/useAdminExport";
 import {
   Users, TrendingUp, TrendingDown, ArrowUpCircle, ArrowDownCircle,
   CreditCard, UserPlus, UserX, RefreshCw, Clock, AlertTriangle,
@@ -53,31 +53,21 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
 
       const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
 
-      const upgrades = currentHistory?.filter(h =>
-        (tierOrder[h.new_tier] ?? 0) > (tierOrder[h.previous_tier] ?? 0)
-      ).length || 0;
-      const prevUpgrades = prevHistory?.filter(h =>
-        (tierOrder[h.new_tier] ?? 0) > (tierOrder[h.previous_tier] ?? 0)
-      ).length || 0;
+      const upgrades = currentHistory?.filter(h => (tierOrder[h.new_tier] ?? 0) > (tierOrder[h.previous_tier] ?? 0)).length || 0;
+      const prevUpgrades = prevHistory?.filter(h => (tierOrder[h.new_tier] ?? 0) > (tierOrder[h.previous_tier] ?? 0)).length || 0;
 
-      const downgrades = currentHistory?.filter(h =>
-        (tierOrder[h.new_tier] ?? 0) < (tierOrder[h.previous_tier] ?? 0)
-      ).length || 0;
-      const prevDowngrades = prevHistory?.filter(h =>
-        (tierOrder[h.new_tier] ?? 0) < (tierOrder[h.previous_tier] ?? 0)
-      ).length || 0;
+      const downgrades = currentHistory?.filter(h => (tierOrder[h.new_tier] ?? 0) < (tierOrder[h.previous_tier] ?? 0)).length || 0;
+      const prevDowngrades = prevHistory?.filter(h => (tierOrder[h.new_tier] ?? 0) < (tierOrder[h.previous_tier] ?? 0)).length || 0;
 
       const renewals = currentHistory?.filter(h => h.reason?.toLowerCase().includes("renewal")).length || 0;
       const prevRenewals = prevHistory?.filter(h => h.reason?.toLowerCase().includes("renewal")).length || 0;
 
       const newSignups = allProfiles?.filter(p =>
-        new Date(p.created_at) >= new Date(periodStart) &&
-        p.membership_tier && p.membership_tier !== "basic"
+        new Date(p.created_at) >= new Date(periodStart) && p.membership_tier && p.membership_tier !== "basic"
       ).length || 0;
       const prevNewSignups = allProfiles?.filter(p => {
         const d = new Date(p.created_at);
-        return d >= new Date(prevPeriodStart) && d < new Date(periodStart) &&
-          p.membership_tier && p.membership_tier !== "basic";
+        return d >= new Date(prevPeriodStart) && d < new Date(periodStart) && p.membership_tier && p.membership_tier !== "basic";
       }).length || 0;
 
       const cancellations = currentCancellations?.length || 0;
@@ -88,10 +78,7 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
 
       const totalFeatureUses = featureUsage?.length || 0;
 
-      // Current snapshot
-      const totalPaid = allProfiles?.filter(p =>
-        p.membership_tier === "professional" || p.membership_tier === "enterprise"
-      ).length || 0;
+      const totalPaid = allProfiles?.filter(p => p.membership_tier === "professional" || p.membership_tier === "enterprise").length || 0;
       const professional = allProfiles?.filter(p => p.membership_tier === "professional").length || 0;
       const enterprise = allProfiles?.filter(p => p.membership_tier === "enterprise").length || 0;
       const mrr = (professional * 19) + (enterprise * 99);
@@ -129,7 +116,6 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
   const highlights = useMemo(() => {
     if (!data) return [];
     const items: { icon: typeof TrendingUp; text: string; type: "positive" | "negative" | "neutral" }[] = [];
-
     if (data.upgrades > 0)
       items.push({ icon: ArrowUpCircle, text: isAr ? `${data.upgrades} ترقية خلال الفترة` : `${data.upgrades} upgrades this period`, type: "positive" });
     if (data.expiringSoon > 0)
@@ -140,9 +126,32 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
       items.push({ icon: Zap, text: isAr ? `${data.gifts} هدية عضوية جديدة` : `${data.gifts} gift memberships purchased`, type: "positive" });
     if (data.renewals > 0)
       items.push({ icon: RefreshCw, text: isAr ? `${data.renewals} تجديد` : `${data.renewals} renewals`, type: "positive" });
-
     return items;
   }, [data, isAr]);
+
+  const { exportData, isExporting } = useAdminExport();
+  const handleExport = useCallback((fmt: "csv" | "json") => {
+    if (!data) return;
+    const rows = [
+      { metric: "MRR (SAR)", current: data.mrr, trend: "" },
+      { metric: "Paid Members", current: data.totalPaid, trend: "" },
+      { metric: "New Signups", current: data.newSignups, trend: `${data.trends.newSignups}%` },
+      { metric: "Upgrades", current: data.upgrades, trend: `${data.trends.upgrades}%` },
+      { metric: "Downgrades", current: data.downgrades, trend: `${data.trends.downgrades}%` },
+      { metric: "Renewals", current: data.renewals, trend: `${data.trends.renewals}%` },
+      { metric: "Cancellations", current: data.cancellations, trend: `${data.trends.cancellations}%` },
+      { metric: "Gift Memberships", current: data.gifts, trend: `${data.trends.gifts}%` },
+      { metric: "Feature Uses", current: data.totalFeatureUses, trend: "" },
+      { metric: "Expiring Soon", current: data.expiringSoon, trend: "" },
+      { metric: "Professional Members", current: data.professional, trend: "" },
+      { metric: "Enterprise Members", current: data.enterprise, trend: "" },
+    ];
+    exportData(rows, [
+      { key: "metric", label: "Metric" },
+      { key: "current", label: `Value (${periodLabel})` },
+      { key: "trend", label: "Trend vs Previous" },
+    ], { filename: `membership-digest-${period}`, format: fmt });
+  }, [data, period, periodLabel, exportData]);
 
   if (isLoading) {
     return (
@@ -154,95 +163,79 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
     );
   }
 
+  const TrendBadge = ({ value }: { value: number }) => (
+    <Badge variant={value > 0 ? "default" : value < 0 ? "destructive" : "secondary"} className="text-[10px] gap-0.5">
+      {value > 0 ? <TrendingUp className="h-3 w-3" /> : value < 0 ? <TrendingDown className="h-3 w-3" /> : null}
+      {value > 0 ? "+" : ""}{value}%
+    </Badge>
+  );
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold">
-            {isAr ? "ملخص العضويات" : "Membership Digest"}
-          </h3>
+          <h3 className="text-lg font-semibold">{isAr ? "ملخص العضويات" : "Membership Digest"}</h3>
           <p className="text-sm text-muted-foreground">
             {periodLabel} — {isAr ? "مقارنة بالفترة السابقة" : "compared to previous period"}
           </p>
         </div>
-        <div className="flex gap-1 rounded-xl border p-1">
-          {(["7d", "14d", "30d"] as Period[]).map(p => (
-            <Button
-              key={p}
-              variant={period === p ? "default" : "ghost"}
-              size="sm"
-              className="h-7 text-xs px-3"
-              onClick={() => setPeriod(p)}
-            >
-              {p === "7d" ? (isAr ? "7 أيام" : "7d") : p === "14d" ? (isAr ? "14 يوم" : "14d") : (isAr ? "30 يوم" : "30d")}
-            </Button>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1 rounded-xl border p-1">
+            {(["7d", "14d", "30d"] as Period[]).map(p => (
+              <Button key={p} variant={period === p ? "default" : "ghost"} size="sm" className="h-7 text-xs px-3" onClick={() => setPeriod(p)}>
+                {p === "7d" ? (isAr ? "7 أيام" : "7d") : p === "14d" ? (isAr ? "14 يوم" : "14d") : (isAr ? "30 يوم" : "30d")}
+              </Button>
+            ))}
+          </div>
+          <AdminExportButton onExport={handleExport} isExporting={isExporting} />
         </div>
       </div>
 
       {/* Snapshot KPIs */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          icon={<CreditCard className="h-4 w-4" />}
-          label={isAr ? "الإيرادات الشهرية" : "Monthly Revenue"}
-          value={`${data?.mrr || 0} SAR`}
-        />
-        <StatsCard
-          icon={<Users className="h-4 w-4" />}
-          label={isAr ? "الأعضاء المدفوعين" : "Paid Members"}
-          value={data?.totalPaid || 0}
-        />
-        <StatsCard
-          icon={<UserPlus className="h-4 w-4" />}
-          label={isAr ? "اشتراكات جديدة" : "New Signups"}
-          value={data?.newSignups || 0}
-          trend={data ? { value: data.trends.newSignups, label: isAr ? "عن الفترة السابقة" : "vs prev" } : undefined}
-        />
-        <StatsCard
-          icon={<Clock className="h-4 w-4" />}
-          label={isAr ? "تنتهي قريباً" : "Expiring Soon"}
-          value={data?.expiringSoon || 0}
-        />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Card><CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-1"><CreditCard className="h-4 w-4 text-primary" /><span className="text-xs text-muted-foreground">{isAr ? "الإيرادات الشهرية" : "MRR"}</span></div>
+          <p className="text-2xl font-bold"><AnimatedCounter value={data?.mrr || 0} /> <span className="text-sm font-normal text-muted-foreground">SAR</span></p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-1"><Users className="h-4 w-4 text-primary" /><span className="text-xs text-muted-foreground">{isAr ? "المدفوعين" : "Paid"}</span></div>
+          <AnimatedCounter value={data?.totalPaid || 0} className="text-2xl font-bold" />
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2"><UserPlus className="h-4 w-4 text-chart-2" /><span className="text-xs text-muted-foreground">{isAr ? "اشتراكات" : "Signups"}</span></div>
+            {data && <TrendBadge value={data.trends.newSignups} />}
+          </div>
+          <AnimatedCounter value={data?.newSignups || 0} className="text-2xl font-bold" />
+        </CardContent></Card>
+        <Card><CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-1"><Clock className="h-4 w-4 text-chart-3" /><span className="text-xs text-muted-foreground">{isAr ? "تنتهي قريباً" : "Expiring"}</span></div>
+          <AnimatedCounter value={data?.expiringSoon || 0} className="text-2xl font-bold" />
+        </CardContent></Card>
       </div>
 
       {/* Period Activity */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatsCard
-          icon={<ArrowUpCircle className="h-4 w-4" />}
-          label={isAr ? "ترقيات" : "Upgrades"}
-          value={data?.upgrades || 0}
-          trend={data ? { value: data.trends.upgrades, label: isAr ? "عن الفترة السابقة" : "vs prev" } : undefined}
-        />
-        <StatsCard
-          icon={<ArrowDownCircle className="h-4 w-4" />}
-          label={isAr ? "تخفيضات" : "Downgrades"}
-          value={data?.downgrades || 0}
-          trend={data ? { value: -data.trends.downgrades, label: isAr ? "عن الفترة السابقة" : "vs prev" } : undefined}
-        />
-        <StatsCard
-          icon={<RefreshCw className="h-4 w-4" />}
-          label={isAr ? "تجديدات" : "Renewals"}
-          value={data?.renewals || 0}
-          trend={data ? { value: data.trends.renewals, label: isAr ? "عن الفترة السابقة" : "vs prev" } : undefined}
-        />
-        <StatsCard
-          icon={<UserX className="h-4 w-4" />}
-          label={isAr ? "إلغاءات" : "Cancellations"}
-          value={data?.cancellations || 0}
-          trend={data ? { value: -data.trends.cancellations, label: isAr ? "عن الفترة السابقة" : "vs prev" } : undefined}
-        />
-        <StatsCard
-          icon={<Zap className="h-4 w-4" />}
-          label={isAr ? "هدايا عضوية" : "Gift Memberships"}
-          value={data?.gifts || 0}
-          trend={data ? { value: data.trends.gifts, label: isAr ? "عن الفترة السابقة" : "vs prev" } : undefined}
-        />
-        <StatsCard
-          icon={<CalendarDays className="h-4 w-4" />}
-          label={isAr ? "استخدام الميزات" : "Feature Uses"}
-          value={data?.totalFeatureUses || 0}
-        />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {[
+          { icon: ArrowUpCircle, label: isAr ? "ترقيات" : "Upgrades", value: data?.upgrades || 0, trend: data?.trends.upgrades || 0, color: "text-primary" },
+          { icon: ArrowDownCircle, label: isAr ? "تخفيضات" : "Downgrades", value: data?.downgrades || 0, trend: -(data?.trends.downgrades || 0), color: "text-destructive" },
+          { icon: RefreshCw, label: isAr ? "تجديدات" : "Renewals", value: data?.renewals || 0, trend: data?.trends.renewals || 0, color: "text-chart-2" },
+          { icon: UserX, label: isAr ? "إلغاءات" : "Cancellations", value: data?.cancellations || 0, trend: -(data?.trends.cancellations || 0), color: "text-destructive" },
+          { icon: Zap, label: isAr ? "هدايا" : "Gifts", value: data?.gifts || 0, trend: data?.trends.gifts || 0, color: "text-chart-4" },
+          { icon: CalendarDays, label: isAr ? "استخدام الميزات" : "Feature Uses", value: data?.totalFeatureUses || 0, trend: 0, color: "text-muted-foreground" },
+        ].map((item, i) => (
+          <Card key={i}><CardContent className="p-4">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <item.icon className={`h-4 w-4 ${item.color}`} />
+                <span className="text-xs text-muted-foreground">{item.label}</span>
+              </div>
+              {item.trend !== 0 && <TrendBadge value={item.trend} />}
+            </div>
+            <AnimatedCounter value={item.value} className="text-2xl font-bold" />
+          </CardContent></Card>
+        ))}
       </div>
 
       {/* Highlights */}
