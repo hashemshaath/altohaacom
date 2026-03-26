@@ -30,7 +30,7 @@ import { UserAnalyticsWidget } from "@/components/admin/UserAnalyticsWidget";
 import { UserDemographicsWidget } from "@/components/admin/UserDemographicsWidget";
 import { UsersLiveStatsWidget } from "@/components/admin/UsersLiveStatsWidget";
 import { UserActivityTimeline } from "@/components/admin/UserActivityTimeline";
-import { UserSearchCommand } from "@/components/admin/UserSearchCommand";
+import { InlineUserSearch } from "@/components/admin/InlineUserSearch";
 import { AdminSessionTracker } from "@/components/admin/AdminSessionTracker";
 import { AdminNotificationCenter } from "@/components/admin/AdminNotificationCenter";
 import { SecurityAuditTimeline } from "@/components/admin/SecurityAuditTimeline";
@@ -241,7 +241,12 @@ export default function UserManagement() {
   // ── Render ──
   return (
     <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
-      <UserSearchCommand open={userSearchOpen} onOpenChange={setUserSearchOpen} onSelectUser={(userId) => setViewingUserId(userId)} />
+      {userSearchOpen && (
+        <InlineUserSearch
+          onSelectUser={(userId) => { setViewingUserId(userId); setUserSearchOpen(false); }}
+          onClose={() => setUserSearchOpen(false)}
+        />
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between">
