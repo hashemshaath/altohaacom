@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { InlinePanel } from "@/components/ui/InlinePanel";
@@ -102,15 +103,25 @@ export default function UserManagement() {
   const [suspendTarget, setSuspendTarget] = useState<{ userId: string; userName: string; email: string | null } | null>(null);
   const [notifyTarget, setNotifyTarget] = useState<{ userId: string; userName: string } | null>(null);
   const [notifyMessage, setNotifyMessage] = useState("");
+  const [notifyMessageAr, setNotifyMessageAr] = useState("");
 
   // Create user form
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newFullName, setNewFullName] = useState("");
+  const [newFullNameAr, setNewFullNameAr] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newRole, setNewRole] = useState<AppRole>("chef");
+  const [newAccountType, setNewAccountType] = useState<"professional" | "fan">("professional");
+  const [newSendInvite, setNewSendInvite] = useState(true);
+
+  // Invite form
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteFullName, setInviteFullName] = useState("");
+  const [inviteRole, setInviteRole] = useState<AppRole>("chef");
+  const [inviteMessageEn, setInviteMessageEn] = useState("");
+  const [inviteMessageAr, setInviteMessageAr] = useState("");
 
   const [userSearchOpen, setUserSearchOpen] = useState(false);
 
@@ -198,12 +209,17 @@ export default function UserManagement() {
   });
 
   const createUserMutation = useMutation({
-    mutationFn: async () => callAdminFn({ action: "create_user", email: newEmail, password: newPassword, full_name: newFullName, username: newUsername, phone: newPhone, role: newRole }),
+    mutationFn: async () => callAdminFn({
+      action: "create_user", email: newEmail, password: newPassword,
+      full_name: newFullName, full_name_ar: newFullNameAr,
+      username: newUsername, phone: newPhone, role: newRole,
+      account_type: newAccountType, send_invite: newSendInvite,
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم إنشاء المستخدم" : "User created" });
+      toast({ title: isAr ? "تم إنشاء المستخدم بنجاح" : "User created successfully", description: newSendInvite ? (isAr ? "تم إرسال دعوة التفعيل" : "Activation invite sent") : undefined });
       setCreateOpen(false);
-      setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewUsername(""); setNewPhone("");
+      setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewFullNameAr(""); setNewUsername(""); setNewPhone(""); setNewSendInvite(true);
     },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
@@ -215,8 +231,15 @@ export default function UserManagement() {
   });
 
   const inviteMutation = useMutation({
-    mutationFn: async () => callAdminFn({ action: "send_invitation", email: inviteEmail }),
-    onSuccess: () => { toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" }); setInviteOpen(false); setInviteEmail(""); },
+    mutationFn: async () => callAdminFn({
+      action: "send_invitation", email: inviteEmail,
+      full_name: inviteFullName, role: inviteRole,
+      message_en: inviteMessageEn, message_ar: inviteMessageAr,
+    }),
+    onSuccess: () => {
+      toast({ title: isAr ? "تم إرسال الدعوة بنجاح" : "Invitation sent successfully" });
+      setInviteOpen(false); setInviteEmail(""); setInviteFullName(""); setInviteMessageEn(""); setInviteMessageAr("");
+    },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
@@ -314,37 +337,90 @@ export default function UserManagement() {
       </Card>
 
       {/* ── Inline Panels ── */}
-      <InlinePanel open={createOpen} onClose={() => setCreateOpen(false)} title={isAr ? "إنشاء حساب جديد" : "Create New Account"} description={isAr ? "أنشئ حساب مستخدم جديد في النظام" : "Create a new user account"} icon={<UserPlus className="h-4 w-4 text-primary" />} size="md"
-        footer={<><Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>{createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}{isAr ? "إنشاء الحساب" : "Create Account"}</Button></>}
+      <InlinePanel open={createOpen} onClose={() => setCreateOpen(false)} title={isAr ? "إنشاء حساب جديد" : "Create New Account"} description={isAr ? "أنشئ حساب مستخدم جديد مع إمكانية إرسال دعوة تلقائية" : "Create a new user account with optional auto-invitation"} icon={<UserPlus className="h-4 w-4 text-primary" />} size="lg"
+        footer={<><Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending} className="gap-2">{createUserMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إنشاء الحساب" : "Create Account"}</Button></>}
       >
-        <div className="space-y-4">
-          <div className="space-y-2"><Label>{isAr ? "الاسم الكامل" : "Full Name"} *</Label><Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} dir={isAr ? "rtl" : "ltr"} placeholder={isAr ? "أدخل الاسم الكامل" : "Enter full name"} /></div>
-          <div className="space-y-2"><Label>{isAr ? "البريد الإلكتروني" : "Email"} *</Label><Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} dir="ltr" placeholder="user@example.com" /></div>
-          <div className="space-y-2"><Label>{isAr ? "كلمة المرور" : "Password"} *</Label><Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} dir="ltr" /></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2"><Label>{isAr ? "اسم المستخدم" : "Username"}</Label><Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} dir="ltr" placeholder="username" /></div>
-            <div className="space-y-2">
-              <Label>{isAr ? "الدور الأساسي" : "Primary Role"}</Label>
-              <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+        <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
+          {/* Name section - Arabic first */}
+          <div className="rounded-xl border border-border/50 p-4 space-y-3">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الاسم والهوية" : "Name & Identity"}</h4>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "الاسم الكامل (عربي)" : "Full Name (AR)"} *</Label><Input value={newFullNameAr} onChange={(e) => setNewFullNameAr(e.target.value)} dir="rtl" placeholder={isAr ? "الاسم بالعربية" : "Name in Arabic"} /></div>
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (EN)"} *</Label><Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} dir="ltr" placeholder="Full name in English" /></div>
+            </div>
+          </div>
+          {/* Account section */}
+          <div className="rounded-xl border border-border/50 p-4 space-y-3">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "بيانات الحساب" : "Account Details"}</h4>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label><Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} dir="ltr" placeholder="user@example.com" /></div>
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label><Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} dir="ltr" placeholder="••••••••" /></div>
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "اسم المستخدم" : "Username"}</Label><Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} dir="ltr" placeholder="username" /></div>
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "رقم الهاتف" : "Phone"}</Label><Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} dir="ltr" placeholder="+966..." /></div>
+            </div>
+          </div>
+          {/* Role & Type */}
+          <div className="rounded-xl border border-border/50 p-4 space-y-3">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الدور ونوع الحساب" : "Role & Account Type"}</h4>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "الدور الأساسي" : "Primary Role"}</Label>
+                <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
+                  <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                  <SelectContent>{ALL_ROLES.map((role) => <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">{isAr ? "نوع الحساب" : "Account Type"}</Label>
+                <Select value={newAccountType} onValueChange={(v) => setNewAccountType(v as "professional" | "fan")}>
+                  <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
+                    <SelectItem value="fan">{isAr ? "متابع" : "Fan"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 pt-1">
+              <Checkbox id="send-invite" checked={newSendInvite} onCheckedChange={(c) => setNewSendInvite(!!c)} />
+              <Label htmlFor="send-invite" className="text-xs cursor-pointer">{isAr ? "إرسال دعوة تفعيل بالبريد الإلكتروني تلقائياً" : "Automatically send activation invite via email"}</Label>
+            </div>
+          </div>
+        </div>
+      </InlinePanel>
+
+      {/* ── Invite Panel ── */}
+      <InlinePanel open={inviteOpen} onClose={() => { setInviteOpen(false); setInviteEmail(""); setInviteFullName(""); setInviteMessageEn(""); setInviteMessageAr(""); }} title={isAr ? "إرسال دعوة انضمام" : "Send Membership Invitation"} description={isAr ? "أرسل دعوة احترافية مخصصة بالعربية والإنجليزية" : "Send a professional bilingual invitation"} icon={<Mail className="h-4 w-4 text-primary" />} size="lg"
+        footer={<><Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending} className="gap-2">{inviteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إرسال الدعوة" : "Send Invitation"}</Button></>}
+      >
+        <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
+          <div className="rounded-xl border border-border/50 p-4 space-y-3">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "بيانات المدعو" : "Invitee Details"}</h4>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email Address"} *</Label><Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} dir="ltr" placeholder="user@example.com" /></div>
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "اسم المدعو" : "Invitee Name"}</Label><Input value={inviteFullName} onChange={(e) => setInviteFullName(e.target.value)} dir={isAr ? "rtl" : "ltr"} placeholder={isAr ? "اسم المدعو (اختياري)" : "Name (optional)"} /></div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "الدور المقترح" : "Suggested Role"}</Label>
+              <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as AppRole)}>
+                <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                 <SelectContent>{ALL_ROLES.map((role) => <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>)}</SelectContent>
               </Select>
             </div>
           </div>
-          <div className="space-y-2"><Label>{isAr ? "رقم الهاتف" : "Phone"}</Label><Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} dir="ltr" placeholder="+966..." /></div>
+          <div className="rounded-xl border border-border/50 p-4 space-y-3">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "رسالة الدعوة" : "Invitation Message"}</h4>
+            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">ع</Badge> {isAr ? "الرسالة بالعربية" : "Message in Arabic"}</Label><Textarea value={inviteMessageAr} onChange={(e) => setInviteMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="نتشرف بدعوتكم للانضمام إلى منصتنا..." /></div>
+            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">EN</Badge> {isAr ? "الرسالة بالإنجليزية" : "Message in English"}</Label><Textarea value={inviteMessageEn} onChange={(e) => setInviteMessageEn(e.target.value)} rows={3} dir="ltr" placeholder="We are honored to invite you to join our platform..." /></div>
+          </div>
         </div>
       </InlinePanel>
 
-      <InlinePanel open={inviteOpen} onClose={() => setInviteOpen(false)} title={isAr ? "إرسال دعوة" : "Send Invitation"} icon={<Mail className="h-4 w-4 text-primary" />} size="md"
-        footer={<><Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>{inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}{isAr ? "إرسال الدعوة" : "Send Invitation"}</Button></>}
-      >
-        <div className="space-y-2"><Label>{isAr ? "البريد الإلكتروني" : "Email Address"}</Label><Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} dir="ltr" placeholder="user@example.com" /></div>
-      </InlinePanel>
-
+      {/* ── Reset Password Panel ── */}
       <InlinePanel open={resetOpen} onClose={() => setResetOpen(false)} title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"} description={resetUserName} icon={<KeyRound className="h-4 w-4 text-primary" />} size="md"
-        footer={<><Button variant="outline" onClick={() => setResetOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => resetPasswordMutation.mutate()} disabled={!resetNewPassword || resetPasswordMutation.isPending}>{resetPasswordMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}{isAr ? "إعادة التعيين" : "Reset Password"}</Button></>}
+        footer={<><Button variant="outline" onClick={() => setResetOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => resetPasswordMutation.mutate()} disabled={!resetNewPassword || resetPasswordMutation.isPending} className="gap-2">{resetPasswordMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إعادة التعيين" : "Reset Password"}</Button></>}
       >
-        <div className="space-y-2"><Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label><Input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} dir="ltr" /></div>
+        <div className="space-y-2" dir={isAr ? "rtl" : "ltr"}><Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label><Input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} dir="ltr" /></div>
       </InlinePanel>
 
       <InlineConfirm
@@ -358,10 +434,19 @@ export default function UserManagement() {
         loading={updateStatusMutation.isPending}
       />
 
-      <InlinePanel open={!!notifyTarget} onClose={() => { setNotifyTarget(null); setNotifyMessage(""); }} title={isAr ? `إرسال إشعار إلى ${notifyTarget?.userName || ""}` : `Send Notification to ${notifyTarget?.userName || ""}`} icon={<Mail className="h-4 w-4 text-primary" />} size="md"
-        footer={<><Button variant="outline" onClick={() => { setNotifyTarget(null); setNotifyMessage(""); }}>{isAr ? "إلغاء" : "Cancel"}</Button><Button disabled={!notifyMessage.trim()} onClick={async () => { if (!notifyTarget) return; await supabase.from("notifications").insert({ user_id: notifyTarget.userId, title: isAr ? "رسالة من الإدارة" : "Message from Admin", title_ar: "رسالة من الإدارة", body: notifyMessage, body_ar: notifyMessage, type: "admin_message" }); toast({ title: isAr ? "تم الإرسال بنجاح" : "Notification sent" }); setNotifyTarget(null); setNotifyMessage(""); }}>{isAr ? "إرسال" : "Send"}</Button></>}
+      <InlinePanel open={!!notifyTarget} onClose={() => { setNotifyTarget(null); setNotifyMessage(""); setNotifyMessageAr(""); }} title={isAr ? `إرسال إشعار إلى ${notifyTarget?.userName || ""}` : `Send Notification to ${notifyTarget?.userName || ""}`} icon={<Mail className="h-4 w-4 text-primary" />} size="lg"
+        footer={<><Button variant="outline" onClick={() => { setNotifyTarget(null); setNotifyMessage(""); setNotifyMessageAr(""); }}>{isAr ? "إلغاء" : "Cancel"}</Button><Button disabled={!notifyMessage.trim() && !notifyMessageAr.trim()} onClick={async () => { if (!notifyTarget) return; await supabase.from("notifications").insert({ user_id: notifyTarget.userId, title: "Message from Admin", title_ar: "رسالة من الإدارة", body: notifyMessage || notifyMessageAr, body_ar: notifyMessageAr || notifyMessage, type: "admin_message" }); toast({ title: isAr ? "تم الإرسال بنجاح" : "Notification sent" }); setNotifyTarget(null); setNotifyMessage(""); setNotifyMessageAr(""); }}>{isAr ? "إرسال" : "Send"}</Button></>}
       >
-        <div className="space-y-2"><Label>{isAr ? "نص الرسالة" : "Message"}</Label><Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={4} dir={isAr ? "rtl" : "ltr"} placeholder={isAr ? "اكتب رسالتك هنا..." : "Type your message here..."} /></div>
+        <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
+          <div className="space-y-1.5">
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">ع</Badge> {isAr ? "نص الرسالة بالعربية" : "Message in Arabic"}</Label>
+            <Textarea value={notifyMessageAr} onChange={(e) => setNotifyMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="اكتب رسالتك بالعربية هنا..." />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">EN</Badge> {isAr ? "نص الرسالة بالإنجليزية" : "Message in English"}</Label>
+            <Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={3} dir="ltr" placeholder="Type your message in English here..." />
+          </div>
+        </div>
       </InlinePanel>
 
       {/* Bulk Actions */}
