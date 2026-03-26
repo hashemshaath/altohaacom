@@ -836,7 +836,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
               </div>
               {!verificationStatus?.is_verified && (
                 <Button variant="outline" size="sm" asChild>
-                  <Link to="/verify">{isAr ? "توثيق" : "Verify"}</Link>
+                  <Link to="/verification">{isAr ? "توثيق" : "Verify"}</Link>
                 </Button>
               )}
             </div>
