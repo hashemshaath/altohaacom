@@ -371,12 +371,12 @@ export default function SocialLinksEditor() {
       const defaultCC = profile.country_code || "SA";
       const waCC = detectCountryFromPhone(profile.whatsapp || "", defaultCC);
       const phCC = detectCountryFromPhone(profile.phone || "", defaultCC);
-      const ph2CC = detectCountryFromPhone((profile as any).phone2 || "", defaultCC);
+      const ph2CC = detectCountryFromPhone(profile.phone2 || "", defaultCC);
       setContactCountryCodes({ whatsapp: waCC, phone: phCC, phone2: ph2CC });
       setContacts({
         whatsapp: stripPhoneCode(profile.whatsapp || "", waCC),
         phone: stripPhoneCode(profile.phone || "", phCC),
-        phone2: stripPhoneCode((profile as any).phone2 || "", ph2CC),
+        phone2: stripPhoneCode(profile.phone2 || "", ph2CC),
       });
     }
   }, [profile, countries]);
