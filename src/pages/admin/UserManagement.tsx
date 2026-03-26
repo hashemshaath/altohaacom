@@ -735,28 +735,29 @@ export default function UserManagement() {
       {/* Bulk Import Panel */}
       {showBulkImport && <BulkUserImport />}
 
-      {/* Reset Password Dialog */}
-      <Dialog open={resetOpen} onOpenChange={setResetOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</DialogTitle>
-            <DialogDescription>{isAr ? `إعادة تعيين كلمة المرور للمستخدم: ${resetUserName}` : `Reset password for: ${resetUserName}`}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label>
-              <Input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الجديدة" : "New password"} dir="ltr" />
-            </div>
-          </div>
-          <DialogFooter>
+      {/* Reset Password Inline */}
+      <InlinePanel
+        open={resetOpen}
+        onClose={() => setResetOpen(false)}
+        title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
+        description={isAr ? `إعادة تعيين كلمة المرور للمستخدم: ${resetUserName}` : `Reset password for: ${resetUserName}`}
+        icon={<KeyRound className="h-4 w-4 text-primary" />}
+        size="md"
+        footer={
+          <>
             <Button variant="outline" onClick={() => setResetOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
             <Button onClick={() => resetPasswordMutation.mutate()} disabled={!resetNewPassword || resetPasswordMutation.isPending}>
               {resetPasswordMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
               {isAr ? "إعادة التعيين" : "Reset Password"}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div className="space-y-2">
+          <Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label>
+          <Input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الجديدة" : "New password"} dir="ltr" />
+        </div>
+      </InlinePanel>
 
       {/* Filters */}
       <AdminFilterBar
@@ -1011,37 +1012,42 @@ export default function UserManagement() {
               <TabsContent value="groups" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <Label className="text-base font-semibold">{isAr ? "المجموعات المنضمة" : "Joined Groups"}</Label>
-                  <Dialog open={createGroupOpen} onOpenChange={setCreateGroupOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" size="sm"><Plus className="me-1 h-3.5 w-3.5" />{isAr ? "مجموعة جديدة" : "New Group"}</Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-sm">
-                      <DialogHeader>
-                        <DialogTitle>{isAr ? "إنشاء مجموعة جديدة" : "Create New Group"}</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label>{isAr ? "اسم المجموعة (EN)" : "Group Name (EN)"}</Label>
-                          <Input value={newGroupName} onChange={(e) => setNewGroupName(e.target.value)} placeholder="VIP Members" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>{isAr ? "اسم المجموعة (AR)" : "Group Name (AR)"}</Label>
-                          <Input value={newGroupNameAr} onChange={(e) => setNewGroupNameAr(e.target.value)} placeholder="أعضاء مميزون" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>{isAr ? "اللون" : "Color"}</Label>
-                          <Input type="color" value={newGroupColor} onChange={(e) => setNewGroupColor(e.target.value)} className="h-10 w-20" />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button variant="outline" onClick={() => setCreateGroupOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-                        <Button onClick={() => createGroupMutation.mutate()} disabled={!newGroupName || createGroupMutation.isPending}>
-                          {createGroupMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                          {isAr ? "إنشاء" : "Create"}
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <Button variant="outline" size="sm" onClick={() => setCreateGroupOpen(!createGroupOpen)}>
+                    <Plus className="me-1 h-3.5 w-3.5" />{isAr ? "مجموعة جديدة" : "New Group"}
+                  </Button>
+                </div>
+
+                <InlinePanel
+                  open={createGroupOpen}
+                  onClose={() => setCreateGroupOpen(false)}
+                  title={isAr ? "إنشاء مجموعة جديدة" : "Create New Group"}
+                  icon={<Plus className="h-4 w-4 text-primary" />}
+                  size="md"
+                  footer={
+                    <>
+                      <Button variant="outline" onClick={() => setCreateGroupOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+                      <Button onClick={() => createGroupMutation.mutate()} disabled={!newGroupName || createGroupMutation.isPending}>
+                        {createGroupMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                        {isAr ? "إنشاء" : "Create"}
+                      </Button>
+                    </>
+                  }
+                >
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم المجموعة (EN)" : "Group Name (EN)"}</Label>
+                      <Input value={newGroupName} onChange={(e) => setNewGroupName(e.target.value)} placeholder="VIP Members" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اسم المجموعة (AR)" : "Group Name (AR)"}</Label>
+                      <Input value={newGroupNameAr} onChange={(e) => setNewGroupNameAr(e.target.value)} placeholder="أعضاء مميزون" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{isAr ? "اللون" : "Color"}</Label>
+                      <Input type="color" value={newGroupColor} onChange={(e) => setNewGroupColor(e.target.value)} className="h-10 w-20" />
+                    </div>
+                  </div>
+                </InlinePanel>
                 </div>
 
                 {userGroupMemberships.length === 0 ? (
