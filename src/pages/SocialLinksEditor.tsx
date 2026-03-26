@@ -329,6 +329,8 @@ export default function SocialLinksEditor() {
 
   const [socials, setSocials] = useState<Record<string, string>>({});
   const [contacts, setContacts] = useState<Record<string, string>>({});
+  const [contactCountryCode, setContactCountryCode] = useState("SA");
+  const { data: countries } = useAllCountries();
 
   useEffect(() => {
     if (profile) {
