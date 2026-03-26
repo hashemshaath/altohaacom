@@ -17,6 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { InlinePanel } from "@/components/ui/InlinePanel";
+import { InlineConfirm } from "@/components/ui/InlineConfirm";
+import { Textarea } from "@/components/ui/textarea";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -159,6 +161,14 @@ export default function UserManagement() {
   const [newGroupNameAr, setNewGroupNameAr] = useState("");
   const [newGroupColor, setNewGroupColor] = useState("#3b82f6");
   const [createGroupOpen, setCreateGroupOpen] = useState(false);
+
+  // Suspend user inline
+  const [suspendTarget, setSuspendTarget] = useState<{ userId: string; userName: string; email: string | null } | null>(null);
+  const [suspendReason, setSuspendReason] = useState("");
+
+  // Send notification inline
+  const [notifyTarget, setNotifyTarget] = useState<{ userId: string; userName: string } | null>(null);
+  const [notifyMessage, setNotifyMessage] = useState("");
 
   // Media upload
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -834,6 +844,62 @@ export default function UserManagement() {
         </div>
       </InlinePanel>
 
+      {/* Suspend User Inline */}
+      <InlineConfirm
+        open={!!suspendTarget}
+        onCancel={() => { setSuspendTarget(null); setSuspendReason(""); }}
+        onConfirm={async () => {
+          if (!suspendTarget) return;
+          await updateStatusMutation.mutateAsync({ userId: suspendTarget.userId, newStatus: "suspended" as AccountStatus, reason: suspendReason || "Admin action" });
+          setSuspendTarget(null);
+          setSuspendReason("");
+        }}
+        title={isAr ? `إيقاف حساب ${suspendTarget?.userName || ""}` : `Suspend ${suspendTarget?.userName || ""}`}
+        description={isAr ? "سيتم إيقاف الحساب ولن يتمكن المستخدم من تسجيل الدخول" : "The account will be suspended and the user will not be able to sign in"}
+        confirmLabel={isAr ? "إيقاف" : "Suspend"}
+        variant="destructive"
+        loading={updateStatusMutation.isPending}
+      />
+
+      {/* Send Notification Inline */}
+      <InlinePanel
+        open={!!notifyTarget}
+        onClose={() => { setNotifyTarget(null); setNotifyMessage(""); }}
+        title={isAr ? `إرسال إشعار إلى ${notifyTarget?.userName || ""}` : `Send Notification to ${notifyTarget?.userName || ""}`}
+        icon={<Mail className="h-4 w-4 text-primary" />}
+        size="md"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => { setNotifyTarget(null); setNotifyMessage(""); }}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button
+              disabled={!notifyMessage.trim()}
+              onClick={async () => {
+                if (!notifyTarget) return;
+                const { error } = await supabase.from("notifications").insert({
+                  user_id: notifyTarget.userId,
+                  title: isAr ? "رسالة من الإدارة" : "Message from Admin",
+                  title_ar: "رسالة من الإدارة",
+                  body: notifyMessage,
+                  body_ar: notifyMessage,
+                  type: "admin_message",
+                });
+                if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); return; }
+                toast({ title: isAr ? "تم إرسال الإشعار" : "Notification sent" });
+                setNotifyTarget(null);
+                setNotifyMessage("");
+              }}
+            >
+              {isAr ? "إرسال" : "Send"}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-2">
+          <Label>{isAr ? "الرسالة" : "Message"}</Label>
+          <Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={4} placeholder={isAr ? "اكتب رسالتك..." : "Write your message..."} />
+        </div>
+      </InlinePanel>
+
       {/* Filters */}
       <AdminFilterBar
         searchValue={searchQuery}
@@ -1339,6 +1405,10 @@ export default function UserManagement() {
                             status={profile.account_status}
                             isVerified={profile.is_verified}
                             onViewProfile={() => { setDrawerUserId(profile.user_id); setDrawerOpen(true); }}
+                            onResetPassword={(uid, name) => { setResetUserId(uid); setResetUserName(name); setResetOpen(true); }}
+                            onSuspend={(uid, name, em) => setSuspendTarget({ userId: uid, userName: name, email: em })}
+                            onSendNotification={(uid, name) => setNotifyTarget({ userId: uid, userName: name })}
+                            onActivate={async (uid) => { await updateStatusMutation.mutateAsync({ userId: uid, newStatus: "active" as AccountStatus }); }}
                           />
                         </div>
                       </TableCell>
