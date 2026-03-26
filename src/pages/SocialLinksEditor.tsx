@@ -958,39 +958,38 @@ export default function SocialLinksEditor() {
                           {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links are generated automatically"}
                         </p>
                       </CardHeader>
-                      <CardContent className="space-y-2 pt-3">
-                        {SOCIAL_PLATFORMS.map(platform => {
-                          const Icon = platform.icon;
-                          const value = socials[platform.key] || "";
-                          const isActive = !!value;
-                          return (
-                            <div key={platform.key} className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 ${isActive ? "border-primary/25 bg-primary/[0.03] shadow-sm" : "border-border/40 hover:border-border"}`}>
-                              <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-sm" : "bg-muted"}`}>
-                                <Icon className={`h-3.5 w-3.5 ${isActive ? "" : "text-muted-foreground"}`} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <Label className="text-[11px] font-semibold mb-0.5 block">{isAr ? platform.labelAr : platform.label}</Label>
-                                <div className="flex items-center gap-1">
-                                  {platform.prefix && (
-                                    <span className="text-[9px] text-muted-foreground shrink-0 hidden sm:inline opacity-60" dir="ltr">{platform.prefix}</span>
+                      <CardContent className="pt-4 pb-5 px-5">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {SOCIAL_PLATFORMS.map(platform => {
+                            const Icon = platform.icon;
+                            const value = socials[platform.key] || "";
+                            const isActive = !!value;
+                            return (
+                              <div key={platform.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
+                                <div className="flex items-center gap-3 p-3">
+                                  <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                                    <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
+                                    <Input
+                                      value={value}
+                                      onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                      placeholder={platform.prefix ? platform.prefix + platform.placeholder : platform.placeholder}
+                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
+                                      dir="ltr"
+                                    />
+                                  </div>
+                                  {isActive && (
+                                    <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
+                                      <Check className="h-3.5 w-3.5 text-chart-1" />
+                                    </div>
                                   )}
-                                  <Input
-                                    value={value}
-                                    onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
-                                    placeholder={platform.placeholder}
-                                    className="h-7 text-xs border-0 bg-transparent shadow-none focus-visible:ring-1 px-1"
-                                    dir="ltr"
-                                  />
                                 </div>
                               </div>
-                              {isActive && (
-                                <div className="h-5 w-5 rounded-full bg-chart-1/10 flex items-center justify-center shrink-0">
-                                  <Check className="h-3 w-3 text-chart-1" />
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
 
@@ -1007,34 +1006,38 @@ export default function SocialLinksEditor() {
                           {isAr ? "تظهر كأيقونات في صفحة الروابط العامة" : "Displayed as icons on your public links page"}
                         </p>
                       </CardHeader>
-                      <CardContent className="space-y-2 pt-3">
-                        {CONTACT_FIELDS.map(field => {
-                          const Icon = field.icon;
-                          const value = contacts[field.key] || "";
-                          const isActive = !!value;
-                          return (
-                            <div key={field.key} className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 ${isActive ? "border-primary/25 bg-primary/[0.03] shadow-sm" : "border-border/40 hover:border-border"}`}>
-                              <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-sm" : "bg-muted"}`}>
-                                <Icon className={`h-3.5 w-3.5 ${isActive ? "" : "text-muted-foreground"}`} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <Label className="text-[11px] font-semibold mb-0.5 block">{isAr ? field.labelAr : field.label}</Label>
-                                <Input
-                                  value={value}
-                                  onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
-                                  placeholder={field.placeholder}
-                                  className="h-7 text-xs border-0 bg-transparent shadow-none focus-visible:ring-1 px-1"
-                                  dir="ltr"
-                                />
-                              </div>
-                              {isActive && (
-                                <div className="h-5 w-5 rounded-full bg-chart-1/10 flex items-center justify-center shrink-0">
-                                  <Check className="h-3 w-3 text-chart-1" />
+                      <CardContent className="pt-4 pb-5 px-5">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {CONTACT_FIELDS.map(field => {
+                            const Icon = field.icon;
+                            const value = contacts[field.key] || "";
+                            const isActive = !!value;
+                            return (
+                              <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
+                                <div className="flex items-center gap-3 p-3">
+                                  <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                                    <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <Label className="text-xs font-semibold mb-1 block">{isAr ? field.labelAr : field.label}</Label>
+                                    <Input
+                                      value={value}
+                                      onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
+                                      placeholder={field.placeholder}
+                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
+                                      dir="ltr"
+                                    />
+                                  </div>
+                                  {isActive && (
+                                    <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
+                                      <Check className="h-3.5 w-3.5 text-chart-1" />
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
 
