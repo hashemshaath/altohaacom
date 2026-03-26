@@ -1077,16 +1077,7 @@ export default function CountriesAdmin() {
             </ScrollArea>
           </Tabs>
 
-          <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={closeForm}>
-              <X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={() => saveMutation.mutate()} disabled={!form.code || !form.name || saveMutation.isPending}>
-              <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      </InlinePanel>
     </div>
   );
 }
