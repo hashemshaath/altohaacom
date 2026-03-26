@@ -1009,6 +1009,12 @@ export async function notifyMembershipExpiringSoon(params: {
   expiresAt: string;
 }) {
   const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+
+  // Send branded email for expiry warning
+  supabase.functions.invoke("send-membership-email", {
+    body: { type: "expiry_warning", user_id: params.userId, data: { tier: params.tier, days_left: params.daysLeft } },
+  }).catch(() => {});
+
   return sendNotification({
     userId: params.userId,
     title: `Membership Expiring in ${params.daysLeft} Day${params.daysLeft > 1 ? "s" : ""}`,
@@ -1026,6 +1032,12 @@ export async function notifyMembershipExpired(params: {
   tier: string;
 }) {
   const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+
+  // Send branded email for expired membership
+  supabase.functions.invoke("send-membership-email", {
+    body: { type: "expired", user_id: params.userId, data: { tier: params.tier } },
+  }).catch(() => {});
+
   return sendNotification({
     userId: params.userId,
     title: `Your ${t.en} Membership Has Expired`,
@@ -1059,6 +1071,11 @@ export async function notifyMembershipTrialEnding(params: {
   userId: string;
   daysLeft: number;
 }) {
+  // Send branded email for trial ending
+  supabase.functions.invoke("send-membership-email", {
+    body: { type: "trial_ending", user_id: params.userId, data: { days_left: params.daysLeft, tier: "professional" } },
+  }).catch(() => {});
+
   return sendNotification({
     userId: params.userId,
     title: `Free Trial Ends in ${params.daysLeft} Day${params.daysLeft > 1 ? "s" : ""}`,
