@@ -1882,13 +1882,13 @@ export default function SocialLinksEditor() {
                           {isAr ? "تحكم بما يظهر في صفحة الروابط العامة" : "Control what appears on your public links page"}
                         </p>
                       </CardHeader>
-                      <CardContent className="pt-3">
-                        <div className="space-y-1.5">
+                      <CardContent className="pt-4 pb-5 px-5">
+                        <div className="grid gap-2 sm:grid-cols-2">
                           {VISIBILITY_SECTIONS.map(section => (
-                            <div key={section.key} className={`flex items-center justify-between rounded-xl border p-3 transition-all duration-200 ${extra[section.key] ? "border-primary/15 bg-primary/[0.02]" : "border-border/30 bg-muted/10"}`}>
+                            <div key={section.key} className={`flex items-center justify-between rounded-xl border-2 p-3 transition-all duration-200 group ${extra[section.key] ? "border-primary/20 bg-primary/[0.03] shadow-sm" : "border-border/20 hover:border-border/40"}`}>
                               <div className="flex items-center gap-2.5">
-                                <div className={`flex h-7 w-7 items-center justify-center rounded-xl transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted"}`}>
-                                  {extra[section.key] ? <Eye className="h-3.5 w-3.5 text-primary" /> : <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />}
+                                <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted/60"}`}>
+                                  {extra[section.key] ? <Eye className="h-4 w-4 text-primary" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
                                 </div>
                                 <Label className="text-xs cursor-pointer font-medium">{section.label}</Label>
                               </div>
