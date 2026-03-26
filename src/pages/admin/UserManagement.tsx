@@ -241,7 +241,12 @@ export default function UserManagement() {
   // ── Render ──
   return (
     <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
-      <UserSearchCommand open={userSearchOpen} onOpenChange={setUserSearchOpen} onSelectUser={(userId) => setViewingUserId(userId)} />
+      {userSearchOpen && (
+        <InlineUserSearch
+          onSelectUser={(userId) => { setViewingUserId(userId); setUserSearchOpen(false); }}
+          onClose={() => setUserSearchOpen(false)}
+        />
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between">
