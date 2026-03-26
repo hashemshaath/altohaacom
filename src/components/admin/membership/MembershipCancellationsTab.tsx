@@ -21,7 +21,8 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { UserX, Gift, Check, X, MessageSquare, Download } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { UserX, Gift, Check, X, MessageSquare, Download, ShieldCheck, Clock, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 
 interface CancellationRequest {
@@ -180,8 +181,45 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
     return <Badge variant={c.variant}>{c.label}</Badge>;
   };
 
+  const pending = requests?.filter(r => r.status === "pending").length || 0;
+  const approved = requests?.filter(r => r.status === "approved").length || 0;
+  const retained = requests?.filter(r => r.status === "retained").length || 0;
+  const retentionRate = (requests?.length || 0) > 0 ? Math.round((retained / (requests?.length || 1)) * 100) : 0;
+
   return (
     <div className="space-y-4">
+      {/* KPI Summary */}
+      <div className="grid gap-4 sm:grid-cols-4">
+        <Card>
+          <CardContent className="pt-5 text-center">
+            <Clock className="h-5 w-5 mx-auto mb-1 text-chart-4" />
+            <p className="text-2xl font-bold"><AnimatedCounter value={pending} /></p>
+            <p className="text-xs text-muted-foreground">{isAr ? "معلقة" : "Pending"}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-5 text-center">
+            <AlertTriangle className="h-5 w-5 mx-auto mb-1 text-destructive" />
+            <p className="text-2xl font-bold text-destructive"><AnimatedCounter value={approved} /></p>
+            <p className="text-xs text-muted-foreground">{isAr ? "تمت الموافقة" : "Approved"}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-5 text-center">
+            <ShieldCheck className="h-5 w-5 mx-auto mb-1 text-primary" />
+            <p className="text-2xl font-bold text-primary"><AnimatedCounter value={retained} /></p>
+            <p className="text-xs text-muted-foreground">{isAr ? "تم الاحتفاظ" : "Retained"}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-5 text-center">
+            <Gift className="h-5 w-5 mx-auto mb-1 text-chart-2" />
+            <p className="text-2xl font-bold text-chart-2"><AnimatedCounter value={retentionRate} />%</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "معدل الاحتفاظ" : "Retention Rate"}</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <BulkActionBar
         count={bulk.count}
         onClear={bulk.clearSelection}
