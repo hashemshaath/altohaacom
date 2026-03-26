@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp,
   PieChart, Share2, ShieldAlert, FileText, Settings2, GitBranch,
-  Wallet, Receipt, Bell, Shield, UserCog,
+  Wallet, Receipt, Bell, Shield, UserCog, Zap, DollarSign,
 } from "lucide-react";
 import MembershipOverview from "@/components/admin/membership/MembershipOverview";
 import MembershipMembersTab from "@/components/admin/membership/MembershipMembersTab";
@@ -23,6 +23,8 @@ import MembershipUserOverrides from "@/components/admin/membership/MembershipUse
 import MembershipWalletTab from "@/components/admin/membership/MembershipWalletTab";
 import MembershipInvoicesTab from "@/components/admin/membership/MembershipInvoicesTab";
 import MembershipNotificationsTab from "@/components/admin/membership/MembershipNotificationsTab";
+import MembershipBulkOperationsTab from "@/components/admin/membership/MembershipBulkOperationsTab";
+import MembershipRevenueTab from "@/components/admin/membership/MembershipRevenueTab";
 
 export default function MembershipManagement() {
   const { language } = useLanguage();
@@ -31,6 +33,8 @@ export default function MembershipManagement() {
   const tabs = [
     { value: "overview", icon: BarChart3, label: isAr ? "عامة" : "Overview" },
     { value: "members", icon: Users, label: isAr ? "أعضاء" : "Members" },
+    { value: "bulk", icon: Zap, label: isAr ? "عمليات جماعية" : "Bulk Ops" },
+    { value: "revenue", icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue" },
     { value: "benefits", icon: Star, label: isAr ? "مميزات" : "Benefits" },
     { value: "features", icon: Shield, label: isAr ? "التحكم" : "Features" },
     { value: "overrides", icon: UserCog, label: isAr ? "تجاوزات" : "Overrides" },
@@ -74,6 +78,8 @@ export default function MembershipManagement() {
 
         <TabsContent value="overview"><MembershipOverview /></TabsContent>
         <TabsContent value="members"><MembershipMembersTab /></TabsContent>
+        <TabsContent value="bulk"><MembershipBulkOperationsTab /></TabsContent>
+        <TabsContent value="revenue"><MembershipRevenueTab /></TabsContent>
         <TabsContent value="benefits"><MembershipBenefitsTab /></TabsContent>
         <TabsContent value="features"><MembershipFeatureControl /></TabsContent>
         <TabsContent value="overrides"><MembershipUserOverrides /></TabsContent>
