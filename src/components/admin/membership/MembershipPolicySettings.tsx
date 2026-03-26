@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,14 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Settings2, Clock, ShieldAlert, Bell, RefreshCw, AlertTriangle,
-  Save, CheckCircle2, Timer, CalendarClock, Zap, Info,
+  Save, CheckCircle2, Timer, CalendarClock, Zap, Info, Loader2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface PolicyConfig {
   gracePeriodDays: number;
@@ -40,27 +39,53 @@ const DEFAULT_POLICY: PolicyConfig = {
   maxRenewalsPerYear: 12,
 };
 
+const SETTINGS_KEY = "membership_policy";
+
 const MembershipPolicySettings = memo(function MembershipPolicySettings() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
+  const { settings, isLoading, saveSetting } = useSiteSettings();
   const [policy, setPolicy] = useState<PolicyConfig>(DEFAULT_POLICY);
-  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
-  const handleSave = () => {
-    // In production, save to a settings table
-    setSaved(true);
-    toast({
-      title: isAr ? "تم حفظ الإعدادات" : "Settings saved",
-      description: isAr ? "تم تحديث سياسات العضوية بنجاح" : "Membership policies updated successfully",
-    });
-    setTimeout(() => setSaved(false), 2000);
+  // Load from DB
+  useEffect(() => {
+    if (settings && settings[SETTINGS_KEY]) {
+      const stored = settings[SETTINGS_KEY] as any;
+      setPolicy(prev => ({ ...prev, ...stored }));
+    }
+  }, [settings]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await saveSetting.mutateAsync({
+        key: SETTINGS_KEY,
+        value: policy as any,
+        category: "membership",
+      });
+      setDirty(false);
+      toast({
+        title: isAr ? "✅ تم حفظ الإعدادات" : "✅ Settings saved",
+        description: isAr ? "تم تحديث سياسات العضوية بنجاح" : "Membership policies updated successfully",
+      });
+    } catch {
+      toast({ variant: "destructive", title: isAr ? "فشل الحفظ" : "Save failed" });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const updatePolicy = <K extends keyof PolicyConfig>(key: K, value: PolicyConfig[K]) => {
     setPolicy(prev => ({ ...prev, [key]: value }));
-    setSaved(false);
+    setDirty(true);
   };
+
+  if (isLoading) {
+    return <div className="space-y-4">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-40 w-full" />)}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -212,6 +237,18 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
               </p>
             </div>
           )}
+
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">{isAr ? "الحد الأقصى للتجديدات سنوياً" : "Max Renewals Per Year"}</Label>
+            <Input
+              type="number"
+              min={1}
+              max={24}
+              value={policy.maxRenewalsPerYear}
+              onChange={e => updatePolicy("maxRenewalsPerYear", parseInt(e.target.value) || 12)}
+              className="max-w-[120px]"
+            />
+          </div>
         </CardContent>
       </Card>
 
@@ -224,18 +261,22 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold text-primary">{policy.gracePeriodDays}</p>
-              <p className="text-xs text-muted-foreground">{isAr ? "أيام فترة السماح" : "Grace Period Days"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "أيام السماح" : "Grace Days"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold text-primary">{policy.trialDurationDays}</p>
-              <p className="text-xs text-muted-foreground">{isAr ? "أيام الفترة التجريبية" : "Trial Duration Days"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "أيام التجربة" : "Trial Days"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
               <p className="text-2xl font-bold text-primary">{policy.expiryWarningDays.length}</p>
-              <p className="text-xs text-muted-foreground">{isAr ? "تنبيهات مجدولة" : "Scheduled Alerts"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "تنبيهات" : "Alerts"}</p>
+            </div>
+            <div className="rounded-xl border p-3 text-center">
+              <p className="text-2xl font-bold text-primary">{policy.maxRenewalsPerYear}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "تجديد/سنة" : "Renewals/yr"}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mt-4">
@@ -256,10 +297,17 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
       </Card>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <Button onClick={handleSave} className="gap-2 min-w-[140px]">
-          {saved ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-          {saved ? (isAr ? "تم الحفظ!" : "Saved!") : (isAr ? "حفظ الإعدادات" : "Save Settings")}
+      <div className="flex items-center justify-between">
+        {dirty && (
+          <Badge variant="outline" className="gap-1 text-chart-4">
+            <AlertTriangle className="h-3 w-3" />
+            {isAr ? "تغييرات غير محفوظة" : "Unsaved changes"}
+          </Badge>
+        )}
+        <div className="ms-auto" />
+        <Button onClick={handleSave} disabled={saving || !dirty} className="gap-2 min-w-[140px]">
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : dirty ? <Save className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
+          {saving ? (isAr ? "جاري الحفظ..." : "Saving...") : dirty ? (isAr ? "حفظ الإعدادات" : "Save Settings") : (isAr ? "محفوظ" : "Saved")}
         </Button>
       </div>
     </div>
