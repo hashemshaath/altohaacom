@@ -137,7 +137,7 @@ export default function UserManagement() {
 
       if (searchQuery) query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%,account_number.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       if (statusFilter !== "all") query = query.eq("account_status", statusFilter as AccountStatus);
-      if (accountTypeFilter !== "all") query = query.eq("account_type", accountTypeFilter);
+      if (accountTypeFilter !== "all") query = query.eq("account_type", accountTypeFilter as Database["public"]["Enums"]["account_type"]);
 
       const { data: profiles, error, count } = await query;
       if (error) throw error;
