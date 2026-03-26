@@ -1006,15 +1006,17 @@ export default function SocialLinksEditor() {
                           {isAr ? "حسابات التواصل الاجتماعي" : "Social Media Accounts"}
                         </CardTitle>
                         <p className="text-[11px] text-muted-foreground">
-                          {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links are generated automatically"}
+                          {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links auto-complete on blur"}
                         </p>
                       </CardHeader>
                       <CardContent className="pt-4 pb-5 px-5">
                         <div className="grid gap-3 sm:grid-cols-2">
                           {SOCIAL_PLATFORMS.map(platform => {
                             const Icon = platform.icon;
-                            const value = socials[platform.key] || "";
-                            const isActive = !!value;
+                            const rawValue = socials[platform.key] || "";
+                            const isActive = !!rawValue;
+                            // Show username in input for cleaner UX
+                            const displayValue = rawValue;
                             return (
                               <div key={platform.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                                 <div className="flex items-center gap-3 p-3">
@@ -1023,13 +1025,43 @@ export default function SocialLinksEditor() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
-                                    <Input
-                                      value={value}
-                                      onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
-                                      placeholder={platform.prefix ? platform.prefix + platform.placeholder : platform.placeholder}
-                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
-                                      dir="ltr"
-                                    />
+                                    {platform.prefix ? (
+                                      <div className="flex items-center gap-0">
+                                        <span className="text-[10px] text-muted-foreground/60 font-mono bg-muted/40 px-1.5 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none" dir="ltr">
+                                          {platform.prefix.replace("https://", "")}
+                                        </span>
+                                        <Input
+                                          value={displayValue.startsWith(platform.prefix) ? displayValue.slice(platform.prefix.length).replace(/\/$/, "") : displayValue}
+                                          onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                          onBlur={e => {
+                                            const normalized = normalizeSocialUrl(e.target.value, platform);
+                                            if (normalized !== socials[platform.key]) {
+                                              setSocials(s => ({ ...s, [platform.key]: normalized }));
+                                            }
+                                          }}
+                                          placeholder={platform.placeholder}
+                                          className="h-8 text-xs rounded-s-none rounded-e-lg border-border/30 bg-muted/20 focus:bg-background placeholder:text-muted-foreground/40"
+                                          dir="ltr"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <Input
+                                        value={displayValue}
+                                        onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                        onBlur={e => {
+                                          const normalized = normalizeSocialUrl(e.target.value, platform);
+                                          if (normalized !== socials[platform.key]) {
+                                            setSocials(s => ({ ...s, [platform.key]: normalized }));
+                                          }
+                                        }}
+                                        placeholder={platform.placeholder}
+                                        className="h-8 text-xs rounded-lg border-border/30 bg-muted/20 focus:bg-background placeholder:text-muted-foreground/40"
+                                        dir="ltr"
+                                      />
+                                    )}
+                                    {isActive && platform.prefix && rawValue.startsWith("http") && (
+                                      <p className="text-[9px] text-muted-foreground/50 mt-0.5 font-mono truncate" dir="ltr">{rawValue}</p>
+                                    )}
                                   </div>
                                   {isActive && (
                                     <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
@@ -1044,25 +1076,50 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    {/* Contact: WhatsApp & Phone */}
+                    {/* Contact: WhatsApp & Phone Numbers */}
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Phone className="h-3.5 w-3.5 text-primary" />
                           </div>
-                          {isAr ? "معلومات الاتصال" : "Contact Info"}
+                          {isAr ? "أرقام الاتصال" : "Contact Numbers"}
                         </CardTitle>
                         <p className="text-[11px] text-muted-foreground">
-                          {isAr ? "تظهر كأيقونات في صفحة الروابط العامة" : "Displayed as icons on your public links page"}
+                          {isAr ? "واتساب + رقمين هاتف — اختر رمز الدولة ثم أدخل الرقم" : "WhatsApp + up to 2 phone numbers — select country code then enter number"}
                         </p>
                       </CardHeader>
-                      <CardContent className="pt-4 pb-5 px-5">
-                        <div className="grid gap-3 sm:grid-cols-2">
+                      <CardContent className="pt-4 pb-5 px-5 space-y-4">
+                        {/* Country Code Selector */}
+                        <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-border/30 bg-muted/5">
+                          <div className="h-9 w-9 rounded-xl bg-muted/80 flex items-center justify-center shrink-0">
+                            <Globe className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Label className="text-xs font-semibold mb-1 block">{isAr ? "رمز الدولة" : "Country Code"}</Label>
+                            <select
+                              value={contactCountryCode}
+                              onChange={e => setContactCountryCode(e.target.value)}
+                              className="w-full h-8 text-xs rounded-lg border border-border/40 bg-muted/20 px-2 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                              dir="ltr"
+                            >
+                              {(countries || []).map(c => (
+                                <option key={c.code} value={c.code}>
+                                  {countryFlag(c.code)} {c.phone_code} — {isAr ? c.name_ar || c.name : c.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <span className="text-lg">{countryFlag(contactCountryCode)}</span>
+                        </div>
+
+                        <div className="grid gap-3">
                           {CONTACT_FIELDS.map(field => {
                             const Icon = field.icon;
                             const value = contacts[field.key] || "";
                             const isActive = !!value;
+                            const selectedCountry = countries?.find(c => c.code === contactCountryCode);
+                            const phoneCode = selectedCountry?.phone_code || "+966";
                             return (
                               <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                                 <div className="flex items-center gap-3 p-3">
@@ -1071,13 +1128,19 @@ export default function SocialLinksEditor() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <Label className="text-xs font-semibold mb-1 block">{isAr ? field.labelAr : field.label}</Label>
-                                    <Input
-                                      value={value}
-                                      onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
-                                      placeholder={field.placeholder}
-                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
-                                      dir="ltr"
-                                    />
+                                    <div className="flex items-center gap-0" dir="ltr">
+                                      <span className="text-[11px] text-muted-foreground/70 font-mono bg-muted/40 px-2 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none">
+                                        {phoneCode}
+                                      </span>
+                                      <Input
+                                        type="tel"
+                                        value={value}
+                                        onChange={e => setContacts(c => ({ ...c, [field.key]: normalizePhoneInput(e.target.value) }))}
+                                        placeholder={field.placeholder}
+                                        className="h-8 text-xs rounded-s-none rounded-e-lg border-border/30 bg-muted/20 focus:bg-background placeholder:text-muted-foreground/40"
+                                        dir="ltr"
+                                      />
+                                    </div>
                                   </div>
                                   {isActive && (
                                     <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
