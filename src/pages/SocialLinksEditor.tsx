@@ -3,6 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPage, useSocialLinkItems, useUpsertSocialLinkPage, useManageSocialLinkItems } from "@/hooks/useSocialLinkPage";
 import { Header } from "@/components/Header";
+import { useAllCountries } from "@/hooks/useCountries";
+import { normalizePhoneInput } from "@/lib/arabicNumerals";
+import { countryFlag } from "@/lib/countryFlag";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -50,9 +53,44 @@ const SOCIAL_PLATFORMS = [
 ];
 
 const CONTACT_FIELDS = [
-  { key: "whatsapp", label: "WhatsApp", labelAr: "واتساب", icon: MessageCircle, placeholder: "+966XXXXXXXXX", color: "from-green-500 to-green-700" },
-  { key: "phone", label: "Phone", labelAr: "الهاتف", icon: Phone, placeholder: "+966XXXXXXXXX", color: "from-blue-400 to-blue-600" },
+  { key: "whatsapp", label: "WhatsApp", labelAr: "واتساب", icon: MessageCircle, placeholder: "5XXXXXXXX", color: "from-green-500 to-green-700" },
+  { key: "phone", label: "Phone", labelAr: "الهاتف", icon: Phone, placeholder: "5XXXXXXXX", color: "from-blue-400 to-blue-600" },
+  { key: "phone2", label: "Phone 2", labelAr: "الهاتف ٢", icon: Phone, placeholder: "5XXXXXXXX", color: "from-indigo-400 to-indigo-600" },
 ];
+
+function normalizeSocialUrl(value: string, platform: typeof SOCIAL_PLATFORMS[number]): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  // Website: just add https if missing
+  if (platform.key === "website") {
+    if (trimmed.includes(".") && !trimmed.startsWith("http")) return "https://" + trimmed;
+    return trimmed;
+  }
+  // If user entered just a username (no slashes, no dots)
+  if (!trimmed.includes("/") && !trimmed.includes(".")) {
+    return platform.prefix + trimmed.replace(/^@/, "");
+  }
+  // Has dots but no http
+  if (trimmed.includes(".") && !trimmed.startsWith("http")) {
+    return "https://" + trimmed;
+  }
+  return trimmed;
+}
+
+// Extract username from a full social URL for display
+function extractUsername(value: string, platform: typeof SOCIAL_PLATFORMS[number]): string {
+  if (!value) return "";
+  if (platform.prefix && value.startsWith(platform.prefix)) {
+    return value.slice(platform.prefix.length).replace(/\/$/, "");
+  }
+  // If it's a full URL with the platform domain
+  try {
+    const url = new URL(value.startsWith("http") ? value : "https://" + value);
+    const path = url.pathname.replace(/^\//, "").replace(/\/$/, "");
+    if (path) return path.replace(/^@/, "");
+  } catch {}
+  return value;
+}
 
 const THEMES = [
   { id: "default", label: "Default", labelAr: "افتراضي", preview: "bg-gradient-to-br from-background to-muted/30" },
