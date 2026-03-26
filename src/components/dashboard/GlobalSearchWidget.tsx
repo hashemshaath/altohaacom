@@ -79,7 +79,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
   const showResults = focused && query.length >= 2;
 
   return (
-    <div ref={containerRef} className="relative mb-6">
+    <div ref={containerRef} className="relative">
       <div className="relative">
         <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
         <Input

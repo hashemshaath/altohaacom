@@ -108,8 +108,8 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               { label: isAr ? "متابَعون" : "Following", value: stats.following },
               { label: isAr ? "منشورات" : "Posts", value: stats.posts },
             ].map((s, i) => (
-              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 hover:border-primary/20 hover:shadow-sm transition-all duration-300 cursor-default">
-                <div className="text-sm font-bold tabular-nums">{s.value}</div>
+              <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 hover:border-primary/20 hover:shadow-sm transition-all duration-300 cursor-default group/stat">
+                <div className="text-sm font-bold tabular-nums group-hover/stat:text-primary transition-colors">{s.value}</div>
                 <div className="text-[8px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
               </div>
             ))}
