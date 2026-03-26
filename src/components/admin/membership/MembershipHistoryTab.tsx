@@ -12,13 +12,16 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { History, ArrowUp, ArrowDown, Minus, Download, Search, Filter } from "lucide-react";
-import { format } from "date-fns";
+import { History, ArrowUp, ArrowDown, Minus, Download, Search, Filter, TrendingUp, TrendingDown } from "lucide-react";
+import { format, subMonths } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
+} from "recharts";
 
 interface HistoryEntry {
   id: string;
