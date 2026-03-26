@@ -21,28 +21,26 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const { data: revenueData } = useQuery({
     queryKey: ["membership-revenue-analytics"],
     queryFn: async () => {
-      // Fetch all profiles for tier distribution
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("membership_tier, membership_status, membership_started_at, created_at");
-
-      // Fetch invoices for revenue
-      const { data: invoices } = await supabase
-        .from("invoices")
-        .select("amount, currency, status, created_at, paid_at")
-        .order("created_at", { ascending: false });
-
-      // Fetch history for churn/upgrade analysis
-      const { data: history } = await supabase
-        .from("membership_history")
-        .select("previous_tier, new_tier, created_at, reason")
-        .order("created_at", { ascending: false })
-        .limit(500);
+      const [
+        { data: profiles },
+        { data: invoices },
+        { data: history },
+        { data: wallets },
+      ] = await Promise.all([
+        supabase.from("profiles").select("membership_tier, membership_status, membership_started_at, created_at"),
+        supabase.from("invoices").select("amount, currency, status, created_at, paid_at").order("created_at", { ascending: false }),
+        supabase.from("membership_history").select("previous_tier, new_tier, created_at, reason").order("created_at", { ascending: false }).limit(500),
+        supabase.from("user_wallets").select("balance, points_balance"),
+      ]);
 
       const now = new Date();
       const total = profiles?.length || 0;
       const professional = profiles?.filter(p => p.membership_tier === "professional").length || 0;
       const enterprise = profiles?.filter(p => p.membership_tier === "enterprise").length || 0;
+
+      // Wallet totals
+      const totalWalletBalance = wallets?.reduce((s, w) => s + (w.balance || 0), 0) || 0;
+      const totalPoints = wallets?.reduce((s, w) => s + (w.points_balance || 0), 0) || 0;
 
       // Monthly Revenue Rate
       const mrr = (professional * 19) + (enterprise * 99);
@@ -111,9 +109,14 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
         { name: isAr ? "مؤسسي" : "Enterprise", members: enterprise, rate: 99, revenue: enterprise * 99 },
       ];
 
+      // LTV estimate (ARPU * avg months)
+      const avgMonths = 6; // assumed average
+      const ltv = arpu * avgMonths;
+
       return {
         mrr, arr, totalRevenue, pendingRevenue, arpu, conversionRate, churnRate,
         paidMembers, total, monthlyTrend, tierBreakdown, recentChurn,
+        totalWalletBalance, totalPoints, ltv,
       };
     },
     staleTime: 1000 * 60 * 5,
