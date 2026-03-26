@@ -318,7 +318,7 @@ export default function CompanyLogin() {
   // ── Phone OTP Step ──
   if (step === "phone-otp") {
     return (
-      <AuthLayout stage="verify" isAr={isAr}>
+      <AuthLayout stage="verify" isAr={isAr} pageType="company">
         <SEOHead title={isAr ? "التحقق من الهاتف" : "Verify Phone"} description="Verify phone for company login" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6">
@@ -338,7 +338,7 @@ export default function CompanyLogin() {
   // ── Phone Password Step ──
   if (step === "phone-password") {
     return (
-      <AuthLayout stage="login" isAr={isAr}>
+      <AuthLayout stage="login" isAr={isAr} pageType="company">
         <SEOHead title={isAr ? "تسجيل دخول الشركة" : "Company Sign In"} description="Enter your password" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
@@ -396,7 +396,7 @@ export default function CompanyLogin() {
 
   // ── Main View ──
   return (
-    <AuthLayout stage="login" isAr={isAr} showFooter>
+    <AuthLayout stage="login" isAr={isAr} showFooter pageType="company">
       <SEOHead
         title={isAr ? "تسجيل دخول الشركة - Altoha" : "Company Login - Altoha"}
         description="Sign in to your company or organization account on Altoha."
