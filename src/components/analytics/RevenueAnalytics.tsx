@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { StaggeredList } from "@/components/ui/staggered-list";
+import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
 import { translateStatus, getTooltipStyle } from "@/lib/chartConfig";
 import { TrendForecastChart } from "./TrendForecastChart";
 
@@ -317,13 +318,13 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={data.statusPie} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value"
-                    label={({ name, value }) => `${name} (${value})`}>
+                  <Pie data={data.statusPie.map((d: any) => ({ ...d, label: translateStatus(d.name, isAr) }))} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" nameKey="label"
+                    label={({ label, value }) => `${label} (${value})`}>
                     {data.statusPie.map((_: any, i: number) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
