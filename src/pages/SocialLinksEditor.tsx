@@ -1062,24 +1062,24 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان الصفحة (EN)" : "Page Title (EN)"}</Label>
-                            <Input value={form.page_title} onChange={e => updateForm({ page_title: e.target.value })} dir="ltr" placeholder={profile?.display_name || profile?.full_name || ""} />
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "عنوان الصفحة (EN)" : "Page Title (EN)"}</Label>
+                            <Input value={form.page_title} onChange={e => updateForm({ page_title: e.target.value })} dir="ltr" placeholder={profile?.display_name || profile?.full_name || ""} className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
                           </div>
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان الصفحة (AR)" : "Page Title (AR)"}</Label>
-                            <Input value={form.page_title_ar} onChange={e => updateForm({ page_title_ar: e.target.value })} dir="rtl" placeholder={profile?.display_name_ar || profile?.full_name_ar || ""} />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "عنوان الصفحة (AR)" : "Page Title (AR)"}</Label>
+                            <Input value={form.page_title_ar} onChange={e => updateForm({ page_title_ar: e.target.value })} dir="rtl" placeholder={profile?.display_name_ar || profile?.full_name_ar || ""} className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
                           </div>
                         </div>
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نبذة (EN)" : "Bio (EN)"}</Label>
-                            <Textarea value={form.bio} onChange={e => updateForm({ bio: e.target.value })} className="min-h-[60px] text-xs" dir="ltr" placeholder={profile?.bio || ""} />
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "نبذة (EN)" : "Bio (EN)"}</Label>
+                            <Textarea value={form.bio} onChange={e => updateForm({ bio: e.target.value })} className="min-h-[80px] text-sm rounded-xl border-border/40 bg-muted/20 focus:bg-background" dir="ltr" placeholder={profile?.bio || ""} />
                           </div>
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نبذة (AR)" : "Bio (AR)"}</Label>
-                            <Textarea value={form.bio_ar} onChange={e => updateForm({ bio_ar: e.target.value })} className="min-h-[60px] text-xs" dir="rtl" placeholder={profile?.bio_ar || ""} />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "نبذة (AR)" : "Bio (AR)"}</Label>
+                            <Textarea value={form.bio_ar} onChange={e => updateForm({ bio_ar: e.target.value })} className="min-h-[80px] text-sm rounded-xl border-border/40 bg-muted/20 focus:bg-background" dir="rtl" placeholder={profile?.bio_ar || ""} />
                           </div>
                         </div>
                         <Separator />
