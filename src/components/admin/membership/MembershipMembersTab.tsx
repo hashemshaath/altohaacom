@@ -211,6 +211,15 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       supabase.functions.invoke("send-membership-email", {
         body: { type: isUpgrade ? "upgraded" : "downgraded", user_id: userId, data: { previous_tier: prevTier, new_tier: newTier, tier: newTier } },
       }).catch(() => {});
+
+      // Auto-create invoice for paid tiers
+      if (newTier !== "basic") {
+        createMembershipInvoice({
+          userId,
+          tier: newTier,
+          action: isUpgrade ? "upgrade" : "downgrade",
+        }).catch(() => {});
+      }
     },
     onSuccess: () => {
       invalidateAll();
