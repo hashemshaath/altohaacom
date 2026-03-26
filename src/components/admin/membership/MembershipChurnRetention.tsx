@@ -228,6 +228,47 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
 
   const totalAtRisk = (atRiskData?.critical.length || 0) + (atRiskData?.warning.length || 0) + (atRiskData?.upcoming.length || 0);
 
+  // Send retention offer to at-risk members
+  const retentionMutation = useMutation({
+    mutationFn: async () => {
+      const allAtRisk = [
+        ...(atRiskData?.critical || []),
+        ...(atRiskData?.warning || []),
+      ];
+      if (!allAtRisk.length) throw new Error("No at-risk members");
+
+      const notifications = allAtRisk.map((u: any) => ({
+        user_id: u.user_id,
+        title: "Your membership is expiring soon — renew now!",
+        title_ar: "عضويتك تنتهي قريباً — جدّد الآن!",
+        body: `Your ${u.membership_tier} membership expires in ${u.daysLeft} day(s). Renew to keep your benefits.`,
+        body_ar: `عضويتك ${u.membership_tier === "professional" ? "الاحترافية" : "المؤسسية"} تنتهي خلال ${u.daysLeft} يوم. جدّد للحفاظ على مميزاتك.`,
+        type: "membership",
+        link: "/profile?tab=membership",
+      }));
+
+      for (let i = 0; i < notifications.length; i += 50) {
+        await supabase.from("notifications").insert(notifications.slice(i, i + 50));
+      }
+
+      if (adminUser) {
+        await supabase.from("admin_actions").insert({
+          admin_id: adminUser.id,
+          action_type: "retention_offer_sent",
+          details: { count: allAtRisk.length },
+        });
+      }
+
+      return allAtRisk.length;
+    },
+    onSuccess: (count) => {
+      toast({ title: isAr ? `تم إرسال عرض الاحتفاظ لـ ${count} عضو` : `Retention offer sent to ${count} members` });
+    },
+    onError: (err) => {
+      toast({ title: isAr ? "فشل الإرسال" : "Failed to send", variant: "destructive" });
+    },
+  });
+
   const { exportData, isExporting } = useAdminExport();
 
   const handleExport = useCallback((fmt: "csv" | "json") => {
