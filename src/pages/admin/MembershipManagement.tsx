@@ -1,7 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp, PieChart, Share2, ShieldAlert, FileText } from "lucide-react";
+import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp, PieChart, Share2, ShieldAlert, FileText, Settings2, GitBranch } from "lucide-react";
 import MembershipOverview from "@/components/admin/membership/MembershipOverview";
 import MembershipMembersTab from "@/components/admin/membership/MembershipMembersTab";
 import MembershipBenefitsTab from "@/components/admin/membership/MembershipBenefitsTab";
@@ -12,6 +12,8 @@ import MembershipAnalyticsDashboard from "@/components/admin/membership/Membersh
 import MembershipReferralsTab from "@/components/admin/membership/MembershipReferralsTab";
 import MembershipChurnRetention from "@/components/admin/membership/MembershipChurnRetention";
 import MembershipDigestPanel from "@/components/admin/membership/MembershipDigestPanel";
+import MembershipPolicySettings from "@/components/admin/membership/MembershipPolicySettings";
+import MembershipLifecycleTimeline from "@/components/admin/membership/MembershipLifecycleTimeline";
 export default function MembershipManagement() {
   const { language } = useLanguage();
   const isAr = language === "ar";
