@@ -1,6 +1,6 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,11 @@ import {
 } from "recharts";
 import {
   TrendingDown, TrendingUp, Users, AlertTriangle, ShieldAlert,
-  Clock, UserMinus, RefreshCcw, ArrowRight, Crown
+  Clock, UserMinus, RefreshCcw, ArrowRight, Crown, Send, Loader2
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import { useMemo, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
