@@ -7,8 +7,8 @@ const corsHeaders = {
 };
 
 const GRACE_PERIOD_DAYS = 7;
-const EXPIRY_MILESTONES = [14, 7, 3, 1]; // days before expiry to notify
-const ANNIVERSARY_MILESTONES = [30, 180, 365]; // days since membership started
+const EXPIRY_MILESTONES = [14, 7, 3, 1];
+const ANNIVERSARY_MILESTONES = [30, 180, 365];
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -16,10 +16,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, serviceKey);
 
     const now = new Date();
     const todayStart = new Date(now);
@@ -32,6 +31,7 @@ Deno.serve(async (req) => {
       expired: 0,
       suspended: 0,
       trial_reminders: 0,
+      emails_queued: 0,
     };
 
     // Helper: check if notification already sent today
@@ -69,8 +69,24 @@ Deno.serve(async (req) => {
       });
     };
 
+    // Helper: send membership email via the edge function
+    const sendEmail = async (userId: string, emailType: string, data?: Record<string, any>) => {
+      try {
+        const resp = await fetch(`${supabaseUrl}/functions/v1/send-membership-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ type: emailType, user_id: userId, data }),
+        });
+        if (resp.ok) stats.emails_queued++;
+      } catch (e) {
+        console.error("Email send failed for", userId, emailType, e);
+      }
+    };
+
     // ═══════════ 1. WELCOME NOTIFICATIONS ═══════════
-    // Users who upgraded in the last 24 hours and haven't received a welcome
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const { data: newMembers } = await supabase
       .from("profiles")
@@ -95,6 +111,7 @@ Deno.serve(async (req) => {
         "/profile?tab=membership",
         { tier: m.membership_tier }
       );
+      await sendEmail(m.user_id, "welcome", { tier: m.membership_tier, full_name: m.full_name });
       stats.welcome++;
     }
 
@@ -137,7 +154,7 @@ Deno.serve(async (req) => {
     // ═══════════ 3. EXPIRY WARNINGS (14, 7, 3, 1 day) ═══════════
     const { data: expiringProfiles } = await supabase
       .from("profiles")
-      .select("user_id, membership_tier, membership_expires_at")
+      .select("user_id, full_name, membership_tier, membership_expires_at")
       .eq("membership_status", "active")
       .neq("membership_tier", "basic")
       .not("membership_expires_at", "is", null)
@@ -148,7 +165,6 @@ Deno.serve(async (req) => {
       const expiresAt = new Date(p.membership_expires_at);
       const daysLeft = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
-      // Find matching milestone
       const milestone = EXPIRY_MILESTONES.find((m) => daysLeft <= m && daysLeft > (EXPIRY_MILESTONES[EXPIRY_MILESTONES.indexOf(m) + 1] || 0));
       if (!milestone) continue;
 
@@ -172,6 +188,13 @@ Deno.serve(async (req) => {
         "/membership/checkout?renew=true",
         { tier: p.membership_tier, expires_at: p.membership_expires_at, days_left: daysLeft }
       );
+      // Send expiry warning email
+      await sendEmail(p.user_id, "expiry_warning", {
+        tier: p.membership_tier,
+        days_left: daysLeft,
+        full_name: p.full_name,
+        expires_at: p.membership_expires_at,
+      });
       stats.expiry_warnings++;
     }
 
@@ -205,6 +228,11 @@ Deno.serve(async (req) => {
         "/membership/checkout?renew=true",
         { tier: p.membership_tier, expired_at: p.membership_expires_at }
       );
+      // Send expired email
+      await sendEmail(p.user_id, "expired", {
+        tier: p.membership_tier,
+        full_name: p.full_name,
+      });
       stats.expired++;
     }
 
@@ -233,6 +261,13 @@ Deno.serve(async (req) => {
         reason: "Auto-suspended after grace period expired",
       });
 
+      // Void any pending invoices
+      await supabase.from("invoices")
+        .update({ status: "void" })
+        .eq("user_id", p.user_id)
+        .eq("status", "pending")
+        .ilike("title", "%membership%");
+
       await notify(
         p.user_id,
         "Membership suspended",
@@ -243,6 +278,12 @@ Deno.serve(async (req) => {
         "/membership/checkout?renew=true",
         { previous_tier: p.membership_tier }
       );
+      // Send suspended email
+      await sendEmail(p.user_id, "suspended", {
+        tier: p.membership_tier,
+        full_name: p.full_name,
+        reason: "Non-renewal after grace period",
+      });
       stats.suspended++;
     }
 
@@ -281,7 +322,47 @@ Deno.serve(async (req) => {
         "/membership/checkout",
         { trial_ends_at: card.trial_ends_at, days_remaining: diffDays }
       );
+      // Send trial ending email
+      await sendEmail(card.user_id, "trial_ending", { days_left: diffDays });
       stats.trial_reminders++;
+    }
+
+    // ═══════════ 7. HANDLE EXPIRED TRIALS ═══════════
+    const { data: expiredTrials } = await supabase
+      .from("profiles")
+      .select("user_id, full_name, membership_tier, trial_tier, trial_ends_at")
+      .eq("trial_expired", false)
+      .not("trial_ends_at", "is", null)
+      .lt("trial_ends_at", now.toISOString());
+
+    for (const t of expiredTrials || []) {
+      if (await alreadySent(t.user_id, "trial_auto_expired")) continue;
+
+      await supabase.from("profiles")
+        .update({
+          membership_tier: "basic" as any,
+          trial_expired: true,
+          membership_status: "active",
+        })
+        .eq("user_id", t.user_id);
+
+      await supabase.from("membership_history").insert({
+        user_id: t.user_id,
+        previous_tier: t.trial_tier || t.membership_tier,
+        new_tier: "basic",
+        reason: "Trial period auto-expired",
+      });
+
+      await notify(
+        t.user_id,
+        "⏳ Your free trial has ended",
+        "⏳ انتهت تجربتك المجانية",
+        "Your trial has ended. Upgrade to keep your premium features.",
+        "انتهت تجربتك المجانية. قم بالترقية للاحتفاظ بالمميزات.",
+        "trial_auto_expired",
+        "/membership/checkout"
+      );
+      await sendEmail(t.user_id, "trial_expired", { full_name: t.full_name });
     }
 
     console.log("Membership lifecycle complete:", stats);
