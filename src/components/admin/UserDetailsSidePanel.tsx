@@ -198,7 +198,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                 onCancel={() => setConfirmAction(null)}
                 onConfirm={() => {
                   if (!confirmAction) return;
-                  const statusMap = { activate: "active", suspend: "suspended", ban: "banned" };
+                  const statusMap: Record<string, Database["public"]["Enums"]["account_status"]> = { activate: "active", suspend: "suspended", ban: "banned" };
                   statusMutation.mutate({ status: statusMap[confirmAction.type] });
                 }}
                 title={confirmAction?.type === "activate" ? (isAr ? "تأكيد التفعيل" : "Confirm Activation") : (isAr ? "تأكيد الإيقاف" : "Confirm Suspension")}
