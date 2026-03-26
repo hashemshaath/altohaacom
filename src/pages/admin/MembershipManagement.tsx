@@ -46,7 +46,7 @@ export default function MembershipManagement() {
     { value: "analytics", icon: TrendingUp, label: isAr ? "تحليلات" : "Analytics" },
     { value: "dashboard", icon: PieChart, label: isAr ? "لوحة" : "Dashboard" },
     { value: "referrals", icon: Share2, label: isAr ? "إحالات" : "Referrals" },
-    { value: "churn", icon: ShieldAlert, label: isAr ? "التسرب" : "Churn" },
+    { value: "churn", icon: ShieldAlert, label: isAr ? "الاحتفاظ" : "Retention" },
     { value: "digest", icon: FileText, label: isAr ? "ملخص" : "Digest" },
     { value: "timeline", icon: GitBranch, label: isAr ? "الزمني" : "Timeline" },
     { value: "policy", icon: Settings2, label: isAr ? "سياسات" : "Policy" },

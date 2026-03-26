@@ -409,7 +409,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         {/* Monthly Churn Rate */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">{isAr ? "معدل التسرب الشهري" : "Monthly Churn Rate"}</CardTitle>
+            <CardTitle className="text-sm">{isAr ? "معدل فقدان الأعضاء الشهري" : "Monthly Member Loss Rate"}</CardTitle>
           </CardHeader>
           <CardContent>
             {churnData?.months && churnData.months.length > 0 ? (
@@ -431,7 +431,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                       borderRadius: "8px",
                       fontSize: 12,
                     }}
-                    formatter={(value: number) => [`${value}%`, isAr ? "معدل التسرب" : "Churn Rate"]}
+                    formatter={(value: number) => [`${value}%`, isAr ? "معدل الفقدان" : "Loss Rate"]}
                   />
                   <Area type="monotone" dataKey="churnRate" stroke="hsl(var(--destructive))" fill="url(#churnGrad)" strokeWidth={2} />
                 </AreaChart>
@@ -445,7 +445,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         {/* Churned vs Retained */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">{isAr ? "المتسربون مقابل المحتفظ بهم" : "Churned vs Retained"}</CardTitle>
+            <CardTitle className="text-sm">{isAr ? "المفقودون مقابل المحتفظ بهم" : "Lost vs Retained"}</CardTitle>
           </CardHeader>
           <CardContent>
             {churnData?.months && churnData.months.length > 0 ? (
