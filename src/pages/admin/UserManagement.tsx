@@ -230,8 +230,15 @@ export default function UserManagement() {
   });
 
   const inviteMutation = useMutation({
-    mutationFn: async () => callAdminFn({ action: "send_invitation", email: inviteEmail }),
-    onSuccess: () => { toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" }); setInviteOpen(false); setInviteEmail(""); },
+    mutationFn: async () => callAdminFn({
+      action: "send_invitation", email: inviteEmail,
+      full_name: inviteFullName, role: inviteRole,
+      message_en: inviteMessageEn, message_ar: inviteMessageAr,
+    }),
+    onSuccess: () => {
+      toast({ title: isAr ? "تم إرسال الدعوة بنجاح" : "Invitation sent successfully" });
+      setInviteOpen(false); setInviteEmail(""); setInviteFullName(""); setInviteMessageEn(""); setInviteMessageAr("");
+    },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
 
