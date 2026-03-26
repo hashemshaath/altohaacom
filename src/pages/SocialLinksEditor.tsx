@@ -1027,7 +1027,7 @@ export default function SocialLinksEditor() {
 
                     {/* Social Media Accounts */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Globe className="h-3.5 w-3.5 text-primary" />
@@ -1107,7 +1107,7 @@ export default function SocialLinksEditor() {
 
                     {/* Contact: WhatsApp & Phone Numbers */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Phone className="h-3.5 w-3.5 text-primary" />
@@ -1181,7 +1181,7 @@ export default function SocialLinksEditor() {
                   {/* ── Settings Tab ── */}
                   <TabsContent value="settings" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Settings2 className="h-3.5 w-3.5 text-primary" />
@@ -1236,7 +1236,7 @@ export default function SocialLinksEditor() {
 
                     {/* ── Multi-Page Management ── */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-chart-3/10 flex items-center justify-center">
                             <LayoutGrid className="h-3.5 w-3.5 text-chart-3" />
@@ -1339,7 +1339,7 @@ export default function SocialLinksEditor() {
                       </div>
                     )}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Plus className="h-3.5 w-3.5 text-primary" />
@@ -1417,7 +1417,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <LinkIcon className="h-3.5 w-3.5 text-primary" />
@@ -1676,7 +1676,7 @@ export default function SocialLinksEditor() {
                   {/* ── Appearance Tab ── */}
                   <TabsContent value="appearance" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Palette className="h-3.5 w-3.5 text-primary" />
@@ -1702,7 +1702,7 @@ export default function SocialLinksEditor() {
 
                     {/* Scheduled Themes */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Calendar className="h-3.5 w-3.5 text-primary" />
@@ -1798,7 +1798,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Type className="h-3.5 w-3.5 text-primary" />
@@ -1842,7 +1842,7 @@ export default function SocialLinksEditor() {
 
                     {/* Layout Controls */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <LayoutList className="h-3.5 w-3.5 text-primary" />
@@ -1920,7 +1920,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Smartphone className="h-3.5 w-3.5 text-primary" />
@@ -1962,7 +1962,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Palette className="h-3.5 w-3.5 text-primary" />
@@ -2002,7 +2002,7 @@ export default function SocialLinksEditor() {
                   {/* ── Display / Visibility Tab ── */}
                   <TabsContent value="visibility" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <EyeOff className="h-3.5 w-3.5 text-primary" />
@@ -2052,7 +2052,7 @@ export default function SocialLinksEditor() {
 
                     {/* Cover Image */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Image className="h-3.5 w-3.5 text-primary" />
@@ -2434,7 +2434,7 @@ export default function SocialLinksEditor() {
 
                     {/* Multi-Page Profiles */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <LayoutGrid className="h-3.5 w-3.5 text-primary" />
@@ -2489,7 +2489,7 @@ export default function SocialLinksEditor() {
                     </Card>
                     {/* Import / Export */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Download className="h-3.5 w-3.5 text-primary" />
@@ -2555,7 +2555,7 @@ export default function SocialLinksEditor() {
                   {/* ── Analytics Tab ── */}
                   <TabsContent value="analytics" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <BarChart3 className="h-3.5 w-3.5 text-primary" />
@@ -2616,7 +2616,7 @@ export default function SocialLinksEditor() {
                     {/* Top Performing */}
                     {items.length > 0 && totalClicks > 0 && (
                       <Card className="overflow-hidden">
-                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-1/10 flex items-center justify-center">
                               <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
@@ -2650,7 +2650,7 @@ export default function SocialLinksEditor() {
                     {/* Click Heatmap */}
                     {items.length > 0 && (
                       <Card className="overflow-hidden">
-                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-destructive/10 flex items-center justify-center">
                               <BarChart3 className="h-3.5 w-3.5 text-destructive" />
@@ -2701,7 +2701,7 @@ export default function SocialLinksEditor() {
                     {/* Best Times to Post / Click Activity */}
                     {clickAnalytics && clickAnalytics.total > 0 && (
                       <Card className="overflow-hidden">
-                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-2/10 flex items-center justify-center">
                               <Clock className="h-3.5 w-3.5 text-chart-2" />
@@ -2794,7 +2794,7 @@ export default function SocialLinksEditor() {
                     {/* Link Performance Comparison */}
                     {clickAnalytics && clickAnalytics.total > 0 && items.length > 1 && (
                       <Card className="overflow-hidden">
-                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-4/10 flex items-center justify-center">
                               <TrendingUp className="h-3.5 w-3.5 text-chart-4" />
@@ -2848,7 +2848,7 @@ export default function SocialLinksEditor() {
                     )}
                     {visitorStats && visitorStats.total > 0 && (
                       <Card className="overflow-hidden">
-                        <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                        <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-3/10 flex items-center justify-center">
                               <Eye className="h-3.5 w-3.5 text-chart-3" />
@@ -2983,7 +2983,7 @@ export default function SocialLinksEditor() {
 
                     {/* Export Data */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <FileDown className="h-3.5 w-3.5 text-primary" />
@@ -3033,7 +3033,7 @@ export default function SocialLinksEditor() {
 
                     {/* ── Notifications Feed ── */}
                     <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-chart-4/10 flex items-center justify-center">
                             <Bell className="h-3.5 w-3.5 text-chart-4" />
