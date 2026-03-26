@@ -34,6 +34,7 @@ interface UserProfile {
   avatar_url: string | null;
   created_at: string;
   country_code: string | null;
+  city: string | null;
   is_verified: boolean | null;
   email: string | null;
   roles?: { role: Database["public"]["Enums"]["app_role"] }[];
