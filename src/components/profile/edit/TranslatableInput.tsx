@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Languages, Loader2 } from "lucide-react";
+import { Languages, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -21,12 +21,15 @@ interface TranslatableInputProps {
   placeholder?: string;
   multiline?: boolean;
   rows?: number;
+  /** Field type for SEO optimization context */
+  fieldType?: "title" | "bio" | "description" | "text";
 }
 
 export const TranslatableInput = memo(function TranslatableInput({
-  label, value, onChange, dir, pairedValue, onTranslated, lang, placeholder, multiline, rows = 3,
+  label, value, onChange, dir, pairedValue, onTranslated, lang, placeholder, multiline, rows = 3, fieldType = "text",
 }: TranslatableInputProps) {
   const [translating, setTranslating] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
 
   const handleTranslate = useCallback(async () => {
     const text = value;
@@ -50,6 +53,25 @@ export const TranslatableInput = memo(function TranslatableInput({
     }
   }, [value, lang, onTranslated]);
 
+  const handleOptimize = useCallback(async () => {
+    if (!value?.trim()) return;
+    setOptimizing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
+        body: { text: value, source_lang: lang, optimize_only: true, field_type: fieldType },
+      });
+      if (error) throw error;
+      if (data?.optimized) {
+        onChange(data.optimized);
+        toast({ title: lang === "ar" ? "تم التحسين بنجاح" : "Optimized successfully" });
+      }
+    } catch (err: any) {
+      toast({ title: "SEO Error", description: err.message, variant: "destructive" });
+    } finally {
+      setOptimizing(false);
+    }
+  }, [value, lang, onChange, fieldType]);
+
   const targetLabel = lang === "en" ? "→ عربي" : "→ EN";
 
   return (
@@ -57,16 +79,28 @@ export const TranslatableInput = memo(function TranslatableInput({
       <div className="flex items-center justify-between">
         <Label className="text-xs">{label}</Label>
         {value?.trim() && (
-          <Button
-            type="button" variant="ghost" size="sm"
-            className="h-6 px-1.5 text-xs text-primary gap-1"
-            onClick={handleTranslate}
-            disabled={translating}
-            title={lang === "en" ? "ترجمة إلى العربية" : "Translate to English"}
-          >
-            {translating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-            {targetLabel}
-          </Button>
+          <div className="flex gap-0.5">
+            <Button
+              type="button" variant="ghost" size="sm"
+              className="h-6 px-1.5 text-[10px] text-primary gap-1"
+              onClick={handleOptimize}
+              disabled={optimizing}
+              title={lang === "ar" ? "تحسين SEO" : "Optimize SEO"}
+            >
+              {optimizing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+              SEO
+            </Button>
+            <Button
+              type="button" variant="ghost" size="sm"
+              className="h-6 px-1.5 text-[10px] text-primary gap-1"
+              onClick={handleTranslate}
+              disabled={translating}
+              title={lang === "en" ? "ترجمة إلى العربية" : "Translate to English"}
+            >
+              {translating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
+              {targetLabel}
+            </Button>
+          </div>
         )}
       </div>
       {multiline ? (
