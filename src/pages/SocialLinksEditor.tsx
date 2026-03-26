@@ -427,19 +427,28 @@ export default function SocialLinksEditor() {
     if (!user) return;
     setSavingSocials(true);
     try {
+      // Auto-normalize social URLs before saving
+      const normalizedSocials: Record<string, string | null> = {};
+      SOCIAL_PLATFORMS.forEach(p => {
+        const val = socials[p.key]?.trim();
+        normalizedSocials[p.key] = val ? normalizeSocialUrl(val, p) : null;
+      });
+      // Build phone values with country code
+      const selectedCountry = countries?.find(c => c.code === contactCountryCode);
+      const phoneCode = selectedCountry?.phone_code || "+966";
+      const buildPhone = (val: string) => {
+        if (!val) return null;
+        const clean = val.replace(/^0+/, "");
+        if (clean.startsWith("+")) return clean;
+        return phoneCode + clean;
+      };
       const { error } = await supabase
         .from("profiles")
         .update({
-          instagram: socials.instagram || null,
-          twitter: socials.twitter || null,
-          tiktok: socials.tiktok || null,
-          youtube: socials.youtube || null,
-          snapchat: socials.snapchat || null,
-          facebook: socials.facebook || null,
-          linkedin: socials.linkedin || null,
-          website: socials.website || null,
-          whatsapp: contacts.whatsapp || null,
-          phone: contacts.phone || null,
+          ...normalizedSocials,
+          whatsapp: buildPhone(contacts.whatsapp),
+          phone: buildPhone(contacts.phone),
+          phone2: buildPhone(contacts.phone2) as any,
         })
         .eq("user_id", user.id);
       if (error) throw error;
