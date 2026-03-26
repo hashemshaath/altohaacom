@@ -17162,6 +17162,7 @@ export type Database = {
           password_last_changed: string | null
           phone: string | null
           phone_verified: boolean | null
+          phone2: string | null
           preferred_job_types: string[] | null
           preferred_language: string | null
           preferred_work_locations: string[] | null
@@ -17262,6 +17263,7 @@ export type Database = {
           password_last_changed?: string | null
           phone?: string | null
           phone_verified?: boolean | null
+          phone2?: string | null
           preferred_job_types?: string[] | null
           preferred_language?: string | null
           preferred_work_locations?: string[] | null
@@ -17362,6 +17364,7 @@ export type Database = {
           password_last_changed?: string | null
           phone?: string | null
           phone_verified?: boolean | null
+          phone2?: string | null
           preferred_job_types?: string[] | null
           preferred_language?: string | null
           preferred_work_locations?: string[] | null

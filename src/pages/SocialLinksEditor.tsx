@@ -3,6 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPage, useSocialLinkItems, useUpsertSocialLinkPage, useManageSocialLinkItems } from "@/hooks/useSocialLinkPage";
 import { Header } from "@/components/Header";
+import { useAllCountries } from "@/hooks/useCountries";
+import { normalizePhoneInput } from "@/lib/arabicNumerals";
+import { countryFlag } from "@/lib/countryFlag";
 import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -50,9 +53,44 @@ const SOCIAL_PLATFORMS = [
 ];
 
 const CONTACT_FIELDS = [
-  { key: "whatsapp", label: "WhatsApp", labelAr: "واتساب", icon: MessageCircle, placeholder: "+966XXXXXXXXX", color: "from-green-500 to-green-700" },
-  { key: "phone", label: "Phone", labelAr: "الهاتف", icon: Phone, placeholder: "+966XXXXXXXXX", color: "from-blue-400 to-blue-600" },
+  { key: "whatsapp", label: "WhatsApp", labelAr: "واتساب", icon: MessageCircle, placeholder: "5XXXXXXXX", color: "from-green-500 to-green-700" },
+  { key: "phone", label: "Phone", labelAr: "الهاتف", icon: Phone, placeholder: "5XXXXXXXX", color: "from-blue-400 to-blue-600" },
+  { key: "phone2", label: "Phone 2", labelAr: "الهاتف ٢", icon: Phone, placeholder: "5XXXXXXXX", color: "from-indigo-400 to-indigo-600" },
 ];
+
+function normalizeSocialUrl(value: string, platform: typeof SOCIAL_PLATFORMS[number]): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  // Website: just add https if missing
+  if (platform.key === "website") {
+    if (trimmed.includes(".") && !trimmed.startsWith("http")) return "https://" + trimmed;
+    return trimmed;
+  }
+  // If user entered just a username (no slashes, no dots)
+  if (!trimmed.includes("/") && !trimmed.includes(".")) {
+    return platform.prefix + trimmed.replace(/^@/, "");
+  }
+  // Has dots but no http
+  if (trimmed.includes(".") && !trimmed.startsWith("http")) {
+    return "https://" + trimmed;
+  }
+  return trimmed;
+}
+
+// Extract username from a full social URL for display
+function extractUsername(value: string, platform: typeof SOCIAL_PLATFORMS[number]): string {
+  if (!value) return "";
+  if (platform.prefix && value.startsWith(platform.prefix)) {
+    return value.slice(platform.prefix.length).replace(/\/$/, "");
+  }
+  // If it's a full URL with the platform domain
+  try {
+    const url = new URL(value.startsWith("http") ? value : "https://" + value);
+    const path = url.pathname.replace(/^\//, "").replace(/\/$/, "");
+    if (path) return path.replace(/^@/, "");
+  } catch {}
+  return value;
+}
 
 const THEMES = [
   { id: "default", label: "Default", labelAr: "افتراضي", preview: "bg-gradient-to-br from-background to-muted/30" },
@@ -160,7 +198,7 @@ export default function SocialLinksEditor() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("username, avatar_url, full_name, full_name_ar, display_name, display_name_ar, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, phone, whatsapp, job_title, job_title_ar")
+        .select("username, avatar_url, full_name, full_name_ar, display_name, display_name_ar, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, phone, phone2, whatsapp, country_code, job_title, job_title_ar")
         .eq("user_id", user!.id)
         .single();
       return data;
@@ -291,6 +329,8 @@ export default function SocialLinksEditor() {
 
   const [socials, setSocials] = useState<Record<string, string>>({});
   const [contacts, setContacts] = useState<Record<string, string>>({});
+  const [contactCountryCode, setContactCountryCode] = useState("SA");
+  const { data: countries } = useAllCountries();
 
   useEffect(() => {
     if (profile) {
@@ -307,7 +347,9 @@ export default function SocialLinksEditor() {
       setContacts({
         whatsapp: profile.whatsapp || "",
         phone: profile.phone || "",
+        phone2: (profile as any).phone2 || "",
       });
+      setContactCountryCode(profile.country_code || "SA");
     }
   }, [profile]);
 
@@ -385,19 +427,28 @@ export default function SocialLinksEditor() {
     if (!user) return;
     setSavingSocials(true);
     try {
+      // Auto-normalize social URLs before saving
+      const normalizedSocials: Record<string, string | null> = {};
+      SOCIAL_PLATFORMS.forEach(p => {
+        const val = socials[p.key]?.trim();
+        normalizedSocials[p.key] = val ? normalizeSocialUrl(val, p) : null;
+      });
+      // Build phone values with country code
+      const selectedCountry = countries?.find(c => c.code === contactCountryCode);
+      const phoneCode = selectedCountry?.phone_code || "+966";
+      const buildPhone = (val: string) => {
+        if (!val) return null;
+        const clean = val.replace(/^0+/, "");
+        if (clean.startsWith("+")) return clean;
+        return phoneCode + clean;
+      };
       const { error } = await supabase
         .from("profiles")
         .update({
-          instagram: socials.instagram || null,
-          twitter: socials.twitter || null,
-          tiktok: socials.tiktok || null,
-          youtube: socials.youtube || null,
-          snapchat: socials.snapchat || null,
-          facebook: socials.facebook || null,
-          linkedin: socials.linkedin || null,
-          website: socials.website || null,
-          whatsapp: contacts.whatsapp || null,
-          phone: contacts.phone || null,
+          ...normalizedSocials,
+          whatsapp: buildPhone(contacts.whatsapp),
+          phone: buildPhone(contacts.phone),
+          phone2: buildPhone(contacts.phone2) as any,
         })
         .eq("user_id", user.id);
       if (error) throw error;
@@ -955,15 +1006,17 @@ export default function SocialLinksEditor() {
                           {isAr ? "حسابات التواصل الاجتماعي" : "Social Media Accounts"}
                         </CardTitle>
                         <p className="text-[11px] text-muted-foreground">
-                          {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links are generated automatically"}
+                          {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links auto-complete on blur"}
                         </p>
                       </CardHeader>
                       <CardContent className="pt-4 pb-5 px-5">
                         <div className="grid gap-3 sm:grid-cols-2">
                           {SOCIAL_PLATFORMS.map(platform => {
                             const Icon = platform.icon;
-                            const value = socials[platform.key] || "";
-                            const isActive = !!value;
+                            const rawValue = socials[platform.key] || "";
+                            const isActive = !!rawValue;
+                            // Show username in input for cleaner UX
+                            const displayValue = rawValue;
                             return (
                               <div key={platform.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                                 <div className="flex items-center gap-3 p-3">
@@ -972,13 +1025,43 @@ export default function SocialLinksEditor() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
-                                    <Input
-                                      value={value}
-                                      onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
-                                      placeholder={platform.prefix ? platform.prefix + platform.placeholder : platform.placeholder}
-                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
-                                      dir="ltr"
-                                    />
+                                    {platform.prefix ? (
+                                      <div className="flex items-center gap-0">
+                                        <span className="text-[10px] text-muted-foreground/60 font-mono bg-muted/40 px-1.5 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none" dir="ltr">
+                                          {platform.prefix.replace("https://", "")}
+                                        </span>
+                                        <Input
+                                          value={displayValue.startsWith(platform.prefix) ? displayValue.slice(platform.prefix.length).replace(/\/$/, "") : displayValue}
+                                          onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                          onBlur={e => {
+                                            const normalized = normalizeSocialUrl(e.target.value, platform);
+                                            if (normalized !== socials[platform.key]) {
+                                              setSocials(s => ({ ...s, [platform.key]: normalized }));
+                                            }
+                                          }}
+                                          placeholder={platform.placeholder}
+                                          className="h-8 text-xs rounded-s-none rounded-e-lg border-border/30 bg-muted/20 focus:bg-background placeholder:text-muted-foreground/40"
+                                          dir="ltr"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <Input
+                                        value={displayValue}
+                                        onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                        onBlur={e => {
+                                          const normalized = normalizeSocialUrl(e.target.value, platform);
+                                          if (normalized !== socials[platform.key]) {
+                                            setSocials(s => ({ ...s, [platform.key]: normalized }));
+                                          }
+                                        }}
+                                        placeholder={platform.placeholder}
+                                        className="h-8 text-xs rounded-lg border-border/30 bg-muted/20 focus:bg-background placeholder:text-muted-foreground/40"
+                                        dir="ltr"
+                                      />
+                                    )}
+                                    {isActive && platform.prefix && rawValue.startsWith("http") && (
+                                      <p className="text-[9px] text-muted-foreground/50 mt-0.5 font-mono truncate" dir="ltr">{rawValue}</p>
+                                    )}
                                   </div>
                                   {isActive && (
                                     <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
@@ -993,25 +1076,50 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    {/* Contact: WhatsApp & Phone */}
+                    {/* Contact: WhatsApp & Phone Numbers */}
                     <Card className="overflow-hidden">
                       <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Phone className="h-3.5 w-3.5 text-primary" />
                           </div>
-                          {isAr ? "معلومات الاتصال" : "Contact Info"}
+                          {isAr ? "أرقام الاتصال" : "Contact Numbers"}
                         </CardTitle>
                         <p className="text-[11px] text-muted-foreground">
-                          {isAr ? "تظهر كأيقونات في صفحة الروابط العامة" : "Displayed as icons on your public links page"}
+                          {isAr ? "واتساب + رقمين هاتف — اختر رمز الدولة ثم أدخل الرقم" : "WhatsApp + up to 2 phone numbers — select country code then enter number"}
                         </p>
                       </CardHeader>
-                      <CardContent className="pt-4 pb-5 px-5">
-                        <div className="grid gap-3 sm:grid-cols-2">
+                      <CardContent className="pt-4 pb-5 px-5 space-y-4">
+                        {/* Country Code Selector */}
+                        <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-border/30 bg-muted/5">
+                          <div className="h-9 w-9 rounded-xl bg-muted/80 flex items-center justify-center shrink-0">
+                            <Globe className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Label className="text-xs font-semibold mb-1 block">{isAr ? "رمز الدولة" : "Country Code"}</Label>
+                            <select
+                              value={contactCountryCode}
+                              onChange={e => setContactCountryCode(e.target.value)}
+                              className="w-full h-8 text-xs rounded-lg border border-border/40 bg-muted/20 px-2 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                              dir="ltr"
+                            >
+                              {(countries || []).map(c => (
+                                <option key={c.code} value={c.code}>
+                                  {countryFlag(c.code)} {c.phone_code} — {isAr ? c.name_ar || c.name : c.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <span className="text-lg">{countryFlag(contactCountryCode)}</span>
+                        </div>
+
+                        <div className="grid gap-3">
                           {CONTACT_FIELDS.map(field => {
                             const Icon = field.icon;
                             const value = contacts[field.key] || "";
                             const isActive = !!value;
+                            const selectedCountry = countries?.find(c => c.code === contactCountryCode);
+                            const phoneCode = selectedCountry?.phone_code || "+966";
                             return (
                               <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                                 <div className="flex items-center gap-3 p-3">
@@ -1020,13 +1128,19 @@ export default function SocialLinksEditor() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <Label className="text-xs font-semibold mb-1 block">{isAr ? field.labelAr : field.label}</Label>
-                                    <Input
-                                      value={value}
-                                      onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
-                                      placeholder={field.placeholder}
-                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
-                                      dir="ltr"
-                                    />
+                                    <div className="flex items-center gap-0" dir="ltr">
+                                      <span className="text-[11px] text-muted-foreground/70 font-mono bg-muted/40 px-2 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none">
+                                        {phoneCode}
+                                      </span>
+                                      <Input
+                                        type="tel"
+                                        value={value}
+                                        onChange={e => setContacts(c => ({ ...c, [field.key]: normalizePhoneInput(e.target.value) }))}
+                                        placeholder={field.placeholder}
+                                        className="h-8 text-xs rounded-s-none rounded-e-lg border-border/30 bg-muted/20 focus:bg-background placeholder:text-muted-foreground/40"
+                                        dir="ltr"
+                                      />
+                                    </div>
                                   </div>
                                   {isActive && (
                                     <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
