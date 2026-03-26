@@ -278,6 +278,10 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         actionReason || "Your membership has been suspended by an administrator.",
         actionReason || "تم إيقاف عضويتك بواسطة المسؤول."
       );
+      // Send suspension email
+      supabase.functions.invoke("send-membership-email", {
+        body: { type: "suspended", user_id: userId, data: { tier: targetUser.membership_tier, reason: actionReason } },
+      }).catch(() => {});
     },
     onSuccess: () => {
       invalidateAll();
@@ -340,6 +344,10 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         "Your membership is now active again.",
         "عضويتك نشطة مرة أخرى."
       );
+      // Send reactivation email
+      supabase.functions.invoke("send-membership-email", {
+        body: { type: "reactivated", user_id: userId, data: { tier: targetUser.membership_tier } },
+      }).catch(() => {});
     },
     onSuccess: () => {
       invalidateAll();
