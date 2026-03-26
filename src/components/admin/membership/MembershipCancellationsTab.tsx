@@ -102,6 +102,18 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
           membership_status: "cancelled",
         }).eq("user_id", userId);
 
+        // Deactivate membership card
+        await supabase.from("membership_cards").update({ card_status: "cancelled" }).eq("user_id", userId);
+
+        // Log history
+        await supabase.from("membership_history").insert({
+          user_id: userId,
+          previous_tier: reviewRequest?.current_tier || "professional",
+          new_tier: "basic",
+          changed_by: user!.id,
+          reason: `Cancellation approved: ${adminNotes || "Admin action"}`,
+        });
+
         await supabase.from("notifications").insert({
           user_id: userId,
           title: "Your membership cancellation has been processed",
@@ -110,6 +122,12 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
           body_ar: "تم تخفيض عضويتك إلى الأساسية. نأسف لرحيلك!",
           type: "membership",
         });
+
+        // Send cancellation email
+        supabase.functions.invoke("send-membership-email", {
+          body: { type: "cancellation_approved", user_id: userId, data: { tier: reviewRequest?.current_tier } },
+        }).catch(() => {});
+
       } else if (action === "retained") {
         await supabase.from("notifications").insert({
           user_id: userId,
@@ -120,6 +138,12 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
           type: "membership",
           link: "/profile?tab=membership",
         });
+
+        // Send retention offer email
+        supabase.functions.invoke("send-membership-email", {
+          body: { type: "retention_offer", user_id: userId, data: { tier: reviewRequest?.current_tier, offer: retentionOffer, offer_ar: retentionOfferAr } },
+        }).catch(() => {});
+
       } else {
         await supabase.from("notifications").insert({
           user_id: userId,
