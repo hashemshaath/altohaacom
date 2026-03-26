@@ -108,8 +108,8 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
         // Log history
         await supabase.from("membership_history").insert({
           user_id: userId,
-          previous_tier: reviewRequest?.current_tier || "professional",
-          new_tier: "basic",
+          previous_tier: (reviewRequest?.current_tier || "professional") as "basic" | "professional" | "enterprise",
+          new_tier: "basic" as const,
           changed_by: user!.id,
           reason: `Cancellation approved: ${adminNotes || "Admin action"}`,
         });
