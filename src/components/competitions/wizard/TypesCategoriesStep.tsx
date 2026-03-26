@@ -155,7 +155,7 @@ export const TypesCategoriesStep = memo(function TypesCategoriesStep({
                     </p>
                   </div>
                   {isSelected && (
-                    <div className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <div className="absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Check className="h-3 w-3" />
                     </div>
                   )}

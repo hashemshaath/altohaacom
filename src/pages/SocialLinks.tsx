@@ -290,7 +290,7 @@ export default function SocialLinks() {
         )}
 
         {/* Top Actions */}
-        <div className={`absolute top-4 ${contentDir === "rtl" ? "left-4" : "right-4"} z-20 flex gap-2 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+        <div className={`absolute top-4 ${contentDir === "rtl" ? "start-4" : "end-4"} z-20 flex gap-2 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
           {isOwner && (
             <Link to="/social-links" className="flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
               style={{ backgroundColor: theme.accentLight, border: `1px solid ${theme.accentMedium}`, color: theme.accent }} title={tl("editPage", lang)}><Pencil className="h-3.5 w-3.5" /></Link>
@@ -303,7 +303,7 @@ export default function SocialLinks() {
 
         {/* Language Switcher */}
         {extra.show_language_switcher && (
-          <div className={`absolute top-4 ${contentDir === "rtl" ? "right-4" : "left-4"} z-20 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+          <div className={`absolute top-4 ${contentDir === "rtl" ? "end-4" : "start-4"} z-20 transition-all duration-700 ${animated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
             <div className="relative group">
               <button className="flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-xl transition-all duration-300 hover:scale-110 active:scale-95"
                 style={{ backgroundColor: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }}><Globe className="h-3.5 w-3.5" /></button>
@@ -323,7 +323,7 @@ export default function SocialLinks() {
         )}
 
         {/* Avatar */}
-        <div className={`absolute -bottom-14 left-1/2 -translate-x-1/2 z-20 transition-all duration-700 delay-150 ${animated ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
+        <div className={`absolute -bottom-14 start-1/2 -translate-x-1/2 z-20 transition-all duration-700 delay-150 ${animated ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
           {(page?.show_avatar !== false) && (
             <div className="relative">
               <div className="absolute -inset-1.5 rounded-full animate-pulse" style={{ background: `radial-gradient(circle, ${theme.accentLight} 0%, transparent 70%)`, opacity: 0.5 }} />

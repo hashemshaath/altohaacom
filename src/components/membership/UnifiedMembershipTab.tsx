@@ -479,18 +479,18 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
             {cardTheme === "classic" ? (
               <>
                 <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "repeating-linear-gradient(45deg, #fff 0px, #fff 1px, transparent 1px, transparent 12px)" }} />
-                <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, transparent 2%, #c9a84c 20%, #f5e6a3 50%, #c9a84c 80%, transparent 98%)" }} />
-                <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, transparent 2%, #c9a84c 20%, #f5e6a3 50%, #c9a84c 80%, transparent 98%)" }} />
-                <div className="absolute top-0 left-0 w-24 h-24 opacity-15" style={{ background: "radial-gradient(circle at 0 0, #c9a84c, transparent 70%)" }} />
-                <div className="absolute bottom-0 right-0 w-32 h-32 opacity-10" style={{ background: "radial-gradient(circle at 100% 100%, #c9a84c, transparent 70%)" }} />
+                <div className="absolute top-0 start-0 end-0 h-[3px]" style={{ background: "linear-gradient(90deg, transparent 2%, #c9a84c 20%, #f5e6a3 50%, #c9a84c 80%, transparent 98%)" }} />
+                <div className="absolute bottom-0 start-0 end-0 h-[3px]" style={{ background: "linear-gradient(90deg, transparent 2%, #c9a84c 20%, #f5e6a3 50%, #c9a84c 80%, transparent 98%)" }} />
+                <div className="absolute top-0 start-0 w-24 h-24 opacity-15" style={{ background: "radial-gradient(circle at 0 0, #c9a84c, transparent 70%)" }} />
+                <div className="absolute bottom-0 end-0 w-32 h-32 opacity-10" style={{ background: "radial-gradient(circle at 100% 100%, #c9a84c, transparent 70%)" }} />
               </>
             ) : (
               <>
                 <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, hsl(var(--primary)) 0.5px, transparent 0)", backgroundSize: "16px 16px" }} />
-                <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent)" }} />
-                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent)" }} />
-                <div className="absolute -top-20 -right-20 w-48 h-48 rounded-full opacity-20" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.3), transparent 70%)" }} />
-                <div className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full opacity-15" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.2), transparent 70%)" }} />
+                <div className="absolute top-0 start-0 end-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent)" }} />
+                <div className="absolute bottom-0 start-0 end-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent)" }} />
+                <div className="absolute -top-20 -end-20 w-48 h-48 rounded-full opacity-20" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.3), transparent 70%)" }} />
+                <div className="absolute -bottom-16 -start-16 w-40 h-40 rounded-full opacity-15" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.2), transparent 70%)" }} />
               </>
             )}
 
@@ -562,7 +562,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                   )}
                 </div>
 
-                <div className={`flex-1 min-w-0 ${isVertical ? "text-center" : isAr ? "text-right" : "text-left"}`}>
+                <div className={`flex-1 min-w-0 ${isVertical ? "text-center" : isAr ? "text-end" : "text-start"}`}>
                   <p
                     className={`font-bold leading-tight break-words ${isVertical ? "text-center" : ""} ${isAr ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"}`}
                     style={{ color: cardTheme === "classic" ? "#f0f0f0" : "hsl(var(--foreground))" }}
@@ -836,7 +836,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
             return (
               <Card key={tier.id} className={`relative transition-all ${tier.featured ? "ring-2 ring-primary shadow-lg" : ""} ${isCurrentTier ? "bg-primary/5" : ""}`}>
                 {tier.featured && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <div className="absolute -top-3 start-1/2 -translate-x-1/2">
                     <Badge className="bg-primary"><Star className="me-1 h-3 w-3" />{isAr ? "الأكثر شعبية" : "Popular"}</Badge>
                   </div>
                 )}

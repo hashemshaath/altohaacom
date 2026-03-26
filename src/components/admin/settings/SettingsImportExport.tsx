@@ -188,7 +188,7 @@ export const SettingsImportExport = memo(function SettingsImportExport() {
                 <AlertDialogFooter>
                   <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
                   <AlertDialogAction onClick={handleImport} disabled={isImporting}>
-                    {isImporting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    {isImporting ? <Loader2 className="h-4 w-4 animate-spin me-2" /> : null}
                     {isAr ? "استيراد" : "Import"}
                   </AlertDialogAction>
                 </AlertDialogFooter>

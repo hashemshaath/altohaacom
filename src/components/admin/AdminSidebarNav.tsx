@@ -140,7 +140,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                           {isActive && (
                             <span className={cn(
                               "absolute top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-full bg-primary",
-                              isAr ? "-right-[5px]" : "-left-[5px]"
+                              isAr ? "-end-[5px]" : "-start-[5px]"
                             )} />
                           )}
                           <item.icon className={cn("h-3.5 w-3.5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />

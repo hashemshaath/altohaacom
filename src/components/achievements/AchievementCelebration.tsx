@@ -51,7 +51,7 @@ export const AchievementCelebration = forwardRef<HTMLDivElement>(function Achiev
             ))}
           </div>
 
-          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-primary/20 blur-[60px]" />
+          <div className="absolute -top-20 start-1/2 -translate-x-1/2 w-40 h-40 rounded-full bg-primary/20 blur-[60px]" />
 
           <div className="relative p-6 text-center space-y-4">
             <Button

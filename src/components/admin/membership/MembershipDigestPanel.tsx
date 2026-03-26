@@ -260,7 +260,7 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
                   h.type === "negative" ? "text-destructive" : "text-muted-foreground"
                 }`} />
                 <span>{h.text}</span>
-                <Badge variant={h.type === "negative" ? "destructive" : "secondary"} className="text-xs ml-auto">
+                <Badge variant={h.type === "negative" ? "destructive" : "secondary"} className="text-xs ms-auto">
                   {h.type === "positive" ? (isAr ? "إيجابي" : "Positive") :
                    h.type === "negative" ? (isAr ? "تنبيه" : "Alert") : ""}
                 </Badge>

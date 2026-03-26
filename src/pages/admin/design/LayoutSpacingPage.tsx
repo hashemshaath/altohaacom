@@ -121,7 +121,7 @@ export default function LayoutSpacingPage() {
             </div>
             {/* Visual preview */}
             <div className="relative h-8 rounded-lg border border-border/30 bg-muted/20 overflow-hidden">
-              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 bg-primary/15 border-x border-primary/30" style={{ width: `${(layout.containerWidth / 1920) * 100}%` }} />
+              <div className="absolute inset-y-0 start-1/2 -translate-x-1/2 bg-primary/15 border-x border-primary/30" style={{ width: `${(layout.containerWidth / 1920) * 100}%` }} />
               <span className="absolute inset-0 flex items-center justify-center text-[9px] text-muted-foreground">{layout.containerWidth}px / 1920px</span>
             </div>
           </CardContent>

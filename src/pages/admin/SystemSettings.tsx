@@ -272,7 +272,7 @@ export default function SystemSettings() {
                     );
                   })}
                 </TabsList>
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-muted/30 to-transparent sm:hidden" />
+                <div className="pointer-events-none absolute inset-y-0 end-0 w-8 bg-gradient-to-l from-muted/30 to-transparent sm:hidden" />
               </CardContent>
             </Card>
 
