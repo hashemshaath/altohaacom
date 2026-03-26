@@ -228,7 +228,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     enabled: !!pageId,
   });
 
-  // Derived metrics
+  // Derived metrics — all hooks MUST be before early returns
   const ctr = useMemo(() => {
     if (!visitorStats || visitorStats.total === 0 || !clickAnalytics) return 0;
     return Math.round((clickAnalytics.total / visitorStats.total) * 1000) / 10;
@@ -244,7 +244,6 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     return clickAnalytics.dailyClicks.slice(-periodDays);
   }, [clickAnalytics, periodDays]);
 
-  // Combined chart data
   const combinedData = useMemo(() => {
     if (!periodVisits.length) return [];
     return periodVisits.map((v, i) => ({
@@ -254,62 +253,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     }));
   }, [periodVisits, periodClicks, isAr]);
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[1, 2, 3, 4].map(i => (
-          <Card key={i}><CardContent className="p-4"><div className="h-16 animate-pulse bg-muted rounded" /></CardContent></Card>
-        ))}
-      </div>
-    );
-  }
-
-  if (!visitorStats || visitorStats.total === 0) {
-    return (
-      <EmptyState
-        icon={Eye}
-        title={isAr ? "لا توجد بيانات بعد" : "No analytics data yet"}
-        description={isAr ? "ستظهر الإحصائيات عند زيارة صفحتك" : "Analytics will appear when your bio page gets visits"}
-      />
-    );
-  }
-
-  const totalClicks = clickAnalytics?.total || 0;
-
-  const statCards = [
-    { icon: Eye, label: isAr ? "إجمالي الزيارات" : "Total Views", value: visitorStats.total, color: "text-chart-1", bg: "bg-chart-1/10" },
-    { icon: TrendingUp, label: isAr ? "آخر 7 أيام" : "Last 7 Days", value: visitorStats.recent7d, color: "text-chart-2", bg: "bg-chart-2/10", trend: visitorStats.changePercent },
-    { icon: MousePointerClick, label: isAr ? "النقرات" : "Clicks", value: totalClicks, color: "text-chart-4", bg: "bg-chart-4/10" },
-    { icon: Percent, label: "CTR", value: ctr, color: "text-chart-3", bg: "bg-chart-3/10", suffix: "%" },
-    { icon: Users, label: isAr ? "زوار فريدون" : "Unique Visitors", value: visitorStats.uniqueVisitors, color: "text-chart-5", bg: "bg-chart-5/10" },
-    { icon: Calendar, label: isAr ? "متوسط يومي" : "Daily Avg", value: visitorStats.avgDaily, color: "text-primary", bg: "bg-primary/10" },
-  ];
-
-  const devicePie = Object.entries(visitorStats.devices).map(([key, val]) => ({
-    name: key === "mobile" ? (isAr ? "جوال" : "Mobile") : key === "desktop" ? (isAr ? "حاسوب" : "Desktop") : key === "tablet" ? (isAr ? "تابلت" : "Tablet") : key,
-    value: val,
-  }));
-
-  const referrerData = Object.entries(visitorStats.referrers)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([name, value]) => ({ name, value }));
-
-  const browserData = Object.entries(visitorStats.browsers)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, value]) => ({ name, value }));
-
-  const countryData = Object.entries(visitorStats.countries)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([name, value]) => ({ name, value }));
-
-  const hourlyData = visitorStats.hourlyBreakdown.map((count: number, hour: number) => ({
-    hour: `${hour.toString().padStart(2, "0")}:00`,
-    [isAr ? "زيارات" : "Views"]: count,
-  }));
-
-  // Link performance — use real click data filtered by selected period
+  // Link performance — real click data filtered by selected period
   const periodClickMap = useMemo(() => {
     if (!clickAnalytics) return {};
     if (period === "7d") return clickAnalytics.linkClickMap7d;
@@ -340,6 +284,62 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       })
       .sort((a, b) => b.clicks - a.clicks);
   }, [linkItems, periodClickMap, periodVisitCount, periodTotalClicks]);
+
+  // Early returns after all hooks
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[1, 2, 3, 4].map(i => (
+          <Card key={i}><CardContent className="p-4"><div className="h-16 animate-pulse bg-muted rounded" /></CardContent></Card>
+        ))}
+      </div>
+    );
+  }
+
+  if (!visitorStats || visitorStats.total === 0) {
+    return (
+      <EmptyState
+        icon={Eye}
+        title={isAr ? "لا توجد بيانات بعد" : "No analytics data yet"}
+        description={isAr ? "ستظهر الإحصائيات عند زيارة صفحتك" : "Analytics will appear when your bio page gets visits"}
+      />
+    );
+  }
+
+  const totalClicks = clickAnalytics?.total || 0;
+
+  const statCards = [
+    { icon: Eye, label: isAr ? "إجمالي الزيارات" : "Total Views", value: visitorStats.total, color: "text-chart-1", bg: "bg-chart-1/10" },
+    { icon: TrendingUp, label: isAr ? "آخر 7 أيام" : "Last 7 Days", value: visitorStats.recent7d, color: "text-chart-2", bg: "bg-chart-2/10", trend: visitorStats.changePercent },
+    { icon: MousePointerClick, label: isAr ? "النقرات" : "Clicks", value: totalClicks, color: "text-chart-4", bg: "bg-chart-4/10", trend: clickAnalytics?.clickTrend },
+    { icon: Percent, label: "CTR", value: ctr, color: "text-chart-3", bg: "bg-chart-3/10", suffix: "%" },
+    { icon: Users, label: isAr ? "زوار فريدون" : "Unique Visitors", value: visitorStats.uniqueVisitors, color: "text-chart-5", bg: "bg-chart-5/10" },
+    { icon: Calendar, label: isAr ? "متوسط يومي" : "Daily Avg", value: visitorStats.avgDaily, color: "text-primary", bg: "bg-primary/10" },
+  ];
+
+  const devicePie = Object.entries(visitorStats.devices).map(([key, val]) => ({
+    name: key === "mobile" ? (isAr ? "جوال" : "Mobile") : key === "desktop" ? (isAr ? "حاسوب" : "Desktop") : key === "tablet" ? (isAr ? "تابلت" : "Tablet") : key,
+    value: val,
+  }));
+
+  const referrerData = Object.entries(visitorStats.referrers)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([name, value]) => ({ name, value }));
+
+  const browserData = Object.entries(visitorStats.browsers)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, value]) => ({ name, value }));
+
+  const countryData = Object.entries(visitorStats.countries)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([name, value]) => ({ name, value }));
+
+  const hourlyData = visitorStats.hourlyBreakdown.map((count: number, hour: number) => ({
+    hour: `${hour.toString().padStart(2, "0")}:00`,
+    [isAr ? "زيارات" : "Views"]: count,
+  }));
 
   // Conversion funnel
   const funnelData = [
