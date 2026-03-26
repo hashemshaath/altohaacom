@@ -208,12 +208,17 @@ export default function UserManagement() {
   });
 
   const createUserMutation = useMutation({
-    mutationFn: async () => callAdminFn({ action: "create_user", email: newEmail, password: newPassword, full_name: newFullName, username: newUsername, phone: newPhone, role: newRole }),
+    mutationFn: async () => callAdminFn({
+      action: "create_user", email: newEmail, password: newPassword,
+      full_name: newFullName, full_name_ar: newFullNameAr,
+      username: newUsername, phone: newPhone, role: newRole,
+      account_type: newAccountType, send_invite: newSendInvite,
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم إنشاء المستخدم" : "User created" });
+      toast({ title: isAr ? "تم إنشاء المستخدم بنجاح" : "User created successfully", description: newSendInvite ? (isAr ? "تم إرسال دعوة التفعيل" : "Activation invite sent") : undefined });
       setCreateOpen(false);
-      setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewUsername(""); setNewPhone("");
+      setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewFullNameAr(""); setNewUsername(""); setNewPhone(""); setNewSendInvite(true);
     },
     onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
   });
