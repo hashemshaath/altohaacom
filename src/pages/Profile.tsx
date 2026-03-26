@@ -167,7 +167,17 @@ export default function Profile() {
           </TabsContent>
 
           <TabsContent value="favorites" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("favorites") ? (user && <Suspense fallback={<TabFallback />}><div className="text-center text-muted-foreground py-12">{isAr ? "قريباً" : "Coming soon"}</div></Suspense>) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
+            {isTabAllowed("favorites") ? (user && <Suspense fallback={<TabFallback />}>
+              <div className="text-center py-16 space-y-4">
+                <div className="mx-auto h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
+                  <Heart className="h-7 w-7 text-muted-foreground/40" />
+                </div>
+                <div>
+                  <p className="text-lg font-semibold">{isAr ? "المفضلة" : "Favorites"}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{isAr ? "ستظهر هنا الطهاة والوصفات المفضلة لديك" : "Your favorite chefs & recipes will appear here"}</p>
+                </div>
+              </div>
+            </Suspense>) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
           </TabsContent>
 
 
