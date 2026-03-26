@@ -69,6 +69,14 @@ export default function MembershipManagement() {
               <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "الملخص" : "Digest"}
             </TabsTrigger>
+            <TabsTrigger value="timeline" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
+              <GitBranch className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "الجدول الزمني" : "Timeline"}
+            </TabsTrigger>
+            <TabsTrigger value="policy" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
+              <Settings2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "السياسات" : "Policy"}
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -82,6 +90,8 @@ export default function MembershipManagement() {
         <TabsContent value="referrals"><MembershipReferralsTab /></TabsContent>
         <TabsContent value="churn"><MembershipChurnRetention /></TabsContent>
         <TabsContent value="digest"><MembershipDigestPanel /></TabsContent>
+        <TabsContent value="timeline"><MembershipLifecycleTimeline /></TabsContent>
+        <TabsContent value="policy"><MembershipPolicySettings /></TabsContent>
       </Tabs>
     </div>
   );
