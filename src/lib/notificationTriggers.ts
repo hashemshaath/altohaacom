@@ -933,6 +933,12 @@ export async function notifyMembershipUpgraded(params: {
 }) {
   const prev = TIER_LABELS[params.previousTier] || TIER_LABELS.basic;
   const next = TIER_LABELS[params.newTier] || TIER_LABELS.professional;
+
+  // Send branded email via edge function
+  supabase.functions.invoke("send-membership-email", {
+    body: { type: "upgraded", user_id: params.userId, data: { previous_tier: params.previousTier, new_tier: params.newTier, tier: params.newTier } },
+  }).catch(() => {});
+
   return sendNotification({
     userId: params.userId,
     title: `Membership Upgraded to ${next.en}`,
@@ -953,6 +959,11 @@ export async function notifyMembershipDowngraded(params: {
 }) {
   const prev = TIER_LABELS[params.previousTier] || TIER_LABELS.professional;
   const next = TIER_LABELS[params.newTier] || TIER_LABELS.basic;
+
+  supabase.functions.invoke("send-membership-email", {
+    body: { type: "downgraded", user_id: params.userId, data: { previous_tier: params.previousTier, new_tier: params.newTier, tier: params.newTier, prorated_credit: params.proratedCredit } },
+  }).catch(() => {});
+
   return sendNotification({
     userId: params.userId,
     title: `Membership Changed to ${next.en}`,
@@ -974,6 +985,11 @@ export async function notifyMembershipRenewed(params: {
   const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
   const expDate = new Date(params.expiresAt).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric" });
   const expDateAr = new Date(params.expiresAt).toLocaleDateString("ar", { year: "numeric", month: "short", day: "numeric" });
+
+  supabase.functions.invoke("send-membership-email", {
+    body: { type: "renewed", user_id: params.userId, data: { tier: params.tier, expires_at: params.expiresAt } },
+  }).catch(() => {});
+
   return sendNotification({
     userId: params.userId,
     title: `Membership Renewed: ${t.en}`,
