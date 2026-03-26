@@ -285,7 +285,7 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
                   <XAxis dataKey="bucket" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip
-                    contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }}
+                    contentStyle={getTooltipStyle(isAr)}
                     formatter={(value: number) => [formatCurrency(value, language as "en" | "ar"), isAr ? "المبلغ" : "Amount"]}
                   />
                   <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
