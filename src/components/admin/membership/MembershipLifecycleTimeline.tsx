@@ -1,19 +1,23 @@
-import { memo } from "react";
+import { memo, useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { AdminExportButton } from "@/components/admin/AdminExportButton";
+import { useAdminExport } from "@/hooks/useAdminExport";
 import {
   ArrowUpCircle, ArrowDownCircle, RefreshCw, UserPlus, XCircle,
-  ShieldAlert, Clock, Gift, Zap, Search, CalendarDays
+  ShieldAlert, Clock, Gift, Zap, Search, CalendarDays, ChevronDown
 } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
-import { useState } from "react";
 
 interface TimelineEvent {
   id: string;
@@ -23,6 +27,7 @@ interface TimelineEvent {
   reason: string | null;
   created_at: string;
   changed_by: string | null;
+  profile?: { full_name: string | null; username: string | null; avatar_url: string | null; account_number: string | null } | null;
 }
 
 const TIER_ORDER: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
@@ -59,51 +64,145 @@ const tierLabels: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "مؤسسي" },
 };
 
+const PAGE_SIZE = 50;
+
 const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [limit, setLimit] = useState(PAGE_SIZE);
 
   const { data: events, isLoading } = useQuery({
-    queryKey: ["membership-lifecycle-timeline"],
+    queryKey: ["membership-lifecycle-timeline", limit],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("membership_history")
         .select("id, user_id, previous_tier, new_tier, reason, created_at, changed_by")
         .order("created_at", { ascending: false })
-        .limit(50);
+        .limit(limit);
       if (error) throw error;
-      return data as TimelineEvent[];
+
+      const userIds = [...new Set((data || []).map(d => d.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url, account_number")
+        .in("user_id", userIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return (data || []).map(e => ({ ...e, profile: profileMap.get(e.user_id) || null })) as TimelineEvent[];
     },
   });
 
-  const filtered = events?.filter(e => {
-    if (!search) return true;
-    return (
-      e.user_id.toLowerCase().includes(search.toLowerCase()) ||
-      e.reason?.toLowerCase().includes(search.toLowerCase()) ||
-      e.new_tier.toLowerCase().includes(search.toLowerCase())
-    );
-  });
+  const filtered = useMemo(() => {
+    return events?.filter(e => {
+      if (typeFilter !== "all") {
+        const type = getEventType(e.previous_tier, e.new_tier, e.reason);
+        if (type !== typeFilter) return false;
+      }
+      if (!search) return true;
+      const s = search.toLowerCase();
+      return (
+        e.user_id.toLowerCase().includes(s) ||
+        e.reason?.toLowerCase().includes(s) ||
+        e.new_tier.toLowerCase().includes(s) ||
+        e.profile?.full_name?.toLowerCase().includes(s) ||
+        e.profile?.username?.toLowerCase().includes(s) ||
+        e.profile?.account_number?.toLowerCase().includes(s)
+      );
+    });
+  }, [events, search, typeFilter]);
+
+  // Stats
+  const stats = useMemo(() => {
+    if (!filtered) return { total: 0, upgrades: 0, downgrades: 0, trials: 0 };
+    let upgrades = 0, downgrades = 0, trials = 0;
+    for (const e of filtered) {
+      const t = getEventType(e.previous_tier, e.new_tier, e.reason);
+      if (t === "upgrade") upgrades++;
+      else if (t === "downgrade") downgrades++;
+      else if (t === "trial") trials++;
+    }
+    return { total: filtered.length, upgrades, downgrades, trials };
+  }, [filtered]);
 
   // Group by date
-  const grouped = filtered?.reduce<Record<string, TimelineEvent[]>>((acc, event) => {
-    const dateKey = format(new Date(event.created_at), "yyyy-MM-dd");
-    if (!acc[dateKey]) acc[dateKey] = [];
-    acc[dateKey].push(event);
-    return acc;
-  }, {}) || {};
+  const grouped = useMemo(() => {
+    return filtered?.reduce<Record<string, TimelineEvent[]>>((acc, event) => {
+      const dateKey = format(new Date(event.created_at), "yyyy-MM-dd");
+      if (!acc[dateKey]) acc[dateKey] = [];
+      acc[dateKey].push(event);
+      return acc;
+    }, {}) || {};
+  }, [filtered]);
+
+  const { exportData, isExporting } = useAdminExport();
+  const handleExport = useCallback((fmt: "csv" | "json") => {
+    const rows = (filtered || []).map(e => ({
+      date: format(new Date(e.created_at), "yyyy-MM-dd HH:mm"),
+      user: e.profile?.full_name || e.profile?.username || e.user_id.slice(0, 8),
+      account: e.profile?.account_number || "",
+      previous_tier: e.previous_tier || "basic",
+      new_tier: e.new_tier,
+      type: getEventType(e.previous_tier, e.new_tier, e.reason),
+      reason: e.reason || "",
+    }));
+    exportData(rows, [
+      { key: "date", label: "Date" },
+      { key: "user", label: "User" },
+      { key: "account", label: "Account" },
+      { key: "previous_tier", label: "Previous Tier" },
+      { key: "new_tier", label: "New Tier" },
+      { key: "type", label: "Event Type" },
+      { key: "reason", label: "Reason" },
+    ], { filename: "membership-lifecycle-timeline", format: fmt });
+  }, [filtered, exportData]);
 
   return (
     <div className="space-y-4">
-      <div className="relative">
-        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder={isAr ? "بحث في السجل..." : "Search timeline..."}
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="ps-9"
-        />
+      {/* KPI Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Card><CardContent className="p-4 text-center">
+          <AnimatedCounter value={stats.total} className="text-2xl font-bold" />
+          <p className="text-xs text-muted-foreground mt-1">{isAr ? "إجمالي الأحداث" : "Total Events"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4 text-center">
+          <AnimatedCounter value={stats.upgrades} className="text-2xl font-bold text-primary" />
+          <p className="text-xs text-muted-foreground mt-1">{isAr ? "ترقيات" : "Upgrades"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4 text-center">
+          <AnimatedCounter value={stats.downgrades} className="text-2xl font-bold text-destructive" />
+          <p className="text-xs text-muted-foreground mt-1">{isAr ? "تخفيضات" : "Downgrades"}</p>
+        </CardContent></Card>
+        <Card><CardContent className="p-4 text-center">
+          <AnimatedCounter value={stats.trials} className="text-2xl font-bold text-chart-4" />
+          <p className="text-xs text-muted-foreground mt-1">{isAr ? "تجارب" : "Trials"}</p>
+        </CardContent></Card>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "بحث بالاسم أو رقم الحساب..." : "Search by name, account, reason..."}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="ps-9"
+          />
+        </div>
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-full sm:w-[160px]">
+            <SelectValue placeholder={isAr ? "النوع" : "Event Type"} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "الكل" : "All Types"}</SelectItem>
+            {Object.entries(eventConfig).map(([key, cfg]) => (
+              <SelectItem key={key} value={key}>{isAr ? cfg.labelAr : cfg.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <AdminExportButton onExport={handleExport} isExporting={isExporting} />
       </div>
 
       {isLoading ? (
@@ -119,13 +218,10 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
         </Card>
       ) : (
         <div className="relative">
-          {/* Vertical line */}
           <div className="absolute start-6 top-0 bottom-0 w-px bg-border" />
-
           <div className="space-y-6">
             {Object.entries(grouped).map(([date, dayEvents]) => (
               <div key={date}>
-                {/* Date header */}
                 <div className="relative flex items-center gap-3 mb-3">
                   <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-background">
                     <CalendarDays className="h-4 w-4 text-muted-foreground" />
@@ -138,7 +234,6 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
                   </Badge>
                 </div>
 
-                {/* Events for this date */}
                 <div className="space-y-2 ms-6 ps-6 border-s border-border">
                   {dayEvents.map(event => {
                     const type = getEventType(event.previous_tier, event.new_tier, event.reason);
@@ -154,6 +249,20 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={event.profile?.avatar_url || undefined} />
+                              <AvatarFallback className="text-[10px]">
+                                {(event.profile?.full_name || "?").charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-medium truncate">
+                              {event.profile?.full_name || event.profile?.username || event.user_id.slice(0, 8)}
+                            </span>
+                            {event.profile?.account_number && (
+                              <span className="text-[10px] text-muted-foreground font-mono">{event.profile.account_number}</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap mt-1">
                             <Badge variant="outline" className="text-[10px]">
                               {isAr ? config.labelAr : config.label}
                             </Badge>
@@ -175,6 +284,16 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
               </div>
             ))}
           </div>
+
+          {/* Load more */}
+          {(events?.length || 0) >= limit && (
+            <div className="flex justify-center mt-6">
+              <Button variant="outline" size="sm" onClick={() => setLimit(l => l + PAGE_SIZE)} className="gap-2">
+                <ChevronDown className="h-4 w-4" />
+                {isAr ? "تحميل المزيد" : "Load More"}
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>
