@@ -1,5 +1,6 @@
-import { memo, useState } from "react";
+import { memo, useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -336,7 +337,16 @@ const RecentActivityFeed = memo(function RecentActivityFeed({ isAr }: { isAr: bo
         .select("id, user_id, previous_tier, new_tier, reason, created_at")
         .order("created_at", { ascending: false })
         .limit(8);
-      return data || [];
+      if (!data?.length) return [];
+
+      const userIds = [...new Set(data.map(d => d.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url, account_number")
+        .in("user_id", userIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return data.map(e => ({ ...e, profile: profileMap.get(e.user_id) || null }));
     },
     staleTime: 60_000,
   });
@@ -364,17 +374,29 @@ const RecentActivityFeed = memo(function RecentActivityFeed({ isAr }: { isAr: bo
             const isUpgrade = (tierOrder[entry.new_tier] || 0) > (tierOrder[entry.previous_tier || "basic"] || 0);
             const prev = tierLabels[entry.previous_tier || "basic"] || tierLabels.basic;
             const next = tierLabels[entry.new_tier] || tierLabels.basic;
+            const profile = entry.profile as any;
 
             return (
               <div key={entry.id} className="flex items-center gap-3 rounded-lg border p-2.5 text-sm">
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${isUpgrade ? "bg-primary/10" : "bg-muted"}`}>
-                  {isUpgrade ? <ArrowUpCircle className="h-4 w-4 text-primary" /> : <UserX className="h-4 w-4 text-muted-foreground" />}
-                </div>
+                <Avatar className="h-8 w-8 shrink-0">
+                  <AvatarImage src={profile?.avatar_url || undefined} />
+                  <AvatarFallback className={`text-xs ${isUpgrade ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                    {(profile?.full_name || "?")[0]}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate text-sm">
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-medium truncate text-sm">
+                      {profile?.full_name || profile?.username || entry.user_id.slice(0, 8)}
+                    </p>
+                    {isUpgrade
+                      ? <ArrowUpCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+                      : <UserX className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate">
                     {isAr ? prev.ar : prev.en} → {isAr ? next.ar : next.en}
+                    {entry.reason ? ` · ${entry.reason}` : ""}
                   </p>
-                  {entry.reason && <p className="text-xs text-muted-foreground truncate">{entry.reason}</p>}
                 </div>
                 <Badge variant="outline" className="text-xs shrink-0">
                   {format(new Date(entry.created_at), "MMM d")}
