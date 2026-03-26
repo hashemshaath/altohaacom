@@ -539,15 +539,6 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
           </CardContent>
         </Card>
       )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Charts Row */}
       <div className="grid md:grid-cols-3 gap-4">
