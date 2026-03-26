@@ -198,7 +198,7 @@ export default function SocialLinksEditor() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("username, avatar_url, full_name, full_name_ar, display_name, display_name_ar, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, phone, whatsapp, job_title, job_title_ar")
+        .select("username, avatar_url, full_name, full_name_ar, display_name, display_name_ar, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, phone, phone2, whatsapp, country_code, job_title, job_title_ar")
         .eq("user_id", user!.id)
         .single();
       return data;
