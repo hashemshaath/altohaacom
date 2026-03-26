@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -35,11 +36,29 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState<{ user_id: string; full_name: string | null; username: string | null; avatar_url: string | null; membership_tier: string | null } | null>(null);
   const [newInvoice, setNewInvoice] = useState({
     userId: "",
     tier: "professional",
     action: "subscription" as const,
     amount: 19,
+  });
+
+  // Search users for invoice creation
+  const { data: searchedUsers = [] } = useQuery({
+    queryKey: ["invoice-user-search", userSearch],
+    queryFn: async () => {
+      if (userSearch.length < 2) return [];
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url, membership_tier, account_number")
+        .or(`full_name.ilike.%${userSearch}%,username.ilike.%${userSearch}%,account_number.ilike.%${userSearch}%`)
+        .limit(6);
+      return data || [];
+    },
+    enabled: userSearch.length >= 2,
+    staleTime: 10000,
   });
 
   const { data: invoiceStats } = useQuery({
@@ -292,19 +311,75 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
       </Card>
 
       {/* Create Invoice Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+      <Dialog open={showCreateDialog} onOpenChange={(open) => {
+        setShowCreateDialog(open);
+        if (!open) { setSelectedUser(null); setUserSearch(""); }
+      }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{isAr ? "إنشاء فاتورة عضوية" : "Create Membership Invoice"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>{isAr ? "معرّف المستخدم" : "User ID"}</Label>
-              <Input
-                placeholder="UUID..."
-                value={newInvoice.userId}
-                onChange={e => setNewInvoice(p => ({ ...p, userId: e.target.value }))}
-              />
+              <Label>{isAr ? "العضو" : "Member"}</Label>
+              {selectedUser ? (
+                <div className="flex items-center gap-3 rounded-xl border p-3 bg-muted/30">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={selectedUser.avatar_url || undefined} />
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                      {(selectedUser.full_name || "U")[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{selectedUser.full_name || selectedUser.username}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {selectedUser.username ? `@${selectedUser.username}` : ""} · <span className="capitalize">{selectedUser.membership_tier || "basic"}</span>
+                    </p>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-xs" onClick={() => { setSelectedUser(null); setNewInvoice(p => ({ ...p, userId: "" })); }}>
+                    {isAr ? "تغيير" : "Change"}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="relative">
+                    <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder={isAr ? "ابحث بالاسم أو رقم الحساب..." : "Search by name or account..."}
+                      value={userSearch}
+                      onChange={e => setUserSearch(e.target.value)}
+                      className="ps-9"
+                    />
+                  </div>
+                  {searchedUsers.length > 0 && (
+                    <div className="space-y-1 max-h-40 overflow-y-auto rounded-lg border p-1">
+                      {searchedUsers.map((u: any) => (
+                        <button
+                          key={u.user_id}
+                          onClick={() => {
+                            setSelectedUser(u);
+                            setNewInvoice(p => ({ ...p, userId: u.user_id }));
+                            setUserSearch("");
+                          }}
+                          className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-start hover:bg-muted/50 transition-colors"
+                        >
+                          <Avatar className="h-7 w-7">
+                            <AvatarImage src={u.avatar_url || undefined} />
+                            <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                              {(u.full_name || "U")[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{u.full_name || u.username || "Unknown"}</p>
+                            <p className="text-xs text-muted-foreground">{u.account_number || u.username}</p>
+                          </div>
+                          <Badge variant="outline" className="text-[10px] capitalize shrink-0">{u.membership_tier || "basic"}</Badge>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
