@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCheck, UserX, Shield, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { translateRole, getTooltipStyle, TOOLTIP_STYLE, CHART_COLORS, LEGEND_STYLE, CHART_HEIGHT, GRID_PROPS, X_AXIS_PROPS, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
 import { linearRegression } from "@/lib/trendPrediction";
 
-const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+const COLORS = CHART_COLORS;
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
   const { language } = useLanguage();
