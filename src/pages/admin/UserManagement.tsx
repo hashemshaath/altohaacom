@@ -1405,6 +1405,10 @@ export default function UserManagement() {
                             status={profile.account_status}
                             isVerified={profile.is_verified}
                             onViewProfile={() => { setDrawerUserId(profile.user_id); setDrawerOpen(true); }}
+                            onResetPassword={(uid, name) => { setResetUserId(uid); setResetUserName(name); setResetOpen(true); }}
+                            onSuspend={(uid, name, em) => setSuspendTarget({ userId: uid, userName: name, email: em })}
+                            onSendNotification={(uid, name) => setNotifyTarget({ userId: uid, userName: name })}
+                            onActivate={async (uid) => { await updateStatusMutation.mutateAsync({ userId: uid, newStatus: "active" as AccountStatus }); }}
                           />
                         </div>
                       </TableCell>
