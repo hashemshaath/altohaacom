@@ -11,6 +11,7 @@ import { SparklineCard } from "./SparklineCard";
 import {
   CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
   GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, CHART_HEIGHT, getNoDataText,
+  translateRole, translateStatus, getTooltipStyle,
 } from "@/lib/chartConfig";
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
