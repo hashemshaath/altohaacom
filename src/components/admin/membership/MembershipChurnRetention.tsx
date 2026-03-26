@@ -33,6 +33,8 @@ const TIER_COLORS: Record<string, string> = {
 const MembershipChurnRetention = memo(function MembershipChurnRetention() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { toast } = useToast();
+  const { user: adminUser } = useAuth();
 
   // Churn rate (monthly) - users who downgraded or had membership suspended/expired
   const { data: churnData, isLoading: churnLoading } = useQuery({
