@@ -844,6 +844,62 @@ export default function UserManagement() {
         </div>
       </InlinePanel>
 
+      {/* Suspend User Inline */}
+      <InlineConfirm
+        open={!!suspendTarget}
+        onCancel={() => { setSuspendTarget(null); setSuspendReason(""); }}
+        onConfirm={async () => {
+          if (!suspendTarget) return;
+          await updateStatusMutation.mutateAsync({ userId: suspendTarget.userId, newStatus: "suspended" as AccountStatus, reason: suspendReason || "Admin action" });
+          setSuspendTarget(null);
+          setSuspendReason("");
+        }}
+        title={isAr ? `إيقاف حساب ${suspendTarget?.userName || ""}` : `Suspend ${suspendTarget?.userName || ""}`}
+        description={isAr ? "سيتم إيقاف الحساب ولن يتمكن المستخدم من تسجيل الدخول" : "The account will be suspended and the user will not be able to sign in"}
+        confirmLabel={isAr ? "إيقاف" : "Suspend"}
+        variant="destructive"
+        loading={updateStatusMutation.isPending}
+      />
+
+      {/* Send Notification Inline */}
+      <InlinePanel
+        open={!!notifyTarget}
+        onClose={() => { setNotifyTarget(null); setNotifyMessage(""); }}
+        title={isAr ? `إرسال إشعار إلى ${notifyTarget?.userName || ""}` : `Send Notification to ${notifyTarget?.userName || ""}`}
+        icon={<Mail className="h-4 w-4 text-primary" />}
+        size="md"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => { setNotifyTarget(null); setNotifyMessage(""); }}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button
+              disabled={!notifyMessage.trim()}
+              onClick={async () => {
+                if (!notifyTarget) return;
+                const { error } = await supabase.from("notifications").insert({
+                  user_id: notifyTarget.userId,
+                  title: isAr ? "رسالة من الإدارة" : "Message from Admin",
+                  title_ar: "رسالة من الإدارة",
+                  body: notifyMessage,
+                  body_ar: notifyMessage,
+                  type: "admin_message",
+                });
+                if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); return; }
+                toast({ title: isAr ? "تم إرسال الإشعار" : "Notification sent" });
+                setNotifyTarget(null);
+                setNotifyMessage("");
+              }}
+            >
+              {isAr ? "إرسال" : "Send"}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-2">
+          <Label>{isAr ? "الرسالة" : "Message"}</Label>
+          <Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={4} placeholder={isAr ? "اكتب رسالتك..." : "Write your message..."} />
+        </div>
+      </InlinePanel>
+
       {/* Filters */}
       <AdminFilterBar
         searchValue={searchQuery}
