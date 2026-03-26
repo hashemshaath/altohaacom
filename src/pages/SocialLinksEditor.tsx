@@ -2406,8 +2406,8 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Custom CSS */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Settings2 className="h-3.5 w-3.5 text-primary" />
