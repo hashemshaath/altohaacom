@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { ShieldAlert, Users, Monitor, Ban, AlertTriangle, Activity, Clock } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { translateRole, getTooltipStyle } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const SecurityLiveWidget = memo(function SecurityLiveWidget() {
@@ -159,7 +160,7 @@ export const SecurityLiveWidget = memo(function SecurityLiveWidget() {
             return (
               <div key={role} className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="capitalize">{role}</span>
+                  <span className="capitalize">{translateRole(role, isAr)}</span>
                   <span className="text-muted-foreground">{count} ({pct}%)</span>
                 </div>
                 <Progress value={pct} className="h-1" />

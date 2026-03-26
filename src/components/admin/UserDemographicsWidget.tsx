@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Globe, Users, Shield, UserCheck, Crown, Star, TrendingUp, Clock } from "lucide-react";
+import { translateRole } from "@/lib/chartConfig";
 
 export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
   const { language } = useLanguage();
@@ -122,7 +123,7 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
         <div className="flex flex-wrap gap-1.5">
           {Object.entries(data.roleCounts).map(([role, count]) => (
             <Badge key={role} variant="outline" className="text-[9px] gap-1">
-              <Shield className="h-2.5 w-2.5" /> {role}: {count}
+              <Shield className="h-2.5 w-2.5" /> {translateRole(role, isAr)}: {count}
             </Badge>
           ))}
         </div>
