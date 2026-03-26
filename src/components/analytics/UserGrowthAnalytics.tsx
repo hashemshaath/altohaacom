@@ -131,17 +131,17 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
             {data?.roleData && data.roleData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
-                  <Pie data={data.roleData} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, value }) => `${name} (${value})`}>
+                  <Pie data={data.roleData.map(d => ({ ...d, label: translateRole(d.name, isAr) }))} cx="50%" cy="50%" outerRadius={100} dataKey="value" nameKey="label" label={({ label, value }) => `${label} (${value})`}>
                     {data.roleData.map((_, i) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                      <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={getTooltipStyle(isAr)} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <p className="py-12 text-center text-muted-foreground">{language === "ar" ? "لا توجد بيانات" : "No data available"}</p>
+              <p className="py-12 text-center text-muted-foreground">{isAr ? "لا توجد بيانات" : "No data available"}</p>
             )}
           </CardContent>
         </Card>
