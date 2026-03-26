@@ -134,32 +134,49 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     staleTime: 5 * 60_000,
   });
 
-  // Click analytics
+  // Click analytics — real data from social_link_clicks
   const { data: clickAnalytics } = useQuery({
     queryKey: ["bio-click-analytics-full", pageId],
     queryFn: async () => {
       const { data: clicks } = await supabase
-        .from("social_link_clicks" as any)
-        .select("link_id, device_type, browser, created_at")
+        .from("social_link_clicks")
+        .select("link_id, device_type, browser, referrer, country, created_at")
         .eq("page_id", pageId)
         .order("created_at", { ascending: false })
         .limit(2000);
 
-      if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return null;
+      if (!clicks || clicks.length === 0) return null;
 
+      const now = Date.now();
+      const week = 7 * 86400000;
       const hourlyAgg = Array(24).fill(0);
       const dailyClickMap: Record<string, number> = {};
       const linkClickMap: Record<string, number> = {};
+      const linkClickMap7d: Record<string, number> = {};
+      const linkClickMap14d: Record<string, number> = {};
+      const linkClickMap30d: Record<string, number> = {};
+      let clicks7d = 0;
+      let clicks14d = 0;
+      let clicksPrev7d = 0;
 
-      for (const c of clicks as any[]) {
+      for (const c of clicks) {
+        const ts = new Date(c.created_at).getTime();
+        const age = now - ts;
         const d = new Date(c.created_at);
         hourlyAgg[d.getHours()]++;
         const dayKey = c.created_at.slice(0, 10);
         dailyClickMap[dayKey] = (dailyClickMap[dayKey] || 0) + 1;
-        if (c.link_id) linkClickMap[c.link_id] = (linkClickMap[c.link_id] || 0) + 1;
+        if (c.link_id) {
+          linkClickMap[c.link_id] = (linkClickMap[c.link_id] || 0) + 1;
+          if (age < week) linkClickMap7d[c.link_id] = (linkClickMap7d[c.link_id] || 0) + 1;
+          if (age < 2 * week) linkClickMap14d[c.link_id] = (linkClickMap14d[c.link_id] || 0) + 1;
+          if (age < 30 * 86400000) linkClickMap30d[c.link_id] = (linkClickMap30d[c.link_id] || 0) + 1;
+        }
+        if (age < week) clicks7d++;
+        if (age < 2 * week) clicks14d++;
+        if (age >= week && age < 2 * week) clicksPrev7d++;
       }
 
-      const now = Date.now();
       const dailyClicks: { date: string; clicks: number }[] = [];
       for (let i = 29; i >= 0; i--) {
         const dt = new Date(now - i * 86400000);
@@ -167,7 +184,20 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
         dailyClicks.push({ date: key, clicks: dailyClickMap[key] || 0 });
       }
 
-      return { total: clicks.length, hourlyAgg, dailyClicks, linkClickMap };
+      const clickTrend = clicksPrev7d > 0 ? Math.round(((clicks7d - clicksPrev7d) / clicksPrev7d) * 100) : clicks7d > 0 ? 100 : 0;
+
+      return {
+        total: clicks.length,
+        clicks7d,
+        clicks14d,
+        clickTrend,
+        hourlyAgg,
+        dailyClicks,
+        linkClickMap,
+        linkClickMap7d,
+        linkClickMap14d,
+        linkClickMap30d,
+      };
     },
     enabled: !!pageId,
     staleTime: 5 * 60_000,
@@ -198,7 +228,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     enabled: !!pageId,
   });
 
-  // Derived metrics
+  // Derived metrics — all hooks MUST be before early returns
   const ctr = useMemo(() => {
     if (!visitorStats || visitorStats.total === 0 || !clickAnalytics) return 0;
     return Math.round((clickAnalytics.total / visitorStats.total) * 1000) / 10;
@@ -214,7 +244,6 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     return clickAnalytics.dailyClicks.slice(-periodDays);
   }, [clickAnalytics, periodDays]);
 
-  // Combined chart data
   const combinedData = useMemo(() => {
     if (!periodVisits.length) return [];
     return periodVisits.map((v, i) => ({
@@ -224,6 +253,39 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     }));
   }, [periodVisits, periodClicks, isAr]);
 
+  // Link performance — real click data filtered by selected period
+  const periodClickMap = useMemo(() => {
+    if (!clickAnalytics) return {};
+    if (period === "7d") return clickAnalytics.linkClickMap7d;
+    if (period === "14d") return clickAnalytics.linkClickMap14d;
+    return clickAnalytics.linkClickMap30d;
+  }, [clickAnalytics, period]);
+
+  const periodTotalClicks = useMemo(() => {
+    return Object.values(periodClickMap).reduce((sum, v) => sum + (v as number), 0);
+  }, [periodClickMap]);
+
+  const periodVisitCount = useMemo(() => {
+    return periodVisits.reduce((s, v) => s + v.visits, 0);
+  }, [periodVisits]);
+
+  const linkPerformance = useMemo(() => {
+    return (linkItems || [])
+      .map(item => {
+        const periodClk = (periodClickMap[item.id] as number) || 0;
+        const allTimeClk = item.click_count || 0;
+        return {
+          ...item,
+          clicks: periodClk,
+          allTimeClicks: allTimeClk,
+          ctr: periodVisitCount > 0 ? Math.round((periodClk / periodVisitCount) * 1000) / 10 : 0,
+          share: periodTotalClicks > 0 ? Math.round((periodClk / periodTotalClicks) * 100) : 0,
+        };
+      })
+      .sort((a, b) => b.clicks - a.clicks);
+  }, [linkItems, periodClickMap, periodVisitCount, periodTotalClicks]);
+
+  // Early returns after all hooks
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -249,7 +311,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
   const statCards = [
     { icon: Eye, label: isAr ? "إجمالي الزيارات" : "Total Views", value: visitorStats.total, color: "text-chart-1", bg: "bg-chart-1/10" },
     { icon: TrendingUp, label: isAr ? "آخر 7 أيام" : "Last 7 Days", value: visitorStats.recent7d, color: "text-chart-2", bg: "bg-chart-2/10", trend: visitorStats.changePercent },
-    { icon: MousePointerClick, label: isAr ? "النقرات" : "Clicks", value: totalClicks, color: "text-chart-4", bg: "bg-chart-4/10" },
+    { icon: MousePointerClick, label: isAr ? "النقرات" : "Clicks", value: totalClicks, color: "text-chart-4", bg: "bg-chart-4/10", trend: clickAnalytics?.clickTrend },
     { icon: Percent, label: "CTR", value: ctr, color: "text-chart-3", bg: "bg-chart-3/10", suffix: "%" },
     { icon: Users, label: isAr ? "زوار فريدون" : "Unique Visitors", value: visitorStats.uniqueVisitors, color: "text-chart-5", bg: "bg-chart-5/10" },
     { icon: Calendar, label: isAr ? "متوسط يومي" : "Daily Avg", value: visitorStats.avgDaily, color: "text-primary", bg: "bg-primary/10" },
@@ -278,16 +340,6 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     hour: `${hour.toString().padStart(2, "0")}:00`,
     [isAr ? "زيارات" : "Views"]: count,
   }));
-
-  // Link performance table
-  const linkPerformance = (linkItems || [])
-    .map(item => ({
-      ...item,
-      clicks: item.click_count || 0,
-      ctr: visitorStats.total > 0 ? Math.round(((item.click_count || 0) / visitorStats.total) * 1000) / 10 : 0,
-      share: totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0,
-    }))
-    .sort((a, b) => b.clicks - a.clicks);
 
   // Conversion funnel
   const funnelData = [
@@ -418,41 +470,63 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       {linkPerformance.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <MousePointerClick className="h-4 w-4 text-primary" />
-              {isAr ? "أداء الروابط" : "Link Performance"}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <MousePointerClick className="h-4 w-4 text-primary" />
+                {isAr ? "أداء الروابط" : "Link Performance"}
+              </CardTitle>
+              <Badge variant="outline" className="text-[10px]">
+                {periodDays} {isAr ? "يوم" : "days"} · {periodTotalClicks} {isAr ? "نقرة" : "clicks"}
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="rounded-xl border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-xs">#</TableHead>
+                    <TableHead className="text-xs w-8">#</TableHead>
                     <TableHead className="text-xs">{isAr ? "الرابط" : "Link"}</TableHead>
-                    <TableHead className="text-xs text-center">{isAr ? "نقرات" : "Clicks"}</TableHead>
+                    <TableHead className="text-xs text-center">{isAr ? "نقرات الفترة" : "Period Clicks"}</TableHead>
+                    <TableHead className="text-xs text-center">{isAr ? "الإجمالي" : "All-time"}</TableHead>
                     <TableHead className="text-xs text-center">CTR</TableHead>
                     <TableHead className="text-xs text-center">{isAr ? "الحصة" : "Share"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {linkPerformance.slice(0, 10).map((item, i) => (
-                    <TableRow key={item.id}>
+                  {linkPerformance.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-xs text-muted-foreground py-8">
+                        {isAr ? "لا توجد نقرات في هذه الفترة" : "No clicks in this period"}
+                      </TableCell>
+                    </TableRow>
+                  ) : linkPerformance.slice(0, 15).map((item, i) => (
+                    <TableRow key={item.id} className={item.clicks > 0 ? "" : "opacity-50"}>
                       <TableCell className="text-xs font-bold tabular-nums w-8">
-                        <span className={i < 3 ? "text-chart-2" : "text-muted-foreground"}>{i + 1}</span>
+                        {i < 3 && item.clicks > 0 ? (
+                          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-chart-2/15 text-chart-2 text-[10px] font-bold">{i + 1}</span>
+                        ) : (
+                          <span className="text-muted-foreground">{i + 1}</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-xs max-w-[200px]">
                         <div className="flex items-center gap-1.5">
-                          {item.icon && <span>{item.icon}</span>}
-                          <span className="truncate font-medium">{item.title}</span>
+                          {item.icon && <span className="text-sm">{item.icon}</span>}
+                          <div className="min-w-0">
+                            <span className="truncate font-medium block">{item.title}</span>
+                            {item.url && <span className="text-[9px] text-muted-foreground truncate block max-w-[180px]">{item.url.replace(/^https?:\/\//, "")}</span>}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-xs text-center font-bold tabular-nums">{item.clicks}</TableCell>
-                      <TableCell className="text-xs text-center tabular-nums">{item.ctr}%</TableCell>
+                      <TableCell className="text-xs text-center tabular-nums text-muted-foreground">{item.allTimeClicks}</TableCell>
+                      <TableCell className="text-xs text-center tabular-nums">
+                        <span className={item.ctr > 5 ? "text-chart-2 font-semibold" : ""}>{item.ctr}%</span>
+                      </TableCell>
                       <TableCell className="text-xs text-center">
                         <div className="flex items-center gap-1.5">
                           <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                            <div className="h-full rounded-full bg-primary/60" style={{ width: `${Math.max(item.share, 2)}%` }} />
+                            <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${Math.max(item.share, 2)}%` }} />
                           </div>
                           <span className="text-[10px] tabular-nums w-8">{item.share}%</span>
                         </div>
