@@ -347,9 +347,9 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
             </div>
             <div className="rounded-xl border p-4 space-y-3">
               <h3 className="text-sm font-semibold">{isAr ? "النبذة التعريفية" : "Biography"}</h3>
-              <UserBioOptimizer bio={editBio} onBioChange={setEditBio} lang="en" onTranslatedBioChange={setEditBioAr} />
-              <Separator />
               <UserBioOptimizer bio={editBioAr} onBioChange={setEditBioAr} lang="ar" onTranslatedBioChange={setEditBio} />
+              <Separator />
+              <UserBioOptimizer bio={editBio} onBioChange={setEditBio} lang="en" onTranslatedBioChange={setEditBioAr} />
             </div>
           </TabsContent>
 

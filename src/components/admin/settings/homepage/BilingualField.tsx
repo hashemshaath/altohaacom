@@ -85,7 +85,7 @@ export const BilingualField = memo(function BilingualField({
 
   return (
     <div className="grid grid-cols-2 gap-1.5">
-      {/* Arabic */}
+      {/* Arabic first */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
           <Label className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
@@ -96,7 +96,7 @@ export const BilingualField = memo(function BilingualField({
         </div>
         <Input value={valueAr} onChange={(e) => onChangeAr(e.target.value)} placeholder={placeholderAr || "...العربية"} className={inputCls} dir="rtl" />
       </div>
-      {/* English */}
+      {/* English second */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
           <Label className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
