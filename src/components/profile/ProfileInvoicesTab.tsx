@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,15 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
 import { EmptyState } from "@/components/ui/empty-state";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import {
-  FileText, Search, Eye, Download, DollarSign, Clock,
-  CheckCircle, XCircle, AlertTriangle,
+  FileText, Search, Eye, DollarSign, Clock,
+  CheckCircle, XCircle, AlertTriangle, RotateCcw, Ban, Printer,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -25,20 +24,28 @@ interface ProfileInvoicesTabProps {
   userId: string;
 }
 
-interface InvoiceItem {
-  name: string;
-  description?: string;
-  quantity: number;
-  unit_price: number;
-}
+const statusConfig: Record<string, { color: "default" | "destructive" | "outline" | "secondary"; icon: typeof CheckCircle; bg: string }> = {
+  draft: { color: "secondary", icon: FileText, bg: "bg-muted" },
+  pending: { color: "outline", icon: Clock, bg: "bg-chart-4/10" },
+  sent: { color: "outline", icon: Clock, bg: "bg-chart-4/10" },
+  paid: { color: "default", icon: CheckCircle, bg: "bg-chart-2/10" },
+  overdue: { color: "destructive", icon: AlertTriangle, bg: "bg-destructive/10" },
+  cancelled: { color: "destructive", icon: XCircle, bg: "bg-destructive/10" },
+  void: { color: "secondary", icon: Ban, bg: "bg-muted" },
+  refunded: { color: "outline", icon: RotateCcw, bg: "bg-chart-3/10" },
+  partially_refunded: { color: "outline", icon: RotateCcw, bg: "bg-chart-3/10" },
+};
 
-const statusConfig: Record<string, { color: "default" | "destructive" | "outline" | "secondary"; icon: typeof CheckCircle }> = {
-  draft: { color: "secondary", icon: FileText },
-  pending: { color: "outline", icon: Clock },
-  sent: { color: "outline", icon: Clock },
-  paid: { color: "default", icon: CheckCircle },
-  overdue: { color: "destructive", icon: AlertTriangle },
-  cancelled: { color: "destructive", icon: XCircle },
+const statusLabels: Record<string, { en: string; ar: string }> = {
+  draft: { en: "Draft", ar: "مسودة" },
+  pending: { en: "Pending", ar: "قيد الانتظار" },
+  sent: { en: "Sent", ar: "مرسلة" },
+  paid: { en: "Paid", ar: "مدفوعة" },
+  overdue: { en: "Overdue", ar: "متأخرة" },
+  cancelled: { en: "Cancelled", ar: "ملغاة" },
+  void: { en: "Void", ar: "ملغاة" },
+  refunded: { en: "Refunded", ar: "مستردة" },
+  partially_refunded: { en: "Partial Refund", ar: "استرداد جزئي" },
 };
 
 export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: ProfileInvoicesTabProps) {
@@ -85,52 +92,27 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
     enabled: !!selectedInvoiceId,
   });
 
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, { en: string; ar: string }> = {
-      draft: { en: "Draft", ar: "مسودة" },
-      pending: { en: "Pending", ar: "قيد الانتظار" },
-      sent: { en: "Sent", ar: "مرسلة" },
-      paid: { en: "Paid", ar: "مدفوعة" },
-      overdue: { en: "Overdue", ar: "متأخرة" },
-      cancelled: { en: "Cancelled", ar: "ملغاة" },
-    };
-    const l = labels[status] || labels.draft;
+  const getStatusLabel = useCallback((status: string) => {
+    const l = statusLabels[status] || statusLabels.draft;
     return isAr ? l.ar : l.en;
-  };
+  }, [isAr]);
 
   // Stats
   const totalAmount = invoices.reduce((sum, i) => sum + Number(i.amount || 0), 0);
   const paidAmount = invoices.filter((i) => i.status === "paid").reduce((sum, i) => sum + Number(i.amount || 0), 0);
-  const pendingCount = invoices.filter((i) => ["pending", "sent"].includes(i.status || "")).length;
+  const pendingAmount = invoices.filter((i) => ["pending", "sent"].includes(i.status || "")).reduce((sum, i) => sum + Number(i.amount || 0), 0);
+  const refundedAmount = invoices.filter((i) => ["refunded", "partially_refunded"].includes(i.status || "")).reduce((sum, i) => sum + Number(i.amount || 0), 0);
 
   const statCards = [
-    {
-      label: isAr ? "إجمالي الفواتير" : "Total Invoices",
-      value: invoices.length,
-      icon: FileText,
-      color: "text-primary",
-    },
-    {
-      label: isAr ? "قيد الانتظار" : "Pending",
-      value: pendingCount,
-      icon: Clock,
-      color: "text-chart-4",
-    },
-    {
-      label: isAr ? "المبلغ المدفوع" : "Paid Amount",
-      value: paidAmount,
-      icon: CheckCircle,
-      color: "text-chart-2",
-      isCurrency: true,
-    },
-    {
-      label: isAr ? "المبلغ الإجمالي" : "Total Amount",
-      value: totalAmount,
-      icon: DollarSign,
-      color: "text-chart-1",
-      isCurrency: true,
-    },
+    { label: isAr ? "إجمالي الفواتير" : "Total Invoices", value: invoices.length, icon: FileText, color: "text-primary", bg: "bg-primary/10", isCurrency: false },
+    { label: isAr ? "المدفوعة" : "Paid", value: paidAmount, icon: CheckCircle, color: "text-chart-2", bg: "bg-chart-2/10", isCurrency: true },
+    { label: isAr ? "قيد الانتظار" : "Pending", value: pendingAmount, icon: Clock, color: "text-chart-4", bg: "bg-chart-4/10", isCurrency: true },
+    { label: isAr ? "المستردة" : "Refunded", value: refundedAmount, icon: RotateCcw, color: "text-chart-3", bg: "bg-chart-3/10", isCurrency: true },
   ];
+
+  const handlePrint = useCallback(() => {
+    window.print();
+  }, []);
 
   if (isLoading) {
     return (
@@ -153,12 +135,15 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
           <Card key={stat.label}>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-muted ${stat.color}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} ${stat.color}`}>
                   <stat.icon className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  <p className="text-lg font-bold">{typeof stat.value === "number" ? <><AnimatedCounter value={stat.value} className="inline" />{(stat as any).isCurrency ? " SAR" : ""}</> : stat.value}</p>
+                  <p className="text-lg font-bold">
+                    <AnimatedCounter value={typeof stat.value === "number" ? Math.round(stat.value) : 0} className="inline" />
+                    {stat.isCurrency ? " SAR" : ""}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -194,12 +179,9 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                <SelectItem value="draft">{isAr ? "مسودة" : "Draft"}</SelectItem>
-                <SelectItem value="pending">{isAr ? "قيد الانتظار" : "Pending"}</SelectItem>
-                <SelectItem value="sent">{isAr ? "مرسلة" : "Sent"}</SelectItem>
-                <SelectItem value="paid">{isAr ? "مدفوعة" : "Paid"}</SelectItem>
-                <SelectItem value="overdue">{isAr ? "متأخرة" : "Overdue"}</SelectItem>
-                <SelectItem value="cancelled">{isAr ? "ملغاة" : "Cancelled"}</SelectItem>
+                {Object.entries(statusLabels).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>{isAr ? label.ar : label.en}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -208,7 +190,7 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
             <EmptyState
               icon={FileText}
               title={isAr ? "لا توجد فواتير" : "No Invoices"}
-              description={isAr ? "ستظهر فواتيرك هنا عند إصدارها من قبل الإدارة" : "Your invoices will appear here when issued by the administration"}
+              description={isAr ? "ستظهر فواتيرك هنا عند إصدارها" : "Your invoices will appear here when issued"}
             />
           ) : (
             <div className="rounded-xl border overflow-hidden">
@@ -227,13 +209,21 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
                   {invoices.map((inv) => {
                     const cfg = statusConfig[inv.status || "draft"] || statusConfig.draft;
                     const StatusIcon = cfg.icon;
+                    const hasDiscount = Number(inv.discount_amount || 0) > 0;
                     return (
                       <TableRow key={inv.id} className="cursor-pointer hover:bg-accent/30" onClick={() => setSelectedInvoiceId(inv.id)}>
                         <TableCell className="font-mono text-sm font-medium" dir="ltr">
                           {inv.invoice_number}
                         </TableCell>
                         <TableCell className="max-w-48 truncate">
-                          {isAr ? (inv.title_ar || inv.title || "—") : (inv.title || "—")}
+                          <div>
+                            {isAr ? (inv.title_ar || inv.title || "—") : (inv.title || "—")}
+                            {hasDiscount && (
+                              <Badge variant="secondary" className="ms-1.5 text-[9px] px-1.5 py-0">
+                                {isAr ? "خصم" : "Discount"}
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-center">
                           <Badge variant={cfg.color} className="gap-1">
@@ -242,7 +232,16 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
                           </Badge>
                         </TableCell>
                         <TableCell className="text-end font-medium" dir="ltr">
-                          <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" /> {inv.currency}
+                          <div className="flex flex-col items-end">
+                            <span>
+                              <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" /> {inv.currency}
+                            </span>
+                            {Number(inv.tax_amount || 0) > 0 && (
+                              <span className="text-[10px] text-muted-foreground">
+                                {isAr ? "شامل الضريبة" : "incl. tax"} {Number(inv.tax_amount).toFixed(2)}
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground" dir="ltr">
                           {format(new Date(inv.created_at), "yyyy-MM-dd")}
@@ -273,10 +272,16 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
       <Dialog open={!!selectedInvoiceId && !!selectedInvoice} onOpenChange={(open) => !open && setSelectedInvoiceId(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-primary" />
-              {selectedInvoice?.invoice_number}
-            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                {selectedInvoice?.invoice_number}
+              </DialogTitle>
+              <Button variant="outline" size="sm" className="gap-1.5 print:hidden" onClick={handlePrint}>
+                <Printer className="h-3.5 w-3.5" />
+                {isAr ? "طباعة" : "Print"}
+              </Button>
+            </div>
           </DialogHeader>
           {selectedInvoice && (
             <PrintableInvoice
