@@ -461,11 +461,12 @@ export default function SocialLinksEditor() {
         const val = socials[p.key]?.trim();
         normalizedSocials[p.key] = val ? normalizeSocialUrl(val, p) : null;
       });
-      // Build phone values with country code
-      const selectedCountry = countries?.find(c => c.code === contactCountryCode);
-      const phoneCode = selectedCountry?.phone_code || "+966";
-      const buildPhone = (val: string) => {
+      // Build phone values with per-number country code
+      const buildPhone = (val: string, fieldKey: string) => {
         if (!val) return null;
+        const cc = contactCountryCodes[fieldKey] || "SA";
+        const country = countries?.find(c => c.code === cc);
+        const phoneCode = country?.phone_code || "+966";
         const clean = val.replace(/^0+/, "");
         if (clean.startsWith("+")) return clean;
         return phoneCode + clean;
