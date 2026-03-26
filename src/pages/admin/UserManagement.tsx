@@ -17,6 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { InlinePanel } from "@/components/ui/InlinePanel";
+import { InlineConfirm } from "@/components/ui/InlineConfirm";
+import { Textarea } from "@/components/ui/textarea";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -159,6 +161,14 @@ export default function UserManagement() {
   const [newGroupNameAr, setNewGroupNameAr] = useState("");
   const [newGroupColor, setNewGroupColor] = useState("#3b82f6");
   const [createGroupOpen, setCreateGroupOpen] = useState(false);
+
+  // Suspend user inline
+  const [suspendTarget, setSuspendTarget] = useState<{ userId: string; userName: string; email: string | null } | null>(null);
+  const [suspendReason, setSuspendReason] = useState("");
+
+  // Send notification inline
+  const [notifyTarget, setNotifyTarget] = useState<{ userId: string; userName: string } | null>(null);
+  const [notifyMessage, setNotifyMessage] = useState("");
 
   // Media upload
   const avatarInputRef = useRef<HTMLInputElement>(null);
