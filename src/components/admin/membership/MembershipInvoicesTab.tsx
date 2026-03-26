@@ -1,5 +1,5 @@
-import { useState, memo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, memo, useCallback } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,19 +13,34 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   FileText, Search, Download, Clock, CheckCircle2, XCircle,
-  Receipt, AlertTriangle,
+  Receipt, AlertTriangle, Plus, Ban, CreditCard, Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { useToast } from "@/hooks/use-toast";
+import { createMembershipInvoice, markInvoicePaid, voidInvoice } from "@/lib/membershipInvoice";
 
 const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [newInvoice, setNewInvoice] = useState({
+    userId: "",
+    tier: "professional",
+    action: "subscription" as const,
+    amount: 19,
+  });
 
   const { data: invoiceStats } = useQuery({
     queryKey: ["membership-invoice-stats"],
@@ -76,6 +91,40 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
     filename: "membership-invoices",
   });
 
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["membership-invoices"] });
+    queryClient.invalidateQueries({ queryKey: ["membership-invoice-stats"] });
+  }, [queryClient]);
+
+  const createInvoiceMutation = useMutation({
+    mutationFn: () => createMembershipInvoice(newInvoice),
+    onSuccess: (data) => {
+      invalidate();
+      setShowCreateDialog(false);
+      toast({
+        title: isAr ? "تم إنشاء الفاتورة" : "Invoice created",
+        description: data?.invoice_number || "",
+      });
+    },
+    onError: () => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error" }),
+  });
+
+  const markPaidMutation = useMutation({
+    mutationFn: markInvoicePaid,
+    onSuccess: () => {
+      invalidate();
+      toast({ title: isAr ? "تم تحديث الحالة" : "Invoice marked as paid" });
+    },
+  });
+
+  const voidMutation = useMutation({
+    mutationFn: voidInvoice,
+    onSuccess: () => {
+      invalidate();
+      toast({ title: isAr ? "تم إلغاء الفاتورة" : "Invoice voided" });
+    },
+  });
+
   const getStatusBadge = (status: string | null) => {
     switch (status) {
       case "paid": return <Badge variant="default" className="gap-1 text-xs"><CheckCircle2 className="h-3 w-3" />{isAr ? "مدفوعة" : "Paid"}</Badge>;
@@ -95,6 +144,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
 
   return (
     <div className="space-y-6">
+      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map(card => (
           <Card key={card.label}>
@@ -112,6 +162,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
         ))}
       </div>
 
+      {/* Invoice Table */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -142,6 +193,10 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
               <Button variant="outline" size="sm" className="gap-1.5 h-8" onClick={() => invoices && exportCSV(invoices)}>
                 <Download className="h-3.5 w-3.5" />
               </Button>
+              <Button size="sm" className="gap-1.5 h-8" onClick={() => setShowCreateDialog(true)}>
+                <Plus className="h-3.5 w-3.5" />
+                {isAr ? "إنشاء" : "Create"}
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -159,6 +214,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                     <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
                     <TableHead className="text-xs">{isAr ? "الاستحقاق" : "Due"}</TableHead>
                     <TableHead className="text-xs">{isAr ? "التاريخ" : "Created"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "إجراءات" : "Actions"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -179,11 +235,51 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                       <TableCell className="text-xs text-muted-foreground">
                         {format(new Date(inv.created_at), "MMM d, yyyy")}
                       </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          {inv.status === "pending" && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7"
+                                title={isAr ? "تحديد كمدفوعة" : "Mark paid"}
+                                onClick={() => markPaidMutation.mutate(inv.id)}
+                                disabled={markPaidMutation.isPending}
+                              >
+                                <CreditCard className="h-3.5 w-3.5 text-chart-2" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7"
+                                title={isAr ? "إلغاء" : "Void"}
+                                onClick={() => voidMutation.mutate(inv.id)}
+                                disabled={voidMutation.isPending}
+                              >
+                                <Ban className="h-3.5 w-3.5 text-destructive" />
+                              </Button>
+                            </>
+                          )}
+                          {inv.status === "overdue" && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              title={isAr ? "تحديد كمدفوعة" : "Mark paid"}
+                              onClick={() => markPaidMutation.mutate(inv.id)}
+                              disabled={markPaidMutation.isPending}
+                            >
+                              <CreditCard className="h-3.5 w-3.5 text-chart-2" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                   {!invoices?.length && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         {isAr ? "لا توجد فواتير" : "No invoices found"}
                       </TableCell>
                     </TableRow>
@@ -194,6 +290,80 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
           )}
         </CardContent>
       </Card>
+
+      {/* Create Invoice Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{isAr ? "إنشاء فاتورة عضوية" : "Create Membership Invoice"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>{isAr ? "معرّف المستخدم" : "User ID"}</Label>
+              <Input
+                placeholder="UUID..."
+                value={newInvoice.userId}
+                onChange={e => setNewInvoice(p => ({ ...p, userId: e.target.value }))}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>{isAr ? "المستوى" : "Tier"}</Label>
+                <Select
+                  value={newInvoice.tier}
+                  onValueChange={v => setNewInvoice(p => ({
+                    ...p,
+                    tier: v,
+                    amount: v === "enterprise" ? 99 : 19,
+                  }))}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="professional">{isAr ? "احترافي" : "Professional"}</SelectItem>
+                    <SelectItem value="enterprise">{isAr ? "مؤسسي" : "Enterprise"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>{isAr ? "النوع" : "Action"}</Label>
+                <Select
+                  value={newInvoice.action}
+                  onValueChange={v => setNewInvoice(p => ({ ...p, action: v as any }))}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="subscription">{isAr ? "اشتراك" : "Subscription"}</SelectItem>
+                    <SelectItem value="renewal">{isAr ? "تجديد" : "Renewal"}</SelectItem>
+                    <SelectItem value="upgrade">{isAr ? "ترقية" : "Upgrade"}</SelectItem>
+                    <SelectItem value="downgrade">{isAr ? "تخفيض" : "Downgrade"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{isAr ? "المبلغ (ر.س)" : "Amount (SAR)"}</Label>
+              <Input
+                type="number"
+                value={newInvoice.amount}
+                onChange={e => setNewInvoice(p => ({ ...p, amount: Number(e.target.value) }))}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+              {isAr ? "إلغاء" : "Cancel"}
+            </Button>
+            <Button
+              onClick={() => createInvoiceMutation.mutate()}
+              disabled={!newInvoice.userId || createInvoiceMutation.isPending}
+              className="gap-1.5"
+            >
+              {createInvoiceMutation.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              {isAr ? "إنشاء" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 });
