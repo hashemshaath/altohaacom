@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { createMembershipInvoice } from "@/lib/membershipInvoice";
 import { SEOHead } from "@/components/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -185,6 +186,20 @@ export default function MembershipCheckout() {
         type: "membership_upgrade",
         link: "/profile?tab=membership",
       });
+
+      // --- Auto-create membership invoice for paid tiers ---
+      if (selectedTier !== "basic") {
+        await createMembershipInvoice({
+          userId: user.id,
+          tier: selectedTier,
+          action: isRenewal ? "renewal" : isDowngrade ? "downgrade" : "upgrade",
+          amount: finalAmount,
+          currency: "SAR",
+          periodStart: new Date().toISOString(),
+          periodEnd: expiresAt.toISOString(),
+          notes: `${changeType} to ${selectedTier} (${billingCycle})`,
+        });
+      }
 
       // --- Referral rewards for membership upgrade ---
       if (!isRenewal && !isDowngrade && currentTier === "basic") {
