@@ -37,14 +37,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { InlinePanel } from "@/components/ui/InlinePanel";
+import { InlineConfirm } from "@/components/ui/InlineConfirm";
 import {
   AlertDialog,
   AlertDialogAction,
