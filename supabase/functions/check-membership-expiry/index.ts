@@ -100,6 +100,24 @@ Deno.serve(async (req) => {
         },
       });
 
+      // Send email notification
+      try {
+        await fetch(`${supabaseUrl}/functions/v1/send-membership-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({
+            type: "expiry_warning",
+            user_id: profile.user_id,
+            data: { tier, days_left: daysLeft },
+          }),
+        });
+      } catch (emailErr) {
+        console.error("Email send failed for", profile.user_id, emailErr);
+      }
+
       notificationsCreated++;
     }
 
