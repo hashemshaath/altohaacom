@@ -329,8 +329,32 @@ export default function SocialLinksEditor() {
 
   const [socials, setSocials] = useState<Record<string, string>>({});
   const [contacts, setContacts] = useState<Record<string, string>>({});
-  const [contactCountryCode, setContactCountryCode] = useState("SA");
+  const [contactCountryCodes, setContactCountryCodes] = useState<Record<string, string>>({ whatsapp: "SA", phone: "SA", phone2: "SA" });
   const { data: countries } = useAllCountries();
+
+  // Helper: extract country code from stored full phone number
+  const detectCountryFromPhone = useCallback((fullPhone: string, fallback: string) => {
+    if (!fullPhone || !countries?.length) return fallback;
+    // Sort by phone_code length desc to match longest first (e.g. +966 before +9)
+    const sorted = [...countries].filter(c => c.phone_code).sort((a, b) => (b.phone_code?.length || 0) - (a.phone_code?.length || 0));
+    for (const c of sorted) {
+      if (fullPhone.startsWith(c.phone_code!)) {
+        return c.code;
+      }
+    }
+    return fallback;
+  }, [countries]);
+
+  // Helper: strip country code prefix from stored phone to get local number
+  const stripPhoneCode = useCallback((fullPhone: string, countryCode: string) => {
+    if (!fullPhone) return "";
+    const country = countries?.find(c => c.code === countryCode);
+    if (country?.phone_code && fullPhone.startsWith(country.phone_code)) {
+      return fullPhone.slice(country.phone_code.length);
+    }
+    if (fullPhone.startsWith("+")) return fullPhone; // keep as-is if can't strip
+    return fullPhone;
+  }, [countries]);
 
   useEffect(() => {
     if (profile) {
@@ -344,14 +368,18 @@ export default function SocialLinksEditor() {
         linkedin: profile.linkedin || "",
         website: profile.website || "",
       });
+      const defaultCC = profile.country_code || "SA";
+      const waCC = detectCountryFromPhone(profile.whatsapp || "", defaultCC);
+      const phCC = detectCountryFromPhone(profile.phone || "", defaultCC);
+      const ph2CC = detectCountryFromPhone((profile as any).phone2 || "", defaultCC);
+      setContactCountryCodes({ whatsapp: waCC, phone: phCC, phone2: ph2CC });
       setContacts({
-        whatsapp: profile.whatsapp || "",
-        phone: profile.phone || "",
-        phone2: (profile as any).phone2 || "",
+        whatsapp: stripPhoneCode(profile.whatsapp || "", waCC),
+        phone: stripPhoneCode(profile.phone || "", phCC),
+        phone2: stripPhoneCode((profile as any).phone2 || "", ph2CC),
       });
-      setContactCountryCode(profile.country_code || "SA");
     }
-  }, [profile]);
+  }, [profile, countries]);
 
   const [form, setForm] = useState({
     page_title: "", page_title_ar: "", bio: "", bio_ar: "",
