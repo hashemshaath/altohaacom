@@ -812,21 +812,27 @@ export default function CountriesAdmin() {
         loading={deleteMutation.isPending}
       />
 
-      {/* ═══ Country Form Dialog ═══ */}
-      <Dialog open={showForm} onOpenChange={v => !v && closeForm()}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Globe className="h-5 w-5" />
-              {editCountry
-                ? (isAr ? `تعديل ${editCountry.name}` : `Edit ${editCountry.name}`)
-                : (isAr ? "إضافة دولة جديدة" : "Add New Country")
-              }
-            </DialogTitle>
-            <DialogDescription>
-              {isAr ? "إعداد تكوين الدولة بالكامل" : "Configure country settings completely"}
-            </DialogDescription>
-          </DialogHeader>
+      {/* ═══ Country Form ═══ */}
+      <InlinePanel
+        open={showForm}
+        onClose={closeForm}
+        title={editCountry
+          ? (isAr ? `تعديل ${editCountry.name}` : `Edit ${editCountry.name}`)
+          : (isAr ? "إضافة دولة جديدة" : "Add New Country")
+        }
+        description={isAr ? "إعداد تكوين الدولة بالكامل" : "Configure country settings completely"}
+        icon={<Globe className="h-5 w-5" />}
+        footer={
+          <>
+            <Button variant="outline" onClick={closeForm}>
+              <X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}
+            </Button>
+            <Button onClick={() => saveMutation.mutate()} disabled={!form.code || !form.name || saveMutation.isPending}>
+              <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
+            </Button>
+          </>
+        }
+      >
 
           <Tabs value={formTab} onValueChange={setFormTab} className="flex-1 overflow-hidden flex flex-col">
             <TabsList className="w-full grid grid-cols-5">
@@ -1071,16 +1077,7 @@ export default function CountriesAdmin() {
             </ScrollArea>
           </Tabs>
 
-          <DialogFooter className="mt-4">
-            <Button variant="outline" onClick={closeForm}>
-              <X className="h-4 w-4 me-2" />{isAr ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button onClick={() => saveMutation.mutate()} disabled={!form.code || !form.name || saveMutation.isPending}>
-              <Save className="h-4 w-4 me-2" />{isAr ? "حفظ" : "Save"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      </InlinePanel>
     </div>
   );
 }
