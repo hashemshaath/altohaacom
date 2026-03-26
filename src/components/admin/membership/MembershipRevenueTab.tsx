@@ -95,15 +95,15 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
       // Conversion rate
       const conversionRate = total > 0 ? Math.round((paidMembers / total) * 100) : 0;
 
-      // Churn (downgrades in last 30 days)
+      // Member loss (downgrades in last 30 days)
       const thirtyDaysAgo = subMonths(now, 1);
-      const recentChurn = history?.filter(h => {
+      const recentLoss = history?.filter(h => {
         const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
         return new Date(h.created_at) >= thirtyDaysAgo &&
           (tierOrder[h.new_tier] || 0) < (tierOrder[h.previous_tier || "basic"] || 0);
       }).length || 0;
 
-      const churnRate = paidMembers > 0 ? Math.round((recentChurn / paidMembers) * 100) : 0;
+      const lossRate = paidMembers > 0 ? Math.round((recentLoss / paidMembers) * 100) : 0;
 
       // Tier revenue breakdown
       const tierBreakdown = [
@@ -116,8 +116,8 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
       const ltv = arpu * avgMonths;
 
       return {
-        mrr, arr, totalRevenue, pendingRevenue, arpu, conversionRate, churnRate,
-        paidMembers, total, monthlyTrend, tierBreakdown, recentChurn,
+        mrr, arr, totalRevenue, pendingRevenue, arpu, conversionRate, lossRate,
+        paidMembers, total, monthlyTrend, tierBreakdown, recentLoss,
         totalWalletBalance, totalPoints, ltv,
       };
     },
@@ -137,9 +137,9 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
     { icon: Wallet, label: isAr ? "رصيد المحافظ" : "Wallet Balances", value: revenueData?.totalWalletBalance || 0, suffix: " SAR", color: "text-chart-3" },
     { icon: Coins, label: isAr ? "إجمالي النقاط" : "Total Points", value: revenueData?.totalPoints || 0, color: "text-chart-5" },
     { icon: Users, label: isAr ? "أعضاء مدفوعون" : "Paid Members", value: revenueData?.paidMembers || 0, color: "text-primary" },
-    { icon: TrendingDown, label: isAr ? "معدل التسرب" : "Churn Rate", value: revenueData?.churnRate || 0, suffix: "%", color: "text-destructive" },
+    { icon: TrendingDown, label: isAr ? "معدل فقدان الأعضاء" : "Member Loss Rate", value: revenueData?.lossRate || 0, suffix: "%", color: "text-destructive" },
     { icon: Target, label: isAr ? "قيمة العمر (LTV)" : "Lifetime Value", value: revenueData?.ltv || 0, suffix: " SAR", color: "text-chart-1" },
-    { icon: ArrowUpCircle, label: isAr ? "التسرب الأخير" : "Recent Churn", value: revenueData?.recentChurn || 0, color: "text-destructive" },
+    { icon: ArrowDownCircle, label: isAr ? "فقدان أخير" : "Recent Loss", value: revenueData?.recentLoss || 0, color: "text-destructive" },
   ];
 
   const { exportData, isExporting } = useAdminExport();
@@ -153,7 +153,7 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
       { metric: "Total Revenue", value: revenueData.totalRevenue, unit: "SAR" },
       { metric: "Pending Revenue", value: revenueData.pendingRevenue, unit: "SAR" },
       { metric: "Paid Members", value: revenueData.paidMembers, unit: "" },
-      { metric: "Churn Rate", value: revenueData.churnRate, unit: "%" },
+      { metric: "Member Loss Rate", value: revenueData.lossRate, unit: "%" },
       { metric: "LTV", value: revenueData.ltv, unit: "SAR" },
       ...(revenueData.monthlyTrend || []).map(m => ({
         metric: `Revenue (${m.month})`, value: m.revenue, unit: "SAR",
