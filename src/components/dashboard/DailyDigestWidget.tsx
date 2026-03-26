@@ -60,7 +60,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
 
   if (!hasActivity) return null;
 
-  const items: { icon: React.ElementType; text: string; color: string; bg: string }[] = [];
+  const items: { icon: React.ElementType; text: string; color: string; bg: string; href?: string }[] = [];
 
   if (digest.unreadNotifications > 0) {
     items.push({
@@ -70,6 +70,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
         : `You have ${digest.unreadNotifications} unread notification${digest.unreadNotifications > 1 ? "s" : ""}`,
       color: "text-primary",
       bg: "bg-primary/10",
+      href: "/notifications",
     });
   }
 
@@ -81,6 +82,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
         : `${digest.unreadMessages} new message${digest.unreadMessages > 1 ? "s" : ""} waiting`,
       color: "text-chart-2",
       bg: "bg-chart-2/10",
+      href: "/messages",
     });
   }
 
@@ -110,15 +112,23 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
           </Badge>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-2">
-        {items.map((item, i) => (
-          <div key={i} className="flex items-start gap-2.5 text-xs">
-            <div className={`flex h-6 w-6 items-center justify-center rounded-md ${item.bg} shrink-0 mt-0.5`}>
-              <item.icon className={`h-3 w-3 ${item.color}`} />
+      <CardContent className="space-y-1">
+        {items.map((item, i) => {
+          const content = (
+            <div className="flex items-start gap-2.5 text-xs rounded-xl px-2.5 py-2 transition-all hover:bg-muted/40 active:scale-[0.98] touch-manipulation group/item">
+              <div className={`flex h-7 w-7 items-center justify-center rounded-xl ${item.bg} shrink-0 mt-0.5 transition-transform group-hover/item:scale-110`}>
+                <item.icon className={`h-3.5 w-3.5 ${item.color}`} />
+              </div>
+              <p className="text-muted-foreground leading-relaxed flex-1 group-hover/item:text-foreground transition-colors">{item.text}</p>
+              {item.href && <ArrowRight className="h-3 w-3 text-muted-foreground/40 mt-1 shrink-0 rtl:rotate-180 opacity-0 group-hover/item:opacity-100 transition-opacity" />}
             </div>
-            <p className="text-muted-foreground leading-relaxed">{item.text}</p>
-          </div>
-        ))}
+          );
+          return item.href ? (
+            <Link key={i} to={item.href}>{content}</Link>
+          ) : (
+            <div key={i}>{content}</div>
+          );
+        })}
       </CardContent>
     </Card>
   );

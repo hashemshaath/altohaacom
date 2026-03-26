@@ -54,19 +54,19 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
   }
 
     return (
-    <Card className="relative overflow-hidden transition-shadow hover:shadow-md border-border/50">
-      <div className="pointer-events-none absolute -top-14 -end-14 h-36 w-36 rounded-full bg-chart-3/5 blur-[45px]" />
-      <div className="flex items-center justify-between border-b bg-muted/30 px-4 py-3">
-        <h3 className="flex items-center gap-2 text-sm font-semibold">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-chart-3/10">
-            <Landmark className="h-3.5 w-3.5 text-chart-3" />
+    <Card className="group relative overflow-hidden transition-all duration-500 hover:shadow-xl border-border/40 bg-card/50 backdrop-blur-sm">
+      <div className="pointer-events-none absolute -top-20 -end-20 h-48 w-48 rounded-full bg-chart-3/5 blur-[60px] transition-all duration-500 group-hover:bg-chart-3/10" />
+      <div className="flex items-center justify-between border-b border-border/40 bg-muted/20 px-5 py-4">
+        <h3 className="flex items-center gap-2.5 text-sm font-bold tracking-tight">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-3/10 shadow-inner group-hover:scale-110 transition-transform duration-300">
+            <Landmark className="h-4 w-4 text-chart-3" />
           </div>
           {isAr ? "الفعاليات القادمة" : "Upcoming Events"}
         </h3>
-        <Button variant="ghost" size="sm" className="gap-1 text-xs h-7" asChild>
+        <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 font-semibold hover:bg-chart-3/5 hover:text-chart-3 transition-all rounded-xl" asChild>
           <Link to="/exhibitions">
             {isAr ? "عرض الكل" : "View All"}
-            <ArrowRight className="h-3 w-3" />
+            <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
           </Link>
         </Button>
       </div>
@@ -82,18 +82,18 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
                 <Link
                   key={exhibition.id}
                   to={`/exhibitions/${exhibition.slug}`}
-                  className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 transition-colors hover:bg-muted/30 -mx-1 px-1 rounded-md"
+                  className="group/item flex items-start gap-4 py-4 first:pt-0 last:pb-0 transition-all hover:bg-chart-3/5 -mx-2 px-2 rounded-xl"
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-muted ring-1 ring-border/20 shadow-sm transition-all duration-300 group-hover/item:scale-110 group-hover/item:shadow-md group-hover/item:rotate-2">
                     {exhibition.cover_image_url ? (
-                      <img src={exhibition.cover_image_url} alt={title} className="h-full w-full object-cover" loading="lazy" />
+                      <img src={exhibition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover/item:scale-110" loading="lazy" />
                     ) : (
-                      <Landmark className="h-5 w-5 text-muted-foreground/30" />
+                      <Landmark className="h-6 w-6 text-chart-3/20" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <h4 className="text-sm font-medium line-clamp-1">{title}</h4>
+                      <h4 className="text-sm font-bold tracking-tight line-clamp-1 group-hover/item:text-chart-3 transition-colors">{title}</h4>
                       {tLabel && (
                         <Badge variant="secondary" className="shrink-0 text-[10px]">
                           {isAr ? tLabel.ar : tLabel.en}
