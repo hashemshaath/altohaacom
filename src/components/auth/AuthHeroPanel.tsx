@@ -1,59 +1,7 @@
-import { useMemo, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { Trophy, Globe, GraduationCap, Award, CheckCircle } from "lucide-react";
-import authHeroImg from "@/assets/auth-hero.jpg";
-
-/* ── Stage quotes ── */
-const quotes: Record<string, { en: string[]; ar: string[] }> = {
-  login: {
-    en: [
-      "Welcome back, Chef. Your community is waiting.",
-      "Continue your culinary excellence journey.",
-      "Great things are cooking — sign in to see what's new.",
-    ],
-    ar: [
-      "مرحباً بعودتك، شيف. مجتمعك في انتظارك.",
-      "واصل رحلتك نحو التميز في الطهي.",
-      "أشياء رائعة تُطهى — سجل دخولك لمعرفة الجديد.",
-    ],
-  },
-  register: {
-    en: [
-      "Every great chef started somewhere. Start your journey today.",
-      "Join thousands of culinary professionals shaping the future of gastronomy.",
-      "Your culinary masterpiece awaits — create, compete, and connect globally.",
-    ],
-    ar: [
-      "كل شيف عظيم بدأ من مكان ما. ابدأ رحلتك اليوم.",
-      "انضم لآلاف المحترفين الذين يشكلون مستقبل فن الطهي.",
-      "تحفتك الفنية في انتظارك — أبدع، تنافس، وتواصل عالمياً.",
-    ],
-  },
-  verify: {
-    en: ["Almost there — we just need to verify it's really you."],
-    ar: ["اقتربت — نحتاج فقط التأكد من هويتك."],
-  },
-  details: {
-    en: ["Tell us a bit about yourself. Every great chef has a story."],
-    ar: ["أخبرنا عن نفسك. كل شيف عظيم له قصة."],
-  },
-  credentials: {
-    en: ["One last step and you're in. Make it secure, make it yours."],
-    ar: ["خطوة أخيرة وتنضم إلينا. اجعلها آمنة، اجعلها خاصة بك."],
-  },
-  reset: {
-    en: ["Secure your account with a strong new password."],
-    ar: ["أمّن حسابك بكلمة مرور جديدة قوية."],
-  },
-};
-
-const headings: Record<string, { en: string; ar: string }> = {
-  login: { en: "Welcome Back,\nChef!", ar: "مرحباً بعودتك\nشيف!" },
-  register: { en: "Join the Global\nCulinary Community", ar: "انضم لمجتمع\nالطهي العالمي" },
-  verify: { en: "Verifying\nYour Identity", ar: "التحقق من\nهويتك" },
-  details: { en: "Tell Us\nAbout Yourself", ar: "أخبرنا\nعن نفسك" },
-  credentials: { en: "Almost\nThere!", ar: "اقتربت\nمن الهدف!" },
-  reset: { en: "Reset Your\nPassword", ar: "إعادة تعيين\nكلمة المرور" },
-};
+import { useAuthHeroSlides, type AuthHeroSlide } from "@/hooks/useAuthHeroSlides";
+import authHeroFallback from "@/assets/auth-hero.jpg";
 
 const features = [
   { icon: Trophy, labelEn: "Compete Globally", labelAr: "تنافس عالمياً" },
@@ -69,6 +17,7 @@ interface Props {
   isAr: boolean;
   currentStep?: number;
   totalSteps?: number;
+  pageType?: "individual" | "company";
 }
 
 /* ── Step Dots ── */
@@ -91,63 +40,123 @@ function StepDots({ current, total }: { current: number; total: number }) {
   );
 }
 
-export const AuthHeroPanel = memo(function AuthHeroPanel({ stage, isAr, currentStep, totalSteps = 4 }: Props) {
-  const quoteSet = quotes[stage] || quotes.register;
-  const quoteList = isAr ? quoteSet.ar : quoteSet.en;
-  const randomQuote = useMemo(
-    () => quoteList[Math.floor(Math.random() * quoteList.length)],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [stage, isAr],
+/* ── Slide Indicator Dots ── */
+function SlideDots({ total, active, onSelect }: { total: number; active: number; onSelect: (i: number) => void }) {
+  if (total <= 1) return null;
+  return (
+    <div className="flex items-center gap-1.5" dir="ltr">
+      {Array.from({ length: total }).map((_, i) => (
+        <button
+          key={i}
+          onClick={() => onSelect(i)}
+          className={`h-1.5 rounded-full transition-all duration-500 ${
+            i === active ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"
+          }`}
+        />
+      ))}
+    </div>
   );
+}
 
-  const heading = headings[stage] || headings.register;
+export const AuthHeroPanel = memo(function AuthHeroPanel({
+  stage,
+  isAr,
+  currentStep,
+  totalSteps = 4,
+  pageType = "individual",
+}: Props) {
+  const { data: slides = [] } = useAuthHeroSlides(pageType);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   const isSignUpFlow = ["register", "verify", "details", "credentials"].includes(stage);
 
+  // Auto-advance slides
+  const nextSlide = useCallback(() => {
+    if (slides.length <= 1) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+      setIsTransitioning(false);
+    }, 500);
+  }, [slides.length]);
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const interval = setInterval(nextSlide, 6000);
+    return () => clearInterval(interval);
+  }, [nextSlide, slides.length]);
+
+  const handleDotSelect = (i: number) => {
+    if (i === activeSlide) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveSlide(i);
+      setIsTransitioning(false);
+    }, 400);
+  };
+
+  // Current slide data
+  const currentSlide: AuthHeroSlide | null = slides[activeSlide] || null;
+  const imgSrc = currentSlide?.image_url || authHeroFallback;
+  const title = currentSlide
+    ? (isAr ? currentSlide.title_ar || currentSlide.title : currentSlide.title) || ""
+    : "";
+  const subtitle = currentSlide
+    ? (isAr ? currentSlide.subtitle_ar || currentSlide.subtitle : currentSlide.subtitle) || ""
+    : "";
+
   return (
-    <div
-      className="hidden md:flex md:w-[420px] lg:w-[540px] xl:w-[620px] relative flex-col overflow-hidden border-e border-white/5"
-    >
-      {/* Background image — Premium treatment */}
-      <img
-        src={authHeroImg}
-        alt="Culinary excellence"
-        className="absolute inset-0 h-full w-full object-cover scale-105 blur-[1px] opacity-90 transition-transform duration-[10s] hover:scale-110"
-      />
+    <div className="hidden md:flex md:w-[460px] lg:w-[560px] xl:w-[660px] relative flex-col overflow-hidden border-e border-white/5">
+      {/* Background image with smooth transition */}
+      <div className="absolute inset-0">
+        <img
+          src={imgSrc}
+          alt={title || "Culinary excellence"}
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-in-out ${
+            isTransitioning ? "opacity-0 scale-110" : "opacity-90 scale-105"
+          }`}
+        />
+      </div>
 
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/20" />
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-transparent opacity-60" />
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/25" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-transparent opacity-60" />
 
-      {/* Animated Floating Orbs */}
+      {/* Animated orbs */}
       <div className="absolute -top-20 -start-20 h-64 w-64 rounded-full bg-primary/20 blur-[100px] animate-pulse" />
       <div className="absolute top-1/2 -end-20 h-48 w-48 rounded-full bg-chart-3/15 blur-[80px] animate-pulse" style={{ animationDelay: "2s" }} />
 
-      {/* Logo Area */}
-      <div className="relative z-10 p-10 xl:p-14">
+      {/* Logo */}
+      <div className="relative z-10 p-8 xl:p-12">
         <div className="flex items-center gap-3 group cursor-pointer">
           <img src="/altoha-logo.png" alt="Altoha" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
           <span className="font-serif text-2xl font-black text-white tracking-tighter drop-shadow-lg">Altoha</span>
         </div>
       </div>
 
-      {/* Main heading */}
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-10 xl:px-14">
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-          <h2
-            className={`${isAr ? "font-sans" : "font-serif"} text-4xl font-black xl:text-6xl leading-[1.1] whitespace-pre-line text-white drop-shadow-2xl tracking-tight`}
-          >
-            {isAr ? heading.ar : heading.en}
-          </h2>
+      {/* Dynamic slide content */}
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-8 xl:px-12">
+        <div className={`space-y-5 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
+          {title && (
+            <h2 className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-black xl:text-5xl leading-[1.1] text-white drop-shadow-2xl tracking-tight`}>
+              {title}
+            </h2>
+          )}
           <div className="h-1.5 w-20 bg-primary/60 rounded-full" />
-          <p className="text-lg leading-relaxed max-w-sm text-white/80 font-medium italic drop-shadow-md">
-            "{randomQuote}"
-          </p>
+          {subtitle && (
+            <p className="text-lg leading-relaxed max-w-sm text-white/80 font-medium italic drop-shadow-md">
+              "{subtitle}"
+            </p>
+          )}
         </div>
       </div>
 
       {/* Bottom section */}
-      <div className="relative z-10 p-8 xl:p-10 space-y-5">
+      <div className="relative z-10 p-6 xl:p-8 space-y-4">
+        {/* Slide dots */}
+        <SlideDots total={slides.length} active={activeSlide} onSelect={handleDotSelect} />
+
         {isSignUpFlow && currentStep !== undefined && (
           <div className="space-y-2">
             <StepDots current={currentStep} total={totalSteps} />
