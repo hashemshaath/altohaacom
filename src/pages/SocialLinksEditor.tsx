@@ -2388,17 +2388,17 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="space-y-2 pt-3">
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
                           <div className="flex items-center gap-2">
                             <Type className="h-3.5 w-3.5 text-muted-foreground" />
-                            <Label className="text-xs cursor-pointer">{isAr ? "تأثير الكتابة على النبذة" : "Typing Animation on Bio"}</Label>
+                            <Label className="text-xs cursor-pointer font-medium">{isAr ? "تأثير الكتابة على النبذة" : "Typing Animation on Bio"}</Label>
                           </div>
                           <Switch checked={extra.enable_typing_animation} onCheckedChange={v => updateExtra({ enable_typing_animation: v })} />
                         </div>
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
                           <div className="flex items-center gap-2">
                             <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
-                            <Label className="text-xs cursor-pointer">{isAr ? "جزيئات عائمة" : "Floating Particles"}</Label>
+                            <Label className="text-xs cursor-pointer font-medium">{isAr ? "جزيئات عائمة" : "Floating Particles"}</Label>
                           </div>
                           <Switch checked={extra.enable_particles} onCheckedChange={v => updateExtra({ enable_particles: v })} />
                         </div>
