@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Gift, TrendingUp, Search, Link2, ArrowUpDown, Copy, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
@@ -156,6 +157,45 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Conversion Funnel */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm">{isAr ? "قمع التحويل" : "Conversion Funnel"}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {(() => {
+            const funnelData = [
+              { stage: isAr ? "نقرات" : "Clicks", value: totalClicks, color: "hsl(var(--muted-foreground))" },
+              { stage: isAr ? "دعوات" : "Invites", value: referralCodes?.reduce((s: number, c: any) => s + (c.total_invites_sent || 0), 0) || 0, color: "hsl(var(--primary))" },
+              { stage: isAr ? "تحويلات" : "Conversions", value: totalConversions, color: "hsl(var(--chart-2))" },
+            ];
+            return funnelData[0].value > 0 ? (
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={funnelData} layout="vertical" margin={{ left: 10, right: 20 }}>
+                  <XAxis type="number" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                  <YAxis type="category" dataKey="stage" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} width={80} />
+                  <Tooltip
+                    contentStyle={{
+                      background: "hsl(var(--popover))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      fontSize: 12,
+                    }}
+                  />
+                  <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28}>
+                    {funnelData.map((entry, idx) => (
+                      <Cell key={idx} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد بيانات بعد" : "No funnel data yet"}</p>
+            );
+          })()}
+        </CardContent>
+      </Card>
 
       {/* Sub-tabs */}
       <Tabs defaultValue="codes" className="space-y-3">

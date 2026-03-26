@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,11 @@ import {
 } from "recharts";
 import {
   TrendingDown, TrendingUp, Users, AlertTriangle, ShieldAlert,
-  Clock, UserMinus, RefreshCcw, ArrowRight, Crown
+  Clock, UserMinus, RefreshCcw, ArrowRight, Crown, Send, Loader2
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import { useMemo, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
@@ -30,6 +33,8 @@ const TIER_COLORS: Record<string, string> = {
 const MembershipChurnRetention = memo(function MembershipChurnRetention() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { toast } = useToast();
+  const { user: adminUser } = useAuth();
 
   // Churn rate (monthly) - users who downgraded or had membership suspended/expired
   const { data: churnData, isLoading: churnLoading } = useQuery({
@@ -222,6 +227,47 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
   });
 
   const totalAtRisk = (atRiskData?.critical.length || 0) + (atRiskData?.warning.length || 0) + (atRiskData?.upcoming.length || 0);
+
+  // Send retention offer to at-risk members
+  const retentionMutation = useMutation({
+    mutationFn: async () => {
+      const allAtRisk = [
+        ...(atRiskData?.critical || []),
+        ...(atRiskData?.warning || []),
+      ];
+      if (!allAtRisk.length) throw new Error("No at-risk members");
+
+      const notifications = allAtRisk.map((u: any) => ({
+        user_id: u.user_id,
+        title: "Your membership is expiring soon — renew now!",
+        title_ar: "عضويتك تنتهي قريباً — جدّد الآن!",
+        body: `Your ${u.membership_tier} membership expires in ${u.daysLeft} day(s). Renew to keep your benefits.`,
+        body_ar: `عضويتك ${u.membership_tier === "professional" ? "الاحترافية" : "المؤسسية"} تنتهي خلال ${u.daysLeft} يوم. جدّد للحفاظ على مميزاتك.`,
+        type: "membership",
+        link: "/profile?tab=membership",
+      }));
+
+      for (let i = 0; i < notifications.length; i += 50) {
+        await supabase.from("notifications").insert(notifications.slice(i, i + 50));
+      }
+
+      if (adminUser) {
+        await supabase.from("admin_actions").insert({
+          admin_id: adminUser.id,
+          action_type: "retention_offer_sent",
+          details: { count: allAtRisk.length },
+        });
+      }
+
+      return allAtRisk.length;
+    },
+    onSuccess: (count) => {
+      toast({ title: isAr ? `تم إرسال عرض الاحتفاظ لـ ${count} عضو` : `Retention offer sent to ${count} members` });
+    },
+    onError: (err) => {
+      toast({ title: isAr ? "فشل الإرسال" : "Failed to send", variant: "destructive" });
+    },
+  });
 
   const { exportData, isExporting } = useAdminExport();
 
@@ -492,10 +538,22 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         {/* At-Risk Members */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-chart-3" />
-              {isAr ? "أعضاء معرضون للخطر" : "At-Risk Members"}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-chart-3" />
+                {isAr ? "أعضاء معرضون للخطر" : "At-Risk Members"}
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 h-7 text-xs"
+                disabled={retentionMutation.isPending || totalAtRisk === 0}
+                onClick={() => retentionMutation.mutate()}
+              >
+                {retentionMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                {isAr ? "إرسال تذكير" : "Send Reminder"}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {[
