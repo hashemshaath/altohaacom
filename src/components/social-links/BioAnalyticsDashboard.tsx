@@ -134,32 +134,49 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     staleTime: 5 * 60_000,
   });
 
-  // Click analytics
+  // Click analytics — real data from social_link_clicks
   const { data: clickAnalytics } = useQuery({
     queryKey: ["bio-click-analytics-full", pageId],
     queryFn: async () => {
       const { data: clicks } = await supabase
-        .from("social_link_clicks" as any)
-        .select("link_id, device_type, browser, created_at")
+        .from("social_link_clicks")
+        .select("link_id, device_type, browser, referrer, country, created_at")
         .eq("page_id", pageId)
         .order("created_at", { ascending: false })
         .limit(2000);
 
-      if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return null;
+      if (!clicks || clicks.length === 0) return null;
 
+      const now = Date.now();
+      const week = 7 * 86400000;
       const hourlyAgg = Array(24).fill(0);
       const dailyClickMap: Record<string, number> = {};
       const linkClickMap: Record<string, number> = {};
+      const linkClickMap7d: Record<string, number> = {};
+      const linkClickMap14d: Record<string, number> = {};
+      const linkClickMap30d: Record<string, number> = {};
+      let clicks7d = 0;
+      let clicks14d = 0;
+      let clicksPrev7d = 0;
 
-      for (const c of clicks as any[]) {
+      for (const c of clicks) {
+        const ts = new Date(c.created_at).getTime();
+        const age = now - ts;
         const d = new Date(c.created_at);
         hourlyAgg[d.getHours()]++;
         const dayKey = c.created_at.slice(0, 10);
         dailyClickMap[dayKey] = (dailyClickMap[dayKey] || 0) + 1;
-        if (c.link_id) linkClickMap[c.link_id] = (linkClickMap[c.link_id] || 0) + 1;
+        if (c.link_id) {
+          linkClickMap[c.link_id] = (linkClickMap[c.link_id] || 0) + 1;
+          if (age < week) linkClickMap7d[c.link_id] = (linkClickMap7d[c.link_id] || 0) + 1;
+          if (age < 2 * week) linkClickMap14d[c.link_id] = (linkClickMap14d[c.link_id] || 0) + 1;
+          if (age < 30 * 86400000) linkClickMap30d[c.link_id] = (linkClickMap30d[c.link_id] || 0) + 1;
+        }
+        if (age < week) clicks7d++;
+        if (age < 2 * week) clicks14d++;
+        if (age >= week && age < 2 * week) clicksPrev7d++;
       }
 
-      const now = Date.now();
       const dailyClicks: { date: string; clicks: number }[] = [];
       for (let i = 29; i >= 0; i--) {
         const dt = new Date(now - i * 86400000);
@@ -167,7 +184,20 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
         dailyClicks.push({ date: key, clicks: dailyClickMap[key] || 0 });
       }
 
-      return { total: clicks.length, hourlyAgg, dailyClicks, linkClickMap };
+      const clickTrend = clicksPrev7d > 0 ? Math.round(((clicks7d - clicksPrev7d) / clicksPrev7d) * 100) : clicks7d > 0 ? 100 : 0;
+
+      return {
+        total: clicks.length,
+        clicks7d,
+        clicks14d,
+        clickTrend,
+        hourlyAgg,
+        dailyClicks,
+        linkClickMap,
+        linkClickMap7d,
+        linkClickMap14d,
+        linkClickMap30d,
+      };
     },
     enabled: !!pageId,
     staleTime: 5 * 60_000,
