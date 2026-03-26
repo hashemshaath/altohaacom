@@ -126,3 +126,46 @@ export async function voidInvoice(invoiceId: string) {
   if (error) console.error("Failed to void invoice:", error);
   return !error;
 }
+
+export async function refundInvoice(invoiceId: string, reason?: string) {
+  const { error } = await supabase
+    .from("invoices")
+    .update({
+      status: "refunded",
+      notes: reason ? `Refund: ${reason}` : "Refunded",
+      notes_ar: reason ? `استرداد: ${reason}` : "تم الاسترداد",
+    })
+    .eq("id", invoiceId);
+
+  if (error) console.error("Failed to refund invoice:", error);
+  return !error;
+}
+
+export async function applyInvoiceDiscount(invoiceId: string, discount: number) {
+  // Recalculate totals
+  const { data: invoice } = await supabase
+    .from("invoices")
+    .select("subtotal, tax_rate")
+    .eq("id", invoiceId)
+    .single();
+
+  if (!invoice) return false;
+
+  const newSubtotal = Math.max(Number(invoice.subtotal || 0) - discount, 0);
+  const taxRate = Number(invoice.tax_rate || 15) / 100;
+  const newTax = Math.round(newSubtotal * taxRate * 100) / 100;
+  const newAmount = Math.round((newSubtotal + newTax) * 100) / 100;
+
+  const { error } = await supabase
+    .from("invoices")
+    .update({
+      discount_amount: discount,
+      subtotal: newSubtotal,
+      tax_amount: newTax,
+      amount: newAmount,
+    })
+    .eq("id", invoiceId);
+
+  if (error) console.error("Failed to apply discount:", error);
+  return !error;
+}
