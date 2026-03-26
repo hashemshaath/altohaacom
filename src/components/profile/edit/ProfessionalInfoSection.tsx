@@ -27,30 +27,35 @@ export const ProfessionalInfoSection = memo(function ProfessionalInfoSection({ f
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 px-6 pb-6">
+        {/* Arabic fields first */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <TranslatableInput
-            label={isAr ? "المسمى الوظيفي (إنجليزي)" : "Job Title (English)"}
-            value={form.job_title} onChange={(v) => update("job_title", v)}
-            dir="ltr" lang="en" placeholder="Executive Chef"
-            pairedValue={form.job_title_ar} onTranslated={(v) => update("job_title_ar", v)}
-          />
           <TranslatableInput
             label={isAr ? "المسمى الوظيفي (عربي)" : "Job Title (Arabic)"}
             value={form.job_title_ar} onChange={(v) => update("job_title_ar", v)}
             dir="rtl" lang="ar" placeholder="الشيف التنفيذي"
             pairedValue={form.job_title} onTranslated={(v) => update("job_title", v)}
+            fieldType="title"
           />
           <TranslatableInput
-            label={isAr ? "التخصص (إنجليزي)" : "Specialization (English)"}
-            value={form.specialization} onChange={(v) => update("specialization", v)}
-            dir="ltr" lang="en"
-            pairedValue={form.specialization_ar} onTranslated={(v) => update("specialization_ar", v)}
+            label={isAr ? "المسمى الوظيفي (إنجليزي)" : "Job Title (English)"}
+            value={form.job_title} onChange={(v) => update("job_title", v)}
+            dir="ltr" lang="en" placeholder="Executive Chef"
+            pairedValue={form.job_title_ar} onTranslated={(v) => update("job_title_ar", v)}
+            fieldType="title"
           />
           <TranslatableInput
             label={isAr ? "التخصص (عربي)" : "Specialization (Arabic)"}
             value={form.specialization_ar} onChange={(v) => update("specialization_ar", v)}
             dir="rtl" lang="ar"
             pairedValue={form.specialization} onTranslated={(v) => update("specialization", v)}
+            fieldType="title"
+          />
+          <TranslatableInput
+            label={isAr ? "التخصص (إنجليزي)" : "Specialization (English)"}
+            value={form.specialization} onChange={(v) => update("specialization", v)}
+            dir="ltr" lang="en"
+            pairedValue={form.specialization_ar} onTranslated={(v) => update("specialization_ar", v)}
+            fieldType="title"
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">

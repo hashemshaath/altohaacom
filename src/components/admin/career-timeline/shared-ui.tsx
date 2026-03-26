@@ -118,18 +118,26 @@ export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, la
 }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
+      {/* Arabic field first */}
       <div className="space-y-1">
-        <Label className="text-[11px] font-medium text-muted-foreground">{labelEn} {required && <span className="text-destructive">*</span>}</Label>
-        <div className="flex gap-1">
-          <Input value={valueEn} onChange={(e) => onChangeEn(e.target.value)} className="h-8 text-xs flex-1" dir="ltr" placeholder={placeholderEn || "English"} />
-          <SmartTranslateBtn sourceText={valueEn} fromLang="en" onTranslated={onChangeAr} />
-        </div>
-      </div>
-      <div className="space-y-1">
-        <Label className="text-[11px] font-medium text-muted-foreground">{labelAr} <span className="text-muted-foreground/60">(AR)</span></Label>
+        <Label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+          <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[8px] font-bold text-primary">ع</span>
+          {labelAr} {required && <span className="text-destructive">*</span>}
+        </Label>
         <div className="flex gap-1">
           <Input value={valueAr} onChange={(e) => onChangeAr(e.target.value)} className="h-8 text-xs flex-1" dir="rtl" placeholder={placeholderAr || "عربي"} />
           <SmartTranslateBtn sourceText={valueAr} fromLang="ar" onTranslated={onChangeEn} />
+        </div>
+      </div>
+      {/* English field second */}
+      <div className="space-y-1">
+        <Label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+          <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[8px] font-bold text-muted-foreground">EN</span>
+          {labelEn}
+        </Label>
+        <div className="flex gap-1">
+          <Input value={valueEn} onChange={(e) => onChangeEn(e.target.value)} className="h-8 text-xs flex-1" dir="ltr" placeholder={placeholderEn || "English"} />
+          <SmartTranslateBtn sourceText={valueEn} fromLang="en" onTranslated={onChangeAr} />
         </div>
       </div>
     </div>

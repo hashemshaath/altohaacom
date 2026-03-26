@@ -33,31 +33,35 @@ export const PersonalInfoSection = memo(function PersonalInfoSection({ form, upd
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 px-6 pb-6">
-        {/* Names */}
+        {/* Names — Arabic first */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <TranslatableInput
-            label={isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (English)"}
-            value={form.full_name} onChange={(v) => update("full_name", v)}
-            dir="ltr" lang="en"
-            pairedValue={form.full_name_ar} onTranslated={(v) => update("full_name_ar", v)}
-          />
           <TranslatableInput
             label={isAr ? "الاسم الكامل (عربي)" : "Full Name (Arabic)"}
             value={form.full_name_ar} onChange={(v) => update("full_name_ar", v)}
             dir="rtl" lang="ar"
             pairedValue={form.full_name} onTranslated={(v) => update("full_name", v)}
+            fieldType="title"
           />
           <TranslatableInput
-            label={isAr ? "الاسم المعروض (إنجليزي)" : "Display Name (English)"}
-            value={form.display_name} onChange={(v) => update("display_name", v)}
-            dir="ltr" lang="en" placeholder="Chef John"
-            pairedValue={form.display_name_ar} onTranslated={(v) => update("display_name_ar", v)}
+            label={isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (English)"}
+            value={form.full_name} onChange={(v) => update("full_name", v)}
+            dir="ltr" lang="en"
+            pairedValue={form.full_name_ar} onTranslated={(v) => update("full_name_ar", v)}
+            fieldType="title"
           />
           <TranslatableInput
             label={isAr ? "الاسم المعروض (عربي)" : "Display Name (Arabic)"}
             value={form.display_name_ar} onChange={(v) => update("display_name_ar", v)}
             dir="rtl" lang="ar" placeholder="الشيف جون"
             pairedValue={form.display_name} onTranslated={(v) => update("display_name", v)}
+            fieldType="title"
+          />
+          <TranslatableInput
+            label={isAr ? "الاسم المعروض (إنجليزي)" : "Display Name (English)"}
+            value={form.display_name} onChange={(v) => update("display_name", v)}
+            dir="ltr" lang="en" placeholder="Chef John"
+            pairedValue={form.display_name_ar} onTranslated={(v) => update("display_name_ar", v)}
+            fieldType="title"
           />
         </div>
 
@@ -94,19 +98,21 @@ export const PersonalInfoSection = memo(function PersonalInfoSection({ form, upd
           </div>
         </div>
 
-        {/* Bio */}
+        {/* Bio — Arabic first */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <TranslatableInput
-            label={isAr ? "النبذة (إنجليزي)" : "Bio (English)"}
-            value={form.bio} onChange={(v) => update("bio", v)}
-            dir="ltr" lang="en" multiline rows={3}
-            pairedValue={form.bio_ar} onTranslated={(v) => update("bio_ar", v)}
-          />
           <TranslatableInput
             label={isAr ? "النبذة (عربي)" : "Bio (Arabic)"}
             value={form.bio_ar} onChange={(v) => update("bio_ar", v)}
             dir="rtl" lang="ar" multiline rows={3}
             pairedValue={form.bio} onTranslated={(v) => update("bio", v)}
+            fieldType="bio"
+          />
+          <TranslatableInput
+            label={isAr ? "النبذة (إنجليزي)" : "Bio (English)"}
+            value={form.bio} onChange={(v) => update("bio", v)}
+            dir="ltr" lang="en" multiline rows={3}
+            pairedValue={form.bio_ar} onTranslated={(v) => update("bio_ar", v)}
+            fieldType="bio"
           />
         </div>
       </CardContent>

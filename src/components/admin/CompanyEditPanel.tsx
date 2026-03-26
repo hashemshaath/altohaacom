@@ -220,26 +220,38 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
     multiline?: boolean;
   }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Arabic field first */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <Label className="text-xs">{isAr ? labelAr : labelEn} (EN)</Label>
-          {editing && valueAr && <AIBtn onClick={() => handleAITranslate(valueAr, "ar", onChangeEn)} />}
-        </div>
-        {multiline ? (
-          <Textarea value={valueEn} onChange={e => onChangeEn(e.target.value)} disabled={!editing} className="min-h-[60px]" />
-        ) : (
-          <Input value={valueEn} onChange={e => onChangeEn(e.target.value)} disabled={!editing} />
-        )}
-      </div>
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between">
-          <Label className="text-xs">{isAr ? labelAr : labelEn} (AR)</Label>
-          {editing && valueEn && <AIBtn onClick={() => handleAITranslate(valueEn, "en", onChangeAr)} />}
+          <Label className="text-xs flex items-center gap-1">
+            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[8px] font-bold text-primary">ع</span>
+            {isAr ? labelAr : labelEn} (AR)
+          </Label>
+          <div className="flex gap-0.5">
+            {editing && valueAr && <AIBtn onClick={() => handleAITranslate(valueAr, "ar", onChangeEn)} />}
+          </div>
         </div>
         {multiline ? (
           <Textarea value={valueAr} onChange={e => onChangeAr(e.target.value)} disabled={!editing} dir="rtl" className="min-h-[60px]" />
         ) : (
           <Input value={valueAr} onChange={e => onChangeAr(e.target.value)} disabled={!editing} dir="rtl" />
+        )}
+      </div>
+      {/* English field second */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs flex items-center gap-1">
+            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[8px] font-bold text-muted-foreground">EN</span>
+            {isAr ? labelAr : labelEn} (EN)
+          </Label>
+          <div className="flex gap-0.5">
+            {editing && valueEn && <AIBtn onClick={() => handleAITranslate(valueEn, "en", onChangeAr)} />}
+          </div>
+        </div>
+        {multiline ? (
+          <Textarea value={valueEn} onChange={e => onChangeEn(e.target.value)} disabled={!editing} className="min-h-[60px]" />
+        ) : (
+          <Input value={valueEn} onChange={e => onChangeEn(e.target.value)} disabled={!editing} />
         )}
       </div>
     </div>
