@@ -1,21 +1,46 @@
-import { memo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { memo, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
   Users, CreditCard, Star, TrendingUp, AlertTriangle, Clock,
-  ArrowUpCircle, UserCheck, UserX, RefreshCw
+  ArrowUpCircle, UserCheck, UserX, RefreshCw, Play, Loader2, CheckCircle2
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
+import { useToast } from "@/hooks/use-toast";
 
 const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { toast } = useToast();
+  const [lastRunResult, setLastRunResult] = useState<any>(null);
+
+  // Manual trigger for expiry check
+  const runExpiryCheck = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("check-membership-expiry", {
+        body: { time: new Date().toISOString() },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      setLastRunResult(data);
+      toast({
+        title: isAr ? "تم تنفيذ فحص العضويات" : "Membership check completed",
+        description: isAr
+          ? `${data.auto_downgraded || 0} تخفيض تلقائي، ${data.notifications_created || 0} إشعار`
+          : `${data.auto_downgraded || 0} auto-downgraded, ${data.notifications_created || 0} notifications sent`,
+      });
+    },
+    onError: (error) => toast({ variant: "destructive", title: "Error", description: error.message }),
+  });
 
   const { data: stats } = useQuery({
     queryKey: ["membership-overview-stats"],
@@ -146,6 +171,37 @@ const MembershipOverview = memo(function MembershipOverview() {
           </Card>
         ))}
       </div>
+
+      {/* Admin Actions Bar */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
+          <div>
+            <p className="text-sm font-medium">{isAr ? "فحص انتهاء العضويات" : "Membership Expiry Check"}</p>
+            <p className="text-xs text-muted-foreground">
+              {isAr ? "تشغيل يدوي لفحص وتخفيض العضويات المنتهية وإرسال التنبيهات" : "Manually run expiry check, auto-downgrade & send alerts"}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            {lastRunResult && (
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <CheckCircle2 className="h-3.5 w-3.5 text-chart-2" />
+                {isAr
+                  ? `${lastRunResult.auto_downgraded || 0} تخفيض · ${lastRunResult.notifications_created || 0} إشعار`
+                  : `${lastRunResult.auto_downgraded || 0} downgraded · ${lastRunResult.notifications_created || 0} alerts`}
+              </div>
+            )}
+            <Button
+              size="sm"
+              onClick={() => runExpiryCheck.mutate()}
+              disabled={runExpiryCheck.isPending}
+              className="gap-1.5"
+            >
+              {runExpiryCheck.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+              {isAr ? "تشغيل الآن" : "Run Now"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Revenue & Conversion */}
       <div className="grid gap-6 md:grid-cols-2">
