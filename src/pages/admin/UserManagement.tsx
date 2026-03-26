@@ -434,10 +434,19 @@ export default function UserManagement() {
         loading={updateStatusMutation.isPending}
       />
 
-      <InlinePanel open={!!notifyTarget} onClose={() => { setNotifyTarget(null); setNotifyMessage(""); }} title={isAr ? `إرسال إشعار إلى ${notifyTarget?.userName || ""}` : `Send Notification to ${notifyTarget?.userName || ""}`} icon={<Mail className="h-4 w-4 text-primary" />} size="md"
-        footer={<><Button variant="outline" onClick={() => { setNotifyTarget(null); setNotifyMessage(""); }}>{isAr ? "إلغاء" : "Cancel"}</Button><Button disabled={!notifyMessage.trim()} onClick={async () => { if (!notifyTarget) return; await supabase.from("notifications").insert({ user_id: notifyTarget.userId, title: isAr ? "رسالة من الإدارة" : "Message from Admin", title_ar: "رسالة من الإدارة", body: notifyMessage, body_ar: notifyMessage, type: "admin_message" }); toast({ title: isAr ? "تم الإرسال بنجاح" : "Notification sent" }); setNotifyTarget(null); setNotifyMessage(""); }}>{isAr ? "إرسال" : "Send"}</Button></>}
+      <InlinePanel open={!!notifyTarget} onClose={() => { setNotifyTarget(null); setNotifyMessage(""); setNotifyMessageAr(""); }} title={isAr ? `إرسال إشعار إلى ${notifyTarget?.userName || ""}` : `Send Notification to ${notifyTarget?.userName || ""}`} icon={<Mail className="h-4 w-4 text-primary" />} size="lg"
+        footer={<><Button variant="outline" onClick={() => { setNotifyTarget(null); setNotifyMessage(""); setNotifyMessageAr(""); }}>{isAr ? "إلغاء" : "Cancel"}</Button><Button disabled={!notifyMessage.trim() && !notifyMessageAr.trim()} onClick={async () => { if (!notifyTarget) return; await supabase.from("notifications").insert({ user_id: notifyTarget.userId, title: "Message from Admin", title_ar: "رسالة من الإدارة", body: notifyMessage || notifyMessageAr, body_ar: notifyMessageAr || notifyMessage, type: "admin_message" }); toast({ title: isAr ? "تم الإرسال بنجاح" : "Notification sent" }); setNotifyTarget(null); setNotifyMessage(""); setNotifyMessageAr(""); }}>{isAr ? "إرسال" : "Send"}</Button></>}
       >
-        <div className="space-y-2"><Label>{isAr ? "نص الرسالة" : "Message"}</Label><Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={4} dir={isAr ? "rtl" : "ltr"} placeholder={isAr ? "اكتب رسالتك هنا..." : "Type your message here..."} /></div>
+        <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
+          <div className="space-y-1.5">
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">ع</Badge> {isAr ? "نص الرسالة بالعربية" : "Message in Arabic"}</Label>
+            <Textarea value={notifyMessageAr} onChange={(e) => setNotifyMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="اكتب رسالتك بالعربية هنا..." />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">EN</Badge> {isAr ? "نص الرسالة بالإنجليزية" : "Message in English"}</Label>
+            <Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={3} dir="ltr" placeholder="Type your message in English here..." />
+          </div>
+        </div>
       </InlinePanel>
 
       {/* Bulk Actions */}
