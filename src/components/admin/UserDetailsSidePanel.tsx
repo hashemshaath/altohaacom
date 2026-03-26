@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, forwardRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,12 +10,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { InlineConfirm } from "@/components/ui/InlineConfirm";
 import { toast } from "sonner";
 import {
   User, Shield, Mail, Phone, Calendar, Globe, Award, Clock,
   CreditCard, FileText, Loader2, X, Copy, ExternalLink,
   CheckCircle2, Ban, ShieldCheck, ShieldOff, UserCheck, UserX,
+  Activity, BarChart3, TrendingUp,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -29,6 +31,29 @@ interface UserDetailsSidePanelProps {
   userId: string | null;
   onClose: () => void;
   onEdit: (userId: string) => void;
+}
+
+/** Calculate profile completeness percentage */
+function calcCompleteness(profile: any): { score: number; missing: string[] } {
+  const fields = [
+    { key: "full_name", label: "Full Name / الاسم" },
+    { key: "username", label: "Username / اسم المستخدم" },
+    { key: "email", label: "Email / البريد" },
+    { key: "phone", label: "Phone / الهاتف" },
+    { key: "avatar_url", label: "Avatar / الصورة" },
+    { key: "country_code", label: "Country / الدولة" },
+    { key: "city", label: "City / المدينة" },
+    { key: "bio", label: "Bio / النبذة" },
+    { key: "specialization", label: "Specialization / التخصص" },
+    { key: "date_of_birth", label: "Date of Birth / تاريخ الميلاد" },
+  ];
+  const missing: string[] = [];
+  let filled = 0;
+  for (const f of fields) {
+    if (profile[f.key]) filled++;
+    else missing.push(f.label);
+  }
+  return { score: Math.round((filled / fields.length) * 100), missing };
 }
 
 export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId, onClose, onEdit }: UserDetailsSidePanelProps) {
@@ -120,6 +145,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
   };
 
   const currentStatus = statusConfig[profile?.account_status || "pending"];
+  const completeness = profile ? calcCompleteness(profile) : { score: 0, missing: [] };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -127,7 +153,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
   };
 
   return (
-    <Card className="border-primary/20 shadow-lg rounded-2xl animate-in slide-in-from-end-4 duration-300 h-fit sticky top-4">
+    <Card className="border-primary/20 shadow-lg rounded-2xl animate-in slide-in-from-end-4 duration-300 h-fit sticky top-4" dir={isAr ? "rtl" : "ltr"}>
       <CardHeader className="pb-2 pt-4 px-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -149,17 +175,21 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
           <p className="text-center text-muted-foreground text-sm py-12">{isAr ? "لم يتم العثور على المستخدم" : "User not found"}</p>
         ) : (
           <ScrollArea className="max-h-[calc(100vh-200px)]">
-            <div className="space-y-4">
+            <div className="space-y-4 pe-2">
               {/* ── Profile Header ── */}
               <div className="flex items-start gap-3">
-                <Avatar className="h-14 w-14 border-2 border-primary/20 ring-2 ring-primary/10 ring-offset-2 ring-offset-background">
+                <Avatar className="h-14 w-14 border-2 border-primary/20 ring-2 ring-primary/10 ring-offset-2 ring-offset-background shrink-0">
                   <AvatarImage src={profile.avatar_url} />
                   <AvatarFallback className="text-sm font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-semibold text-sm truncate">{isAr ? (profile.full_name_ar || profile.full_name) : profile.full_name || "—"}</h3>
-                    {profile.is_verified && <Badge variant="outline" className="text-[9px] border-primary/30 text-primary gap-0.5"><CheckCircle2 className="h-2.5 w-2.5" />{isAr ? "موثق" : "Verified"}</Badge>}
+                    {profile.is_verified && (
+                      <Badge variant="outline" className="text-[9px] border-primary/30 text-primary gap-0.5">
+                        <CheckCircle2 className="h-2.5 w-2.5" />{isAr ? "موثق" : "Verified"}
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5" dir="ltr">@{profile.username || "—"}</p>
                   <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
@@ -175,10 +205,33 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                 </div>
               </div>
 
+              {/* ── Profile Completeness ── */}
+              <div className="rounded-xl border border-border/40 bg-muted/10 p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-medium flex items-center gap-1.5">
+                    <Activity className="h-3 w-3 text-primary" />
+                    {isAr ? "اكتمال الملف الشخصي" : "Profile Completeness"}
+                  </span>
+                  <span className={cn(
+                    "text-[11px] font-bold tabular-nums",
+                    completeness.score >= 80 ? "text-chart-3" : completeness.score >= 50 ? "text-chart-4" : "text-destructive"
+                  )}>
+                    {completeness.score}%
+                  </span>
+                </div>
+                <Progress value={completeness.score} className="h-1.5" />
+                {completeness.missing.length > 0 && completeness.score < 100 && (
+                  <p className="text-[10px] text-muted-foreground">
+                    {isAr ? "ينقص:" : "Missing:"} {completeness.missing.slice(0, 3).join(", ")}
+                    {completeness.missing.length > 3 && ` +${completeness.missing.length - 3}`}
+                  </p>
+                )}
+              </div>
+
               {/* ── Quick Actions ── */}
               <div className="flex items-center gap-1.5 flex-wrap">
                 <Button size="sm" className="rounded-xl gap-1.5 h-8 text-xs flex-1" onClick={() => onEdit(profile.user_id)}>
-                  <ExternalLink className="h-3 w-3" />{isAr ? "تعديل" : "Edit"}
+                  <ExternalLink className="h-3 w-3" />{isAr ? "تعديل الملف" : "Edit Profile"}
                 </Button>
                 {profile.account_status !== "active" && (
                   <Button size="sm" variant="outline" className="rounded-xl gap-1.5 h-8 text-xs text-chart-3 border-chart-3/30 hover:bg-chart-3/10" onClick={() => setConfirmAction({ type: "activate", userId: profile.user_id })}>
@@ -202,7 +255,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                   statusMutation.mutate({ status: statusMap[confirmAction.type] });
                 }}
                 title={confirmAction?.type === "activate" ? (isAr ? "تأكيد التفعيل" : "Confirm Activation") : (isAr ? "تأكيد الإيقاف" : "Confirm Suspension")}
-                description={confirmAction?.type === "activate" ? (isAr ? "سيتم تفعيل الحساب" : "This account will be activated") : (isAr ? "سيتم إيقاف الحساب" : "This account will be suspended")}
+                description={confirmAction?.type === "activate" ? (isAr ? "سيتم تفعيل هذا الحساب" : "This account will be activated") : (isAr ? "سيتم إيقاف هذا الحساب ولن يتمكن المستخدم من الدخول" : "This account will be suspended")}
                 confirmLabel={confirmAction?.type === "activate" ? (isAr ? "تفعيل" : "Activate") : (isAr ? "إيقاف" : "Suspend")}
                 variant={confirmAction?.type === "activate" ? "default" : "destructive"}
                 loading={statusMutation.isPending}
@@ -213,29 +266,39 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
               {/* ── Tabs ── */}
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="w-full rounded-xl bg-muted/40 p-1 h-auto">
-                  <TabsTrigger value="overview" className="text-[11px] flex-1 rounded-lg">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
-                  <TabsTrigger value="roles" className="text-[11px] flex-1 rounded-lg">{isAr ? "الأدوار" : "Roles"}</TabsTrigger>
-                  <TabsTrigger value="activity" className="text-[11px] flex-1 rounded-lg">{isAr ? "السجل" : "Activity"}</TabsTrigger>
+                  <TabsTrigger value="overview" className="text-[11px] flex-1 rounded-lg gap-1">
+                    <BarChart3 className="h-3 w-3" />{isAr ? "نظرة عامة" : "Overview"}
+                  </TabsTrigger>
+                  <TabsTrigger value="roles" className="text-[11px] flex-1 rounded-lg gap-1">
+                    <Shield className="h-3 w-3" />{isAr ? "الأدوار" : "Roles"}
+                  </TabsTrigger>
+                  <TabsTrigger value="activity" className="text-[11px] flex-1 rounded-lg gap-1">
+                    <Clock className="h-3 w-3" />{isAr ? "السجل" : "Activity"}
+                  </TabsTrigger>
                 </TabsList>
 
                 {/* ── Overview ── */}
                 <TabsContent value="overview" className="mt-3 space-y-3">
-                  {/* Contact Info */}
-                  <div className="space-y-2">
-                    <InfoRow icon={Mail} label={isAr ? "البريد" : "Email"} value={profile.email} dir="ltr" onCopy={() => copyToClipboard(profile.email || "")} />
-                    <InfoRow icon={Phone} label={isAr ? "الهاتف" : "Phone"} value={profile.phone || "—"} dir="ltr" />
-                    <InfoRow icon={Globe} label={isAr ? "الدولة" : "Country"} value={profile.country_code || "—"} />
-                    {profile.city && <InfoRow icon={Globe} label={isAr ? "المدينة" : "City"} value={profile.city} />}
+                  <SectionLabel icon={Mail} text={isAr ? "معلومات التواصل" : "Contact Info"} />
+                  <div className="space-y-1">
+                    <InfoRow icon={Mail} label={isAr ? "البريد الإلكتروني" : "Email"} value={profile.email} dir="ltr" onCopy={() => copyToClipboard(profile.email || "")} isAr={isAr} />
+                    <InfoRow icon={Phone} label={isAr ? "رقم الهاتف" : "Phone"} value={profile.phone || "—"} dir="ltr" isAr={isAr} />
+                    <InfoRow icon={Globe} label={isAr ? "الدولة" : "Country"} value={profile.country_code || "—"} isAr={isAr} />
+                    {profile.city && <InfoRow icon={Globe} label={isAr ? "المدينة" : "City"} value={profile.city} isAr={isAr} />}
                   </div>
+
                   <Separator className="my-2" />
-                  {/* Account Info */}
-                  <div className="space-y-2">
-                    <InfoRow icon={CreditCard} label={isAr ? "رقم الحساب" : "Account #"} value={profile.account_number || "—"} dir="ltr" onCopy={() => copyToClipboard(profile.account_number || "")} />
-                    <InfoRow icon={Calendar} label={isAr ? "تاريخ الانضمام" : "Joined"} value={profile.created_at ? format(new Date(profile.created_at), "yyyy-MM-dd") : "—"} />
-                    <InfoRow icon={Clock} label={isAr ? "آخر دخول" : "Last Login"} value={profile.last_login_at ? format(new Date(profile.last_login_at), "yyyy-MM-dd HH:mm") : "—"} />
+                  <SectionLabel icon={CreditCard} text={isAr ? "بيانات الحساب" : "Account Info"} />
+                  <div className="space-y-1">
+                    <InfoRow icon={CreditCard} label={isAr ? "رقم الحساب" : "Account #"} value={profile.account_number || "—"} dir="ltr" onCopy={() => copyToClipboard(profile.account_number || "")} isAr={isAr} />
+                    <InfoRow icon={Calendar} label={isAr ? "تاريخ الانضمام" : "Joined"} value={profile.created_at ? format(new Date(profile.created_at), "yyyy-MM-dd") : "—"} isAr={isAr} />
+                    <InfoRow icon={Clock} label={isAr ? "آخر تسجيل دخول" : "Last Login"} value={profile.last_login_at ? format(new Date(profile.last_login_at), "yyyy-MM-dd HH:mm") : "—"} isAr={isAr} />
+                    <InfoRow icon={TrendingUp} label={isAr ? "نوع الحساب" : "Account Type"} value={profile.account_type === "professional" ? (isAr ? "محترف" : "Professional") : (isAr ? "متابع" : "Fan")} isAr={isAr} />
+                    <InfoRow icon={Award} label={isAr ? "العضوية" : "Membership"} value={profile.membership_tier === "enterprise" ? (isAr ? "مؤسسي" : "Enterprise") : profile.membership_tier === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "أساسي" : "Basic")} isAr={isAr} />
                   </div>
+
                   <Separator className="my-2" />
-                  {/* Financial */}
+                  <SectionLabel icon={Award} text={isAr ? "الرصيد والنقاط" : "Balance & Points"} />
                   <div className="grid grid-cols-2 gap-2">
                     <MiniStatCard icon={Award} label={isAr ? "النقاط" : "Points"} value={String(data.wallet?.points_balance ?? profile.loyalty_points ?? 0)} color="text-chart-4" />
                     <MiniStatCard icon={CreditCard} label={isAr ? "الرصيد" : "Balance"} value={`${data.wallet?.balance ?? 0} SAR`} color="text-chart-2" />
@@ -247,10 +310,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
 
                 {/* ── Roles ── */}
                 <TabsContent value="roles" className="mt-3 space-y-2">
-                  <p className="text-xs font-semibold flex items-center gap-1.5 mb-3">
-                    <Shield className="h-3.5 w-3.5 text-primary" />
-                    {isAr ? "إدارة الأدوار" : "Role Management"}
-                  </p>
+                  <SectionLabel icon={Shield} text={isAr ? "إدارة الأدوار" : "Role Management"} />
                   {ALL_ROLES.map((role) => {
                     const hasRole = data.roles.includes(role);
                     return (
@@ -278,14 +338,11 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
 
                 {/* ── Activity ── */}
                 <TabsContent value="activity" className="mt-3">
-                  <p className="text-xs font-semibold flex items-center gap-1.5 mb-3">
-                    <Clock className="h-3.5 w-3.5 text-chart-4" />
-                    {isAr ? "سجل الإجراءات" : "Action History"}
-                  </p>
+                  <SectionLabel icon={Clock} text={isAr ? "سجل الإجراءات الإدارية" : "Admin Action History"} />
                   {data.actions.length === 0 ? (
-                    <p className="text-xs text-muted-foreground text-center py-6">{isAr ? "لا يوجد سجل" : "No activity yet"}</p>
+                    <p className="text-xs text-muted-foreground text-center py-6">{isAr ? "لا يوجد سجل إجراءات بعد" : "No activity yet"}</p>
                   ) : (
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 mt-2">
                       {data.actions.map((action: any, i: number) => (
                         <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-muted/20 border border-border/30">
                           <div className="h-6 w-6 rounded-full bg-muted/60 flex items-center justify-center shrink-0 mt-0.5">
@@ -293,7 +350,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium">{action.action_type.replace(/_/g, " ")}</p>
-                            <p className="text-[10px] text-muted-foreground tabular-nums mt-0.5">
+                            <p className="text-[10px] text-muted-foreground tabular-nums mt-0.5" dir="ltr">
                               {format(new Date(action.created_at), "yyyy-MM-dd HH:mm")}
                             </p>
                           </div>
@@ -312,17 +369,27 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
 });
 
 // ── Helper Components ──
-function InfoRow({ icon: Icon, label, value, dir, onCopy }: { icon: typeof Mail; label: string; value: string | null; dir?: string; onCopy?: () => void }) {
+
+function SectionLabel({ icon: Icon, text }: { icon: typeof Mail; text: string }) {
   return (
-    <div className="flex items-center justify-between gap-2 py-1.5">
-      <div className="flex items-center gap-2 text-muted-foreground min-w-0">
+    <p className="text-[11px] font-semibold text-foreground/80 flex items-center gap-1.5">
+      <Icon className="h-3.5 w-3.5 text-primary/70" />
+      {text}
+    </p>
+  );
+}
+
+function InfoRow({ icon: Icon, label, value, dir, onCopy, isAr }: { icon: typeof Mail; label: string; value: string | null; dir?: string; onCopy?: () => void; isAr?: boolean }) {
+  return (
+    <div className="flex items-center justify-between gap-2 py-1.5 px-1 rounded-lg hover:bg-muted/30 transition-colors">
+      <div className="flex items-center gap-2 text-muted-foreground min-w-0 shrink-0">
         <Icon className="h-3.5 w-3.5 shrink-0" />
-        <span className="text-[11px]">{label}</span>
+        <span className="text-[11px] whitespace-nowrap">{label}</span>
       </div>
       <div className="flex items-center gap-1 min-w-0">
-        <span className="text-xs font-medium truncate" dir={dir}>{value || "—"}</span>
+        <span className="text-xs font-medium truncate max-w-[160px]" dir={dir}>{value || "—"}</span>
         {onCopy && value && value !== "—" && (
-          <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md shrink-0" onClick={onCopy}>
+          <Button variant="ghost" size="icon" className="h-5 w-5 rounded-md shrink-0 opacity-50 hover:opacity-100" onClick={onCopy} title={isAr ? "نسخ" : "Copy"}>
             <Copy className="h-2.5 w-2.5" />
           </Button>
         )}
@@ -331,14 +398,16 @@ function InfoRow({ icon: Icon, label, value, dir, onCopy }: { icon: typeof Mail;
   );
 }
 
-function MiniStatCard({ icon: Icon, label, value, color }: { icon: typeof Award; label: string; value: string; color: string }) {
-  return (
-    <div className="rounded-xl border border-border/40 bg-muted/20 p-3">
-      <div className="flex items-center gap-1.5 mb-1">
-        <Icon className={cn("h-3 w-3", color)} />
-        <span className="text-[10px] text-muted-foreground">{label}</span>
+const MiniStatCard = forwardRef<HTMLDivElement, { icon: typeof Award; label: string; value: string; color: string }>(
+  function MiniStatCard({ icon: Icon, label, value, color }, ref) {
+    return (
+      <div ref={ref} className="rounded-xl border border-border/40 bg-muted/20 p-3">
+        <div className="flex items-center gap-1.5 mb-1">
+          <Icon className={cn("h-3 w-3", color)} />
+          <span className="text-[10px] text-muted-foreground">{label}</span>
+        </div>
+        <p className="text-sm font-semibold tabular-nums">{value}</p>
       </div>
-      <p className="text-sm font-semibold tabular-nums">{value}</p>
-    </div>
-  );
-}
+    );
+  }
+);
