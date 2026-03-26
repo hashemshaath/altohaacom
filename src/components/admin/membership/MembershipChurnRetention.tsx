@@ -462,8 +462,8 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                       fontSize: 12,
                     }}
                   />
-                  <Bar dataKey="retained" fill="hsl(var(--primary))" name={isAr ? "محتفظ" : "Retained"} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="churned" fill="hsl(var(--destructive))" name={isAr ? "متسرب" : "Churned"} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="retained" fill="hsl(var(--primary))" name={isAr ? "محتفظ بهم" : "Retained"} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="churned" fill="hsl(var(--destructive))" name={isAr ? "مفقودين" : "Lost"} radius={[4, 4, 0, 0]} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                 </BarChart>
               </ResponsiveContainer>
