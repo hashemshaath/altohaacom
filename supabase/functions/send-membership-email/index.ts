@@ -13,6 +13,9 @@ const BRAND = {
   url: "https://altoha.lovable.app",
 };
 
+const SENDER_DOMAIN = "notify.altoha.com";
+const FROM_DOMAIN = "notify.altoha.com";
+
 interface EmailRequest {
   type:
     | "expiry_warning"
@@ -23,7 +26,12 @@ interface EmailRequest {
     | "trial_started"
     | "trial_ending"
     | "trial_expired"
-    | "welcome";
+    | "welcome"
+    | "suspended"
+    | "reactivated"
+    | "cancellation_submitted"
+    | "cancellation_approved"
+    | "retention_offer";
   user_id: string;
   data?: Record<string, any>;
 }
@@ -168,6 +176,88 @@ function getEmailTemplate(type: string, data: Record<string, any>) {
         <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">عرض التفاصيل</a>
       `,
     },
+    suspended: {
+      subject_en: `⚠️ Your ${tn.en} membership has been suspended`,
+      subject_ar: `⚠️ تم تعليق عضويتك ${tn.ar}`,
+      body_en: `
+        <p>Hi ${name},</p>
+        <p>Your <strong>${tn.en}</strong> membership has been suspended.</p>
+        ${data.reason ? `<p>Reason: ${data.reason}</p>` : ""}
+        <p>Please contact our support team if you have any questions or to resolve this issue.</p>
+        <a href="${BRAND.url}/membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">Contact Support</a>
+      `,
+      body_ar: `
+        <p>مرحباً ${name}،</p>
+        <p>تم تعليق عضويتك <strong>${tn.ar}</strong>.</p>
+        ${data.reason ? `<p>السبب: ${data.reason}</p>` : ""}
+        <p>يرجى التواصل مع فريق الدعم إذا كان لديك أي أسئلة أو لحل هذه المسألة.</p>
+        <a href="${BRAND.url}/membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">تواصل مع الدعم</a>
+      `,
+    },
+    reactivated: {
+      subject_en: `✅ Your ${tn.en} membership has been reactivated`,
+      subject_ar: `✅ تم إعادة تفعيل عضويتك ${tn.ar}`,
+      body_en: `
+        <p>Hi ${name},</p>
+        <p>Great news! Your <strong>${tn.en}</strong> membership has been reactivated.</p>
+        <p>All your premium features are now restored. Welcome back!</p>
+        <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">View Membership</a>
+      `,
+      body_ar: `
+        <p>مرحباً ${name}،</p>
+        <p>أخبار رائعة! تم إعادة تفعيل عضويتك <strong>${tn.ar}</strong>.</p>
+        <p>تم استعادة جميع ميزاتك المميزة. مرحباً بعودتك!</p>
+        <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">عرض العضوية</a>
+      `,
+    },
+    cancellation_submitted: {
+      subject_en: `Your cancellation request has been received`,
+      subject_ar: `تم استلام طلب إلغاء عضويتك`,
+      body_en: `
+        <p>Hi ${name},</p>
+        <p>We've received your cancellation request for the <strong>${tn.en}</strong> membership.</p>
+        <p>Our team will review your request and get back to you shortly. You'll continue to have access to all features until a decision is made.</p>
+        <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">View Status</a>
+      `,
+      body_ar: `
+        <p>مرحباً ${name}،</p>
+        <p>تم استلام طلب إلغاء عضويتك <strong>${tn.ar}</strong>.</p>
+        <p>سيقوم فريقنا بمراجعة طلبك والرد عليك قريباً. ستستمر في الوصول لجميع الميزات حتى يتم اتخاذ القرار.</p>
+        <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">عرض الحالة</a>
+      `,
+    },
+    cancellation_approved: {
+      subject_en: `Your membership cancellation has been processed`,
+      subject_ar: `تمت معالجة طلب إلغاء عضويتك`,
+      body_en: `
+        <p>Hi ${name},</p>
+        <p>Your <strong>${tn.en}</strong> membership cancellation has been processed. Your account has been moved to the Basic tier.</p>
+        <p>We're sorry to see you go. You can re-subscribe anytime:</p>
+        <a href="${BRAND.url}/membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">Resubscribe</a>
+      `,
+      body_ar: `
+        <p>مرحباً ${name}،</p>
+        <p>تمت معالجة طلب إلغاء عضويتك <strong>${tn.ar}</strong>. تم نقل حسابك إلى المستوى الأساسي.</p>
+        <p>نأسف لرحيلك. يمكنك إعادة الاشتراك في أي وقت:</p>
+        <a href="${BRAND.url}/membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">إعادة الاشتراك</a>
+      `,
+    },
+    retention_offer: {
+      subject_en: `🎁 We have a special offer for you!`,
+      subject_ar: `🎁 لدينا عرض خاص لك!`,
+      body_en: `
+        <p>Hi ${name},</p>
+        <p>Before you go, we'd love to offer you something special to keep your <strong>${tn.en}</strong> membership:</p>
+        ${data.offer ? `<div style="background:#fff8e7;border:2px solid ${BRAND.hex};border-radius:12px;padding:16px;margin:16px 0;text-align:center;"><p style="font-size:18px;font-weight:700;color:${BRAND.hex};margin:0;">${data.offer}</p></div>` : ""}
+        <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">Accept Offer</a>
+      `,
+      body_ar: `
+        <p>مرحباً ${name}،</p>
+        <p>قبل أن تغادر، نود أن نقدم لك عرضاً خاصاً للحفاظ على عضويتك <strong>${tn.ar}</strong>:</p>
+        ${data.offer_ar || data.offer ? `<div style="background:#fff8e7;border:2px solid ${BRAND.hex};border-radius:12px;padding:16px;margin:16px 0;text-align:center;"><p style="font-size:18px;font-weight:700;color:${BRAND.hex};margin:0;">${data.offer_ar || data.offer}</p></div>` : ""}
+        <a href="${BRAND.url}/profile?tab=membership" style="display:inline-block;padding:12px 32px;background:${BRAND.hex};color:#fff;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0;">قبول العرض</a>
+      `,
+    },
   };
 
   return templates[type] || templates.expired;
@@ -187,7 +277,6 @@ function wrapInLayout(bodyHtml: string, dir: "ltr" | "rtl") {
     </div>
     <div style="padding:16px 32px;background:#fafafa;text-align:center;font-size:12px;color:#999;border-top:1px solid #eee;">
       <p style="margin:4px 0;">© ${new Date().getFullYear()} ${BRAND.name}. ${dir === "rtl" ? "جميع الحقوق محفوظة." : "All rights reserved."}</p>
-      <p style="margin:4px 0;"><a href="${BRAND.url}/unsubscribe" style="color:#999;text-decoration:underline;">${dir === "rtl" ? "إلغاء الاشتراك" : "Unsubscribe"}</a></p>
     </div>
   </div>
 </body>
@@ -214,6 +303,7 @@ Deno.serve(async (req) => {
       .single();
 
     if (profileError || !profile?.email) {
+      console.log("User not found or no email for", user_id);
       return new Response(
         JSON.stringify({ error: "User not found or no email" }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -233,38 +323,55 @@ Deno.serve(async (req) => {
     const bodyHtml = isAr ? template.body_ar : template.body_en;
     const html = wrapInLayout(bodyHtml, isAr ? "rtl" : "ltr");
 
-    // Queue email via pgmq
-    const { error: queueError } = await supabase.rpc("read_email_batch", {
-      queue_name: "email_queue",
-      batch_size: 0,
-      vt: 0,
+    // Generate idempotency key to prevent duplicate sends
+    const idempotencyKey = `membership-${type}-${user_id}-${new Date().toISOString().slice(0, 10)}`;
+
+    // Enqueue email via pgmq for reliable delivery
+    const { error: enqueueError } = await supabase.rpc("enqueue_email", {
+      queue_name: "transactional_emails",
+      payload: {
+        to: profile.email,
+        from: `${BRAND.name} <noreply@${FROM_DOMAIN}>`,
+        sender_domain: SENDER_DOMAIN,
+        subject,
+        html,
+        idempotency_key: idempotencyKey,
+        purpose: "transactional",
+        category: "membership",
+      },
     });
 
-    // Insert into email queue for processing by process-email-queue
-    const emailPayload = {
-      to: profile.email,
-      subject,
-      html,
-      category: "membership",
-      metadata: { type, user_id, tier: data.tier || data.new_tier },
-    };
+    if (enqueueError) {
+      console.error("Failed to enqueue membership email:", enqueueError);
+      // Fallback: log to email_send_log for audit
+      await supabase.from("email_send_log").insert({
+        recipient_email: profile.email,
+        template_name: `membership_${type}`,
+        subject,
+        status: "failed",
+        error_message: enqueueError.message,
+        metadata: { type, user_id, tier: data.tier || data.new_tier },
+      }).catch(() => {});
 
-    // Try direct queue, fallback to notifications table
-    const { data: queueResult, error: sendError } = await supabase
-      .from("notifications")
-      .insert({
-        user_id,
-        title: subject,
-        title_ar: template.subject_ar,
-        body: isAr ? template.subject_ar : template.subject_en,
-        body_ar: template.subject_ar,
-        type: `membership_email_${type}`,
-        link: "/profile?tab=membership",
-        metadata: { email_sent: true, email_to: profile.email, email_type: type },
-      });
+      return new Response(
+        JSON.stringify({ success: false, error: "Failed to enqueue email" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Log successful enqueue
+    await supabase.from("email_send_log").insert({
+      recipient_email: profile.email,
+      template_name: `membership_${type}`,
+      subject,
+      status: "pending",
+      metadata: { type, user_id, tier: data.tier || data.new_tier },
+    }).catch(() => {});
+
+    console.log(`Membership email enqueued: ${type} for ${profile.email}`);
 
     return new Response(
-      JSON.stringify({ success: true, email: profile.email, type }),
+      JSON.stringify({ success: true, email: profile.email, type, queued: true }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
