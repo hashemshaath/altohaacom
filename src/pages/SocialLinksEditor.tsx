@@ -2102,8 +2102,8 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Custom Footer */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <FileText className="h-3.5 w-3.5 text-primary" />
@@ -2112,19 +2112,19 @@ export default function SocialLinksEditor() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
-                          <Label className="text-xs cursor-pointer">{isAr ? "إظهار التذييل" : "Show Footer"}</Label>
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
+                          <Label className="text-xs cursor-pointer font-medium">{isAr ? "إظهار التذييل" : "Show Footer"}</Label>
                           <Switch checked={extra.show_footer} onCheckedChange={v => updateExtra({ show_footer: v })} />
                         </div>
                         {extra.show_footer && (
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div>
                               <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نص التذييل (EN)" : "Footer Text (EN)"}</Label>
-                              <Input value={extra.footer_text} onChange={e => updateExtra({ footer_text: e.target.value })} placeholder="© 2024 My Brand" dir="ltr" className="text-xs" />
+                              <Input value={extra.footer_text} onChange={e => updateExtra({ footer_text: e.target.value })} placeholder="© 2024 My Brand" dir="ltr" className="text-xs rounded-xl" />
                             </div>
                             <div>
                               <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نص التذييل (AR)" : "Footer Text (AR)"}</Label>
-                              <Input value={extra.footer_text_ar} onChange={e => updateExtra({ footer_text_ar: e.target.value })} placeholder="© 2024 علامتي" dir="rtl" className="text-xs" />
+                              <Input value={extra.footer_text_ar} onChange={e => updateExtra({ footer_text_ar: e.target.value })} placeholder="© 2024 علامتي" dir="rtl" className="text-xs rounded-xl" />
                             </div>
                           </div>
                         )}
@@ -2132,8 +2132,8 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Video Embeds */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Video className="h-3.5 w-3.5 text-primary" />
@@ -2145,16 +2145,16 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="pt-3">
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
-                          <Label className="text-xs cursor-pointer">{isAr ? "تفعيل المعاينة المضمنة" : "Enable Video Previews"}</Label>
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
+                          <Label className="text-xs cursor-pointer font-medium">{isAr ? "تفعيل المعاينة المضمنة" : "Enable Video Previews"}</Label>
                           <Switch checked={extra.show_video_embeds} onCheckedChange={v => updateExtra({ show_video_embeds: v })} />
                         </div>
                       </CardContent>
                     </Card>
 
                     {/* Contact Form */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <MessageCircle className="h-3.5 w-3.5 text-primary" />
@@ -2166,19 +2166,19 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
-                          <Label className="text-xs cursor-pointer">{isAr ? "إظهار نموذج التواصل" : "Show Contact Form"}</Label>
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
+                          <Label className="text-xs cursor-pointer font-medium">{isAr ? "إظهار نموذج التواصل" : "Show Contact Form"}</Label>
                           <Switch checked={extra.show_contact_form} onCheckedChange={v => updateExtra({ show_contact_form: v })} />
                         </div>
                         {extra.show_contact_form && (
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div>
                               <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان النموذج (EN)" : "Form Title (EN)"}</Label>
-                              <Input value={extra.contact_form_title} onChange={e => updateExtra({ contact_form_title: e.target.value })} dir="ltr" className="text-xs" />
+                              <Input value={extra.contact_form_title} onChange={e => updateExtra({ contact_form_title: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                             </div>
                             <div>
                               <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان النموذج (AR)" : "Form Title (AR)"}</Label>
-                              <Input value={extra.contact_form_title_ar} onChange={e => updateExtra({ contact_form_title_ar: e.target.value })} dir="rtl" className="text-xs" />
+                              <Input value={extra.contact_form_title_ar} onChange={e => updateExtra({ contact_form_title_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                             </div>
                           </div>
                         )}
@@ -2186,8 +2186,8 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Password Protection */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <EyeOff className="h-3.5 w-3.5 text-primary" />
@@ -2199,8 +2199,8 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
-                          <Label className="text-xs cursor-pointer">{isAr ? "تفعيل الحماية" : "Enable Protection"}</Label>
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
+                          <Label className="text-xs cursor-pointer font-medium">{isAr ? "تفعيل الحماية" : "Enable Protection"}</Label>
                           <Switch checked={extra.enable_password} onCheckedChange={v => updateExtra({ enable_password: v })} />
                         </div>
                         {extra.enable_password && (
@@ -2212,7 +2212,7 @@ export default function SocialLinksEditor() {
                               onChange={e => updateExtra({ page_password: e.target.value })}
                               placeholder={isAr ? "أدخل كلمة المرور" : "Enter page password"}
                               dir="ltr"
-                              className="text-xs"
+                              className="text-xs rounded-xl"
                             />
                           </div>
                         )}
@@ -2220,8 +2220,8 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Email Collection */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Upload className="h-3.5 w-3.5 text-primary" />
@@ -2233,8 +2233,8 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
-                        <div className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
-                          <Label className="text-xs cursor-pointer">{isAr ? "تفعيل جمع الإيميلات" : "Enable Email Collection"}</Label>
+                        <div className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30">
+                          <Label className="text-xs cursor-pointer font-medium">{isAr ? "تفعيل جمع الإيميلات" : "Enable Email Collection"}</Label>
                           <Switch checked={extra.enable_email_collection} onCheckedChange={v => updateExtra({ enable_email_collection: v })} />
                         </div>
                         {extra.enable_email_collection && (
@@ -2242,21 +2242,21 @@ export default function SocialLinksEditor() {
                             <div className="grid sm:grid-cols-2 gap-3">
                               <div>
                                 <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
-                                <Input value={extra.email_collection_title} onChange={e => updateExtra({ email_collection_title: e.target.value })} dir="ltr" className="text-xs" />
+                                <Input value={extra.email_collection_title} onChange={e => updateExtra({ email_collection_title: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                               </div>
                               <div>
                                 <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
-                                <Input value={extra.email_collection_title_ar} onChange={e => updateExtra({ email_collection_title_ar: e.target.value })} dir="rtl" className="text-xs" />
+                                <Input value={extra.email_collection_title_ar} onChange={e => updateExtra({ email_collection_title_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                               </div>
                             </div>
                             <div className="grid sm:grid-cols-2 gap-3">
                               <div>
                                 <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
-                                <Input value={extra.email_collection_description} onChange={e => updateExtra({ email_collection_description: e.target.value })} dir="ltr" className="text-xs" />
+                                <Input value={extra.email_collection_description} onChange={e => updateExtra({ email_collection_description: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                               </div>
                               <div>
                                 <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
-                                <Input value={extra.email_collection_description_ar} onChange={e => updateExtra({ email_collection_description_ar: e.target.value })} dir="rtl" className="text-xs" />
+                                <Input value={extra.email_collection_description_ar} onChange={e => updateExtra({ email_collection_description_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                               </div>
                             </div>
                           </div>
@@ -2265,8 +2265,8 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* SEO & Open Graph */}
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Search className="h-3.5 w-3.5 text-primary" />
@@ -2375,8 +2375,8 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    <Card className="overflow-hidden">
-                      <CardHeader className="pb-3 bg-gradient-to-r from-muted/40 to-transparent">
+                    <Card className="overflow-hidden border-border/40">
+                      <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
                             <Sparkles className="h-3.5 w-3.5 text-primary" />
