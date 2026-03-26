@@ -470,44 +470,75 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       {linkPerformance.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <MousePointerClick className="h-4 w-4 text-primary" />
-              {isAr ? "أداء الروابط" : "Link Performance"}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <MousePointerClick className="h-4 w-4 text-primary" />
+                {isAr ? "أداء الروابط" : "Link Performance"}
+              </CardTitle>
+              <Badge variant="outline" className="text-[10px]">
+                {periodDays} {isAr ? "يوم" : "days"} · {periodTotalClicks} {isAr ? "نقرة" : "clicks"}
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="rounded-xl border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-xs">#</TableHead>
+                    <TableHead className="text-xs w-8">#</TableHead>
                     <TableHead className="text-xs">{isAr ? "الرابط" : "Link"}</TableHead>
-                    <TableHead className="text-xs text-center">{isAr ? "نقرات" : "Clicks"}</TableHead>
+                    <TableHead className="text-xs text-center">{isAr ? "نقرات الفترة" : "Period Clicks"}</TableHead>
+                    <TableHead className="text-xs text-center">{isAr ? "الإجمالي" : "All-time"}</TableHead>
                     <TableHead className="text-xs text-center">CTR</TableHead>
                     <TableHead className="text-xs text-center">{isAr ? "الحصة" : "Share"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {linkPerformance.slice(0, 10).map((item, i) => (
-                    <TableRow key={item.id}>
+                  {linkPerformance.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-xs text-muted-foreground py-8">
+                        {isAr ? "لا توجد نقرات في هذه الفترة" : "No clicks in this period"}
+                      </TableCell>
+                    </TableRow>
+                  ) : linkPerformance.slice(0, 15).map((item, i) => (
+                    <TableRow key={item.id} className={item.clicks > 0 ? "" : "opacity-50"}>
                       <TableCell className="text-xs font-bold tabular-nums w-8">
-                        <span className={i < 3 ? "text-chart-2" : "text-muted-foreground"}>{i + 1}</span>
+                        {i < 3 && item.clicks > 0 ? (
+                          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-chart-2/15 text-chart-2 text-[10px] font-bold">{i + 1}</span>
+                        ) : (
+                          <span className="text-muted-foreground">{i + 1}</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-xs max-w-[200px]">
                         <div className="flex items-center gap-1.5">
-                          {item.icon && <span>{item.icon}</span>}
-                          <span className="truncate font-medium">{item.title}</span>
+                          {item.icon && <span className="text-sm">{item.icon}</span>}
+                          <div className="min-w-0">
+                            <span className="truncate font-medium block">{item.title}</span>
+                            {item.url && <span className="text-[9px] text-muted-foreground truncate block max-w-[180px]">{item.url.replace(/^https?:\/\//, "")}</span>}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-xs text-center font-bold tabular-nums">{item.clicks}</TableCell>
-                      <TableCell className="text-xs text-center tabular-nums">{item.ctr}%</TableCell>
+                      <TableCell className="text-xs text-center tabular-nums text-muted-foreground">{item.allTimeClicks}</TableCell>
+                      <TableCell className="text-xs text-center tabular-nums">
+                        <span className={item.ctr > 5 ? "text-chart-2 font-semibold" : ""}>{item.ctr}%</span>
+                      </TableCell>
                       <TableCell className="text-xs text-center">
                         <div className="flex items-center gap-1.5">
                           <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
-                            <div className="h-full rounded-full bg-primary/60" style={{ width: `${Math.max(item.share, 2)}%` }} />
+                            <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${Math.max(item.share, 2)}%` }} />
                           </div>
                           <span className="text-[10px] tabular-nums w-8">{item.share}%</span>
                         </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
                       </TableCell>
                     </TableRow>
                   ))}
