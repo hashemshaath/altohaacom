@@ -1,16 +1,20 @@
-import { memo } from "react";
+import { memo, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { History, ArrowUp, ArrowDown, Minus, Download } from "lucide-react";
+import { History, ArrowUp, ArrowDown, Minus, Download, Search, Filter } from "lucide-react";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -24,11 +28,19 @@ interface HistoryEntry {
   reason: string | null;
   changed_by: string | null;
   created_at: string;
+  profile?: {
+    full_name: string | null;
+    username: string | null;
+    avatar_url: string | null;
+    account_number: string | null;
+  };
 }
 
 const MembershipHistoryTab = memo(function MembershipHistoryTab() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [search, setSearch] = useState("");
+  const [directionFilter, setDirectionFilter] = useState("all");
 
   const { data: history, isLoading } = useQuery({
     queryKey: ["membership-history-admin"],
@@ -37,16 +49,54 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
         .from("membership_history")
         .select("id, user_id, previous_tier, new_tier, reason, changed_by, created_at")
         .order("created_at", { ascending: false })
-        .limit(200);
+        .limit(500);
       if (error) throw error;
-      return data as HistoryEntry[];
+
+      // Fetch profiles for all user_ids
+      const userIds = [...new Set((data || []).map(h => h.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, username, avatar_url, account_number")
+        .in("user_id", userIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
+      return (data || []).map(h => ({ ...h, profile: profileMap.get(h.user_id) || null })) as HistoryEntry[];
     },
   });
 
-  const bulk = useAdminBulkActions(history || []);
+  const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
+  const tierLabels: Record<string, string> = isAr
+    ? { basic: "أساسي", professional: "احترافي", enterprise: "مؤسسي" }
+    : { basic: "Basic", professional: "Professional", enterprise: "Enterprise" };
+
+  const getDirection = (prev: string | null, next: string) => {
+    const p = tierOrder[prev || "basic"] ?? 0;
+    const n = tierOrder[next] ?? 0;
+    if (n > p) return "upgrade";
+    if (n < p) return "downgrade";
+    return "lateral";
+  };
+
+  const filtered = useMemo(() => {
+    if (!history) return [];
+    return history.filter(h => {
+      if (directionFilter !== "all" && getDirection(h.previous_tier, h.new_tier) !== directionFilter) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        const name = (h.profile?.full_name || h.profile?.username || h.user_id || "").toLowerCase();
+        const acct = (h.profile?.account_number || "").toLowerCase();
+        const reason = (h.reason || "").toLowerCase();
+        if (!name.includes(q) && !acct.includes(q) && !reason.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [history, search, directionFilter]);
+
+  const bulk = useAdminBulkActions(filtered);
 
   const { exportCSV } = useCSVExport({
     columns: [
+      { header: isAr ? "العضو" : "Member", accessor: (r: HistoryEntry) => r.profile?.full_name || r.profile?.username || r.user_id },
       { header: isAr ? "من" : "From", accessor: (r: HistoryEntry) => r.previous_tier || "basic" },
       { header: isAr ? "إلى" : "To", accessor: (r: HistoryEntry) => r.new_tier },
       { header: isAr ? "السبب" : "Reason", accessor: (r: HistoryEntry) => r.reason || "" },
@@ -55,23 +105,16 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
     filename: "membership-history",
   });
 
-  const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
-  const tierLabels: Record<string, string> = isAr
-    ? { basic: "أساسي", professional: "احترافي", enterprise: "مؤسسي" }
-    : { basic: "Basic", professional: "Professional", enterprise: "Enterprise" };
-
   const getChangeIcon = (prev: string | null, next: string) => {
-    const prevOrder = tierOrder[prev || "basic"] ?? 0;
-    const nextOrder = tierOrder[next] ?? 0;
-    if (nextOrder > prevOrder) return <ArrowUp className="h-4 w-4 text-primary" />;
-    if (nextOrder < prevOrder) return <ArrowDown className="h-4 w-4 text-destructive" />;
+    const dir = getDirection(prev, next);
+    if (dir === "upgrade") return <ArrowUp className="h-4 w-4 text-primary" />;
+    if (dir === "downgrade") return <ArrowDown className="h-4 w-4 text-destructive" />;
     return <Minus className="h-4 w-4 text-muted-foreground" />;
   };
 
-  // Summary stats
-  const totalChanges = history?.length || 0;
-  const upgrades = history?.filter(h => (tierOrder[h.new_tier] || 0) > (tierOrder[h.previous_tier || "basic"] || 0)).length || 0;
-  const downgrades = history?.filter(h => (tierOrder[h.new_tier] || 0) < (tierOrder[h.previous_tier || "basic"] || 0)).length || 0;
+  const totalChanges = filtered.length;
+  const upgrades = filtered.filter(h => getDirection(h.previous_tier, h.new_tier) === "upgrade").length;
+  const downgrades = filtered.filter(h => getDirection(h.previous_tier, h.new_tier) === "downgrade").length;
 
   return (
     <div className="space-y-4">
@@ -97,10 +140,35 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
         </Card>
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "بحث بالاسم أو رقم الحساب..." : "Search by name or account..."}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="ps-9"
+          />
+        </div>
+        <Select value={directionFilter} onValueChange={setDirectionFilter}>
+          <SelectTrigger className="w-[140px]">
+            <Filter className="h-4 w-4 me-1.5" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+            <SelectItem value="upgrade">{isAr ? "ترقيات" : "Upgrades"}</SelectItem>
+            <SelectItem value="downgrade">{isAr ? "تخفيضات" : "Downgrades"}</SelectItem>
+            <SelectItem value="lateral">{isAr ? "تحويلات" : "Lateral"}</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <BulkActionBar
         count={bulk.count}
         onClear={bulk.clearSelection}
-        onExport={() => exportCSV(bulk.count > 0 ? bulk.selectedItems : history || [])}
+        onExport={() => exportCSV(bulk.count > 0 ? bulk.selectedItems : filtered)}
       />
 
       <Card>
@@ -113,7 +181,7 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
               </CardTitle>
               <CardDescription>{isAr ? "جميع تغييرات مستويات العضوية" : "All membership tier changes"}</CardDescription>
             </div>
-            <Button variant="outline" size="sm" onClick={() => exportCSV(history || [])} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => exportCSV(filtered)} className="gap-1.5">
               <Download className="h-3.5 w-3.5" />
               {isAr ? "تصدير" : "Export"}
             </Button>
@@ -124,48 +192,69 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
             <div className="flex justify-center py-8">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
-          ) : history?.length === 0 ? (
+          ) : filtered.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <History className="h-12 w-12 mx-auto mb-3 opacity-30" />
-              <p>{isAr ? "لا يوجد سجل بعد" : "No history yet"}</p>
+              <p>{isAr ? "لا يوجد سجل بعد" : "No history found"}</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-10">
-                    <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
-                  </TableHead>
-                  <TableHead>{isAr ? "التغيير" : "Change"}</TableHead>
-                  <TableHead>{isAr ? "من" : "From"}</TableHead>
-                  <TableHead>{isAr ? "إلى" : "To"}</TableHead>
-                  <TableHead>{isAr ? "السبب" : "Reason"}</TableHead>
-                  <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {history?.map((entry) => (
-                  <TableRow key={entry.id} className={bulk.isSelected(entry.id) ? "bg-primary/5" : ""}>
-                    <TableCell>
-                      <Checkbox checked={bulk.isSelected(entry.id)} onCheckedChange={() => bulk.toggleOne(entry.id)} />
-                    </TableCell>
-                    <TableCell>{getChangeIcon(entry.previous_tier, entry.new_tier)}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{tierLabels[entry.previous_tier || "basic"] || entry.previous_tier}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="default">{tierLabels[entry.new_tier] || entry.new_tier}</Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
-                      {entry.reason || "-"}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(entry.created_at), "MMM d, yyyy HH:mm")}
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+                    </TableHead>
+                    <TableHead>{isAr ? "العضو" : "Member"}</TableHead>
+                    <TableHead>{isAr ? "التغيير" : "Change"}</TableHead>
+                    <TableHead>{isAr ? "من" : "From"}</TableHead>
+                    <TableHead>{isAr ? "إلى" : "To"}</TableHead>
+                    <TableHead>{isAr ? "السبب" : "Reason"}</TableHead>
+                    <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((entry) => (
+                    <TableRow key={entry.id} className={bulk.isSelected(entry.id) ? "bg-primary/5" : ""}>
+                      <TableCell>
+                        <Checkbox checked={bulk.isSelected(entry.id)} onCheckedChange={() => bulk.toggleOne(entry.id)} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-7 w-7">
+                            <AvatarImage src={entry.profile?.avatar_url || undefined} />
+                            <AvatarFallback className="text-xs">
+                              {(entry.profile?.full_name || entry.profile?.username || "?").charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium truncate max-w-[120px]">
+                              {entry.profile?.full_name || entry.profile?.username || entry.user_id.slice(0, 8)}
+                            </p>
+                            {entry.profile?.account_number && (
+                              <p className="text-xs text-muted-foreground">{entry.profile.account_number}</p>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{getChangeIcon(entry.previous_tier, entry.new_tier)}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{tierLabels[entry.previous_tier || "basic"] || entry.previous_tier}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="default">{tierLabels[entry.new_tier] || entry.new_tier}</Badge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
+                        {entry.reason || "-"}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                        {format(new Date(entry.created_at), "MMM d, yyyy HH:mm", { locale: isAr ? ar : undefined })}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>
