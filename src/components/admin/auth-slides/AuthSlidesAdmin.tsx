@@ -49,11 +49,17 @@ export function AuthSlidesAdmin() {
         const { error } = await supabase.from("auth_hero_slides").update(slide).eq("id", slide.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("auth_hero_slides").insert({
-          ...slide,
-          created_by: user?.id,
+        const { error } = await supabase.from("auth_hero_slides").insert([{
+          title: slide.title || null,
+          title_ar: slide.title_ar || null,
+          subtitle: slide.subtitle || null,
+          subtitle_ar: slide.subtitle_ar || null,
+          image_url: slide.image_url!,
+          page_type: slide.page_type || "both",
+          is_active: slide.is_active ?? true,
           sort_order: slides.length,
-        });
+          created_by: user?.id,
+        }]);
         if (error) throw error;
       }
     },
