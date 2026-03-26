@@ -124,6 +124,14 @@ export default function HomepageDesignPage() {
             {isAr ? "هوية العلامة" : "Brand Identity"}
           </Link>
         </Button>
+
+        {/* Auth Slides */}
+        <Button size="sm" variant="ghost" className="h-auto py-2 text-xs gap-1 rounded-xl border border-border/40" asChild>
+          <Link to="/admin/auth-slides">
+            <Layers className="h-3.5 w-3.5" />
+            {isAr ? "شرائح تسجيل الدخول" : "Auth Slides"}
+          </Link>
+        </Button>
       </div>
 
       <div className="grid gap-3 xl:grid-cols-[1fr_260px]">
