@@ -107,7 +107,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
     : "";
 
   return (
-    <div className="hidden md:flex md:w-[460px] lg:w-[560px] xl:w-[660px] relative flex-col overflow-hidden border-e border-white/5">
+    <div className="hidden md:flex md:w-[460px] lg:w-[560px] xl:w-[660px] relative flex-col overflow-hidden border-e border-white/5 self-stretch min-h-[100dvh] sticky top-0">
       {/* Background image with smooth transition */}
       <div className="absolute inset-0">
         <img
