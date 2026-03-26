@@ -1216,44 +1216,59 @@ export default function SocialLinksEditor() {
                           {isAr ? "إضافة رابط جديد" : "Add New Link"}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-3 pt-3">
+                      <CardContent className="space-y-4 pt-4 pb-5 px-5">
                         <div className="grid sm:grid-cols-2 gap-3">
-                          <Input placeholder={isAr ? "العنوان (EN)" : "Title (EN)"} value={newLink.title} onChange={e => setNewLink(l => ({ ...l, title: e.target.value }))} dir="ltr" />
-                          <Input placeholder={isAr ? "العنوان (AR)" : "Title (AR)"} value={newLink.title_ar} onChange={e => setNewLink(l => ({ ...l, title_ar: e.target.value }))} dir="rtl" />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
+                            <Input placeholder={isAr ? "أدخل العنوان بالإنجليزية" : "Enter title in English"} value={newLink.title} onChange={e => setNewLink(l => ({ ...l, title: e.target.value }))} dir="ltr" className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
+                            <Input placeholder={isAr ? "أدخل العنوان بالعربية" : "Enter title in Arabic"} value={newLink.title_ar} onChange={e => setNewLink(l => ({ ...l, title_ar: e.target.value }))} dir="rtl" className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                          </div>
                         </div>
-                        <Input placeholder="https://example.com" value={newLink.url} onChange={e => handleNewLinkUrlChange(e.target.value)} dir="ltr" />
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-semibold">{isAr ? "الرابط" : "URL"}</Label>
+                          <Input placeholder="https://example.com" value={newLink.url} onChange={e => handleNewLinkUrlChange(e.target.value)} dir="ltr" className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                        </div>
                         <div className="grid grid-cols-2 gap-3">
-                          <Input placeholder={isAr ? "إيموجي 🔗" : "Emoji 🔗"} value={newLink.icon} onChange={e => setNewLink(l => ({ ...l, icon: e.target.value }))} />
-                          <Select value={newLink.link_type} onValueChange={v => setNewLink(l => ({ ...l, link_type: v }))}>
-                            <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="custom">{isAr ? "مخصص" : "Custom"}</SelectItem>
-                              <SelectItem value="menu">{isAr ? "قائمة طعام" : "Menu"}</SelectItem>
-                              <SelectItem value="store">{isAr ? "متجر" : "Store"}</SelectItem>
-                              <SelectItem value="booking">{isAr ? "حجز" : "Booking"}</SelectItem>
-                              <SelectItem value="portfolio">{isAr ? "أعمال" : "Portfolio"}</SelectItem>
-                              <SelectItem value="video">{isAr ? "فيديو" : "Video"}</SelectItem>
-                              <SelectItem value="music">{isAr ? "موسيقى" : "Music"}</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "أيقونة" : "Icon"}</Label>
+                            <Input placeholder={isAr ? "إيموجي 🔗" : "Emoji 🔗"} value={newLink.icon} onChange={e => setNewLink(l => ({ ...l, icon: e.target.value }))} className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "النوع" : "Type"}</Label>
+                            <Select value={newLink.link_type} onValueChange={v => setNewLink(l => ({ ...l, link_type: v }))}>
+                              <SelectTrigger className="h-10 rounded-xl border-border/40 bg-muted/20"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="custom">{isAr ? "مخصص" : "Custom"}</SelectItem>
+                                <SelectItem value="menu">{isAr ? "قائمة طعام" : "Menu"}</SelectItem>
+                                <SelectItem value="store">{isAr ? "متجر" : "Store"}</SelectItem>
+                                <SelectItem value="booking">{isAr ? "حجز" : "Booking"}</SelectItem>
+                                <SelectItem value="portfolio">{isAr ? "أعمال" : "Portfolio"}</SelectItem>
+                                <SelectItem value="video">{isAr ? "فيديو" : "Video"}</SelectItem>
+                                <SelectItem value="music">{isAr ? "موسيقى" : "Music"}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                         {/* Scheduling */}
                         <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" />{isAr ? "يبدأ من" : "Start Date"}</Label>
-                            <Input type="datetime-local" value={newLink.scheduled_start} onChange={e => setNewLink(l => ({ ...l, scheduled_start: e.target.value }))} className="text-xs h-8" dir="ltr" />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" />{isAr ? "يبدأ من" : "Start Date"}</Label>
+                            <Input type="datetime-local" value={newLink.scheduled_start} onChange={e => setNewLink(l => ({ ...l, scheduled_start: e.target.value }))} className="text-xs h-9 rounded-xl border-border/40 bg-muted/20" dir="ltr" />
                           </div>
-                          <div>
-                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{isAr ? "ينتهي في" : "End Date"}</Label>
-                            <Input type="datetime-local" value={newLink.scheduled_end} onChange={e => setNewLink(l => ({ ...l, scheduled_end: e.target.value }))} className="text-xs h-8" dir="ltr" />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{isAr ? "ينتهي في" : "End Date"}</Label>
+                            <Input type="datetime-local" value={newLink.scheduled_end} onChange={e => setNewLink(l => ({ ...l, scheduled_end: e.target.value }))} className="text-xs h-9 rounded-xl border-border/40 bg-muted/20" dir="ltr" />
                           </div>
                         </div>
                         {/* Page Tab Assignment */}
                         {extra.pages.length > 0 && (
-                          <div>
-                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-3 w-3" />{isAr ? "الصفحة" : "Page"}</Label>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-3 w-3" />{isAr ? "الصفحة" : "Page"}</Label>
                             <Select value={newLink.page_tab} onValueChange={v => setNewLink(l => ({ ...l, page_tab: v }))}>
-                              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                              <SelectTrigger className="h-9 text-xs rounded-xl border-border/40 bg-muted/20"><SelectValue /></SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="main">{isAr ? "الرئيسية" : "Main"}</SelectItem>
                                 {extra.pages.map(pg => (
@@ -1263,9 +1278,9 @@ export default function SocialLinksEditor() {
                             </Select>
                           </div>
                         )}
-                        <Button onClick={handleAddLink} disabled={addItem.isPending} className="w-full gap-1.5" size="sm">
-                          {addItem.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
-                          {isAr ? "إضافة" : "Add Link"}
+                        <Button onClick={handleAddLink} disabled={addItem.isPending} className="w-full gap-2 h-10 rounded-xl font-semibold">
+                          {addItem.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                          {isAr ? "إضافة الرابط" : "Add Link"}
                         </Button>
                       </CardContent>
                     </Card>
