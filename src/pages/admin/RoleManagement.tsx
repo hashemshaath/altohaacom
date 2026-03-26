@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { usePermissions, useRolePermissions } from "@/hooks/usePermissions";
@@ -11,19 +11,18 @@ import { Button } from "@/components/ui/button";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { Progress } from "@/components/ui/progress";
 import {
   Shield, ChefHat, Award, Users, Hand, Heart, Headphones, Eye, Save, Loader2, Lock,
-  Search, UserPlus, UserMinus, CheckCircle2, XCircle, BarChart3, Grid3X3, UserCog,
-  ShieldCheck, ShieldOff, ChevronDown, ChevronUp, AlertTriangle, Activity, Download,
-  PenTool,
+  Search, CheckCircle2, XCircle, Grid3X3, UserCog, ShieldCheck, ShieldOff,
+  ChevronDown, ChevronUp, AlertTriangle, Activity, Download, PenTool, Copy,
+  RotateCcw, Trash2, Info,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { format } from "date-fns";
@@ -31,15 +30,15 @@ import { format } from "date-fns";
 type AppRole = Database["public"]["Enums"]["app_role"];
 
 const ROLE_META: Record<AppRole, { icon: typeof Shield; color: string; labelEn: string; labelAr: string; descEn: string; descAr: string }> = {
-  chef: { icon: ChefHat, color: "bg-chart-2/10 text-chart-2", labelEn: "Chef", labelAr: "شيف", descEn: "Professional chefs on the platform", descAr: "الطهاة المحترفين على المنصة" },
-  judge: { icon: Award, color: "bg-chart-3/10 text-chart-3", labelEn: "Judge", labelAr: "حَكَم", descEn: "Competition judges and evaluators", descAr: "حكام ومقيمو المسابقات" },
-  student: { icon: Users, color: "bg-primary/10 text-primary", labelEn: "Student", labelAr: "طالب", descEn: "Culinary students and learners", descAr: "طلاب ومتعلمي الطهي" },
-  organizer: { icon: Shield, color: "bg-destructive/10 text-destructive", labelEn: "Organizer", labelAr: "منظم", descEn: "Event and competition organizers", descAr: "منظمو الفعاليات والمسابقات" },
-  volunteer: { icon: Hand, color: "bg-chart-5/10 text-chart-5", labelEn: "Volunteer", labelAr: "متطوع", descEn: "Platform volunteers and helpers", descAr: "المتطوعون والمساعدون" },
-  sponsor: { icon: Heart, color: "bg-chart-1/10 text-chart-1", labelEn: "Sponsor", labelAr: "راعي", descEn: "Corporate sponsors and partners", descAr: "الرعاة والشركاء" },
+  chef: { icon: ChefHat, color: "bg-chart-2/10 text-chart-2", labelEn: "Chef", labelAr: "شيف", descEn: "Professional chefs", descAr: "الطهاة المحترفين" },
+  judge: { icon: Award, color: "bg-chart-3/10 text-chart-3", labelEn: "Judge", labelAr: "حَكَم", descEn: "Competition judges", descAr: "حكام المسابقات" },
+  student: { icon: Users, color: "bg-primary/10 text-primary", labelEn: "Student", labelAr: "طالب", descEn: "Culinary students", descAr: "طلاب الطهي" },
+  organizer: { icon: Shield, color: "bg-destructive/10 text-destructive", labelEn: "Organizer", labelAr: "منظم", descEn: "Event organizers", descAr: "منظمو الفعاليات" },
+  volunteer: { icon: Hand, color: "bg-chart-5/10 text-chart-5", labelEn: "Volunteer", labelAr: "متطوع", descEn: "Platform volunteers", descAr: "المتطوعون" },
+  sponsor: { icon: Heart, color: "bg-chart-1/10 text-chart-1", labelEn: "Sponsor", labelAr: "راعي", descEn: "Corporate sponsors", descAr: "الرعاة" },
   assistant: { icon: Headphones, color: "bg-accent text-accent-foreground", labelEn: "Assistant", labelAr: "مساعد", descEn: "Support assistants", descAr: "مساعدو الدعم" },
-  supervisor: { icon: Eye, color: "bg-chart-4/10 text-chart-4", labelEn: "Supervisor", labelAr: "مشرف", descEn: "Full platform supervisors (admin)", descAr: "مشرفو المنصة (مدراء)" },
-  content_writer: { icon: PenTool, color: "bg-chart-1/10 text-chart-1", labelEn: "Content Writer", labelAr: "كاتب محتوى", descEn: "Content creators, editors, and SEO specialists", descAr: "منشئو المحتوى والمحررون ومتخصصو السيو" },
+  supervisor: { icon: Eye, color: "bg-chart-4/10 text-chart-4", labelEn: "Supervisor", labelAr: "مشرف", descEn: "Platform supervisors", descAr: "مشرفو المنصة" },
+  content_writer: { icon: PenTool, color: "bg-chart-1/10 text-chart-1", labelEn: "Content Writer", labelAr: "كاتب محتوى", descEn: "Content & SEO specialists", descAr: "متخصصو المحتوى والسيو" },
 };
 
 const ALL_ROLES: AppRole[] = ["supervisor", "organizer", "content_writer", "judge", "chef", "student", "volunteer", "sponsor", "assistant"];
@@ -47,8 +46,10 @@ const ALL_ROLES: AppRole[] = ["supervisor", "organizer", "content_writer", "judg
 export default function RoleManagement() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const t = (en: string, ar: string) => isAr ? ar : en;
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
   const [activeTab, setActiveTab] = useState("overview");
   const [activeRole, setActiveRole] = useState<AppRole>("chef");
   const [saving, setSaving] = useState(false);
@@ -57,6 +58,9 @@ export default function RoleManagement() {
   const [userSearch, setUserSearch] = useState("");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [matrixSearch, setMatrixSearch] = useState("");
+  const [compareRoles, setCompareRoles] = useState<AppRole[]>([]);
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
+  const [permSearch, setPermSearch] = useState("");
 
   const { data: permissions = [] } = usePermissions();
   const { data: rolePerms = [], isLoading: rolePermsLoading } = useRolePermissions(activeRole);
@@ -75,7 +79,6 @@ export default function RoleManagement() {
     staleTime: 1000 * 60 * 2,
   });
 
-  // Recent role changes for activity log
   const { data: recentChanges = [] } = useQuery({
     queryKey: ["roleActivityLog"],
     queryFn: async () => {
@@ -92,7 +95,6 @@ export default function RoleManagement() {
     staleTime: 1000 * 60,
   });
 
-  // Users with roles for assignment tab
   const { data: usersForAssignment = [], isLoading: usersLoading } = useQuery({
     queryKey: ["usersForRoleAssignment", userSearch],
     queryFn: async () => {
@@ -118,7 +120,6 @@ export default function RoleManagement() {
     staleTime: 1000 * 30,
   });
 
-  // Permission overrides
   const { data: overrides = [], isLoading: overridesLoading } = useQuery({
     queryKey: ["permissionOverrides"],
     queryFn: async () => {
@@ -141,49 +142,49 @@ export default function RoleManagement() {
     staleTime: 1000 * 60,
   });
 
-  // Sync selectedPerms when role data loads
+  // Sync selectedPerms
   if (!rolePermsLoading && lastSyncedRole !== activeRole) {
     const ids = new Set(rolePerms.map((rp: any) => rp.permission_id as string));
     setSelectedPerms(ids);
     setLastSyncedRole(activeRole);
   }
 
-  const handleRoleChange = (role: AppRole) => {
+  const handleRoleChange = useCallback((role: AppRole) => {
     setActiveRole(role);
     setLastSyncedRole(null);
-  };
+  }, []);
 
-  const togglePerm = (permId: string) => {
+  const togglePerm = useCallback((permId: string) => {
     setSelectedPerms((prev) => {
       const next = new Set(prev);
       if (next.has(permId)) next.delete(permId); else next.add(permId);
       return next;
     });
-  };
+  }, []);
 
-  const toggleCategory = (cat: string) => {
+  const toggleCategory = useCallback((cat: string) => {
     setExpandedCategories((prev) => {
       const next = new Set(prev);
       if (next.has(cat)) next.delete(cat); else next.add(cat);
       return next;
     });
-  };
+  }, []);
 
-  const selectAllInCategory = (catPerms: any[]) => {
+  const selectAllInCategory = useCallback((catPerms: any[]) => {
     setSelectedPerms((prev) => {
       const next = new Set(prev);
       catPerms.forEach((p) => next.add(p.id));
       return next;
     });
-  };
+  }, []);
 
-  const deselectAllInCategory = (catPerms: any[]) => {
+  const deselectAllInCategory = useCallback((catPerms: any[]) => {
     setSelectedPerms((prev) => {
       const next = new Set(prev);
       catPerms.forEach((p) => next.delete(p.id));
       return next;
     });
-  };
+  }, []);
 
   const handleSave = async () => {
     setSaving(true);
@@ -196,13 +197,19 @@ export default function RoleManagement() {
       }
       queryClient.invalidateQueries({ queryKey: ["rolePermissions"] });
       queryClient.invalidateQueries({ queryKey: ["roleStats"] });
-      toast({ title: isAr ? "تم حفظ الصلاحيات بنجاح" : "Permissions saved successfully" });
+      toast({ title: t("Permissions saved successfully", "تم حفظ الصلاحيات بنجاح") });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err.message });
     } finally {
       setSaving(false);
     }
   };
+
+  const copyPermsFromRole = useCallback((sourceRole: AppRole) => {
+    const sourcePerms = allRolePerms.filter((rp: any) => rp.role === sourceRole).map((rp: any) => rp.permission_id as string);
+    setSelectedPerms(new Set(sourcePerms));
+    toast({ title: t(`Copied permissions from ${ROLE_META[sourceRole].labelEn}`, `تم نسخ الصلاحيات من ${ROLE_META[sourceRole].labelAr}`) });
+  }, [allRolePerms, toast, t]);
 
   const toggleUserRole = useMutation({
     mutationFn: async ({ userId, role, add }: { userId: string; role: AppRole; add: boolean }) => {
@@ -217,10 +224,10 @@ export default function RoleManagement() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["usersForRoleAssignment"] });
       queryClient.invalidateQueries({ queryKey: ["roleStats"] });
-      toast({ title: isAr ? "تم تحديث الأدوار" : "Roles updated" });
+      toast({ title: t("Roles updated", "تم تحديث الأدوار") });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err.message });
     },
   });
 
@@ -230,34 +237,53 @@ export default function RoleManagement() {
       if (error) throw error;
     },
     onSuccess: () => {
+      setConfirmingDeleteId(null);
       queryClient.invalidateQueries({ queryKey: ["permissionOverrides"] });
-      toast({ title: isAr ? "تم حذف الاستثناء" : "Override removed" });
+      toast({ title: t("Override removed", "تم حذف الاستثناء") });
     },
   });
 
   // Group permissions by category
-  const grouped = permissions.reduce<Record<string, typeof permissions>>((acc, p) => {
+  const grouped = useMemo(() => permissions.reduce<Record<string, typeof permissions>>((acc, p) => {
     const cat = p.category || "general";
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(p);
     return acc;
-  }, {});
+  }, {}), [permissions]);
 
-  // Build matrix data with search filter
+  // Filtered groups for permissions tab
+  const filteredGrouped = useMemo(() => {
+    if (!permSearch.trim()) return grouped;
+    const result: Record<string, typeof permissions> = {};
+    Object.entries(grouped).forEach(([cat, perms]) => {
+      const filtered = perms.filter(p =>
+        p.name.toLowerCase().includes(permSearch.toLowerCase()) ||
+        p.code.toLowerCase().includes(permSearch.toLowerCase()) ||
+        (p.name_ar && p.name_ar.includes(permSearch))
+      );
+      if (filtered.length > 0) result[cat] = filtered;
+    });
+    return result;
+  }, [grouped, permSearch]);
+
+  // Matrix data
   const matrixData = useMemo(() => {
+    const rolesToShow = compareRoles.length >= 2 ? compareRoles : ALL_ROLES;
     return Object.entries(grouped).map(([category, perms]) => ({
       category,
       perms: perms
-        .filter(p => !matrixSearch || p.name.toLowerCase().includes(matrixSearch.toLowerCase()) || p.code.toLowerCase().includes(matrixSearch.toLowerCase()))
+        .filter(p => !matrixSearch || p.name.toLowerCase().includes(matrixSearch.toLowerCase()) || p.code.toLowerCase().includes(matrixSearch.toLowerCase()) || (p.name_ar && p.name_ar.includes(matrixSearch)))
         .map((p) => ({
           ...p,
-          roles: ALL_ROLES.reduce<Record<string, boolean>>((acc, role) => {
+          roles: rolesToShow.reduce<Record<string, boolean>>((acc, role) => {
             acc[role] = allRolePerms.some((rp: any) => rp.role === role && rp.permission_id === p.id);
             return acc;
           }, {}),
         })),
     })).filter(g => g.perms.length > 0);
-  }, [grouped, allRolePerms, matrixSearch]);
+  }, [grouped, allRolePerms, matrixSearch, compareRoles]);
+
+  const rolesToShow = compareRoles.length >= 2 ? compareRoles : ALL_ROLES;
 
   // Security score
   const securityScore = useMemo(() => {
@@ -269,31 +295,32 @@ export default function RoleManagement() {
   }, [allRolePerms, overrides]);
 
   const totalPerms = permissions.length;
+  const totalUsers = useMemo(() => roleStats.reduce((s, r) => s + r.count, 0), [roleStats]);
 
   const { exportCSV: exportUsersCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Name", accessor: (u: any) => u.full_name || "" },
-      { header: isAr ? "اسم المستخدم" : "Username", accessor: (u: any) => u.username || "" },
-      { header: isAr ? "البريد" : "Email", accessor: (u: any) => u.email || "" },
-      { header: isAr ? "رقم الحساب" : "Account #", accessor: (u: any) => u.account_number || "" },
-      { header: isAr ? "الأدوار" : "Roles", accessor: (u: any) => u.roles?.join(", ") || "" },
+      { header: t("Name", "الاسم"), accessor: (u: any) => u.full_name || "" },
+      { header: t("Username", "اسم المستخدم"), accessor: (u: any) => u.username || "" },
+      { header: t("Email", "البريد"), accessor: (u: any) => u.email || "" },
+      { header: t("Account #", "رقم الحساب"), accessor: (u: any) => u.account_number || "" },
+      { header: t("Roles", "الأدوار"), accessor: (u: any) => u.roles?.join(", ") || "" },
     ],
     filename: "role-assignments",
   });
 
   const { exportCSV: exportActivityCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الإجراء" : "Action", accessor: (r: any) => r.action_type?.replace(/_/g, " ") || "" },
-      { header: isAr ? "التفاصيل" : "Details", accessor: (r: any) => r.details ? JSON.stringify(r.details) : "" },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+      { header: t("Action", "الإجراء"), accessor: (r: any) => r.action_type?.replace(/_/g, " ") || "" },
+      { header: t("Details", "التفاصيل"), accessor: (r: any) => r.details ? JSON.stringify(r.details) : "" },
+      { header: t("Date", "التاريخ"), accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
     ],
     filename: "role-activity-log",
   });
 
   const exportMatrixCSV = () => {
-    const headers = ["Category", "Permission", "Code", ...ALL_ROLES.map(r => ROLE_META[r].labelEn)];
+    const headers = [t("Category", "التصنيف"), t("Permission", "الصلاحية"), t("Code", "الكود"), ...rolesToShow.map(r => ROLE_META[r].labelEn)];
     const rows = matrixData.flatMap(({ category, perms }) =>
-      perms.map(p => [category, p.name, p.code, ...ALL_ROLES.map(r => p.roles[r] ? "✓" : "")])
+      perms.map(p => [category, p.name, p.code, ...rolesToShow.map(r => p.roles[r] ? "✓" : "")])
     );
     const csv = "\uFEFF" + [headers, ...rows].map(r => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -305,110 +332,159 @@ export default function RoleManagement() {
     URL.revokeObjectURL(url);
   };
 
+  const toggleCompareRole = (role: AppRole) => {
+    setCompareRoles(prev =>
+      prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
+    );
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
       <AdminPageHeader
         icon={Shield}
-        title={isAr ? "الأدوار والصلاحيات" : "Roles & Permissions"}
-        description={isAr ? "مركز التحكم الكامل في الأدوار والصلاحيات والاستثناءات" : "Full control center for roles, permissions, and overrides"}
+        title={t("Roles & Permissions", "الأدوار والصلاحيات")}
+        description={t("Full control center for roles, permissions, and overrides", "مركز التحكم الكامل في الأدوار والصلاحيات والاستثناءات")}
         actions={
           <div className="flex items-center gap-2">
-            <Badge variant={securityScore >= 80 ? "default" : securityScore >= 50 ? "secondary" : "destructive"} className="gap-1">
+            <Badge variant={securityScore >= 80 ? "default" : securityScore >= 50 ? "secondary" : "destructive"} className="gap-1.5 px-3 py-1">
               <Shield className="h-3 w-3" />
-              {securityScore}% {isAr ? "أمان" : "Secure"}
+              {securityScore}% {t("Secure", "أمان")}
             </Badge>
-            <Badge variant="outline" className="gap-1">
+            <Badge variant="outline" className="gap-1.5 px-3 py-1">
               <Lock className="h-3 w-3" />
-              {totalPerms} {isAr ? "صلاحية" : "Perms"}
+              {totalPerms} {t("Perms", "صلاحية")}
+            </Badge>
+            <Badge variant="outline" className="gap-1.5 px-3 py-1">
+              <Users className="h-3 w-3" />
+              {totalUsers} {t("Assigned", "معيّن")}
             </Badge>
           </div>
         }
       />
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+      {/* ─── Summary Stats ─── */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-9">
         {roleStats.map(({ role, count }) => {
           const meta = ROLE_META[role];
           const Icon = meta.icon;
           const permCount = allRolePerms.filter((rp: any) => rp.role === role).length;
+          const permPercent = totalPerms > 0 ? Math.round((permCount / totalPerms) * 100) : 0;
           return (
-            <Card key={role} className="rounded-2xl border-border/40 cursor-pointer group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30"
-              onClick={() => { setActiveTab("permissions"); handleRoleChange(role); }}>
-              <CardContent className="p-3 text-center">
-                <div className={`mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${meta.color}`}>
+            <Card
+              key={role}
+              className={`rounded-2xl cursor-pointer group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] ${
+                activeRole === role && activeTab === "permissions" ? "ring-2 ring-primary border-primary/40" : "border-border/40 hover:border-primary/30"
+              }`}
+              onClick={() => { setActiveTab("permissions"); handleRoleChange(role); }}
+            >
+              <CardContent className="p-3 text-center space-y-1">
+                <div className={`mx-auto flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${meta.color}`}>
                   <Icon className="h-4 w-4" />
                 </div>
-                <p className="text-xs font-medium truncate">{isAr ? meta.labelAr : meta.labelEn}</p>
-                <AnimatedCounter value={count} className="text-lg font-bold" />
-                <p className="text-[10px] text-muted-foreground">{permCount}/{totalPerms} {isAr ? "صلاحية" : "perms"}</p>
+                <p className="text-xs font-semibold truncate">{isAr ? meta.labelAr : meta.labelEn}</p>
+                <AnimatedCounter value={count} className="text-lg font-bold leading-none" />
+                <Progress value={permPercent} className="h-1 mt-1" />
+                <p className="text-[10px] text-muted-foreground">{permCount}/{totalPerms}</p>
               </CardContent>
             </Card>
           );
         })}
       </div>
 
-      {/* Main Tabs */}
+      {/* ─── Main Tabs ─── */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="h-auto flex-wrap gap-1 rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1.5">
           <TabsTrigger value="overview" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Grid3X3 className="h-3.5 w-3.5" />
-            {isAr ? "المصفوفة" : "Matrix"}
+            {t("Matrix", "المصفوفة")}
           </TabsTrigger>
           <TabsTrigger value="permissions" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <ShieldCheck className="h-3.5 w-3.5" />
-            {isAr ? "الصلاحيات" : "Permissions"}
+            {t("Permissions", "الصلاحيات")}
           </TabsTrigger>
           <TabsTrigger value="users" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <UserCog className="h-3.5 w-3.5" />
-            {isAr ? "تعيين الأدوار" : "Assign Roles"}
+            {t("Assign Roles", "تعيين الأدوار")}
           </TabsTrigger>
           <TabsTrigger value="overrides" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <AlertTriangle className="h-3.5 w-3.5" />
-            {isAr ? "الاستثناءات" : "Overrides"}
+            {t("Overrides", "الاستثناءات")}
+            {overrides.length > 0 && <Badge variant="destructive" className="text-[10px] h-4 px-1 ms-1">{overrides.length}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Activity className="h-3.5 w-3.5" />
-            {isAr ? "سجل النشاط" : "Activity"}
+            {t("Activity", "سجل النشاط")}
           </TabsTrigger>
         </TabsList>
 
-        {/* ─── MATRIX TAB ─── */}
-        <TabsContent value="overview" className="mt-4">
-          <Card>
+        {/* ══════════════ MATRIX TAB ══════════════ */}
+        <TabsContent value="overview" className="mt-4 space-y-4">
+          {/* Compare Role Selector */}
+          <Card className="rounded-2xl border-border/40">
+            <CardContent className="p-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="text-xs font-medium text-muted-foreground">{t("Compare roles:", "مقارنة الأدوار:")}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {ALL_ROLES.map(role => {
+                    const meta = ROLE_META[role];
+                    const Icon = meta.icon;
+                    const selected = compareRoles.includes(role);
+                    return (
+                      <Button key={role} variant={selected ? "default" : "outline"} size="sm"
+                        className={`h-7 text-[11px] gap-1 rounded-xl ${!selected ? "opacity-50 hover:opacity-80" : ""}`}
+                        onClick={() => toggleCompareRole(role)}>
+                        <Icon className="h-3 w-3" />
+                        {isAr ? meta.labelAr : meta.labelEn}
+                      </Button>
+                    );
+                  })}
+                </div>
+                {compareRoles.length > 0 && (
+                  <Button variant="ghost" size="sm" className="h-7 text-[11px] gap-1" onClick={() => setCompareRoles([])}>
+                    <RotateCcw className="h-3 w-3" /> {t("Reset", "إعادة")}
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Grid3X3 className="h-4 w-4 text-primary" />
-                  {isAr ? "مصفوفة الصلاحيات لكل دور" : "Role-Permission Matrix"}
+                  {t("Role-Permission Matrix", "مصفوفة الصلاحيات لكل دور")}
                 </CardTitle>
                 <div className="flex gap-2">
                   <div className="relative">
                     <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                    <Input placeholder={isAr ? "بحث..." : "Filter..."} value={matrixSearch} onChange={e => setMatrixSearch(e.target.value)} className="ps-8 h-8 w-48 text-xs" />
+                    <Input placeholder={t("Filter...", "بحث...")} value={matrixSearch} onChange={e => setMatrixSearch(e.target.value)} className="ps-8 h-8 w-48 text-xs rounded-xl" />
                   </div>
-                  <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={exportMatrixCSV}>
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-xl" onClick={exportMatrixCSV}>
                     <Download className="h-3.5 w-3.5" /> CSV
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <ScrollArea className="w-full">
+              <ScrollArea className="w-full" dir="ltr">
                 <div className="min-w-[800px]">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="sticky start-0 bg-background z-10 w-[200px]">
-                          {isAr ? "الصلاحية" : "Permission"}
+                        <TableHead className="sticky start-0 bg-background z-10 w-[220px]">
+                          {t("Permission", "الصلاحية")}
                         </TableHead>
-                        {ALL_ROLES.map((role) => {
+                        {rolesToShow.map((role) => {
                           const meta = ROLE_META[role];
                           const Icon = meta.icon;
                           return (
-                            <TableHead key={role} className="text-center w-[80px]">
+                            <TableHead key={role} className="text-center w-[85px]">
                               <div className="flex flex-col items-center gap-1">
-                                <Icon className="h-3.5 w-3.5" />
-                                <span className="text-[10px]">{isAr ? meta.labelAr : meta.labelEn}</span>
+                                <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${meta.color}`}>
+                                  <Icon className="h-3.5 w-3.5" />
+                                </div>
+                                <span className="text-[10px] font-medium">{isAr ? meta.labelAr : meta.labelEn}</span>
                               </div>
                             </TableHead>
                           );
@@ -418,11 +494,9 @@ export default function RoleManagement() {
                     <TableBody>
                       {matrixData.map(({ category, perms }) => (
                         <>
-                          <TableRow key={category} className="bg-muted/30">
-                            <TableCell colSpan={ALL_ROLES.length + 1} className="py-1.5">
-                              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                {category}
-                              </span>
+                          <TableRow key={`cat-${category}`} className="bg-muted/30 hover:bg-muted/30">
+                            <TableCell colSpan={rolesToShow.length + 1} className="py-1.5">
+                              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{category}</span>
                             </TableCell>
                           </TableRow>
                           {perms.map((perm) => (
@@ -431,20 +505,20 @@ export default function RoleManagement() {
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <span className="text-xs cursor-help">
-                                        {isAr ? perm.name_ar || perm.name : perm.name}
-                                      </span>
+                                      <span className="text-xs cursor-help">{isAr ? perm.name_ar || perm.name : perm.name}</span>
                                     </TooltipTrigger>
-                                    <TooltipContent><span className="font-mono text-[10px]">{perm.code}</span></TooltipContent>
+                                    <TooltipContent side={isAr ? "left" : "right"}>
+                                      <span className="font-mono text-[10px]">{perm.code}</span>
+                                    </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
                               </TableCell>
-                              {ALL_ROLES.map((role) => (
+                              {rolesToShow.map((role) => (
                                 <TableCell key={role} className="text-center">
                                   {perm.roles[role] ? (
                                     <CheckCircle2 className="mx-auto h-4 w-4 text-chart-2" />
                                   ) : (
-                                    <XCircle className="mx-auto h-4 w-4 text-muted-foreground/20" />
+                                    <XCircle className="mx-auto h-4 w-4 text-muted-foreground/15" />
                                   )}
                                 </TableCell>
                               ))}
@@ -460,7 +534,7 @@ export default function RoleManagement() {
           </Card>
         </TabsContent>
 
-        {/* ─── PERMISSIONS TAB ─── */}
+        {/* ══════════════ PERMISSIONS TAB ══════════════ */}
         <TabsContent value="permissions" className="mt-4 space-y-4">
           <div className="flex flex-wrap gap-2">
             {ALL_ROLES.map((role) => {
@@ -468,7 +542,7 @@ export default function RoleManagement() {
               const Icon = meta.icon;
               return (
                 <Button key={role} variant={activeRole === role ? "default" : "outline"} size="sm"
-                  onClick={() => handleRoleChange(role)} className="gap-1.5 text-xs">
+                  onClick={() => handleRoleChange(role)} className="gap-1.5 text-xs rounded-xl active:scale-[0.98]">
                   <Icon className="h-3.5 w-3.5" />
                   {isAr ? meta.labelAr : meta.labelEn}
                 </Button>
@@ -476,66 +550,97 @@ export default function RoleManagement() {
             })}
           </div>
 
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className={`rounded-full p-2 ${ROLE_META[activeRole].color}`}>
+                  <div className={`rounded-xl p-2.5 ${ROLE_META[activeRole].color}`}>
                     {(() => { const Icon = ROLE_META[activeRole].icon; return <Icon className="h-5 w-5" />; })()}
                   </div>
                   <div>
-                    <CardTitle>{isAr ? ROLE_META[activeRole].labelAr : ROLE_META[activeRole].labelEn}</CardTitle>
-                    <CardDescription className="text-xs">
-                      {isAr ? ROLE_META[activeRole].descAr : ROLE_META[activeRole].descEn}
-                    </CardDescription>
+                    <CardTitle className="text-base">{isAr ? ROLE_META[activeRole].labelAr : ROLE_META[activeRole].labelEn}</CardTitle>
+                    <CardDescription className="text-xs">{isAr ? ROLE_META[activeRole].descAr : ROLE_META[activeRole].descEn}</CardDescription>
                   </div>
                 </div>
-                <Badge variant="secondary">{selectedPerms.size}/{totalPerms}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs">{selectedPerms.size}/{totalPerms}</Badge>
+                  {/* Copy from another role */}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="relative group/copy">
+                          <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-xl">
+                            <Copy className="h-3.5 w-3.5" /> {t("Copy from", "نسخ من")}
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                          <div className="absolute end-0 top-full mt-1 hidden group-hover/copy:block z-20 bg-popover border rounded-xl shadow-lg p-1 min-w-[140px]">
+                            {ALL_ROLES.filter(r => r !== activeRole).map(role => {
+                              const meta = ROLE_META[role];
+                              const Icon = meta.icon;
+                              return (
+                                <button key={role} onClick={() => copyPermsFromRole(role)}
+                                  className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs rounded-lg hover:bg-muted transition-colors text-start">
+                                  <Icon className="h-3.5 w-3.5" />
+                                  {isAr ? meta.labelAr : meta.labelEn}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>{t("Copy permissions from another role", "نسخ الصلاحيات من دور آخر")}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
+              {/* Permission search */}
+              <div className="relative">
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input placeholder={t("Search permissions...", "ابحث في الصلاحيات...")} value={permSearch} onChange={e => setPermSearch(e.target.value)} className="ps-9 h-8 text-xs rounded-xl" />
+              </div>
+
               {rolePermsLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
+                <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
               ) : (
-                Object.entries(grouped).map(([category, perms]) => {
+                Object.entries(filteredGrouped).map(([category, perms]) => {
                   const catSelected = perms.filter((p) => selectedPerms.has(p.id)).length;
                   const allSelected = catSelected === perms.length;
                   const isExpanded = expandedCategories.has(category) || catSelected > 0;
                   return (
-                    <div key={category} className="rounded-xl border">
+                    <div key={category} className="rounded-xl border border-border/60 overflow-hidden">
                       <button onClick={() => toggleCategory(category)}
                         className="flex w-full items-center justify-between p-3 hover:bg-muted/30 transition-colors">
                         <div className="flex items-center gap-2">
                           <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                           <h3 className="text-sm font-semibold capitalize">{category}</h3>
-                          <Badge variant="outline" className="text-[10px] h-5">{catSelected}/{perms.length}</Badge>
+                          <Badge variant={catSelected > 0 ? "default" : "outline"} className="text-[10px] h-5">{catSelected}/{perms.length}</Badge>
                         </div>
-                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                       </button>
                       {isExpanded && (
-                        <div className="border-t px-3 pb-3 pt-2 space-y-2">
+                        <div className="border-t px-3 pb-3 pt-2 space-y-2 bg-muted/5">
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" className="h-6 text-[10px]"
+                            <Button variant="ghost" size="sm" className="h-6 text-[10px] rounded-lg"
                               onClick={() => selectAllInCategory(perms)} disabled={allSelected}>
-                              {isAr ? "تحديد الكل" : "Select All"}
+                              {t("Select All", "تحديد الكل")}
                             </Button>
-                            <Button variant="ghost" size="sm" className="h-6 text-[10px]"
+                            <Button variant="ghost" size="sm" className="h-6 text-[10px] rounded-lg"
                               onClick={() => deselectAllInCategory(perms)} disabled={catSelected === 0}>
-                              {isAr ? "إلغاء الكل" : "Deselect All"}
+                              {t("Deselect All", "إلغاء الكل")}
                             </Button>
                           </div>
                           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
                             {perms.map((perm) => (
                               <label key={perm.id}
-                                className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-2.5 transition-colors hover:bg-muted/50 ${
-                                  selectedPerms.has(perm.id) ? "border-primary/40 bg-primary/5" : ""
+                                className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-2.5 transition-all duration-200 hover:bg-muted/50 active:scale-[0.98] ${
+                                  selectedPerms.has(perm.id) ? "border-primary/40 bg-primary/5 shadow-sm" : "border-border/40"
                                 }`}>
                                 <Checkbox checked={selectedPerms.has(perm.id)} onCheckedChange={() => togglePerm(perm.id)} />
-                                <div className="min-w-0">
+                                <div className="min-w-0 flex-1">
                                   <p className="text-xs font-medium leading-tight">{isAr ? perm.name_ar || perm.name : perm.name}</p>
-                                  <p className="text-[10px] text-muted-foreground font-mono">{perm.code}</p>
+                                  <p className="text-[10px] text-muted-foreground font-mono" dir="ltr">{perm.code}</p>
                                 </div>
                               </label>
                             ))}
@@ -547,73 +652,93 @@ export default function RoleManagement() {
                 })
               )}
               <div className="flex justify-end pt-2">
-                <Button onClick={handleSave} disabled={saving} className="gap-1.5">
+                <Button onClick={handleSave} disabled={saving} className="gap-1.5 rounded-xl active:scale-[0.98]">
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-                  {isAr ? "حفظ الصلاحيات" : "Save Permissions"}
+                  {t("Save Permissions", "حفظ الصلاحيات")}
                 </Button>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* ─── USER ASSIGNMENT TAB ─── */}
+        {/* ══════════════ USER ASSIGNMENT TAB ══════════════ */}
         <TabsContent value="users" className="mt-4 space-y-4">
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
-               <CardTitle className="text-sm flex items-center gap-2">
-                <UserCog className="h-4 w-4 text-primary" />
-                {isAr ? "تعيين الأدوار للمستخدمين" : "Assign Roles to Users"}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {isAr ? "ابحث عن مستخدم وعيّن أو أزل الأدوار مباشرة" : "Search for a user and assign or remove roles directly"}
-              </CardDescription>
-              {usersForAssignment.length > 0 && (
-                <Button variant="outline" size="sm" className="gap-1.5 ms-auto" onClick={() => exportUsersCSV(usersForAssignment)}>
-                  <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
-                </Button>
-              )}
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <UserCog className="h-4 w-4 text-primary" />
+                    {t("Assign Roles to Users", "تعيين الأدوار للمستخدمين")}
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    {t("Search for a user and assign or remove roles directly", "ابحث عن مستخدم وعيّن أو أزل الأدوار مباشرة")}
+                  </CardDescription>
+                </div>
+                {usersForAssignment.length > 0 && (
+                  <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={() => exportUsersCSV(usersForAssignment)}>
+                    <Download className="h-3.5 w-3.5" />{t("Export", "تصدير")}
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="relative">
                 <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder={isAr ? "ابحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account number..."}
-                  value={userSearch} onChange={(e) => setUserSearch(e.target.value)} className="ps-9" />
+                <Input placeholder={t("Search by name, email, or account number...", "ابحث بالاسم أو البريد أو رقم الحساب...")}
+                  value={userSearch} onChange={(e) => setUserSearch(e.target.value)} className="ps-9 rounded-xl" />
               </div>
+
+              {/* Role legend */}
+              <div className="flex flex-wrap gap-1.5 p-2 rounded-xl bg-muted/20 border border-border/30">
+                {ALL_ROLES.map(role => {
+                  const meta = ROLE_META[role];
+                  const Icon = meta.icon;
+                  return (
+                    <div key={role} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <Icon className="h-3 w-3" />
+                      <span>{isAr ? meta.labelAr : meta.labelEn}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
               {usersLoading ? (
                 <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
               ) : (
                 <ScrollArea className="max-h-[500px]">
                   <div className="space-y-2">
                     {usersForAssignment.map((user) => (
-                      <div key={user.user_id} className="flex items-center gap-3 rounded-xl border p-3">
-                        <Avatar className="h-9 w-9">
+                      <div key={user.user_id} className="flex items-center gap-3 rounded-xl border border-border/40 p-3 hover:bg-muted/20 transition-colors">
+                        <Avatar className="h-9 w-9 rounded-xl">
                           <AvatarImage src={user.avatar_url || undefined} />
-                          <AvatarFallback className="text-xs">
+                          <AvatarFallback className="text-xs rounded-xl">
                             {(user.full_name || user.username || "?").charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium truncate">{isAr ? user.full_name_ar || user.full_name : user.full_name}</p>
-                          <p className="text-[10px] text-muted-foreground">@{user.username} · {user.account_number}</p>
+                          <p className="text-[10px] text-muted-foreground" dir="ltr">@{user.username} · {user.account_number}</p>
                         </div>
                         <div className="flex flex-wrap gap-1">
                           {ALL_ROLES.map((role) => {
                             const hasRole = user.roles.includes(role);
                             const meta = ROLE_META[role];
+                            const Icon = meta.icon;
                             return (
                               <TooltipProvider key={role}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Button variant={hasRole ? "default" : "outline"} size="sm"
-                                      className={`h-6 w-6 p-0 ${hasRole ? "" : "opacity-30 hover:opacity-70"}`}
+                                      className={`h-7 w-7 p-0 rounded-lg active:scale-[0.98] ${hasRole ? "" : "opacity-25 hover:opacity-60"}`}
                                       onClick={() => toggleUserRole.mutate({ userId: user.user_id, role, add: !hasRole })}
                                       disabled={toggleUserRole.isPending}>
-                                      {(() => { const Icon = meta.icon; return <Icon className="h-3 w-3" />; })()}
+                                      <Icon className="h-3 w-3" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <span className="text-xs">
-                                      {hasRole ? (isAr ? "إزالة" : "Remove") : (isAr ? "إضافة" : "Add")} {isAr ? meta.labelAr : meta.labelEn}
+                                      {hasRole ? t("Remove", "إزالة") : t("Add", "إضافة")} {isAr ? meta.labelAr : meta.labelEn}
                                     </span>
                                   </TooltipContent>
                                 </Tooltip>
@@ -624,7 +749,11 @@ export default function RoleManagement() {
                       </div>
                     ))}
                     {usersForAssignment.length === 0 && (
-                      <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد نتائج" : "No results found"}</p>
+                      <div className="flex flex-col items-center py-12 text-muted-foreground">
+                        <Search className="h-8 w-8 mb-2 opacity-30" />
+                        <p className="text-sm">{t("No results found", "لا توجد نتائج")}</p>
+                        <p className="text-xs">{t("Try a different search term", "جرب كلمة بحث مختلفة")}</p>
+                      </div>
                     )}
                   </div>
                 </ScrollArea>
@@ -633,54 +762,81 @@ export default function RoleManagement() {
           </Card>
         </TabsContent>
 
-        {/* ─── OVERRIDES TAB ─── */}
+        {/* ══════════════ OVERRIDES TAB ══════════════ */}
         <TabsContent value="overrides" className="mt-4">
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-chart-4" />
-                {isAr ? "استثناءات الصلاحيات" : "Permission Overrides"}
-                {overrides.length > 0 && <Badge variant="destructive" className="text-[10px]">{overrides.length}</Badge>}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {isAr ? "صلاحيات مُمنوحة أو مسحوبة من مستخدمين بشكل فردي" : "Permissions individually granted or revoked from specific users"}
-              </CardDescription>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-chart-4" />
+                    {t("Permission Overrides", "استثناءات الصلاحيات")}
+                    {overrides.length > 0 && <Badge variant="destructive" className="text-[10px]">{overrides.length}</Badge>}
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    {t("Permissions individually granted or revoked from specific users", "صلاحيات مُمنوحة أو مسحوبة من مستخدمين بشكل فردي")}
+                  </CardDescription>
+                </div>
+                {overrides.length > 0 && (
+                  <div className="flex items-center gap-1.5 text-xs text-chart-4">
+                    <Info className="h-3.5 w-3.5" />
+                    {t("Overrides bypass role permissions", "الاستثناءات تتجاوز صلاحيات الدور")}
+                  </div>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
               {overridesLoading ? (
                 <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
               ) : overrides.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد استثناءات حالياً" : "No overrides currently configured"}</p>
+                <div className="flex flex-col items-center py-12 text-muted-foreground">
+                  <ShieldCheck className="h-8 w-8 mb-2 opacity-30" />
+                  <p className="text-sm">{t("No overrides configured", "لا توجد استثناءات حالياً")}</p>
+                  <p className="text-xs">{t("All users follow their role permissions", "جميع المستخدمين يتبعون صلاحيات أدوارهم")}</p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {overrides.map((o: any) => (
-                    <div key={o.id} className="flex items-center gap-3 rounded-xl border p-3">
-                      <div className={`rounded-full p-1.5 ${o.granted ? "bg-chart-2/10" : "bg-destructive/10"}`}>
+                    <div key={o.id} className="flex items-center gap-3 rounded-xl border border-border/40 p-3 hover:bg-muted/20 transition-colors">
+                      <div className={`rounded-xl p-2 ${o.granted ? "bg-chart-2/10" : "bg-destructive/10"}`}>
                         {o.granted ? <ShieldCheck className="h-4 w-4 text-chart-2" /> : <ShieldOff className="h-4 w-4 text-destructive" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium">
-                          {o.profile ? (isAr ? o.profile.full_name_ar || o.profile.full_name : o.profile.full_name) : "Unknown"}
-                          {o.profile?.username && <span className="text-muted-foreground text-xs ms-1">@{o.profile.username}</span>}
+                          {o.profile ? (isAr ? o.profile.full_name_ar || o.profile.full_name : o.profile.full_name) : t("Unknown", "غير معروف")}
+                          {o.profile?.username && <span className="text-muted-foreground text-xs ms-1.5" dir="ltr">@{o.profile.username}</span>}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {isAr ? o.permissions?.name_ar || o.permissions?.name : o.permissions?.name}
-                          <span className="font-mono ms-1">({o.permissions?.code})</span>
+                          <span className="font-mono ms-1.5" dir="ltr">({o.permissions?.code})</span>
                         </p>
                         {o.reason && <p className="text-[10px] text-muted-foreground mt-0.5">{o.reason}</p>}
                         {o.expires_at && (
                           <p className="text-[10px] text-chart-4 mt-0.5">
-                            {isAr ? "ينتهي:" : "Expires:"} {new Date(o.expires_at).toLocaleDateString()}
+                            {t("Expires:", "ينتهي:")} {new Date(o.expires_at).toLocaleDateString(isAr ? "ar" : "en")}
                           </p>
                         )}
                       </div>
-                      <Badge variant={o.granted ? "default" : "destructive"} className="text-[10px]">
-                        {o.granted ? (isAr ? "ممنوح" : "Granted") : (isAr ? "محجوب" : "Revoked")}
+                      <Badge variant={o.granted ? "default" : "destructive"} className="text-[10px] shrink-0">
+                        {o.granted ? t("Granted", "ممنوح") : t("Revoked", "محجوب")}
                       </Badge>
-                      <Button variant="ghost" size="sm" className="h-7 w-7 p-0"
-                        onClick={() => deleteOverride.mutate(o.id)} disabled={deleteOverride.isPending}>
-                        <XCircle className="h-3.5 w-3.5 text-destructive" />
-                      </Button>
+                      {confirmingDeleteId === o.id ? (
+                        <div className="flex items-center gap-1 shrink-0">
+                          <Button variant="destructive" size="sm" className="h-7 text-[10px] rounded-lg gap-1"
+                            onClick={() => deleteOverride.mutate(o.id)} disabled={deleteOverride.isPending}>
+                            {deleteOverride.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
+                            {t("Confirm", "تأكيد")}
+                          </Button>
+                          <Button variant="ghost" size="sm" className="h-7 text-[10px] rounded-lg" onClick={() => setConfirmingDeleteId(null)}>
+                            {t("Cancel", "إلغاء")}
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-lg hover:bg-destructive/10"
+                          onClick={() => setConfirmingDeleteId(o.id)}>
+                          <XCircle className="h-3.5 w-3.5 text-destructive" />
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -689,45 +845,48 @@ export default function RoleManagement() {
           </Card>
         </TabsContent>
 
-        {/* ─── ACTIVITY LOG TAB ─── */}
+        {/* ══════════════ ACTIVITY LOG TAB ══════════════ */}
         <TabsContent value="activity" className="mt-4">
-          <Card>
+          <Card className="rounded-2xl border-border/40">
             <CardHeader className="pb-3">
-               <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <div>
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Activity className="h-4 w-4 text-primary" />
-                    {isAr ? "سجل تغييرات الأدوار" : "Role Change Activity Log"}
+                    {t("Role Change Activity Log", "سجل تغييرات الأدوار")}
                   </CardTitle>
                   <CardDescription className="text-xs">
-                    {isAr ? "آخر 50 تغيير في الأدوار والصلاحيات" : "Last 50 role and permission changes"}
+                    {t("Last 50 role and permission changes", "آخر 50 تغيير في الأدوار والصلاحيات")}
                   </CardDescription>
                 </div>
                 {recentChanges.length > 0 && (
-                  <Button variant="outline" size="sm" className="gap-1.5" onClick={() => exportActivityCSV(recentChanges)}>
-                    <Download className="h-3.5 w-3.5" />{isAr ? "تصدير" : "Export"}
+                  <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={() => exportActivityCSV(recentChanges)}>
+                    <Download className="h-3.5 w-3.5" />{t("Export", "تصدير")}
                   </Button>
                 )}
               </div>
             </CardHeader>
             <CardContent>
               {recentChanges.length === 0 ? (
-                <p className="text-center text-sm text-muted-foreground py-8">{isAr ? "لا توجد تغييرات" : "No changes recorded"}</p>
+                <div className="flex flex-col items-center py-12 text-muted-foreground">
+                  <Activity className="h-8 w-8 mb-2 opacity-30" />
+                  <p className="text-sm">{t("No changes recorded", "لا توجد تغييرات")}</p>
+                </div>
               ) : (
                 <ScrollArea className="max-h-[500px]">
                   <div className="space-y-2">
                     {recentChanges.map((change: any) => (
-                      <div key={change.id} className="flex items-center gap-3 rounded-xl border p-3">
-                        <div className="rounded-full p-1.5 bg-primary/10">
+                      <div key={change.id} className="flex items-center gap-3 rounded-xl border border-border/40 p-3 hover:bg-muted/20 transition-colors">
+                        <div className="rounded-xl p-2 bg-primary/10 shrink-0">
                           <Activity className="h-3.5 w-3.5 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium">{change.action_type.replace(/_/g, " ")}</p>
-                          <p className="text-[10px] text-muted-foreground">
-                            {change.details ? JSON.stringify(change.details) : "—"}
+                          <p className="text-xs font-semibold capitalize">{change.action_type.replace(/_/g, " ")}</p>
+                          <p className="text-[10px] text-muted-foreground truncate">
+                            {change.details ? (typeof change.details === "object" ? JSON.stringify(change.details) : change.details) : "—"}
                           </p>
                         </div>
-                        <p className="text-[10px] text-muted-foreground whitespace-nowrap">
+                        <p className="text-[10px] text-muted-foreground whitespace-nowrap shrink-0" dir="ltr">
                           {format(new Date(change.created_at), "MMM d, HH:mm")}
                         </p>
                       </div>
