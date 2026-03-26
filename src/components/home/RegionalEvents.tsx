@@ -116,7 +116,7 @@ export function RegionalEvents() {
   );
 }
 
-function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
+const EventCard = forwardRef<HTMLAnchorElement, { item: any; isAr: boolean }>(function EventCard({ item, isAr }, ref) {
   const title = isAr && item.title_ar ? item.title_ar : item.title;
 
   const statusMap: Record<string, { label: string; labelAr: string; icon?: any; cls: string }> = {
@@ -128,7 +128,7 @@ function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
   const StatusIcon = s.icon;
 
   return (
-    <Link to={`/competitions/${item.id}`} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
+    <Link ref={ref} to={`/competitions/${item.id}`} className="group block w-[210px] sm:w-[220px] flex-shrink-0 snap-start touch-manipulation">
       <Card interactive className="h-full overflow-hidden border-border/50 rounded-2xl">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {item.cover_image_url ? (
@@ -163,5 +163,5 @@ function EventCard({ item, isAr }: { item: any; isAr: boolean }) {
       </Card>
     </Link>
   );
-}
+});
 
