@@ -345,7 +345,9 @@ export default function SocialLinksEditor() {
       setContacts({
         whatsapp: profile.whatsapp || "",
         phone: profile.phone || "",
+        phone2: (profile as any).phone2 || "",
       });
+      setContactCountryCode(profile.country_code || "SA");
     }
   }, [profile]);
 
