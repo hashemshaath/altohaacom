@@ -1214,15 +1214,15 @@ export default function SocialLinksEditor() {
                           </div>
                         </div>
                         <Separator />
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           {[
                             { key: "show_avatar", label: isAr ? "إظهار الصورة الشخصية" : "Show Avatar", icon: Eye },
                             { key: "show_social_icons", label: isAr ? "إظهار أيقونات التواصل" : "Show Social Icons", icon: Globe },
                             { key: "is_published", label: isAr ? "نشر الصفحة" : "Published", icon: Sparkles },
                           ].map(setting => (
-                            <div key={setting.key} className="flex items-center justify-between rounded-xl p-3 hover:bg-muted/40 transition-colors group">
+                            <div key={setting.key} className="flex items-center justify-between rounded-2xl p-3 bg-muted/20 border border-border/30 group">
                               <div className="flex items-center gap-2.5">
-                                <div className="h-8 w-8 rounded-lg bg-muted/60 flex items-center justify-center group-hover:bg-muted transition-colors">
+                                <div className="h-8 w-8 rounded-xl bg-muted/60 flex items-center justify-center group-hover:bg-muted transition-colors">
                                   <setting.icon className="h-4 w-4 text-muted-foreground" />
                                 </div>
                                 <Label className="text-sm cursor-pointer font-medium">{setting.label}</Label>
