@@ -187,6 +187,20 @@ export default function MembershipCheckout() {
         link: "/profile?tab=membership",
       });
 
+      // --- Auto-create membership invoice for paid tiers ---
+      if (selectedTier !== "basic") {
+        await createMembershipInvoice({
+          userId: user.id,
+          tier: selectedTier,
+          action: isRenewal ? "renewal" : isDowngrade ? "downgrade" : "upgrade",
+          amount: finalAmount,
+          currency: "SAR",
+          periodStart: new Date().toISOString(),
+          periodEnd: expiresAt.toISOString(),
+          notes: `${changeType} to ${selectedTier} (${billingCycle})`,
+        });
+      }
+
       // --- Referral rewards for membership upgrade ---
       if (!isRenewal && !isDowngrade && currentTier === "basic") {
         const { data: referralConversion } = await supabase
