@@ -37,24 +37,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { InlinePanel } from "@/components/ui/InlinePanel";
+import { InlineConfirm } from "@/components/ui/InlineConfirm";
+// AlertDialog removed - using InlineConfirm instead
 import {
   Table,
   TableBody,
@@ -686,277 +671,198 @@ export default function LeadManagement() {
         </div>
       )}
 
-      {/* Lead Detail Dialog with Activity Log */}
-      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {selectedLead?.contact_name}
-              {selectedLead && getTypeBadge(selectedLead.type)}
-            </DialogTitle>
-            <DialogDescription>
-              {isAr ? "تفاصيل العميل المحتمل والملاحظات" : "Lead details, notes & activity"}
-            </DialogDescription>
-          </DialogHeader>
-
-          {selectedLead && (
-            <Tabs defaultValue="details" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="details" className="gap-1.5 text-xs">
-                  <Eye className="h-3.5 w-3.5" />
-                  {isAr ? "التفاصيل" : "Details"}
-                </TabsTrigger>
-                <TabsTrigger value="activity" className="gap-1.5 text-xs">
-                  <History className="h-3.5 w-3.5" />
-                  {isAr ? "السجل" : "Activity Log"}
-                  {activityLog.length > 0 && (
-                    <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[9px]">{activityLog.length}</Badge>
-                  )}
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="details" className="space-y-4">
-                {/* Contact Info */}
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="flex items-center gap-3 rounded-xl border p-3">
-                    <Mail className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">{isAr ? "البريد الإلكتروني" : "Email"}</p>
-                      <a href={`mailto:${selectedLead.email}`} className="text-sm font-medium text-primary hover:underline">{selectedLead.email}</a>
-                    </div>
-                  </div>
-                  {selectedLead.phone && (
-                    <div className="flex items-center gap-3 rounded-xl border p-3">
-                      <Phone className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">{isAr ? "الهاتف" : "Phone"}</p>
-                        <a href={`tel:${selectedLead.phone}`} className="text-sm font-medium text-primary hover:underline">{selectedLead.phone}</a>
-                      </div>
-                    </div>
-                  )}
-                  {selectedLead.company_name && (
-                    <div className="flex items-center gap-3 rounded-xl border p-3">
-                      <Building2 className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs text-muted-foreground">{isAr ? "الشركة" : "Company"}</p>
-                        <p className="text-sm font-medium">{selectedLead.company_name}</p>
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-3 rounded-xl border p-3">
-                    <Calendar className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">{isAr ? "تاريخ الإنشاء" : "Created"}</p>
-                      <p className="text-sm font-medium">{format(new Date(selectedLead.created_at), "PPP")}</p>
-                    </div>
+      {/* Lead Detail Inline */}
+      <InlinePanel
+        open={isDetailOpen}
+        onClose={() => setIsDetailOpen(false)}
+        title={selectedLead?.contact_name || ""}
+        description={isAr ? "تفاصيل العميل المحتمل والملاحظات" : "Lead details, notes & activity"}
+        icon={selectedLead && getTypeBadge(selectedLead.type)}
+        size="lg"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setIsDetailOpen(false)}>{isAr ? "إغلاق" : "Close"}</Button>
+            <Button onClick={handleSaveNotes} disabled={updateLeadMutation.isPending}>{isAr ? "حفظ الملاحظات" : "Save Notes"}</Button>
+          </>
+        }
+      >
+        {selectedLead && (
+          <Tabs defaultValue="details" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="details" className="gap-1.5 text-xs">
+                <Eye className="h-3.5 w-3.5" />{isAr ? "التفاصيل" : "Details"}
+              </TabsTrigger>
+              <TabsTrigger value="activity" className="gap-1.5 text-xs">
+                <History className="h-3.5 w-3.5" />{isAr ? "السجل" : "Activity Log"}
+                {activityLog.length > 0 && <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[9px]">{activityLog.length}</Badge>}
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="details" className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-center gap-3 rounded-xl border p-3">
+                  <Mail className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">{isAr ? "البريد الإلكتروني" : "Email"}</p>
+                    <a href={`mailto:${selectedLead.email}`} className="text-sm font-medium text-primary hover:underline">{selectedLead.email}</a>
                   </div>
                 </div>
-
-                {selectedLead.message && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                      <p className="text-sm font-medium">{isAr ? "الرسالة" : "Message"}</p>
+                {selectedLead.phone && (
+                  <div className="flex items-center gap-3 rounded-xl border p-3">
+                    <Phone className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">{isAr ? "الهاتف" : "Phone"}</p>
+                      <a href={`tel:${selectedLead.phone}`} className="text-sm font-medium text-primary hover:underline">{selectedLead.phone}</a>
                     </div>
-                    <div className="rounded-xl bg-muted p-4 text-sm">{selectedLead.message}</div>
                   </div>
                 )}
-
-                {/* Status Update */}
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">{isAr ? "تحديث الحالة" : "Update Status"}</p>
-                  <Select
-                    value={selectedLead.status || "new"}
-                    onValueChange={value => {
-                      updateLeadMutation.mutate({ id: selectedLead.id, updates: { status: value } });
-                      setSelectedLead({ ...selectedLead, status: value });
-                    }}
-                  >
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {LEAD_STATUSES.map(s => (
-                        <SelectItem key={s} value={s}>{stageLabels[s]?.[language] || s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Notes */}
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">{isAr ? "ملاحظات داخلية" : "Internal Notes"}</p>
-                  <Textarea
-                    value={notes}
-                    onChange={e => setNotes(e.target.value)}
-                    placeholder={isAr ? "أضف ملاحظات حول هذا العميل المحتمل..." : "Add notes about this lead..."}
-                    rows={4}
-                  />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="activity" className="space-y-3">
-                {activityLog.length === 0 ? (
-                  <div className="text-center py-8">
-                    <History className="mx-auto h-8 w-8 text-muted-foreground/30 mb-2" />
-                    <p className="text-sm text-muted-foreground">{isAr ? "لا يوجد سجل نشاط" : "No activity recorded yet"}</p>
+                {selectedLead.company_name && (
+                  <div className="flex items-center gap-3 rounded-xl border p-3">
+                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">{isAr ? "الشركة" : "Company"}</p>
+                      <p className="text-sm font-medium">{selectedLead.company_name}</p>
+                    </div>
                   </div>
-                ) : (
-                  <ScrollArea className="max-h-[350px]">
-                    <div className="relative ps-6 space-y-4">
-                      <div className="absolute start-2 top-0 bottom-0 w-px bg-border" />
-                      {activityLog.map((entry: any) => (
-                        <div key={entry.id} className="relative">
-                          <div className="absolute start-[-18px] top-1 h-4 w-4 rounded-full bg-primary/10 ring-2 ring-background flex items-center justify-center">
-                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                          </div>
-                          <div className="rounded-xl border p-3">
-                            <div className="flex items-center justify-between">
-                              <p className="text-xs font-medium">
-                                {entry.details?.action === "created"
-                                  ? (isAr ? "تم إنشاء العميل" : "Lead created")
-                                  : entry.details?.action === "bulk_status_change"
-                                    ? (isAr ? "تغيير حالة جماعي" : "Bulk status change")
-                                    : entry.details?.updates?.status
-                                      ? `${isAr ? "الحالة → " : "Status → "}${stageLabels[entry.details.updates.status]?.[language] || entry.details.updates.status}`
-                                      : entry.details?.updates?.notes !== undefined
-                                        ? (isAr ? "تحديث الملاحظات" : "Notes updated")
-                                        : (isAr ? "تحديث" : "Updated")}
-                              </p>
-                              <span className="text-[10px] text-muted-foreground">
-                                {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
-                              </span>
-                            </div>
+                )}
+                <div className="flex items-center gap-3 rounded-xl border p-3">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">{isAr ? "تاريخ الإنشاء" : "Created"}</p>
+                    <p className="text-sm font-medium">{format(new Date(selectedLead.created_at), "PPP")}</p>
+                  </div>
+                </div>
+              </div>
+              {selectedLead.message && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    <p className="text-sm font-medium">{isAr ? "الرسالة" : "Message"}</p>
+                  </div>
+                  <div className="rounded-xl bg-muted p-4 text-sm">{selectedLead.message}</div>
+                </div>
+              )}
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{isAr ? "تحديث الحالة" : "Update Status"}</p>
+                <Select
+                  value={selectedLead.status || "new"}
+                  onValueChange={value => {
+                    updateLeadMutation.mutate({ id: selectedLead.id, updates: { status: value } });
+                    setSelectedLead({ ...selectedLead, status: value });
+                  }}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {LEAD_STATUSES.map(s => (
+                      <SelectItem key={s} value={s}>{stageLabels[s]?.[language] || s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{isAr ? "ملاحظات داخلية" : "Internal Notes"}</p>
+                <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder={isAr ? "أضف ملاحظات حول هذا العميل المحتمل..." : "Add notes about this lead..."} rows={4} />
+              </div>
+            </TabsContent>
+            <TabsContent value="activity" className="space-y-3">
+              {activityLog.length === 0 ? (
+                <div className="text-center py-8">
+                  <History className="mx-auto h-8 w-8 text-muted-foreground/30 mb-2" />
+                  <p className="text-sm text-muted-foreground">{isAr ? "لا يوجد سجل نشاط" : "No activity recorded yet"}</p>
+                </div>
+              ) : (
+                <ScrollArea className="max-h-[350px]">
+                  <div className="relative ps-6 space-y-4">
+                    <div className="absolute start-2 top-0 bottom-0 w-px bg-border" />
+                    {activityLog.map((entry: any) => (
+                      <div key={entry.id} className="relative">
+                        <div className="absolute start-[-18px] top-1 h-4 w-4 rounded-full bg-primary/10 ring-2 ring-background flex items-center justify-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        </div>
+                        <div className="rounded-xl border p-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs font-medium">
+                              {entry.details?.action === "created"
+                                ? (isAr ? "تم إنشاء العميل" : "Lead created")
+                                : entry.details?.action === "bulk_status_change"
+                                  ? (isAr ? "تغيير حالة جماعي" : "Bulk status change")
+                                  : entry.details?.updates?.status
+                                    ? `${isAr ? "الحالة → " : "Status → "}${stageLabels[entry.details.updates.status]?.[language] || entry.details.updates.status}`
+                                    : entry.details?.updates?.notes !== undefined
+                                      ? (isAr ? "تحديث الملاحظات" : "Notes updated")
+                                      : (isAr ? "تحديث" : "Updated")}
+                            </p>
+                            <span className="text-[10px] text-muted-foreground">
+                              {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
+                            </span>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                )}
-              </TabsContent>
-            </Tabs>
-          )}
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+            </TabsContent>
+          </Tabs>
+        )}
+      </InlinePanel>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDetailOpen(false)}>
-              {isAr ? "إغلاق" : "Close"}
-            </Button>
-            <Button onClick={handleSaveNotes} disabled={updateLeadMutation.isPending}>
-              {isAr ? "حفظ الملاحظات" : "Save Notes"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Create Lead Dialog */}
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <UserPlus className="h-5 w-5 text-primary" />
-              {isAr ? "إضافة عميل محتمل" : "Add New Lead"}
-            </DialogTitle>
-            <DialogDescription>
-              {isAr ? "أدخل بيانات العميل المحتمل الجديد" : "Enter new lead contact information"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                placeholder={isAr ? "اسم جهة الاتصال *" : "Contact Name *"}
-                value={newLead.contact_name}
-                onChange={e => setNewLead({ ...newLead, contact_name: e.target.value })}
-              />
-              <Input
-                placeholder={isAr ? "البريد الإلكتروني *" : "Email *"}
-                type="email"
-                value={newLead.email}
-                onChange={e => setNewLead({ ...newLead, email: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                placeholder={isAr ? "رقم الهاتف" : "Phone"}
-                value={newLead.phone}
-                onChange={e => setNewLead({ ...newLead, phone: e.target.value })}
-              />
-              <Input
-                placeholder={isAr ? "اسم الشركة" : "Company Name"}
-                value={newLead.company_name}
-                onChange={e => setNewLead({ ...newLead, company_name: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Select value={newLead.type} onValueChange={v => setNewLead({ ...newLead, type: v })}>
-                <SelectTrigger><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
-                <SelectContent>
-                  {LEAD_TYPES.map(t => (
-                    <SelectItem key={t} value={t}>
-                      {t === "sponsor" ? (isAr ? "راعٍ" : "Sponsor") :
-                       t === "organizer" ? (isAr ? "منظم" : "Organizer") :
-                       t === "partnership" ? (isAr ? "شراكة" : "Partnership") :
-                       (isAr ? "عام" : "General")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Input
-                placeholder={isAr ? "المصدر (مثال: موقع، إحالة)" : "Source (e.g., website, referral)"}
-                value={newLead.source}
-                onChange={e => setNewLead({ ...newLead, source: e.target.value })}
-              />
-            </div>
-            <Textarea
-              placeholder={isAr ? "رسالة أو وصف..." : "Message or description..."}
-              value={newLead.message}
-              onChange={e => setNewLead({ ...newLead, message: e.target.value })}
-              rows={3}
-            />
-            <Textarea
-              placeholder={isAr ? "ملاحظات داخلية..." : "Internal notes..."}
-              value={newLead.notes}
-              onChange={e => setNewLead({ ...newLead, notes: e.target.value })}
-              rows={2}
-            />
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
-              {isAr ? "إلغاء" : "Cancel"}
-            </Button>
-            <Button
-              onClick={() => createLeadMutation.mutate()}
-              disabled={!newLead.contact_name.trim() || !newLead.email.trim() || createLeadMutation.isPending}
-              className="gap-1.5"
-            >
+      {/* Create Lead Inline */}
+      <InlinePanel
+        open={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        title={isAr ? "إضافة عميل محتمل" : "Add New Lead"}
+        description={isAr ? "أدخل بيانات العميل المحتمل الجديد" : "Enter new lead contact information"}
+        icon={<UserPlus className="h-4 w-4 text-primary" />}
+        size="lg"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setIsCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
+            <Button onClick={() => createLeadMutation.mutate()} disabled={!newLead.contact_name.trim() || !newLead.email.trim() || createLeadMutation.isPending} className="gap-1.5">
               <Plus className="h-4 w-4" />
               {createLeadMutation.isPending ? (isAr ? "جاري الإنشاء..." : "Creating...") : (isAr ? "إنشاء" : "Create Lead")}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <Input placeholder={isAr ? "اسم جهة الاتصال *" : "Contact Name *"} value={newLead.contact_name} onChange={e => setNewLead({ ...newLead, contact_name: e.target.value })} />
+            <Input placeholder={isAr ? "البريد الإلكتروني *" : "Email *"} type="email" value={newLead.email} onChange={e => setNewLead({ ...newLead, email: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input placeholder={isAr ? "رقم الهاتف" : "Phone"} value={newLead.phone} onChange={e => setNewLead({ ...newLead, phone: e.target.value })} />
+            <Input placeholder={isAr ? "اسم الشركة" : "Company Name"} value={newLead.company_name} onChange={e => setNewLead({ ...newLead, company_name: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Select value={newLead.type} onValueChange={v => setNewLead({ ...newLead, type: v })}>
+              <SelectTrigger><SelectValue placeholder={isAr ? "النوع" : "Type"} /></SelectTrigger>
+              <SelectContent>
+                {LEAD_TYPES.map(t => (
+                  <SelectItem key={t} value={t}>
+                    {t === "sponsor" ? (isAr ? "راعٍ" : "Sponsor") : t === "organizer" ? (isAr ? "منظم" : "Organizer") : t === "partnership" ? (isAr ? "شراكة" : "Partnership") : (isAr ? "عام" : "General")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input placeholder={isAr ? "المصدر (مثال: موقع، إحالة)" : "Source (e.g., website, referral)"} value={newLead.source} onChange={e => setNewLead({ ...newLead, source: e.target.value })} />
+          </div>
+          <Textarea placeholder={isAr ? "رسالة أو وصف..." : "Message or description..."} value={newLead.message} onChange={e => setNewLead({ ...newLead, message: e.target.value })} rows={3} />
+          <Textarea placeholder={isAr ? "ملاحظات داخلية..." : "Internal notes..."} value={newLead.notes} onChange={e => setNewLead({ ...newLead, notes: e.target.value })} rows={2} />
+        </div>
+      </InlinePanel>
 
       {/* Bulk Delete Confirm */}
-      <AlertDialog open={bulkAction === "delete"} onOpenChange={() => setBulkAction(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{isAr ? "تأكيد الحذف" : "Confirm Deletion"}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {isAr
-                ? `هل تريد حذف ${selectedIds.size} عميل محتمل؟ لا يمكن التراجع عن هذا الإجراء.`
-                : `Delete ${selectedIds.size} leads? This action cannot be undone.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => deleteLeadMutation.mutate([...selectedIds])}
-            >
-              {isAr ? "حذف" : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <InlineConfirm
+        open={bulkAction === "delete"}
+        onCancel={() => setBulkAction(null)}
+        onConfirm={() => deleteLeadMutation.mutate([...selectedIds])}
+        title={isAr ? "تأكيد الحذف" : "Confirm Deletion"}
+        description={isAr ? `هل تريد حذف ${selectedIds.size} عميل محتمل؟ لا يمكن التراجع عن هذا الإجراء.` : `Delete ${selectedIds.size} leads? This action cannot be undone.`}
+        confirmLabel={isAr ? "حذف" : "Delete"}
+        cancelLabel={isAr ? "إلغاء" : "Cancel"}
+        variant="destructive"
+        loading={deleteLeadMutation.isPending}
+      />
     </div>
   );
 }

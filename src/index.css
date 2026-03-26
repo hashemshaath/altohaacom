@@ -165,6 +165,12 @@
   [dir="rtl"] {
     font-family: 'Noto Sans Arabic', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   }
+  [dir="rtl"] input:not([dir="ltr"]),
+  [dir="rtl"] textarea:not([dir="ltr"]),
+  [dir="rtl"] select:not([dir="ltr"]) {
+    text-align: right;
+    direction: rtl;
+  }
   h1 { @apply text-3xl md:text-4xl font-bold tracking-tight font-serif; }
   h2 { @apply text-2xl md:text-3xl font-bold tracking-tight font-serif; }
   h3 { @apply text-xl font-semibold tracking-tight; }
