@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, TrendingDown, Users, CreditCard,
-  ArrowUpCircle, ArrowDownCircle, Percent, Target,
+  ArrowUpCircle, ArrowDownCircle, Percent, Target, Wallet, Coins,
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 
@@ -132,8 +132,12 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const secondaryCards = [
     { icon: CreditCard, label: isAr ? "إجمالي المحصّل" : "Total Collected", value: revenueData?.totalRevenue || 0, suffix: " SAR", color: "text-chart-2" },
     { icon: DollarSign, label: isAr ? "إيرادات معلقة" : "Pending Revenue", value: revenueData?.pendingRevenue || 0, suffix: " SAR", color: "text-chart-4" },
+    { icon: Wallet, label: isAr ? "رصيد المحافظ" : "Wallet Balances", value: revenueData?.totalWalletBalance || 0, suffix: " SAR", color: "text-chart-3" },
+    { icon: Coins, label: isAr ? "إجمالي النقاط" : "Total Points", value: revenueData?.totalPoints || 0, color: "text-chart-5" },
     { icon: Users, label: isAr ? "أعضاء مدفوعون" : "Paid Members", value: revenueData?.paidMembers || 0, color: "text-primary" },
     { icon: TrendingDown, label: isAr ? "معدل التسرب" : "Churn Rate", value: revenueData?.churnRate || 0, suffix: "%", color: "text-destructive" },
+    { icon: Target, label: isAr ? "قيمة العمر (LTV)" : "Lifetime Value", value: revenueData?.ltv || 0, suffix: " SAR", color: "text-chart-1" },
+    { icon: ArrowUpCircle, label: isAr ? "التسرب الأخير" : "Recent Churn", value: revenueData?.recentChurn || 0, color: "text-destructive" },
   ];
 
   return (
