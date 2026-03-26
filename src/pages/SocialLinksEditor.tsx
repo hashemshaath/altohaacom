@@ -958,39 +958,38 @@ export default function SocialLinksEditor() {
                           {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links are generated automatically"}
                         </p>
                       </CardHeader>
-                      <CardContent className="space-y-2 pt-3">
-                        {SOCIAL_PLATFORMS.map(platform => {
-                          const Icon = platform.icon;
-                          const value = socials[platform.key] || "";
-                          const isActive = !!value;
-                          return (
-                            <div key={platform.key} className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 ${isActive ? "border-primary/25 bg-primary/[0.03] shadow-sm" : "border-border/40 hover:border-border"}`}>
-                              <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-sm" : "bg-muted"}`}>
-                                <Icon className={`h-3.5 w-3.5 ${isActive ? "" : "text-muted-foreground"}`} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <Label className="text-[11px] font-semibold mb-0.5 block">{isAr ? platform.labelAr : platform.label}</Label>
-                                <div className="flex items-center gap-1">
-                                  {platform.prefix && (
-                                    <span className="text-[9px] text-muted-foreground shrink-0 hidden sm:inline opacity-60" dir="ltr">{platform.prefix}</span>
+                      <CardContent className="pt-4 pb-5 px-5">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {SOCIAL_PLATFORMS.map(platform => {
+                            const Icon = platform.icon;
+                            const value = socials[platform.key] || "";
+                            const isActive = !!value;
+                            return (
+                              <div key={platform.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
+                                <div className="flex items-center gap-3 p-3">
+                                  <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                                    <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
+                                    <Input
+                                      value={value}
+                                      onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
+                                      placeholder={platform.prefix ? platform.prefix + platform.placeholder : platform.placeholder}
+                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
+                                      dir="ltr"
+                                    />
+                                  </div>
+                                  {isActive && (
+                                    <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
+                                      <Check className="h-3.5 w-3.5 text-chart-1" />
+                                    </div>
                                   )}
-                                  <Input
-                                    value={value}
-                                    onChange={e => setSocials(s => ({ ...s, [platform.key]: e.target.value }))}
-                                    placeholder={platform.placeholder}
-                                    className="h-7 text-xs border-0 bg-transparent shadow-none focus-visible:ring-1 px-1"
-                                    dir="ltr"
-                                  />
                                 </div>
                               </div>
-                              {isActive && (
-                                <div className="h-5 w-5 rounded-full bg-chart-1/10 flex items-center justify-center shrink-0">
-                                  <Check className="h-3 w-3 text-chart-1" />
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
 
@@ -1007,34 +1006,38 @@ export default function SocialLinksEditor() {
                           {isAr ? "تظهر كأيقونات في صفحة الروابط العامة" : "Displayed as icons on your public links page"}
                         </p>
                       </CardHeader>
-                      <CardContent className="space-y-2 pt-3">
-                        {CONTACT_FIELDS.map(field => {
-                          const Icon = field.icon;
-                          const value = contacts[field.key] || "";
-                          const isActive = !!value;
-                          return (
-                            <div key={field.key} className={`flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 ${isActive ? "border-primary/25 bg-primary/[0.03] shadow-sm" : "border-border/40 hover:border-border"}`}>
-                              <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-sm" : "bg-muted"}`}>
-                                <Icon className={`h-3.5 w-3.5 ${isActive ? "" : "text-muted-foreground"}`} />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <Label className="text-[11px] font-semibold mb-0.5 block">{isAr ? field.labelAr : field.label}</Label>
-                                <Input
-                                  value={value}
-                                  onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
-                                  placeholder={field.placeholder}
-                                  className="h-7 text-xs border-0 bg-transparent shadow-none focus-visible:ring-1 px-1"
-                                  dir="ltr"
-                                />
-                              </div>
-                              {isActive && (
-                                <div className="h-5 w-5 rounded-full bg-chart-1/10 flex items-center justify-center shrink-0">
-                                  <Check className="h-3 w-3 text-chart-1" />
+                      <CardContent className="pt-4 pb-5 px-5">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {CONTACT_FIELDS.map(field => {
+                            const Icon = field.icon;
+                            const value = contacts[field.key] || "";
+                            const isActive = !!value;
+                            return (
+                              <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
+                                <div className="flex items-center gap-3 p-3">
+                                  <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                                    <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <Label className="text-xs font-semibold mb-1 block">{isAr ? field.labelAr : field.label}</Label>
+                                    <Input
+                                      value={value}
+                                      onChange={e => setContacts(c => ({ ...c, [field.key]: e.target.value }))}
+                                      placeholder={field.placeholder}
+                                      className="h-8 text-xs rounded-lg border-border/40 bg-muted/30 focus:bg-background placeholder:text-muted-foreground/40"
+                                      dir="ltr"
+                                    />
+                                  </div>
+                                  {isActive && (
+                                    <div className="h-6 w-6 rounded-full bg-chart-1/15 flex items-center justify-center shrink-0">
+                                      <Check className="h-3.5 w-3.5 text-chart-1" />
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                              </div>
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
 
@@ -1059,37 +1062,39 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان الصفحة (EN)" : "Page Title (EN)"}</Label>
-                            <Input value={form.page_title} onChange={e => updateForm({ page_title: e.target.value })} dir="ltr" placeholder={profile?.display_name || profile?.full_name || ""} />
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "عنوان الصفحة (EN)" : "Page Title (EN)"}</Label>
+                            <Input value={form.page_title} onChange={e => updateForm({ page_title: e.target.value })} dir="ltr" placeholder={profile?.display_name || profile?.full_name || ""} className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
                           </div>
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان الصفحة (AR)" : "Page Title (AR)"}</Label>
-                            <Input value={form.page_title_ar} onChange={e => updateForm({ page_title_ar: e.target.value })} dir="rtl" placeholder={profile?.display_name_ar || profile?.full_name_ar || ""} />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "عنوان الصفحة (AR)" : "Page Title (AR)"}</Label>
+                            <Input value={form.page_title_ar} onChange={e => updateForm({ page_title_ar: e.target.value })} dir="rtl" placeholder={profile?.display_name_ar || profile?.full_name_ar || ""} className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
                           </div>
                         </div>
-                        <div className="grid sm:grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نبذة (EN)" : "Bio (EN)"}</Label>
-                            <Textarea value={form.bio} onChange={e => updateForm({ bio: e.target.value })} className="min-h-[60px] text-xs" dir="ltr" placeholder={profile?.bio || ""} />
+                        <div className="grid sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "نبذة (EN)" : "Bio (EN)"}</Label>
+                            <Textarea value={form.bio} onChange={e => updateForm({ bio: e.target.value })} className="min-h-[80px] text-sm rounded-xl border-border/40 bg-muted/20 focus:bg-background" dir="ltr" placeholder={profile?.bio || ""} />
                           </div>
-                          <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نبذة (AR)" : "Bio (AR)"}</Label>
-                            <Textarea value={form.bio_ar} onChange={e => updateForm({ bio_ar: e.target.value })} className="min-h-[60px] text-xs" dir="rtl" placeholder={profile?.bio_ar || ""} />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "نبذة (AR)" : "Bio (AR)"}</Label>
+                            <Textarea value={form.bio_ar} onChange={e => updateForm({ bio_ar: e.target.value })} className="min-h-[80px] text-sm rounded-xl border-border/40 bg-muted/20 focus:bg-background" dir="rtl" placeholder={profile?.bio_ar || ""} />
                           </div>
                         </div>
                         <Separator />
-                        <div className="space-y-2.5">
+                        <div className="space-y-1">
                           {[
                             { key: "show_avatar", label: isAr ? "إظهار الصورة الشخصية" : "Show Avatar", icon: Eye },
                             { key: "show_social_icons", label: isAr ? "إظهار أيقونات التواصل" : "Show Social Icons", icon: Globe },
                             { key: "is_published", label: isAr ? "نشر الصفحة" : "Published", icon: Sparkles },
                           ].map(setting => (
-                            <div key={setting.key} className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/30 transition-colors">
-                              <div className="flex items-center gap-2">
-                                <setting.icon className="h-3.5 w-3.5 text-muted-foreground" />
-                                <Label className="text-xs cursor-pointer">{setting.label}</Label>
+                            <div key={setting.key} className="flex items-center justify-between rounded-xl p-3 hover:bg-muted/40 transition-colors group">
+                              <div className="flex items-center gap-2.5">
+                                <div className="h-8 w-8 rounded-lg bg-muted/60 flex items-center justify-center group-hover:bg-muted transition-colors">
+                                  <setting.icon className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <Label className="text-sm cursor-pointer font-medium">{setting.label}</Label>
                               </div>
                               <Switch checked={(form as any)[setting.key]} onCheckedChange={v => updateForm({ [setting.key]: v })} />
                             </div>
@@ -1211,44 +1216,59 @@ export default function SocialLinksEditor() {
                           {isAr ? "إضافة رابط جديد" : "Add New Link"}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-3 pt-3">
+                      <CardContent className="space-y-4 pt-4 pb-5 px-5">
                         <div className="grid sm:grid-cols-2 gap-3">
-                          <Input placeholder={isAr ? "العنوان (EN)" : "Title (EN)"} value={newLink.title} onChange={e => setNewLink(l => ({ ...l, title: e.target.value }))} dir="ltr" />
-                          <Input placeholder={isAr ? "العنوان (AR)" : "Title (AR)"} value={newLink.title_ar} onChange={e => setNewLink(l => ({ ...l, title_ar: e.target.value }))} dir="rtl" />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
+                            <Input placeholder={isAr ? "أدخل العنوان بالإنجليزية" : "Enter title in English"} value={newLink.title} onChange={e => setNewLink(l => ({ ...l, title: e.target.value }))} dir="ltr" className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
+                            <Input placeholder={isAr ? "أدخل العنوان بالعربية" : "Enter title in Arabic"} value={newLink.title_ar} onChange={e => setNewLink(l => ({ ...l, title_ar: e.target.value }))} dir="rtl" className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                          </div>
                         </div>
-                        <Input placeholder="https://example.com" value={newLink.url} onChange={e => handleNewLinkUrlChange(e.target.value)} dir="ltr" />
+                        <div className="space-y-1.5">
+                          <Label className="text-xs font-semibold">{isAr ? "الرابط" : "URL"}</Label>
+                          <Input placeholder="https://example.com" value={newLink.url} onChange={e => handleNewLinkUrlChange(e.target.value)} dir="ltr" className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                        </div>
                         <div className="grid grid-cols-2 gap-3">
-                          <Input placeholder={isAr ? "إيموجي 🔗" : "Emoji 🔗"} value={newLink.icon} onChange={e => setNewLink(l => ({ ...l, icon: e.target.value }))} />
-                          <Select value={newLink.link_type} onValueChange={v => setNewLink(l => ({ ...l, link_type: v }))}>
-                            <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="custom">{isAr ? "مخصص" : "Custom"}</SelectItem>
-                              <SelectItem value="menu">{isAr ? "قائمة طعام" : "Menu"}</SelectItem>
-                              <SelectItem value="store">{isAr ? "متجر" : "Store"}</SelectItem>
-                              <SelectItem value="booking">{isAr ? "حجز" : "Booking"}</SelectItem>
-                              <SelectItem value="portfolio">{isAr ? "أعمال" : "Portfolio"}</SelectItem>
-                              <SelectItem value="video">{isAr ? "فيديو" : "Video"}</SelectItem>
-                              <SelectItem value="music">{isAr ? "موسيقى" : "Music"}</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "أيقونة" : "Icon"}</Label>
+                            <Input placeholder={isAr ? "إيموجي 🔗" : "Emoji 🔗"} value={newLink.icon} onChange={e => setNewLink(l => ({ ...l, icon: e.target.value }))} className="rounded-xl border-border/40 bg-muted/20 focus:bg-background h-10" />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-semibold">{isAr ? "النوع" : "Type"}</Label>
+                            <Select value={newLink.link_type} onValueChange={v => setNewLink(l => ({ ...l, link_type: v }))}>
+                              <SelectTrigger className="h-10 rounded-xl border-border/40 bg-muted/20"><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="custom">{isAr ? "مخصص" : "Custom"}</SelectItem>
+                                <SelectItem value="menu">{isAr ? "قائمة طعام" : "Menu"}</SelectItem>
+                                <SelectItem value="store">{isAr ? "متجر" : "Store"}</SelectItem>
+                                <SelectItem value="booking">{isAr ? "حجز" : "Booking"}</SelectItem>
+                                <SelectItem value="portfolio">{isAr ? "أعمال" : "Portfolio"}</SelectItem>
+                                <SelectItem value="video">{isAr ? "فيديو" : "Video"}</SelectItem>
+                                <SelectItem value="music">{isAr ? "موسيقى" : "Music"}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                         {/* Scheduling */}
                         <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" />{isAr ? "يبدأ من" : "Start Date"}</Label>
-                            <Input type="datetime-local" value={newLink.scheduled_start} onChange={e => setNewLink(l => ({ ...l, scheduled_start: e.target.value }))} className="text-xs h-8" dir="ltr" />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" />{isAr ? "يبدأ من" : "Start Date"}</Label>
+                            <Input type="datetime-local" value={newLink.scheduled_start} onChange={e => setNewLink(l => ({ ...l, scheduled_start: e.target.value }))} className="text-xs h-9 rounded-xl border-border/40 bg-muted/20" dir="ltr" />
                           </div>
-                          <div>
-                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{isAr ? "ينتهي في" : "End Date"}</Label>
-                            <Input type="datetime-local" value={newLink.scheduled_end} onChange={e => setNewLink(l => ({ ...l, scheduled_end: e.target.value }))} className="text-xs h-8" dir="ltr" />
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1"><Clock className="h-3 w-3" />{isAr ? "ينتهي في" : "End Date"}</Label>
+                            <Input type="datetime-local" value={newLink.scheduled_end} onChange={e => setNewLink(l => ({ ...l, scheduled_end: e.target.value }))} className="text-xs h-9 rounded-xl border-border/40 bg-muted/20" dir="ltr" />
                           </div>
                         </div>
                         {/* Page Tab Assignment */}
                         {extra.pages.length > 0 && (
-                          <div>
-                            <Label className="text-[10px] mb-1 block text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-3 w-3" />{isAr ? "الصفحة" : "Page"}</Label>
+                          <div className="space-y-1.5">
+                            <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-3 w-3" />{isAr ? "الصفحة" : "Page"}</Label>
                             <Select value={newLink.page_tab} onValueChange={v => setNewLink(l => ({ ...l, page_tab: v }))}>
-                              <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                              <SelectTrigger className="h-9 text-xs rounded-xl border-border/40 bg-muted/20"><SelectValue /></SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="main">{isAr ? "الرئيسية" : "Main"}</SelectItem>
                                 {extra.pages.map(pg => (
@@ -1258,9 +1278,9 @@ export default function SocialLinksEditor() {
                             </Select>
                           </div>
                         )}
-                        <Button onClick={handleAddLink} disabled={addItem.isPending} className="w-full gap-1.5" size="sm">
-                          {addItem.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
-                          {isAr ? "إضافة" : "Add Link"}
+                        <Button onClick={handleAddLink} disabled={addItem.isPending} className="w-full gap-2 h-10 rounded-xl font-semibold">
+                          {addItem.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                          {isAr ? "إضافة الرابط" : "Add Link"}
                         </Button>
                       </CardContent>
                     </Card>
@@ -1862,13 +1882,13 @@ export default function SocialLinksEditor() {
                           {isAr ? "تحكم بما يظهر في صفحة الروابط العامة" : "Control what appears on your public links page"}
                         </p>
                       </CardHeader>
-                      <CardContent className="pt-3">
-                        <div className="space-y-1.5">
+                      <CardContent className="pt-4 pb-5 px-5">
+                        <div className="grid gap-2 sm:grid-cols-2">
                           {VISIBILITY_SECTIONS.map(section => (
-                            <div key={section.key} className={`flex items-center justify-between rounded-xl border p-3 transition-all duration-200 ${extra[section.key] ? "border-primary/15 bg-primary/[0.02]" : "border-border/30 bg-muted/10"}`}>
+                            <div key={section.key} className={`flex items-center justify-between rounded-xl border-2 p-3 transition-all duration-200 group ${extra[section.key] ? "border-primary/20 bg-primary/[0.03] shadow-sm" : "border-border/20 hover:border-border/40"}`}>
                               <div className="flex items-center gap-2.5">
-                                <div className={`flex h-7 w-7 items-center justify-center rounded-xl transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted"}`}>
-                                  {extra[section.key] ? <Eye className="h-3.5 w-3.5 text-primary" /> : <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />}
+                                <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted/60"}`}>
+                                  {extra[section.key] ? <Eye className="h-4 w-4 text-primary" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
                                 </div>
                                 <Label className="text-xs cursor-pointer font-medium">{section.label}</Label>
                               </div>
