@@ -42,6 +42,7 @@ const ForYou = lazy(() => import("@/pages/ForYou"));
 const Tastings = lazy(() => import("@/pages/Tastings"));
 const TastingDetail = lazy(() => import("@/pages/TastingDetail"));
 const CreateTasting = lazy(() => import("@/pages/CreateTasting"));
+const Verification = lazy(() => import("@/pages/Verification"));
 
 export const protectedRoutes = (
   <>
@@ -83,5 +84,6 @@ export const protectedRoutes = (
     <Route path="/tastings" element={<ProtectedRoute><Tastings /></ProtectedRoute>} />
     <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
     <Route path="/tastings/:id" element={<ProtectedRoute><TastingDetail /></ProtectedRoute>} />
+    <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
   </>
 );
