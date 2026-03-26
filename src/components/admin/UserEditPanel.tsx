@@ -16,16 +16,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { InlinePanel } from "@/components/ui/InlinePanel";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { UserPersonalDetailsTab } from "@/components/admin/UserPersonalDetailsTab";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserModificationHistory } from "@/components/admin/UserModificationHistory";
 import { UserBioOptimizer } from "@/components/admin/UserBioOptimizer";
+import { TranslatableInput } from "@/components/profile/edit/TranslatableInput";
 import {
   Edit, UserCircle, Users, Briefcase, History, ImageIcon, X, Save,
-  Loader2, Upload, Camera, KeyRound, Mail, AlertCircle, Plus, Trash2,
-  ChefHat, Pencil, Check, Search,
+  Loader2, Upload, Camera, KeyRound, Mail, AlertCircle,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -101,12 +100,6 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const [usernameError, setUsernameError] = useState("");
   const [usernameChecking, setUsernameChecking] = useState(false);
 
-  // Group management
-  const [createGroupOpen, setCreateGroupOpen] = useState(false);
-  const [newGroupName, setNewGroupName] = useState("");
-  const [newGroupNameAr, setNewGroupNameAr] = useState("");
-  const [newGroupColor, setNewGroupColor] = useState("#3b82f6");
-
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
@@ -114,11 +107,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const { data: editUserSpecialties = [], refetch: refetchUserSpecialties } = useUserSpecialties(editingUser.user_id);
   const { data: editFollowStats } = useFollowStats(editingUser.user_id);
 
-  const { data: groups = [] } = useQueryClient().getQueryData(["customerGroups"]) as any || { data: [] };
-  const { data: userGroupMemberships = [] } = useQueryClient().getQueryData(["userGroupMemberships", editingUser.user_id]) as any || { data: [] };
-
   const editUserSpecialtyIds = new Set(editUserSpecialties.map((us: any) => us.specialty_id));
-  const availableSpecialties = approvedSpecialties.filter((s) => !editUserSpecialtyIds.has(s.id));
 
   const validateUsername = async (username: string) => {
     if (!username || username.length < 3) {
@@ -267,7 +256,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   };
 
   return (
-    <Card className="border-primary/20 shadow-lg shadow-primary/5 rounded-2xl animate-in fade-in-0 slide-in-from-top-2 duration-300">
+    <Card className="border-primary/20 shadow-lg shadow-primary/5 rounded-2xl animate-in fade-in-0 slide-in-from-top-2 duration-300" dir={isAr ? "rtl" : "ltr"}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -277,14 +266,14 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
             </Avatar>
             <div>
               <CardTitle className="text-lg flex items-center gap-2">
-                {(editingUser as any).display_name || editingUser.full_name || "Unknown"}
+                {isAr ? ((editingUser as any).display_name_ar || (editingUser as any).full_name_ar || editingUser.full_name) : ((editingUser as any).display_name || editingUser.full_name || "Unknown")}
                 {statusBadge(editingUser.account_status)}
                 {editingUser.is_verified && <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">✓ {isAr ? "موثق" : "Verified"}</Badge>}
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded-md">{editingUser.account_number}</span>
-                <span className="mx-1.5">·</span>@{editingUser.username}
-                <span className="mx-1.5">·</span>{editingUser.email}
+                <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded-md" dir="ltr">{editingUser.account_number}</span>
+                <span className="mx-1.5">·</span><span dir="ltr">@{editingUser.username}</span>
+                <span className="mx-1.5">·</span><span dir="ltr">{editingUser.email}</span>
               </p>
               {editFollowStats && (
                 <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
@@ -314,15 +303,58 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
 
           {/* ── Profile Tab ────── */}
           <TabsContent value="profile" className="space-y-5">
+            {/* Name & Identity - Arabic first */}
             <div className="rounded-xl border p-4 space-y-4">
               <h3 className="text-sm font-semibold flex items-center gap-2"><UserCircle className="h-4 w-4" />{isAr ? "الاسم والهوية" : "Name & Identity"}</h3>
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2"><Label>Full Name (EN)</Label><Input value={editFullName} onChange={(e) => setEditFullName(e.target.value)} dir="ltr" /></div>
-                <div className="space-y-2"><Label>الاسم الكامل (AR)</Label><Input value={editFullNameAr} onChange={(e) => setEditFullNameAr(e.target.value)} dir="rtl" /></div>
-                <div className="space-y-2"><Label>Display Name (EN)</Label><Input value={editDisplayName} onChange={(e) => setEditDisplayName(e.target.value)} dir="ltr" /></div>
-                <div className="space-y-2"><Label>الاسم المعروض (AR)</Label><Input value={editDisplayNameAr} onChange={(e) => setEditDisplayNameAr(e.target.value)} dir="rtl" /></div>
+                <TranslatableInput
+                  label={isAr ? "الاسم الكامل (عربي)" : "Full Name (AR)"}
+                  value={editFullNameAr}
+                  onChange={setEditFullNameAr}
+                  dir="rtl"
+                  pairedValue={editFullName}
+                  onTranslated={setEditFullName}
+                  lang="ar"
+                  placeholder={isAr ? "الاسم بالعربية" : "Name in Arabic"}
+                  fieldType="title"
+                />
+                <TranslatableInput
+                  label={isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (EN)"}
+                  value={editFullName}
+                  onChange={setEditFullName}
+                  dir="ltr"
+                  pairedValue={editFullNameAr}
+                  onTranslated={setEditFullNameAr}
+                  lang="en"
+                  placeholder="Full name in English"
+                  fieldType="title"
+                />
+                <TranslatableInput
+                  label={isAr ? "الاسم المعروض (عربي)" : "Display Name (AR)"}
+                  value={editDisplayNameAr}
+                  onChange={setEditDisplayNameAr}
+                  dir="rtl"
+                  pairedValue={editDisplayName}
+                  onTranslated={setEditDisplayName}
+                  lang="ar"
+                  placeholder={isAr ? "الاسم المعروض بالعربية" : "Display name in Arabic"}
+                  fieldType="title"
+                />
+                <TranslatableInput
+                  label={isAr ? "الاسم المعروض (إنجليزي)" : "Display Name (EN)"}
+                  value={editDisplayName}
+                  onChange={setEditDisplayName}
+                  dir="ltr"
+                  pairedValue={editDisplayNameAr}
+                  onTranslated={setEditDisplayNameAr}
+                  lang="en"
+                  placeholder="Display name in English"
+                  fieldType="title"
+                />
               </div>
             </div>
+
+            {/* Account Details */}
             <div className="rounded-xl border p-4 space-y-4">
               <h3 className="text-sm font-semibold">{isAr ? "بيانات الحساب" : "Account Details"}</h3>
               <div className="grid gap-4 md:grid-cols-3">
@@ -338,6 +370,8 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
                 <div className="space-y-2"><Label>{isAr ? "الهاتف" : "Phone"}</Label><Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} dir="ltr" placeholder="+966..." /></div>
               </div>
             </div>
+
+            {/* Location */}
             <div className="rounded-xl border p-4 space-y-4">
               <h3 className="text-sm font-semibold">{isAr ? "الموقع" : "Location"}</h3>
               <div className="grid gap-4 md:grid-cols-2">
@@ -345,11 +379,42 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
                 <div className="space-y-1.5"><Label className="text-xs">{isAr ? "المدينة" : "City"}</Label><Input value={editCity} onChange={(e) => setEditCity(e.target.value)} /></div>
               </div>
             </div>
+
+            {/* Biography - Arabic first */}
             <div className="rounded-xl border p-4 space-y-3">
               <h3 className="text-sm font-semibold">{isAr ? "النبذة التعريفية" : "Biography"}</h3>
               <UserBioOptimizer bio={editBioAr} onBioChange={setEditBioAr} lang="ar" onTranslatedBioChange={setEditBio} />
               <Separator />
               <UserBioOptimizer bio={editBio} onBioChange={setEditBio} lang="en" onTranslatedBioChange={setEditBioAr} />
+            </div>
+
+            {/* Specialization - Arabic first */}
+            <div className="rounded-xl border p-4 space-y-4">
+              <h3 className="text-sm font-semibold">{isAr ? "التخصص" : "Specialization"}</h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <TranslatableInput
+                  label={isAr ? "التخصص (عربي)" : "Specialization (AR)"}
+                  value={editSpecializationAr}
+                  onChange={setEditSpecializationAr}
+                  dir="rtl"
+                  pairedValue={editSpecialization}
+                  onTranslated={setEditSpecialization}
+                  lang="ar"
+                  placeholder={isAr ? "التخصص بالعربية" : "Specialization in Arabic"}
+                  fieldType="title"
+                />
+                <TranslatableInput
+                  label={isAr ? "التخصص (إنجليزي)" : "Specialization (EN)"}
+                  value={editSpecialization}
+                  onChange={setEditSpecialization}
+                  dir="ltr"
+                  pairedValue={editSpecializationAr}
+                  onTranslated={setEditSpecializationAr}
+                  lang="en"
+                  placeholder="Specialization in English"
+                  fieldType="title"
+                />
+              </div>
             </div>
           </TabsContent>
 
@@ -391,7 +456,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
               <Label>{isAr ? "الأدوار" : "Roles"}</Label>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
                 {ALL_ROLES.map((role) => (
-                  <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm active:scale-[0.98] ${editRoles.includes(role) ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"}`}>
+                  <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm active:scale-[0.98] touch-manipulation ${editRoles.includes(role) ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"}`}>
                     <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleRole(role)} />
                     <span className="text-sm capitalize">{t(role as any)}</span>
                   </div>
