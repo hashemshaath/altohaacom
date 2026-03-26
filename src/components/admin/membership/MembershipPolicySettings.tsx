@@ -61,7 +61,7 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await updateSetting.mutateAsync({
+      await saveSetting.mutateAsync({
         key: SETTINGS_KEY,
         value: policy as any,
         category: "membership",
