@@ -1048,7 +1048,6 @@ export default function UserManagement() {
                     </div>
                   </div>
                 </InlinePanel>
-                </div>
 
                 {userGroupMemberships.length === 0 ? (
                   <p className="text-sm text-muted-foreground py-4 text-center">{isAr ? "لم ينضم لأي مجموعة بعد" : "Not a member of any group yet"}</p>
