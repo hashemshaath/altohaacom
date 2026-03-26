@@ -6,7 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/PageShell";
-import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight, LayoutDashboard, ChevronRight } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight, LayoutDashboard, ChevronRight, Calendar, TrendingUp, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -44,13 +44,10 @@ const StreakWidget = lazy(() => import("@/components/dashboard/StreakWidget").th
 const WeeklyOverviewWidget = lazy(() => import("@/components/dashboard/WeeklyOverviewWidget").then(m => ({ default: m.WeeklyOverviewWidget })));
 const WalletBalanceWidget = lazy(() => import("@/components/dashboard/WalletBalanceWidget").then(m => ({ default: m.WalletBalanceWidget })));
 const GoalsMilestonesWidget = lazy(() => import("@/components/dashboard/GoalsMilestonesWidget").then(m => ({ default: m.GoalsMilestonesWidget })));
-// Fan-specific widgets
 const FanTrendingWidget = lazy(() => import("@/components/dashboard/FanTrendingWidget").then(m => ({ default: m.FanTrendingWidget })));
 const FanSuggestedFollowsWidget = lazy(() => import("@/components/dashboard/FanSuggestedFollowsWidget").then(m => ({ default: m.FanSuggestedFollowsWidget })));
 const FanRecommendationsWidget = lazy(() => import("@/components/dashboard/FanRecommendationsWidget").then(m => ({ default: m.FanRecommendationsWidget })));
 const FanEventWatchlist = lazy(() => import("@/components/fan/FanEventWatchlist").then(m => ({ default: m.FanEventWatchlist })));
-
-// Enhancement widgets
 const NotificationGroupWidget = lazy(() => import("@/components/notifications/NotificationGroupWidget").then(m => ({ default: m.NotificationGroupWidget })));
 const NotificationDigest = lazy(() => import("@/components/notifications/NotificationDigest").then(m => ({ default: m.NotificationDigest })));
 const MessageSearchWidget = lazy(() => import("@/components/messages/MessageSearchWidget").then(m => ({ default: m.MessageSearchWidget })));
@@ -86,7 +83,7 @@ export default function Dashboard() {
       if (!user) return null;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, full_name_ar, username, profile_completed, avatar_url, account_type")
+        .select("full_name, full_name_ar, username, profile_completed, avatar_url, account_type, membership_tier, loyalty_points")
         .eq("user_id", user.id)
         .single();
       return data;
@@ -145,8 +142,8 @@ export default function Dashboard() {
       {/* Membership Expiry Banner */}
       <MembershipExpiryBanner className="mb-4" />
 
-      {/* Welcome Banner */}
-      <WelcomeBanner
+      {/* ── Hero Welcome Section ── */}
+      <HeroWelcome
         greeting={greeting}
         subtitle={subtitle}
         isAr={isAr}
@@ -155,10 +152,14 @@ export default function Dashboard() {
         resetLayout={resetLayout}
         avatarUrl={profile?.avatar_url}
         firstName={firstName}
+        membershipTier={profile?.membership_tier}
+        loyaltyPoints={profile?.loyalty_points}
       />
 
       {/* Global Search */}
-      <GlobalSearchWidget />
+      <div className="mb-6">
+        <GlobalSearchWidget />
+      </div>
 
       {/* Profile Completion Nudge */}
       {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
@@ -166,24 +167,23 @@ export default function Dashboard() {
       {/* Quick Navigation */}
       <QuickAccessGrid sections={sections} isAr={isAr} />
 
-      {/* Quick Stats */}
+      {/* Quick Stats - Full width row */}
       {user && isVisible("quick-stats") && (
-        <div className="mb-5"><W lines={1}><QuickStatsWidget /></W></div>
+        <div className="mb-6"><W lines={1}><QuickStatsWidget /></W></div>
       )}
 
       {/* Achievements Summary */}
       {user && isVisible("achievements") && (
-        <div className="mb-5"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
+        <div className="mb-6"><AchievementsSummary userId={user.id} isAr={isAr} /></div>
       )}
-
 
       {/* Daily Digest */}
       {user && isVisible("daily-digest") && (
-        <div className="mb-5"><W><DailyDigestWidget /></W></div>
+        <div className="mb-6"><W><DailyDigestWidget /></W></div>
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
-      <div className="grid gap-4 md:gap-6 lg:grid-cols-12 pb-20 sm:pb-0">
+      <div className="grid gap-5 lg:grid-cols-12 pb-20 sm:pb-0">
         {/* Left Column - Profile & Identity */}
         <aside className="lg:col-span-3 space-y-4">
           <SectionLabel icon={Star} label={isAr ? "ملفك الشخصي" : "Your Profile"} />
@@ -198,24 +198,18 @@ export default function Dashboard() {
         </aside>
 
         {/* Center Column - Main Content Feed */}
-        <main className="lg:col-span-6 space-y-4 md:space-y-5">
+        <main className="lg:col-span-6 space-y-5">
           <SectionLabel icon={Trophy} label={isAr ? "النشاط الرئيسي" : "Main Feed"} />
 
-          {/* Common content */}
           {isVisible("competitions") && <W><UpcomingCompetitionsWidget /></W>}
           {isVisible("exhibitions") && <W><UpcomingExhibitionsWidget /></W>}
           {user && !isFan && isVisible("masterclass") && <W><MasterclassProgressWidget /></W>}
-
-          {/* AI Recommendations */}
           {user && isVisible("recommendations") && <W><SmartRecommendationsWidget /></W>}
-
           {user && !isFan && isVisible("weekly-trend") && <W><WeeklyTrendChart /></W>}
           {user && !isFan && isVisible("activity-heatmap") && <W><ActivityHeatmapWidget /></W>}
           {user && !isFan && isVisible("engagement") && <W><EngagementAnalyticsWidget /></W>}
           {user && !isFan && isVisible("content-stats") && <W><ContentStatsWidget /></W>}
           {user && !isFan && isVisible("progress-report") && <W><ProgressReportWidget /></W>}
-
-          {/* Shared activity */}
           {isVisible("activity") && <W><RecentActivityWidget /></W>}
         </main>
 
@@ -231,17 +225,14 @@ export default function Dashboard() {
             {user && isVisible("recent-orders") && <W><RecentOrdersWidget /></W>}
             {user && isVisible("live-competitions") && <W><LiveCompetitionsWidget /></W>}
 
-            {/* Fan sidebar */}
             {user && isFan && <W><FanEventWatchlist /></W>}
             {user && isFan && <W><FanSuggestedFollowsWidget /></W>}
             {user && isFan && <W><FanTrendingWidget /></W>}
 
-            {/* Pro sidebar */}
             {user && !isFan && isVisible("profile-insights") && <W><ProfileInsightsWidget /></W>}
             {user && !isFan && isVisible("chef-schedule") && <W><ChefScheduleWidget /></W>}
             {user && !isFan && <W name="job-availability"><JobAvailabilityWidget /></W>}
 
-            {/* Shared sidebar */}
             {user && isVisible("referral") && <W><ReferralWidget /></W>}
             {user && isVisible("notification-activity") && <W><NotificationActivityWidget /></W>}
             {user && isVisible("events-calendar") && <W><EventsCalendarWidget /></W>}
@@ -257,64 +248,111 @@ export default function Dashboard() {
   );
 }
 
-/* ---------- Sub-Components ---------- */
+/* ══════════════════════════════════════════════════════════
+   Sub-Components
+   ══════════════════════════════════════════════════════════ */
 
 const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5 mb-1 lg:mb-0">
-      <Icon className="h-3 w-3 text-primary/70" />
-      <span className="hidden lg:inline">{label}</span>
-    </h2>
+    <div className="flex items-center gap-2 mb-1 lg:mb-0">
+      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="h-3 w-3 text-primary" />
+      </div>
+      <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </h2>
+      <div className="flex-1 h-px bg-gradient-to-r from-border/60 to-transparent hidden lg:block" />
+    </div>
   );
 });
 
-const WelcomeBanner = memo(function WelcomeBanner({
-  greeting, subtitle, isAr, widgets, toggleWidget, resetLayout, avatarUrl, firstName,
+/* ── Hero Welcome ── */
+const HeroWelcome = memo(function HeroWelcome({
+  greeting, subtitle, isAr, widgets, toggleWidget, resetLayout, avatarUrl, firstName, membershipTier, loyaltyPoints,
 }: {
   greeting: string; subtitle: string; isAr: boolean;
   widgets: any[]; toggleWidget: (id: string) => void; resetLayout: () => void;
   avatarUrl?: string | null; firstName: string;
+  membershipTier?: string | null; loyaltyPoints?: number | null;
 }) {
+  const tierColors: Record<string, string> = {
+    free: "from-muted/30 to-muted/10",
+    professional: "from-primary/15 via-primary/5 to-accent/10",
+    enterprise: "from-chart-4/15 via-primary/10 to-chart-3/5",
+  };
+  const tierBg = tierColors[membershipTier || "free"] || tierColors.free;
+
   return (
-    <div className="relative mb-5 sm:mb-6 overflow-hidden rounded-2xl sm:rounded-3xl border border-primary/10 bg-gradient-to-br from-primary/8 via-background to-accent/8 p-4 sm:p-6 md:p-8 shadow-lg">
-      {/* Decorative orbs */}
-      <div className="pointer-events-none absolute -end-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-[80px] animate-pulse" />
-      <div className="pointer-events-none absolute -start-8 -bottom-8 h-36 w-36 rounded-full bg-accent/10 blur-[60px] animate-pulse [animation-delay:2s]" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
+    <div className={`relative mb-6 overflow-hidden rounded-2xl sm:rounded-3xl border border-border/30 bg-gradient-to-br ${tierBg} shadow-xl`}>
+      {/* Decorative elements */}
+      <div className="pointer-events-none absolute -end-20 -top-20 h-56 w-56 rounded-full bg-primary/8 blur-[100px]" />
+      <div className="pointer-events-none absolute -start-12 bottom-0 h-40 w-40 rounded-full bg-accent/8 blur-[80px]" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent" />
 
-      <div className="relative flex items-start gap-3 sm:gap-4">
-        {/* Avatar */}
-        <Link to="/profile" className="shrink-0 hidden sm:block">
-          <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow p-[2px] shadow-xl transition-all hover:scale-105 hover:shadow-primary/20">
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" className="h-full w-full rounded-[14px] object-cover bg-card" />
-            ) : (
-              <div className="h-full w-full rounded-[14px] bg-primary/10 flex items-center justify-center">
-                <LayoutDashboard className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
-              </div>
-            )}
-          </div>
-        </Link>
+      {/* Subtle pattern */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.02]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 sm:gap-3">
-            <div>
-              <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                {greeting} 👋
-                <ActivityPulse status="live" label={isAr ? "متصل" : "Online"} />
-              </h1>
-              <p className="mt-1 text-[10px] sm:text-xs sm:mt-1.5 text-muted-foreground/80">{subtitle}</p>
+      <div className="relative p-5 sm:p-7 md:p-8">
+        <div className="flex items-start gap-4 sm:gap-5">
+          {/* Avatar with tier ring */}
+          <Link to="/profile" className="shrink-0 hidden sm:block">
+            <div className={`h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-2xl p-[2.5px] shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-primary/25 ${
+              membershipTier === "enterprise" ? "bg-gradient-to-br from-chart-4 via-primary to-chart-3" :
+              membershipTier === "professional" ? "bg-gradient-to-br from-primary to-primary-glow" :
+              "bg-gradient-to-br from-muted-foreground/30 to-muted-foreground/10"
+            }`}>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="" className="h-full w-full rounded-[13px] object-cover bg-card" />
+              ) : (
+                <div className="h-full w-full rounded-[13px] bg-card flex items-center justify-center">
+                  <span className="text-xl font-bold text-primary">{firstName?.charAt(0) || "U"}</span>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
-              <Link to="/profile?tab=edit">
-                <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs">
-                  <span className="hidden sm:inline">{isAr ? "إدارة الملف" : "Manage Profile"}</span>
-                  <span className="sm:hidden">{isAr ? "الملف" : "Profile"}</span>
-                  <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
-                </Button>
-              </Link>
+          </Link>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+                    {greeting}
+                  </h1>
+                  <ActivityPulse status="live" label={isAr ? "متصل" : "Online"} />
+                </div>
+                <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground/80 line-clamp-1">{subtitle}</p>
+
+                {/* Quick stats chips */}
+                <div className="flex items-center gap-2 mt-3 flex-wrap">
+                  {membershipTier && membershipTier !== "free" && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/15">
+                      <Zap className="h-3 w-3" />
+                      {membershipTier === "enterprise" ? (isAr ? "مؤسسي" : "Enterprise") : (isAr ? "احترافي" : "Professional")}
+                    </span>
+                  )}
+                  {(loyaltyPoints ?? 0) > 0 && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-chart-4/10 text-chart-4 border border-chart-4/15">
+                      <Star className="h-3 w-3" />
+                      <AnimatedCounter value={loyaltyPoints || 0} /> {isAr ? "نقطة" : "pts"}
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium bg-muted/60 text-muted-foreground border border-border/30">
+                    <Calendar className="h-3 w-3" />
+                    {new Date().toLocaleDateString(isAr ? "ar-SA" : "en-US", { weekday: "short", month: "short", day: "numeric" })}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <DashboardLayoutControl widgets={widgets} toggleWidget={toggleWidget} resetLayout={resetLayout} />
+                <Link to="/profile?tab=edit">
+                  <Button variant="secondary" size="sm" className="gap-1.5 shadow-sm rounded-xl text-xs hidden sm:flex">
+                    {isAr ? "إدارة الملف" : "Manage Profile"}
+                    <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -323,20 +361,24 @@ const WelcomeBanner = memo(function WelcomeBanner({
   );
 });
 
+/* ── Profile Nudge ── */
 const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
   return (
-    <div className="mb-5 animate-fade-in">
+    <div className="mb-6 animate-fade-in">
       <Link to="/onboarding">
-        <Card className="group rounded-2xl border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.99]">
+        <Card className="group rounded-2xl border-chart-4/30 bg-gradient-to-r from-chart-4/5 to-transparent transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]">
           <CardContent className="flex items-center gap-3 py-3.5 px-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20 transition-transform duration-300 group-hover:scale-110">
-              <AlertCircle className="h-4 w-4 text-chart-4" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-chart-4/10 ring-2 ring-chart-4/20 transition-transform duration-300 group-hover:scale-110">
+              <AlertCircle className="h-5 w-5 text-chart-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
-              <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا" : "Finish setup to unlock all features"}</p>
+              <p className="text-sm font-bold">{isAr ? "أكمل ملفك الشخصي" : "Complete Your Profile"}</p>
+              <p className="text-xs text-muted-foreground truncate">{isAr ? "أكمل معلوماتك لفتح جميع المزايا والمكافآت" : "Finish setup to unlock all features & rewards"}</p>
             </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-300 shrink-0 rtl:rotate-180" />
+            <div className="shrink-0 flex items-center gap-1">
+              <span className="text-xs font-bold text-chart-4 hidden sm:block">{isAr ? "أكمل الآن" : "Complete Now"}</span>
+              <ChevronRight className="h-4 w-4 text-chart-4 group-hover:translate-x-0.5 transition-all duration-300 shrink-0 rtl:rotate-180" />
+            </div>
           </CardContent>
         </Card>
       </Link>
@@ -344,33 +386,42 @@ const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
   );
 });
 
+/* ── Quick Access Grid ── */
 const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
   const { prefetchProps } = usePrefetchRoute();
   return (
     <div className="mb-6">
-      <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-        <Sparkles className="h-3 w-3 text-primary" />
-        {isAr ? "الوصول السريع" : "Quick Access"}
-      </h2>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
+            <Sparkles className="h-3 w-3 text-primary" />
+          </div>
+          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            {isAr ? "الوصول السريع" : "Quick Access"}
+          </h2>
+        </div>
+      </div>
+
       <div className="relative">
-        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-10 sm:overflow-visible scrollbar-none" dir={isAr ? "rtl" : "ltr"}>
+        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-11 sm:overflow-visible scrollbar-none touch-manipulation" dir={isAr ? "rtl" : "ltr"}>
           {sections.map((s) => (
             <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink" {...prefetchProps(s.href)}>
-              <div className={`flex flex-col items-center gap-1.5 p-2.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 active:scale-[0.92] w-[68px] sm:w-auto ${s.glow}`}>
+              <div className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 active:scale-[0.95] w-[72px] sm:w-auto ${s.glow}`}>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
-                  <s.icon className={`h-4 w-4 ${s.color}`} />
+                  <s.icon className={`h-4.5 w-4.5 ${s.color}`} />
                 </div>
-                <span className="text-[9px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
+                <span className="text-[9px] sm:text-[10px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
               </div>
             </Link>
           ))}
         </div>
-        <div className="pointer-events-none absolute end-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent sm:hidden" />
+        <div className="pointer-events-none absolute end-0 top-0 bottom-2 w-10 bg-gradient-to-l from-background to-transparent sm:hidden" />
       </div>
     </div>
   );
 });
 
+/* ── Achievements Summary ── */
 const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: { userId: string; isAr: boolean }) {
   const { data } = useQuery({
     queryKey: ["dashboard-achievements", userId],
@@ -392,22 +443,22 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
   if (!data || (data.certificates === 0 && data.competitions === 0 && data.badges === 0)) return null;
 
   const items = [
-    { icon: Trophy, label: isAr ? "مسابقات" : "Competitions", value: data.competitions, color: "text-primary", bg: "bg-primary/10", border: "border-s-primary" },
-    { icon: Award, label: isAr ? "شهادات" : "Certificates", value: data.certificates, color: "text-chart-3", bg: "bg-chart-3/10", border: "border-s-chart-3" },
-    { icon: Star, label: isAr ? "شارات" : "Badges", value: data.badges, color: "text-chart-4", bg: "bg-chart-4/10", border: "border-s-chart-4" },
+    { icon: Trophy, label: isAr ? "مسابقات" : "Competitions", value: data.competitions, color: "text-primary", bg: "bg-primary/10", border: "border-s-primary/60" },
+    { icon: Award, label: isAr ? "شهادات" : "Certificates", value: data.certificates, color: "text-chart-3", bg: "bg-chart-3/10", border: "border-s-chart-3/60" },
+    { icon: Star, label: isAr ? "شارات" : "Badges", value: data.badges, color: "text-chart-4", bg: "bg-chart-4/10", border: "border-s-chart-4/60" },
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-3 gap-3 mb-6">
       {items.map((item) => (
-        <Card key={item.label} className={`border-s-[3px] ${item.border} rounded-2xl transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.97] group`}>
-          <CardContent className="flex items-center gap-3 p-3 sm:p-4">
-            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.bg} border border-border/20 transition-transform duration-300 group-hover:scale-110`}>
-              <item.icon className={`h-4 w-4 ${item.color}`} />
+        <Card key={item.label} className={`border-s-[3px] ${item.border} rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] group`}>
+          <CardContent className="flex items-center gap-3 p-3.5 sm:p-4">
+            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${item.bg} border border-border/20 transition-transform duration-300 group-hover:scale-110`}>
+              <item.icon className={`h-4.5 w-4.5 ${item.color}`} />
             </div>
             <div>
-              <AnimatedCounter value={item.value} className="text-xl font-bold tabular-nums" />
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-tight">{item.label}</p>
+              <AnimatedCounter value={item.value} className="text-2xl font-black tabular-nums" />
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-tight font-medium">{item.label}</p>
             </div>
           </CardContent>
         </Card>
