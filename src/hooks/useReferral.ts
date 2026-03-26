@@ -16,14 +16,25 @@ export function useReferralCode() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (error) throw error;
-      // Auto-create if missing
+      // Auto-create if missing — use DB function for guaranteed uniqueness
       if (!data) {
+        const { data: generated } = await supabase.rpc("generate_referral_code");
+        const uniqueCode = (generated as string) || crypto.randomUUID().slice(0, 8).toUpperCase();
         const { data: newCode, error: insertErr } = await supabase
           .from("referral_codes")
-          .insert({ user_id: user.id, code: crypto.randomUUID().slice(0, 8).toUpperCase() })
+          .insert({ user_id: user.id, code: uniqueCode })
           .select()
           .single();
-        if (insertErr) throw insertErr;
+        if (insertErr) {
+          // Code might have been created by the DB trigger — refetch
+          const { data: existing } = await supabase
+            .from("referral_codes")
+            .select("id, code, user_id, is_active, total_clicks, total_invites_sent, total_conversions, total_points_earned, custom_slug, created_at, updated_at")
+            .eq("user_id", user.id)
+            .single();
+          if (existing) return existing;
+          throw insertErr;
+        }
         return newCode;
       }
       return data;
