@@ -118,11 +118,31 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
   const totalChanges = filtered.length;
   const upgrades = filtered.filter(h => getDirection(h.previous_tier, h.new_tier) === "upgrade").length;
   const downgrades = filtered.filter(h => getDirection(h.previous_tier, h.new_tier) === "downgrade").length;
+  const netMovement = upgrades - downgrades;
+
+  // Monthly trend data for mini chart
+  const monthlyTrend = useMemo(() => {
+    if (!history) return [];
+    const months: Record<string, { label: string; upgrades: number; downgrades: number }> = {};
+    for (let i = 5; i >= 0; i--) {
+      const d = subMonths(new Date(), i);
+      const key = format(d, "yyyy-MM");
+      months[key] = { label: format(d, "MMM"), upgrades: 0, downgrades: 0 };
+    }
+    for (const h of history) {
+      const key = format(new Date(h.created_at), "yyyy-MM");
+      if (!months[key]) continue;
+      const dir = getDirection(h.previous_tier, h.new_tier);
+      if (dir === "upgrade") months[key].upgrades++;
+      else if (dir === "downgrade") months[key].downgrades++;
+    }
+    return Object.values(months);
+  }, [history]);
 
   return (
     <div className="space-y-4">
       {/* Summary */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-4">
         <Card>
           <CardContent className="pt-6 text-center">
             <p className="text-2xl font-bold"><AnimatedCounter value={totalChanges} /></p>
@@ -141,7 +161,47 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
             <p className="text-sm text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
           </CardContent>
         </Card>
+        <Card>
+          <CardContent className="pt-6 text-center">
+            <div className="flex items-center justify-center gap-1.5">
+              {netMovement >= 0 ? <TrendingUp className="h-5 w-5 text-chart-2" /> : <TrendingDown className="h-5 w-5 text-destructive" />}
+              <p className={`text-2xl font-bold ${netMovement >= 0 ? "text-chart-2" : "text-destructive"}`}>
+                {netMovement >= 0 ? "+" : ""}<AnimatedCounter value={netMovement} />
+              </p>
+            </div>
+            <p className="text-sm text-muted-foreground">{isAr ? "صافي الحركة" : "Net Movement"}</p>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Monthly Trend Chart */}
+      {monthlyTrend.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">{isAr ? "اتجاه التغييرات الشهرية" : "Monthly Change Trend"}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={monthlyTrend}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                <XAxis dataKey="label" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} width={25} />
+                <Tooltip
+                  contentStyle={{
+                    background: "hsl(var(--popover))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "8px",
+                    fontSize: 12,
+                  }}
+                />
+                <Bar dataKey="upgrades" fill="hsl(var(--primary))" name={isAr ? "ترقيات" : "Upgrades"} radius={[3, 3, 0, 0]} />
+                <Bar dataKey="downgrades" fill="hsl(var(--destructive))" name={isAr ? "تخفيضات" : "Downgrades"} radius={[3, 3, 0, 0]} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-center">
