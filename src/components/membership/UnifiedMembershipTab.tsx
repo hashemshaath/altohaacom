@@ -95,6 +95,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
       const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
       const tierPrices: Record<string, number> = { basic: 0, professional: 19, enterprise: 99 };
       const isDowngrade = tierOrder[newTier] < tierOrder[prevTier];
+      const isRenewal = newTier === prevTier;
 
       // Calculate prorated credit for downgrades
       let proratedCredit = 0;
@@ -107,35 +108,39 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
         proratedCredit = Math.round((dailyRate - newDailyRate) * remainingDays * 100) / 100;
       }
 
+      // Record history
       await supabase.from("membership_history").insert([{
         user_id: userId,
         previous_tier: prevTier,
         new_tier: newTier,
         reason: isDowngrade
           ? `Downgrade with prorated credit: ${proratedCredit} SAR`
-          : (newTier === prevTier ? "Renewal" : "Upgrade"),
+          : (isRenewal ? "Renewal" : "Upgrade"),
       }]);
 
+      // Update profile
       const { error } = await supabase
         .from("profiles")
         .update({
           membership_tier: newTier,
-          membership_status: newTier === "basic" ? "active" : "active",
+          membership_status: "active",
           membership_started_at: isDowngrade ? profile?.membership_started_at : now.toISOString(),
           membership_expires_at: expiresAt.toISOString(),
         })
         .eq("user_id", userId);
       if (error) throw error;
 
+      // Update card
       if (card) {
         await supabase.from("membership_cards").update({
           expires_at: expiresAt.toISOString(),
           is_trial: false,
           card_status: "active",
+          renewed_at: isRenewal ? now.toISOString() : undefined,
         }).eq("id", card.id);
       }
 
-      // If downgrade with credit, add to wallet atomically via RPC
+      // If downgrade with credit, add to wallet
       if (isDowngrade && proratedCredit > 0) {
         await supabase.rpc("wallet_credit", {
           p_user_id: userId,
@@ -146,22 +151,69 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
         });
       }
 
-      return { newTier, isDowngrade, proratedCredit };
+      // Generate invoice for paid tiers
+      const amount = tierPrices[newTier] * 12; // yearly
+      if (amount > 0) {
+        const taxRate = 15; // VAT 15%
+        const subtotal = amount;
+        const taxAmount = Math.round(subtotal * taxRate) / 100;
+        const total = subtotal + taxAmount;
+        const invoiceNumber = `INV-MBR-${Date.now().toString(36).toUpperCase()}`;
+
+        const tierNames = { basic: { en: "Basic", ar: "أساسية" }, professional: { en: "Professional", ar: "احترافية" }, enterprise: { en: "Enterprise", ar: "مؤسسية" } };
+        const tn = tierNames[newTier] || tierNames.basic;
+
+        await supabase.from("invoices").insert({
+          invoice_number: invoiceNumber,
+          user_id: userId,
+          amount: total,
+          currency: "SAR",
+          subtotal,
+          tax_rate: taxRate,
+          tax_amount: taxAmount,
+          title: isRenewal ? `${tn.en} Membership Renewal` : `${tn.en} Membership ${isDowngrade ? "Change" : "Upgrade"}`,
+          title_ar: isRenewal ? `تجديد عضوية ${tn.ar}` : `${isDowngrade ? "تغيير" : "ترقية"} عضوية ${tn.ar}`,
+          description: `${tn.en} membership - Annual plan`,
+          description_ar: `عضوية ${tn.ar} - خطة سنوية`,
+          status: "paid",
+          paid_at: now.toISOString(),
+          payment_method: "wallet",
+          items: [{ name: `${tn.en} Membership`, name_ar: `عضوية ${tn.ar}`, quantity: 1, unit_price: subtotal, amount: subtotal }],
+        });
+      }
+
+      return { newTier, prevTier, isDowngrade, isRenewal, proratedCredit, amount };
     },
-    onSuccess: ({ newTier, isDowngrade, proratedCredit }) => {
+    onSuccess: ({ newTier, prevTier, isDowngrade, isRenewal, proratedCredit, amount }) => {
       queryClient.invalidateQueries({ queryKey: ["membership-history", userId] });
       queryClient.invalidateQueries({ queryKey: ["membership-card", userId] });
       queryClient.invalidateQueries({ queryKey: ["membership-card-sub", userId] });
+      queryClient.invalidateQueries({ queryKey: ["membership-invoices", userId] });
       onMembershipChange?.();
+
+      const tierNames: Record<string, { en: string; ar: string }> = { basic: { en: "Basic", ar: "أساسية" }, professional: { en: "Professional", ar: "احترافية" }, enterprise: { en: "Enterprise", ar: "مؤسسية" } };
+      const tn = tierNames[newTier] || tierNames.basic;
+
       toast({
         title: isAr
-          ? (isDowngrade ? "تم تخفيض العضوية" : "تم تحديث العضوية!")
-          : (isDowngrade ? "Membership downgraded" : "Membership updated!"),
+          ? (isRenewal ? "تم تجديد العضوية!" : isDowngrade ? "تم تخفيض العضوية" : "تم ترقية العضوية!")
+          : (isRenewal ? "Membership renewed!" : isDowngrade ? "Membership downgraded" : "Membership upgraded!"),
         description: isDowngrade && proratedCredit > 0
           ? (isAr ? `تم إضافة ${proratedCredit} ر.س كرصيد تناسبي لمحفظتك` : `${proratedCredit} SAR prorated credit added to your wallet`)
-          : (isAr
-            ? `تم تغيير عضويتك إلى ${newTier === "professional" ? "احترافية" : newTier === "enterprise" ? "مؤسسية" : "أساسية"}`
-            : `Your membership has been changed to ${newTier}`),
+          : (isAr ? `تم تغيير عضويتك إلى ${tn.ar}` : `Your membership is now ${tn.en}`),
+      });
+
+      // Send notifications asynchronously
+      import("@/lib/notificationTriggers").then((triggers) => {
+        if (isRenewal) {
+          const expiresAt = new Date();
+          expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+          triggers.notifyMembershipRenewed({ userId, tier: newTier, expiresAt: expiresAt.toISOString(), amount });
+        } else if (isDowngrade) {
+          triggers.notifyMembershipDowngraded({ userId, previousTier: prevTier, newTier, proratedCredit });
+        } else {
+          triggers.notifyMembershipUpgraded({ userId, previousTier: prevTier, newTier, amount });
+        }
       });
     },
     onError: (err: any) => {
@@ -200,6 +252,16 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
       setCancelReason("");
       setCancelFeedback("");
       setCancelReasonType("too_expensive");
+
+      // Send notifications
+      import("@/lib/notificationTriggers").then((triggers) => {
+        triggers.notifyMembershipCancellationSubmitted({ userId, tier: profile?.membership_tier || "basic" });
+        triggers.notifyAdminMembershipCancellation({
+          userName: profile?.full_name || "User",
+          tier: profile?.membership_tier || "basic",
+          reason: cancelReasonType === "other" ? cancelReason : cancelReasonType,
+        });
+      });
     },
     onError: (err: any) => {
       toast({ variant: "destructive", title: "Error", description: err.message });
@@ -774,7 +836,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
               </div>
               {!verificationStatus?.is_verified && (
                 <Button variant="outline" size="sm" asChild>
-                  <Link to="/verify">{isAr ? "توثيق" : "Verify"}</Link>
+                  <Link to="/verification">{isAr ? "توثيق" : "Verify"}</Link>
                 </Button>
               )}
             </div>
