@@ -1076,6 +1076,51 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_hero_slides: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          page_type: string
+          sort_order: number
+          subtitle: string | null
+          subtitle_ar: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          page_type?: string
+          sort_order?: number
+          subtitle?: string | null
+          subtitle_ar?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          page_type?: string
+          sort_order?: number
+          subtitle?: string | null
+          subtitle_ar?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       automation_runs: {
         Row: {
           action: string
