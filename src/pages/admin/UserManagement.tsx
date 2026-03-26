@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { InlinePanel } from "@/components/ui/InlinePanel";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -698,80 +698,13 @@ export default function UserManagement() {
             <kbd className="text-[9px] bg-muted px-1.5 py-0.5 rounded-md font-mono hidden sm:inline">⌘U</kbd>
           </Button>
 
-          <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" className="rounded-xl gap-1.5"><UserPlus className="h-3.5 w-3.5" />{isAr ? "إنشاء" : "Create"}</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>{isAr ? "إنشاء حساب جديد" : "Create New Account"}</DialogTitle>
-                <DialogDescription>{isAr ? "أنشئ حساب مستخدم جديد" : "Create a new user account"}</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
-                  <Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} placeholder={isAr ? "أدخل الاسم الكامل" : "Enter full name"} />
-                </div>
-                <div className="space-y-2">
-                  <Label>{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                  <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
-                </div>
-                <div className="space-y-2">
-                  <Label>{isAr ? "كلمة المرور" : "Password"} *</Label>
-                  <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder={isAr ? "كلمة المرور الأولية" : "Initial password"} dir="ltr" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{isAr ? "اسم المستخدم" : "Username"}</Label>
-                    <Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="username" dir="ltr" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>{isAr ? "الدور" : "Role"}</Label>
-                    <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {ALL_ROLES.map((role) => (
-                          <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-                <Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending}>
-                  {createUserMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                  {isAr ? "إنشاء" : "Create"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button size="sm" className="rounded-xl gap-1.5" onClick={() => setCreateOpen(!createOpen)}>
+            <UserPlus className="h-3.5 w-3.5" />{isAr ? "إنشاء" : "Create"}
+          </Button>
 
-          <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="rounded-xl gap-1.5"><Mail className="h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>{isAr ? "إرسال دعوة" : "Send Invitation"}</DialogTitle>
-                <DialogDescription>{isAr ? "أرسل دعوة للمستخدم" : "Invite user to activate account"}</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>{isAr ? "البريد الإلكتروني" : "Email"}</Label>
-                  <Input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="user@example.com" dir="ltr" />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-                <Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending}>
-                  {inviteMutation.isPending && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-                  {isAr ? "إرسال" : "Send"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" size="sm" className="rounded-xl gap-1.5" onClick={() => setInviteOpen(!inviteOpen)}>
+            <Mail className="h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}
+          </Button>
 
           <Separator orientation="vertical" className="h-5 mx-0.5" />
 
