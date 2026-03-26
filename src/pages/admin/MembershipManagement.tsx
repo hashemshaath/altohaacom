@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,25 +7,42 @@ import {
   PieChart, Share2, ShieldAlert, FileText, Settings2, GitBranch,
   Wallet, Receipt, Bell, Shield, UserCog, Zap, DollarSign,
 } from "lucide-react";
-import MembershipOverview from "@/components/admin/membership/MembershipOverview";
-import MembershipMembersTab from "@/components/admin/membership/MembershipMembersTab";
-import MembershipBenefitsTab from "@/components/admin/membership/MembershipBenefitsTab";
-import MembershipCancellationsTab from "@/components/admin/membership/MembershipCancellationsTab";
-import MembershipHistoryTab from "@/components/admin/membership/MembershipHistoryTab";
-import MembershipFeatureAnalytics from "@/components/admin/membership/MembershipFeatureAnalytics";
-import MembershipAnalyticsDashboard from "@/components/admin/membership/MembershipAnalyticsDashboard";
-import MembershipReferralsTab from "@/components/admin/membership/MembershipReferralsTab";
-import MembershipChurnRetention from "@/components/admin/membership/MembershipChurnRetention";
-import MembershipDigestPanel from "@/components/admin/membership/MembershipDigestPanel";
-import MembershipPolicySettings from "@/components/admin/membership/MembershipPolicySettings";
-import MembershipLifecycleTimeline from "@/components/admin/membership/MembershipLifecycleTimeline";
-import MembershipFeatureControl from "@/components/admin/membership/MembershipFeatureControl";
-import MembershipUserOverrides from "@/components/admin/membership/MembershipUserOverrides";
-import MembershipWalletTab from "@/components/admin/membership/MembershipWalletTab";
-import MembershipInvoicesTab from "@/components/admin/membership/MembershipInvoicesTab";
-import MembershipNotificationsTab from "@/components/admin/membership/MembershipNotificationsTab";
-import MembershipBulkOperationsTab from "@/components/admin/membership/MembershipBulkOperationsTab";
-import MembershipRevenueTab from "@/components/admin/membership/MembershipRevenueTab";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy-load all tab components for performance
+const MembershipOverview = lazy(() => import("@/components/admin/membership/MembershipOverview"));
+const MembershipMembersTab = lazy(() => import("@/components/admin/membership/MembershipMembersTab"));
+const MembershipBenefitsTab = lazy(() => import("@/components/admin/membership/MembershipBenefitsTab"));
+const MembershipCancellationsTab = lazy(() => import("@/components/admin/membership/MembershipCancellationsTab"));
+const MembershipHistoryTab = lazy(() => import("@/components/admin/membership/MembershipHistoryTab"));
+const MembershipFeatureAnalytics = lazy(() => import("@/components/admin/membership/MembershipFeatureAnalytics"));
+const MembershipAnalyticsDashboard = lazy(() => import("@/components/admin/membership/MembershipAnalyticsDashboard"));
+const MembershipReferralsTab = lazy(() => import("@/components/admin/membership/MembershipReferralsTab"));
+const MembershipChurnRetention = lazy(() => import("@/components/admin/membership/MembershipChurnRetention"));
+const MembershipDigestPanel = lazy(() => import("@/components/admin/membership/MembershipDigestPanel"));
+const MembershipPolicySettings = lazy(() => import("@/components/admin/membership/MembershipPolicySettings"));
+const MembershipLifecycleTimeline = lazy(() => import("@/components/admin/membership/MembershipLifecycleTimeline"));
+const MembershipFeatureControl = lazy(() => import("@/components/admin/membership/MembershipFeatureControl"));
+const MembershipUserOverrides = lazy(() => import("@/components/admin/membership/MembershipUserOverrides"));
+const MembershipWalletTab = lazy(() => import("@/components/admin/membership/MembershipWalletTab"));
+const MembershipInvoicesTab = lazy(() => import("@/components/admin/membership/MembershipInvoicesTab"));
+const MembershipNotificationsTab = lazy(() => import("@/components/admin/membership/MembershipNotificationsTab"));
+const MembershipBulkOperationsTab = lazy(() => import("@/components/admin/membership/MembershipBulkOperationsTab"));
+const MembershipRevenueTab = lazy(() => import("@/components/admin/membership/MembershipRevenueTab"));
+
+function TabFallback() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-10 w-full" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-64 w-full rounded-xl" />
+    </div>
+  );
+}
 
 export default function MembershipManagement() {
   const { language } = useLanguage();
@@ -46,7 +64,7 @@ export default function MembershipManagement() {
     { value: "analytics", icon: TrendingUp, label: isAr ? "تحليلات" : "Analytics" },
     { value: "dashboard", icon: PieChart, label: isAr ? "لوحة" : "Dashboard" },
     { value: "referrals", icon: Share2, label: isAr ? "إحالات" : "Referrals" },
-    { value: "churn", icon: ShieldAlert, label: isAr ? "الاحتفاظ" : "Retention" },
+    { value: "retention", icon: ShieldAlert, label: isAr ? "الاحتفاظ" : "Retention" },
     { value: "digest", icon: FileText, label: isAr ? "ملخص" : "Digest" },
     { value: "timeline", icon: GitBranch, label: isAr ? "الزمني" : "Timeline" },
     { value: "policy", icon: Settings2, label: isAr ? "سياسات" : "Policy" },
@@ -76,25 +94,25 @@ export default function MembershipManagement() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview"><MembershipOverview /></TabsContent>
-        <TabsContent value="members"><MembershipMembersTab /></TabsContent>
-        <TabsContent value="bulk"><MembershipBulkOperationsTab /></TabsContent>
-        <TabsContent value="revenue"><MembershipRevenueTab /></TabsContent>
-        <TabsContent value="benefits"><MembershipBenefitsTab /></TabsContent>
-        <TabsContent value="features"><MembershipFeatureControl /></TabsContent>
-        <TabsContent value="overrides"><MembershipUserOverrides /></TabsContent>
-        <TabsContent value="wallet"><MembershipWalletTab /></TabsContent>
-        <TabsContent value="invoices"><MembershipInvoicesTab /></TabsContent>
-        <TabsContent value="notifications"><MembershipNotificationsTab /></TabsContent>
-        <TabsContent value="cancellations"><MembershipCancellationsTab /></TabsContent>
-        <TabsContent value="history"><MembershipHistoryTab /></TabsContent>
-        <TabsContent value="analytics"><MembershipFeatureAnalytics /></TabsContent>
-        <TabsContent value="dashboard"><MembershipAnalyticsDashboard /></TabsContent>
-        <TabsContent value="referrals"><MembershipReferralsTab /></TabsContent>
-        <TabsContent value="churn"><MembershipChurnRetention /></TabsContent>
-        <TabsContent value="digest"><MembershipDigestPanel /></TabsContent>
-        <TabsContent value="timeline"><MembershipLifecycleTimeline /></TabsContent>
-        <TabsContent value="policy"><MembershipPolicySettings /></TabsContent>
+        <TabsContent value="overview"><Suspense fallback={<TabFallback />}><MembershipOverview /></Suspense></TabsContent>
+        <TabsContent value="members"><Suspense fallback={<TabFallback />}><MembershipMembersTab /></Suspense></TabsContent>
+        <TabsContent value="bulk"><Suspense fallback={<TabFallback />}><MembershipBulkOperationsTab /></Suspense></TabsContent>
+        <TabsContent value="revenue"><Suspense fallback={<TabFallback />}><MembershipRevenueTab /></Suspense></TabsContent>
+        <TabsContent value="benefits"><Suspense fallback={<TabFallback />}><MembershipBenefitsTab /></Suspense></TabsContent>
+        <TabsContent value="features"><Suspense fallback={<TabFallback />}><MembershipFeatureControl /></Suspense></TabsContent>
+        <TabsContent value="overrides"><Suspense fallback={<TabFallback />}><MembershipUserOverrides /></Suspense></TabsContent>
+        <TabsContent value="wallet"><Suspense fallback={<TabFallback />}><MembershipWalletTab /></Suspense></TabsContent>
+        <TabsContent value="invoices"><Suspense fallback={<TabFallback />}><MembershipInvoicesTab /></Suspense></TabsContent>
+        <TabsContent value="notifications"><Suspense fallback={<TabFallback />}><MembershipNotificationsTab /></Suspense></TabsContent>
+        <TabsContent value="cancellations"><Suspense fallback={<TabFallback />}><MembershipCancellationsTab /></Suspense></TabsContent>
+        <TabsContent value="history"><Suspense fallback={<TabFallback />}><MembershipHistoryTab /></Suspense></TabsContent>
+        <TabsContent value="analytics"><Suspense fallback={<TabFallback />}><MembershipFeatureAnalytics /></Suspense></TabsContent>
+        <TabsContent value="dashboard"><Suspense fallback={<TabFallback />}><MembershipAnalyticsDashboard /></Suspense></TabsContent>
+        <TabsContent value="referrals"><Suspense fallback={<TabFallback />}><MembershipReferralsTab /></Suspense></TabsContent>
+        <TabsContent value="retention"><Suspense fallback={<TabFallback />}><MembershipChurnRetention /></Suspense></TabsContent>
+        <TabsContent value="digest"><Suspense fallback={<TabFallback />}><MembershipDigestPanel /></Suspense></TabsContent>
+        <TabsContent value="timeline"><Suspense fallback={<TabFallback />}><MembershipLifecycleTimeline /></Suspense></TabsContent>
+        <TabsContent value="policy"><Suspense fallback={<TabFallback />}><MembershipPolicySettings /></Suspense></TabsContent>
       </Tabs>
     </div>
   );
