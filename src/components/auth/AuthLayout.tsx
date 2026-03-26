@@ -9,15 +9,16 @@ interface AuthLayoutProps {
   isAr: boolean;
   showFooter?: boolean;
   currentStep?: number;
+  pageType?: "individual" | "company";
 }
 
-export const AuthLayout = memo(function AuthLayout({ children, stage, isAr, showFooter = false, currentStep }: AuthLayoutProps) {
+export const AuthLayout = memo(function AuthLayout({ children, stage, isAr, showFooter = false, currentStep, pageType = "individual" }: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden">
       <Header />
       <main className="flex flex-1">
         {/* Hero panel — tablet & desktop */}
-        <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} />
+        <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} pageType={pageType} />
 
         {/* Form panel */}
         <div className="relative flex flex-1 items-start md:items-center justify-center px-4 py-4 sm:px-6 sm:py-8 lg:px-10 overflow-hidden">
