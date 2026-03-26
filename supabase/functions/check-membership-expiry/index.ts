@@ -103,7 +103,8 @@ Deno.serve(async (req) => {
       notificationsCreated++;
     }
 
-    // Process expired memberships
+    // Process expired memberships — auto-downgrade + notify
+    let autoDowngraded = 0;
     for (const profile of expiredProfiles || []) {
       const { data: existing } = await supabase
         .from("notifications")
@@ -115,20 +116,99 @@ Deno.serve(async (req) => {
 
       if (existing && existing.length > 0) continue;
 
+      const tierLabels: Record<string, string> = { professional: "احترافي", enterprise: "مؤسسي" };
+      const tierLabelAr = tierLabels[profile.membership_tier] || profile.membership_tier;
+
+      // Auto-downgrade to basic
+      const { error: downgradeError } = await supabase
+        .from("profiles")
+        .update({
+          membership_tier: "basic",
+          membership_status: "expired",
+        })
+        .eq("user_id", profile.user_id);
+
+      if (!downgradeError) {
+        autoDowngraded++;
+
+        // Log history
+        await supabase.from("membership_history").insert({
+          user_id: profile.user_id,
+          previous_tier: profile.membership_tier,
+          new_tier: "basic",
+          reason: "Auto-expired: membership period ended",
+        });
+
+        // Deactivate membership card
+        await supabase
+          .from("membership_cards")
+          .update({ card_status: "expired" })
+          .eq("user_id", profile.user_id);
+
+        // Create invoice record for the expired period
+        await supabase.from("invoices").insert({
+          invoice_number: `INV-EXP-${Date.now().toString(36).toUpperCase()}`,
+          user_id: profile.user_id,
+          amount: 0,
+          currency: "SAR",
+          status: "void",
+          notes: `Membership expired: ${profile.membership_tier}`,
+          notes_ar: `انتهاء العضوية: ${tierLabelAr}`,
+        });
+      }
+
       await supabase.from("notifications").insert({
         user_id: profile.user_id,
         title: `🔴 Your ${profile.membership_tier} membership has expired`,
-        title_ar: `🔴 انتهت عضويتك ${profile.membership_tier}`,
-        body: `Your premium features are now disabled. Renew to restore access.`,
-        body_ar: `تم تعطيل ميزاتك المميزة. جدد لاستعادة الوصول.`,
+        title_ar: `🔴 انتهت عضويتك ${tierLabelAr}`,
+        body: `Your account has been moved to the Basic tier. Renew to restore premium access.`,
+        body_ar: `تم نقل حسابك إلى المستوى الأساسي. جدد لاستعادة الوصول المميز.`,
         type: "membership_expired",
         link: "/membership",
         metadata: {
           membership_tier: profile.membership_tier,
           expired_at: profile.membership_expires_at,
+          auto_downgraded: true,
         },
       });
 
+      notificationsCreated++;
+    }
+
+    // Process trial expirations
+    const { data: expiredTrials } = await supabase
+      .from("profiles")
+      .select("user_id, full_name, membership_tier, trial_ends_at, trial_tier")
+      .not("trial_ends_at", "is", null)
+      .eq("trial_expired", false)
+      .lte("trial_ends_at", now.toISOString());
+
+    let trialsExpired = 0;
+    for (const trial of expiredTrials || []) {
+      await supabase.from("profiles").update({
+        membership_tier: "basic",
+        trial_expired: true,
+        membership_status: "active",
+      }).eq("user_id", trial.user_id);
+
+      await supabase.from("membership_history").insert({
+        user_id: trial.user_id,
+        previous_tier: trial.membership_tier,
+        new_tier: "basic",
+        reason: "Trial period ended",
+      });
+
+      await supabase.from("notifications").insert({
+        user_id: trial.user_id,
+        title: "⏳ Your free trial has ended",
+        title_ar: "⏳ انتهت تجربتك المجانية",
+        body: "Upgrade now to keep your premium features!",
+        body_ar: "قم بالترقية الآن للحفاظ على ميزاتك المميزة!",
+        type: "trial_expired",
+        link: "/membership",
+      });
+
+      trialsExpired++;
       notificationsCreated++;
     }
 
@@ -138,6 +218,8 @@ Deno.serve(async (req) => {
         notifications_created: notificationsCreated,
         expiring_count: expiringProfiles?.length || 0,
         expired_count: expiredProfiles?.length || 0,
+        auto_downgraded: autoDowngraded,
+        trials_expired: trialsExpired,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
