@@ -48,7 +48,7 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
         supabase.from("membership_cancellation_requests").select("id, created_at").gte("created_at", prevPeriodStart).lt("created_at", periodStart),
         supabase.from("membership_gifts").select("id, created_at").gte("created_at", periodStart),
         supabase.from("membership_gifts").select("id, created_at").gte("created_at", prevPeriodStart).lt("created_at", periodStart),
-        supabase.from("membership_feature_usage").select("feature_code, created_at").gte("created_at", periodStart),
+        supabase.from("membership_feature_usage").select("id, access_count, created_at").gte("created_at", periodStart),
       ]);
 
       const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
@@ -76,7 +76,7 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
       const gifts = giftsPurchased?.length || 0;
       const prevGiftCount = prevGifts?.length || 0;
 
-      const totalFeatureUses = featureUsage?.length || 0;
+      const totalFeatureUses = featureUsage?.reduce((s, f) => s + (f.access_count || 0), 0) || 0;
 
       const totalPaid = allProfiles?.filter(p => p.membership_tier === "professional" || p.membership_tier === "enterprise").length || 0;
       const professional = allProfiles?.filter(p => p.membership_tier === "professional").length || 0;

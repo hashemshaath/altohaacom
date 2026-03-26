@@ -326,8 +326,8 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-lg font-bold">{isAr ? "التسرب والاحتفاظ" : "Churn & Retention"}</h3>
-          <p className="text-sm text-muted-foreground">{isAr ? "تحليل معدلات التسرب والاحتفاظ بالأعضاء المدفوعين" : "Analyze paid member churn rates, retention cohorts & at-risk alerts"}</p>
+          <h3 className="text-lg font-bold">{isAr ? "فقدان الأعضاء والاحتفاظ بهم" : "Member Loss & Retention"}</h3>
+          <p className="text-sm text-muted-foreground">{isAr ? "تحليل معدلات فقدان الأعضاء المدفوعين (التخفيض أو الإلغاء) ومعدلات الاحتفاظ بهم" : "Analyze paid member loss rates (downgrades & cancellations) and retention cohorts"}</p>
         </div>
         <AdminExportButton onExport={handleExport} isExporting={isExporting} />
       </div>
@@ -338,10 +338,10 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <TrendingDown className="h-4 w-4 text-destructive" />
-              <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل التسرب" : "Avg Churn Rate"}</span>
+              <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل فقدان الأعضاء" : "Avg Loss Rate"}</span>
             </div>
             <span className="text-2xl font-bold"><AnimatedCounter value={parseFloat(churnData?.avgChurn || "0")} suffix="%" /></span>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر" : "6-month avg"}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر — نسبة الأعضاء المدفوعين الذين ألغوا أو خفّضوا اشتراكهم" : "6-month avg — % of paid members who downgraded or cancelled"}</p>
           </CardContent>
         </Card>
         <Card>
@@ -351,7 +351,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل الاحتفاظ" : "Retention Rate"}</span>
             </div>
             <span className="text-2xl font-bold"><AnimatedCounter value={Math.round((100 - parseFloat(churnData?.avgChurn || "0")) * 10) / 10} suffix="%" /></span>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "أعضاء مدفوعين" : "paid members"}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "نسبة الأعضاء الذين استمروا باشتراكهم المدفوع" : "% of paid members who stayed"}</p>
           </CardContent>
         </Card>
         <Card>

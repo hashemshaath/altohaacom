@@ -47,7 +47,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
       const { data } = await supabase
         .from("notifications")
         .select("is_read, type")
-        .in("type", ["membership", "membership_trial", "membership_email_expiry_warning", "membership_email_expired", "membership_email_upgraded", "membership_email_downgraded", "membership_email_renewed", "membership_email_trial_ending", "membership_email_trial_expired"]);
+        .or("type.eq.membership,type.eq.membership_upgrade,type.eq.membership_trial,type.eq.membership_expired,type.like.membership_email_%");
 
       const total = data?.length || 0;
       const unread = data?.filter(n => !n.is_read).length || 0;
@@ -70,9 +70,9 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
       if (typeFilter === "email") {
         query = query.like("type", "membership_email_%");
       } else if (typeFilter === "in_app") {
-        query = query.eq("type", "membership");
+        query = query.or("type.eq.membership,type.eq.membership_upgrade,type.eq.membership_trial,type.eq.membership_expired");
       } else {
-        query = query.or("type.eq.membership,type.eq.membership_trial,type.like.membership_email_%");
+        query = query.or("type.eq.membership,type.eq.membership_upgrade,type.eq.membership_trial,type.eq.membership_expired,type.like.membership_email_%");
       }
 
       if (readFilter === "unread") query = query.eq("is_read", false);
@@ -162,10 +162,15 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
   const getTypeIcon = (type: string) => {
     if (type?.includes("email")) return <Mail className="h-3.5 w-3.5 text-chart-3" />;
     if (type === "membership_trial") return <Clock className="h-3.5 w-3.5 text-chart-4" />;
+    if (type === "membership_upgrade") return <CheckCircle2 className="h-3.5 w-3.5 text-chart-2" />;
+    if (type === "membership_expired") return <Clock className="h-3.5 w-3.5 text-destructive" />;
     return <Send className="h-3.5 w-3.5 text-primary" />;
   };
 
   const getTypeBadge = (type: string) => {
+    if (type === "membership_upgrade") return <Badge className="text-[9px] h-4 bg-primary/20 text-primary">{isAr ? "ترقية" : "Upgrade"}</Badge>;
+    if (type === "membership_expired") return <Badge variant="destructive" className="text-[9px] h-4">{isAr ? "منتهي" : "Expired"}</Badge>;
+    if (type === "membership_trial") return <Badge className="text-[9px] h-4 bg-chart-4/20 text-chart-4">{isAr ? "تجريبي" : "Trial"}</Badge>;
     if (type?.includes("email_expiry")) return <Badge variant="destructive" className="text-[9px] h-4">{isAr ? "تحذير" : "Warning"}</Badge>;
     if (type?.includes("email_expired")) return <Badge variant="destructive" className="text-[9px] h-4">{isAr ? "منتهي" : "Expired"}</Badge>;
     if (type?.includes("email_upgraded")) return <Badge className="text-[9px] h-4 bg-primary/20 text-primary">{isAr ? "ترقية" : "Upgrade"}</Badge>;
