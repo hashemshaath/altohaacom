@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageShell } from "@/components/PageShell";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Lock } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Lock, ShieldCheck } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -91,6 +91,7 @@ export default function Profile() {
       { id: "social-links", label: isAr ? "صفحة الروابط" : "Social Links", icon: Link2, href: "/social-links" },
     ] : []),
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
+    { id: "verification", label: isAr ? "التوثيق" : "Verification", icon: ShieldCheck, href: "/verification" },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 

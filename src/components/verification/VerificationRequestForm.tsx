@@ -71,11 +71,9 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
       return;
     }
 
-    const { data: urlData } = supabase.storage
-      .from("verification-documents")
-      .getPublicUrl(path);
-
-    setUploadedDocs((prev) => [...prev, { type: docType, url: urlData.publicUrl, name: file.name }]);
+    // Bucket is private — store path reference, admins can view via signed URLs
+    setUploadedDocs((prev) => [...prev, { type: docType, url: path, name: file.name }]);
+    setUploading(false);
     setUploading(false);
   };
 
