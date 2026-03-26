@@ -193,10 +193,11 @@ export default function MembershipCheckout() {
           userId: user.id,
           tier: selectedTier,
           action: isRenewal ? "renewal" : isDowngrade ? "downgrade" : "upgrade",
-          amount: finalAmount,
+          amount: price,
           currency: "SAR",
           periodStart: new Date().toISOString(),
           periodEnd: expiresAt.toISOString(),
+          discount: proratedCredit > 0 ? proratedCredit : 0,
           notes: `${changeType} to ${selectedTier} (${billingCycle})`,
         });
       }
