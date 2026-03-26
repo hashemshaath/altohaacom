@@ -914,3 +914,161 @@ export async function notifySupplierInquiry(params: {
     });
   }
 }
+
+// ═══════════════════════════════════════════════
+// ── Membership Lifecycle Notifications ──
+// ═══════════════════════════════════════════════
+
+const TIER_LABELS: Record<string, { en: string; ar: string }> = {
+  basic: { en: "Basic", ar: "أساسية" },
+  professional: { en: "Professional", ar: "احترافية" },
+  enterprise: { en: "Enterprise", ar: "مؤسسية" },
+};
+
+export async function notifyMembershipUpgraded(params: {
+  userId: string;
+  previousTier: string;
+  newTier: string;
+  amount?: number;
+}) {
+  const prev = TIER_LABELS[params.previousTier] || TIER_LABELS.basic;
+  const next = TIER_LABELS[params.newTier] || TIER_LABELS.professional;
+  return sendNotification({
+    userId: params.userId,
+    title: `Membership Upgraded to ${next.en}`,
+    titleAr: `تم ترقية عضويتك إلى ${next.ar}`,
+    body: `Congratulations! Your membership has been upgraded from ${prev.en} to ${next.en}.${params.amount ? ` Amount: ${params.amount} SAR.` : ""}`,
+    bodyAr: `تهانينا! تم ترقية عضويتك من ${prev.ar} إلى ${next.ar}.${params.amount ? ` المبلغ: ${params.amount} ر.س.` : ""}`,
+    type: "success",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyMembershipDowngraded(params: {
+  userId: string;
+  previousTier: string;
+  newTier: string;
+  proratedCredit?: number;
+}) {
+  const prev = TIER_LABELS[params.previousTier] || TIER_LABELS.professional;
+  const next = TIER_LABELS[params.newTier] || TIER_LABELS.basic;
+  return sendNotification({
+    userId: params.userId,
+    title: `Membership Changed to ${next.en}`,
+    titleAr: `تم تغيير عضويتك إلى ${next.ar}`,
+    body: `Your membership has been changed from ${prev.en} to ${next.en}.${params.proratedCredit ? ` A credit of ${params.proratedCredit} SAR has been added to your wallet.` : ""}`,
+    bodyAr: `تم تغيير عضويتك من ${prev.ar} إلى ${next.ar}.${params.proratedCredit ? ` تم إضافة ${params.proratedCredit} ر.س كرصيد لمحفظتك.` : ""}`,
+    type: "info",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyMembershipRenewed(params: {
+  userId: string;
+  tier: string;
+  expiresAt: string;
+  amount?: number;
+}) {
+  const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+  const expDate = new Date(params.expiresAt).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric" });
+  const expDateAr = new Date(params.expiresAt).toLocaleDateString("ar", { year: "numeric", month: "short", day: "numeric" });
+  return sendNotification({
+    userId: params.userId,
+    title: `Membership Renewed: ${t.en}`,
+    titleAr: `تم تجديد العضوية: ${t.ar}`,
+    body: `Your ${t.en} membership has been renewed. New expiry date: ${expDate}.${params.amount ? ` Amount: ${params.amount} SAR.` : ""}`,
+    bodyAr: `تم تجديد عضويتك ${t.ar}. تاريخ الانتهاء الجديد: ${expDateAr}.${params.amount ? ` المبلغ: ${params.amount} ر.س.` : ""}`,
+    type: "success",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyMembershipExpiringSoon(params: {
+  userId: string;
+  tier: string;
+  daysLeft: number;
+  expiresAt: string;
+}) {
+  const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+  return sendNotification({
+    userId: params.userId,
+    title: `Membership Expiring in ${params.daysLeft} Day${params.daysLeft > 1 ? "s" : ""}`,
+    titleAr: `عضويتك تنتهي خلال ${params.daysLeft} ${params.daysLeft === 1 ? "يوم" : "أيام"}`,
+    body: `Your ${t.en} membership expires in ${params.daysLeft} day${params.daysLeft > 1 ? "s" : ""}. Renew now to keep your benefits.`,
+    bodyAr: `عضويتك ${t.ar} تنتهي خلال ${params.daysLeft} أيام. جدد الآن للحفاظ على مزاياك.`,
+    type: "warning",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyMembershipExpired(params: {
+  userId: string;
+  tier: string;
+}) {
+  const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+  return sendNotification({
+    userId: params.userId,
+    title: `Your ${t.en} Membership Has Expired`,
+    titleAr: `انتهت عضويتك ${t.ar}`,
+    body: `Your ${t.en} membership has expired. Your account has been downgraded to Basic. Renew now to restore your benefits.`,
+    bodyAr: `انتهت عضويتك ${t.ar}. تم تخفيض حسابك إلى الأساسية. جدد الآن لاستعادة مزاياك.`,
+    type: "error",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyMembershipCancellationSubmitted(params: {
+  userId: string;
+  tier: string;
+}) {
+  const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+  return sendNotification({
+    userId: params.userId,
+    title: `Cancellation Request Received`,
+    titleAr: `تم استلام طلب إلغاء العضوية`,
+    body: `Your cancellation request for the ${t.en} membership has been submitted. Our team will review it shortly.`,
+    bodyAr: `تم تقديم طلب إلغاء عضويتك ${t.ar}. سيقوم فريقنا بمراجعته قريباً.`,
+    type: "info",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+export async function notifyMembershipTrialEnding(params: {
+  userId: string;
+  daysLeft: number;
+}) {
+  return sendNotification({
+    userId: params.userId,
+    title: `Free Trial Ends in ${params.daysLeft} Day${params.daysLeft > 1 ? "s" : ""}`,
+    titleAr: `تنتهي فترتك التجريبية خلال ${params.daysLeft} ${params.daysLeft === 1 ? "يوم" : "أيام"}`,
+    body: `Your free trial ends in ${params.daysLeft} day${params.daysLeft > 1 ? "s" : ""}. Upgrade now to keep all your features.`,
+    bodyAr: `تنتهي فترتك التجريبية خلال ${params.daysLeft} أيام. ارقِ الآن للحفاظ على جميع الميزات.`,
+    type: "warning",
+    link: "/profile?tab=membership",
+    channels: ["in_app", "email"],
+  });
+}
+
+/** Notify admins about cancellation requests */
+export async function notifyAdminMembershipCancellation(params: {
+  userName: string;
+  tier: string;
+  reason: string;
+}) {
+  const t = TIER_LABELS[params.tier] || TIER_LABELS.basic;
+  return notifyAllAdmins({
+    title: `Membership Cancellation: ${params.userName}`,
+    titleAr: `طلب إلغاء عضوية: ${params.userName}`,
+    body: `${params.userName} requested to cancel their ${t.en} membership. Reason: ${params.reason}`,
+    bodyAr: `طلب ${params.userName} إلغاء عضويته ${t.ar}. السبب: ${params.reason}`,
+    type: "warning",
+    link: "/admin/memberships",
+    channels: ["in_app", "email"],
+  });
+}
