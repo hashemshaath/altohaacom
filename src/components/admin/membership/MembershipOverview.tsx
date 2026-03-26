@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
+} from "recharts";
+import {
   Users, CreditCard, Star, TrendingUp, AlertTriangle, Clock,
   ArrowUpCircle, UserCheck, UserX, RefreshCw, Play, Loader2, CheckCircle2
 } from "lucide-react";
@@ -203,25 +206,69 @@ const MembershipOverview = memo(function MembershipOverview() {
         </CardContent>
       </Card>
 
-      {/* Revenue & Conversion */}
-      <div className="grid gap-6 md:grid-cols-2">
+      {/* Revenue, Tier Distribution & Conversion */}
+      <div className="grid gap-6 md:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">
-              {isAr ? "الإيرادات الشهرية المقدرة" : "Estimated Monthly Revenue"}
+              {isAr ? "الإيرادات الشهرية المقدرة" : "Est. Monthly Revenue"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-3xl font-bold"><AnimatedCounter value={stats?.monthlyRevenue || 0} /> SAR</p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex justify-between">
-                <span>{isAr ? "الاحترافي" : "Professional"} ({stats?.professional || 0} × 19 SAR)</span>
+                <span>{isAr ? "الاحترافي" : "Professional"} ({stats?.professional || 0} × 19)</span>
                 <span>{(stats?.professional || 0) * 19} SAR</span>
               </div>
               <div className="flex justify-between">
-                <span>{isAr ? "المؤسسي" : "Enterprise"} ({stats?.enterprise || 0} × 99 SAR)</span>
+                <span>{isAr ? "المؤسسي" : "Enterprise"} ({stats?.enterprise || 0} × 99)</span>
                 <span>{(stats?.enterprise || 0) * 99} SAR</span>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tier Distribution Pie */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">
+              {isAr ? "توزيع المستويات" : "Tier Distribution"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[160px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: isAr ? "أساسي" : "Basic", value: stats?.basic || 0, fill: "hsl(var(--muted-foreground))" },
+                      { name: isAr ? "احترافي" : "Professional", value: stats?.professional || 0, fill: "hsl(var(--primary))" },
+                      { name: isAr ? "مؤسسي" : "Enterprise", value: stats?.enterprise || 0, fill: "hsl(var(--chart-2))" },
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={40}
+                    outerRadius={65}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    {[
+                      "hsl(var(--muted-foreground))",
+                      "hsl(var(--primary))",
+                      "hsl(var(--chart-2))",
+                    ].map((color, i) => (
+                      <Cell key={i} fill={color} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-center gap-4 mt-2 text-xs">
+              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-muted-foreground" />{isAr ? "أساسي" : "Basic"}</span>
+              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-primary" />{isAr ? "احترافي" : "Pro"}</span>
+              <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-chart-2" />{isAr ? "مؤسسي" : "Ent"}</span>
             </div>
           </CardContent>
         </Card>
@@ -239,12 +286,12 @@ const MembershipOverview = memo(function MembershipOverview() {
               <span>{isAr ? "مجاني" : "Free"}: {stats?.basic || 0}</span>
               <span>{isAr ? "مدفوع" : "Paid"}: {(stats?.professional || 0) + (stats?.enterprise || 0)}</span>
             </div>
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="rounded-xl border p-3 text-center">
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="rounded-xl border p-2.5 text-center">
                 <AnimatedCounter value={stats?.recentUpgrades || 0} className="text-lg text-primary" />
                 <p className="text-xs text-muted-foreground">{isAr ? "ترقيات" : "Upgrades"}</p>
               </div>
-              <div className="rounded-xl border p-3 text-center">
+              <div className="rounded-xl border p-2.5 text-center">
                 <AnimatedCounter value={stats?.recentDowngrades || 0} className="text-lg text-destructive" />
                 <p className="text-xs text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
               </div>

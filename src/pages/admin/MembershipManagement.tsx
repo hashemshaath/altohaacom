@@ -1,7 +1,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp, PieChart, Share2, ShieldAlert, FileText } from "lucide-react";
+import { CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp, PieChart, Share2, ShieldAlert, FileText, Settings2, GitBranch } from "lucide-react";
 import MembershipOverview from "@/components/admin/membership/MembershipOverview";
 import MembershipMembersTab from "@/components/admin/membership/MembershipMembersTab";
 import MembershipBenefitsTab from "@/components/admin/membership/MembershipBenefitsTab";
@@ -12,6 +12,8 @@ import MembershipAnalyticsDashboard from "@/components/admin/membership/Membersh
 import MembershipReferralsTab from "@/components/admin/membership/MembershipReferralsTab";
 import MembershipChurnRetention from "@/components/admin/membership/MembershipChurnRetention";
 import MembershipDigestPanel from "@/components/admin/membership/MembershipDigestPanel";
+import MembershipPolicySettings from "@/components/admin/membership/MembershipPolicySettings";
+import MembershipLifecycleTimeline from "@/components/admin/membership/MembershipLifecycleTimeline";
 export default function MembershipManagement() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -67,6 +69,14 @@ export default function MembershipManagement() {
               <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
               {isAr ? "الملخص" : "Digest"}
             </TabsTrigger>
+            <TabsTrigger value="timeline" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
+              <GitBranch className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "الجدول الزمني" : "Timeline"}
+            </TabsTrigger>
+            <TabsTrigger value="policy" className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm">
+              <Settings2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isAr ? "السياسات" : "Policy"}
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -80,6 +90,8 @@ export default function MembershipManagement() {
         <TabsContent value="referrals"><MembershipReferralsTab /></TabsContent>
         <TabsContent value="churn"><MembershipChurnRetention /></TabsContent>
         <TabsContent value="digest"><MembershipDigestPanel /></TabsContent>
+        <TabsContent value="timeline"><MembershipLifecycleTimeline /></TabsContent>
+        <TabsContent value="policy"><MembershipPolicySettings /></TabsContent>
       </Tabs>
     </div>
   );
