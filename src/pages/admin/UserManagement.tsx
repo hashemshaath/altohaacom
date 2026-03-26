@@ -102,15 +102,25 @@ export default function UserManagement() {
   const [suspendTarget, setSuspendTarget] = useState<{ userId: string; userName: string; email: string | null } | null>(null);
   const [notifyTarget, setNotifyTarget] = useState<{ userId: string; userName: string } | null>(null);
   const [notifyMessage, setNotifyMessage] = useState("");
+  const [notifyMessageAr, setNotifyMessageAr] = useState("");
 
   // Create user form
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newFullName, setNewFullName] = useState("");
+  const [newFullNameAr, setNewFullNameAr] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newRole, setNewRole] = useState<AppRole>("chef");
+  const [newAccountType, setNewAccountType] = useState<"professional" | "fan">("professional");
+  const [newSendInvite, setNewSendInvite] = useState(true);
+
+  // Invite form
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteFullName, setInviteFullName] = useState("");
+  const [inviteRole, setInviteRole] = useState<AppRole>("chef");
+  const [inviteMessageEn, setInviteMessageEn] = useState("");
+  const [inviteMessageAr, setInviteMessageAr] = useState("");
 
   const [userSearchOpen, setUserSearchOpen] = useState(false);
 
