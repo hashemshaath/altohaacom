@@ -255,10 +255,19 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
       {/* Policy Summary */}
       <Card className="border-dashed">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Settings2 className="h-4 w-4 text-muted-foreground" />
-            {isAr ? "ملخص السياسة النشطة" : "Active Policy Summary"}
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Settings2 className="h-4 w-4 text-muted-foreground" />
+              {isAr ? "ملخص السياسة النشطة" : "Active Policy Summary"}
+            </CardTitle>
+            {settings?.[SETTINGS_KEY] && (
+              <Badge variant="outline" className="gap-1 text-[10px] text-muted-foreground">
+                <CheckCircle2 className="h-3 w-3" />
+                {isAr ? "آخر حفظ: " : "Last saved: "}
+                {new Date().toLocaleDateString(isAr ? "ar-SA" : "en-US")}
+              </Badge>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

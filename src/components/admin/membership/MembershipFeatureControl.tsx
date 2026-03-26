@@ -1,17 +1,20 @@
-import { useState, memo } from "react";
+import { useState, memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAllMembershipFeatures } from "@/hooks/useMembershipFeatures";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Loader2, Search, Shield, Zap, Star, Crown, Layout, Users, MessageCircle } from "lucide-react";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import {
+  Loader2, Search, Shield, Zap, Star, Crown, Layout, Users, MessageCircle,
+  ToggleLeft, ToggleRight, CheckCircle2, XCircle,
+} from "lucide-react";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 
@@ -35,12 +38,31 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
   const [search, setSearch] = useState("");
   const [updating, setUpdating] = useState<string | null>(null);
 
+  // KPI stats
+  const stats = useMemo(() => {
+    if (!features) return { total: 0, active: 0, inactive: 0, tierCoverage: { basic: 0, professional: 0, enterprise: 0 } };
+    const total = features.length;
+    const active = features.filter(f => f.is_active).length;
+    const tierCoverage = { basic: 0, professional: 0, enterprise: 0 };
+
+    for (const f of features) {
+      if (!f.is_active) continue;
+      const mappings = (f as any).membership_feature_tiers || [];
+      for (const tier of TIERS) {
+        if (mappings.some((m: any) => m.tier === tier && m.is_enabled)) {
+          tierCoverage[tier]++;
+        }
+      }
+    }
+
+    return { total, active, inactive: total - active, tierCoverage };
+  }, [features]);
+
   const handleToggle = async (featureId: string, tier: string, currentEnabled: boolean) => {
     const key = `${featureId}-${tier}`;
     setUpdating(key);
 
     try {
-      // Check if mapping exists
       const { data: existing } = await supabase
         .from("membership_feature_tiers")
         .select("id")
@@ -89,6 +111,36 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
     }
   };
 
+  // Bulk enable all features for a tier
+  const handleBulkTierToggle = async (tier: string, enable: boolean) => {
+    if (!features) return;
+    setUpdating(`bulk-${tier}`);
+    try {
+      const activeFeatures = features.filter(f => f.is_active);
+      for (const f of activeFeatures) {
+        const { data: existing } = await supabase
+          .from("membership_feature_tiers")
+          .select("id")
+          .eq("feature_id", f.id)
+          .eq("tier", tier)
+          .maybeSingle();
+
+        if (existing) {
+          await supabase.from("membership_feature_tiers").update({ is_enabled: enable }).eq("id", existing.id);
+        } else if (enable) {
+          await supabase.from("membership_feature_tiers").insert({ feature_id: f.id, tier, is_enabled: true });
+        }
+      }
+      queryClient.invalidateQueries({ queryKey: ["allMembershipFeatures"] });
+      queryClient.invalidateQueries({ queryKey: ["userAllFeatures"] });
+      toast.success(isAr ? `تم تحديث جميع المميزات لـ ${tier}` : `All features ${enable ? "enabled" : "disabled"} for ${tier}`);
+    } catch {
+      toast.error(isAr ? "فشل التحديث الجماعي" : "Bulk update failed");
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -104,17 +156,63 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
     return f.name.toLowerCase().includes(s) || f.name_ar?.toLowerCase().includes(s) || f.code.toLowerCase().includes(s);
   });
 
+  const kpiCards = [
+    { icon: Shield, label: isAr ? "إجمالي المميزات" : "Total Features", value: stats.total, color: "text-primary" },
+    { icon: CheckCircle2, label: isAr ? "مفعّلة" : "Active", value: stats.active, color: "text-chart-2" },
+    { icon: XCircle, label: isAr ? "معطّلة" : "Inactive", value: stats.inactive, color: "text-destructive" },
+    { icon: Crown, label: isAr ? "تغطية Enterprise" : "Enterprise Coverage", value: stats.active > 0 ? Math.round((stats.tierCoverage.enterprise / stats.active) * 100) : 0, suffix: "%", color: "text-chart-4" },
+  ];
+
   return (
     <div className="space-y-4">
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder={isAr ? "بحث عن ميزة..." : "Search features..."}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="ps-9"
-        />
+      {/* KPI Cards */}
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        {kpiCards.map(card => (
+          <Card key={card.label}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <card.icon className={`h-4 w-4 ${card.color}`} />
+                <span className="text-xs font-medium text-muted-foreground">{card.label}</span>
+              </div>
+              <AnimatedCounter value={card.value} className="text-2xl" suffix={(card as any).suffix} />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Search + Bulk Actions */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative max-w-sm flex-1">
+          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder={isAr ? "بحث عن ميزة..." : "Search features..."}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="ps-9"
+          />
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs text-muted-foreground">{isAr ? "تفعيل كل المميزات:" : "Enable all for:"}</span>
+          {TIERS.map(tier => {
+            const cfg = TIER_CONFIG[tier];
+            const isBulkUpdating = updating === `bulk-${tier}`;
+            return (
+              <Button
+                key={tier}
+                variant="outline"
+                size="sm"
+                className="gap-1 h-7 text-xs px-2"
+                disabled={!!updating}
+                onClick={() => handleBulkTierToggle(tier, true)}
+              >
+                {isBulkUpdating ? <Loader2 className="h-3 w-3 animate-spin" /> : <cfg.icon className={`h-3 w-3 ${cfg.color}`} />}
+                {tier === "basic" ? (isAr ? "أساسي" : "Basic") :
+                 tier === "professional" ? (isAr ? "احترافي" : "Pro") :
+                 (isAr ? "مؤسسي" : "Ent")}
+              </Button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Legend */}
@@ -127,6 +225,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
               {tier === "basic" ? (isAr ? "الأساسي" : "Basic") :
                tier === "professional" ? (isAr ? "الاحترافي" : "Professional") :
                (isAr ? "المؤسسي" : "Enterprise")}
+              <span className="text-muted-foreground ms-1">{stats.tierCoverage[tier]}/{stats.active}</span>
             </Badge>
           );
         })}
@@ -137,10 +236,12 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
         <TabsList className="h-8 gap-1">
           {categories.map(cat => {
             const cfg = CATEGORY_CONFIG[cat] || { icon: Layout, label: cat, labelAr: cat };
+            const catCount = filteredFeatures?.filter(f => f.category === cat).length || 0;
             return (
               <TabsTrigger key={cat} value={cat} className="gap-1 text-xs h-7 px-2">
                 <cfg.icon className="h-3 w-3" />
                 {isAr ? cfg.labelAr : cfg.label}
+                <Badge variant="secondary" className="text-[9px] h-4 px-1 ms-0.5">{catCount}</Badge>
               </TabsTrigger>
             );
           })}
