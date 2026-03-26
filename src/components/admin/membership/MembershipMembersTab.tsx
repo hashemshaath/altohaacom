@@ -197,12 +197,19 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       await logAction(userId, "change_membership", { previous: prevTier, new: newTier, reason: actionReason });
 
       const tierLabel = newTier === "professional" ? "احترافي" : newTier === "enterprise" ? "مؤسسي" : "أساسي";
+      const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
+      const isUpgrade = (tierOrder[newTier] || 0) > (tierOrder[prevTier || "basic"] || 0);
+
       await notify(userId,
         `Your membership has been updated to ${newTier}`,
         `تم تحديث عضويتك إلى ${tierLabel}`,
         "Your membership tier has been changed by an administrator.",
         "تم تغيير مستوى عضويتك بواسطة المسؤول."
       );
+      // Send upgrade/downgrade email
+      supabase.functions.invoke("send-membership-email", {
+        body: { type: isUpgrade ? "upgraded" : "downgraded", user_id: userId, data: { previous_tier: prevTier, new_tier: newTier, tier: newTier } },
+      }).catch(() => {});
     },
     onSuccess: () => {
       invalidateAll();
