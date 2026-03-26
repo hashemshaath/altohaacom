@@ -98,8 +98,6 @@ export default function MembershipManagement() {
       </Tabs>
     </div>
   );
-}
-  const { language } = useLanguage();
   const isAr = language === "ar";
 
   const tabs = [
