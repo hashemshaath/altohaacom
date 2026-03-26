@@ -78,7 +78,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
 
       if (search) query = query.or(`full_name.ilike.%${search}%,username.ilike.%${search}%,email.ilike.%${search}%`);
       if (tierFilter !== "all") query = query.eq("membership_tier", tierFilter as MembershipTier);
-      if (statusFilter !== "all") query = query.eq("membership_status", statusFilter);
+      if (statusFilter !== "all") query = query.eq("membership_status", statusFilter as any);
 
       const { data } = await query;
       let filtered = (data || []) as BulkMember[];
