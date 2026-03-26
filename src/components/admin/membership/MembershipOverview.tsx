@@ -172,6 +172,37 @@ const MembershipOverview = memo(function MembershipOverview() {
         ))}
       </div>
 
+      {/* Admin Actions Bar */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
+          <div>
+            <p className="text-sm font-medium">{isAr ? "فحص انتهاء العضويات" : "Membership Expiry Check"}</p>
+            <p className="text-xs text-muted-foreground">
+              {isAr ? "تشغيل يدوي لفحص وتخفيض العضويات المنتهية وإرسال التنبيهات" : "Manually run expiry check, auto-downgrade & send alerts"}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            {lastRunResult && (
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <CheckCircle2 className="h-3.5 w-3.5 text-chart-2" />
+                {isAr
+                  ? `${lastRunResult.auto_downgraded || 0} تخفيض · ${lastRunResult.notifications_created || 0} إشعار`
+                  : `${lastRunResult.auto_downgraded || 0} downgraded · ${lastRunResult.notifications_created || 0} alerts`}
+              </div>
+            )}
+            <Button
+              size="sm"
+              onClick={() => runExpiryCheck.mutate()}
+              disabled={runExpiryCheck.isPending}
+              className="gap-1.5"
+            >
+              {runExpiryCheck.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+              {isAr ? "تشغيل الآن" : "Run Now"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Revenue & Conversion */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
