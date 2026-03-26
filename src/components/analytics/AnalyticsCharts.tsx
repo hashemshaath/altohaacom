@@ -8,6 +8,7 @@ import {
 import {
   CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
   GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, CHART_HEIGHT, getNoDataText,
+  translateStatus, getTooltipStyle,
 } from "@/lib/chartConfig";
 
 function NoData({ isAr }: { isAr: boolean }) {
@@ -109,10 +110,10 @@ export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }:
         {data && data.length > 0 ? (
           <ResponsiveContainer width="100%" height={CHART_HEIGHT.md}>
             <PieChart>
-              <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={85} innerRadius={45} paddingAngle={3} strokeWidth={0}>
+              <Pie data={data.map(d => ({ ...d, label: translateStatus(d.name, isAr) }))} dataKey="value" nameKey="label" cx="50%" cy="50%" outerRadius={85} innerRadius={45} paddingAngle={3} strokeWidth={0}>
                 {data.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Pie>
-              <Tooltip contentStyle={TOOLTIP_STYLE} />
+              <Tooltip contentStyle={getTooltipStyle(isAr)} />
               <Legend wrapperStyle={LEGEND_STYLE} />
             </PieChart>
           </ResponsiveContainer>
