@@ -207,6 +207,10 @@ export default function Auth() {
     } else {
       setLoginAttempts(0);
       setLockoutUntil(null);
+      toast({
+        title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
+        description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
+      });
     }
   };
 
@@ -287,6 +291,10 @@ export default function Auth() {
     } else {
       setLoginAttempts(0);
       setLockoutUntil(null);
+      toast({
+        title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
+        description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
+      });
     }
   };
 
@@ -309,6 +317,24 @@ export default function Auth() {
       setFormError(error.message);
     } else {
       setResetSuccess(true);
+      // Send password change confirmation email (fire-and-forget)
+      try {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser?.email) {
+          supabase.functions.invoke("send-transactional-email", {
+            body: {
+              templateName: "password-changed",
+              recipientEmail: currentUser.email,
+              idempotencyKey: `pwd-changed-${currentUser.id}-${Date.now()}`,
+              templateData: { name: currentUser.user_metadata?.full_name },
+            },
+          }).catch(() => {});
+        }
+      } catch {}
+      toast({
+        title: isAr ? "تم تحديث كلمة المرور بنجاح" : "Password updated successfully",
+        description: isAr ? "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة" : "You can now sign in with your new password",
+      });
       setTimeout(() => navigate("/login", { replace: true }), 2000);
     }
   };
@@ -424,7 +450,14 @@ export default function Auth() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
-        data: { full_name: fullName, username: username.toLowerCase() },
+        data: {
+          full_name: fullName,
+          username: username.toLowerCase(),
+          phone: verifiedPhone || null,
+          country_code: countryCode || null,
+          account_type: accountType,
+          preferred_language: language,
+        },
       },
     });
 
