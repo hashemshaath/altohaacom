@@ -142,9 +142,55 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
     { icon: ArrowUpCircle, label: isAr ? "التسرب الأخير" : "Recent Churn", value: revenueData?.recentChurn || 0, color: "text-destructive" },
   ];
 
+  const { exportData, isExporting } = useAdminExport();
+  const handleExport = useCallback((fmt: "csv" | "json") => {
+    if (!revenueData) return;
+    const rows = [
+      { metric: "MRR", value: revenueData.mrr, unit: "SAR" },
+      { metric: "ARR", value: revenueData.arr, unit: "SAR" },
+      { metric: "ARPU", value: revenueData.arpu, unit: "SAR" },
+      { metric: "Conversion Rate", value: revenueData.conversionRate, unit: "%" },
+      { metric: "Total Revenue", value: revenueData.totalRevenue, unit: "SAR" },
+      { metric: "Pending Revenue", value: revenueData.pendingRevenue, unit: "SAR" },
+      { metric: "Paid Members", value: revenueData.paidMembers, unit: "" },
+      { metric: "Churn Rate", value: revenueData.churnRate, unit: "%" },
+      { metric: "LTV", value: revenueData.ltv, unit: "SAR" },
+      ...(revenueData.monthlyTrend || []).map(m => ({
+        metric: `Revenue (${m.month})`, value: m.revenue, unit: "SAR",
+      })),
+    ];
+    exportData(rows as any, [
+      { key: "metric" as any, label: "Metric" },
+      { key: "value" as any, label: "Value" },
+      { key: "unit" as any, label: "Unit" },
+    ], { filename: "membership-revenue", format: fmt });
+  }, [revenueData, exportData]);
+
+  // MRR growth from trend data
+  const mrrGrowth = (() => {
+    const trend = revenueData?.monthlyTrend;
+    if (!trend || trend.length < 2) return null;
+    const prev = trend[trend.length - 2].revenue;
+    const curr = trend[trend.length - 1].revenue;
+    if (prev === 0) return curr > 0 ? 100 : 0;
+    return Math.round(((curr - prev) / prev) * 100);
+  })();
+
   return (
     <div className="space-y-6">
-      {/* Primary KPIs */}
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-bold">{isAr ? "الإيرادات" : "Revenue Analytics"}</h3>
+          {mrrGrowth !== null && (
+            <Badge variant={mrrGrowth >= 0 ? "default" : "destructive"} className="gap-1 text-xs">
+              {mrrGrowth >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+              {mrrGrowth > 0 ? "+" : ""}{mrrGrowth}% {isAr ? "هذا الشهر" : "this month"}
+            </Badge>
+          )}
+        </div>
+        <AdminExportButton onExport={handleExport} isExporting={isExporting} />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpiCards.map(card => (
           <Card key={card.label} className="relative overflow-hidden">
