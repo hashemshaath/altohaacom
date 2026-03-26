@@ -216,7 +216,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                   <TabsTrigger value="overview" className="text-[11px] flex-1 rounded-lg">{isAr ? "نظرة عامة" : "Overview"}</TabsTrigger>
                   <TabsTrigger value="roles" className="text-[11px] flex-1 rounded-lg">{isAr ? "الأدوار" : "Roles"}</TabsTrigger>
                   <TabsTrigger value="activity" className="text-[11px] flex-1 rounded-lg">{isAr ? "السجل" : "Activity"}</TabsTrigger>
-                </Tabs>
+                </TabsList>
 
                 {/* ── Overview ── */}
                 <TabsContent value="overview" className="mt-3 space-y-3">
