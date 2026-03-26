@@ -252,7 +252,74 @@ const MembershipOverview = memo(function MembershipOverview() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Activity Feed */}
+      <RecentActivityFeed isAr={isAr} />
     </div>
+  );
+});
+
+/** Recent membership activity feed */
+const RecentActivityFeed = memo(function RecentActivityFeed({ isAr }: { isAr: boolean }) {
+  const { data: recentActivity } = useQuery({
+    queryKey: ["membership-recent-activity"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("membership_history")
+        .select("id, user_id, previous_tier, new_tier, reason, created_at")
+        .order("created_at", { ascending: false })
+        .limit(8);
+      return data || [];
+    },
+    staleTime: 1000 * 60,
+  });
+
+  const tierLabels: Record<string, { en: string; ar: string }> = {
+    basic: { en: "Basic", ar: "أساسي" },
+    professional: { en: "Professional", ar: "احترافي" },
+    enterprise: { en: "Enterprise", ar: "مؤسسي" },
+  };
+
+  if (!recentActivity?.length) return null;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <Clock className="h-4 w-4 text-muted-foreground" />
+          {isAr ? "آخر النشاطات" : "Recent Activity"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {recentActivity.map((entry) => {
+            const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
+            const isUpgrade = (tierOrder[entry.new_tier] || 0) > (tierOrder[entry.previous_tier || "basic"] || 0);
+            const prev = tierLabels[entry.previous_tier || "basic"] || tierLabels.basic;
+            const next = tierLabels[entry.new_tier] || tierLabels.basic;
+
+            return (
+              <div key={entry.id} className="flex items-center gap-3 rounded-lg border p-2.5 text-sm">
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${isUpgrade ? "bg-primary/10" : "bg-muted"}`}>
+                  {isUpgrade ? <ArrowUpCircle className="h-4 w-4 text-primary" /> : <UserX className="h-4 w-4 text-muted-foreground" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium truncate">
+                    {isAr ? prev.ar : prev.en} → {isAr ? next.ar : next.en}
+                  </p>
+                  {entry.reason && (
+                    <p className="text-xs text-muted-foreground truncate">{entry.reason}</p>
+                  )}
+                </div>
+                <Badge variant="outline" className="text-xs shrink-0">
+                  {format(new Date(entry.created_at), "MMM d")}
+                </Badge>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
   );
 });
 
