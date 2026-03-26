@@ -14,11 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { InlinePanel } from "@/components/ui/InlinePanel";
+import { InlineConfirm } from "@/components/ui/InlineConfirm";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
@@ -798,31 +798,19 @@ export default function CountriesAdmin() {
       </Tabs>
 
       {/* ═══ Delete Confirmation ═══ */}
-      <AlertDialog open={!!deleteTarget} onOpenChange={v => !v && setDeleteTarget(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              {isAr ? "تأكيد الحذف" : "Confirm Deletion"}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {isAr
-                ? `هل أنت متأكد من حذف "${deleteTarget?.name}"؟ لا يمكن التراجع عن هذا الإجراء.`
-                : `Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{isAr ? "إلغاء" : "Cancel"}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => deleteTarget && deleteMutation.mutate({ id: deleteTarget.id, code: deleteTarget.code })}
-            >
-              <Trash2 className="h-4 w-4 me-2" />
-              {isAr ? "حذف" : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <InlineConfirm
+        open={!!deleteTarget}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={() => deleteTarget && deleteMutation.mutate({ id: deleteTarget.id, code: deleteTarget.code })}
+        title={isAr ? "تأكيد الحذف" : "Confirm Deletion"}
+        description={isAr
+          ? `هل أنت متأكد من حذف "${deleteTarget?.name}"؟ لا يمكن التراجع عن هذا الإجراء.`
+          : `Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
+        confirmLabel={isAr ? "حذف" : "Delete"}
+        cancelLabel={isAr ? "إلغاء" : "Cancel"}
+        variant="destructive"
+        loading={deleteMutation.isPending}
+      />
 
       {/* ═══ Country Form Dialog ═══ */}
       <Dialog open={showForm} onOpenChange={v => !v && closeForm()}>
