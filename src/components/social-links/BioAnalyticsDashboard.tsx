@@ -309,15 +309,37 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
     [isAr ? "زيارات" : "Views"]: count,
   }));
 
-  // Link performance table
-  const linkPerformance = (linkItems || [])
-    .map(item => ({
-      ...item,
-      clicks: item.click_count || 0,
-      ctr: visitorStats.total > 0 ? Math.round(((item.click_count || 0) / visitorStats.total) * 1000) / 10 : 0,
-      share: totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0,
-    }))
-    .sort((a, b) => b.clicks - a.clicks);
+  // Link performance — use real click data filtered by selected period
+  const periodClickMap = useMemo(() => {
+    if (!clickAnalytics) return {};
+    if (period === "7d") return clickAnalytics.linkClickMap7d;
+    if (period === "14d") return clickAnalytics.linkClickMap14d;
+    return clickAnalytics.linkClickMap30d;
+  }, [clickAnalytics, period]);
+
+  const periodTotalClicks = useMemo(() => {
+    return Object.values(periodClickMap).reduce((sum, v) => sum + (v as number), 0);
+  }, [periodClickMap]);
+
+  const periodVisitCount = useMemo(() => {
+    return periodVisits.reduce((s, v) => s + v.visits, 0);
+  }, [periodVisits]);
+
+  const linkPerformance = useMemo(() => {
+    return (linkItems || [])
+      .map(item => {
+        const periodClk = (periodClickMap[item.id] as number) || 0;
+        const allTimeClk = item.click_count || 0;
+        return {
+          ...item,
+          clicks: periodClk,
+          allTimeClicks: allTimeClk,
+          ctr: periodVisitCount > 0 ? Math.round((periodClk / periodVisitCount) * 1000) / 10 : 0,
+          share: periodTotalClicks > 0 ? Math.round((periodClk / periodTotalClicks) * 100) : 0,
+        };
+      })
+      .sort((a, b) => b.clicks - a.clicks);
+  }, [linkItems, periodClickMap, periodVisitCount, periodTotalClicks]);
 
   // Conversion funnel
   const funnelData = [
