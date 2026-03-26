@@ -27,7 +27,7 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-1.5">
-            <p className="text-2xl sm:text-3xl font-black leading-none tracking-tight text-foreground tabular-nums group-hover:text-primary transition-colors">{value}</p>
+            <p className="text-2xl sm:text-3xl font-black leading-none tracking-tight text-foreground tabular-nums group-hover:text-primary transition-colors">{typeof value === "number" ? value : value}</p>
             {numValue > 0 && (
               <span className={`text-[9px] font-bold ${iconColor} opacity-0 group-hover:opacity-100 transition-opacity`}>
                 ●
