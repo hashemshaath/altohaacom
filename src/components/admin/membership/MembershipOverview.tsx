@@ -18,6 +18,29 @@ import { useToast } from "@/hooks/use-toast";
 const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const { toast } = useToast();
+  const [lastRunResult, setLastRunResult] = useState<any>(null);
+
+  // Manual trigger for expiry check
+  const runExpiryCheck = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("check-membership-expiry", {
+        body: { time: new Date().toISOString() },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      setLastRunResult(data);
+      toast({
+        title: isAr ? "تم تنفيذ فحص العضويات" : "Membership check completed",
+        description: isAr
+          ? `${data.auto_downgraded || 0} تخفيض تلقائي، ${data.notifications_created || 0} إشعار`
+          : `${data.auto_downgraded || 0} auto-downgraded, ${data.notifications_created || 0} notifications sent`,
+      });
+    },
+    onError: (error) => toast({ variant: "destructive", title: "Error", description: error.message }),
+  });
 
   const { data: stats } = useQuery({
     queryKey: ["membership-overview-stats"],
