@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, TrendingDown, Users, CreditCard,
-  ArrowUpCircle, ArrowDownCircle, Percent, Target,
+  ArrowUpCircle, ArrowDownCircle, Percent, Target, Wallet, Coins,
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 
@@ -21,28 +21,26 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const { data: revenueData } = useQuery({
     queryKey: ["membership-revenue-analytics"],
     queryFn: async () => {
-      // Fetch all profiles for tier distribution
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("membership_tier, membership_status, membership_started_at, created_at");
-
-      // Fetch invoices for revenue
-      const { data: invoices } = await supabase
-        .from("invoices")
-        .select("amount, currency, status, created_at, paid_at")
-        .order("created_at", { ascending: false });
-
-      // Fetch history for churn/upgrade analysis
-      const { data: history } = await supabase
-        .from("membership_history")
-        .select("previous_tier, new_tier, created_at, reason")
-        .order("created_at", { ascending: false })
-        .limit(500);
+      const [
+        { data: profiles },
+        { data: invoices },
+        { data: history },
+        { data: wallets },
+      ] = await Promise.all([
+        supabase.from("profiles").select("membership_tier, membership_status, membership_started_at, created_at"),
+        supabase.from("invoices").select("amount, currency, status, created_at, paid_at").order("created_at", { ascending: false }),
+        supabase.from("membership_history").select("previous_tier, new_tier, created_at, reason").order("created_at", { ascending: false }).limit(500),
+        supabase.from("user_wallets").select("balance, points_balance"),
+      ]);
 
       const now = new Date();
       const total = profiles?.length || 0;
       const professional = profiles?.filter(p => p.membership_tier === "professional").length || 0;
       const enterprise = profiles?.filter(p => p.membership_tier === "enterprise").length || 0;
+
+      // Wallet totals
+      const totalWalletBalance = wallets?.reduce((s, w) => s + (w.balance || 0), 0) || 0;
+      const totalPoints = wallets?.reduce((s, w) => s + (w.points_balance || 0), 0) || 0;
 
       // Monthly Revenue Rate
       const mrr = (professional * 19) + (enterprise * 99);
@@ -111,9 +109,14 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
         { name: isAr ? "مؤسسي" : "Enterprise", members: enterprise, rate: 99, revenue: enterprise * 99 },
       ];
 
+      // LTV estimate (ARPU * avg months)
+      const avgMonths = 6; // assumed average
+      const ltv = arpu * avgMonths;
+
       return {
         mrr, arr, totalRevenue, pendingRevenue, arpu, conversionRate, churnRate,
         paidMembers, total, monthlyTrend, tierBreakdown, recentChurn,
+        totalWalletBalance, totalPoints, ltv,
       };
     },
     staleTime: 1000 * 60 * 5,
@@ -129,8 +132,12 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const secondaryCards = [
     { icon: CreditCard, label: isAr ? "إجمالي المحصّل" : "Total Collected", value: revenueData?.totalRevenue || 0, suffix: " SAR", color: "text-chart-2" },
     { icon: DollarSign, label: isAr ? "إيرادات معلقة" : "Pending Revenue", value: revenueData?.pendingRevenue || 0, suffix: " SAR", color: "text-chart-4" },
+    { icon: Wallet, label: isAr ? "رصيد المحافظ" : "Wallet Balances", value: revenueData?.totalWalletBalance || 0, suffix: " SAR", color: "text-chart-3" },
+    { icon: Coins, label: isAr ? "إجمالي النقاط" : "Total Points", value: revenueData?.totalPoints || 0, color: "text-chart-5" },
     { icon: Users, label: isAr ? "أعضاء مدفوعون" : "Paid Members", value: revenueData?.paidMembers || 0, color: "text-primary" },
     { icon: TrendingDown, label: isAr ? "معدل التسرب" : "Churn Rate", value: revenueData?.churnRate || 0, suffix: "%", color: "text-destructive" },
+    { icon: Target, label: isAr ? "قيمة العمر (LTV)" : "Lifetime Value", value: revenueData?.ltv || 0, suffix: " SAR", color: "text-chart-1" },
+    { icon: ArrowUpCircle, label: isAr ? "التسرب الأخير" : "Recent Churn", value: revenueData?.recentChurn || 0, color: "text-destructive" },
   ];
 
   return (
