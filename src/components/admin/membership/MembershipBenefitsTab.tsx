@@ -55,11 +55,11 @@ const MembershipBenefitsTab = memo(function MembershipBenefitsTab() {
       </TabsList>
 
       <TabsContent value="control">
-        <MembershipFeatureControl />
+        <div><MembershipFeatureControl /></div>
       </TabsContent>
 
       <TabsContent value="overrides">
-        <MembershipUserOverrides />
+        <div><MembershipUserOverrides /></div>
       </TabsContent>
 
       <TabsContent value="comparison">

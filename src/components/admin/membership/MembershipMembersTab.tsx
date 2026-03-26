@@ -266,6 +266,23 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         `Your membership now expires on ${format(newExpiry, "MMM d, yyyy")}.`,
         `عضويتك تنتهي الآن في ${format(newExpiry, "yyyy/MM/dd")}.`
       );
+
+      // Create renewal invoice for paid tiers
+      if (targetUser.membership_tier && targetUser.membership_tier !== "basic") {
+        createMembershipInvoice({
+          userId,
+          tier: targetUser.membership_tier,
+          action: "renewal",
+          periodStart: new Date().toISOString(),
+          periodEnd: newExpiry.toISOString(),
+          notes: actionReason || undefined,
+        }).catch(() => {});
+      }
+
+      // Send extension email
+      supabase.functions.invoke("send-membership-email", {
+        body: { type: "extended", user_id: userId, data: { tier: targetUser.membership_tier, new_expiry: newExpiry.toISOString() } },
+      }).catch(() => {});
     },
     onSuccess: () => {
       invalidateAll();
@@ -334,6 +351,11 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         actionReason || "Your premium membership has been revoked by an administrator.",
         actionReason || "تم إلغاء عضويتك المميزة بواسطة المسؤول."
       );
+
+      // Send revocation email
+      supabase.functions.invoke("send-membership-email", {
+        body: { type: "revoked", user_id: userId, data: { previous_tier: prevTier, reason: actionReason } },
+      }).catch(() => {});
     },
     onSuccess: () => {
       invalidateAll();
@@ -355,6 +377,8 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       if (error) throw error;
 
       await logAction(userId, "reactivate_membership", { reason: actionReason, tier: targetUser.membership_tier });
+      await logHistory(userId, targetUser.membership_tier, targetUser.membership_tier || "basic",
+        `Reactivated: ${actionReason || "Admin action"}`);
       await notify(userId,
         "Your membership has been reactivated!",
         "تم إعادة تفعيل عضويتك!",
