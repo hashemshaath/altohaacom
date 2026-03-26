@@ -16,11 +16,12 @@ import {
 } from "@/components/ui/table";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
-  Wallet, Search, ArrowUpRight, ArrowDownRight, Coins,
-  TrendingUp, Users, CreditCard, Download,
+  Wallet, Search, Coins, Users, CreditCard, Download,
 } from "lucide-react";
-import { format } from "date-fns";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import type { Database } from "@/integrations/supabase/types";
+
+type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
 const MembershipWalletTab = memo(function MembershipWalletTab() {
   const { language } = useLanguage();
@@ -33,31 +34,30 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
     queryFn: async () => {
       const { data: wallets } = await supabase
         .from("user_wallets")
-        .select("balance, total_earned, total_spent, points_balance, user_id");
+        .select("balance, points_balance, user_id");
 
       const totalBalance = wallets?.reduce((s, w) => s + (w.balance || 0), 0) || 0;
       const totalPoints = wallets?.reduce((s, w) => s + (w.points_balance || 0), 0) || 0;
-      const totalEarned = wallets?.reduce((s, w) => s + (w.total_earned || 0), 0) || 0;
-      const totalSpent = wallets?.reduce((s, w) => s + (w.total_spent || 0), 0) || 0;
       const activeWallets = wallets?.filter(w => (w.balance || 0) > 0).length || 0;
 
-      return { totalBalance, totalPoints, totalEarned, totalSpent, activeWallets, total: wallets?.length || 0 };
+      return { totalBalance, totalPoints, activeWallets, total: wallets?.length || 0 };
     },
   });
 
   const { data: walletUsers, isLoading } = useQuery({
     queryKey: ["membership-wallet-users", search, tierFilter],
     queryFn: async () => {
-      let query = supabase
+      const { data: wallets } = await supabase
         .from("user_wallets")
-        .select("id, user_id, balance, total_earned, total_spent, points_balance, currency, created_at")
+        .select("id, user_id, balance, points_balance, currency, status, created_at")
         .order("balance", { ascending: false })
         .limit(50);
 
-      const { data: wallets } = await query;
       if (!wallets?.length) return [];
 
-      const userIds = wallets.map(w => w.user_id);
+      const userIds = wallets.map(w => w.user_id).filter(Boolean) as string[];
+      if (!userIds.length) return [];
+
       let profileQuery = supabase
         .from("profiles")
         .select("user_id, full_name, full_name_ar, username, avatar_url, membership_tier, account_number")
@@ -67,15 +67,15 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
         profileQuery = profileQuery.or(`full_name.ilike.%${search}%,username.ilike.%${search}%,account_number.ilike.%${search}%`);
       }
       if (tierFilter !== "all") {
-        profileQuery = profileQuery.eq("membership_tier", tierFilter);
+        profileQuery = profileQuery.eq("membership_tier", tierFilter as MembershipTier);
       }
 
       const { data: profiles } = await profileQuery;
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
 
       return wallets
-        .filter(w => profileMap.has(w.user_id))
-        .map(w => ({ ...w, profile: profileMap.get(w.user_id) }));
+        .filter(w => w.user_id && profileMap.has(w.user_id))
+        .map(w => ({ ...w, profile: profileMap.get(w.user_id!) }));
     },
   });
 
@@ -86,8 +86,6 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
       { header: isAr ? "المستوى" : "Tier", accessor: (r: any) => r.profile?.membership_tier || "basic" },
       { header: isAr ? "الرصيد" : "Balance", accessor: (r: any) => r.balance || 0 },
       { header: isAr ? "النقاط" : "Points", accessor: (r: any) => r.points_balance || 0 },
-      { header: isAr ? "إجمالي المكتسب" : "Total Earned", accessor: (r: any) => r.total_earned || 0 },
-      { header: isAr ? "إجمالي المنفق" : "Total Spent", accessor: (r: any) => r.total_spent || 0 },
     ],
     filename: "membership-wallets",
   });
@@ -95,13 +93,12 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
   const statCards = [
     { icon: Wallet, label: isAr ? "إجمالي الأرصدة" : "Total Balance", value: walletStats?.totalBalance || 0, suffix: " SAR", color: "text-primary" },
     { icon: Coins, label: isAr ? "إجمالي النقاط" : "Total Points", value: walletStats?.totalPoints || 0, color: "text-chart-2" },
-    { icon: TrendingUp, label: isAr ? "إجمالي المكتسب" : "Total Earned", value: walletStats?.totalEarned || 0, suffix: " SAR", color: "text-chart-3" },
-    { icon: Users, label: isAr ? "محافظ نشطة" : "Active Wallets", value: walletStats?.activeWallets || 0, color: "text-primary" },
+    { icon: Users, label: isAr ? "محافظ نشطة" : "Active Wallets", value: walletStats?.activeWallets || 0, color: "text-chart-3" },
+    { icon: CreditCard, label: isAr ? "إجمالي المحافظ" : "Total Wallets", value: walletStats?.total || 0, color: "text-primary" },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map(card => (
           <Card key={card.label}>
@@ -119,7 +116,6 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
         ))}
       </div>
 
-      {/* Filters & Table */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -138,9 +134,7 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
                 />
               </div>
               <Select value={tierFilter} onValueChange={setTierFilter}>
-                <SelectTrigger className="w-32 h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="w-32 h-8 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isAr ? "الكل" : "All Tiers"}</SelectItem>
                   <SelectItem value="basic">{isAr ? "أساسي" : "Basic"}</SelectItem>
@@ -169,8 +163,7 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
                     <TableHead className="text-xs">{isAr ? "المستوى" : "Tier"}</TableHead>
                     <TableHead className="text-xs text-end">{isAr ? "الرصيد" : "Balance"}</TableHead>
                     <TableHead className="text-xs text-end">{isAr ? "النقاط" : "Points"}</TableHead>
-                    <TableHead className="text-xs text-end">{isAr ? "مكتسب" : "Earned"}</TableHead>
-                    <TableHead className="text-xs text-end">{isAr ? "منفق" : "Spent"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -209,23 +202,16 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
                           <span className="tabular-nums">{item.points_balance || 0}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-end text-chart-3 tabular-nums">
-                        <div className="flex items-center justify-end gap-1">
-                          <ArrowUpRight className="h-3 w-3" />
-                          {(item.total_earned || 0).toFixed(0)}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-end text-destructive tabular-nums">
-                        <div className="flex items-center justify-end gap-1">
-                          <ArrowDownRight className="h-3 w-3" />
-                          {(item.total_spent || 0).toFixed(0)}
-                        </div>
+                      <TableCell>
+                        <Badge variant={item.status === "active" ? "default" : "secondary"} className="text-xs capitalize">
+                          {item.status}
+                        </Badge>
                       </TableCell>
                     </TableRow>
                   ))}
                   {!walletUsers?.length && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                         {isAr ? "لا توجد محافظ" : "No wallets found"}
                       </TableCell>
                     </TableRow>

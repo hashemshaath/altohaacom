@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/table";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
-  FileText, Search, Download, DollarSign, Clock, CheckCircle2, XCircle,
-  Receipt, TrendingUp, AlertTriangle,
+  FileText, Search, Download, Clock, CheckCircle2, XCircle,
+  Receipt, AlertTriangle,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -26,42 +26,38 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
   const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
 
   const { data: invoiceStats } = useQuery({
     queryKey: ["membership-invoice-stats"],
     queryFn: async () => {
       const { data } = await supabase
         .from("invoices")
-        .select("status, total_amount, invoice_type");
+        .select("status, amount");
 
       const total = data?.length || 0;
       const paid = data?.filter(i => i.status === "paid") || [];
       const pending = data?.filter(i => i.status === "pending") || [];
       const overdue = data?.filter(i => i.status === "overdue") || [];
-      const membershipInvoices = data?.filter(i => i.invoice_type === "membership") || [];
 
       return {
         total,
-        paidAmount: paid.reduce((s, i) => s + (i.total_amount || 0), 0),
-        pendingAmount: pending.reduce((s, i) => s + (i.total_amount || 0), 0),
+        paidAmount: paid.reduce((s, i) => s + (i.amount || 0), 0),
+        pendingAmount: pending.reduce((s, i) => s + (i.amount || 0), 0),
         overdueCount: overdue.length,
-        membershipCount: membershipInvoices.length,
       };
     },
   });
 
   const { data: invoices, isLoading } = useQuery({
-    queryKey: ["membership-invoices", search, statusFilter, typeFilter],
+    queryKey: ["membership-invoices", search, statusFilter],
     queryFn: async () => {
       let query = supabase
         .from("invoices")
-        .select("id, invoice_number, user_id, total_amount, currency, status, invoice_type, due_date, paid_at, created_at")
+        .select("id, invoice_number, user_id, amount, currency, status, title, title_ar, due_date, paid_at, created_at")
         .order("created_at", { ascending: false })
         .limit(100);
 
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
-      if (typeFilter !== "all") query = query.eq("invoice_type", typeFilter);
       if (search) query = query.ilike("invoice_number", `%${search}%`);
 
       const { data } = await query;
@@ -72,10 +68,9 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
   const { exportCSV } = useCSVExport({
     columns: [
       { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (r: any) => r.invoice_number || "" },
-      { header: isAr ? "المبلغ" : "Amount", accessor: (r: any) => r.total_amount || 0 },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (r: any) => r.amount || 0 },
       { header: isAr ? "العملة" : "Currency", accessor: (r: any) => r.currency || "SAR" },
       { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status || "" },
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.invoice_type || "" },
       { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.created_at ? format(new Date(r.created_at), "yyyy-MM-dd") : "" },
     ],
     filename: "membership-invoices",
@@ -144,15 +139,6 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                   <SelectItem value="void">{isAr ? "ملغاة" : "Void"}</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-32 h-8 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل الأنواع" : "All Types"}</SelectItem>
-                  <SelectItem value="membership">{isAr ? "عضوية" : "Membership"}</SelectItem>
-                  <SelectItem value="upgrade">{isAr ? "ترقية" : "Upgrade"}</SelectItem>
-                  <SelectItem value="renewal">{isAr ? "تجديد" : "Renewal"}</SelectItem>
-                </SelectContent>
-              </Select>
               <Button variant="outline" size="sm" className="gap-1.5 h-8" onClick={() => invoices && exportCSV(invoices)}>
                 <Download className="h-3.5 w-3.5" />
               </Button>
@@ -168,7 +154,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                 <TableHeader>
                   <TableRow className="bg-muted/30">
                     <TableHead className="text-xs">{isAr ? "رقم الفاتورة" : "Invoice #"}</TableHead>
-                    <TableHead className="text-xs">{isAr ? "النوع" : "Type"}</TableHead>
+                    <TableHead className="text-xs">{isAr ? "العنوان" : "Title"}</TableHead>
                     <TableHead className="text-xs text-end">{isAr ? "المبلغ" : "Amount"}</TableHead>
                     <TableHead className="text-xs">{isAr ? "الحالة" : "Status"}</TableHead>
                     <TableHead className="text-xs">{isAr ? "الاستحقاق" : "Due"}</TableHead>
@@ -179,11 +165,11 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                   {invoices?.map(inv => (
                     <TableRow key={inv.id}>
                       <TableCell className="font-mono text-xs">{inv.invoice_number}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-xs capitalize">{inv.invoice_type}</Badge>
+                      <TableCell className="text-sm truncate max-w-[200px]">
+                        {isAr ? (inv.title_ar || inv.title || "—") : (inv.title || "—")}
                       </TableCell>
                       <TableCell className="text-end font-medium tabular-nums">
-                        {(inv.total_amount || 0).toFixed(2)}
+                        {(inv.amount || 0).toFixed(2)}
                         <span className="text-xs text-muted-foreground ms-1">{inv.currency || "SAR"}</span>
                       </TableCell>
                       <TableCell>{getStatusBadge(inv.status)}</TableCell>
