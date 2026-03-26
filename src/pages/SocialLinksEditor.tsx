@@ -258,7 +258,7 @@ export default function SocialLinksEditor() {
     queryKey: ["social-link-clicks-analytics", page?.id],
     queryFn: async () => {
       const { data: clicks } = await supabase
-        .from("social_link_clicks" as any)
+        .from("social_link_clicks")
         .select("link_id, device_type, browser, created_at")
         .eq("page_id", page!.id)
         .order("created_at", { ascending: false })
@@ -477,7 +477,7 @@ export default function SocialLinksEditor() {
           ...normalizedSocials,
           whatsapp: buildPhone(contacts.whatsapp, "whatsapp"),
           phone: buildPhone(contacts.phone, "phone"),
-          phone2: buildPhone(contacts.phone2, "phone2") as any,
+          phone2: buildPhone(contacts.phone2, "phone2"),
         })
         .eq("user_id", user.id);
       if (error) throw error;
