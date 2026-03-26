@@ -294,8 +294,8 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
     exportData(rows, [
       { key: "section", label: "Section" },
       { key: "month", label: "Month" },
-      { key: "churn_rate", label: "Churn Rate %" },
-      { key: "churned", label: "Churned" },
+      { key: "churn_rate", label: "Loss Rate %" },
+      { key: "churned", label: "Lost" },
       { key: "retained", label: "Retained" },
       { key: "name", label: "Name" },
       { key: "tier", label: "Tier" },
