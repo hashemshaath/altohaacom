@@ -2014,18 +2014,38 @@ export default function SocialLinksEditor() {
                         </p>
                       </CardHeader>
                       <CardContent className="pt-4 pb-5 px-5">
-                        <div className="grid gap-2 sm:grid-cols-2">
-                          {VISIBILITY_SECTIONS.map(section => (
-                            <div key={section.key} className={`flex items-center justify-between rounded-xl border-2 p-3 transition-all duration-200 group ${extra[section.key] ? "border-primary/20 bg-primary/[0.03] shadow-sm" : "border-border/20 hover:border-border/40"}`}>
-                              <div className="flex items-center gap-2.5">
-                                <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${extra[section.key] ? "bg-primary/10" : "bg-muted/60"}`}>
-                                  {extra[section.key] ? <Eye className="h-4 w-4 text-primary" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
+                        <div className="grid gap-2.5 sm:grid-cols-2">
+                          {VISIBILITY_SECTIONS.map(section => {
+                            const isOn = !!extra[section.key];
+                            return (
+                              <button
+                                key={section.key}
+                                type="button"
+                                onClick={() => updateExtra({ [section.key]: !isOn } as any)}
+                                className={`flex items-center justify-between rounded-2xl border px-4 py-3 transition-all duration-200 touch-manipulation active:scale-[0.98] cursor-pointer ${
+                                  isOn
+                                    ? "border-primary/25 bg-primary/[0.06] shadow-sm"
+                                    : "border-border/30 bg-muted/20 hover:border-border/50"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2.5">
+                                  <Eye className={`h-4 w-4 shrink-0 transition-colors ${isOn ? "text-primary" : "text-muted-foreground/40"}`} />
+                                  <span className="text-xs font-medium select-none">{section.label}</span>
                                 </div>
-                                <Label className="text-xs cursor-pointer font-medium">{section.label}</Label>
-                              </div>
-                              <Switch checked={extra[section.key] as boolean} onCheckedChange={v => updateExtra({ [section.key]: v } as any)} />
-                            </div>
-                          ))}
+                                <div
+                                  className={`relative h-7 w-12 rounded-full transition-colors duration-200 ${
+                                    isOn ? "bg-primary" : "bg-muted-foreground/20"
+                                  }`}
+                                >
+                                  <div
+                                    className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200 ${
+                                      isOn ? "translate-x-5 rtl:-translate-x-5" : "translate-x-0.5 rtl:-translate-x-0.5"
+                                    }`}
+                                  />
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
                       </CardContent>
                     </Card>
