@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Shield, Users, Lock, Key, AlertTriangle, CheckCircle } from "lucide-react";
+import { translateRole } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
@@ -105,7 +106,7 @@ export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
               .sort((a, b) => b[1] - a[1])
               .map(([role, count]) => (
                 <div key={role} className="flex items-center gap-2">
-                  <span className={`text-xs font-medium w-20 truncate ${roleColors[role] || "text-muted-foreground"}`}>{role}</span>
+                  <span className={`text-xs font-medium w-20 truncate ${roleColors[role] || "text-muted-foreground"}`}>{translateRole(role, isAr)}</span>
                   <Progress value={(count / maxRole) * 100} className="h-1.5 flex-1" />
                   <span className="text-[10px] text-muted-foreground w-8 text-end">{count}</span>
                   {data.permPerRole[role] && (
