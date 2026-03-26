@@ -538,10 +538,22 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         {/* At-Risk Members */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-chart-3" />
-              {isAr ? "أعضاء معرضون للخطر" : "At-Risk Members"}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-chart-3" />
+                {isAr ? "أعضاء معرضون للخطر" : "At-Risk Members"}
+              </CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 h-7 text-xs"
+                disabled={retentionMutation.isPending || totalAtRisk === 0}
+                onClick={() => retentionMutation.mutate()}
+              >
+                {retentionMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+                {isAr ? "إرسال تذكير" : "Send Reminder"}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {[
