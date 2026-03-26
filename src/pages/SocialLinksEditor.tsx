@@ -329,8 +329,32 @@ export default function SocialLinksEditor() {
 
   const [socials, setSocials] = useState<Record<string, string>>({});
   const [contacts, setContacts] = useState<Record<string, string>>({});
-  const [contactCountryCode, setContactCountryCode] = useState("SA");
+  const [contactCountryCodes, setContactCountryCodes] = useState<Record<string, string>>({ whatsapp: "SA", phone: "SA", phone2: "SA" });
   const { data: countries } = useAllCountries();
+
+  // Helper: extract country code from stored full phone number
+  const detectCountryFromPhone = useCallback((fullPhone: string, fallback: string) => {
+    if (!fullPhone || !countries?.length) return fallback;
+    // Sort by phone_code length desc to match longest first (e.g. +966 before +9)
+    const sorted = [...countries].filter(c => c.phone_code).sort((a, b) => (b.phone_code?.length || 0) - (a.phone_code?.length || 0));
+    for (const c of sorted) {
+      if (fullPhone.startsWith(c.phone_code!)) {
+        return c.code;
+      }
+    }
+    return fallback;
+  }, [countries]);
+
+  // Helper: strip country code prefix from stored phone to get local number
+  const stripPhoneCode = useCallback((fullPhone: string, countryCode: string) => {
+    if (!fullPhone) return "";
+    const country = countries?.find(c => c.code === countryCode);
+    if (country?.phone_code && fullPhone.startsWith(country.phone_code)) {
+      return fullPhone.slice(country.phone_code.length);
+    }
+    if (fullPhone.startsWith("+")) return fullPhone; // keep as-is if can't strip
+    return fullPhone;
+  }, [countries]);
 
   useEffect(() => {
     if (profile) {
@@ -344,14 +368,18 @@ export default function SocialLinksEditor() {
         linkedin: profile.linkedin || "",
         website: profile.website || "",
       });
+      const defaultCC = profile.country_code || "SA";
+      const waCC = detectCountryFromPhone(profile.whatsapp || "", defaultCC);
+      const phCC = detectCountryFromPhone(profile.phone || "", defaultCC);
+      const ph2CC = detectCountryFromPhone((profile as any).phone2 || "", defaultCC);
+      setContactCountryCodes({ whatsapp: waCC, phone: phCC, phone2: ph2CC });
       setContacts({
-        whatsapp: profile.whatsapp || "",
-        phone: profile.phone || "",
-        phone2: (profile as any).phone2 || "",
+        whatsapp: stripPhoneCode(profile.whatsapp || "", waCC),
+        phone: stripPhoneCode(profile.phone || "", phCC),
+        phone2: stripPhoneCode((profile as any).phone2 || "", ph2CC),
       });
-      setContactCountryCode(profile.country_code || "SA");
     }
-  }, [profile]);
+  }, [profile, countries]);
 
   const [form, setForm] = useState({
     page_title: "", page_title_ar: "", bio: "", bio_ar: "",
@@ -433,11 +461,12 @@ export default function SocialLinksEditor() {
         const val = socials[p.key]?.trim();
         normalizedSocials[p.key] = val ? normalizeSocialUrl(val, p) : null;
       });
-      // Build phone values with country code
-      const selectedCountry = countries?.find(c => c.code === contactCountryCode);
-      const phoneCode = selectedCountry?.phone_code || "+966";
-      const buildPhone = (val: string) => {
+      // Build phone values with per-number country code
+      const buildPhone = (val: string, fieldKey: string) => {
         if (!val) return null;
+        const cc = contactCountryCodes[fieldKey] || "SA";
+        const country = countries?.find(c => c.code === cc);
+        const phoneCode = country?.phone_code || "+966";
         const clean = val.replace(/^0+/, "");
         if (clean.startsWith("+")) return clean;
         return phoneCode + clean;
@@ -446,9 +475,9 @@ export default function SocialLinksEditor() {
         .from("profiles")
         .update({
           ...normalizedSocials,
-          whatsapp: buildPhone(contacts.whatsapp),
-          phone: buildPhone(contacts.phone),
-          phone2: buildPhone(contacts.phone2) as any,
+          whatsapp: buildPhone(contacts.whatsapp, "whatsapp"),
+          phone: buildPhone(contacts.phone, "phone"),
+          phone2: buildPhone(contacts.phone2, "phone2") as any,
         })
         .eq("user_id", user.id);
       if (error) throw error;
@@ -1089,36 +1118,14 @@ export default function SocialLinksEditor() {
                           {isAr ? "واتساب + رقمين هاتف — اختر رمز الدولة ثم أدخل الرقم" : "WhatsApp + up to 2 phone numbers — select country code then enter number"}
                         </p>
                       </CardHeader>
-                      <CardContent className="pt-4 pb-5 px-5 space-y-4">
-                        {/* Country Code Selector */}
-                        <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-border/30 bg-muted/5">
-                          <div className="h-9 w-9 rounded-xl bg-muted/80 flex items-center justify-center shrink-0">
-                            <Globe className="h-4 w-4 text-muted-foreground" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <Label className="text-xs font-semibold mb-1 block">{isAr ? "رمز الدولة" : "Country Code"}</Label>
-                            <select
-                              value={contactCountryCode}
-                              onChange={e => setContactCountryCode(e.target.value)}
-                              className="w-full h-8 text-xs rounded-lg border border-border/40 bg-muted/20 px-2 focus:outline-none focus:ring-1 focus:ring-primary/30"
-                              dir="ltr"
-                            >
-                              {(countries || []).map(c => (
-                                <option key={c.code} value={c.code}>
-                                  {countryFlag(c.code)} {c.phone_code} — {isAr ? c.name_ar || c.name : c.name}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <span className="text-lg">{countryFlag(contactCountryCode)}</span>
-                        </div>
-
+                      <CardContent className="pt-4 pb-5 px-5">
                         <div className="grid gap-3">
                           {CONTACT_FIELDS.map(field => {
                             const Icon = field.icon;
                             const value = contacts[field.key] || "";
                             const isActive = !!value;
-                            const selectedCountry = countries?.find(c => c.code === contactCountryCode);
+                            const cc = contactCountryCodes[field.key] || "SA";
+                            const selectedCountry = countries?.find(c => c.code === cc);
                             const phoneCode = selectedCountry?.phone_code || "+966";
                             return (
                               <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
@@ -1127,11 +1134,21 @@ export default function SocialLinksEditor() {
                                     <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <Label className="text-xs font-semibold mb-1 block">{isAr ? field.labelAr : field.label}</Label>
+                                    <Label className="text-xs font-semibold mb-1.5 block">{isAr ? field.labelAr : field.label}</Label>
                                     <div className="flex items-center gap-0" dir="ltr">
-                                      <span className="text-[11px] text-muted-foreground/70 font-mono bg-muted/40 px-2 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none">
-                                        {phoneCode}
-                                      </span>
+                                      {/* Inline country code selector per number */}
+                                      <select
+                                        value={cc}
+                                        onChange={e => setContactCountryCodes(prev => ({ ...prev, [field.key]: e.target.value }))}
+                                        className="h-8 text-[11px] font-mono rounded-s-lg border border-e-0 border-border/30 bg-muted/30 px-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30 appearance-none cursor-pointer min-w-[90px] text-muted-foreground"
+                                        dir="ltr"
+                                      >
+                                        {(countries || []).map(c => (
+                                          <option key={c.code} value={c.code}>
+                                            {countryFlag(c.code)} {c.phone_code}
+                                          </option>
+                                        ))}
+                                      </select>
                                       <Input
                                         type="tel"
                                         value={value}
