@@ -100,6 +100,24 @@ Deno.serve(async (req) => {
         },
       });
 
+      // Send email notification
+      try {
+        await fetch(`${supabaseUrl}/functions/v1/send-membership-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({
+            type: "expiry_warning",
+            user_id: profile.user_id,
+            data: { tier, days_left: daysLeft },
+          }),
+        });
+      } catch (emailErr) {
+        console.error("Email send failed for", profile.user_id, emailErr);
+      }
+
       notificationsCreated++;
     }
 
@@ -172,6 +190,15 @@ Deno.serve(async (req) => {
         },
       });
 
+      // Send expiry email
+      try {
+        await fetch(`${supabaseUrl}/functions/v1/send-membership-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${serviceKey}` },
+          body: JSON.stringify({ type: "expired", user_id: profile.user_id, data: { tier: profile.membership_tier } }),
+        });
+      } catch (e) { console.error("Email failed:", e); }
+
       notificationsCreated++;
     }
 
@@ -207,6 +234,15 @@ Deno.serve(async (req) => {
         type: "trial_expired",
         link: "/membership",
       });
+
+      // Send trial expired email
+      try {
+        await fetch(`${supabaseUrl}/functions/v1/send-membership-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${serviceKey}` },
+          body: JSON.stringify({ type: "trial_expired", user_id: trial.user_id, data: { tier: trial.membership_tier } }),
+        });
+      } catch (e) { console.error("Trial email failed:", e); }
 
       trialsExpired++;
       notificationsCreated++;
