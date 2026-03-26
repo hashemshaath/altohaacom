@@ -1026,7 +1026,7 @@ export default function SocialLinksEditor() {
                     )}
 
                     {/* Social Media Accounts */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1106,7 +1106,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Contact: WhatsApp & Phone Numbers */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1180,7 +1180,7 @@ export default function SocialLinksEditor() {
 
                   {/* ── Settings Tab ── */}
                   <TabsContent value="settings" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1235,7 +1235,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* ── Multi-Page Management ── */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-chart-3/10 flex items-center justify-center">
@@ -1338,7 +1338,7 @@ export default function SocialLinksEditor() {
                         <Badge variant="secondary" className="text-[10px] ms-auto">{items.length} {isAr ? "رابط" : "links"}</Badge>
                       </div>
                     )}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1416,7 +1416,7 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1675,7 +1675,7 @@ export default function SocialLinksEditor() {
 
                   {/* ── Appearance Tab ── */}
                   <TabsContent value="appearance" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1701,7 +1701,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Scheduled Themes */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1797,7 +1797,7 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1841,7 +1841,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Layout Controls */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1919,7 +1919,7 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -1961,7 +1961,7 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
 
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -2001,7 +2001,7 @@ export default function SocialLinksEditor() {
 
                   {/* ── Display / Visibility Tab ── */}
                   <TabsContent value="visibility" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -2051,7 +2051,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Cover Image */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -2433,7 +2433,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* Multi-Page Profiles */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -2488,7 +2488,7 @@ export default function SocialLinksEditor() {
                       </CardContent>
                     </Card>
                     {/* Import / Export */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -2554,7 +2554,7 @@ export default function SocialLinksEditor() {
 
                   {/* ── Analytics Tab ── */}
                   <TabsContent value="analytics" className="space-y-4 mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -2615,7 +2615,7 @@ export default function SocialLinksEditor() {
 
                     {/* Top Performing */}
                     {items.length > 0 && totalClicks > 0 && (
-                      <Card className="overflow-hidden">
+                      <Card className="overflow-hidden border-border/40">
                         <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-1/10 flex items-center justify-center">
@@ -2649,7 +2649,7 @@ export default function SocialLinksEditor() {
 
                     {/* Click Heatmap */}
                     {items.length > 0 && (
-                      <Card className="overflow-hidden">
+                      <Card className="overflow-hidden border-border/40">
                         <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-destructive/10 flex items-center justify-center">
@@ -2700,7 +2700,7 @@ export default function SocialLinksEditor() {
 
                     {/* Best Times to Post / Click Activity */}
                     {clickAnalytics && clickAnalytics.total > 0 && (
-                      <Card className="overflow-hidden">
+                      <Card className="overflow-hidden border-border/40">
                         <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-2/10 flex items-center justify-center">
@@ -2793,7 +2793,7 @@ export default function SocialLinksEditor() {
 
                     {/* Link Performance Comparison */}
                     {clickAnalytics && clickAnalytics.total > 0 && items.length > 1 && (
-                      <Card className="overflow-hidden">
+                      <Card className="overflow-hidden border-border/40">
                         <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-4/10 flex items-center justify-center">
@@ -2847,7 +2847,7 @@ export default function SocialLinksEditor() {
                       </Card>
                     )}
                     {visitorStats && visitorStats.total > 0 && (
-                      <Card className="overflow-hidden">
+                      <Card className="overflow-hidden border-border/40">
                         <CardHeader className="pb-3 bg-muted/30">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <div className="h-7 w-7 rounded-xl bg-chart-3/10 flex items-center justify-center">
@@ -2982,7 +2982,7 @@ export default function SocialLinksEditor() {
                     )}
 
                     {/* Export Data */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -3032,7 +3032,7 @@ export default function SocialLinksEditor() {
                     </Card>
 
                     {/* ── Notifications Feed ── */}
-                    <Card className="overflow-hidden">
+                    <Card className="overflow-hidden border-border/40">
                       <CardHeader className="pb-3 bg-muted/30">
                         <CardTitle className="text-sm flex items-center gap-2">
                           <div className="h-7 w-7 rounded-xl bg-chart-4/10 flex items-center justify-center">
