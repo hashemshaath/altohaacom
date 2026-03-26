@@ -294,8 +294,8 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
     exportData(rows, [
       { key: "section", label: "Section" },
       { key: "month", label: "Month" },
-      { key: "churn_rate", label: "Churn Rate %" },
-      { key: "churned", label: "Churned" },
+      { key: "churn_rate", label: "Loss Rate %" },
+      { key: "churned", label: "Lost" },
       { key: "retained", label: "Retained" },
       { key: "name", label: "Name" },
       { key: "tier", label: "Tier" },
@@ -326,8 +326,8 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-lg font-bold">{isAr ? "التسرب والاحتفاظ" : "Churn & Retention"}</h3>
-          <p className="text-sm text-muted-foreground">{isAr ? "تحليل معدلات التسرب والاحتفاظ بالأعضاء المدفوعين" : "Analyze paid member churn rates, retention cohorts & at-risk alerts"}</p>
+          <h3 className="text-lg font-bold">{isAr ? "فقدان الأعضاء والاحتفاظ بهم" : "Member Loss & Retention"}</h3>
+          <p className="text-sm text-muted-foreground">{isAr ? "تحليل معدلات فقدان الأعضاء المدفوعين (التخفيض أو الإلغاء) ومعدلات الاحتفاظ بهم" : "Analyze paid member loss rates (downgrades & cancellations) and retention cohorts"}</p>
         </div>
         <AdminExportButton onExport={handleExport} isExporting={isExporting} />
       </div>
@@ -338,10 +338,10 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <TrendingDown className="h-4 w-4 text-destructive" />
-              <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل التسرب" : "Avg Churn Rate"}</span>
+              <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل فقدان الأعضاء" : "Avg Loss Rate"}</span>
             </div>
             <span className="text-2xl font-bold"><AnimatedCounter value={parseFloat(churnData?.avgChurn || "0")} suffix="%" /></span>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر" : "6-month avg"}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر — نسبة الأعضاء المدفوعين الذين ألغوا أو خفّضوا اشتراكهم" : "6-month avg — % of paid members who downgraded or cancelled"}</p>
           </CardContent>
         </Card>
         <Card>
@@ -351,7 +351,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل الاحتفاظ" : "Retention Rate"}</span>
             </div>
             <span className="text-2xl font-bold"><AnimatedCounter value={Math.round((100 - parseFloat(churnData?.avgChurn || "0")) * 10) / 10} suffix="%" /></span>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "أعضاء مدفوعين" : "paid members"}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "نسبة الأعضاء الذين استمروا باشتراكهم المدفوع" : "% of paid members who stayed"}</p>
           </CardContent>
         </Card>
         <Card>
@@ -409,7 +409,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         {/* Monthly Churn Rate */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">{isAr ? "معدل التسرب الشهري" : "Monthly Churn Rate"}</CardTitle>
+            <CardTitle className="text-sm">{isAr ? "معدل فقدان الأعضاء الشهري" : "Monthly Member Loss Rate"}</CardTitle>
           </CardHeader>
           <CardContent>
             {churnData?.months && churnData.months.length > 0 ? (
@@ -431,7 +431,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                       borderRadius: "8px",
                       fontSize: 12,
                     }}
-                    formatter={(value: number) => [`${value}%`, isAr ? "معدل التسرب" : "Churn Rate"]}
+                    formatter={(value: number) => [`${value}%`, isAr ? "معدل الفقدان" : "Loss Rate"]}
                   />
                   <Area type="monotone" dataKey="churnRate" stroke="hsl(var(--destructive))" fill="url(#churnGrad)" strokeWidth={2} />
                 </AreaChart>
@@ -445,7 +445,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         {/* Churned vs Retained */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">{isAr ? "المتسربون مقابل المحتفظ بهم" : "Churned vs Retained"}</CardTitle>
+            <CardTitle className="text-sm">{isAr ? "المفقودون مقابل المحتفظ بهم" : "Lost vs Retained"}</CardTitle>
           </CardHeader>
           <CardContent>
             {churnData?.months && churnData.months.length > 0 ? (
@@ -462,8 +462,8 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                       fontSize: 12,
                     }}
                   />
-                  <Bar dataKey="retained" fill="hsl(var(--primary))" name={isAr ? "محتفظ" : "Retained"} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="churned" fill="hsl(var(--destructive))" name={isAr ? "متسرب" : "Churned"} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="retained" fill="hsl(var(--primary))" name={isAr ? "محتفظ بهم" : "Retained"} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="churned" fill="hsl(var(--destructive))" name={isAr ? "مفقودين" : "Lost"} radius={[4, 4, 0, 0]} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                 </BarChart>
               </ResponsiveContainer>
