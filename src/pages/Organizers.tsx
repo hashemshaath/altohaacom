@@ -322,11 +322,11 @@ export default function Organizers() {
                       </h2>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
-                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       )}
                     </section>
@@ -352,11 +352,11 @@ export default function Organizers() {
                     }
                     return viewMode === "grid" ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     );
                   })()}
