@@ -13,7 +13,6 @@ import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
   Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem,
-  History,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
@@ -68,7 +67,7 @@ const ExhibitionSponsorshipHub = lazy(() => import("@/components/exhibitions/det
 const ExhibitionAttendeeSchedule = lazy(() => import("@/components/exhibitions/detail/ExhibitionAttendeeSchedule"));
 const OrganizerAdvancedReports = lazy(() => import("@/components/exhibitions/detail/OrganizerAdvancedReports"));
 const RelatedExhibitions = lazy(() => import("@/components/exhibitions/detail/RelatedExhibitions").then(m => ({ default: m.RelatedExhibitions })));
-const ExhibitionEditionsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionEditionsTab").then(m => ({ default: m.ExhibitionEditionsTab })));
+const ExhibitionEditionsSection = lazy(() => import("@/components/exhibitions/detail/ExhibitionEditionsSection").then(m => ({ default: m.ExhibitionEditionsSection })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
@@ -417,7 +416,7 @@ export default function ExhibitionDetail() {
                   <TabsTrigger value="overview" className="rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
-                  {(exhibition as any).series_id && <ExhibitionTabTrigger value="editions" icon={History} label={isAr ? "النسخ السابقة" : "Editions"} />}
+                  
                   {hasWinningDishes && <ExhibitionTabTrigger value="winning-dishes" icon={Award} label={isAr ? "الأطباق" : "Winners"} count={winningDishes!.length} />}
                   {hasCompetitions && <ExhibitionTabTrigger value="competitions" icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} count={linkedCompetitions!.length} />}
                   {hasSchedule && <ExhibitionTabTrigger value="schedule" icon={Calendar} label={isAr ? "الجدول" : "Schedule"} />}
@@ -451,13 +450,6 @@ export default function ExhibitionDetail() {
                 </Suspense>
               </TabsContent>
 
-              {(exhibition as any).series_id && (
-                <TabsContent value="editions" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionEditionsTab seriesId={(exhibition as any).series_id} currentExhibitionId={exhibition.id} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
 
               {hasWinningDishes && (
                 <TabsContent value="winning-dishes" className="mt-6">
@@ -638,6 +630,17 @@ export default function ExhibitionDetail() {
             />
           </Suspense>
         </div>
+
+        {/* Previous Editions Section */}
+        {(exhibition as any).series_id && (
+          <Suspense fallback={null}>
+            <ExhibitionEditionsSection
+              seriesId={(exhibition as any).series_id}
+              currentExhibitionId={exhibition.id}
+              isAr={isAr}
+            />
+          </Suspense>
+        )}
 
         {/* Related Exhibitions */}
         <Suspense fallback={null}>
