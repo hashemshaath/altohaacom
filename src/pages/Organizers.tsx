@@ -606,6 +606,15 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
             )}
           </div>
 
+          {onToggleFollow && (
+            <button
+              onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
+              className={`shrink-0 text-[10px] rounded-lg p-1 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"}`}
+            >
+              <Heart className={`h-3.5 w-3.5 ${isFollowed ? "fill-current" : ""}`} />
+            </button>
+          )}
+
           {onCompare && (
             <button
               onClick={e => { e.stopPropagation(); onCompare(org); }}
