@@ -15975,6 +15975,35 @@ export type Database = {
           },
         ]
       }
+      organizer_follows: {
+        Row: {
+          created_at: string
+          id: string
+          organizer_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organizer_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organizer_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organizer_follows_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "organizers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizers: {
         Row: {
           address: string | null
@@ -15994,6 +16023,7 @@ export type Database = {
           description_ar: string | null
           email: string | null
           entity_id: string | null
+          follower_count: number | null
           founded_year: number | null
           gallery_urls: string[] | null
           id: string
@@ -16035,6 +16065,7 @@ export type Database = {
           description_ar?: string | null
           email?: string | null
           entity_id?: string | null
+          follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
           id?: string
@@ -16076,6 +16107,7 @@ export type Database = {
           description_ar?: string | null
           email?: string | null
           entity_id?: string | null
+          follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
           id?: string

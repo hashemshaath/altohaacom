@@ -25,6 +25,10 @@ import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboa
 import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
 import { OrganizerCompareBar } from "@/components/organizers/OrganizerCompareBar";
 import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
+import { OrganizerSearchAutocomplete } from "@/components/organizers/OrganizerSearchAutocomplete";
+import { OrganizerReviewsCarousel } from "@/components/organizers/OrganizerReviewsCarousel";
+import { useOrganizerFollows } from "@/hooks/useOrganizerFollow";
+import { Heart } from "lucide-react";
 
 type SortKey = "featured" | "name" | "events" | "rating" | "newest";
 type ViewMode = "grid" | "list" | "map";
@@ -40,6 +44,7 @@ export default function Organizers() {
   const [showFilters, setShowFilters] = useState(false);
   const [previewOrg, setPreviewOrg] = useState<any | null>(null);
   const [compareList, setCompareList] = useState<any[]>([]);
+  const { followedIds, toggleFollow } = useOrganizerFollows();
 
   const toggleCompare = useCallback((org: any) => {
     setCompareList(prev => {
@@ -185,20 +190,13 @@ export default function Organizers() {
         <section className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
           <div className="container max-w-6xl py-3">
             <div className="flex items-center gap-2">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={isAr ? "ابحث عن منظم..." : "Search organizers..."}
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="ps-10 h-10 rounded-xl"
-                />
-                {search && (
-                  <button onClick={() => setSearch("")} className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
+              <OrganizerSearchAutocomplete
+                organizers={organizers || []}
+                search={search}
+                onSearchChange={setSearch}
+                isAr={isAr}
+                onPreview={setPreviewOrg}
+              />
 
               <Button
                 variant={showFilters ? "secondary" : "outline"}
@@ -301,6 +299,11 @@ export default function Organizers() {
                 />
               )}
 
+              {/* Reviews Carousel */}
+              {!hasActiveFilters && viewMode !== "map" && (
+                <OrganizerReviewsCarousel isAr={isAr} />
+              )}
+
               {/* Map View */}
               {viewMode === "map" ? (
                 <OrganizerMapView
@@ -319,11 +322,11 @@ export default function Organizers() {
                       </h2>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
-                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       )}
                     </section>
@@ -349,11 +352,11 @@ export default function Organizers() {
                     }
                     return viewMode === "grid" ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     );
                   })()}
@@ -388,7 +391,7 @@ export default function Organizers() {
 }
 
 /* ─── Grid Card ─── */
-const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
+const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
   const isCompared = compareIds.includes(org.id);
@@ -507,16 +510,27 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </div>
           )}
 
-          {/* Compare button */}
-          {onCompare && (
-            <button
-              onClick={e => { e.stopPropagation(); onCompare(org); }}
-              className={`mt-2 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
-            >
-              <Scale className="h-3 w-3" />
-              {isCompared ? (isAr ? "تمت الإضافة" : "Added") : (isAr ? "قارن" : "Compare")}
-            </button>
-          )}
+          {/* Actions row */}
+          <div className="flex items-center gap-1.5 mt-2">
+            {onCompare && (
+              <button
+                onClick={e => { e.stopPropagation(); onCompare(org); }}
+                className={`flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+              >
+                <Scale className="h-3 w-3" />
+                {isCompared ? (isAr ? "تمت الإضافة" : "Added") : (isAr ? "قارن" : "Compare")}
+              </button>
+            )}
+            {onToggleFollow && (
+              <button
+                onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
+                className={`flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ms-auto ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"}`}
+              >
+                <Heart className={`h-3 w-3 ${isFollowed ? "fill-current" : ""}`} />
+                {isFollowed ? (isAr ? "متابَع" : "Following") : (isAr ? "تابع" : "Follow")}
+              </button>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -524,7 +538,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
 });
 
 /* ─── List Item ─── */
-const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
+const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
   const isCompared = compareIds.includes(org.id);
@@ -591,6 +605,15 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
               </div>
             )}
           </div>
+
+          {onToggleFollow && (
+            <button
+              onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
+              className={`shrink-0 text-[10px] rounded-lg p-1 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"}`}
+            >
+              <Heart className={`h-3.5 w-3.5 ${isFollowed ? "fill-current" : ""}`} />
+            </button>
+          )}
 
           {onCompare && (
             <button
