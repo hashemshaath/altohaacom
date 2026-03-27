@@ -148,35 +148,45 @@ export default function Organizers() {
           <div className="absolute -top-20 -end-20 h-60 w-60 rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-10 -start-10 h-40 w-40 rounded-full bg-primary/5 blur-2xl" />
 
-          <div className="container relative max-w-6xl py-12 md:py-16">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-5">
+          <div className="container relative max-w-6xl py-14 md:py-20">
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
                 <Building2 className="h-4 w-4 text-primary" />
                 <span className="text-xs font-medium text-primary">
                   {isAr ? "دليل المنظمين" : "Organizer Directory"}
                 </span>
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
-                {isAr ? "منظمو الفعاليات" : "Event Organizers"}
-              </h1>
-              <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+
+              {/* Bilingual Title - Arabic prominent, English below */}
+              <div className="space-y-2">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-['Noto_Sans_Arabic',sans-serif]" dir="rtl">
+                  منظمو الفعاليات والمعارض
+                </h1>
+                {!isAr && (
+                  <p className="text-lg md:text-xl font-semibold text-muted-foreground/70 tracking-wide">
+                    Event & Exhibition Organizers
+                  </p>
+                )}
+              </div>
+
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
                 {isAr
-                  ? "تعرّف على أبرز منظمي المعارض والفعاليات والمسابقات في قطاع الطهي والضيافة"
-                  : "Discover leading exhibition, event, and competition organizers in the culinary & hospitality industry"}
+                  ? "تعرّف على أبرز منظمي المعارض والفعاليات والمسابقات في قطاع الطهي والضيافة حول العالم"
+                  : "Discover leading exhibition, event, and competition organizers in the culinary & hospitality industry worldwide"}
               </p>
             </div>
 
             {/* ─── Stats Cards ─── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mt-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mt-10">
               {[
-                { icon: Building2, value: totalOrgs, label: isAr ? "منظم" : "Organizers", color: "text-primary" },
-                { icon: Landmark, value: totalEvents, label: isAr ? "فعالية" : "Events", color: "text-emerald-600 dark:text-emerald-400" },
-                { icon: Globe, value: totalCountries, label: isAr ? "دولة" : "Countries", color: "text-blue-600 dark:text-blue-400" },
-                { icon: Star, value: parseFloat(avgRating as string), label: isAr ? "متوسط التقييم" : "Avg Rating", color: "text-amber-500", isDecimal: true },
+                { icon: Building2, value: totalOrgs, label: isAr ? "منظم" : "Organizers", labelEn: "Organizers", color: "text-primary" },
+                { icon: Landmark, value: totalEvents, label: isAr ? "فعالية" : "Events", labelEn: "Events", color: "text-emerald-600 dark:text-emerald-400" },
+                { icon: Globe, value: totalCountries, label: isAr ? "دولة" : "Countries", labelEn: "Countries", color: "text-blue-600 dark:text-blue-400" },
+                { icon: Star, value: parseFloat(avgRating as string), label: isAr ? "متوسط التقييم" : "Avg Rating", labelEn: "Avg Rating", color: "text-amber-500", isDecimal: true },
               ].map(s => (
-                <div key={s.label} className="flex flex-col items-center gap-1 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-4">
-                  <s.icon className={`h-5 w-5 ${s.color} mb-1`} />
-                  <p className="text-xl md:text-2xl font-bold">
+                <div key={s.labelEn} className="flex flex-col items-center gap-1.5 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-5 hover:border-primary/20 transition-colors">
+                  <s.icon className={`h-5 w-5 ${s.color} mb-0.5`} />
+                  <p className="text-2xl md:text-3xl font-bold tabular-nums">
                     {s.isDecimal ? s.value : <AnimatedCounter value={s.value} />}
                   </p>
                   <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{s.label}</p>
