@@ -52,20 +52,20 @@ function parseStats(raw: any): { visitors?: number; exhibitors?: number; countri
   };
 }
 
-function GrowthBadge({ current, previous }: { current?: number; previous?: number }) {
+const GrowthBadge = memo(function GrowthBadge({ current, previous }: { current?: number; previous?: number }) {
   if (!current || !previous) return null;
   const pct = Math.round(((current - previous) / previous) * 100);
   if (pct === 0) return null;
   return (
     <span className={cn(
       "inline-flex items-center gap-0.5 text-[10px] font-bold rounded-full px-1.5 py-0.5",
-      pct > 0 ? "bg-emerald-500/10 text-emerald-600" : "bg-red-500/10 text-red-500"
+      pct > 0 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-500 dark:text-red-400"
     )}>
       {pct > 0 ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
       {pct > 0 ? "+" : ""}{pct}%
     </span>
   );
-}
+});
 
 export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection({ seriesId, currentExhibitionId, isAr }: Props) {
   const [expandedEdition, setExpandedEdition] = useState<string | null>(null);
