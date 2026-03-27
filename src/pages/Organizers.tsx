@@ -148,35 +148,45 @@ export default function Organizers() {
           <div className="absolute -top-20 -end-20 h-60 w-60 rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-10 -start-10 h-40 w-40 rounded-full bg-primary/5 blur-2xl" />
 
-          <div className="container relative max-w-6xl py-12 md:py-16">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-5">
+          <div className="container relative max-w-6xl py-14 md:py-20">
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5">
                 <Building2 className="h-4 w-4 text-primary" />
                 <span className="text-xs font-medium text-primary">
                   {isAr ? "دليل المنظمين" : "Organizer Directory"}
                 </span>
               </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3">
-                {isAr ? "منظمو الفعاليات" : "Event Organizers"}
-              </h1>
-              <p className="text-muted-foreground max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+
+              {/* Bilingual Title - Arabic prominent, English below */}
+              <div className="space-y-2">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-['Noto_Sans_Arabic',sans-serif]" dir="rtl">
+                  منظمو الفعاليات والمعارض
+                </h1>
+                {!isAr && (
+                  <p className="text-lg md:text-xl font-semibold text-muted-foreground/70 tracking-wide">
+                    Event & Exhibition Organizers
+                  </p>
+                )}
+              </div>
+
+              <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
                 {isAr
-                  ? "تعرّف على أبرز منظمي المعارض والفعاليات والمسابقات في قطاع الطهي والضيافة"
-                  : "Discover leading exhibition, event, and competition organizers in the culinary & hospitality industry"}
+                  ? "تعرّف على أبرز منظمي المعارض والفعاليات والمسابقات في قطاع الطهي والضيافة حول العالم"
+                  : "Discover leading exhibition, event, and competition organizers in the culinary & hospitality industry worldwide"}
               </p>
             </div>
 
             {/* ─── Stats Cards ─── */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mt-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mt-10">
               {[
-                { icon: Building2, value: totalOrgs, label: isAr ? "منظم" : "Organizers", color: "text-primary" },
-                { icon: Landmark, value: totalEvents, label: isAr ? "فعالية" : "Events", color: "text-emerald-600 dark:text-emerald-400" },
-                { icon: Globe, value: totalCountries, label: isAr ? "دولة" : "Countries", color: "text-blue-600 dark:text-blue-400" },
-                { icon: Star, value: parseFloat(avgRating as string), label: isAr ? "متوسط التقييم" : "Avg Rating", color: "text-amber-500", isDecimal: true },
+                { icon: Building2, value: totalOrgs, label: isAr ? "منظم" : "Organizers", labelEn: "Organizers", color: "text-primary" },
+                { icon: Landmark, value: totalEvents, label: isAr ? "فعالية" : "Events", labelEn: "Events", color: "text-emerald-600 dark:text-emerald-400" },
+                { icon: Globe, value: totalCountries, label: isAr ? "دولة" : "Countries", labelEn: "Countries", color: "text-blue-600 dark:text-blue-400" },
+                { icon: Star, value: parseFloat(avgRating as string), label: isAr ? "متوسط التقييم" : "Avg Rating", labelEn: "Avg Rating", color: "text-amber-500", isDecimal: true },
               ].map(s => (
-                <div key={s.label} className="flex flex-col items-center gap-1 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-4">
-                  <s.icon className={`h-5 w-5 ${s.color} mb-1`} />
-                  <p className="text-xl md:text-2xl font-bold">
+                <div key={s.labelEn} className="flex flex-col items-center gap-1.5 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-5 hover:border-primary/20 transition-colors">
+                  <s.icon className={`h-5 w-5 ${s.color} mb-0.5`} />
+                  <p className="text-2xl md:text-3xl font-bold tabular-nums">
                     {s.isDecimal ? s.value : <AnimatedCounter value={s.value} />}
                   </p>
                   <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{s.label}</p>
@@ -315,11 +325,16 @@ export default function Organizers() {
                 <>
                   {/* Featured */}
                   {featured.length > 0 && sortBy === "featured" && (
-                    <section>
-                      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                        <Star className="h-5 w-5 text-amber-500" />
-                        {isAr ? "المنظمون المميزون" : "Featured Organizers"}
-                      </h2>
+                     <section>
+                      <div className="mb-5">
+                        <h2 className="text-lg font-bold flex items-center gap-2" dir={isAr ? "rtl" : "ltr"}>
+                          <Star className="h-5 w-5 text-amber-500" />
+                          {isAr ? "المنظمون المميزون" : "Featured Organizers"}
+                        </h2>
+                        {!isAr && (
+                          <p className="text-xs text-muted-foreground/60 mt-0.5 ms-7 font-medium" dir="rtl" style={{ fontFamily: "'Noto Sans Arabic', sans-serif" }}>المنظمون المميزون</p>
+                        )}
+                      </div>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
                           {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
@@ -392,29 +407,27 @@ export default function Organizers() {
 
 /* ─── Grid Card ─── */
 const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
-  const name = isAr && org.name_ar ? org.name_ar : org.name;
+  const primaryName = isAr ? (org.name_ar || org.name) : org.name;
+  const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const cityText = isAr && org.city_ar ? org.city_ar : org.city;
+  const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
+  const locationText = [cityText, countryText].filter(Boolean).join("، ");
   const isCompared = compareIds.includes(org.id);
 
   return (
     <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
-      <Card className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
+      <Card className={`overflow-hidden hover:shadow-xl transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         {/* Cover */}
-        <div className="h-32 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
+        <div className="h-36 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
           {org.cover_image_url ? (
-            <img
-              src={org.cover_image_url}
-              alt={name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-              decoding="async"
-            />
+            <img src={org.cover_image_url} alt={primaryName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <Building2 className="h-10 w-10 text-primary/15" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
           {featured && (
             <div className="absolute top-2.5 end-2.5">
               <Badge className="text-[9px] gap-1 bg-amber-500 text-white border-0 shadow-sm">
@@ -437,18 +450,46 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
               {org.logo_url && <AvatarImage src={org.logo_url} />}
               <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-bold text-lg">{org.name?.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0 pt-5">
-              <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{name}</h3>
-              {org.city && (
-                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                  <MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{isAr && org.city_ar ? org.city_ar : org.city}{org.country ? `, ${isAr && org.country_ar ? org.country_ar : org.country}` : ""}</span>
+            <div className="flex-1 min-w-0 pt-4">
+              {/* Primary title - full display, no truncation */}
+              <h3
+                className="font-bold text-sm leading-snug group-hover:text-primary transition-colors"
+                dir={isAr ? "rtl" : "ltr"}
+                style={isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+              >
+                {primaryName}
+              </h3>
+              {/* Secondary title (other language) */}
+              {secondaryName && secondaryName !== primaryName && (
+                <p
+                  className="text-[11px] text-muted-foreground/60 font-medium mt-0.5 leading-snug"
+                  dir={isAr ? "ltr" : "rtl"}
+                  style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+                >
+                  {secondaryName}
+                </p>
+              )}
+              {/* Location */}
+              {locationText && (
+                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-1">
+                  <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                  <span>{locationText}</span>
                 </p>
               )}
             </div>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 shrink-0 mt-5 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground/40 shrink-0 mt-5 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
           </div>
 
-          {desc && <p className="text-[11px] text-muted-foreground/80 mt-3 line-clamp-2 leading-relaxed">{desc}</p>}
+          {/* Description */}
+          {desc && (
+            <p
+              className="text-[11px] text-muted-foreground/80 mt-3 line-clamp-2 leading-relaxed"
+              dir={isAr && org.description_ar ? "rtl" : "ltr"}
+              style={isAr && org.description_ar ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+            >
+              {desc}
+            </p>
+          )}
 
           {/* Stats */}
           <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/30">
@@ -536,11 +577,14 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
     </div>
   );
 });
-
 /* ─── List Item ─── */
 const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
-  const name = isAr && org.name_ar ? org.name_ar : org.name;
+  const primaryName = isAr ? (org.name_ar || org.name) : org.name;
+  const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const cityText = isAr && org.city_ar ? org.city_ar : org.city;
+  const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
+  const locationText = [cityText, countryText].filter(Boolean).join("، ");
   const isCompared = compareIds.includes(org.id);
 
   return (
@@ -561,21 +605,43 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{name}</h3>
+              <h3
+                className="font-bold text-sm group-hover:text-primary transition-colors leading-snug"
+                dir={isAr ? "rtl" : "ltr"}
+                style={isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+              >
+                {primaryName}
+              </h3>
               {featured && (
                 <Badge className="text-[8px] gap-0.5 bg-amber-500 text-white border-0 h-4">
                   <Star className="h-2 w-2 fill-current" />{isAr ? "مميز" : "Featured"}
                 </Badge>
               )}
             </div>
-            {org.city && (
-              <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                <MapPin className="h-3 w-3 shrink-0" />{isAr && org.city_ar ? org.city_ar : org.city}{org.country ? `, ${isAr && org.country_ar ? org.country_ar : org.country}` : ""}
+            {secondaryName && secondaryName !== primaryName && (
+              <p
+                className="text-[11px] text-muted-foreground/60 font-medium leading-snug"
+                dir={isAr ? "ltr" : "rtl"}
+                style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+              >
+                {secondaryName}
               </p>
             )}
-            {desc && <p className="text-[11px] text-muted-foreground/80 mt-1 line-clamp-1">{desc}</p>}
+            {locationText && (
+              <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                {locationText}
+              </p>
+            )}
+            {desc && (
+              <p
+                className="text-[11px] text-muted-foreground/80 mt-1 line-clamp-1"
+                dir={isAr && org.description_ar ? "rtl" : "ltr"}
+              >
+                {desc}
+              </p>
+            )}
 
-            {/* Tags in list view */}
             {org.categories && org.categories.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1.5">
                 {org.categories.slice(0, 2).map((c: string) => (
