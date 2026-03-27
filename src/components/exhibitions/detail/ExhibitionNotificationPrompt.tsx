@@ -12,7 +12,7 @@ interface Props {
   isFollowing: boolean;
 }
 
-export const ExhibitionNotificationPrompt = memo(function ExhibitionNotificationPrompt({ exhibitionId, exhibitionName, isAr, isFollowing }: Props) {
+export const ExhibitionNotificationPrompt = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionNotificationPrompt({ exhibitionId, exhibitionName, isAr, isFollowing }, ref) {
   const { user } = useAuth();
   const { isSubscribed, isSupported, isLoading, subscribe, checkSubscription } = usePushNotifications();
   const [dismissed, setDismissed] = useState(false);

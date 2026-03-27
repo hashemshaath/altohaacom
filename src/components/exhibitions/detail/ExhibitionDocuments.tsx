@@ -24,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionDocuments = memo(function ExhibitionDocuments({ documents, isAr }: Props) {
+export const ExhibitionDocuments = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionDocuments({ documents, isAr }, ref) {
   if (!documents || !Array.isArray(documents)) return null;
 
   const docs = (documents as DocumentItem[]).filter((d) => d?.url);
