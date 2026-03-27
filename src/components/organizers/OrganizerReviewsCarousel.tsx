@@ -8,7 +8,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const OrganizerReviewsCarousel = memo(forwardRef<HTMLDivElement, Props>(function OrganizerReviewsCarousel({ isAr }, _ref) {
+export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({ isAr }: Props) {
   const { data: reviews = [] } = useQuery({
     queryKey: ["organizer-page-reviews"],
     queryFn: async () => {

@@ -19,7 +19,7 @@ interface Props {
   isInCompare?: boolean;
 }
 
-export const OrganizerPreviewDrawer = memo(forwardRef<HTMLDivElement, Props>(function OrganizerPreviewDrawer({ org, open, onOpenChange, isAr, onCompare, isInCompare }, _ref) {
+export const OrganizerPreviewDrawer = memo(function OrganizerPreviewDrawer({ org, open, onOpenChange, isAr, onCompare, isInCompare }: Props) {
   if (!org) return null;
 
   const name = isAr && org.name_ar ? org.name_ar : org.name;
