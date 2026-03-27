@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Footer } from "@/components/Footer";
 import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboard";
-import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
+
 import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
 import { OrganizerSearchAutocomplete } from "@/components/organizers/OrganizerSearchAutocomplete";
 import { OrganizerReviewsCarousel } from "@/components/organizers/OrganizerReviewsCarousel";
@@ -47,7 +47,7 @@ export default function Organizers() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
-  const [previewOrg, setPreviewOrg] = useState<any | null>(null);
+  
   const { followedIds, toggleFollow } = useOrganizerFollows();
 
   const { data: organizers, isLoading } = useQuery({
@@ -367,12 +367,6 @@ export default function Organizers() {
         </div>
       </main>
 
-      <OrganizerPreviewDrawer
-        org={previewOrg}
-        open={!!previewOrg}
-        onOpenChange={open => !open && setPreviewOrg(null)}
-        isAr={isAr}
-      />
 
       <Footer />
     </div>
