@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -16,13 +16,18 @@ import {
 import {
   Building2, Search, MapPin, Globe, CheckCircle2, Star, Landmark,
   ArrowUpRight, Mail, Phone, LayoutGrid, List, Calendar, Eye,
-  SlidersHorizontal, TrendingUp, Award, X,
+  SlidersHorizontal, TrendingUp, Award, X, Scale, Map,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Footer } from "@/components/Footer";
+import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboard";
+import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
+import { OrganizerCompareBar } from "@/components/organizers/OrganizerCompareBar";
+import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
 
 type SortKey = "featured" | "name" | "events" | "rating" | "newest";
+type ViewMode = "grid" | "list" | "map";
 
 export default function Organizers() {
   const { language } = useLanguage();
