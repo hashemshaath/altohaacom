@@ -299,6 +299,11 @@ export default function Organizers() {
                 />
               )}
 
+              {/* Reviews Carousel */}
+              {!hasActiveFilters && viewMode !== "map" && (
+                <OrganizerReviewsCarousel isAr={isAr} />
+              )}
+
               {/* Map View */}
               {viewMode === "map" ? (
                 <OrganizerMapView
