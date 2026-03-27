@@ -1,4 +1,4 @@
-import { memo, forwardRef } from "react";
+import { forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, FileImage, FileSpreadsheet, File } from "lucide-react";
@@ -24,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionDocuments = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionDocuments({ documents, isAr }, ref) {
+export const ExhibitionDocuments = forwardRef<HTMLDivElement, Props>(function ExhibitionDocuments({ documents, isAr }, ref) {
   if (!documents || !Array.isArray(documents)) return null;
 
   const docs = (documents as DocumentItem[]).filter((d) => d?.url);
@@ -64,4 +64,4 @@ export const ExhibitionDocuments = memo(forwardRef<HTMLDivElement, Props>(functi
       </CardContent>
     </Card>
   );
-}));
+});
