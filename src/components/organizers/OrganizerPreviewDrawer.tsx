@@ -172,4 +172,4 @@ export const OrganizerPreviewDrawer = memo(function OrganizerPreviewDrawer({ org
       </SheetContent>
     </Sheet>
   );
-}));
+});

@@ -116,4 +116,4 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
       </div>
     </section>
   );
-}));
+});
