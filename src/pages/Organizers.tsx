@@ -592,9 +592,18 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
             )}
           </div>
 
+          {onCompare && (
+            <button
+              onClick={e => { e.stopPropagation(); onCompare(org); }}
+              className={`shrink-0 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+            >
+              <Scale className="h-3 w-3" />
+            </button>
+          )}
+
           <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 shrink-0 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 });
