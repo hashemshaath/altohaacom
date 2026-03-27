@@ -1,4 +1,5 @@
 import { memo, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import { CheckCircle2, Globe, MapPin, ChevronDown, ChevronUp, Star, Landmark } f
 interface Props {
   organizers: any[];
   isAr: boolean;
-  onPreview: (org: any) => void;
 }
 
 // Map country codes to flag emojis
@@ -18,7 +18,7 @@ function countryFlag(code: string): string {
   );
 }
 
-export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isAr, onPreview }: Props) {
+export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isAr }: Props) {
   const [expandedCountry, setExpandedCountry] = useState<string | null>(null);
 
   const grouped = useMemo(() => {
@@ -84,9 +84,9 @@ export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isA
                   {group.orgs.map(org => {
                     const name = isAr && org.name_ar ? org.name_ar : org.name;
                     return (
-                      <button
+                      <Link
                         key={org.id}
-                        onClick={() => onPreview(org)}
+                        to={`/organizers/${org.slug}`}
                         className="flex items-center gap-2.5 w-full rounded-xl p-2 text-start hover:bg-muted/50 transition-colors group"
                       >
                         <Avatar className="h-9 w-9 rounded-xl border border-border/30">
@@ -108,7 +108,7 @@ export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isA
                             <span className="flex items-center gap-0.5"><Star className="h-3 w-3 text-amber-500" />{org.average_rating.toFixed(1)}</span>
                           )}
                         </div>
-                      </button>
+                      </Link>
                     );
                   })}
                 </div>

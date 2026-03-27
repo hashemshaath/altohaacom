@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Footer } from "@/components/Footer";
 import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboard";
-import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
+
 import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
 import { OrganizerSearchAutocomplete } from "@/components/organizers/OrganizerSearchAutocomplete";
 import { OrganizerReviewsCarousel } from "@/components/organizers/OrganizerReviewsCarousel";
@@ -47,7 +47,7 @@ export default function Organizers() {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
-  const [previewOrg, setPreviewOrg] = useState<any | null>(null);
+  
   const { followedIds, toggleFollow } = useOrganizerFollows();
 
   const { data: organizers, isLoading } = useQuery({
@@ -196,7 +196,7 @@ export default function Organizers() {
                 search={search}
                 onSearchChange={setSearch}
                 isAr={isAr}
-                onPreview={setPreviewOrg}
+               
               />
 
               <Button
@@ -294,7 +294,7 @@ export default function Organizers() {
                 <OrganizerLeaderboard
                   organizers={organizers || []}
                   isAr={isAr}
-                  onPreview={setPreviewOrg}
+                 
                 />
               )}
 
@@ -306,7 +306,7 @@ export default function Organizers() {
                 <OrganizerMapView
                   organizers={filtered}
                   isAr={isAr}
-                  onPreview={setPreviewOrg}
+                 
                 />
               ) : (
                 <>
@@ -323,11 +323,11 @@ export default function Organizers() {
                       </div>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
-                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       )}
                     </section>
@@ -352,11 +352,11 @@ export default function Organizers() {
                     }
                     return viewMode === "grid" ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     );
                   })()}
@@ -367,12 +367,6 @@ export default function Organizers() {
         </div>
       </main>
 
-      <OrganizerPreviewDrawer
-        org={previewOrg}
-        open={!!previewOrg}
-        onOpenChange={open => !open && setPreviewOrg(null)}
-        isAr={isAr}
-      />
 
       <Footer />
     </div>
@@ -380,7 +374,7 @@ export default function Organizers() {
 }
 
 /* ─── Grid Card ─── */
-const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
+const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const primaryName = isAr ? (org.name_ar || org.name) : org.name;
   const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
@@ -515,7 +509,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
 });
 
 /* ─── List Item ─── */
-const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
+const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const primaryName = isAr ? (org.name_ar || org.name) : org.name;
   const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;

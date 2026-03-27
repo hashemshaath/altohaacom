@@ -1,4 +1,5 @@
 import { memo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,13 +10,12 @@ type LeaderboardMetric = "events" | "rating" | "views";
 interface Props {
   organizers: any[];
   isAr: boolean;
-  onPreview: (org: any) => void;
 }
 
 const MEDAL_COLORS = ["text-amber-500", "text-zinc-400", "text-amber-700"];
 const MEDAL_ICONS = [Trophy, Medal, Award];
 
-export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organizers, isAr, onPreview }: Props) {
+export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organizers, isAr }: Props) {
   const [metric, setMetric] = useState<LeaderboardMetric>("events");
 
   const sorted = [...organizers]
@@ -76,9 +76,9 @@ export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organiz
           const medalColor = idx < 3 ? MEDAL_COLORS[idx] : "";
 
           return (
-            <button
+            <Link
               key={org.id}
-              onClick={() => onPreview(org)}
+              to={`/organizers/${org.slug}`}
               className="flex items-center gap-3 w-full rounded-xl p-2.5 text-start hover:bg-muted/50 transition-colors group"
             >
               <span className="flex h-7 w-7 items-center justify-center shrink-0">
@@ -108,7 +108,7 @@ export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organiz
                 <p className="text-sm font-bold text-foreground">{getValue(org)}</p>
                 <p className="text-[9px] text-muted-foreground">{getLabel()}</p>
               </div>
-            </button>
+            </Link>
           );
         })}
       </div>

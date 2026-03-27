@@ -1,4 +1,5 @@
 import { memo, useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,10 +10,9 @@ interface Props {
   search: string;
   onSearchChange: (val: string) => void;
   isAr: boolean;
-  onPreview: (org: any) => void;
 }
 
-export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomplete({ organizers, search, onSearchChange, isAr, onPreview }: Props) {
+export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomplete({ organizers, search, onSearchChange, isAr }: Props) {
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -64,14 +64,12 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
           {suggestions.map((org: any) => {
             const name = isAr && org.name_ar ? org.name_ar : org.name;
             return (
-              <button
+              <Link
                 key={org.id}
+                to={`/organizers/${org.slug}`}
                 role="option"
                 className="flex items-center gap-3 w-full px-3 py-2.5 text-start hover:bg-accent/50 transition-colors"
-                onClick={() => {
-                  onPreview(org);
-                  setIsFocused(false);
-                }}
+                onClick={() => setIsFocused(false)}
               >
                 <Avatar className="h-9 w-9 rounded-xl border border-border/30 shrink-0">
                   {org.logo_url && <AvatarImage src={org.logo_url} />}
@@ -94,7 +92,7 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
                     )}
                   </div>
                 </div>
-              </button>
+              </Link>
             );
           })}
           <div className="px-3 py-2 border-t border-border/30 text-[10px] text-muted-foreground text-center">
