@@ -61,7 +61,7 @@ export default function OrganizerDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
     queryFn: async () => {
-      const ORG_FIELDS = "id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, email, phone, website, gallery_urls, key_contacts, total_views, is_verified, organizer_number, social_links, country, country_ar, country_code, city, city_ar, founded_year, status";
+      const ORG_FIELDS = "id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, email, phone, website, gallery_urls, key_contacts, total_views, is_verified, organizer_number, social_links, country, country_ar, country_code, city, city_ar, founded_year, status, follower_count, average_rating, total_exhibitions";
       const EX_FIELDS = "id, title, title_ar, slug, description, description_ar, type, status, start_date, end_date, venue, venue_ar, city, country, cover_image_url, logo_url, organizer_name, organizer_name_ar, organizer_logo_url, organizer_email, organizer_phone, organizer_website, view_count, tags, targeted_sectors, categories, includes_competitions, includes_training, includes_seminars, social_links, edition_stats, sponsors_info, is_virtual, is_featured, registration_url, website_url, edition_year, gallery_urls";
 
       const { data: orgRecord } = await supabase
@@ -72,12 +72,36 @@ export default function OrganizerDetail() {
 
       let exhibitions: any[] = [];
       if (orgRecord) {
-        const { data: exByOrgId } = await supabase
-          .from("exhibitions")
-          .select(EX_FIELDS)
-          .or(`organizer_id.eq.${orgRecord.id},organizer_name.eq.${orgRecord.name}`)
-          .order("start_date", { ascending: false });
-        exhibitions = exByOrgId || [];
+        // Fetch via direct organizer_id, organizer_name match, AND junction table
+        const [directRes, junctionRes] = await Promise.all([
+          supabase
+            .from("exhibitions")
+            .select(EX_FIELDS)
+            .or(`organizer_id.eq.${orgRecord.id},organizer_name.ilike.%${orgRecord.name}%`)
+            .order("start_date", { ascending: false }),
+          supabase
+            .from("exhibition_organizers")
+            .select("exhibition_id")
+            .eq("organizer_id", orgRecord.id),
+        ]);
+
+        const directExhibitions = directRes.data || [];
+        const junctionIds = (junctionRes.data || []).map((j: any) => j.exhibition_id);
+        const directIds = new Set(directExhibitions.map((e: any) => e.id));
+        const missingIds = junctionIds.filter((id: string) => !directIds.has(id));
+
+        if (missingIds.length > 0) {
+          const { data: extraExhibitions } = await supabase
+            .from("exhibitions")
+            .select(EX_FIELDS)
+            .in("id", missingIds)
+            .order("start_date", { ascending: false });
+          exhibitions = [...directExhibitions, ...(extraExhibitions || [])];
+        } else {
+          exhibitions = directExhibitions;
+        }
+        // Sort by start_date descending
+        exhibitions.sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
       } else {
         const { data: exByName } = await supabase
           .from("exhibitions")
