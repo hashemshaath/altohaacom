@@ -411,6 +411,11 @@ export default function Competitions() {
             </div>
           )}
 
+          {/* Previous Editions Section */}
+          {competitions && competitions.length > 0 && !search && activeTab === "all" && (
+            <CompetitionEditionsSection competitions={competitions} isAr={isAr} />
+          )}
+
           {/* Stats Footer */}
           {competitions && competitions.length > 0 && (
             <section className="border-t border-border/10 pt-8 mt-4">
