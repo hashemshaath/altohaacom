@@ -419,6 +419,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
   const cityText = isAr && org.city_ar ? org.city_ar : org.city;
   const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
   const locationText = [cityText, countryText].filter(Boolean).join("، ");
+  const flag = countryFlag(org.country_code);
   const isCompared = compareIds.includes(org.id);
 
   return (
