@@ -388,12 +388,13 @@ export default function Organizers() {
 }
 
 /* ─── Grid Card ─── */
-const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured }: { org: any; isAr: boolean; featured?: boolean }) {
+const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const isCompared = compareIds.includes(org.id);
 
   return (
-    <Link to={`/organizers/${org.slug}`} className="group block">
+    <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
       <Card className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         {/* Cover */}
         <div className="h-32 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
@@ -505,19 +506,31 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured }: { org
               )}
             </div>
           )}
+
+          {/* Compare button */}
+          {onCompare && (
+            <button
+              onClick={e => { e.stopPropagation(); onCompare(org); }}
+              className={`mt-2 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+            >
+              <Scale className="h-3 w-3" />
+              {isCompared ? (isAr ? "تمت الإضافة" : "Added") : (isAr ? "قارن" : "Compare")}
+            </button>
+          )}
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 });
 
 /* ─── List Item ─── */
-const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured }: { org: any; isAr: boolean; featured?: boolean }) {
+const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const isCompared = compareIds.includes(org.id);
 
   return (
-    <Link to={`/organizers/${org.slug}`} className="group block">
+    <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
       <Card className={`hover:shadow-md transition-all duration-300 border-border/40 hover:border-primary/30 rounded-2xl active:scale-[0.99] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         <CardContent className="p-4 flex items-center gap-4">
           <div className="relative shrink-0">
