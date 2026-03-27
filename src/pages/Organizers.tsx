@@ -16,14 +16,13 @@ import {
 import {
   Building2, Search, MapPin, Globe, CheckCircle2, Star, Landmark,
   ArrowUpRight, Mail, Phone, LayoutGrid, List, Calendar, Eye,
-  SlidersHorizontal, TrendingUp, Award, X, Scale, Map,
+  SlidersHorizontal, TrendingUp, Award, X, Map,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Footer } from "@/components/Footer";
 import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboard";
 import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
-import { OrganizerCompareBar } from "@/components/organizers/OrganizerCompareBar";
 import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
 import { OrganizerSearchAutocomplete } from "@/components/organizers/OrganizerSearchAutocomplete";
 import { OrganizerReviewsCarousel } from "@/components/organizers/OrganizerReviewsCarousel";
@@ -49,17 +48,7 @@ export default function Organizers() {
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [previewOrg, setPreviewOrg] = useState<any | null>(null);
-  const [compareList, setCompareList] = useState<any[]>([]);
   const { followedIds, toggleFollow } = useOrganizerFollows();
-
-  const toggleCompare = useCallback((org: any) => {
-    setCompareList(prev => {
-      const exists = prev.some(o => o.id === org.id);
-      if (exists) return prev.filter(o => o.id !== org.id);
-      if (prev.length >= 3) return prev; // max 3
-      return [...prev, org];
-    });
-  }, []);
 
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["public-organizers"],
@@ -96,7 +85,6 @@ export default function Organizers() {
       return matchSearch && matchCountry && matchCategory;
     });
 
-    // Sort
     switch (sortBy) {
       case "name":
         list = [...list].sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
@@ -110,7 +98,7 @@ export default function Organizers() {
       case "newest":
         list = [...list].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         break;
-      default: // featured first
+      default:
         list = [...list].sort((a: any, b: any) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
     }
     return list;
@@ -150,7 +138,6 @@ export default function Organizers() {
       <main className="flex-1">
         {/* ─── Hero Section ─── */}
         <section className="relative overflow-hidden border-b bg-gradient-to-br from-primary/8 via-primary/4 to-transparent">
-          {/* Decorative blobs */}
           <div className="absolute -top-20 -end-20 h-60 w-60 rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute -bottom-10 -start-10 h-40 w-40 rounded-full bg-primary/5 blur-2xl" />
 
@@ -163,7 +150,6 @@ export default function Organizers() {
                 </span>
               </div>
 
-              {/* Bilingual Title - Arabic prominent, English below */}
               <div className="space-y-2">
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight font-['Noto_Sans_Arabic',sans-serif]" dir="rtl">
                   منظمو الفعاليات والمعارض
@@ -182,7 +168,6 @@ export default function Organizers() {
               </p>
             </div>
 
-            {/* ─── Stats Cards ─── */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mt-10">
               {[
                 { icon: Building2, value: totalOrgs, label: isAr ? "منظم" : "Organizers", labelEn: "Organizers", color: "text-primary" },
@@ -256,7 +241,6 @@ export default function Organizers() {
               </div>
             </div>
 
-            {/* Expandable Filters */}
             {showFilters && (
               <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-border/40">
                 <Select value={countryFilter} onValueChange={setCountryFilter}>
@@ -306,7 +290,6 @@ export default function Organizers() {
             </div>
           ) : (
             <>
-              {/* Leaderboard - show when no active filters */}
               {!hasActiveFilters && viewMode !== "map" && (organizers || []).length >= 3 && (
                 <OrganizerLeaderboard
                   organizers={organizers || []}
@@ -315,12 +298,10 @@ export default function Organizers() {
                 />
               )}
 
-              {/* Reviews Carousel */}
               {!hasActiveFilters && viewMode !== "map" && (
                 <OrganizerReviewsCarousel isAr={isAr} />
               )}
 
-              {/* Map View */}
               {viewMode === "map" ? (
                 <OrganizerMapView
                   organizers={filtered}
@@ -329,9 +310,8 @@ export default function Organizers() {
                 />
               ) : (
                 <>
-                  {/* Featured */}
                   {featured.length > 0 && sortBy === "featured" && (
-                     <section>
+                    <section>
                       <div className="mb-5">
                         <h2 className="text-lg font-bold flex items-center gap-2" dir={isAr ? "rtl" : "ltr"}>
                           <Star className="h-5 w-5 text-amber-500" />
@@ -343,17 +323,16 @@ export default function Organizers() {
                       </div>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
-                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       )}
                     </section>
                   )}
 
-                  {/* Regular / All */}
                   {(() => {
                     const items = sortBy === "featured" ? regular : filtered;
                     if (items.length === 0 && featured.length === 0) {
@@ -373,11 +352,11 @@ export default function Organizers() {
                     }
                     return viewMode === "grid" ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     );
                   })()}
@@ -388,21 +367,10 @@ export default function Organizers() {
         </div>
       </main>
 
-      {/* Preview Drawer */}
       <OrganizerPreviewDrawer
         org={previewOrg}
         open={!!previewOrg}
         onOpenChange={open => !open && setPreviewOrg(null)}
-        isAr={isAr}
-        onCompare={toggleCompare}
-        isInCompare={previewOrg ? compareList.some(c => c.id === previewOrg.id) : false}
-      />
-
-      {/* Compare Bar */}
-      <OrganizerCompareBar
-        items={compareList}
-        onRemove={id => setCompareList(prev => prev.filter(o => o.id !== id))}
-        onClear={() => setCompareList([])}
         isAr={isAr}
       />
 
@@ -412,7 +380,7 @@ export default function Organizers() {
 }
 
 /* ─── Grid Card ─── */
-const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
+const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const primaryName = isAr ? (org.name_ar || org.name) : org.name;
   const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
@@ -420,12 +388,10 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
   const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
   const locationText = [cityText, countryText].filter(Boolean).join("، ");
   const flag = countryFlag(org.country_code);
-  const isCompared = compareIds.includes(org.id);
 
   return (
-    <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
+    <Link to={`/organizers/${org.slug}`} className="group block">
       <Card className={`overflow-hidden hover:shadow-xl transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
-        {/* Cover */}
         <div className="h-36 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
           {org.cover_image_url ? (
             <img src={org.cover_image_url} alt={primaryName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
@@ -452,14 +418,12 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
         </div>
 
         <CardContent className="p-4 -mt-10 relative z-10">
-          {/* Avatar + Title block */}
           <div className="flex items-start gap-3">
             <Avatar className="h-16 w-16 rounded-2xl border-[3px] border-background shadow-lg shrink-0 ring-1 ring-border/20">
               {org.logo_url && <AvatarImage src={org.logo_url} />}
               <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-bold text-lg">{org.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0 pt-4">
-              {/* Primary title */}
               <h3
                 className="font-bold text-[15px] leading-snug group-hover:text-primary transition-colors"
                 dir={isAr ? "rtl" : "ltr"}
@@ -467,7 +431,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
               >
                 {primaryName}
               </h3>
-              {/* Secondary title (other language) */}
               {secondaryName && secondaryName !== primaryName && (
                 <p
                   className="text-[11px] text-muted-foreground/50 font-medium mt-0.5 leading-snug"
@@ -480,7 +443,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </div>
           </div>
 
-          {/* Location with flag */}
           {(locationText || org.country_code) && (
             <div className="flex items-center gap-1.5 mt-3 px-2.5 py-1.5 rounded-lg bg-muted/40 border border-border/20">
               {flag && <span className="text-base leading-none">{flag}</span>}
@@ -489,7 +451,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </div>
           )}
 
-          {/* Description */}
           {desc && (
             <p
               className="text-[11px] text-muted-foreground/70 mt-2.5 line-clamp-2 leading-relaxed"
@@ -500,7 +461,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </p>
           )}
 
-          {/* Stats row */}
           <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border/30">
             <div className="flex flex-col items-center gap-0.5 py-1.5 rounded-lg bg-muted/30">
               <Landmark className="h-3.5 w-3.5 text-emerald-500" />
@@ -519,7 +479,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </div>
           </div>
 
-          {/* Categories */}
           {org.categories && org.categories.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2.5">
               {org.categories.slice(0, 3).map((c: string) => (
@@ -529,7 +488,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </div>
           )}
 
-          {/* Actions row */}
           <div className="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-border/20">
             {(org.email || org.phone || org.website) && (
               <div className="flex gap-1">
@@ -539,32 +497,25 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
               </div>
             )}
             <div className="flex items-center gap-1 ms-auto">
-              {onCompare && (
-                <button
-                  onClick={e => { e.stopPropagation(); onCompare(org); }}
-                  className={`flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
-                >
-                  <Scale className="h-3 w-3" />
-                  {isCompared ? (isAr ? "✓" : "✓") : (isAr ? "قارن" : "Compare")}
-                </button>
-              )}
               {onToggleFollow && (
                 <button
-                  onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
+                  onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFollow(org.id); }}
                   className={`flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"}`}
                 >
                   <Heart className={`h-3 w-3 ${isFollowed ? "fill-current" : ""}`} />
                 </button>
               )}
+              <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
             </div>
           </div>
         </CardContent>
       </Card>
-    </div>
+    </Link>
   );
 });
+
 /* ─── List Item ─── */
-const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
+const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const primaryName = isAr ? (org.name_ar || org.name) : org.name;
   const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
@@ -572,10 +523,9 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
   const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
   const locationText = [cityText, countryText].filter(Boolean).join("، ");
   const flag = countryFlag(org.country_code);
-  const isCompared = compareIds.includes(org.id);
 
   return (
-    <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
+    <Link to={`/organizers/${org.slug}`} className="group block">
       <Card className={`hover:shadow-md transition-all duration-300 border-border/40 hover:border-primary/30 rounded-2xl active:scale-[0.99] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         <CardContent className="p-4 flex items-center gap-4">
           <div className="relative shrink-0">
@@ -631,7 +581,6 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
             )}
           </div>
 
-          {/* Stats */}
           <div className="hidden sm:flex items-center gap-4 shrink-0">
             <div className="text-center px-2">
               <p className="text-sm font-bold text-foreground">{org.total_exhibitions || 0}</p>
@@ -647,7 +596,7 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
 
           {onToggleFollow && (
             <button
-              onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
+              onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFollow(org.id); }}
               className={`shrink-0 rounded-lg p-1.5 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"}`}
             >
               <Heart className={`h-4 w-4 ${isFollowed ? "fill-current" : ""}`} />
@@ -657,6 +606,6 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
           <ArrowUpRight className="h-4 w-4 text-muted-foreground/40 shrink-0 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
         </CardContent>
       </Card>
-    </div>
+    </Link>
   );
 });
