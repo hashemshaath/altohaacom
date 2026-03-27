@@ -43,7 +43,7 @@ export default function Organizers() {
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [previewOrg, setPreviewOrg] = useState<any | null>(null);
-  const [compareList, setCompareList] = useState<any[]>([]);
+  const { followedIds, toggleFollow } = useOrganizerFollows();
 
   const toggleCompare = useCallback((org: any) => {
     setCompareList(prev => {
