@@ -17,13 +17,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Footer } from "@/components/Footer";
 import {
   Building2, Mail, Phone, Globe, MapPin, Calendar, Eye, Landmark,
   Users, TrendingUp, ExternalLink, Newspaper, ChevronRight,
   Award, Target, Sparkles, BarChart3, Clock, Star,
   Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight, Heart,
   CalendarDays, Ticket, GraduationCap, Swords, Mic2, BookOpen,
-  Copy, Check, Image as ImageIcon, UserCircle2,
+  Copy, Check, Image as ImageIcon, UserCircle2, ChevronLeft,
+  CircleDot, AlertCircle, X,
 } from "lucide-react";
 import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -37,6 +39,12 @@ interface ExhibitionRow {
   [key: string]: any;
 }
 
+/** Convert ISO country code to flag emoji */
+const countryFlag = (code?: string | null) => {
+  if (!code || code.length !== 2) return null;
+  return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1f1e6 - 65 + c.charCodeAt(0)));
+};
+
 export default function OrganizerDetail() {
   const { name } = useParams<{ name: string }>();
   const { language } = useLanguage();
@@ -45,6 +53,7 @@ export default function OrganizerDetail() {
   const [viewMode, setViewMode] = useState<"grid" | "timeline">("grid");
   const [copied, setCopied] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState<string | null>(null);
+  const [galleryIndex, setGalleryIndex] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [activeTab, setActiveTab] = useState("exhibitions");
   const { user } = useAuth();
@@ -52,8 +61,8 @@ export default function OrganizerDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
     queryFn: async () => {
-      const ORG_FIELDS = "id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, email, phone, website, gallery_urls, key_contacts, total_views, is_verified, organizer_number, social_links, country, city, founded_year, status";
-      const EX_FIELDS = "id, title, title_ar, slug, description, description_ar, type, status, start_date, end_date, venue, venue_ar, city, country, cover_image_url, logo_url, organizer_name, organizer_name_ar, organizer_logo_url, organizer_email, organizer_phone, organizer_website, view_count, tags, targeted_sectors, categories, includes_competitions, includes_training, includes_seminars, social_links, edition_stats, sponsors_info, is_virtual, is_featured, registration_url, website_url, edition_year";
+      const ORG_FIELDS = "id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, email, phone, website, gallery_urls, key_contacts, total_views, is_verified, organizer_number, social_links, country, country_ar, country_code, city, city_ar, founded_year, status";
+      const EX_FIELDS = "id, title, title_ar, slug, description, description_ar, type, status, start_date, end_date, venue, venue_ar, city, country, cover_image_url, logo_url, organizer_name, organizer_name_ar, organizer_logo_url, organizer_email, organizer_phone, organizer_website, view_count, tags, targeted_sectors, categories, includes_competitions, includes_training, includes_seminars, social_links, edition_stats, sponsors_info, is_virtual, is_featured, registration_url, website_url, edition_year, gallery_urls";
 
       const { data: orgRecord } = await supabase
         .from("organizers")
@@ -142,6 +151,9 @@ export default function OrganizerDetail() {
     const orgName = useOrgRecord
       ? (isAr && org?.name_ar ? org.name_ar : org?.name || decodedName)
       : (isAr && org?.organizer_name_ar ? org.organizer_name_ar : org?.organizer_name || decodedName);
+    const orgNameSecondary = useOrgRecord
+      ? (isAr ? org?.name : org?.name_ar)
+      : (isAr ? org?.organizer_name : org?.organizer_name_ar);
     const orgLogo = useOrgRecord ? org?.logo_url : (org?.organizer_logo_url || org?.logo_url);
     const orgDescription = useOrgRecord ? (isAr && org?.description_ar ? org.description_ar : org?.description) : null;
     const orgGallery: string[] = useOrgRecord ? (org?.gallery_urls || []) : [];
@@ -154,6 +166,17 @@ export default function OrganizerDetail() {
     const venues = [...new Set(exhibitions.map((e: ExhibitionRow) => isAr && e.venue_ar ? e.venue_ar : e.venue).filter(Boolean))] as string[];
 
     const coverImage = useOrgRecord ? org?.cover_image_url : exhibitions.find((e: ExhibitionRow) => e.cover_image_url)?.cover_image_url;
+
+    // Collect ALL gallery images from org + exhibitions
+    const allGalleryImages: string[] = [...orgGallery];
+    exhibitions.forEach((e: ExhibitionRow) => {
+      if (e.cover_image_url) allGalleryImages.push(e.cover_image_url);
+      if (e.gallery_urls && Array.isArray(e.gallery_urls)) {
+        allGalleryImages.push(...e.gallery_urls);
+      }
+    });
+    // Unique
+    const uniqueGallery = [...new Set(allGalleryImages)];
 
     const allSectors = new Set<string>();
     const allCategories = new Set<string>();
@@ -170,7 +193,7 @@ export default function OrganizerDetail() {
       seminars: exhibitions.some((e: ExhibitionRow) => e.includes_seminars),
     };
 
-    const rawSocial = exhibitions.find((e: ExhibitionRow) => e.social_links)?.social_links;
+    const rawSocial = orgRecord?.social_links || exhibitions.find((e: ExhibitionRow) => e.social_links)?.social_links;
     const socialLinks: Record<string, string> = (rawSocial && typeof rawSocial === 'object' && !Array.isArray(rawSocial))
       ? rawSocial as Record<string, string> : {};
 
@@ -218,20 +241,25 @@ export default function OrganizerDetail() {
     const nextEvent = upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
 
     return {
-      orgName, orgLogo, coverImage, totalExhibitions, totalViews,
+      orgName, orgNameSecondary, orgLogo, coverImage, totalExhibitions, totalViews,
       countries, cities, types, venues, services, socialLinks,
       byYear, sortedYears, upcoming, past, active,
       firstYear, lastYear, allSectors, allCategories, allTags,
       editionStats, allSponsors, nextEvent,
-      orgDescription, orgGallery, orgKeyContacts,
+      orgDescription, orgGallery, orgKeyContacts, uniqueGallery,
     };
   }, [exhibitions, isAr, org, decodedName, useOrgRecord, orgRecord]);
 
   const availableTabs = useMemo(() => [
-    "exhibitions", "profile", "stats",
+    "exhibitions",
+    ...(computed?.upcoming?.length ? ["upcoming"] : []),
+    "gallery",
+    "profile",
+    "stats",
+    ...(computed?.orgKeyContacts?.length ? ["team"] : []),
     ...(computed?.allSponsors?.length ? ["partners"] : []),
     ...(articles.length > 0 ? ["news"] : []),
-  ], [computed?.allSponsors?.length, articles.length]);
+  ], [computed?.allSponsors?.length, articles.length, computed?.upcoming?.length, computed?.orgKeyContacts?.length]);
 
   const { swipeHandlers } = useSwipeTabs({ tabs: availableTabs, currentTab: activeTab, onTabChange: setActiveTab });
 
@@ -270,17 +298,18 @@ export default function OrganizerDetail() {
   }
 
   const {
-    orgName, orgLogo, coverImage, totalExhibitions, totalViews,
+    orgName, orgNameSecondary, orgLogo, coverImage, totalExhibitions, totalViews,
     countries, cities, types, venues, services, socialLinks,
     byYear, sortedYears, upcoming, past, active,
     firstYear, lastYear, allSectors, allCategories, allTags,
     editionStats, allSponsors, nextEvent,
-    orgDescription, orgGallery, orgKeyContacts,
+    orgDescription, orgGallery, orgKeyContacts, uniqueGallery,
   } = computed;
 
   const contactEmail = orgRecord?.email || org?.organizer_email;
   const contactPhone = orgRecord?.phone || org?.organizer_phone;
   const contactWebsite = orgRecord?.website || org?.organizer_website;
+  const flag = countryFlag(orgRecord?.country_code);
 
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
@@ -298,6 +327,7 @@ export default function OrganizerDetail() {
             { label: orgName },
           ]} />
         </div>
+
         {/* ═══════ Hero Section ═══════ */}
         <div className="relative">
           {coverImage ? (
@@ -322,7 +352,9 @@ export default function OrganizerDetail() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{orgName}</h1>
+                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight" dir={isAr ? "rtl" : "ltr"} style={isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}>
+                        {orgName}
+                      </h1>
                       {orgRecord?.is_verified && (
                         <TooltipProvider>
                           <Tooltip>
@@ -339,11 +371,23 @@ export default function OrganizerDetail() {
                         <Badge variant="outline" className="text-[10px] font-mono h-5">{orgRecord.organizer_number}</Badge>
                       )}
                     </div>
-                    {org.organizer_name_ar && !isAr && (
-                      <p className="text-sm text-muted-foreground mt-0.5" dir="rtl">{org.organizer_name_ar}</p>
+                    {/* Secondary language name */}
+                    {orgNameSecondary && orgNameSecondary !== orgName && (
+                      <p className="text-sm text-muted-foreground mt-0.5" dir={isAr ? "ltr" : "rtl"}
+                        style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+                      >
+                        {orgNameSecondary}
+                      </p>
                     )}
-                    {org.organizer_name && isAr && (
-                      <p className="text-sm text-muted-foreground mt-0.5" dir="ltr">{org.organizer_name}</p>
+                    {/* Location with flag */}
+                    {(orgRecord?.city || orgRecord?.country) && (
+                      <div className="flex items-center gap-1.5 mt-1.5 text-sm text-muted-foreground">
+                        {flag && <span className="text-base">{flag}</span>}
+                        <MapPin className="h-3.5 w-3.5 text-primary/60" />
+                        <span>
+                          {[isAr ? orgRecord?.city_ar || orgRecord?.city : orgRecord?.city, isAr ? orgRecord?.country_ar || orgRecord?.country : orgRecord?.country].filter(Boolean).join("، ")}
+                        </span>
+                      </div>
                     )}
                   </div>
                   <div className="flex gap-2 shrink-0">
@@ -387,6 +431,12 @@ export default function OrganizerDetail() {
 
                 {/* Quick badges */}
                 <div className="flex flex-wrap gap-2 mt-3">
+                  {orgRecord?.founded_year && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {isAr ? `تأسس ${orgRecord.founded_year}` : `Est. ${orgRecord.founded_year}`}
+                    </Badge>
+                  )}
                   <Badge variant="secondary" className="text-xs gap-1">
                     <Calendar className="h-3 w-3" />
                     {firstYear === lastYear ? firstYear : `${firstYear} – ${lastYear}`}
@@ -435,7 +485,12 @@ export default function OrganizerDetail() {
 
                 {/* Description */}
                 {orgDescription && (
-                  <p className="text-sm text-muted-foreground mt-3 line-clamp-3 max-w-2xl">{orgDescription}</p>
+                  <p className="text-sm text-muted-foreground mt-3 line-clamp-3 max-w-2xl"
+                    dir={isAr ? "rtl" : "ltr"}
+                    style={isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+                  >
+                    {orgDescription}
+                  </p>
                 )}
               </div>
             </div>
@@ -464,6 +519,39 @@ export default function OrganizerDetail() {
               </Card>
             ))}
           </div>
+
+          {/* Edition Stats */}
+          {(editionStats.visitors || editionStats.exhibitors || editionStats.area) && (
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              {editionStats.visitors && (
+                <Card className="border-border/40 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent">
+                  <CardContent className="p-3 text-center">
+                    <Users className="h-5 w-5 mx-auto text-primary mb-1" />
+                    <p className="text-lg font-bold">{editionStats.visitors.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</p>
+                  </CardContent>
+                </Card>
+              )}
+              {editionStats.exhibitors && (
+                <Card className="border-border/40 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent">
+                  <CardContent className="p-3 text-center">
+                    <Target className="h-5 w-5 mx-auto text-primary mb-1" />
+                    <p className="text-lg font-bold">{editionStats.exhibitors.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي العارضين" : "Total Exhibitors"}</p>
+                  </CardContent>
+                </Card>
+              )}
+              {editionStats.area && (
+                <Card className="border-border/40 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent">
+                  <CardContent className="p-3 text-center">
+                    <Sparkles className="h-5 w-5 mx-auto text-primary mb-1" />
+                    <p className="text-lg font-bold">{editionStats.area.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground">{isAr ? "م² مساحة المعرض" : "m² Exhibition Area"}</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
 
           {/* Next Event Highlight */}
           {nextEvent && (
@@ -494,59 +582,6 @@ export default function OrganizerDetail() {
           )}
         </div>
 
-        {/* ═══════ Gallery Section ═══════ */}
-        {orgGallery.length > 0 && (
-          <div className="container max-w-6xl pb-6">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-              <ImageIcon className="h-4 w-4 text-primary" />
-              {isAr ? "معرض الصور" : "Gallery"}
-            </h3>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-              {orgGallery.map((url: string, i: number) => (
-                <img
-                  key={i}
-                  src={url}
-                  alt={`${orgName} gallery ${i + 1}`}
-                  className="h-28 w-44 rounded-2xl object-cover shrink-0 cursor-pointer hover:opacity-90 transition-opacity border border-border/40"
-                  onClick={() => setGalleryOpen(url)}
-                  loading="lazy"
-                  decoding="async"
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ═══════ Key Contacts ═══════ */}
-        {orgKeyContacts.length > 0 && (
-          <div className="container max-w-6xl pb-6">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-              <UserCircle2 className="h-4 w-4 text-primary" />
-              {isAr ? "جهات الاتصال الرئيسية" : "Key Contacts"}
-            </h3>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {orgKeyContacts.map((c: any, i: number) => (
-                <Card key={i} className="rounded-2xl border-border/40">
-                  <CardContent className="p-3 flex items-center gap-3">
-                    <Avatar className="h-10 w-10 rounded-xl">
-                      {c.photo_url && <AvatarImage src={c.photo_url} />}
-                      <AvatarFallback className="rounded-xl bg-muted">{(c.name || "?").charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{c.name}</p>
-                      {c.title && <p className="text-[10px] text-muted-foreground">{c.title}</p>}
-                    </div>
-                    <div className="flex gap-1.5">
-                      {c.email && <a href={`mailto:${c.email}`}><Mail className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" /></a>}
-                      {c.phone && <a href={`tel:${c.phone}`}><Phone className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" /></a>}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* ═══════ Main Content Tabs ═══════ */}
         <div className="container max-w-6xl pb-12 space-y-6">
           {/* Rating Summary */}
@@ -559,6 +594,18 @@ export default function OrganizerDetail() {
                 {isAr ? "المعارض" : "Events"}
                 <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{totalExhibitions}</Badge>
               </TabsTrigger>
+              {upcoming.length > 0 && (
+                <TabsTrigger value="upcoming" className="gap-1.5">
+                  <CalendarDays className="h-3.5 w-3.5" />
+                  {isAr ? "القادمة" : "Upcoming"}
+                  <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{upcoming.length}</Badge>
+                </TabsTrigger>
+              )}
+              <TabsTrigger value="gallery" className="gap-1.5">
+                <ImageIcon className="h-3.5 w-3.5" />
+                {isAr ? "المعرض" : "Gallery"}
+                {uniqueGallery.length > 0 && <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{uniqueGallery.length}</Badge>}
+              </TabsTrigger>
               <TabsTrigger value="profile" className="gap-1.5">
                 <Building2 className="h-3.5 w-3.5" />
                 {isAr ? "الملف التعريفي" : "Profile"}
@@ -567,6 +614,12 @@ export default function OrganizerDetail() {
                 <BarChart3 className="h-3.5 w-3.5" />
                 {isAr ? "الإحصائيات" : "Analytics"}
               </TabsTrigger>
+              {orgKeyContacts.length > 0 && (
+                <TabsTrigger value="team" className="gap-1.5">
+                  <UserCircle2 className="h-3.5 w-3.5" />
+                  {isAr ? "الفريق" : "Team"}
+                </TabsTrigger>
+              )}
               {allSponsors.length > 0 && (
                 <TabsTrigger value="partners" className="gap-1.5">
                   <Award className="h-3.5 w-3.5" />
@@ -584,6 +637,7 @@ export default function OrganizerDetail() {
             </TabsList>
 
             <div {...swipeHandlers} className="touch-pan-y">
+
             {/* ═══════ Exhibitions Tab ═══════ */}
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
               <div className="flex items-center justify-between">
@@ -671,32 +725,18 @@ export default function OrganizerDetail() {
                             <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                               {ex.cover_image_url && (
                                 <div className="relative h-36 overflow-hidden">
-                                  <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async" />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                                  <div className="absolute top-2 end-2">
-                                    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium backdrop-blur-sm ${derived.color}`}>
-                                      {derived.status === "started" ? (
-                                        <span className="relative flex h-2 w-2">
-                                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
-                                          <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
-                                        </span>
-                                      ) : (
-                                        <span className={`h-2 w-2 rounded-full ${derived.dot}`} />
-                                      )}
+                                  <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                                  <div className="absolute bottom-2 start-2 end-2 flex items-center justify-between">
+                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium backdrop-blur-sm ${derived.color}`}>
+                                      <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />
                                       {isAr ? derived.labelAr : derived.label}
                                     </span>
                                   </div>
-                                  {ex.edition_year && (
-                                    <div className="absolute bottom-2 start-2">
-                                      <Badge variant="secondary" className="text-[9px] backdrop-blur-sm bg-background/80">
-                                        {isAr ? "الإصدار" : "Edition"} {ex.edition_year}
-                                      </Badge>
-                                    </div>
-                                  )}
                                 </div>
                               )}
                               <CardContent className="p-3 space-y-2">
-                                <h4 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                                <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
                                   {isAr && ex.title_ar ? ex.title_ar : ex.title}
                                 </h4>
                                 <p className="text-[11px] text-muted-foreground">
@@ -746,6 +786,108 @@ export default function OrganizerDetail() {
                     </div>
                   </div>
                 ))
+              )}
+            </TabsContent>
+
+            {/* ═══════ Upcoming Events Calendar Tab ═══════ */}
+            {upcoming.length > 0 && (
+              <TabsContent value="upcoming" className="mt-4">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <CalendarDays className="h-5 w-5 text-primary" />
+                    {isAr ? "جدول المعارض القادمة" : "Upcoming Events Schedule"}
+                  </h3>
+                  <div className="space-y-3">
+                    {upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()).map((ex: ExhibitionRow) => {
+                      const daysUntil = differenceInDays(new Date(ex.start_date), new Date());
+                      const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
+                      return (
+                        <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group block">
+                          <Card className="hover:shadow-lg transition-all border-border/40 hover:border-primary/30 rounded-2xl overflow-hidden">
+                            <CardContent className="p-0 flex">
+                              {/* Date block */}
+                              <div className="flex flex-col items-center justify-center bg-primary/5 px-5 py-4 min-w-[80px] border-e border-border/20">
+                                <span className="text-2xl font-bold text-primary">{format(new Date(ex.start_date), "dd")}</span>
+                                <span className="text-xs font-medium text-muted-foreground uppercase">{format(new Date(ex.start_date), "MMM")}</span>
+                                <span className="text-[10px] text-muted-foreground">{format(new Date(ex.start_date), "yyyy")}</span>
+                              </div>
+                              <div className="flex-1 p-4 min-w-0">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">
+                                      {isAr && ex.title_ar ? ex.title_ar : ex.title}
+                                    </h4>
+                                    <div className="flex items-center gap-3 mt-1 text-[11px] text-muted-foreground">
+                                      {ex.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ex.city}</span>}
+                                      {ex.venue && <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{isAr && ex.venue_ar ? ex.venue_ar : ex.venue}</span>}
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${derived.color}`}>
+                                        <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />
+                                        {isAr ? derived.labelAr : derived.label}
+                                      </span>
+                                      <Badge variant="outline" className="text-[9px]">
+                                        <Clock className="h-2.5 w-2.5 me-0.5" />
+                                        {daysUntil === 0 ? (isAr ? "اليوم" : "Today") :
+                                         daysUntil === 1 ? (isAr ? "غداً" : "Tomorrow") :
+                                         `${daysUntil} ${isAr ? "يوم" : "days"}`}
+                                      </Badge>
+                                      {ex.registration_url && (
+                                        <Badge variant="secondary" className="text-[9px] gap-0.5 text-primary">
+                                          <Ticket className="h-2.5 w-2.5" />
+                                          {isAr ? "التسجيل مفتوح" : "Register"}
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <ArrowUpRight className="h-4 w-4 text-muted-foreground shrink-0 group-hover:text-primary transition-colors" />
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </TabsContent>
+            )}
+
+            {/* ═══════ Gallery Tab ═══════ */}
+            <TabsContent value="gallery" className="mt-4">
+              {uniqueGallery.length > 0 ? (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4 text-primary" />
+                    {isAr ? "معرض الصور" : "Photo Gallery"}
+                    <Badge variant="outline" className="text-[9px]">{uniqueGallery.length} {isAr ? "صورة" : "photos"}</Badge>
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {uniqueGallery.map((url: string, i: number) => (
+                      <div
+                        key={i}
+                        className="relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group"
+                        onClick={() => { setGalleryOpen(url); setGalleryIndex(i); }}
+                      >
+                        <img
+                          src={url}
+                          alt={`${orgName} ${i + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                          <Eye className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-16">
+                  <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
+                  <p className="text-muted-foreground text-sm">{isAr ? "لا توجد صور متاحة حالياً" : "No photos available yet"}</p>
+                </div>
               )}
             </TabsContent>
 
@@ -935,6 +1077,77 @@ export default function OrganizerDetail() {
               />
             </TabsContent>
 
+            {/* ═══════ Team Tab ═══════ */}
+            {orgKeyContacts.length > 0 && (
+              <TabsContent value="team" className="mt-4">
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <UserCircle2 className="h-5 w-5 text-primary" />
+                    {isAr ? "فريق العمل وجهات الاتصال" : "Team & Key Contacts"}
+                  </h3>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {orgKeyContacts.map((c: any, i: number) => (
+                      <Card key={i} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
+                        <CardContent className="p-5">
+                          <div className="flex items-center gap-4 mb-3">
+                            <Avatar className="h-14 w-14 rounded-2xl">
+                              {c.photo_url && <AvatarImage src={c.photo_url} />}
+                              <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-bold text-lg">{(c.name || "?").charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold text-sm">{c.name}</p>
+                              {c.name_ar && <p className="text-[11px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
+                              {c.title && <p className="text-[11px] text-primary font-medium mt-0.5">{c.title}</p>}
+                              {c.department && <p className="text-[10px] text-muted-foreground">{c.department}</p>}
+                            </div>
+                          </div>
+                          {(c.email || c.phone) && (
+                            <div className="space-y-2 pt-3 border-t border-border/30">
+                              {c.email && (
+                                <a href={`mailto:${c.email}`} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
+                                  <Mail className="h-3.5 w-3.5 shrink-0" />
+                                  <span className="truncate">{c.email}</span>
+                                </a>
+                              )}
+                              {c.phone && (
+                                <a href={`tel:${c.phone}`} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors" dir="ltr">
+                                  <Phone className="h-3.5 w-3.5 shrink-0" />
+                                  <span>{c.phone}</span>
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Contact Form CTA */}
+                  <Card className="rounded-2xl border-primary/20 bg-primary/5">
+                    <CardContent className="p-5 flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0">
+                        <Mail className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm">{isAr ? "تواصل مع المنظم" : "Contact this Organizer"}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          {isAr ? "للاستفسارات والشراكات والمشاركة في المعارض" : "For inquiries, partnerships, and exhibition participation"}
+                        </p>
+                      </div>
+                      {contactEmail && (
+                        <Button size="sm" asChild>
+                          <a href={`mailto:${contactEmail}`}>
+                            <Mail className="h-3.5 w-3.5 me-1.5" />
+                            {isAr ? "إرسال بريد" : "Send Email"}
+                          </a>
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+            )}
+
             {/* ═══════ Partners Tab ═══════ */}
             {allSponsors.length > 0 && (
               <TabsContent value="partners" className="mt-4">
@@ -999,10 +1212,35 @@ export default function OrganizerDetail() {
         </div>
       </main>
 
+      <Footer />
+
       {/* Gallery Lightbox */}
       {galleryOpen && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setGalleryOpen(null)}>
-          <img src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" />
+          <button className="absolute top-4 end-4 text-white/70 hover:text-white z-10" onClick={() => setGalleryOpen(null)}>
+            <X className="h-6 w-6" />
+          </button>
+          {/* Nav buttons */}
+          {uniqueGallery.length > 1 && (
+            <>
+              <button
+                className="absolute start-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/30 rounded-full p-2 z-10"
+                onClick={e => { e.stopPropagation(); const prev = (galleryIndex - 1 + uniqueGallery.length) % uniqueGallery.length; setGalleryIndex(prev); setGalleryOpen(uniqueGallery[prev]); }}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                className="absolute end-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/30 rounded-full p-2 z-10"
+                onClick={e => { e.stopPropagation(); const next = (galleryIndex + 1) % uniqueGallery.length; setGalleryIndex(next); setGalleryOpen(uniqueGallery[next]); }}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
+          <img src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
+          <div className="absolute bottom-4 text-white/60 text-xs">
+            {galleryIndex + 1} / {uniqueGallery.length}
+          </div>
         </div>
       )}
     </div>
