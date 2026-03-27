@@ -247,6 +247,16 @@ export default function Competitions() {
             <FeaturedCompetitionCard competition={featured} language={language} isAr={isAr} />
           )}
 
+          {/* Next Competition Countdown */}
+          {competitions && !search && activeTab === "all" && (
+            <NextCompetitionCountdown competitions={competitions} isAr={isAr} />
+          )}
+
+          {/* Trending Competitions */}
+          {competitions && !search && activeTab === "all" && (
+            <TrendingCompetitions competitions={competitions} isAr={isAr} />
+          )}
+
           {/* Sticky Filters */}
           <div className="sticky top-12 z-30 -mx-4 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-border/20 md:rounded-2xl md:border md:border-border/20 md:mx-0 md:px-4 md:bg-card/60 space-y-2.5">
             <div className="flex gap-2 items-center">
