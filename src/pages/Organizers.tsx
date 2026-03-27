@@ -325,11 +325,16 @@ export default function Organizers() {
                 <>
                   {/* Featured */}
                   {featured.length > 0 && sortBy === "featured" && (
-                    <section>
-                      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                        <Star className="h-5 w-5 text-amber-500" />
-                        {isAr ? "المنظمون المميزون" : "Featured Organizers"}
-                      </h2>
+                     <section>
+                      <div className="mb-5">
+                        <h2 className="text-lg font-bold flex items-center gap-2" dir={isAr ? "rtl" : "ltr"}>
+                          <Star className="h-5 w-5 text-amber-500" />
+                          {isAr ? "المنظمون المميزون" : "Featured Organizers"}
+                        </h2>
+                        {!isAr && (
+                          <p className="text-xs text-muted-foreground/60 mt-0.5 ms-7 font-medium" dir="rtl" style={{ fontFamily: "'Noto Sans Arabic', sans-serif" }}>المنظمون المميزون</p>
+                        )}
+                      </div>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
                           {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
