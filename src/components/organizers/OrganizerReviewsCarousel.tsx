@@ -116,4 +116,4 @@ export const OrganizerReviewsCarousel = memo(forwardRef<HTMLDivElement, Props>(f
       </div>
     </section>
   );
-});
+}));

@@ -172,4 +172,4 @@ export const OrganizerPreviewDrawer = memo(forwardRef<HTMLDivElement, Props>(fun
       </SheetContent>
     </Sheet>
   );
-});
+}));
