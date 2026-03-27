@@ -382,10 +382,12 @@ export default function OrganizerDetail() {
                       {orgRecord?.is_verified && (
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <Badge variant="secondary" className="gap-1 text-[10px]">
-                                <Check className="h-3 w-3 text-primary" />{isAr ? "موثق" : "Verified"}
-                              </Badge>
+                            <TooltipTrigger asChild>
+                              <span>
+                                <Badge variant="secondary" className="gap-1 text-[10px]">
+                                  <Check className="h-3 w-3 text-primary" />{isAr ? "موثق" : "Verified"}
+                                </Badge>
+                              </span>
                             </TooltipTrigger>
                             <TooltipContent>{isAr ? "منظم موثق من المنصة" : "Verified by platform"}</TooltipContent>
                           </Tooltip>
