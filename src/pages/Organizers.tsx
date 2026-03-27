@@ -574,8 +574,12 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
 });
 /* ─── List Item ─── */
 const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
-  const name = isAr && org.name_ar ? org.name_ar : org.name;
+  const primaryName = isAr ? (org.name_ar || org.name) : org.name;
+  const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const cityText = isAr && org.city_ar ? org.city_ar : org.city;
+  const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
+  const locationText = [cityText, countryText].filter(Boolean).join("، ");
   const isCompared = compareIds.includes(org.id);
 
   return (
@@ -596,21 +600,43 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{name}</h3>
+              <h3
+                className="font-bold text-sm group-hover:text-primary transition-colors leading-snug"
+                dir={isAr ? "rtl" : "ltr"}
+                style={isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+              >
+                {primaryName}
+              </h3>
               {featured && (
                 <Badge className="text-[8px] gap-0.5 bg-amber-500 text-white border-0 h-4">
                   <Star className="h-2 w-2 fill-current" />{isAr ? "مميز" : "Featured"}
                 </Badge>
               )}
             </div>
-            {org.city && (
-              <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                <MapPin className="h-3 w-3 shrink-0" />{isAr && org.city_ar ? org.city_ar : org.city}{org.country ? `, ${isAr && org.country_ar ? org.country_ar : org.country}` : ""}
+            {secondaryName && secondaryName !== primaryName && (
+              <p
+                className="text-[11px] text-muted-foreground/60 font-medium leading-snug"
+                dir={isAr ? "ltr" : "rtl"}
+                style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+              >
+                {secondaryName}
               </p>
             )}
-            {desc && <p className="text-[11px] text-muted-foreground/80 mt-1 line-clamp-1">{desc}</p>}
+            {locationText && (
+              <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                {locationText}
+              </p>
+            )}
+            {desc && (
+              <p
+                className="text-[11px] text-muted-foreground/80 mt-1 line-clamp-1"
+                dir={isAr && org.description_ar ? "rtl" : "ltr"}
+              >
+                {desc}
+              </p>
+            )}
 
-            {/* Tags in list view */}
             {org.categories && org.categories.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1.5">
                 {org.categories.slice(0, 2).map((c: string) => (
