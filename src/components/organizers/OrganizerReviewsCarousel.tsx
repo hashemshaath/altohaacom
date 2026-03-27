@@ -14,9 +14,9 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_reviews")
-        .select("id, rating, comment, created_at, user_id, exhibition_id")
+        .select("id, rating, content, created_at, user_id, exhibition_id")
         .gte("rating", 4)
-        .not("comment", "is", null)
+        .not("content", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
       if (error) throw error;
@@ -98,7 +98,7 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
             </div>
 
             <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-3">
-              "{r.comment}"
+              "{r.content}"
             </p>
 
             {(r.exhibition_title || r.organizer_name) && (

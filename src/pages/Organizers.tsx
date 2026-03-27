@@ -25,6 +25,10 @@ import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboa
 import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
 import { OrganizerCompareBar } from "@/components/organizers/OrganizerCompareBar";
 import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
+import { OrganizerSearchAutocomplete } from "@/components/organizers/OrganizerSearchAutocomplete";
+import { OrganizerReviewsCarousel } from "@/components/organizers/OrganizerReviewsCarousel";
+import { useOrganizerFollows } from "@/hooks/useOrganizerFollow";
+import { Heart } from "lucide-react";
 
 type SortKey = "featured" | "name" | "events" | "rating" | "newest";
 type ViewMode = "grid" | "list" | "map";
