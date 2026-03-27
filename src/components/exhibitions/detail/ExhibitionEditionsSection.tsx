@@ -67,15 +67,17 @@ const GrowthBadge = memo(function GrowthBadge({ current, previous }: { current?:
 });
 
 /* ── Stat Pill ── */
-const StatPill = memo(function StatPill({ value, label, growth }: { value: string; label: string; growth?: React.ReactNode }) {
-  return (
-    <div className="flex flex-col items-center gap-0.5 rounded-xl bg-muted/50 px-3 py-2 min-w-[70px]">
-      <span className="text-sm font-bold tabular-nums">{value}</span>
-      <span className="text-[9px] text-muted-foreground leading-none">{label}</span>
-      {growth}
-    </div>
-  );
-});
+const StatPill = forwardRef<HTMLDivElement, { value: string; label: string; growth?: React.ReactNode }>(
+  function StatPill({ value, label, growth }, ref) {
+    return (
+      <div ref={ref} className="flex flex-col items-center gap-0.5 rounded-xl bg-muted/50 px-3 py-2 min-w-[70px]">
+        <span className="text-sm font-bold tabular-nums">{value}</span>
+        <span className="text-[9px] text-muted-foreground leading-none">{label}</span>
+        {growth}
+      </div>
+    );
+  }
+);
 
 /* ── Timeline Dot ── */
 function TimelineDot({ year, isCurrent }: { year: number | null; isCurrent: boolean }) {
