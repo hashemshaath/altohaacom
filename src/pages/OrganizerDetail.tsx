@@ -25,7 +25,7 @@ import {
   Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight, Heart,
   CalendarDays, Ticket, GraduationCap, Swords, Mic2, BookOpen,
   Copy, Check, Image as ImageIcon, UserCircle2, ChevronLeft,
-  CircleDot, AlertCircle,
+  CircleDot, AlertCircle, X,
 } from "lucide-react";
 import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from "date-fns";
 import { ar } from "date-fns/locale";
