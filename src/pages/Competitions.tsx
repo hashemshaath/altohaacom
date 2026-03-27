@@ -28,6 +28,9 @@ import {
   type CompetitionWithRegs,
 } from "@/components/competitions/CompetitionCard";
 import { CompetitionEditionsSection } from "@/components/competitions/CompetitionEditionsSection";
+import { TrendingCompetitions } from "@/components/competitions/TrendingCompetitions";
+import { CountryDiscovery } from "@/components/competitions/CountryDiscovery";
+import { NextCompetitionCountdown } from "@/components/competitions/NextCompetitionCountdown";
 
 const TAB_FILTERS = ["all", "upcoming", "active", "past"] as const;
 type TabFilter = typeof TAB_FILTERS[number];
