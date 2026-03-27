@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,7 +8,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({ isAr }: Props) {
+export const OrganizerReviewsCarousel = memo(forwardRef<HTMLDivElement, Props>(function OrganizerReviewsCarousel({ isAr }, _ref) {
   const { data: reviews = [] } = useQuery({
     queryKey: ["organizer-page-reviews"],
     queryFn: async () => {
