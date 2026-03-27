@@ -27,6 +27,7 @@ import {
   getTabBucket,
   type CompetitionWithRegs,
 } from "@/components/competitions/CompetitionCard";
+import { CompetitionEditionsSection } from "@/components/competitions/CompetitionEditionsSection";
 
 const TAB_FILTERS = ["all", "upcoming", "active", "past"] as const;
 type TabFilter = typeof TAB_FILTERS[number];
