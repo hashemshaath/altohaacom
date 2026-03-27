@@ -67,6 +67,7 @@ const ExhibitionSponsorshipHub = lazy(() => import("@/components/exhibitions/det
 const ExhibitionAttendeeSchedule = lazy(() => import("@/components/exhibitions/detail/ExhibitionAttendeeSchedule"));
 const OrganizerAdvancedReports = lazy(() => import("@/components/exhibitions/detail/OrganizerAdvancedReports"));
 const RelatedExhibitions = lazy(() => import("@/components/exhibitions/detail/RelatedExhibitions").then(m => ({ default: m.RelatedExhibitions })));
+const ExhibitionEditionsTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionEditionsTab").then(m => ({ default: m.ExhibitionEditionsTab })));
 
 const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
 
