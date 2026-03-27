@@ -108,7 +108,7 @@ export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organiz
                 <p className="text-sm font-bold text-foreground">{getValue(org)}</p>
                 <p className="text-[9px] text-muted-foreground">{getLabel()}</p>
               </div>
-            </button>
+            </Link>
           );
         })}
       </div>

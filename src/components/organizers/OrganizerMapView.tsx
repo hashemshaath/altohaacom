@@ -1,4 +1,5 @@
 import { memo, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import { CheckCircle2, Globe, MapPin, ChevronDown, ChevronUp, Star, Landmark } f
 interface Props {
   organizers: any[];
   isAr: boolean;
-  onPreview: (org: any) => void;
 }
 
 // Map country codes to flag emojis
@@ -18,7 +18,7 @@ function countryFlag(code: string): string {
   );
 }
 
-export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isAr, onPreview }: Props) {
+export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isAr }: Props) {
   const [expandedCountry, setExpandedCountry] = useState<string | null>(null);
 
   const grouped = useMemo(() => {
