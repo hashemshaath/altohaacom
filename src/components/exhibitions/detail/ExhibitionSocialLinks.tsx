@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Globe, ExternalLink } from "lucide-react";
@@ -24,7 +24,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionSocialLinks = memo(function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }: Props) {
+export const ExhibitionSocialLinks = forwardRef<HTMLDivElement, Props>(function ExhibitionSocialLinks({ socialLinks, websiteUrl, isAr }, ref) {
   if (!socialLinks || typeof socialLinks !== "object" || Array.isArray(socialLinks)) {
     if (!websiteUrl) return null;
   }
@@ -42,7 +42,7 @@ export const ExhibitionSocialLinks = memo(function ExhibitionSocialLinks({ socia
   if (links.length === 0) return null;
 
   return (
-    <Card className="overflow-hidden">
+    <Card ref={ref} className="overflow-hidden">
       <div className="border-b bg-muted/30 px-4 py-3">
         <h3 className="flex items-center gap-2 text-sm font-semibold">
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
