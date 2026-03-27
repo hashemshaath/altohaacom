@@ -43,6 +43,7 @@ export default function Organizers() {
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [previewOrg, setPreviewOrg] = useState<any | null>(null);
+  const [compareList, setCompareList] = useState<any[]>([]);
   const { followedIds, toggleFollow } = useOrganizerFollows();
 
   const toggleCompare = useCallback((org: any) => {
@@ -189,20 +190,13 @@ export default function Organizers() {
         <section className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
           <div className="container max-w-6xl py-3">
             <div className="flex items-center gap-2">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={isAr ? "ابحث عن منظم..." : "Search organizers..."}
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="ps-10 h-10 rounded-xl"
-                />
-                {search && (
-                  <button onClick={() => setSearch("")} className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
+              <OrganizerSearchAutocomplete
+                organizers={organizers || []}
+                search={search}
+                onSearchChange={setSearch}
+                isAr={isAr}
+                onPreview={setPreviewOrg}
+              />
 
               <Button
                 variant={showFilters ? "secondary" : "outline"}
