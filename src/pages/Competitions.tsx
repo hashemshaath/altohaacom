@@ -142,14 +142,35 @@ export default function Competitions() {
       title={isAr ? "مسابقات الطهي" : "Culinary Competitions"}
       description={isAr ? "تصفح وانضم لمسابقات الطهي الاحترافية حول العالم على منصة الطهاة" : "Browse and join professional culinary competitions worldwide on Altoha"}
       seoProps={{
-        keywords: isAr ? "مسابقات طهي, بطولات طبخ, مسابقات شيف, تحكيم طهي, جوائز طهي" : "culinary competitions, cooking championships, chef contests, culinary judging, cooking awards",
+        keywords: isAr
+          ? "مسابقات طهي, بطولات طبخ, مسابقات شيف, تحكيم طهي, جوائز طهي, إصدارات سابقة, نتائج مسابقات"
+          : "culinary competitions, cooking championships, chef contests, culinary judging, cooking awards, past editions, competition results",
         jsonLd: {
           "@context": "https://schema.org",
           "@type": "CollectionPage",
-          name: isAr ? "مسابقات الطهي" : "Culinary Competitions",
-          description: "Browse culinary competitions on Altoha",
+          name: isAr ? "مسابقات الطهي - جميع الإصدارات" : "Culinary Competitions - All Editions",
+          description: isAr
+            ? "تصفح جميع مسابقات الطهي الاحترافية وإصداراتها السابقة ونتائجها على منصة الطهاة"
+            : "Browse all professional culinary competitions, past editions, and results on Altoha",
           url: `${window.location.origin}/competitions`,
           isPartOf: { "@type": "WebSite", name: "Altoha", url: window.location.origin },
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: competitions?.length || 0,
+            itemListElement: (competitions || []).slice(0, 10).map((c, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              item: {
+                "@type": "Event",
+                name: c.title,
+                startDate: c.competition_start,
+                endDate: c.competition_end,
+                url: `${window.location.origin}/competitions/${c.id}`,
+                ...(c.city && { location: { "@type": "Place", name: c.city, address: { "@type": "PostalAddress", addressLocality: c.city, addressCountry: c.country_code } } }),
+                ...(c.is_virtual && { eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode" }),
+              },
+            })),
+          },
         },
       }}
       container={false}
