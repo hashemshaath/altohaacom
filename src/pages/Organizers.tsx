@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -16,13 +16,18 @@ import {
 import {
   Building2, Search, MapPin, Globe, CheckCircle2, Star, Landmark,
   ArrowUpRight, Mail, Phone, LayoutGrid, List, Calendar, Eye,
-  SlidersHorizontal, TrendingUp, Award, X,
+  SlidersHorizontal, TrendingUp, Award, X, Scale, Map,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Footer } from "@/components/Footer";
+import { OrganizerLeaderboard } from "@/components/organizers/OrganizerLeaderboard";
+import { OrganizerPreviewDrawer } from "@/components/organizers/OrganizerPreviewDrawer";
+import { OrganizerCompareBar } from "@/components/organizers/OrganizerCompareBar";
+import { OrganizerMapView } from "@/components/organizers/OrganizerMapView";
 
 type SortKey = "featured" | "name" | "events" | "rating" | "newest";
+type ViewMode = "grid" | "list" | "map";
 
 export default function Organizers() {
   const { language } = useLanguage();
@@ -30,9 +35,20 @@ export default function Organizers() {
   const [search, setSearch] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
+  const [previewOrg, setPreviewOrg] = useState<any | null>(null);
+  const [compareList, setCompareList] = useState<any[]>([]);
+
+  const toggleCompare = useCallback((org: any) => {
+    setCompareList(prev => {
+      const exists = prev.some(o => o.id === org.id);
+      if (exists) return prev.filter(o => o.id !== org.id);
+      if (prev.length >= 3) return prev; // max 3
+      return [...prev, org];
+    });
+  }, []);
 
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["public-organizers"],
@@ -220,6 +236,9 @@ export default function Organizers() {
                 <Button variant={viewMode === "list" ? "default" : "ghost"} size="icon" className="h-9 w-9 rounded-xl" onClick={() => setViewMode("list")}>
                   <List className="h-3.5 w-3.5" />
                 </Button>
+                <Button variant={viewMode === "map" ? "default" : "ghost"} size="icon" className="h-9 w-9 rounded-xl" onClick={() => setViewMode("map")}>
+                  <Map className="h-3.5 w-3.5" />
+                </Button>
               </div>
             </div>
 
@@ -273,69 +292,109 @@ export default function Organizers() {
             </div>
           ) : (
             <>
-              {/* Featured */}
-              {featured.length > 0 && sortBy === "featured" && (
-                <section>
-                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                    <Star className="h-5 w-5 text-amber-500" />
-                    {isAr ? "المنظمون المميزون" : "Featured Organizers"}
-                  </h2>
-                  {viewMode === "grid" ? (
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured />)}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured />)}
-                    </div>
-                  )}
-                </section>
+              {/* Leaderboard - show when no active filters */}
+              {!hasActiveFilters && viewMode !== "map" && (organizers || []).length >= 3 && (
+                <OrganizerLeaderboard
+                  organizers={organizers || []}
+                  isAr={isAr}
+                  onPreview={setPreviewOrg}
+                />
               )}
 
-              {/* Regular / All when not sorting by featured */}
-              {(() => {
-                const items = sortBy === "featured" ? regular : filtered;
-                if (items.length === 0 && featured.length === 0) {
-                  return (
-                    <div className="text-center py-20">
-                      <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-muted/50 mb-4">
-                        <Building2 className="h-8 w-8 text-muted-foreground/40" />
-                      </div>
-                      <p className="text-muted-foreground font-medium">{isAr ? "لا توجد نتائج" : "No organizers found"}</p>
-                      {hasActiveFilters && (
-                        <Button variant="link" onClick={clearFilters} className="mt-2 text-sm">
-                          {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
-                        </Button>
+              {/* Map View */}
+              {viewMode === "map" ? (
+                <OrganizerMapView
+                  organizers={filtered}
+                  isAr={isAr}
+                  onPreview={setPreviewOrg}
+                />
+              ) : (
+                <>
+                  {/* Featured */}
+                  {featured.length > 0 && sortBy === "featured" && (
+                    <section>
+                      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                        <Star className="h-5 w-5 text-amber-500" />
+                        {isAr ? "المنظمون المميزون" : "Featured Organizers"}
+                      </h2>
+                      {viewMode === "grid" ? (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                        </div>
                       )}
-                    </div>
-                  );
-                }
-                return viewMode === "grid" ? (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} />)}
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} />)}
-                  </div>
-                );
-              })()}
+                    </section>
+                  )}
+
+                  {/* Regular / All */}
+                  {(() => {
+                    const items = sortBy === "featured" ? regular : filtered;
+                    if (items.length === 0 && featured.length === 0) {
+                      return (
+                        <div className="text-center py-20">
+                          <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-muted/50 mb-4">
+                            <Building2 className="h-8 w-8 text-muted-foreground/40" />
+                          </div>
+                          <p className="text-muted-foreground font-medium">{isAr ? "لا توجد نتائج" : "No organizers found"}</p>
+                          {hasActiveFilters && (
+                            <Button variant="link" onClick={clearFilters} className="mt-2 text-sm">
+                              {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
+                            </Button>
+                          )}
+                        </div>
+                      );
+                    }
+                    return viewMode === "grid" ? (
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} onPreview={setPreviewOrg} onCompare={toggleCompare} compareIds={compareList.map(c => c.id)} />)}
+                      </div>
+                    );
+                  })()}
+                </>
+              )}
             </>
           )}
         </div>
       </main>
+
+      {/* Preview Drawer */}
+      <OrganizerPreviewDrawer
+        org={previewOrg}
+        open={!!previewOrg}
+        onOpenChange={open => !open && setPreviewOrg(null)}
+        isAr={isAr}
+        onCompare={toggleCompare}
+        isInCompare={previewOrg ? compareList.some(c => c.id === previewOrg.id) : false}
+      />
+
+      {/* Compare Bar */}
+      <OrganizerCompareBar
+        items={compareList}
+        onRemove={id => setCompareList(prev => prev.filter(o => o.id !== id))}
+        onClear={() => setCompareList([])}
+        isAr={isAr}
+      />
+
       <Footer />
     </div>
   );
 }
 
 /* ─── Grid Card ─── */
-const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured }: { org: any; isAr: boolean; featured?: boolean }) {
+const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const isCompared = compareIds.includes(org.id);
 
   return (
-    <Link to={`/organizers/${org.slug}`} className="group block">
+    <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
       <Card className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         {/* Cover */}
         <div className="h-32 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
@@ -447,19 +506,31 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured }: { org
               )}
             </div>
           )}
+
+          {/* Compare button */}
+          {onCompare && (
+            <button
+              onClick={e => { e.stopPropagation(); onCompare(org); }}
+              className={`mt-2 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+            >
+              <Scale className="h-3 w-3" />
+              {isCompared ? (isAr ? "تمت الإضافة" : "Added") : (isAr ? "قارن" : "Compare")}
+            </button>
+          )}
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 });
 
 /* ─── List Item ─── */
-const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured }: { org: any; isAr: boolean; featured?: boolean }) {
+const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const isCompared = compareIds.includes(org.id);
 
   return (
-    <Link to={`/organizers/${org.slug}`} className="group block">
+    <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
       <Card className={`hover:shadow-md transition-all duration-300 border-border/40 hover:border-primary/30 rounded-2xl active:scale-[0.99] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         <CardContent className="p-4 flex items-center gap-4">
           <div className="relative shrink-0">
@@ -521,9 +592,18 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured 
             )}
           </div>
 
+          {onCompare && (
+            <button
+              onClick={e => { e.stopPropagation(); onCompare(org); }}
+              className={`shrink-0 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+            >
+              <Scale className="h-3 w-3" />
+            </button>
+          )}
+
           <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 shrink-0 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
         </CardContent>
       </Card>
-    </Link>
+    </div>
   );
 });
