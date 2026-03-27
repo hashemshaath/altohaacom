@@ -391,7 +391,7 @@ export default function Organizers() {
 }
 
 /* ─── Grid Card ─── */
-const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
+const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
   const isCompared = compareIds.includes(org.id);
