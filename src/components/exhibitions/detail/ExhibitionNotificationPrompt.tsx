@@ -88,4 +88,4 @@ export const ExhibitionNotificationPrompt = memo(forwardRef<HTMLDivElement, Prop
       </CardContent>
     </Card>
   );
-});
+}));

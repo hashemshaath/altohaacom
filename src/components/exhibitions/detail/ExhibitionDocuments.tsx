@@ -64,4 +64,4 @@ export const ExhibitionDocuments = memo(forwardRef<HTMLDivElement, Props>(functi
       </CardContent>
     </Card>
   );
-});
+}));
