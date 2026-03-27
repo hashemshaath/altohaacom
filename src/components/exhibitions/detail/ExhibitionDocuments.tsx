@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, FileImage, FileSpreadsheet, File } from "lucide-react";
