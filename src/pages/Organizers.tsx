@@ -571,6 +571,7 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
   const cityText = isAr && org.city_ar ? org.city_ar : org.city;
   const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
   const locationText = [cityText, countryText].filter(Boolean).join("، ");
+  const flag = countryFlag(org.country_code);
   const isCompared = compareIds.includes(org.id);
 
   return (
@@ -591,6 +592,7 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
+              {flag && <span className="text-sm leading-none">{flag}</span>}
               <h3
                 className="font-bold text-sm group-hover:text-primary transition-colors leading-snug"
                 dir={isAr ? "rtl" : "ltr"}
@@ -606,7 +608,7 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
             </div>
             {secondaryName && secondaryName !== primaryName && (
               <p
-                className="text-[11px] text-muted-foreground/60 font-medium leading-snug"
+                className="text-[11px] text-muted-foreground/50 font-medium leading-snug ms-6"
                 dir={isAr ? "ltr" : "rtl"}
                 style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
               >
@@ -621,39 +623,24 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
             )}
             {desc && (
               <p
-                className="text-[11px] text-muted-foreground/80 mt-1 line-clamp-1"
+                className="text-[11px] text-muted-foreground/70 mt-1 line-clamp-1"
                 dir={isAr && org.description_ar ? "rtl" : "ltr"}
               >
                 {desc}
               </p>
             )}
-
-            {org.categories && org.categories.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {org.categories.slice(0, 2).map((c: string) => (
-                  <Badge key={c} variant="secondary" className="text-[8px] rounded-full px-2 py-0 h-4 font-normal">{c}</Badge>
-                ))}
-              </div>
-            )}
           </div>
 
-          <div className="hidden sm:flex items-center gap-5 shrink-0">
-            {org.total_exhibitions > 0 && (
-              <div className="text-center">
-                <p className="text-sm font-bold text-foreground">{org.total_exhibitions}</p>
-                <p className="text-[9px] text-muted-foreground">{isAr ? "فعالية" : "Events"}</p>
-              </div>
-            )}
+          {/* Stats */}
+          <div className="hidden sm:flex items-center gap-4 shrink-0">
+            <div className="text-center px-2">
+              <p className="text-sm font-bold text-foreground">{org.total_exhibitions || 0}</p>
+              <p className="text-[9px] text-muted-foreground">{isAr ? "معرض" : "Events"}</p>
+            </div>
             {org.average_rating > 0 && (
-              <div className="text-center">
+              <div className="text-center px-2">
                 <p className="text-sm font-bold flex items-center justify-center gap-0.5"><Star className="h-3 w-3 text-amber-500 fill-amber-500" />{org.average_rating.toFixed(1)}</p>
                 <p className="text-[9px] text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p>
-              </div>
-            )}
-            {(org.total_views || 0) > 0 && (
-              <div className="text-center">
-                <p className="text-sm font-bold text-foreground">{(org.total_views || 0).toLocaleString()}</p>
-                <p className="text-[9px] text-muted-foreground">{isAr ? "مشاهدة" : "Views"}</p>
               </div>
             )}
           </div>
@@ -661,22 +648,13 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
           {onToggleFollow && (
             <button
               onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
-              className={`shrink-0 text-[10px] rounded-lg p-1 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"}`}
+              className={`shrink-0 rounded-lg p-1.5 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500"}`}
             >
-              <Heart className={`h-3.5 w-3.5 ${isFollowed ? "fill-current" : ""}`} />
+              <Heart className={`h-4 w-4 ${isFollowed ? "fill-current" : ""}`} />
             </button>
           )}
 
-          {onCompare && (
-            <button
-              onClick={e => { e.stopPropagation(); onCompare(org); }}
-              className={`shrink-0 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
-            >
-              <Scale className="h-3 w-3" />
-            </button>
-          )}
-
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 shrink-0 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground/40 shrink-0 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
         </CardContent>
       </Card>
     </div>
