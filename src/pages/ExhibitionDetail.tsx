@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
   Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem,
+  History,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
@@ -449,6 +450,14 @@ export default function ExhibitionDetail() {
                   />
                 </Suspense>
               </TabsContent>
+
+              {(exhibition as any).series_id && (
+                <TabsContent value="editions" className="mt-6">
+                  <Suspense fallback={<TabFallback />}>
+                    <ExhibitionEditionsTab seriesId={(exhibition as any).series_id} currentExhibitionId={exhibition.id} isAr={isAr} />
+                  </Suspense>
+                </TabsContent>
+              )}
 
               {hasWinningDishes && (
                 <TabsContent value="winning-dishes" className="mt-6">
