@@ -28,6 +28,9 @@ import {
   type CompetitionWithRegs,
 } from "@/components/competitions/CompetitionCard";
 import { CompetitionEditionsSection } from "@/components/competitions/CompetitionEditionsSection";
+import { TrendingCompetitions } from "@/components/competitions/TrendingCompetitions";
+import { CountryDiscovery } from "@/components/competitions/CountryDiscovery";
+import { NextCompetitionCountdown } from "@/components/competitions/NextCompetitionCountdown";
 
 const TAB_FILTERS = ["all", "upcoming", "active", "past"] as const;
 type TabFilter = typeof TAB_FILTERS[number];
@@ -244,6 +247,16 @@ export default function Competitions() {
             <FeaturedCompetitionCard competition={featured} language={language} isAr={isAr} />
           )}
 
+          {/* Next Competition Countdown */}
+          {competitions && !search && activeTab === "all" && (
+            <NextCompetitionCountdown competitions={competitions} isAr={isAr} />
+          )}
+
+          {/* Trending Competitions */}
+          {competitions && !search && activeTab === "all" && (
+            <TrendingCompetitions competitions={competitions} isAr={isAr} />
+          )}
+
           {/* Sticky Filters */}
           <div className="sticky top-12 z-30 -mx-4 px-4 py-2.5 bg-background/90 backdrop-blur-xl border-b border-border/20 md:rounded-2xl md:border md:border-border/20 md:mx-0 md:px-4 md:bg-card/60 space-y-2.5">
             <div className="flex gap-2 items-center">
@@ -409,6 +422,16 @@ export default function Competitions() {
                 );
               })}
             </div>
+          )}
+
+          {/* Discover by Country */}
+          {competitions && competitions.length > 0 && !search && activeTab === "all" && (
+            <CountryDiscovery
+              competitions={competitions}
+              isAr={isAr}
+              onCountrySelect={setCountryFilter}
+              allCountries={allCountries}
+            />
           )}
 
           {/* Previous Editions Section */}
