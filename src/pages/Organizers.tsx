@@ -402,29 +402,27 @@ export default function Organizers() {
 
 /* ─── Grid Card ─── */
 const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
-  const name = isAr && org.name_ar ? org.name_ar : org.name;
+  const primaryName = isAr ? (org.name_ar || org.name) : org.name;
+  const secondaryName = isAr ? org.name : org.name_ar;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
+  const cityText = isAr && org.city_ar ? org.city_ar : org.city;
+  const countryText = org.country ? (isAr && org.country_ar ? org.country_ar : org.country) : "";
+  const locationText = [cityText, countryText].filter(Boolean).join("، ");
   const isCompared = compareIds.includes(org.id);
 
   return (
     <div className="group block cursor-pointer" onClick={() => onPreview?.(org)}>
-      <Card className={`overflow-hidden hover:shadow-lg transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
+      <Card className={`overflow-hidden hover:shadow-xl transition-all duration-300 border-border/40 hover:border-primary/30 h-full rounded-2xl active:scale-[0.98] ${featured ? "ring-1 ring-amber-500/20 border-amber-500/15" : ""}`}>
         {/* Cover */}
-        <div className="h-32 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
+        <div className="h-36 overflow-hidden relative bg-gradient-to-br from-primary/10 to-primary/5">
           {org.cover_image_url ? (
-            <img
-              src={org.cover_image_url}
-              alt={name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-              decoding="async"
-            />
+            <img src={org.cover_image_url} alt={primaryName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
               <Building2 className="h-10 w-10 text-primary/15" />
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
           {featured && (
             <div className="absolute top-2.5 end-2.5">
               <Badge className="text-[9px] gap-1 bg-amber-500 text-white border-0 shadow-sm">
@@ -447,18 +445,46 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
               {org.logo_url && <AvatarImage src={org.logo_url} />}
               <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-bold text-lg">{org.name?.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0 pt-5">
-              <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{name}</h3>
-              {org.city && (
-                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                  <MapPin className="h-3 w-3 shrink-0" /><span className="truncate">{isAr && org.city_ar ? org.city_ar : org.city}{org.country ? `, ${isAr && org.country_ar ? org.country_ar : org.country}` : ""}</span>
+            <div className="flex-1 min-w-0 pt-4">
+              {/* Primary title - full display, no truncation */}
+              <h3
+                className="font-bold text-sm leading-snug group-hover:text-primary transition-colors"
+                dir={isAr ? "rtl" : "ltr"}
+                style={isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+              >
+                {primaryName}
+              </h3>
+              {/* Secondary title (other language) */}
+              {secondaryName && secondaryName !== primaryName && (
+                <p
+                  className="text-[11px] text-muted-foreground/60 font-medium mt-0.5 leading-snug"
+                  dir={isAr ? "ltr" : "rtl"}
+                  style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+                >
+                  {secondaryName}
+                </p>
+              )}
+              {/* Location */}
+              {locationText && (
+                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-1">
+                  <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
+                  <span>{locationText}</span>
                 </p>
               )}
             </div>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground/50 shrink-0 mt-5 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground/40 shrink-0 mt-5 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
           </div>
 
-          {desc && <p className="text-[11px] text-muted-foreground/80 mt-3 line-clamp-2 leading-relaxed">{desc}</p>}
+          {/* Description */}
+          {desc && (
+            <p
+              className="text-[11px] text-muted-foreground/80 mt-3 line-clamp-2 leading-relaxed"
+              dir={isAr && org.description_ar ? "rtl" : "ltr"}
+              style={isAr && org.description_ar ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
+            >
+              {desc}
+            </p>
+          )}
 
           {/* Stats */}
           <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/30">
@@ -546,7 +572,6 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
     </div>
   );
 });
-
 /* ─── List Item ─── */
 const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
