@@ -35,9 +35,20 @@ export default function Organizers() {
   const [search, setSearch] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [sortBy, setSortBy] = useState<SortKey>("featured");
   const [showFilters, setShowFilters] = useState(false);
+  const [previewOrg, setPreviewOrg] = useState<any | null>(null);
+  const [compareList, setCompareList] = useState<any[]>([]);
+
+  const toggleCompare = useCallback((org: any) => {
+    setCompareList(prev => {
+      const exists = prev.some(o => o.id === org.id);
+      if (exists) return prev.filter(o => o.id !== org.id);
+      if (prev.length >= 3) return prev; // max 3
+      return [...prev, org];
+    });
+  }, []);
 
   const { data: organizers, isLoading } = useQuery({
     queryKey: ["public-organizers"],
