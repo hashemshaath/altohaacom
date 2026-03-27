@@ -92,7 +92,7 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
                     )}
                   </div>
                 </div>
-              </button>
+              </Link>
             );
           })}
           <div className="px-3 py-2 border-t border-border/30 text-[10px] text-muted-foreground text-center">
