@@ -236,6 +236,9 @@ export default function Organizers() {
                 <Button variant={viewMode === "list" ? "default" : "ghost"} size="icon" className="h-9 w-9 rounded-xl" onClick={() => setViewMode("list")}>
                   <List className="h-3.5 w-3.5" />
                 </Button>
+                <Button variant={viewMode === "map" ? "default" : "ghost"} size="icon" className="h-9 w-9 rounded-xl" onClick={() => setViewMode("map")}>
+                  <Map className="h-3.5 w-3.5" />
+                </Button>
               </div>
             </div>
 
