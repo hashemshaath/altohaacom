@@ -424,6 +424,16 @@ export default function Competitions() {
             </div>
           )}
 
+          {/* Discover by Country */}
+          {competitions && competitions.length > 0 && !search && activeTab === "all" && (
+            <CountryDiscovery
+              competitions={competitions}
+              isAr={isAr}
+              onCountrySelect={setCountryFilter}
+              allCountries={allCountries}
+            />
+          )}
+
           {/* Previous Editions Section */}
           {competitions && competitions.length > 0 && !search && activeTab === "all" && (
             <CompetitionEditionsSection competitions={competitions} isAr={isAr} />
