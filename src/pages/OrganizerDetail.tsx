@@ -72,12 +72,36 @@ export default function OrganizerDetail() {
 
       let exhibitions: any[] = [];
       if (orgRecord) {
-        const { data: exByOrgId } = await supabase
-          .from("exhibitions")
-          .select(EX_FIELDS)
-          .or(`organizer_id.eq.${orgRecord.id},organizer_name.eq.${orgRecord.name}`)
-          .order("start_date", { ascending: false });
-        exhibitions = exByOrgId || [];
+        // Fetch via direct organizer_id, organizer_name match, AND junction table
+        const [directRes, junctionRes] = await Promise.all([
+          supabase
+            .from("exhibitions")
+            .select(EX_FIELDS)
+            .or(`organizer_id.eq.${orgRecord.id},organizer_name.ilike.%${orgRecord.name}%`)
+            .order("start_date", { ascending: false }),
+          supabase
+            .from("exhibition_organizers")
+            .select("exhibition_id")
+            .eq("organizer_id", orgRecord.id),
+        ]);
+
+        const directExhibitions = directRes.data || [];
+        const junctionIds = (junctionRes.data || []).map((j: any) => j.exhibition_id);
+        const directIds = new Set(directExhibitions.map((e: any) => e.id));
+        const missingIds = junctionIds.filter((id: string) => !directIds.has(id));
+
+        if (missingIds.length > 0) {
+          const { data: extraExhibitions } = await supabase
+            .from("exhibitions")
+            .select(EX_FIELDS)
+            .in("id", missingIds)
+            .order("start_date", { ascending: false });
+          exhibitions = [...directExhibitions, ...(extraExhibitions || [])];
+        } else {
+          exhibitions = directExhibitions;
+        }
+        // Sort by start_date descending
+        exhibitions.sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
       } else {
         const { data: exByName } = await supabase
           .from("exhibitions")
