@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ interface Props {
   isFollowing: boolean;
 }
 
-export const ExhibitionNotificationPrompt = memo(function ExhibitionNotificationPrompt({ exhibitionId, exhibitionName, isAr, isFollowing }: Props) {
+export const ExhibitionNotificationPrompt = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionNotificationPrompt({ exhibitionId, exhibitionName, isAr, isFollowing }, ref) {
   const { user } = useAuth();
   const { isSubscribed, isSupported, isLoading, subscribe, checkSubscription } = usePushNotifications();
   const [dismissed, setDismissed] = useState(false);
@@ -88,4 +88,4 @@ export const ExhibitionNotificationPrompt = memo(function ExhibitionNotification
       </CardContent>
     </Card>
   );
-});
+}));
