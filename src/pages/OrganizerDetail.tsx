@@ -61,7 +61,7 @@ export default function OrganizerDetail() {
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-detail", decodedName],
     queryFn: async () => {
-      const ORG_FIELDS = "id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, email, phone, website, gallery_urls, key_contacts, total_views, is_verified, organizer_number, social_links, country, country_ar, country_code, city, city_ar, founded_year, status";
+      const ORG_FIELDS = "id, name, name_ar, slug, logo_url, cover_image_url, description, description_ar, email, phone, website, gallery_urls, key_contacts, total_views, is_verified, organizer_number, social_links, country, country_ar, country_code, city, city_ar, founded_year, status, follower_count, average_rating, total_exhibitions";
       const EX_FIELDS = "id, title, title_ar, slug, description, description_ar, type, status, start_date, end_date, venue, venue_ar, city, country, cover_image_url, logo_url, organizer_name, organizer_name_ar, organizer_logo_url, organizer_email, organizer_phone, organizer_website, view_count, tags, targeted_sectors, categories, includes_competitions, includes_training, includes_seminars, social_links, edition_stats, sponsors_info, is_virtual, is_featured, registration_url, website_url, edition_year, gallery_urls";
 
       const { data: orgRecord } = await supabase
