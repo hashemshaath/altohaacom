@@ -510,16 +510,27 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
             </div>
           )}
 
-          {/* Compare button */}
-          {onCompare && (
-            <button
-              onClick={e => { e.stopPropagation(); onCompare(org); }}
-              className={`mt-2 flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
-            >
-              <Scale className="h-3 w-3" />
-              {isCompared ? (isAr ? "تمت الإضافة" : "Added") : (isAr ? "قارن" : "Compare")}
-            </button>
-          )}
+          {/* Actions row */}
+          <div className="flex items-center gap-1.5 mt-2">
+            {onCompare && (
+              <button
+                onClick={e => { e.stopPropagation(); onCompare(org); }}
+                className={`flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ${isCompared ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/50"}`}
+              >
+                <Scale className="h-3 w-3" />
+                {isCompared ? (isAr ? "تمت الإضافة" : "Added") : (isAr ? "قارن" : "Compare")}
+              </button>
+            )}
+            {onToggleFollow && (
+              <button
+                onClick={e => { e.stopPropagation(); onToggleFollow(org.id); }}
+                className={`flex items-center gap-1 text-[10px] font-medium rounded-lg px-2 py-1 transition-colors ms-auto ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"}`}
+              >
+                <Heart className={`h-3 w-3 ${isFollowed ? "fill-current" : ""}`} />
+                {isFollowed ? (isAr ? "متابَع" : "Following") : (isAr ? "تابع" : "Follow")}
+              </button>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -527,7 +538,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, onPrevi
 });
 
 /* ─── List Item ─── */
-const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [] }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[] }) {
+const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured, onPreview, onCompare, compareIds = [], isFollowed, onToggleFollow }: { org: any; isAr: boolean; featured?: boolean; onPreview?: (org: any) => void; onCompare?: (org: any) => void; compareIds?: string[]; isFollowed?: boolean; onToggleFollow?: (id: string) => void }) {
   const name = isAr && org.name_ar ? org.name_ar : org.name;
   const desc = isAr && org.description_ar ? org.description_ar : org.description;
   const isCompared = compareIds.includes(org.id);
