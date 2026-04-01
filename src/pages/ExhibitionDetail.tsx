@@ -55,6 +55,7 @@ const ExhibitionSocialWall = lazy(() => import("@/components/exhibitions/detail/
 const ExhibitionAnalyticsDashboardDetail = lazy(() => import("@/components/exhibitions/detail/ExhibitionAnalyticsDashboard").then(m => ({ default: m.ExhibitionAnalyticsDashboard })));
 const ExhibitionIndoorMap = lazy(() => import("@/components/exhibitions/detail/ExhibitionIndoorMap").then(m => ({ default: m.ExhibitionIndoorMap })));
 const ExhibitionAuctionsOffers = lazy(() => import("@/components/exhibitions/detail/ExhibitionAuctionsOffers").then(m => ({ default: m.ExhibitionAuctionsOffers })));
+const SmartEventRecommendations = lazy(() => import("@/components/SmartEventRecommendations").then(m => ({ default: m.SmartEventRecommendations })));
 const ExhibitionMyTickets = lazy(() => import("@/components/exhibitions/detail/ExhibitionMyTickets").then(m => ({ default: m.ExhibitionMyTickets })));
 const ExhibitionTicketSummary = lazy(() => import("@/components/exhibitions/detail/ExhibitionTicketSummary").then(m => ({ default: m.ExhibitionTicketSummary })));
 const ExhibitionCheckinScanner = lazy(() => import("@/components/exhibitions/detail/ExhibitionCheckinScanner"));
