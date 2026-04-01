@@ -402,10 +402,11 @@ export default function Exhibitions() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-muted/30 p-1 rounded-xl border border-border/30">
             {[
-              { id: "all", label: isAr ? "الكل" : "All", icon: null, count: exhibitions?.length },
-              { id: "current", label: isAr ? "يحدث الآن" : "Live", icon: Clock, count: happeningNowCount },
+              { id: "active", label: isAr ? "الجارية والقادمة" : "Active & Upcoming", icon: TrendingUp, count: happeningNowCount + upcomingCount },
+              { id: "current", label: isAr ? "يحدث الآن" : "Live Now", icon: Clock, count: happeningNowCount },
               { id: "upcoming", label: isAr ? "القادمة" : "Upcoming", icon: CalendarDays, count: upcomingCount },
               { id: "past", label: isAr ? "السابقة" : "Past", icon: History, count: null },
+              { id: "all", label: isAr ? "الكل" : "All", icon: null, count: exhibitions?.length },
             ].map((t) => (
               <TabsTrigger
                 key={t.id}
