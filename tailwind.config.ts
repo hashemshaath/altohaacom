@@ -22,6 +22,8 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        switchThumbOff: "hsl(var(--switch-thumb-off))",
+        switchThumbOn: "hsl(var(--switch-thumb-on))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
