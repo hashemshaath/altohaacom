@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
+import { AddToCalendarButton } from "@/components/ui/AddToCalendarButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -165,6 +166,17 @@ export const ExhibitionHero = memo(function ExhibitionHero({
 
             {/* Actions — desktop */}
             <div className="hidden sm:flex items-center gap-2 shrink-0 pt-1">
+              <AddToCalendarButton
+                title={title}
+                startDate={exhibition.start_date}
+                endDate={exhibition.end_date}
+                description={exhibition.description?.slice(0, 200)}
+                location={[venue, exhibition.city, exhibition.country].filter(Boolean).join(", ")}
+                url={shareUrl}
+                variant="outline"
+                size="sm"
+                className="h-9 rounded-xl"
+              />
               <ShareDropdown isAr={isAr} title={title} shareUrl={shareUrl} />
 
               {isOwner && (
