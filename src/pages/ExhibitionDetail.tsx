@@ -127,6 +127,15 @@ export default function ExhibitionDetail() {
     staleTime: 1000 * 60 * 5,
   });
 
+  // Increment view count once per session
+  const viewIncremented = useRef(false);
+  useEffect(() => {
+    if (exhibition?.id && !viewIncremented.current) {
+      viewIncremented.current = true;
+      supabase.rpc("increment_exhibition_views", { exhibition_id: exhibition.id }).then();
+    }
+  }, [exhibition?.id]);
+
   const { isWatched: isWatchlisted, toggle: toggleWatchlist } = useEventWatchlist("exhibition", exhibition?.id);
 
   const { data: isFollowing } = useQuery({
