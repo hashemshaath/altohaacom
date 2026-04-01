@@ -125,10 +125,8 @@ export function useSEOTracking() {
     supabase
       .from("seo_page_views")
       .insert(record)
-      .select("id")
-      .single()
-      .then(({ data }) => {
-        if (data?.id) lastViewId.current = data.id;
+      .then(() => {
+        // Page view recorded – duration updates use session_id + path
       });
 
     // Update duration on page unload
