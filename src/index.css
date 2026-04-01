@@ -49,6 +49,10 @@
     --input: 220 14% 88%;
     --ring: 40 72% 52%;
 
+    /* Switch */
+    --switch-thumb-off: 0 0% 100%;
+    --switch-thumb-on: 0 0% 100%;
+
     --radius: 0.5rem;
 
     /* Sidebar — light */
@@ -119,6 +123,10 @@
     --border: 220 14% 19%;
     --input: 220 14% 18%;
     --ring: 40 75% 56%;
+
+    /* Switch */
+    --switch-thumb-off: 40 20% 96%;
+    --switch-thumb-on: 0 0% 100%;
 
     --sidebar-background: 220 22% 6%;
     --sidebar-foreground: 40 14% 92%;
