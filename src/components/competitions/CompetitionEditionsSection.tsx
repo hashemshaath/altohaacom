@@ -29,7 +29,7 @@ interface SeriesGroup {
   years: number[];
 }
 
-export const CompetitionEditionsSection = memo(function CompetitionEditionsSection({ competitions, isAr }: Props) {
+export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(function CompetitionEditionsSection({ competitions, isAr }, ref) {
   const [expandedSeries, setExpandedSeries] = useState<string | null>(null);
 
   const seriesGroups = useMemo(() => {

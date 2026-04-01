@@ -13,7 +13,7 @@ interface Props {
   allCountries: { code: string; name: string; name_ar?: string | null }[];
 }
 
-export const CountryDiscovery = memo(function CountryDiscovery({ competitions, isAr, onCountrySelect, allCountries }: Props) {
+export const CountryDiscovery = memo(forwardRef<HTMLElement, Props>(function CountryDiscovery({ competitions, isAr, onCountrySelect, allCountries }, ref) {
   const countries = useMemo(() => {
     const map = new Map<string, { count: number; regs: number }>();
     for (const c of competitions) {
