@@ -1,8 +1,8 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 
-export const Toaster = memo(function Toaster() {
+export const Toaster = memo(forwardRef<HTMLDivElement>(function Toaster(_props, _ref) {
   const { toasts } = useToast();
 
   return (
@@ -22,4 +22,4 @@ export const Toaster = memo(function Toaster() {
       <ToastViewport />
     </ToastProvider>
   );
-});
+}));

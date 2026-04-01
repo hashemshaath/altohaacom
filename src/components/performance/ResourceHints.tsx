@@ -1,9 +1,9 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 /**
  * Resource hints for critical third-party origins.
  * Preconnect for faster external resource loading and prefetch key API endpoints.
  */
-export const ResourceHints = memo(function ResourceHints() {
+export const ResourceHints = memo(forwardRef<HTMLElement>(function ResourceHints(_props, _ref) {
   return (
     <>
       {/* Supabase API & Storage — preconnect for both API and storage CDN */}
@@ -19,4 +19,4 @@ export const ResourceHints = memo(function ResourceHints() {
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
     </>
   );
-});
+}));
