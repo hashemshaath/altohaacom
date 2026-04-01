@@ -307,7 +307,7 @@ export default function ExhibitionDetail() {
   /* ---------- derived data ---------- */
   const baseTitle = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
   const editionYear = (exhibition as any).edition_year;
-  const title = editionYear ? `${baseTitle} +${editionYear}` : baseTitle;
+  const title = editionYear && !baseTitle.includes(String(editionYear)) ? `${baseTitle} ${editionYear}` : baseTitle;
   const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
   const organizer = isAr && exhibition.organizer_name_ar ? exhibition.organizer_name_ar : exhibition.organizer_name;
