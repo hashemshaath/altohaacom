@@ -18,7 +18,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
-import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
+import { useState, useMemo, lazy, Suspense, memo, useCallback, useEffect, useRef } from "react";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { EventComments } from "@/components/fan/EventComments";
@@ -126,6 +126,15 @@ export default function ExhibitionDetail() {
     enabled: !!slug,
     staleTime: 1000 * 60 * 5,
   });
+
+  // Increment view count once per session
+  const viewIncremented = useRef(false);
+  useEffect(() => {
+    if (exhibition?.id && !viewIncremented.current) {
+      viewIncremented.current = true;
+      supabase.rpc("increment_exhibition_views", { exhibition_id: exhibition.id }).then();
+    }
+  }, [exhibition?.id]);
 
   const { isWatched: isWatchlisted, toggle: toggleWatchlist } = useEventWatchlist("exhibition", exhibition?.id);
 
@@ -307,7 +316,7 @@ export default function ExhibitionDetail() {
   /* ---------- derived data ---------- */
   const baseTitle = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
   const editionYear = (exhibition as any).edition_year;
-  const title = editionYear ? `${baseTitle} +${editionYear}` : baseTitle;
+  const title = editionYear && !baseTitle.includes(String(editionYear)) ? `${baseTitle} ${editionYear}` : baseTitle;
   const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
   const organizer = isAr && exhibition.organizer_name_ar ? exhibition.organizer_name_ar : exhibition.organizer_name;

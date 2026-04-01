@@ -23259,6 +23259,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_exhibition_views: {
+        Args: { exhibition_id: string }
+        Returns: undefined
+      }
       increment_organizer_views: {
         Args: { p_organizer_id: string }
         Returns: undefined
