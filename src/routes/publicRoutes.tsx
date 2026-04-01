@@ -10,6 +10,7 @@ const CompetitionResults = lazy(() => import("@/pages/CompetitionResults"));
 const Rankings = lazy(() => import("@/pages/Rankings"));
 const ChefPortfolio = lazy(() => import("@/pages/ChefPortfolio"));
 const CompetitionDiscovery = lazy(() => import("@/pages/CompetitionDiscovery"));
+const CompareExhibitions = lazy(() => import("@/pages/CompareExhibitions"));
 const Search = lazy(() => import("@/pages/Search"));
 const PublicProfile = lazy(() => import("@/pages/PublicProfile"));
 const HelpCenter = lazy(() => import("@/pages/HelpCenter"));
