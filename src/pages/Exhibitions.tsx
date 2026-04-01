@@ -116,6 +116,7 @@ export default function Exhibitions() {
   }, [exhibitions]);
 
   const filtered = useMemo(() => {
+    const now = new Date();
     return exhibitions?.filter((ex) => {
       const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
       const matchesSearch = !searchQuery ||
@@ -126,22 +127,35 @@ export default function Exhibitions() {
       const matchesCountry = countryFilter === "all" || ex.country === countryFilter;
       const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
 
-      const now = new Date();
       const start = new Date(ex.start_date);
       const end = new Date(ex.end_date);
 
       let matchesTab = true;
-      if (activeTab === "upcoming") matchesTab = isFuture(start);
-      else if (activeTab === "current") {
+      if (activeTab === "active") {
+        // Show happening now + upcoming (exclude past)
+        matchesTab = !isPast(end);
+      } else if (activeTab === "upcoming") {
+        matchesTab = isFuture(start);
+      } else if (activeTab === "current") {
         try { matchesTab = isWithinInterval(now, { start, end }); } catch { matchesTab = false; }
+      } else if (activeTab === "past") {
+        matchesTab = isPast(end);
       }
-      else if (activeTab === "past") matchesTab = isPast(end);
 
       return matchesSearch && matchesType && matchesCountry && matchesYear && matchesTab;
     })?.sort((a, b) => {
       if (sortBy === "date_desc") return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
       if (sortBy === "name_asc") return (isAr && a.title_ar ? a.title_ar : a.title).localeCompare(isAr && b.title_ar ? b.title_ar : b.title);
-      return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+      // Default: happening now first, then upcoming by date
+      const aStart = new Date(a.start_date);
+      const aEnd = new Date(a.end_date);
+      const bStart = new Date(b.start_date);
+      const bEnd = new Date(b.end_date);
+      const aIsLive = !isPast(aEnd) && !isFuture(aStart);
+      const bIsLive = !isPast(bEnd) && !isFuture(bStart);
+      if (aIsLive && !bIsLive) return -1;
+      if (!aIsLive && bIsLive) return 1;
+      return aStart.getTime() - bStart.getTime();
     });
   }, [exhibitions, searchQuery, typeFilter, countryFilter, yearFilter, activeTab, sortBy, isAr]);
 
