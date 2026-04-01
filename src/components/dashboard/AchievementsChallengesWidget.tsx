@@ -83,7 +83,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
             </div>
             {isAr ? "الإنجازات والتحديات" : "Achievements & Challenges"}
           </CardTitle>
-          <Link to="/loyalty">
+          <Link to="/rewards">
             <Button variant="ghost" size="sm" className="text-xs gap-1 h-7">
               {isAr ? "عرض الكل" : "View All"}
               <ChevronRight className="h-3 w-3 rtl:rotate-180" />

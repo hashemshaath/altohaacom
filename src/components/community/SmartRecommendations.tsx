@@ -151,7 +151,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
 
             <TabsContent value="chefs" className="mt-2 space-y-1.5">
               {data?.chefs?.length ? data.chefs.map((c: any) => (
-                <Link key={c.user_id} to={`/chef/${c.username || c.user_id}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
+                <Link key={c.user_id} to={`/${c.username || c.user_id}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={c.avatar_url || ""} />
                     <AvatarFallback className="text-xs">{(c.full_name || "U")[0]}</AvatarFallback>

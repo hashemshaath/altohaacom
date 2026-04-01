@@ -417,8 +417,8 @@ export default function JobDetail() {
                     </Avatar>
                     <div>
                       <p className="text-xs font-semibold">{isAr ? (company?.name_ar || company?.name) : company?.name}</p>
-                      {company?.slug && (
-                        <Link to={`/companies/${company.slug}`} className="text-[10px] text-primary hover:underline">
+                      {company?.id && (
+                        <Link to={`/companies/${company.id}`} className="text-[10px] text-primary hover:underline">
                           {isAr ? "عرض صفحة الشركة" : "View company page"}
                         </Link>
                       )}

@@ -178,7 +178,7 @@ export default function ForYou() {
       bg: "bg-chart-3/10",
       items: data?.chefs || [],
       renderItem: (c: any) => (
-        <Link key={c.user_id} to={`/chef/${c.username || c.user_id}`} className="group">
+        <Link key={c.user_id} to={`/${c.username || c.user_id}`} className="group">
           <Card className="transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-4 flex flex-col items-center text-center gap-2">
               <Avatar className="h-14 w-14 ring-2 ring-border/20">
