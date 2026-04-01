@@ -98,19 +98,7 @@ export function useSEOTracking() {
       return; // Don't count crawlers as regular page views
     }
 
-    // Update duration of previous page view
-    if (lastViewId.current && lastPath.current !== path) {
-      const duration = Math.round((Date.now() - startTime.current) / 1000);
-      const isBounce = duration < 10;
-      supabase
-        .from("seo_page_views")
-        .update({ duration_seconds: duration, is_bounce: isBounce })
-        .eq("id", lastViewId.current)
-        .then(() => {});
-    }
-
-    // Record new page view
-    startTime.current = Date.now();
+    // Record new page view (insert-only, no updates needed for anon tracking)
     lastPath.current = path;
 
     const record = {
@@ -122,35 +110,6 @@ export function useSEOTracking() {
       session_id: getSessionId(),
     };
 
-    supabase
-      .from("seo_page_views")
-      .insert(record)
-      .then(() => {
-        // Page view recorded – duration updates use session_id + path
-      });
-
-    // Update duration on page unload
-    const handleUnload = () => {
-      if (lastViewId.current) {
-        const duration = Math.round((Date.now() - startTime.current) / 1000);
-        const isBounce = duration < 10;
-        const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/seo_page_views?id=eq.${lastViewId.current}`;
-        const headers = {
-          "Content-Type": "application/json",
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          Prefer: "return=minimal",
-        };
-        fetch(url, {
-          method: "PATCH",
-          headers,
-          body: JSON.stringify({ duration_seconds: duration, is_bounce: isBounce }),
-          keepalive: true,
-        }).catch(() => {});
-      }
-    };
-
-    window.addEventListener("beforeunload", handleUnload);
-    return () => window.removeEventListener("beforeunload", handleUnload);
+    supabase.from("seo_page_views").insert(record).then(() => {});
   }, [location.pathname]);
 }
