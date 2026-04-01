@@ -73,6 +73,7 @@ export const publicRoutes = (
     <Route path="/auth" element={<Navigate to="/login" replace />} />
     <Route path="/login" element={<Auth />} />
     <Route path="/register" element={<Auth />} />
+    <Route path="/signup" element={<Auth />} />
     <Route path="/company-login" element={<CompanyLogin />} />
     <Route path="/reset-password" element={<Auth />} />
     <Route path="/competitions" element={<Competitions />} />
