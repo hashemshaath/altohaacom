@@ -19,4 +19,4 @@ export const ResourceHints = memo(forwardRef<HTMLElement>(function ResourceHints
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
     </>
   );
-});
+}));
