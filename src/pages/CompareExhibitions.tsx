@@ -37,7 +37,7 @@ const CompareExhibitions = () => {
       const { data } = await supabase
         .from("exhibitions")
         .select("id, title, title_ar, slug, start_date, end_date, city, country, cover_image_url, max_attendees, is_free, is_virtual, venue, venue_ar, edition_year, status, edition_stats, categories, targeted_sectors, includes_competitions, includes_seminars, includes_training, ticket_price")
-        .in("status", ["active", "upcoming", "published"])
+        .in("status", ["active", "upcoming"])
         .order("start_date", { ascending: true });
       return (data || []) as Exhibition[];
     },
