@@ -651,6 +651,15 @@ export default function ExhibitionDetail() {
           </Suspense>
         )}
 
+        {/* Smart Recommendations */}
+        <Suspense fallback={null}>
+          <SmartEventRecommendations
+            currentEventId={exhibition.id}
+            currentEventCountry={exhibition.country}
+            currentEventCategories={(exhibition.categories as string[]) || []}
+          />
+        </Suspense>
+
         {/* Related Exhibitions */}
         <Suspense fallback={null}>
           <RelatedExhibitions
