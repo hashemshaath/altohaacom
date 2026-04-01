@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, LayoutGrid, List } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, LayoutGrid, List, Scale } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
 import { ExhibitionListItem } from "@/components/exhibitions/ExhibitionListItem";
