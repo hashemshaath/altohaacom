@@ -50,7 +50,7 @@ export default function Exhibitions() {
   useAdTracking();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("active");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [countryFilter, setCountryFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
