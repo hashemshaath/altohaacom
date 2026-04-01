@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo, useState, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ interface SeriesGroup {
   years: number[];
 }
 
-export const CompetitionEditionsSection = memo(function CompetitionEditionsSection({ competitions, isAr }: Props) {
+export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(function CompetitionEditionsSection({ competitions, isAr }, ref) {
   const [expandedSeries, setExpandedSeries] = useState<string | null>(null);
 
   const seriesGroups = useMemo(() => {
@@ -75,7 +75,7 @@ export const CompetitionEditionsSection = memo(function CompetitionEditionsSecti
   if (seriesGroups.length === 0) return null;
 
   return (
-    <section className="space-y-4" aria-label={isAr ? "إصدارات المسابقات" : "Competition Series & Editions"}>
+    <section ref={ref} className="space-y-4" aria-label={isAr ? "إصدارات المسابقات" : "Competition Series & Editions"}>
       <div className="flex items-center gap-2.5">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/20">
           <History className="h-4 w-4 text-primary" />
@@ -278,4 +278,4 @@ export const CompetitionEditionsSection = memo(function CompetitionEditionsSecti
       </div>
     </section>
   );
-});
+}));

@@ -24,6 +24,9 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
 
       if (existing) return existing;
 
+      // Only create QR codes for authenticated users
+      if (!user?.id) return null;
+
       // Generate a new code via DB function
       const prefix = CODE_PREFIXES[category || entityType] || "QR";
       const { data: codeResult } = await supabase.rpc("generate_qr_code", { p_prefix: prefix });
@@ -37,7 +40,7 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
           entity_type: entityType,
           entity_id: entityId,
           category: category || entityType,
-          created_by: user?.id || null,
+          created_by: user.id,
         })
         .select()
         .single();

@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Globe, Trophy, Users } from "lucide-react";
@@ -13,7 +13,7 @@ interface Props {
   allCountries: { code: string; name: string; name_ar?: string | null }[];
 }
 
-export const CountryDiscovery = memo(function CountryDiscovery({ competitions, isAr, onCountrySelect, allCountries }: Props) {
+export const CountryDiscovery = memo(forwardRef<HTMLElement, Props>(function CountryDiscovery({ competitions, isAr, onCountrySelect, allCountries }, ref) {
   const countries = useMemo(() => {
     const map = new Map<string, { count: number; regs: number }>();
     for (const c of competitions) {
@@ -39,7 +39,7 @@ export const CountryDiscovery = memo(function CountryDiscovery({ competitions, i
   if (countries.length < 2) return null;
 
   return (
-    <section className="space-y-3" aria-label={isAr ? "اكتشف حسب الدولة" : "Discover by Country"}>
+    <section ref={ref} className="space-y-3" aria-label={isAr ? "اكتشف حسب الدولة" : "Discover by Country"}>
       <div className="flex items-center gap-2">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/10 ring-1 ring-chart-1/20">
           <Globe className="h-3.5 w-3.5 text-chart-1" />
@@ -84,4 +84,4 @@ export const CountryDiscovery = memo(function CountryDiscovery({ competitions, i
       </div>
     </section>
   );
-});
+}));
