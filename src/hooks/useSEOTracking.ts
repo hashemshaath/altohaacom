@@ -70,9 +70,7 @@ function detectCrawler(ua: string): { name: string; type: string } | null {
  */
 export function useSEOTracking() {
   const location = useLocation();
-  const startTime = useRef(Date.now());
   const lastPath = useRef<string | null>(null);
-  const lastViewId = useRef<string | null>(null);
 
   useEffect(() => {
     const path = location.pathname;
