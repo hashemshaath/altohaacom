@@ -18,7 +18,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
-import { useState, useMemo, lazy, Suspense, memo, useCallback } from "react";
+import { useState, useMemo, lazy, Suspense, memo, useCallback, useEffect, useRef } from "react";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { EventComments } from "@/components/fan/EventComments";
