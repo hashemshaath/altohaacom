@@ -84,4 +84,4 @@ export const CountryDiscovery = memo(forwardRef<HTMLElement, Props>(function Cou
       </div>
     </section>
   );
-});
+}));

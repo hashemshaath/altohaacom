@@ -278,4 +278,4 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
       </div>
     </section>
   );
-});
+}));
