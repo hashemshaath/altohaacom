@@ -39,7 +39,7 @@ export const CountryDiscovery = memo(forwardRef<HTMLElement, Props>(function Cou
   if (countries.length < 2) return null;
 
   return (
-    <section className="space-y-3" aria-label={isAr ? "اكتشف حسب الدولة" : "Discover by Country"}>
+    <section ref={ref} className="space-y-3" aria-label={isAr ? "اكتشف حسب الدولة" : "Discover by Country"}>
       <div className="flex items-center gap-2">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-chart-1/10 ring-1 ring-chart-1/20">
           <Globe className="h-3.5 w-3.5 text-chart-1" />
