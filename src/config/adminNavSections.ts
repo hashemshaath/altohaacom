@@ -159,6 +159,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/articles", icon: Newspaper, labelEn: "Articles", labelAr: "المقالات" },
       { to: "/admin/design/homepage", icon: Home, labelEn: "Homepage", labelAr: "الرئيسية" },
       { to: "/admin/hero-slides", icon: ImagePlay, labelEn: "Hero Slides", labelAr: "شرائح البانر" },
+      { to: "/admin/auth-slides", icon: ImagePlay, labelEn: "Auth Slides", labelAr: "شرائح التسجيل" },
       { to: "/admin/design/covers", icon: Layers, labelEn: "Covers", labelAr: "الأغلفة" },
       { to: "/admin/seo", icon: Search, labelEn: "SEO Dashboard", labelAr: "لوحة SEO" },
       { to: "/admin/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
