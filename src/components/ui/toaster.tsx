@@ -22,4 +22,4 @@ export const Toaster = memo(forwardRef<HTMLDivElement>(function Toaster(_props, 
       <ToastViewport />
     </ToastProvider>
   );
-});
+}));
