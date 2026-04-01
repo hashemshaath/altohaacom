@@ -235,6 +235,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/ai", icon: Bot, labelEn: "AI Config", labelAr: "الذكاء الاصطناعي" },
       { to: "/admin/audit", icon: ClipboardList, labelEn: "Audit Log", labelAr: "سجل العمليات" },
       { to: "/admin/database", icon: Database, labelEn: "Database", labelAr: "قاعدة البيانات" },
+      { to: "/admin/data-import-export", icon: Upload, labelEn: "Import/Export", labelAr: "استيراد/تصدير" },
     ],
   },
 ];
