@@ -98,7 +98,7 @@ export const ExhibitionCard = memo(
     ({ exhibition, language, variant = "default", sponsors = [] }, ref) => {
       const isAr = language === "ar";
       const baseTitle = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
-      const title = exhibition.edition_year ? `${baseTitle} ${exhibition.edition_year}` : baseTitle;
+      const title = exhibition.edition_year && !baseTitle.includes(String(exhibition.edition_year)) ? `${baseTitle} ${exhibition.edition_year}` : baseTitle;
       const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
       const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;
       const organizer = isAr && exhibition.organizer_name_ar ? exhibition.organizer_name_ar : exhibition.organizer_name;
