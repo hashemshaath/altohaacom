@@ -106,7 +106,7 @@ const CompareExhibitions = () => {
   ];
 
   return (
-    <PageShell>
+    <PageShell title={isAr ? "مقارنة المعارض" : "Compare Exhibitions"}>
       <SEOHead
         title={isAr ? "مقارنة المعارض — الطهاة" : "Compare Exhibitions — Altoha"}
         description={isAr ? "قارن بين المعارض جنبًا إلى جنب" : "Compare exhibitions side by side"}

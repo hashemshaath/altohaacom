@@ -86,7 +86,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
       const { data: exhibitions } = await supabase
         .from("exhibitions")
         .select("id, title, title_ar, slug, start_date, city, country, cover_image_url, categories")
-        .in("status", ["active", "upcoming", "published"])
+        .in("status", ["active", "upcoming"])
         .gte("start_date", new Date().toISOString())
         .neq("id", currentEventId || "")
         .order("start_date", { ascending: true })
