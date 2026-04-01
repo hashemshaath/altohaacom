@@ -97,6 +97,7 @@ export const publicRoutes = (
     <Route path="/masterclasses/:id" element={<MasterclassDetail />} />
     <Route path="/install" element={<Install />} />
     <Route path="/exhibitions" element={<Exhibitions />} />
+    <Route path="/exhibitions/compare" element={<CompareExhibitions />} />
     <Route path="/exhibitions/:slug" element={<ExhibitionDetail />} />
     <Route path="/organizers/:name" element={<OrganizerDetail />} />
     <Route path="/entities" element={<Entities />} />
