@@ -260,7 +260,7 @@ export default function SocialLinks() {
   return (
     <div className="flex min-h-screen flex-col items-center relative" dir={contentDir} style={{ background: theme.bg, fontFamily, color: theme.text }}>
       {extra.enable_particles && <FloatingParticles color={extra.particle_color || theme.accent} />}
-      {extra.custom_user_css && <style dangerouslySetInnerHTML={{ __html: extra.custom_user_css }} />}
+      {extra.custom_user_css && <style dangerouslySetInnerHTML={{ __html: sanitizeCss(extra.custom_user_css) }} />}
       {googleFontLink && <link rel="stylesheet" href={googleFontLink} />}
       <SEOHead
         title={(lang === "ar" ? extra.seo_title_ar || extra.seo_title : extra.seo_title) || `${displayName} (@${username}) - Altoha`}
