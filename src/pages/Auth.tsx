@@ -133,18 +133,15 @@ export default function Auth() {
 
   // Username availability check
   useEffect(() => {
-    if (!username || username.length < 3 || !usernameRegex.test(username)) {
-      setUsernameStatus("idle");
+    const validation = validateUsername(username);
+    if (!username || username.length < 3 || !validation.valid) {
+      setUsernameStatus(validation.valid === false && username.length >= 3 ? "taken" : "idle");
       return;
     }
     setUsernameStatus("checking");
     const timer = setTimeout(async () => {
-      const { data } = await supabase
-        .from("profiles_public")
-        .select("username")
-        .eq("username", username.toLowerCase())
-        .maybeSingle();
-      setUsernameStatus(data ? "taken" : "available");
+      const { data: taken } = await supabase.rpc("check_username_taken", { p_username: username.toLowerCase() });
+      setUsernameStatus(taken ? "taken" : "available");
     }, 500);
     return () => clearTimeout(timer);
   }, [username]);
