@@ -194,14 +194,16 @@ export default function Auth() {
         setLockoutUntil(lockUntil);
         setLoginAttempts(0);
         // Log lockout security event (fire-and-forget)
-        supabase.rpc("log_security_event", {
-          p_user_id: null as any,
-          p_event_type: "account_locked",
-          p_severity: "warning",
-          p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed login attempts for email: ${signInEmail.trim()}`,
-          p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة للبريد: ${signInEmail.trim()}`,
-          p_metadata: { email: signInEmail.trim(), attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
-        }).catch(() => {});
+        try {
+          supabase.rpc("log_security_event", {
+            p_user_id: null as any,
+            p_event_type: "account_locked",
+            p_severity: "warning",
+            p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts`,
+            p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة`,
+            p_metadata: { email: signInEmail.trim(), attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
+          });
+        } catch {}
         return;
       }
 
