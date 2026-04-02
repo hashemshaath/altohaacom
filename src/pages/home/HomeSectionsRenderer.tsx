@@ -49,12 +49,6 @@ function DeferredSection({ children, index }: { children: React.ReactNode; index
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // Check if already in viewport
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight + 400) {
-      setInView(true);
-      return;
-    }
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -67,6 +61,8 @@ function DeferredSection({ children, index }: { children: React.ReactNode; index
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+
 
   if (inView) return <>{children}</>;
 
