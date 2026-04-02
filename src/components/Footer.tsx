@@ -145,7 +145,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           {/* Nav columns */}
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h4 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-3">
                 {l(col.titleEn, col.titleAr)}
               </h4>
               <ul className="space-y-2 sm:space-y-1.5">
