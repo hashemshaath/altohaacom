@@ -18,13 +18,13 @@ export default function AdminLayout() {
   useGlobalShortcuts();
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex h-screen flex-col bg-background overflow-hidden">
       <AdminHeader />
-      <div className="flex flex-1">
-        {/* Sidebar — white card on gray bg, unified with content */}
+      <div className="flex flex-1 min-h-0">
+        {/* Sidebar */}
         <aside
           className={cn(
-            "sticky top-14 hidden h-[calc(100vh-56px)] shrink-0 border-e border-border bg-card transition-all duration-200 md:block",
+            "hidden h-full shrink-0 border-e border-border bg-card transition-all duration-200 md:block overflow-y-auto",
             collapsed ? "w-[60px]" : "w-56"
           )}
         >
@@ -48,8 +48,8 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        {/* Main Content — same bg as page background */}
-        <main className="min-w-0 flex-1">
+        {/* Main Content — scrollable */}
+        <main className="min-w-0 flex-1 overflow-y-auto">
           <div className="container py-5 space-y-4">
             <AdminPendingBanner />
             <AdminBreadcrumb />
