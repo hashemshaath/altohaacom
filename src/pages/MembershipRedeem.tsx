@@ -41,12 +41,9 @@ export default function MembershipRedeem() {
     queryFn: async () => {
       if (!code || code.length < 5) return null;
       const { data, error } = await supabase
-        .from("membership_gifts")
-        .select("id, gift_code, tier, status, sender_id, recipient_id, recipient_email, message, redeemed_at, expires_at, created_at")
-        .eq("gift_code", code.toUpperCase())
-        .maybeSingle();
+        .rpc("lookup_gift_by_code" as any, { p_gift_code: code });
       if (error) throw error;
-      return data;
+      return Array.isArray(data) ? data[0] ?? null : data;
     },
     enabled: code.length >= 5,
   });
