@@ -1243,25 +1243,22 @@ export default function Auth() {
                   )}
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                    <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد أو اسم المستخدم" : "Email or Username"}</Label>
                     <Input
                       id="signInEmail"
-                      type="email"
+                      type="text"
                       value={signInEmail}
                       onChange={(e) => {
                         setSignInEmail(e.target.value);
                         if (errors.signInEmail) setErrors((prev) => ({ ...prev, signInEmail: "" }));
                         if (formError) setFormError("");
                       }}
-                      placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                      placeholder={isAr ? "البريد الإلكتروني أو اسم المستخدم" : "Email or username"}
                       onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
                       maxLength={255}
-                      autoComplete="email"
+                      autoComplete="username"
                       disabled={isLockedOut}
                     />
-                    {signInEmail && !z.string().email().safeParse(signInEmail.trim()).success && (
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "يرجى إدخال بريد إلكتروني صحيح" : "Please enter a valid email"}</p>
-                    )}
                     {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
                   </div>
 
