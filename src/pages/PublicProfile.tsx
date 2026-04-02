@@ -164,8 +164,8 @@ export default function PublicProfile() {
           nationality: profile.country_code ? { "@type": "Country", name: profile.country_code } : undefined,
           memberOf: { "@type": "Organization", name: "AlToha", url: "https://altoha.com" },
           sameAs: [
-            profile.linkedin_url,
-            profile.instagram_url,
+            profile.linkedin,
+            profile.instagram,
           ].filter(Boolean),
         }}
       />

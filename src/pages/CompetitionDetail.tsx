@@ -359,7 +359,7 @@ export default function CompetitionDetail() {
         description={(description || `${title} - Culinary competition`).slice(0, 155)}
         ogImage={competition.cover_image_url || undefined}
         ogType="article"
-        canonical={`https://altoha.com/competitions/${competition.slug}`}
+        canonical={`https://altoha.com/competitions/${slug}`}
         lang={language}
         keywords={`${title}, culinary competition, ${competition.city || ""}, ${competition.country || ""}, chef competition`}
         jsonLd={eventLd}

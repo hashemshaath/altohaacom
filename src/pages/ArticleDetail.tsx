@@ -306,7 +306,7 @@ export default function ArticleDetail() {
           datePublished: article.published_at || article.created_at,
           dateModified: article.updated_at,
           wordCount,
-          author: authorName ? { "@type": "Person", name: authorName } : undefined,
+          author: { "@type": "Organization", name: "AlToha" },
           publisher: {
             "@type": "Organization",
             name: "AlToha",
