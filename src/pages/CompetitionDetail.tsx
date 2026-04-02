@@ -534,7 +534,7 @@ export default function CompetitionDetail() {
                 )}
                 {isOrganizer && (
                   <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
-                    <Link to={`/competitions/${id}/edit`}><Pencil className="me-1.5 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link>
+                    <Link to={`/competitions/${competition.slug || competitionId}/edit`}><Pencil className="me-1.5 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link>
                   </Button>
                 )}
                 {canRegister && !showRegistrationForm && (
