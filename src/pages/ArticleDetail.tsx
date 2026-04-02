@@ -289,10 +289,15 @@ export default function ArticleDetail() {
         />
       )}
       <SEOHead
-        title={title}
-        description={excerpt || `${title} - Altoha`}
+        title={`${title} | ${isAr ? "الطهاة" : "AlToha"}`}
+        description={(excerpt || `${title}`).slice(0, 155)}
         ogImage={article.featured_image_url || undefined}
         ogType="article"
+        canonical={`https://altoha.com/articles/${article.slug}`}
+        lang={language}
+        publishedTime={article.published_at || article.created_at}
+        modifiedTime={article.updated_at}
+        author={authorName || undefined}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Article",
@@ -302,6 +307,14 @@ export default function ArticleDetail() {
           datePublished: article.published_at || article.created_at,
           dateModified: article.updated_at,
           wordCount,
+          author: authorName ? { "@type": "Person", name: authorName } : undefined,
+          publisher: {
+            "@type": "Organization",
+            name: "AlToha",
+            url: "https://altoha.com",
+            logo: { "@type": "ImageObject", url: "https://altoha.com/pwa-512x512.png" },
+          },
+          mainEntityOfPage: `https://altoha.com/articles/${article.slug}`,
         }}
       />
       <Header />

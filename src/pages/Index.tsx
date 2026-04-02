@@ -98,13 +98,15 @@ const Index = () => {
   }, [dbSections]);
 
   const seo = useMemo(() => {
-    const title = isAr ? "الطهاة | المجتمع الطهوي العالمي" : "Altoha | Global Culinary Community";
+    const title = isAr
+      ? "الطهاة | مجتمع الطهاة العالمي — مسابقات ومعارض وأكاديميات الطهي"
+      : "AlToha | Global Chef Community — Culinary Competitions, Exhibitions & Academies";
     const description = isAr
-      ? "المنصة الأولى للطهاة والحكام والمنظمين ومحترفي صناعة الأغذية حول العالم."
-      : "The premier platform for chefs, judges, organizers, and food industry professionals worldwide.";
+      ? "منصة الطهاة العالمية — اكتشف معارض الطعام والمشروبات، مسابقات الطهي، الجمعيات والأكاديميات الطهية حول العالم. انضم لمجتمع الطهاة المحترفين."
+      : "Join the world's leading chef community. Discover global food & beverage exhibitions, cooking competitions, culinary academies, and chef associations. Connect with professional chefs worldwide.";
     const keywords = isAr
-      ? "طهاة, مسابقات طهي, وصفات, معارض أغذية, تصنيف الطهاة, مجتمع الطهاة"
-      : "chefs, culinary competitions, recipes, food exhibitions, chef rankings, culinary community";
+      ? "طهاة, مجتمع الطهي, معارض الطعام, مسابقات الطهي, أكاديميات الطهي, جمعيات الطهاة, فعاليات الطهي, الطاهي المحترف, طبخ, فنون الطهي"
+      : "chefs, culinary community, food exhibitions, cooking competitions, culinary academies, chef associations, culinary events, professional chef, gastronomy";
     return { title, description, keywords };
   }, [isAr]);
 
@@ -115,18 +117,23 @@ const Index = () => {
         title={seo.title}
         description={seo.description}
         keywords={seo.keywords}
-        ogImage="/pwa-512x512.png"
-        canonical={`${window.location.origin}/`}
+        ogImage="https://altoha.com/og-image.png"
+        canonical="https://altoha.com/"
         lang={language}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Altoha",
-          url: window.location.origin,
+          name: isAr ? "الطهاة" : "AlToha",
+          alternateName: isAr ? "AlToha" : "الطهاة",
+          url: "https://altoha.com",
+          inLanguage: ["en", "ar"],
           description: seo.description,
           potentialAction: {
             "@type": "SearchAction",
-            target: `${window.location.origin}/search?q={search_term_string}`,
+            target: {
+              "@type": "EntryPoint",
+              urlTemplate: "https://altoha.com/search?q={search_term_string}",
+            },
             "query-input": "required name=search_term_string",
           },
         }}

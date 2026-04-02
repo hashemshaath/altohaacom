@@ -353,10 +353,14 @@ export default function CompetitionDetail() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={title}
-        description={description || `${title} - Culinary competition on Altoha`}
+        title={isAr
+          ? `${title} — مسابقة الطهي | الطهاة`
+          : `${title} — Culinary Competition | AlToha`}
+        description={(description || `${title} - Culinary competition`).slice(0, 155)}
         ogImage={competition.cover_image_url || undefined}
         ogType="article"
+        canonical={`https://altoha.com/competitions/${competition.slug}`}
+        lang={language}
         keywords={`${title}, culinary competition, ${competition.city || ""}, ${competition.country || ""}, chef competition`}
         jsonLd={eventLd}
       />

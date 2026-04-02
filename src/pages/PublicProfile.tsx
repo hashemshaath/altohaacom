@@ -143,9 +143,12 @@ export default function PublicProfile() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={`${displayName} (@${profile.username}) - Altoha`}
-        description={bio || `${displayName}'s professional culinary profile on Altoha`}
+        title={isAr
+          ? `${displayName} — طاهٍ محترف | الطهاة`
+          : `${displayName} — Professional Chef | AlToha`}
+        description={(bio || `${displayName}'s professional culinary profile`).slice(0, 155)}
         ogImage={profile.avatar_url || undefined}
+        ogType="profile"
         canonical={`https://altoha.com/chef/${profile.username}`}
         lang={language}
         jsonLd={{
@@ -159,7 +162,11 @@ export default function PublicProfile() {
           jobTitle: profile.job_title || undefined,
           worksFor: currentWork ? { "@type": "Organization", name: currentWork } : undefined,
           nationality: profile.country_code ? { "@type": "Country", name: profile.country_code } : undefined,
-          memberOf: { "@type": "Organization", name: "Altoha", url: "https://altoha.com" },
+          memberOf: { "@type": "Organization", name: "AlToha", url: "https://altoha.com" },
+          sameAs: [
+            profile.linkedin_url,
+            profile.instagram_url,
+          ].filter(Boolean),
         }}
       />
       <Header />

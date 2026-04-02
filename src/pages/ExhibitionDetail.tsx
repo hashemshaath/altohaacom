@@ -355,14 +355,18 @@ export default function ExhibitionDetail() {
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
       <SEOHead
-        title={`${title} — ${isAr ? "الطهاة" : "Altoha"}`}
-        description={description ? description.slice(0, 160) : `${title} - ${isAr ? "فعالية على الطهاة" : "Event on Altoha"}`}
+        title={isAr
+          ? `${title} — معرض الطعام والمشروبات | الطهاة`
+          : `${title} — Food & Beverage Exhibition | AlToha`}
+        description={description ? description.slice(0, 155) : `${title} - ${isAr ? "معرض طعام ومشروبات" : "Food & Beverage Exhibition"}`}
         ogImage={exhibition.cover_image_url || undefined}
         ogType="article"
+        canonical={`https://altoha.com/exhibitions/${exhibition.slug}`}
+        lang={language}
         jsonLd={{
-          "@context": "https://schema.org", "@type": "Event", name: title,
+          "@context": "https://schema.org", "@type": "ExhibitionEvent", name: title,
           description: description || undefined, startDate: exhibition.start_date, endDate: exhibition.end_date,
-          eventStatus: hasEnded ? "https://schema.org/EventPostponed" : isHappening ? "https://schema.org/EventScheduled" : "https://schema.org/EventScheduled",
+          eventStatus: hasEnded ? "https://schema.org/EventPostponed" : "https://schema.org/EventScheduled",
           eventAttendanceMode: exhibition.is_virtual ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
           location: exhibition.is_virtual
             ? { "@type": "VirtualLocation", url: exhibition.virtual_link || exhibition.website_url }
