@@ -333,6 +333,9 @@ export default function SystemSettings() {
             <TabsContent value="tracking" className="mt-0">
               <div className="space-y-6">
                 <GoogleIntegrationPanel />
+                <MetaPixelPanel />
+                <TikTokPixelPanel />
+                <SnapPixelPanel />
                 <TrackingStatusCard />
               </div>
             </TabsContent>
