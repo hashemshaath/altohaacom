@@ -7,6 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
  * Reads ALL tracking configs from `integration_settings` (single source of truth).
  * Injects GTM, GA4, Google Ads, AdSense, GSC, Meta Pixel, TikTok Pixel,
  * Snap Pixel, LinkedIn, and Hotjar scripts dynamically.
+ *
+ * IMPORTANT: When GTM is active it manages the dataLayer. GA4 and Google Ads
+ * are typically configured *inside* GTM — but if they are also enabled here
+ * they will be loaded standalone (safe; gtag deduplicates automatically).
  */
 
 const ALL_TRACKING_TYPES = [
@@ -42,14 +46,17 @@ export function useGoogleTracking() {
     if (!configs || configs.length === 0 || injected.current) return;
     injected.current = true;
 
+    // Ensure dataLayer exists once before any script needs it
+    (window as any).dataLayer = (window as any).dataLayer || [];
+
     configs.forEach((row: any) => {
       const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
       switch (row.integration_type) {
-        case "google_analytics":
-          if (cfg.measurement_id) injectGA4(cfg.measurement_id);
-          break;
         case "google_tag_manager":
           if (cfg.container_id) injectGTM(cfg.container_id);
+          break;
+        case "google_analytics":
+          if (cfg.measurement_id) injectGA4(cfg.measurement_id);
           break;
         case "google_ads":
           if (cfg.conversion_id) injectGoogleAds(cfg.conversion_id);
@@ -81,6 +88,21 @@ export function useGoogleTracking() {
 }
 
 /* ═══════════════════════════════════════════
+   Shared gtag bootstrap — ensures the global
+   `gtag()` function exists exactly once.
+   ═══════════════════════════════════════════ */
+
+function ensureGtag() {
+  if (typeof (window as any).gtag === "function") return;
+  (window as any).dataLayer = (window as any).dataLayer || [];
+  (window as any).gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
+    (window as any).dataLayer.push(arguments);
+  };
+  (window as any).gtag("js", new Date());
+}
+
+/* ═══════════════════════════════════════════
    Script Injectors
    ═══════════════════════════════════════════ */
 
@@ -97,6 +119,7 @@ function injectGTM(containerId: string) {
   `;
   document.head.insertBefore(script, document.head.firstChild);
 
+  // GTM noscript fallback
   const noscript = document.createElement("noscript");
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.googletagmanager.com/ns.html?id=${containerId}`;
@@ -115,31 +138,21 @@ function injectGA4(measurementId: string) {
   script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
   document.head.appendChild(script);
 
-  const inline = document.createElement("script");
-  inline.textContent = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${measurementId}', { send_page_view: true });
-  `;
-  document.head.appendChild(inline);
+  ensureGtag();
+  (window as any).gtag("config", measurementId, { send_page_view: true });
 }
 
 function injectGoogleAds(conversionId: string) {
-  if (document.querySelector(`script[src*="gtag/js?id=${conversionId}"]`)) return;
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${conversionId}`;
-  document.head.appendChild(script);
+  // If GA4 already loaded gtag/js we can skip the loader script
+  if (!document.querySelector('script[src*="gtag/js"]')) {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${conversionId}`;
+    document.head.appendChild(script);
+  }
 
-  const inline = document.createElement("script");
-  inline.textContent = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${conversionId}');
-  `;
-  document.head.appendChild(inline);
+  ensureGtag();
+  (window as any).gtag("config", conversionId);
 }
 
 function injectAdSense(publisherId: string) {
@@ -260,7 +273,8 @@ function injectHotjar(siteId: string) {
 }
 
 /* ═══════════════════════════════════════════
-   Public Utilities
+   Public Utilities — single canonical source
+   for pushing events to the GTM dataLayer.
    ═══════════════════════════════════════════ */
 
 export function pushDataLayer(event: string, params?: Record<string, unknown>) {
@@ -269,7 +283,7 @@ export function pushDataLayer(event: string, params?: Record<string, unknown>) {
   (window as any).dataLayer = (window as any).dataLayer || [];
   (window as any).dataLayer.push(payload);
   if (import.meta.env.DEV) {
-    console.log("[DataLayer]", event, params);
+    console.debug("[DataLayer]", event, params);
   }
 }
 

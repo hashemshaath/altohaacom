@@ -1,20 +1,11 @@
-/* ─── GTM DataLayer helpers ─── */
+/**
+ * GTM DataLayer helpers — single canonical source.
+ * All dataLayer pushes flow through pushDataLayer from useGoogleTracking.
+ */
+import { pushDataLayer } from "@/hooks/useGoogleTracking";
 
-type GTMEvent = { event: string; [key: string]: unknown };
-
-declare global {
-  interface Window {
-    dataLayer?: GTMEvent[];
-  }
-}
-
-export function pushDataLayer(event: string, params: Record<string, unknown> = {}): void {
-  if (typeof window === "undefined") return;
-  window.dataLayer = window.dataLayer || [];
-  const payload: GTMEvent = { event, ...params };
-  window.dataLayer.push(payload);
-  if (import.meta.env.DEV) console.debug("[GTM]", payload);
-}
+// Re-export so any future consumer can import from either location
+export { pushDataLayer };
 
 /* ─── Typed event helpers ─── */
 
