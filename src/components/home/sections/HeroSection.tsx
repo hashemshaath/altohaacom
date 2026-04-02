@@ -313,17 +313,30 @@ export function HeroSection() {
             </button>
 
             {/* Progress dots */}
-            <div className="absolute bottom-4 sm:bottom-6 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-xl bg-card/40 backdrop-blur-xl border border-border/20 px-3 py-2 shadow-sm">
+            <div className="absolute bottom-4 sm:bottom-6 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-xl bg-card/40 backdrop-blur-xl border border-border/20 px-3 py-2 shadow-sm" role="tablist" aria-label="Slides">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => goTo(idx)}
+                  role="tab"
+                  aria-selected={idx === safeCurrent}
                   className={cn(
-                    "relative h-1.5 rounded-full transition-all duration-500 ease-out overflow-hidden",
-                    idx === safeCurrent ? "w-7 bg-muted-foreground/15" : "w-1.5 bg-muted-foreground/25 hover:bg-muted-foreground/50"
+                    "relative h-6 rounded-full transition-all duration-500 ease-out overflow-hidden flex items-center justify-center",
+                    idx === safeCurrent ? "w-8" : "w-6 hover:bg-muted-foreground/50"
                   )}
                   aria-label={`Slide ${idx + 1}`}
                 >
+                  <span className={cn(
+                    "block rounded-full",
+                    idx === safeCurrent ? "h-1.5 w-7 bg-muted-foreground/15 relative overflow-hidden" : "h-1.5 w-1.5 bg-muted-foreground/25"
+                  )}>
+                    {idx === safeCurrent && (
+                      <span
+                        className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-[var(--shadow-glow)]"
+                        style={{ width: `${progress}%`, transition: "width 80ms linear" }}
+                      />
+                    )}
+                  </span>
                   {idx === safeCurrent && (
                     <span
                       className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-[var(--shadow-glow)]"

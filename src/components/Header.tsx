@@ -85,8 +85,9 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
               {headerCfg.showLogo !== false && (
                 <img
                   src={logoUrl}
-                  alt={brandCfg.siteName || "Altoha"}
+                  alt={isAr ? "الطهاة — الصفحة الرئيسية" : "Altoha — Homepage"}
                   className="h-7 w-auto sm:h-8 transition-transform duration-300 group-hover:scale-105"
+                  loading="eager"
                 />
               )}
               {headerCfg.showBrandName !== false && (

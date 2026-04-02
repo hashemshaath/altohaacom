@@ -166,8 +166,8 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
 
         {/* Bottom bar */}
         <div className="border-t border-border/20 py-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-muted-foreground/40">{copyrightText}</p>
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground/40">
+          <p className="text-[11px] text-muted-foreground/60">{copyrightText}</p>
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground/60">
             {legalLinks.map((link, i) => (
               <span key={link.to} className="flex items-center gap-3">
                 <Link to={link.to} className="hover:text-foreground transition-colors">

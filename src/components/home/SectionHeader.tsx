@@ -49,9 +49,9 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
             {actions}
             {viewAllHref && (
               <Button variant="ghost" size="sm" className="rounded-xl gap-1 text-xs font-semibold text-primary h-8 px-2.5 touch-manipulation" asChild>
-                <Link to={viewAllHref}>
+                <Link to={viewAllHref} aria-label={viewAllLabel || (isAr ? `عرض الكل - ${title}` : `View all ${title}`)}>
                   {viewAllLabel || (isAr ? "عرض الكل" : "View All")}
-                  <ArrowRight className="h-3 w-3 rtl:rotate-180" />
+                  <ArrowRight className="h-3 w-3 rtl:rotate-180" aria-hidden="true" />
                 </Link>
               </Button>
             )}
