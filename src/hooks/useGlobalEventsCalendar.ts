@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ROUTES } from "@/config/routes";
 
 export type GlobalEventType =
   | "competition" | "exhibition" | "chefs_table" | "tv_interview"
