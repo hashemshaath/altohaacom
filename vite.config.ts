@@ -202,7 +202,7 @@ export default defineConfig(({ mode }) => ({
     cssMinify: "lightningcss",
     cssCodeSplit: true,
     sourcemap: false,
-    chunkSizeWarningLimit: 800,
+    chunkSizeWarningLimit: 500,
     modulePreload: {
       polyfill: true,
     },
