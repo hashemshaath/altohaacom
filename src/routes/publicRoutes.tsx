@@ -89,8 +89,8 @@ export const publicRoutes = (
     <Route path="/reset-password" element={<Auth />} />
     <Route path="/competitions" element={<Competitions />} />
     <Route path="/discover" element={<CompetitionDiscovery />} />
-    <Route path="/competitions/:id" element={<CompetitionDetail />} />
-    <Route path="/competitions/:id/results" element={<CompetitionResults />} />
+    <Route path="/competitions/:slug" element={<CompetitionDetail />} />
+    <Route path="/competitions/:slug/results" element={<CompetitionResults />} />
     <Route path="/rankings" element={<Rankings />} />
     <Route path="/portfolio/:userId" element={<ChefPortfolio />} />
     <Route path="/search" element={<Search />} />
