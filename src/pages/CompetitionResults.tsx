@@ -38,21 +38,26 @@ const PODIUM_CONFIG = [
 ];
 
 export default function CompetitionResults() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const { data: competition, isLoading: loadingComp } = useQuery({
-    queryKey: ["competition", id],
+    queryKey: ["competition", slug],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number").eq("id", id).maybeSingle();
+      let { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number, slug").eq("slug", slug).maybeSingle();
+      if (!data) {
+        ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number, slug").eq("id", slug).maybeSingle());
+      }
       if (error) throw error;
       if (!data) throw new Error("Competition not found");
       return data;
     },
-    enabled: !!id,
+    enabled: !!slug,
   });
+
+  const competitionId = competition?.id;
 
   const { data: categories } = useQuery({
     queryKey: ["result-categories", id],

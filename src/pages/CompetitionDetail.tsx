@@ -124,14 +124,14 @@ function Section({
 }
 
 export default function CompetitionDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
   const [activeSection, setActiveSection] = useState<string>("overview");
-  const setActiveTab = (id: string) => {
-    setActiveSection(id);
-    const el = document.getElementById(`section-${id}`);
+  const setActiveTab = (tabId: string) => {
+    setActiveSection(tabId);
+    const el = document.getElementById(`section-${tabId}`);
     if (el) {
       const offset = 140;
       const bodyRect = document.body.getBoundingClientRect().top;
@@ -143,20 +143,26 @@ export default function CompetitionDetail() {
   };
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
-  const { data: qrCode } = useEntityQRCode("competition", id, "competition");
-  const { isWatched, toggle: toggleWatchlist } = useEventWatchlist("competition", id);
 
   const { data: competition, isLoading } = useQuery({
-    queryKey: ["competition", id],
+    queryKey: ["competition", slug],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix").eq("id", id).maybeSingle();
+      // Try slug first, fall back to id for backwards compatibility
+      let { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("slug", slug).maybeSingle();
+      if (!data) {
+        ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("id", slug).maybeSingle());
+      }
       if (error) throw error;
       if (!data) throw new Error("Competition not found");
       return data;
     },
-    enabled: !!id,
+    enabled: !!slug,
     staleTime: 1000 * 60 * 3,
   });
+
+  const competitionId = competition?.id;
+  const { data: qrCode } = useEntityQRCode("competition", competitionId, "competition");
+  const { isWatched, toggle: toggleWatchlist } = useEventWatchlist("competition", competitionId);
 
   const { data: categories } = useQuery({
     queryKey: ["competition-categories", id],
