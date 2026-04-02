@@ -23806,20 +23806,7 @@ export type Database = {
           verification_code: string
         }[]
       }
-      verify_qr_code: {
-        Args: { p_code: string }
-        Returns: {
-          category: string
-          code: string
-          created_at: string
-          entity_id: string
-          entity_type: string
-          id: string
-          is_active: boolean
-          metadata: Json
-          scan_count: number
-        }[]
-      }
+      verify_qr_code: { Args: { p_code: string }; Returns: Json }
       wallet_credit: {
         Args: {
           p_amount: number
