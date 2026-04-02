@@ -3,12 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Reads active Google integrations from `integration_settings`
- * and dynamically injects the appropriate scripts.
+ * Reads tracking IDs from TWO sources:
+ *   1. `site_settings` key "seo_analytics" (primary — admin SEO & Analytics panel)
+ *   2. `integration_settings` table (legacy / additional Google integrations)
  *
- * NOTE: GTM (GTM-M76WXJCC) and GA4 (G-F96L8LZWR7) are hardcoded in index.html
- * for crawler/verification compatibility. This hook handles any *additional*
- * IDs configured via admin and other platforms (Ads, AdSense, Search Console).
+ * Dynamically injects GTM, GA4, LinkedIn Insight, Hotjar, GSC verification,
+ * Google Ads, and AdSense scripts. No IDs are hardcoded.
  */
 
 const GOOGLE_TYPES = [
@@ -22,7 +22,23 @@ const GOOGLE_TYPES = [
 export function useGoogleTracking() {
   const injected = useRef(false);
 
-  const { data: configs } = useQuery({
+  // Source 1: SEO Analytics settings (primary)
+  const { data: seoAnalytics } = useQuery({
+    queryKey: ["site-settings-seo-analytics"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "seo_analytics")
+        .maybeSingle();
+      if (!data?.value) return null;
+      return typeof data.value === "string" ? JSON.parse(data.value) : data.value;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Source 2: Integration settings (legacy)
+  const { data: integrationConfigs } = useQuery({
     queryKey: ["integration-settings-google-active"],
     queryFn: async () => {
       const { data } = await supabase
@@ -36,12 +52,28 @@ export function useGoogleTracking() {
   });
 
   useEffect(() => {
-    if (!configs || configs.length === 0 || injected.current) return;
+    if (injected.current) return;
+
+    const analytics = seoAnalytics?.analytics;
+    const hasSettingsData = analytics && Object.values(analytics).some((v: any) => !!v);
+    const hasIntegrationData = integrationConfigs && integrationConfigs.length > 0;
+
+    if (!hasSettingsData && !hasIntegrationData) return;
     injected.current = true;
 
-    configs.forEach((row: any) => {
-      const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
+    // ── From SEO Analytics settings (primary source) ──
+    if (analytics) {
+      if (analytics.gtmId) injectGTM(analytics.gtmId);
+      if (analytics.gaMeasurementId) injectGA4(analytics.gaMeasurementId);
+      if (analytics.gscVerification) injectSearchConsoleVerification(analytics.gscVerification);
+      if (analytics.metaPixelId) injectMetaPixel(analytics.metaPixelId);
+      if (analytics.linkedinInsightTagId) injectLinkedIn(analytics.linkedinInsightTagId);
+      if (analytics.hotjarSiteId) injectHotjar(analytics.hotjarSiteId);
+    }
 
+    // ── From integration_settings (legacy / additional) ──
+    (integrationConfigs || []).forEach((row: any) => {
+      const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
       switch (row.integration_type) {
         case "google_analytics":
           if (cfg.measurement_id) injectGA4(cfg.measurement_id);
@@ -60,12 +92,43 @@ export function useGoogleTracking() {
           break;
       }
     });
-  }, [configs]);
+  }, [seoAnalytics, integrationConfigs]);
 }
 
-/* ── GA4 ── */
+/* ═══════════════════════════════════════════
+   Script Injectors
+   ═══════════════════════════════════════════ */
+
+/** Google Tag Manager — head snippet + body noscript fallback */
+function injectGTM(containerId: string) {
+  if (document.querySelector(`script[data-gtm-id="${containerId}"]`)) return;
+
+  // Head script
+  const script = document.createElement("script");
+  script.setAttribute("data-gtm-id", containerId);
+  script.textContent = `
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','${containerId}');
+  `;
+  document.head.insertBefore(script, document.head.firstChild);
+
+  // Body noscript fallback
+  const noscript = document.createElement("noscript");
+  const iframe = document.createElement("iframe");
+  iframe.src = `https://www.googletagmanager.com/ns.html?id=${containerId}`;
+  iframe.height = "0";
+  iframe.width = "0";
+  iframe.style.display = "none";
+  iframe.style.visibility = "hidden";
+  noscript.appendChild(iframe);
+  document.body.insertBefore(noscript, document.body.firstChild);
+}
+
+/** Google Analytics 4 — gtag.js */
 function injectGA4(measurementId: string) {
-  // Skip if already present (hardcoded or previously injected)
   if (document.querySelector(`script[src*="gtag/js?id=${measurementId}"]`)) return;
 
   const script = document.createElement("script");
@@ -83,33 +146,7 @@ function injectGA4(measurementId: string) {
   document.head.appendChild(inline);
 }
 
-/* ── GTM ── */
-function injectGTM(containerId: string) {
-  // Skip if already present (hardcoded or previously injected)
-  if (document.querySelector(`script[src*="gtm.js?id=${containerId}"]`)) return;
-
-  const script = document.createElement("script");
-  script.textContent = `
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','${containerId}');
-  `;
-  document.head.appendChild(script);
-
-  const noscript = document.createElement("noscript");
-  const iframe = document.createElement("iframe");
-  iframe.src = `https://www.googletagmanager.com/ns.html?id=${containerId}`;
-  iframe.height = "0";
-  iframe.width = "0";
-  iframe.style.display = "none";
-  iframe.style.visibility = "hidden";
-  noscript.appendChild(iframe);
-  document.body.insertBefore(noscript, document.body.firstChild);
-}
-
-/* ── Google Ads ── */
+/** Google Ads conversion tracking */
 function injectGoogleAds(conversionId: string) {
   if (document.querySelector(`script[src*="gtag/js?id=${conversionId}"]`)) return;
 
@@ -128,7 +165,7 @@ function injectGoogleAds(conversionId: string) {
   document.head.appendChild(inline);
 }
 
-/* ── AdSense ── */
+/** Google AdSense */
 function injectAdSense(publisherId: string) {
   if (document.querySelector(`script[data-ad-client="${publisherId}"]`)) return;
 
@@ -140,7 +177,7 @@ function injectAdSense(publisherId: string) {
   document.head.appendChild(script);
 }
 
-/* ── Search Console Verification ── */
+/** Google Search Console verification */
 function injectSearchConsoleVerification(code: string) {
   if (document.querySelector('meta[name="google-site-verification"]')) return;
 
@@ -150,19 +187,103 @@ function injectSearchConsoleVerification(code: string) {
   document.head.appendChild(meta);
 }
 
-/* ── Helpers ── */
+/** Meta (Facebook) Pixel */
+function injectMetaPixel(pixelId: string) {
+  if (document.querySelector(`script[data-pixel="meta-${pixelId}"]`)) return;
+
+  const script = document.createElement("script");
+  script.setAttribute("data-pixel", `meta-${pixelId}`);
+  script.textContent = `
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '${pixelId}');
+    fbq('track', 'PageView');
+  `;
+  document.head.appendChild(script);
+}
+
+/** LinkedIn Insight Tag — key for professional chef & F&B audience */
+function injectLinkedIn(partnerId: string) {
+  if (document.querySelector(`script[data-linkedin-id="${partnerId}"]`)) return;
+
+  const script = document.createElement("script");
+  script.setAttribute("data-linkedin-id", partnerId);
+  script.textContent = `
+    _linkedin_partner_id = "${partnerId}";
+    window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+    window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+    (function(l) {
+      if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+      window.lintrk.q=[]}
+      var s = document.getElementsByTagName("script")[0];
+      var b = document.createElement("script");
+      b.type = "text/javascript";b.async = true;
+      b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+      s.parentNode.insertBefore(b, s);
+    })(window.lintrk);
+  `;
+  document.head.appendChild(script);
+
+  // LinkedIn noscript pixel
+  const noscript = document.createElement("noscript");
+  const img = document.createElement("img");
+  img.height = 1;
+  img.width = 1;
+  img.style.display = "none";
+  img.alt = "";
+  img.src = `https://px.ads.linkedin.com/collect/?pid=${partnerId}&fmt=gif`;
+  noscript.appendChild(img);
+  document.body.appendChild(noscript);
+}
+
+/** Hotjar heatmap & session recording */
+function injectHotjar(siteId: string) {
+  if (document.querySelector(`script[data-hotjar-id="${siteId}"]`)) return;
+
+  const script = document.createElement("script");
+  script.setAttribute("data-hotjar-id", siteId);
+  script.textContent = `
+    (function(h,o,t,j,a,r){
+      h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+      h._hjSettings={hjid:${siteId},hjsv:6};
+      a=o.getElementsByTagName('head')[0];
+      r=o.createElement('script');r.async=1;
+      r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+      a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+  `;
+  document.head.appendChild(script);
+}
+
+/* ═══════════════════════════════════════════
+   Public Utilities
+   ═══════════════════════════════════════════ */
+
+/**
+ * Push a structured event to GTM dataLayer.
+ * Logs to console in development mode only.
+ */
+export function pushDataLayer(event: string, params?: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+
+  const payload = { event, ...params };
+  (window as any).dataLayer = (window as any).dataLayer || [];
+  (window as any).dataLayer.push(payload);
+
+  if (import.meta.env.DEV) {
+    console.log("[DataLayer]", event, params);
+  }
+}
+
+/** Alias kept for backward compatibility */
+export const pushToDataLayer = pushDataLayer;
 
 /** Send conversion events to Google gtag */
 export function sendGoogleConversion(eventName: string, params?: Record<string, unknown>) {
   if (typeof window !== "undefined" && (window as any).gtag) {
     (window as any).gtag("event", eventName, params);
-  }
-}
-
-/** Push events to GTM dataLayer */
-export function pushToDataLayer(event: string, data?: Record<string, unknown>) {
-  if (typeof window !== "undefined") {
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    (window as any).dataLayer.push({ event, ...data });
   }
 }
