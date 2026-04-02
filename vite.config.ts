@@ -140,19 +140,21 @@ export default defineConfig(({ mode }) => ({
               cacheName: "supabase-storage-cache",
               expiration: {
                 maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 7,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
               },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
           {
-            urlPattern: /\.(png|jpg|jpeg|webp|svg|gif)$/i,
+            urlPattern: /\.(png|jpg|jpeg|webp|svg|gif|avif)$/i,
             handler: "CacheFirst",
             options: {
               cacheName: "image-cache",
               expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
               },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
           {
@@ -162,8 +164,9 @@ export default defineConfig(({ mode }) => ({
               cacheName: "font-cache",
               expiration: {
                 maxEntries: 20,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
               },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
           {
@@ -186,6 +189,33 @@ export default defineConfig(({ mode }) => ({
                 maxEntries: 30,
                 maxAgeSeconds: 60 * 60 * 24 * 365,
               },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Cache tracking library scripts (gtag, fbevents, etc.)
+            urlPattern: /^https:\/\/(www\.googletagmanager\.com|connect\.facebook\.net|analytics\.tiktok\.com|sc-static\.net|snap\.licdn\.com|static\.hotjar\.com)\/.*/i,
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "tracking-scripts-cache",
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24, // 1 day
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Cache CSS/JS assets with long expiry
+            urlPattern: /\.(css|js)$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "static-assets-cache",
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
         ],
