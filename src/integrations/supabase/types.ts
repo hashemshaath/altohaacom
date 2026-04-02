@@ -23176,6 +23176,7 @@ export type Database = {
       }
       check_email_exists: { Args: { p_email: string }; Returns: boolean }
       check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
+      check_username_taken: { Args: { p_username: string }; Returns: boolean }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -23251,6 +23252,10 @@ export type Database = {
       get_user_competition_role: {
         Args: { p_competition_id: string; p_user_id: string }
         Returns: string[]
+      }
+      get_user_email_by_username: {
+        Args: { p_username: string }
+        Returns: string
       }
       has_role: {
         Args: {
