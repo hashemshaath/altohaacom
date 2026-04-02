@@ -41,9 +41,9 @@ export default function MembershipRedeem() {
     queryFn: async () => {
       if (!code || code.length < 5) return null;
       const { data, error } = await supabase
-        .rpc("lookup_gift_by_code", { p_gift_code: code });
+        .rpc("lookup_gift_by_code" as any, { p_gift_code: code });
       if (error) throw error;
-      return data?.[0] ?? data ?? null;
+      return Array.isArray(data) ? data[0] ?? null : data;
     },
     enabled: code.length >= 5,
   });
