@@ -349,7 +349,7 @@ export default function PublicProfile() {
           {/* RIGHT SIDEBAR */}
           <div className="hidden md:block">
             <div className="sticky top-20 space-y-4">
-              {!isProfileFan && profile.is_open_to_work && (
+              {!isProfileFan && (profile as any)?.is_open_to_work && (
                 <SectionReveal delay={180} direction="right">
                   <ProfileAvailabilityCard profile={profile} isAr={isAr} />
                 </SectionReveal>
