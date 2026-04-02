@@ -885,6 +885,54 @@ export type Database = {
         }
         Relationships: []
       }
+      approval_requests: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          notes: string | null
+          payload: Json
+          rejection_reason: string | null
+          request_type: string
+          requested_at: string
+          requested_by: string
+          status: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          notes?: string | null
+          payload?: Json
+          rejection_reason?: string | null
+          request_type: string
+          requested_at?: string
+          requested_by: string
+          status?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          notes?: string | null
+          payload?: Json
+          rejection_reason?: string | null
+          request_type?: string
+          requested_at?: string
+          requested_by?: string
+          status?: string
+        }
+        Relationships: []
+      }
       article_reactions: {
         Row: {
           article_id: string
@@ -1073,6 +1121,51 @@ export type Database = {
           name?: string
           name_ar?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      audit_logs: {
+        Row: {
+          action_type: string
+          actor_id: string | null
+          actor_role: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          new_value: Json | null
+          old_value: Json | null
+          request_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action_type: string
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          new_value?: Json | null
+          old_value?: Json | null
+          request_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action_type?: string
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          new_value?: Json | null
+          old_value?: Json | null
+          request_id?: string | null
+          user_agent?: string | null
         }
         Relationships: []
       }
@@ -5228,6 +5321,13 @@ export type Database = {
             referencedRelation: "profiles_public"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "competition_registrations_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       competition_roles: {
@@ -8065,6 +8165,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles_public"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "entity_positions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_safe"
             referencedColumns: ["user_id"]
           },
         ]
@@ -12578,6 +12685,39 @@ export type Database = {
           },
         ]
       }
+      idempotency_keys: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          expires_at: string
+          id: string
+          idempotency_key: string
+          operation: string
+          response: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          expires_at?: string
+          id?: string
+          idempotency_key: string
+          operation: string
+          response?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          expires_at?: string
+          id?: string
+          idempotency_key?: string
+          operation?: string
+          response?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       integration_settings: {
         Row: {
           config: Json | null
@@ -12796,6 +12936,7 @@ export type Database = {
           title_ar: string | null
           updated_at: string
           user_id: string
+          version: number
         }
         Insert: {
           amount: number
@@ -12826,6 +12967,7 @@ export type Database = {
           title_ar?: string | null
           updated_at?: string
           user_id: string
+          version?: number
         }
         Update: {
           amount?: number
@@ -12856,6 +12998,7 @@ export type Database = {
           title_ar?: string | null
           updated_at?: string
           user_id?: string
+          version?: number
         }
         Relationships: [
           {
@@ -22813,6 +22956,7 @@ export type Database = {
           status: string
           transaction_number: string
           type: string
+          version: number
           wallet_id: string
         }
         Insert: {
@@ -22833,6 +22977,7 @@ export type Database = {
           status?: string
           transaction_number: string
           type: string
+          version?: number
           wallet_id: string
         }
         Update: {
@@ -22853,6 +22998,7 @@ export type Database = {
           status?: string
           transaction_number?: string
           type?: string
+          version?: number
           wallet_id?: string
         }
         Relationships: [
@@ -23303,6 +23449,73 @@ export type Database = {
           },
         ]
       }
+      profiles_safe: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"] | null
+          avatar_url: string | null
+          bio: string | null
+          bio_ar: string | null
+          city: string | null
+          country_code: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          email: string | null
+          full_name: string | null
+          full_name_ar: string | null
+          is_chef_visible: boolean | null
+          is_verified: boolean | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          phone: string | null
+          profile_visibility: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          city?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          date_of_birth?: never
+          email?: never
+          full_name?: string | null
+          full_name_ar?: string | null
+          is_chef_visible?: boolean | null
+          is_verified?: boolean | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          phone?: never
+          profile_visibility?: string | null
+          user_id?: string | null
+          username?: string | null
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          city?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          date_of_birth?: never
+          email?: never
+          full_name?: string | null
+          full_name_ar?: string | null
+          is_chef_visible?: boolean | null
+          is_verified?: boolean | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          phone?: never
+          profile_visibility?: string | null
+          user_id?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       approve_chefs_table_request: {
@@ -23322,6 +23535,10 @@ export type Database = {
         Returns: number
       }
       check_email_exists: { Args: { p_email: string }; Returns: boolean }
+      check_idempotency: {
+        Args: { p_key: string; p_operation: string }
+        Returns: Json
+      }
       check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
       check_reset_rate_limit: {
         Args: { p_identifier: string }
@@ -23419,6 +23636,7 @@ export type Database = {
         Returns: string
       }
       has_organizer_role: { Args: never; Returns: boolean }
+      has_permission: { Args: { p_permission_code: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -23447,6 +23665,16 @@ export type Database = {
       }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
       is_valid_chef: { Args: { p_user_id: string }; Returns: boolean }
+      log_audit_event: {
+        Args: {
+          p_action_type: string
+          p_entity_id?: string
+          p_entity_type: string
+          p_new_value?: Json
+          p_old_value?: Json
+        }
+        Returns: string
+      }
       log_feature_access: {
         Args: {
           p_feature_code: string
@@ -23478,6 +23706,10 @@ export type Database = {
       notify_membership_expiry_reminders: { Args: never; Returns: undefined }
       notify_trial_expiry_reminders: { Args: never; Returns: undefined }
       notify_upcoming_exhibitions: { Args: never; Returns: undefined }
+      process_approval: {
+        Args: { p_approved: boolean; p_reason?: string; p_request_id: string }
+        Returns: boolean
+      }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
@@ -23504,6 +23736,15 @@ export type Database = {
       reject_chefs_table_request: {
         Args: { p_rejection_reason: string; p_request_id: string }
         Returns: undefined
+      }
+      request_approval: {
+        Args: {
+          p_entity_id: string
+          p_entity_type: string
+          p_payload?: Json
+          p_type: string
+        }
+        Returns: string
       }
       start_membership_trial: {
         Args: { p_duration_days?: number; p_tier?: string; p_user_id: string }
