@@ -1,22 +1,38 @@
-import { memo, forwardRef } from "react";
+import { memo } from "react";
+
 /**
  * Resource hints for critical third-party origins.
- * Preconnect for faster external resource loading and prefetch key API endpoints.
+ * Preconnect with crossorigin="anonymous" ensures cookie-free requests.
+ *
+ * NOTE: Google Fonts and Supabase preconnect are already in index.html <head>
+ * for earliest possible discovery. This component adds tracking-related
+ * origins that are only needed after the app boots.
  */
-export const ResourceHints = memo(forwardRef<HTMLElement>(function ResourceHints(_props, _ref) {
+export const ResourceHints = memo(function ResourceHints() {
   return (
     <>
-      {/* Supabase API & Storage — preconnect for both API and storage CDN */}
-      <link rel="dns-prefetch" href="https://pbjhffdnzlekprmxfbnt.supabase.co" />
-      <link rel="preconnect" href="https://pbjhffdnzlekprmxfbnt.supabase.co" crossOrigin="anonymous" />
+      {/* Google Tag Manager / Analytics — preconnect for tracking scripts */}
+      <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
 
-      {/* Supabase Storage CDN */}
-      <link rel="dns-prefetch" href="https://pbjhffdnzlekprmxfbnt.supabase.co/storage/v1" />
+      {/* Google Analytics beacon endpoint */}
+      <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+      <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
 
-      {/* Google Fonts */}
-      <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      {/* Meta Pixel */}
+      <link rel="dns-prefetch" href="https://connect.facebook.net" />
+
+      {/* TikTok Pixel */}
+      <link rel="dns-prefetch" href="https://analytics.tiktok.com" />
+
+      {/* Snap Pixel */}
+      <link rel="dns-prefetch" href="https://sc-static.net" />
+
+      {/* LinkedIn Insight */}
+      <link rel="dns-prefetch" href="https://snap.licdn.com" />
+
+      {/* Hotjar */}
+      <link rel="dns-prefetch" href="https://static.hotjar.com" />
     </>
   );
-}));
+});

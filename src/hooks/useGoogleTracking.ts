@@ -8,9 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
  * Injects GTM, GA4, Google Ads, AdSense, GSC, Meta Pixel, TikTok Pixel,
  * Snap Pixel, LinkedIn, and Hotjar scripts dynamically.
  *
- * IMPORTANT: When GTM is active it manages the dataLayer. GA4 and Google Ads
- * are typically configured *inside* GTM — but if they are also enabled here
- * they will be loaded standalone (safe; gtag deduplicates automatically).
+ * All external scripts use crossorigin="anonymous" so the browser sends
+ * cookie-free requests — eliminating unnecessary network traffic.
  */
 
 const ALL_TRACKING_TYPES = [
@@ -88,6 +87,19 @@ export function useGoogleTracking() {
 }
 
 /* ═══════════════════════════════════════════
+   Helper: create a cookie-free async script
+   ═══════════════════════════════════════════ */
+
+function createAsyncScript(src: string, attrs?: Record<string, string>): HTMLScriptElement {
+  const s = document.createElement("script");
+  s.async = true;
+  s.crossOrigin = "anonymous";
+  s.src = src;
+  if (attrs) Object.entries(attrs).forEach(([k, v]) => s.setAttribute(k, v));
+  return s;
+}
+
+/* ═══════════════════════════════════════════
    Shared gtag bootstrap — ensures the global
    `gtag()` function exists exactly once.
    ═══════════════════════════════════════════ */
@@ -114,7 +126,8 @@ function injectGTM(containerId: string) {
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;
+    j.crossOrigin='anonymous';f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','${containerId}');
   `;
   document.head.insertBefore(script, document.head.firstChild);
@@ -133,36 +146,32 @@ function injectGTM(containerId: string) {
 
 function injectGA4(measurementId: string) {
   if (document.querySelector(`script[src*="gtag/js?id=${measurementId}"]`)) return;
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-  document.head.appendChild(script);
-
+  document.head.appendChild(
+    createAsyncScript(`https://www.googletagmanager.com/gtag/js?id=${measurementId}`)
+  );
   ensureGtag();
   (window as any).gtag("config", measurementId, { send_page_view: true });
 }
 
 function injectGoogleAds(conversionId: string) {
-  // If GA4 already loaded gtag/js we can skip the loader script
+  // Reuse gtag/js loader if GA4 already loaded it
   if (!document.querySelector('script[src*="gtag/js"]')) {
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${conversionId}`;
-    document.head.appendChild(script);
+    document.head.appendChild(
+      createAsyncScript(`https://www.googletagmanager.com/gtag/js?id=${conversionId}`)
+    );
   }
-
   ensureGtag();
   (window as any).gtag("config", conversionId);
 }
 
 function injectAdSense(publisherId: string) {
   if (document.querySelector(`script[data-ad-client="${publisherId}"]`)) return;
-  const script = document.createElement("script");
-  script.async = true;
-  script.crossOrigin = "anonymous";
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`;
-  script.setAttribute("data-ad-client", publisherId);
-  document.head.appendChild(script);
+  document.head.appendChild(
+    createAsyncScript(
+      `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`,
+      { "data-ad-client": publisherId }
+    )
+  );
 }
 
 function injectSearchConsoleVerification(code: string) {
@@ -181,7 +190,8 @@ function injectMetaPixel(pixelId: string) {
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    t.crossOrigin='anonymous';t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window,
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '${pixelId}');
     fbq('track', 'PageView');
@@ -202,8 +212,9 @@ function injectTikTokPixel(pixelId: string) {
     n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){
     var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],
     ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};
-    var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+
-    "&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+    var o=document.createElement("script");o.type="text/javascript",o.async=!0,
+    o.crossOrigin='anonymous',o.src=i+"?sdkid="+e+"&lib="+t;
+    var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
     ttq.load('${pixelId}');ttq.page()}(window,document,'ttq');
   `;
   document.head.appendChild(script);
@@ -216,7 +227,8 @@ function injectSnapchatPixel(pixelId: string) {
   script.textContent = `
     (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?
     a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var s='script';
-    var r=t.createElement(s);r.async=!0;r.src=n;var u=t.getElementsByTagName(s)[0];
+    var r=t.createElement(s);r.async=!0;r.crossOrigin='anonymous';r.src=n;
+    var u=t.getElementsByTagName(s)[0];
     u.parentNode.insertBefore(r,u)})(window,document,'https://sc-static.net/scevent.min.js');
     snaptr('init', '${pixelId}', {});
     snaptr('track', 'PAGE_VIEW');
@@ -238,6 +250,7 @@ function injectLinkedIn(partnerId: string) {
       var s = document.getElementsByTagName("script")[0];
       var b = document.createElement("script");
       b.type = "text/javascript";b.async = true;
+      b.crossOrigin = "anonymous";
       b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
       s.parentNode.insertBefore(b, s);
     })(window.lintrk);
@@ -265,6 +278,7 @@ function injectHotjar(siteId: string) {
       h._hjSettings={hjid:${siteId},hjsv:6};
       a=o.getElementsByTagName('head')[0];
       r=o.createElement('script');r.async=1;
+      r.crossOrigin='anonymous';
       r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
       a.appendChild(r);
     })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
