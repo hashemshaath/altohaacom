@@ -113,7 +113,7 @@ export function useGlobalEventsCalendar(filters?: {
             status: c.status || "upcoming",
             is_international: false,
             is_recurring: false,
-            link: `/competitions/${c.id}`,
+            link: ROUTES.competition(c.id),
             color: "chart-1",
             icon: "Trophy",
             source: "competition",
