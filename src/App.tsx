@@ -79,7 +79,7 @@ function AppRoutes() {
     <ErrorBoundary>
       <MaintenanceGuard>
         <Suspense fallback={RouteSpinner}>
-          <div id="main-content" className="pb-16 md:pb-0 overflow-x-hidden">
+          <div id="main-content" className="pb-16 md:pb-0 min-h-0">
             <PageTransition>
               <Routes>
                 {publicRoutes}
