@@ -118,12 +118,12 @@ export const CommandPalette = memo(function CommandPalette() {
         supabase.from("culinary_entities").select("id, name, name_ar, type").or(`name.ilike.%${escaped}%,name_ar.ilike.%${escaped}%`).eq("is_visible", true).limit(2),
       ]);
 
-      comps.data?.forEach((c) => searchResults.push({ id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: `/competitions/${c.id}`, subtitle: c.country_code || undefined }));
-      articles.data?.forEach((a) => searchResults.push({ id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: `/news/${a.slug}`, subtitle: a.type }));
-      members.data?.forEach((m) => searchResults.push({ id: m.user_id, title: isAr && m.full_name_ar ? m.full_name_ar : m.full_name || m.username || "", type: "member", href: `/u/${m.username}`, subtitle: m.specialization || undefined }));
-      recipes.data?.forEach((r) => searchResults.push({ id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: `/recipes/${r.slug || r.id}` }));
-      exhibitions.data?.forEach((e) => searchResults.push({ id: e.id, title: isAr && e.title_ar ? e.title_ar : e.title, type: "exhibition", href: `/exhibitions/${e.slug || e.id}` }));
-      entities.data?.forEach((e) => searchResults.push({ id: e.id, title: isAr && e.name_ar ? e.name_ar : e.name, type: "entity", href: `/entities/${e.id}`, subtitle: e.type || undefined }));
+      comps.data?.forEach((c) => searchResults.push({ id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: ROUTES.competition(c.id), subtitle: c.country_code || undefined }));
+      articles.data?.forEach((a) => searchResults.push({ id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: ROUTES.article(a.slug), subtitle: a.type }));
+      members.data?.forEach((m) => searchResults.push({ id: m.user_id, title: isAr && m.full_name_ar ? m.full_name_ar : m.full_name || m.username || "", type: "member", href: ROUTES.publicProfile(m.username || ""), subtitle: m.specialization || undefined }));
+      recipes.data?.forEach((r) => searchResults.push({ id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: ROUTES.recipe(r.slug || r.id) }));
+      exhibitions.data?.forEach((e) => searchResults.push({ id: e.id, title: isAr && e.title_ar ? e.title_ar : e.title, type: "exhibition", href: ROUTES.exhibition(e.slug || e.id) }));
+      entities.data?.forEach((e) => searchResults.push({ id: e.id, title: isAr && e.name_ar ? e.name_ar : e.name, type: "entity", href: ROUTES.entity(e.id), subtitle: e.type || undefined }));
 
       return searchResults;
     },

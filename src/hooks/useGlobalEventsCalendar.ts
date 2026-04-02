@@ -148,7 +148,7 @@ export function useGlobalEventsCalendar(filters?: {
             status: e.status || "upcoming",
             is_international: false,
             is_recurring: false,
-            link: e.slug ? `/exhibitions/${e.slug}` : null,
+            link: e.slug ? ROUTES.exhibition(e.slug) : null,
             color: "chart-3",
             icon: "Landmark",
             source: "exhibition",

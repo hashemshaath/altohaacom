@@ -47,16 +47,16 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
       ]);
 
       comps.data?.forEach(c => searchResults.push({
-        id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: `/competitions/${c.id}`, subtitle: c.country_code || undefined,
+        id: c.id, title: isAr && c.title_ar ? c.title_ar : c.title, type: "competition", href: ROUTES.competition(c.id), subtitle: c.country_code || undefined,
       }));
       recipes.data?.forEach(r => searchResults.push({
-        id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: `/recipes/${r.id}`, subtitle: r.category || undefined,
+        id: r.id, title: isAr && r.title_ar ? r.title_ar : r.title, type: "recipe", href: ROUTES.recipe(r.id), subtitle: r.category || undefined,
       }));
       articles.data?.forEach(a => searchResults.push({
-        id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: `/news/${a.slug}`, subtitle: a.type,
+        id: a.id, title: isAr && a.title_ar ? a.title_ar : a.title, type: "article", href: ROUTES.article(a.slug), subtitle: a.type,
       }));
       chefs.data?.forEach(c => searchResults.push({
-        id: c.user_id, title: isAr && c.full_name_ar ? c.full_name_ar : c.full_name || c.username || "", type: "chef", href: `/u/${c.username}`, subtitle: c.specialization || undefined,
+        id: c.user_id, title: isAr && c.full_name_ar ? c.full_name_ar : c.full_name || c.username || "", type: "chef", href: ROUTES.publicProfile(c.username || ""), subtitle: c.specialization || undefined,
       }));
 
       return searchResults;

@@ -116,7 +116,7 @@ export const ReEngagementPrompt = memo(function ReEngagementPrompt() {
           {/* Quick stats */}
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => { setOpen(false); navigate("/competitions"); }}
+              onClick={() => { setOpen(false); navigate(ROUTES.competitions); }}
               className="rounded-xl border border-border/50 p-3 text-center hover:bg-accent/50 transition-colors active:scale-95"
             >
               <Trophy className="h-5 w-5 mx-auto text-primary mb-1" />
