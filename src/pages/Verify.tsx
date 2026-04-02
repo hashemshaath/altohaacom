@@ -60,10 +60,10 @@ export default function Verify() {
         case "user": {
           const { data } = await supabase
             .from("profiles_public")
-            .select("full_name, username, specialization, experience_level, location, bio, account_number, avatar_url, country_code, website")
+            .select("full_name, username, specialization, location, bio, account_number, avatar_url, country_code, website")
             .eq("username", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...data, type: "user" as const } : null;
+          return data ? { ...(data as Record<string, unknown>), type: "user" as const } : null;
         }
         case "certificate": {
           const { data } = await supabase.rpc("verify_certificate", { p_code: qrResult.entity_id });

@@ -73,7 +73,7 @@ export default function PublicProfile() {
   const categorizedRecords = useMemo(() => categorizeCareerRecords(careerRecords), [careerRecords]);
 
   const isOwnProfile = user?.id === profile?.user_id;
-  const visibility = profile?.section_visibility || {};
+  const visibility = (profile as any)?.section_visibility || {};
   const isVisible = useCallback((section: string) => visibility[section] !== false, [visibility]);
   const currentWork = categorizedRecords.work.find((r: any) => r.is_current) || categorizedRecords.work[0];
 
@@ -349,7 +349,7 @@ export default function PublicProfile() {
           {/* RIGHT SIDEBAR */}
           <div className="hidden md:block">
             <div className="sticky top-20 space-y-4">
-              {!isProfileFan && profile.is_open_to_work && (
+              {!isProfileFan && (profile as any)?.is_open_to_work && (
                 <SectionReveal delay={180} direction="right">
                   <ProfileAvailabilityCard profile={profile} isAr={isAr} />
                 </SectionReveal>

@@ -23108,40 +23108,14 @@ export type Database = {
       }
       fan_leaderboard: {
         Row: {
-          account_type: Database["public"]["Enums"]["account_type"] | null
           avatar_url: string | null
-          comments_count: number | null
           engagement_score: number | null
-          favorites_count: number | null
-          following_count: number | null
           full_name: string | null
-          reviews_count: number | null
+          total_comments: number | null
+          total_likes: number | null
+          total_saves: number | null
           user_id: string | null
           username: string | null
-        }
-        Insert: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
-          avatar_url?: string | null
-          comments_count?: never
-          engagement_score?: never
-          favorites_count?: never
-          following_count?: never
-          full_name?: string | null
-          reviews_count?: never
-          user_id?: string | null
-          username?: string | null
-        }
-        Update: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
-          avatar_url?: string | null
-          comments_count?: never
-          engagement_score?: never
-          favorites_count?: never
-          following_count?: never
-          full_name?: string | null
-          reviews_count?: never
-          user_id?: string | null
-          username?: string | null
         }
         Relationships: []
       }
@@ -23211,33 +23185,155 @@ export type Database = {
       profiles_public: {
         Row: {
           account_number: string | null
-          account_status: Database["public"]["Enums"]["account_status"] | null
           account_type: Database["public"]["Enums"]["account_type"] | null
           avatar_url: string | null
           bio: string | null
           bio_ar: string | null
           city: string | null
-          company_id: string | null
-          company_role: string | null
           country_code: string | null
           cover_image_url: string | null
           created_at: string | null
           display_name: string | null
           display_name_ar: string | null
-          education_entity_id: string | null
-          education_institution: string | null
-          education_level: string | null
-          experience_level:
-            | Database["public"]["Enums"]["experience_level"]
-            | null
           facebook: string | null
-          follow_privacy: string | null
           full_name: string | null
           full_name_ar: string | null
-          gender: string | null
-          global_awards: Json | null
           id: string | null
           instagram: string | null
+          is_chef_visible: boolean | null
+          is_verified: boolean | null
+          job_title: string | null
+          job_title_ar: string | null
+          linkedin: string | null
+          location: string | null
+          membership_status:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          nationality: string | null
+          preferred_language: string | null
+          profile_visibility: string | null
+          snapchat: string | null
+          specialization: string | null
+          specialization_ar: string | null
+          tiktok: string | null
+          twitter: string | null
+          user_id: string | null
+          username: string | null
+          view_count: number | null
+          website: string | null
+          years_of_experience: number | null
+          youtube: string | null
+        }
+        Insert: {
+          account_number?: string | null
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          city?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          display_name_ar?: string | null
+          facebook?: string | null
+          full_name?: string | null
+          full_name_ar?: string | null
+          id?: string | null
+          instagram?: string | null
+          is_chef_visible?: boolean | null
+          is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          linkedin?: string | null
+          location?: string | null
+          membership_status?:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
+          preferred_language?: string | null
+          profile_visibility?: string | null
+          snapchat?: string | null
+          specialization?: string | null
+          specialization_ar?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          user_id?: string | null
+          username?: string | null
+          view_count?: number | null
+          website?: string | null
+          years_of_experience?: number | null
+          youtube?: string | null
+        }
+        Update: {
+          account_number?: string | null
+          account_type?: Database["public"]["Enums"]["account_type"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          bio_ar?: string | null
+          city?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          display_name_ar?: string | null
+          facebook?: string | null
+          full_name?: string | null
+          full_name_ar?: string | null
+          id?: string | null
+          instagram?: string | null
+          is_chef_visible?: boolean | null
+          is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          linkedin?: string | null
+          location?: string | null
+          membership_status?:
+            | Database["public"]["Enums"]["membership_status"]
+            | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
+          preferred_language?: string | null
+          profile_visibility?: string | null
+          snapchat?: string | null
+          specialization?: string | null
+          specialization_ar?: string | null
+          tiktok?: string | null
+          twitter?: string | null
+          user_id?: string | null
+          username?: string | null
+          view_count?: number | null
+          website?: string | null
+          years_of_experience?: number | null
+          youtube?: string | null
+        }
+        Relationships: []
+      }
+      profiles_safe: {
+        Row: {
+          account_number: string | null
+          account_type: Database["public"]["Enums"]["account_type"] | null
+          avatar_url: string | null
+          bio: string | null
+          bio_ar: string | null
+          city: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          display_name: string | null
+          display_name_ar: string | null
+          facebook: string | null
+          full_name: string | null
+          full_name_ar: string | null
+          id: string | null
+          instagram: string | null
+          is_chef_visible: boolean | null
           is_open_to_work: boolean | null
           is_verified: boolean | null
           job_availability_visibility: string | null
@@ -23245,23 +23341,13 @@ export type Database = {
           job_title_ar: string | null
           linkedin: string | null
           location: string | null
-          membership_expires_at: string | null
           membership_status:
             | Database["public"]["Enums"]["membership_status"]
             | null
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           nationality: string | null
-          offers_services: boolean | null
-          preferred_job_types: string[] | null
           preferred_language: string | null
-          preferred_work_locations: string[] | null
-          profile_completed: boolean | null
           profile_visibility: string | null
-          second_nationality: string | null
-          section_visibility: Json | null
-          services_description: string | null
-          services_description_ar: string | null
-          show_nationality: boolean | null
           snapchat: string | null
           specialization: string | null
           specialization_ar: string | null
@@ -23270,47 +23356,29 @@ export type Database = {
           updated_at: string | null
           user_id: string | null
           username: string | null
-          verification_badge: string | null
-          verification_level: string | null
-          verified_at: string | null
           view_count: number | null
           website: string | null
-          whatsapp: string | null
-          willing_to_relocate: boolean | null
-          work_availability_note: string | null
-          work_availability_note_ar: string | null
           years_of_experience: number | null
           youtube: string | null
         }
         Insert: {
           account_number?: string | null
-          account_status?: Database["public"]["Enums"]["account_status"] | null
           account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
           city?: string | null
-          company_id?: string | null
-          company_role?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           display_name?: string | null
           display_name_ar?: string | null
-          education_entity_id?: string | null
-          education_institution?: string | null
-          education_level?: string | null
-          experience_level?:
-            | Database["public"]["Enums"]["experience_level"]
-            | null
           facebook?: string | null
-          follow_privacy?: string | null
           full_name?: string | null
           full_name_ar?: string | null
-          gender?: string | null
-          global_awards?: Json | null
           id?: string | null
           instagram?: string | null
+          is_chef_visible?: boolean | null
           is_open_to_work?: boolean | null
           is_verified?: boolean | null
           job_availability_visibility?: string | null
@@ -23318,7 +23386,6 @@ export type Database = {
           job_title_ar?: string | null
           linkedin?: string | null
           location?: string | null
-          membership_expires_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
             | null
@@ -23326,17 +23393,8 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           nationality?: string | null
-          offers_services?: boolean | null
-          preferred_job_types?: string[] | null
           preferred_language?: string | null
-          preferred_work_locations?: string[] | null
-          profile_completed?: boolean | null
           profile_visibility?: string | null
-          second_nationality?: string | null
-          section_visibility?: Json | null
-          services_description?: string | null
-          services_description_ar?: string | null
-          show_nationality?: boolean | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
@@ -23345,47 +23403,29 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
           username?: string | null
-          verification_badge?: string | null
-          verification_level?: string | null
-          verified_at?: string | null
           view_count?: number | null
           website?: string | null
-          whatsapp?: string | null
-          willing_to_relocate?: boolean | null
-          work_availability_note?: string | null
-          work_availability_note_ar?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
         Update: {
           account_number?: string | null
-          account_status?: Database["public"]["Enums"]["account_status"] | null
           account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
           city?: string | null
-          company_id?: string | null
-          company_role?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           display_name?: string | null
           display_name_ar?: string | null
-          education_entity_id?: string | null
-          education_institution?: string | null
-          education_level?: string | null
-          experience_level?:
-            | Database["public"]["Enums"]["experience_level"]
-            | null
           facebook?: string | null
-          follow_privacy?: string | null
           full_name?: string | null
           full_name_ar?: string | null
-          gender?: string | null
-          global_awards?: Json | null
           id?: string | null
           instagram?: string | null
+          is_chef_visible?: boolean | null
           is_open_to_work?: boolean | null
           is_verified?: boolean | null
           job_availability_visibility?: string | null
@@ -23393,7 +23433,6 @@ export type Database = {
           job_title_ar?: string | null
           linkedin?: string | null
           location?: string | null
-          membership_expires_at?: string | null
           membership_status?:
             | Database["public"]["Enums"]["membership_status"]
             | null
@@ -23401,17 +23440,8 @@ export type Database = {
             | Database["public"]["Enums"]["membership_tier"]
             | null
           nationality?: string | null
-          offers_services?: boolean | null
-          preferred_job_types?: string[] | null
           preferred_language?: string | null
-          preferred_work_locations?: string[] | null
-          profile_completed?: boolean | null
           profile_visibility?: string | null
-          second_nationality?: string | null
-          section_visibility?: Json | null
-          services_description?: string | null
-          services_description_ar?: string | null
-          show_nationality?: boolean | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
@@ -23420,99 +23450,10 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
           username?: string | null
-          verification_badge?: string | null
-          verification_level?: string | null
-          verified_at?: string | null
           view_count?: number | null
           website?: string | null
-          whatsapp?: string | null
-          willing_to_relocate?: boolean | null
-          work_availability_note?: string | null
-          work_availability_note_ar?: string | null
           years_of_experience?: number | null
           youtube?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "profiles_education_entity_id_fkey"
-            columns: ["education_entity_id"]
-            isOneToOne: false
-            referencedRelation: "culinary_entities"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles_safe: {
-        Row: {
-          account_type: Database["public"]["Enums"]["account_type"] | null
-          avatar_url: string | null
-          bio: string | null
-          bio_ar: string | null
-          city: string | null
-          country_code: string | null
-          created_at: string | null
-          date_of_birth: string | null
-          email: string | null
-          full_name: string | null
-          full_name_ar: string | null
-          is_chef_visible: boolean | null
-          is_verified: boolean | null
-          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
-          phone: string | null
-          profile_visibility: string | null
-          user_id: string | null
-          username: string | null
-        }
-        Insert: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
-          avatar_url?: string | null
-          bio?: string | null
-          bio_ar?: string | null
-          city?: string | null
-          country_code?: string | null
-          created_at?: string | null
-          date_of_birth?: never
-          email?: never
-          full_name?: string | null
-          full_name_ar?: string | null
-          is_chef_visible?: boolean | null
-          is_verified?: boolean | null
-          membership_tier?:
-            | Database["public"]["Enums"]["membership_tier"]
-            | null
-          phone?: never
-          profile_visibility?: string | null
-          user_id?: string | null
-          username?: string | null
-        }
-        Update: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
-          avatar_url?: string | null
-          bio?: string | null
-          bio_ar?: string | null
-          city?: string | null
-          country_code?: string | null
-          created_at?: string | null
-          date_of_birth?: never
-          email?: never
-          full_name?: string | null
-          full_name_ar?: string | null
-          is_chef_visible?: boolean | null
-          is_verified?: boolean | null
-          membership_tier?:
-            | Database["public"]["Enums"]["membership_tier"]
-            | null
-          phone?: never
-          profile_visibility?: string | null
-          user_id?: string | null
-          username?: string | null
         }
         Relationships: []
       }
