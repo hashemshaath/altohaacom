@@ -61,17 +61,8 @@ function DeferredSection({ children, index }: { children: React.ReactNode; index
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
-      },
-      { rootMargin: "400px 0px", threshold: 0 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+
+
 
   if (inView) return <>{children}</>;
 
