@@ -60,8 +60,11 @@ export default function Auth() {
   const [signInCountry, setSignInCountry] = useState(DEFAULT_COUNTRY);
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
-  const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password">("phone");
+  const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password" | "pin">("phone");
   const [signInVerifiedPhone, setSignInVerifiedPhone] = useState("");
+  const [signInPin, setSignInPin] = useState("");
+  const [pinAvailable, setPinAvailable] = useState(false);
+  const [pinError, setPinError] = useState("");
 
   // Sign-up contact step
   const [phoneInput, setPhoneInput] = useState("");
