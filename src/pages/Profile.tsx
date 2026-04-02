@@ -214,6 +214,10 @@ export default function Profile() {
             {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={refetchProfile} />}
           </TabsContent>
 
+          <TabsContent value="security" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            <SecuritySettings />
+          </TabsContent>
+
           <TabsContent value="privacy" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={refetchProfile} />}
           </TabsContent>
