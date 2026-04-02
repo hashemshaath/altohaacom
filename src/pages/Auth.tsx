@@ -386,6 +386,76 @@ export default function Auth() {
     }
   };
 
+  // ── PIN Login (phone + PIN, no OTP) ──
+  const handlePinLogin = async () => {
+    setPinError("");
+    if (signInPin.length !== 6) {
+      setPinError(isAr ? "أدخل الرمز المكون من 6 أرقام" : "Enter your 6-digit PIN");
+      return;
+    }
+    setLoading(true);
+    try {
+      const fingerprint = await getDeviceFingerprint();
+      const fullPhone = normalizePhoneForStorage(signInPhoneCode + signInPhone.replace(/\s/g, ""));
+      const { data, error: fnError } = await supabase.functions.invoke("pin-auth", {
+        body: { action: "pin_login", phone: fullPhone, pin: signInPin, device_fingerprint: fingerprint },
+      });
+
+      if (fnError || data?.error) {
+        const code = data?.code;
+        if (code === "UNTRUSTED_DEVICE") {
+          setPinError(isAr ? "جهاز غير معروف. سجّل الدخول بالتحقق أولاً" : "Unrecognized device. Please login with OTP first.");
+        } else if (code === "WRONG_PIN") {
+          setPinError(isAr ? `رمز غير صحيح (${data.remaining_attempts} محاولات متبقية)` : `Incorrect PIN (${data.remaining_attempts} attempts remaining)`);
+        } else if (code === "PIN_LOCKED") {
+          setPinError(isAr ? "تم قفل الرمز مؤقتاً. حاول لاحقاً" : "PIN temporarily locked. Try again later.");
+        } else if (code === "PIN_EXPIRED") {
+          setPinError(isAr ? "انتهت صلاحية الرمز. أعد إعداده" : "PIN expired. Please set a new one.");
+        } else {
+          setPinError(data?.error || fnError?.message || "Login failed");
+        }
+        setLoading(false);
+        return;
+      }
+
+      if (data?.token_hash && data?.email) {
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          email: data.email,
+          token_hash: data.token_hash,
+          type: "magiclink",
+        });
+
+        if (verifyError) {
+          setPinError(isAr ? "فشل تسجيل الدخول" : "Login failed");
+          setLoading(false);
+          return;
+        }
+
+        toast({
+          title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
+          description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
+        });
+      }
+    } catch (err: any) {
+      setPinError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Check PIN availability for phone ──
+  const checkPinForPhone = async (fullPhone: string) => {
+    try {
+      const fingerprint = await getDeviceFingerprint();
+      const { data } = await supabase.functions.invoke("pin-auth", {
+        body: { action: "check_pin_by_phone", phone: fullPhone, device_fingerprint: fingerprint },
+      });
+      setPinAvailable(data?.has_pin && !data?.is_expired && data?.device_trusted);
+    } catch {
+      setPinAvailable(false);
+    }
+  };
+
   // ── Password Reset ──
   const [resetSuccess, setResetSuccess] = useState(false);
   const handleResetPassword = async () => {
