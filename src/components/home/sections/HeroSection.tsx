@@ -15,13 +15,17 @@ const SUPABASE_STORAGE = "https://pbjhffdnzlekprmxfbnt.supabase.co/storage/v1";
 /** Build an optimised Supabase Storage image URL with transforms */
 function heroImgUrl(path: string, width: number, quality = 80): string {
   if (!path) return "/placeholder.svg";
-  // Already a full URL with supabase
+  // Already a full URL with supabase storage
   if (path.includes("supabase.co/storage/")) {
     const base = path.replace("/object/", "/render/image/");
     const sep = base.includes("?") ? "&" : "?";
     return `${base}${sep}width=${width}&quality=${quality}&format=webp`;
   }
-  // Relative storage path
+  // Local public path (e.g. /competition-covers/...) — serve directly
+  if (path.startsWith("/")) {
+    return path;
+  }
+  // Relative storage path (no leading slash, no http)
   if (!path.startsWith("http")) {
     return `${SUPABASE_STORAGE}/render/image/public/${path}?width=${width}&quality=${quality}&format=webp`;
   }
