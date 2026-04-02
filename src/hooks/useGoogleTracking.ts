@@ -3,76 +3,46 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Reads tracking IDs from TWO sources:
- *   1. `site_settings` key "seo_analytics" (primary — admin SEO & Analytics panel)
- *   2. `integration_settings` table (legacy / additional Google integrations)
- *
- * Dynamically injects GTM, GA4, LinkedIn Insight, Hotjar, GSC verification,
- * Google Ads, and AdSense scripts. No IDs are hardcoded.
+ * Unified tracking injector.
+ * Reads ALL tracking configs from `integration_settings` (single source of truth).
+ * Injects GTM, GA4, Google Ads, AdSense, GSC, Meta Pixel, TikTok Pixel,
+ * Snap Pixel, LinkedIn, and Hotjar scripts dynamically.
  */
 
-const GOOGLE_TYPES = [
+const ALL_TRACKING_TYPES = [
   "google_analytics",
   "google_tag_manager",
   "google_ads",
   "google_adsense",
   "google_search_console",
+  "facebook_pixel",
+  "tiktok_pixel",
+  "snap_pixel",
+  "linkedin_insight",
+  "hotjar",
 ];
 
 export function useGoogleTracking() {
   const injected = useRef(false);
 
-  // Source 1: SEO Analytics settings (primary)
-  const { data: seoAnalytics } = useQuery({
-    queryKey: ["site-settings-seo-analytics"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("site_settings")
-        .select("value")
-        .eq("key", "seo_analytics")
-        .maybeSingle();
-      if (!data?.value) return null;
-      return typeof data.value === "string" ? JSON.parse(data.value) : data.value;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  // Source 2: Integration settings (legacy)
-  const { data: integrationConfigs } = useQuery({
-    queryKey: ["integration-settings-google-active"],
+  const { data: configs } = useQuery({
+    queryKey: ["integration-settings-tracking-active"],
     queryFn: async () => {
       const { data } = await supabase
         .from("integration_settings")
         .select("integration_type, config, is_active")
         .eq("is_active", true)
-        .in("integration_type", GOOGLE_TYPES);
+        .in("integration_type", ALL_TRACKING_TYPES);
       return data || [];
     },
     staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
-    if (injected.current) return;
-
-    const analytics = seoAnalytics?.analytics;
-    const hasSettingsData = analytics && Object.values(analytics).some((v: any) => !!v);
-    const hasIntegrationData = integrationConfigs && integrationConfigs.length > 0;
-
-    if (!hasSettingsData && !hasIntegrationData) return;
+    if (!configs || configs.length === 0 || injected.current) return;
     injected.current = true;
 
-    // ── From SEO Analytics settings (primary source) ──
-    if (analytics) {
-      if (analytics.gtmId) injectGTM(analytics.gtmId);
-      if (analytics.gaMeasurementId) injectGA4(analytics.gaMeasurementId);
-      if (analytics.gscVerification) injectSearchConsoleVerification(analytics.gscVerification);
-      if (analytics.metaPixelId) injectMetaPixel(analytics.metaPixelId);
-      if (analytics.linkedinInsightTagId) injectLinkedIn(analytics.linkedinInsightTagId);
-      if (analytics.hotjarSiteId) injectHotjar(analytics.hotjarSiteId);
-    }
-
-    // ── From integration_settings (legacy / additional) ──
-    (integrationConfigs || []).forEach((row: any) => {
+    configs.forEach((row: any) => {
       const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
       switch (row.integration_type) {
         case "google_analytics":
@@ -90,20 +60,32 @@ export function useGoogleTracking() {
         case "google_search_console":
           if (cfg.verification_code) injectSearchConsoleVerification(cfg.verification_code);
           break;
+        case "facebook_pixel":
+          if (cfg.pixel_id) injectMetaPixel(cfg.pixel_id);
+          break;
+        case "tiktok_pixel":
+          if (cfg.pixel_id) injectTikTokPixel(cfg.pixel_id);
+          break;
+        case "snap_pixel":
+          if (cfg.pixel_id) injectSnapchatPixel(cfg.pixel_id);
+          break;
+        case "linkedin_insight":
+          if (cfg.partner_id) injectLinkedIn(cfg.partner_id);
+          break;
+        case "hotjar":
+          if (cfg.site_id) injectHotjar(cfg.site_id);
+          break;
       }
     });
-  }, [seoAnalytics, integrationConfigs]);
+  }, [configs]);
 }
 
 /* ═══════════════════════════════════════════
    Script Injectors
    ═══════════════════════════════════════════ */
 
-/** Google Tag Manager — head snippet + body noscript fallback */
 function injectGTM(containerId: string) {
   if (document.querySelector(`script[data-gtm-id="${containerId}"]`)) return;
-
-  // Head script
   const script = document.createElement("script");
   script.setAttribute("data-gtm-id", containerId);
   script.textContent = `
@@ -115,7 +97,6 @@ function injectGTM(containerId: string) {
   `;
   document.head.insertBefore(script, document.head.firstChild);
 
-  // Body noscript fallback
   const noscript = document.createElement("noscript");
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.googletagmanager.com/ns.html?id=${containerId}`;
@@ -127,10 +108,8 @@ function injectGTM(containerId: string) {
   document.body.insertBefore(noscript, document.body.firstChild);
 }
 
-/** Google Analytics 4 — gtag.js */
 function injectGA4(measurementId: string) {
   if (document.querySelector(`script[src*="gtag/js?id=${measurementId}"]`)) return;
-
   const script = document.createElement("script");
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
@@ -146,10 +125,8 @@ function injectGA4(measurementId: string) {
   document.head.appendChild(inline);
 }
 
-/** Google Ads conversion tracking */
 function injectGoogleAds(conversionId: string) {
   if (document.querySelector(`script[src*="gtag/js?id=${conversionId}"]`)) return;
-
   const script = document.createElement("script");
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${conversionId}`;
@@ -165,10 +142,8 @@ function injectGoogleAds(conversionId: string) {
   document.head.appendChild(inline);
 }
 
-/** Google AdSense */
 function injectAdSense(publisherId: string) {
   if (document.querySelector(`script[data-ad-client="${publisherId}"]`)) return;
-
   const script = document.createElement("script");
   script.async = true;
   script.crossOrigin = "anonymous";
@@ -177,20 +152,16 @@ function injectAdSense(publisherId: string) {
   document.head.appendChild(script);
 }
 
-/** Google Search Console verification */
 function injectSearchConsoleVerification(code: string) {
   if (document.querySelector('meta[name="google-site-verification"]')) return;
-
   const meta = document.createElement("meta");
   meta.name = "google-site-verification";
   meta.content = code;
   document.head.appendChild(meta);
 }
 
-/** Meta (Facebook) Pixel */
 function injectMetaPixel(pixelId: string) {
   if (document.querySelector(`script[data-pixel="meta-${pixelId}"]`)) return;
-
   const script = document.createElement("script");
   script.setAttribute("data-pixel", `meta-${pixelId}`);
   script.textContent = `
@@ -205,10 +176,43 @@ function injectMetaPixel(pixelId: string) {
   document.head.appendChild(script);
 }
 
-/** LinkedIn Insight Tag — key for professional chef & F&B audience */
+function injectTikTokPixel(pixelId: string) {
+  if (document.querySelector(`script[data-pixel="tiktok-${pixelId}"]`)) return;
+  const script = document.createElement("script");
+  script.setAttribute("data-pixel", `tiktok-${pixelId}`);
+  script.textContent = `
+    !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=
+    ["page","track","identify","instances","debug","on","off","once","ready","alias",
+    "group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){
+    t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;
+    i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],
+    n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){
+    var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],
+    ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};
+    var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+
+    "&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+    ttq.load('${pixelId}');ttq.page()}(window,document,'ttq');
+  `;
+  document.head.appendChild(script);
+}
+
+function injectSnapchatPixel(pixelId: string) {
+  if (document.querySelector(`script[data-pixel="snap-${pixelId}"]`)) return;
+  const script = document.createElement("script");
+  script.setAttribute("data-pixel", `snap-${pixelId}`);
+  script.textContent = `
+    (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?
+    a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var s='script';
+    var r=t.createElement(s);r.async=!0;r.src=n;var u=t.getElementsByTagName(s)[0];
+    u.parentNode.insertBefore(r,u)})(window,document,'https://sc-static.net/scevent.min.js');
+    snaptr('init', '${pixelId}', {});
+    snaptr('track', 'PAGE_VIEW');
+  `;
+  document.head.appendChild(script);
+}
+
 function injectLinkedIn(partnerId: string) {
   if (document.querySelector(`script[data-linkedin-id="${partnerId}"]`)) return;
-
   const script = document.createElement("script");
   script.setAttribute("data-linkedin-id", partnerId);
   script.textContent = `
@@ -227,7 +231,6 @@ function injectLinkedIn(partnerId: string) {
   `;
   document.head.appendChild(script);
 
-  // LinkedIn noscript pixel
   const noscript = document.createElement("noscript");
   const img = document.createElement("img");
   img.height = 1;
@@ -239,10 +242,8 @@ function injectLinkedIn(partnerId: string) {
   document.body.appendChild(noscript);
 }
 
-/** Hotjar heatmap & session recording */
 function injectHotjar(siteId: string) {
   if (document.querySelector(`script[data-hotjar-id="${siteId}"]`)) return;
-
   const script = document.createElement("script");
   script.setAttribute("data-hotjar-id", siteId);
   script.textContent = `
@@ -262,17 +263,11 @@ function injectHotjar(siteId: string) {
    Public Utilities
    ═══════════════════════════════════════════ */
 
-/**
- * Push a structured event to GTM dataLayer.
- * Logs to console in development mode only.
- */
 export function pushDataLayer(event: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
-
   const payload = { event, ...params };
   (window as any).dataLayer = (window as any).dataLayer || [];
   (window as any).dataLayer.push(payload);
-
   if (import.meta.env.DEV) {
     console.log("[DataLayer]", event, params);
   }

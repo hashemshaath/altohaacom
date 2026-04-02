@@ -129,7 +129,6 @@ function AppContent() {
       <SkipToContent />
       {/* ─── Global Tracking ─── */}
       <GoogleTrackingProvider />
-      <TrackingScriptsInjector />
       <PageTracker />
       {!isHome && <AnnouncementBanner />}
       <AppRoutes />
