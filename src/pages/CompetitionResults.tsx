@@ -38,44 +38,49 @@ const PODIUM_CONFIG = [
 ];
 
 export default function CompetitionResults() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const { data: competition, isLoading: loadingComp } = useQuery({
-    queryKey: ["competition", id],
+    queryKey: ["competition", slug],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number").eq("id", id).maybeSingle();
+      let { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number, slug").eq("slug", slug).maybeSingle();
+      if (!data) {
+        ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number, slug").eq("id", slug).maybeSingle());
+      }
       if (error) throw error;
       if (!data) throw new Error("Competition not found");
       return data;
     },
-    enabled: !!id,
+    enabled: !!slug,
   });
 
+  const competitionId = competition?.id;
+
   const { data: categories } = useQuery({
-    queryKey: ["result-categories", id],
+    queryKey: ["result-categories", competitionId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar").eq("competition_id", id!).order("sort_order");
+      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar").eq("competition_id", competitionId!).order("sort_order");
       if (error) throw error;
       return data;
     },
-    enabled: !!id,
+    enabled: !!competitionId,
   });
 
   const { data: winners, isLoading: loadingWinners } = useQuery({
-    queryKey: ["competition-results", id],
+    queryKey: ["competition-results", competitionId],
     queryFn: async () => {
       const { data: registrations, error: regError } = await supabase
         .from("competition_registrations")
         .select("id, participant_id, dish_name, dish_image_url, category_id")
-        .eq("competition_id", id!)
+        .eq("competition_id", competitionId!)
         .eq("status", "approved");
       if (regError) throw regError;
       if (!registrations?.length) return [];
 
-      const { data: criteria } = await supabase.from("judging_criteria").select("id, weight, max_score").eq("competition_id", id!);
+      const { data: criteria } = await supabase.from("judging_criteria").select("id, weight, max_score").eq("competition_id", competitionId!);
       const registrationIds = registrations.map((r) => r.id);
       const { data: scores } = await supabase.from("competition_scores").select("registration_id, criteria_id, score").in("registration_id", registrationIds);
       const participantIds = registrations.map((r) => r.participant_id);
@@ -115,7 +120,7 @@ export default function CompetitionResults() {
       results.forEach((r, i) => { r.rank = i + 1; });
       return results;
     },
-    enabled: !!id,
+    enabled: !!competitionId,
   });
 
   const isLoading = loadingComp || loadingWinners;
@@ -166,7 +171,7 @@ export default function CompetitionResults() {
           </div>
           <div className="container relative py-10 md:py-14">
             <Button variant="ghost" size="sm" asChild className="mb-6 -ms-2">
-              <Link to={`/competitions/${id}`}>
+              <Link to={`/competitions/${competition?.slug || slug}`}>
                 <ArrowLeft className="me-1.5 h-4 w-4" />
                 {isAr ? "العودة للمسابقة" : "Back to Competition"}
               </Link>
