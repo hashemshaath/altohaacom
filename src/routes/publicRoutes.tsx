@@ -95,8 +95,10 @@ export const publicRoutes = (
     <Route path="/portfolio/:userId" element={<ChefPortfolio />} />
     <Route path="/search" element={<Search />} />
     <Route path="/help" element={<HelpCenter />} />
-    <Route path="/news" element={<News />} />
-    <Route path="/news/:slug" element={<ArticleDetail />} />
+    <Route path="/blog" element={<News />} />
+    <Route path="/blog/:slug" element={<ArticleDetail />} />
+    <Route path="/news" element={<Navigate to="/blog" replace />} />
+    <Route path="/news/:slug" element={<NewsSlugRedirect />} />
     <Route path="/sponsors" element={<SponsorsLanding />} />
     <Route path="/for-organizers" element={<OrganizersLanding />} />
     <Route path="/for-companies" element={<CompaniesLanding />} />
