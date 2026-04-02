@@ -1119,6 +1119,212 @@ export default function SEODashboard() {
     );
   }
 
+  // ── SEO Settings Query (for sitemap config + robots.txt) ──
+  const { data: seoSettings, refetch: refetchSeoSettings } = useQuery({
+    queryKey: ["seo-site-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "seo")
+        .maybeSingle();
+      if (error) throw error;
+      return (data?.value as any) || {};
+    },
+  });
+
+  const [sitemapToggles, setSitemapToggles] = useState<Record<string, boolean>>({});
+  const [robotsTxtDraft, setRobotsTxtDraft] = useState<string>("");
+  const [savingSeo, setSavingSeo] = useState(false);
+
+  useEffect(() => {
+    if (seoSettings) {
+      setSitemapToggles(seoSettings.sitemapSections || {
+        competitions: true, exhibitions: true, blog: true, chefs: true,
+        masterclasses: true, recipes: true, establishments: true,
+        mentorship: true, jobs: true, entities: true,
+      });
+      setRobotsTxtDraft(seoSettings.robotsTxt || DEFAULT_ROBOTS_TXT);
+    }
+  }, [seoSettings]);
+
+  const saveSeoField = async (patch: Record<string, any>) => {
+    setSavingSeo(true);
+    try {
+      const merged = { ...(seoSettings || {}), ...patch };
+      const { error } = await supabase
+        .from("site_settings")
+        .update({ value: merged as any, updated_at: new Date().toISOString() })
+        .eq("key", "seo");
+      if (error) throw error;
+      await refetchSeoSettings();
+      toast.success(isAr ? "تم الحفظ بنجاح" : "Saved successfully");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setSavingSeo(false);
+    }
+  };
+
+  // ── URL Health Monitor ──
+  function renderUrlHealth() {
+    const redirects = [
+      { old: "/news", new_url: "/blog", type: "Redirect", status: "Active" },
+      { old: "/news/:slug", new_url: "/blog/:slug", type: "Redirect", status: "Active" },
+      { old: "/profile/:username", new_url: "/:username", type: "Redirect", status: "Active" },
+      { old: "/competitions/:id", new_url: "/competitions/:slug", type: "Updated", status: "Active" },
+    ];
+
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Route className="h-4 w-4 text-primary" />
+            {isAr ? "مراقب صحة الروابط" : "URL Health Monitor"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/40 text-xs text-muted-foreground">
+                  <th className="text-start py-2 pe-3 font-medium">{isAr ? "الرابط القديم" : "Old URL Pattern"}</th>
+                  <th className="text-start py-2 px-3 font-medium">{isAr ? "الرابط الجديد" : "New URL"}</th>
+                  <th className="text-start py-2 px-3 font-medium">{isAr ? "النوع" : "Type"}</th>
+                  <th className="text-start py-2 ps-3 font-medium">{isAr ? "الحالة" : "Status"}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {redirects.map((r, i) => (
+                  <tr key={i} className="border-b border-border/20 last:border-0">
+                    <td className="py-2.5 pe-3 font-mono text-xs text-muted-foreground">{r.old}</td>
+                    <td className="py-2.5 px-3 font-mono text-xs font-medium">{r.new_url}</td>
+                    <td className="py-2.5 px-3">
+                      <Badge variant={r.type === "Redirect" ? "secondary" : "outline"} className="text-[9px]">
+                        {r.type === "Redirect" ? "301 Redirect" : "Route Update"}
+                      </Badge>
+                    </td>
+                    <td className="py-2.5 ps-3">
+                      <Badge variant="default" className="text-[9px] gap-1">
+                        <CheckCircle2 className="h-2.5 w-2.5" /> {r.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-3">
+            {isAr
+              ? "عمليات إعادة التوجيه النشطة في publicRoutes.tsx — تُعيد توجيه الروابط القديمة تلقائياً مع الحفاظ على ترتيب محركات البحث."
+              : "Active redirects in publicRoutes.tsx — old URLs are automatically redirected preserving SEO equity."}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // ── Sitemap Configuration ──
+  function renderSitemapConfig() {
+    const sections = [
+      { key: "competitions", label: isAr ? "المسابقات" : "Competitions" },
+      { key: "exhibitions", label: isAr ? "المعارض" : "Exhibitions" },
+      { key: "blog", label: isAr ? "المدونة / المقالات" : "Blog / Articles" },
+      { key: "chefs", label: isAr ? "الطهاة" : "Chef Profiles" },
+      { key: "masterclasses", label: isAr ? "الدورات" : "Masterclasses" },
+      { key: "recipes", label: isAr ? "الوصفات" : "Recipes" },
+      { key: "establishments", label: isAr ? "المنشآت" : "Establishments" },
+      { key: "mentorship", label: isAr ? "الإرشاد" : "Mentorship" },
+      { key: "jobs", label: isAr ? "الوظائف" : "Jobs" },
+      { key: "entities", label: isAr ? "الكيانات / الأكاديميات" : "Entities / Academies" },
+    ];
+
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Map className="h-4 w-4 text-primary" />
+            {isAr ? "إعدادات خريطة الموقع" : "Sitemap Configuration"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            {isAr ? "اختر الأقسام التي تظهر في خريطة الموقع XML:" : "Choose which sections appear in the XML sitemap:"}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {sections.map(s => (
+              <div key={s.key} className="flex items-center justify-between py-2 px-3 rounded-lg border border-border/40 hover:border-primary/20 transition-colors">
+                <span className="text-sm font-medium">{s.label}</span>
+                <Switch
+                  checked={sitemapToggles[s.key] !== false}
+                  onCheckedChange={(checked) =>
+                    setSitemapToggles(prev => ({ ...prev, [s.key]: checked }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+          <Button
+            onClick={() => saveSeoField({ sitemapSections: sitemapToggles })}
+            disabled={savingSeo}
+            size="sm"
+            className="gap-1.5 mt-2"
+          >
+            <Save className="h-3.5 w-3.5" />
+            {savingSeo ? (isAr ? "جارٍ الحفظ..." : "Saving...") : (isAr ? "حفظ الإعدادات" : "Save Sitemap Settings")}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // ── robots.txt Preview/Editor ──
+  function renderRobotsTxt() {
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <FileCode className="h-4 w-4 text-primary" />
+            {isAr ? "محرر robots.txt" : "robots.txt Editor"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            {isAr
+              ? "عدّل ملف robots.txt لتتحكم في زحف محركات البحث. يُحفظ هذا المحتوى في قاعدة البيانات."
+              : "Edit the robots.txt content to control search engine crawling. Content is stored in the database."}
+          </p>
+          <Textarea
+            value={robotsTxtDraft}
+            onChange={(e) => setRobotsTxtDraft(e.target.value)}
+            className="font-mono text-xs min-h-[320px] bg-muted/30"
+            dir="ltr"
+          />
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => saveSeoField({ robotsTxt: robotsTxtDraft })}
+              disabled={savingSeo}
+              size="sm"
+              className="gap-1.5"
+            >
+              <Save className="h-3.5 w-3.5" />
+              {savingSeo ? (isAr ? "جارٍ الحفظ..." : "Saving...") : (isAr ? "حفظ" : "Save robots.txt")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 text-xs"
+              onClick={() => { setRobotsTxtDraft(DEFAULT_ROBOTS_TXT); toast.info(isAr ? "تم استعادة القيم الافتراضية" : "Reset to defaults"); }}
+            >
+              <RefreshCw className="h-3 w-3" />
+              {isAr ? "استعادة الافتراضي" : "Reset to Default"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-0">
       {/* Header */}
