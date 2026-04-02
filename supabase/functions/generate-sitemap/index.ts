@@ -51,100 +51,181 @@ function getClient() {
   return createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 }
 
+// ── Static Pages ──
 const STATIC_PAGES = [
   { path: "/", p: "1.0", f: "daily" },
-  { path: "/en/", p: "1.0", f: "daily" },
-  { path: "/competitions", p: "1.0", f: "daily" },
-  { path: "/exhibitions", p: "1.0", f: "daily" },
-  { path: "/academies", p: "1.0", f: "daily" },
-  { path: "/associations", p: "1.0", f: "daily" },
-  { path: "/chefs", p: "1.0", f: "daily" },
-  { path: "/events-calendar", p: "1.0", f: "daily" },
-  { path: "/news", p: "1.0", f: "daily" },
-  { path: "/about", p: "1.0", f: "daily" },
-  { path: "/contact", p: "1.0", f: "daily" },
-  { path: "/discover", p: "0.9", f: "daily" },
-  { path: "/community", p: "0.8", f: "daily" },
+  { path: "/competitions", p: "0.8", f: "daily" },
+  { path: "/exhibitions", p: "0.8", f: "daily" },
+  { path: "/blog", p: "0.8", f: "daily" },
+  { path: "/masterclasses", p: "0.8", f: "daily" },
+  { path: "/recipes", p: "0.8", f: "daily" },
+  { path: "/establishments", p: "0.8", f: "daily" },
+  { path: "/mentorship", p: "0.8", f: "daily" },
+  { path: "/jobs", p: "0.8", f: "daily" },
+  { path: "/pro-suppliers", p: "0.8", f: "daily" },
+  { path: "/entities", p: "0.8", f: "daily" },
+  { path: "/organizers", p: "0.8", f: "daily" },
+  { path: "/events-calendar", p: "0.8", f: "daily" },
+  { path: "/membership", p: "0.8", f: "weekly" },
+  { path: "/about", p: "0.5", f: "monthly" },
+  { path: "/contact", p: "0.5", f: "monthly" },
   { path: "/rankings", p: "0.8", f: "weekly" },
-  { path: "/recipes", p: "0.8", f: "weekly" },
-  { path: "/masterclasses", p: "0.7", f: "weekly" },
-  { path: "/shop", p: "0.7", f: "daily" },
+  { path: "/discover", p: "0.7", f: "daily" },
   { path: "/chefs-table", p: "0.7", f: "weekly" },
-  { path: "/pro-suppliers", p: "0.7", f: "weekly" },
-  { path: "/mentorship", p: "0.7", f: "weekly" },
-  { path: "/establishments", p: "0.7", f: "weekly" },
-  { path: "/organizers", p: "0.7", f: "weekly" },
-  { path: "/jobs", p: "0.7", f: "daily" },
-  { path: "/entities", p: "0.6", f: "weekly" },
-  { path: "/membership", p: "0.6", f: "monthly" },
-  { path: "/search", p: "0.6", f: "daily" },
-  { path: "/for-chefs", p: "0.8", f: "monthly" },
-  { path: "/for-companies", p: "0.8", f: "monthly" },
-  { path: "/for-organizers", p: "0.8", f: "monthly" },
-  { path: "/sponsors", p: "0.8", f: "monthly" },
-  { path: "/help", p: "0.5", f: "monthly" },
+  { path: "/shop", p: "0.7", f: "daily" },
+  { path: "/for-chefs", p: "0.6", f: "monthly" },
+  { path: "/for-companies", p: "0.6", f: "monthly" },
+  { path: "/for-organizers", p: "0.6", f: "monthly" },
+  { path: "/sponsors", p: "0.6", f: "monthly" },
+  { path: "/help", p: "0.3", f: "monthly" },
   { path: "/privacy", p: "0.3", f: "monthly" },
   { path: "/terms", p: "0.3", f: "monthly" },
   { path: "/cookies", p: "0.3", f: "monthly" },
-  { path: "/verify/certificate", p: "0.4", f: "monthly" },
-  { path: "/install", p: "0.4", f: "monthly" },
+  { path: "/verify/certificate", p: "0.3", f: "monthly" },
+  { path: "/install", p: "0.3", f: "monthly" },
 ];
 
 async function buildStatic(): Promise<string> {
   return wrapUrlset(STATIC_PAGES.map(p => urlTag(`${BASE}${p.path}`, p.p, p.f)));
 }
 
+// ── Chef Profiles → /:username ──
 async function buildChefs(): Promise<string> {
   const sb = getClient();
-  const { data } = await sb.from("profiles").select("username, updated_at, profile_photo_url").not("username", "is", null).eq("is_public", true).order("updated_at", { ascending: false }).limit(5000);
-  const urls = (data || []).filter(p => p.username).map(p => urlTag(`${BASE}/chef/${p.username}`, "0.8", "weekly", p.updated_at?.split("T")[0]));
+  const { data } = await sb
+    .from("profiles")
+    .select("username, updated_at")
+    .not("username", "is", null)
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || [])
+    .filter(p => p.username)
+    .map(p => urlTag(`${BASE}/${p.username}`, "0.6", "weekly", p.updated_at?.split("T")[0]));
   return wrapUrlset(urls);
 }
 
+// ── Competitions → /competitions/:slug ──
 async function buildCompetitions(): Promise<string> {
   const sb = getClient();
-  const { data } = await sb.from("competitions").select("id, slug, updated_at").order("updated_at", { ascending: false }).limit(5000);
-  const urls = (data || []).map(c => {
-    const s = c.slug || c.id;
-    return urlTag(`${BASE}/competitions/${s}`, "0.9", "daily", c.updated_at?.split("T")[0]);
-  });
+  const { data } = await sb
+    .from("competitions")
+    .select("slug, updated_at")
+    .not("slug", "is", null)
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || [])
+    .filter(c => c.slug)
+    .map(c => urlTag(`${BASE}/competitions/${c.slug}`, "0.8", "weekly", c.updated_at?.split("T")[0]));
   return wrapUrlset(urls);
 }
 
+// ── Exhibitions → /exhibitions/:slug ──
 async function buildExhibitions(): Promise<string> {
   const sb = getClient();
-  const { data } = await sb.from("exhibitions").select("slug, updated_at").order("updated_at", { ascending: false }).limit(5000);
-  const urls = (data || []).map(e => urlTag(`${BASE}/exhibitions/${e.slug}`, "0.9", "weekly", e.updated_at?.split("T")[0]));
+  const { data } = await sb
+    .from("exhibitions")
+    .select("slug, updated_at")
+    .not("slug", "is", null)
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(e => urlTag(`${BASE}/exhibitions/${e.slug}`, "0.8", "weekly", e.updated_at?.split("T")[0]));
   return wrapUrlset(urls);
 }
 
-async function buildEntities(type: string, prefix: string, priority: string, freq: string): Promise<string> {
-  const sb = getClient();
-  const { data } = await sb.from("culinary_entities").select("slug, updated_at").eq("type", type).eq("status", "active").order("updated_at", { ascending: false }).limit(5000);
-  const urls = (data || []).map(e => urlTag(`${BASE}/${prefix}/${e.slug}`, priority, freq, e.updated_at?.split("T")[0]));
-  return wrapUrlset(urls);
-}
-
+// ── Blog → /blog/:slug (was /news) ──
 async function buildBlog(): Promise<string> {
   const sb = getClient();
-  const { data } = await sb.from("articles").select("slug, updated_at").eq("status", "published").order("updated_at", { ascending: false }).limit(5000);
-  const urls = (data || []).map(a => urlTag(`${BASE}/news/${a.slug}`, "0.8", "never", a.updated_at?.split("T")[0]));
+  const { data } = await sb
+    .from("articles")
+    .select("slug, updated_at")
+    .eq("status", "published")
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(a => urlTag(`${BASE}/blog/${a.slug}`, "0.7", "weekly", a.updated_at?.split("T")[0]));
   return wrapUrlset(urls);
 }
 
+// ── Masterclasses → /masterclasses/:id ──
+async function buildMasterclasses(): Promise<string> {
+  const sb = getClient();
+  const { data } = await sb
+    .from("masterclasses")
+    .select("id, updated_at")
+    .eq("status", "published")
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(m => urlTag(`${BASE}/masterclasses/${m.id}`, "0.5", "weekly", m.updated_at?.split("T")[0]));
+  return wrapUrlset(urls);
+}
+
+// ── Recipes → /recipes/:slug ──
+async function buildRecipes(): Promise<string> {
+  const sb = getClient();
+  const { data } = await sb
+    .from("recipes")
+    .select("slug, updated_at")
+    .eq("is_published", true)
+    .not("slug", "is", null)
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(r => urlTag(`${BASE}/recipes/${r.slug}`, "0.5", "weekly", r.updated_at?.split("T")[0]));
+  return wrapUrlset(urls);
+}
+
+// ── Establishments → /establishments/:id ──
+async function buildEstablishments(): Promise<string> {
+  const sb = getClient();
+  const { data } = await sb
+    .from("establishments")
+    .select("id, updated_at")
+    .eq("is_active", true)
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(e => urlTag(`${BASE}/establishments/${e.id}`, "0.5", "weekly", e.updated_at?.split("T")[0]));
+  return wrapUrlset(urls);
+}
+
+// ── Mentorship → /mentorship/:id ──
+async function buildMentorship(): Promise<string> {
+  const sb = getClient();
+  const { data } = await sb
+    .from("mentorship_programs")
+    .select("id, updated_at")
+    .eq("status", "active")
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(m => urlTag(`${BASE}/mentorship/${m.id}`, "0.5", "weekly", m.updated_at?.split("T")[0]));
+  return wrapUrlset(urls);
+}
+
+// ── Entities (academies + associations) → /entities/:slug ──
+async function buildEntities(): Promise<string> {
+  const sb = getClient();
+  const { data } = await sb
+    .from("culinary_entities")
+    .select("slug, updated_at")
+    .eq("status", "active")
+    .not("slug", "is", null)
+    .order("updated_at", { ascending: false })
+    .limit(5000);
+  const urls = (data || []).map(e => urlTag(`${BASE}/entities/${e.slug}`, "0.5", "monthly", e.updated_at?.split("T")[0]));
+  return wrapUrlset(urls);
+}
+
+// ── Image Sitemap ──
 async function buildImages(): Promise<string> {
   const sb = getClient();
   const [chefs, comps, exhs] = await Promise.all([
-    sb.from("profiles").select("username, full_name, profile_photo_url").not("username", "is", null).not("profile_photo_url", "is", null).eq("is_public", true).limit(2000),
-    sb.from("competitions").select("id, slug, title, cover_image_url").not("cover_image_url", "is", null).limit(2000),
-    sb.from("exhibitions").select("slug, title, cover_image_url").not("cover_image_url", "is", null).limit(2000),
+    sb.from("profiles").select("username, full_name, profile_photo_url").not("username", "is", null).not("profile_photo_url", "is", null).limit(2000),
+    sb.from("competitions").select("slug, title, cover_image_url").not("cover_image_url", "is", null).not("slug", "is", null).limit(2000),
+    sb.from("exhibitions").select("slug, title, cover_image_url").not("cover_image_url", "is", null).not("slug", "is", null).limit(2000),
   ]);
 
   const urls: string[] = [];
   for (const c of chefs.data || []) {
     if (!c.username || !c.profile_photo_url) continue;
     urls.push(`<url>
-  <loc>${esc(`${BASE}/chef/${c.username}`)}</loc>
+  <loc>${esc(`${BASE}/${c.username}`)}</loc>
   <image:image>
     <image:loc>${esc(c.profile_photo_url)}</image:loc>
     <image:title>${esc(c.full_name || c.username)}</image:title>
@@ -152,9 +233,9 @@ async function buildImages(): Promise<string> {
 </url>`);
   }
   for (const c of comps.data || []) {
-    const s = c.slug || c.id;
+    if (!c.slug) continue;
     urls.push(`<url>
-  <loc>${esc(`${BASE}/competitions/${s}`)}</loc>
+  <loc>${esc(`${BASE}/competitions/${c.slug}`)}</loc>
   <image:image>
     <image:loc>${esc(c.cover_image_url)}</image:loc>
     <image:title>${esc(c.title || "Competition")}</image:title>
@@ -197,38 +278,27 @@ Deno.serve(async (req) => {
       case "exhibitions":
         xml = await buildExhibitions();
         break;
-      case "academies":
-        xml = await buildEntities("academy", "entities", "0.8", "monthly");
-        break;
-      case "associations":
-        xml = await buildEntities("association", "entities", "0.8", "monthly");
-        break;
-      case "events":
-        xml = await buildEntities("event", "events-calendar", "0.9", "daily");
-        break;
       case "blog":
         xml = await buildBlog();
+        break;
+      case "masterclasses":
+        xml = await buildMasterclasses();
+        break;
+      case "recipes":
+        xml = await buildRecipes();
+        break;
+      case "establishments":
+        xml = await buildEstablishments();
+        break;
+      case "mentorship":
+        xml = await buildMentorship();
+        break;
+      case "entities":
+        xml = await buildEntities();
         break;
       case "images":
         xml = await buildImages();
         break;
-      case "full": {
-        // Single combined sitemap (fallback)
-        const sb = getClient();
-        const [chefs, comps, exhs, articles] = await Promise.all([
-          sb.from("profiles").select("username, updated_at").not("username", "is", null).eq("is_public", true).limit(1000),
-          sb.from("competitions").select("id, slug, updated_at").limit(500),
-          sb.from("exhibitions").select("slug, updated_at").limit(500),
-          sb.from("articles").select("slug, updated_at").eq("status", "published").limit(1000),
-        ]);
-        const urls = STATIC_PAGES.map(p => urlTag(`${BASE}${p.path}`, p.p, p.f));
-        for (const c of chefs.data || []) if (c.username) urls.push(urlTag(`${BASE}/chef/${c.username}`, "0.8", "weekly", c.updated_at?.split("T")[0]));
-        for (const c of comps.data || []) urls.push(urlTag(`${BASE}/competitions/${c.slug || c.id}`, "0.9", "daily", c.updated_at?.split("T")[0]));
-        for (const e of exhs.data || []) urls.push(urlTag(`${BASE}/exhibitions/${e.slug}`, "0.9", "weekly", e.updated_at?.split("T")[0]));
-        for (const a of articles.data || []) urls.push(urlTag(`${BASE}/news/${a.slug}`, "0.8", "never", a.updated_at?.split("T")[0]));
-        xml = wrapUrlset(urls);
-        break;
-      }
       case "index":
       default: {
         xml = sitemapIndex([
@@ -236,10 +306,12 @@ Deno.serve(async (req) => {
           `${FN_BASE_URL}?type=chefs`,
           `${FN_BASE_URL}?type=competitions`,
           `${FN_BASE_URL}?type=exhibitions`,
-          `${FN_BASE_URL}?type=academies`,
-          `${FN_BASE_URL}?type=associations`,
-          `${FN_BASE_URL}?type=events`,
           `${FN_BASE_URL}?type=blog`,
+          `${FN_BASE_URL}?type=masterclasses`,
+          `${FN_BASE_URL}?type=recipes`,
+          `${FN_BASE_URL}?type=establishments`,
+          `${FN_BASE_URL}?type=mentorship`,
+          `${FN_BASE_URL}?type=entities`,
           `${FN_BASE_URL}?type=images`,
         ]);
 
