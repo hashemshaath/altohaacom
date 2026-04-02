@@ -10,6 +10,32 @@ import { cn } from "@/lib/utils";
 const SLIDE_DURATION = 6000;
 const SWIPE_THRESHOLD = 50;
 
+const SUPABASE_STORAGE = "https://pbjhffdnzlekprmxfbnt.supabase.co/storage/v1";
+
+/** Build an optimised Supabase Storage image URL with transforms */
+function heroImgUrl(path: string, width: number, quality = 80): string {
+  if (!path) return "/placeholder.svg";
+  // Already a full URL with supabase
+  if (path.includes("supabase.co/storage/")) {
+    const base = path.replace("/object/", "/render/image/");
+    const sep = base.includes("?") ? "&" : "?";
+    return `${base}${sep}width=${width}&quality=${quality}&format=webp`;
+  }
+  // Relative storage path
+  if (!path.startsWith("http")) {
+    return `${SUPABASE_STORAGE}/render/image/public/${path}?width=${width}&quality=${quality}&format=webp`;
+  }
+  return path;
+}
+
+function heroSrcSet(path: string): string {
+  return [
+    `${heroImgUrl(path, 390)} 390w`,
+    `${heroImgUrl(path, 800)} 800w`,
+    `${heroImgUrl(path, 1200)} 1200w`,
+  ].join(", ");
+}
+
 interface HeroSlide {
   id: string;
   title: string;
@@ -57,6 +83,7 @@ export function HeroSection() {
   const rafRef = useRef(0);
   const startRef = useRef(0);
   const pausedRef = useRef(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   const { data: slides = [] } = useQuery<HeroSlide[]>({
     queryKey: ["hero-slides"],
@@ -86,6 +113,7 @@ export function HeroSection() {
   }, [slides.length, current]);
 
   const goTo = useCallback((idx: number) => {
+    setHasInteracted(true);
     setCurrent(idx);
     setProgress(0);
     startRef.current = performance.now();
@@ -122,6 +150,7 @@ export function HeroSection() {
       setProgress(pct);
       if (pct >= 100) {
         setCurrent((c) => (c + 1) % slides.length);
+        setHasInteracted(true);
         setProgress(0);
         startRef.current = now;
       }
@@ -174,6 +203,7 @@ export function HeroSection() {
   const safeCurrent = slides.length ? ((current % slides.length) + slides.length) % slides.length : 0;
   const slide = slides[safeCurrent];
   const opacity = Math.max(((slide?.overlay_opacity || 50) / 100), 0.4);
+  const isFirstRender = !hasInteracted && safeCurrent === 0;
 
   return (
     <section
@@ -189,16 +219,23 @@ export function HeroSection() {
           <div
             key={s.id}
             className={cn(
-              "absolute inset-0 transition-all duration-[1200ms] ease-in-out will-change-[opacity,transform]",
-              idx === safeCurrent ? "opacity-100 scale-100" : "opacity-0 scale-[1.03] pointer-events-none"
+              "absolute inset-0 will-change-[opacity,transform]",
+              // First slide on initial render: NO transition, fully visible immediately for LCP
+              idx === 0 && isFirstRender
+                ? "opacity-100 scale-100"
+                : idx === safeCurrent
+                ? "opacity-100 scale-100 transition-all duration-[1200ms] ease-in-out"
+                : "opacity-0 scale-[1.03] pointer-events-none transition-all duration-[1200ms] ease-in-out"
             )}
           >
             <img
-              src={s.image_url}
+              src={idx === 0 ? heroImgUrl(s.image_url, 800) : s.image_url}
+              srcSet={idx === 0 ? heroSrcSet(s.image_url) : undefined}
+              sizes={idx === 0 ? "100vw" : undefined}
               alt={s.title}
               className="h-full w-full object-cover"
               loading={idx === 0 ? "eager" : "lazy"}
-              decoding={idx === 0 ? "sync" : "async"}
+              decoding="async"
               fetchPriority={idx === 0 ? "high" : undefined}
             />
             <div
@@ -214,7 +251,7 @@ export function HeroSection() {
           <div
             key={slide.id}
             className="max-w-xl space-y-2.5 sm:space-y-3"
-            style={{ animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
+            style={isFirstRender ? undefined : { animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/25 backdrop-blur-lg border border-primary/30 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-[hsl(var(--hero-foreground))] shadow-md">
               <Sparkles className="h-3 w-3 animate-pulse" />
