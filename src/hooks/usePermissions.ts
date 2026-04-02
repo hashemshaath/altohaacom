@@ -93,6 +93,18 @@ export function useHasPermission(permissionCode: string) {
   return permissions.includes(permissionCode);
 }
 
+/**
+ * Check multiple permissions at once.
+ * Returns an object keyed by permission code → boolean.
+ */
+export function useHasPermissions(codes: string[]) {
+  const { data: permissions = [] } = useUserPermissions();
+  return codes.reduce<Record<string, boolean>>((acc, code) => {
+    acc[code] = permissions.includes(code);
+    return acc;
+  }, {});
+}
+
 // ── Competition Roles ────────────────────────────────────
 
 export function useCompetitionRoles(competitionId?: string) {
