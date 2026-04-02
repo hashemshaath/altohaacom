@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect, useRef } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
@@ -37,6 +37,45 @@ const SECTION_ERROR_FALLBACK = (
     <div className="min-h-[40px]" />
   </div>
 );
+
+/** Number of sections to render immediately (above-fold) */
+const EAGER_SECTION_COUNT = 3;
+
+/** Wrapper that defers rendering until near viewport */
+function DeferredSection({ children, index }: { children: React.ReactNode; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Check if already in viewport
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 400) {
+      setInView(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px", threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  if (inView) return <>{children}</>;
+
+  return (
+    <div ref={ref}>
+      <HomeSectionSkeleton index={index} />
+    </div>
+  );
+}
 
 function normalizeEntries(entries: SectionEntry[]) {
   const deduped = new Map<string, SectionEntry>();
@@ -98,8 +137,9 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
       {ordered.map((entry, index) => {
         const sectionKey = entry.section_key;
         const Component = HOME_SECTION_COMPONENTS[sectionKey];
+        const isAboveFold = index < EAGER_SECTION_COUNT;
 
-        return (
+        const sectionContent = (
           <ErrorBoundary key={`${sectionKey}-${entry.sort_order}-${index}`} fallback={SECTION_ERROR_FALLBACK}>
             <Suspense fallback={<TimedSkeleton index={index} />}>
               <SectionKeyProvider sectionKey={sectionKey}>
@@ -109,6 +149,15 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
               </SectionKeyProvider>
             </Suspense>
           </ErrorBoundary>
+        );
+
+        // Above-fold sections render immediately; below-fold defer until near viewport
+        if (isAboveFold) return sectionContent;
+
+        return (
+          <DeferredSection key={`${sectionKey}-${entry.sort_order}-${index}`} index={index}>
+            {sectionContent}
+          </DeferredSection>
         );
       })}
     </>

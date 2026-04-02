@@ -10,6 +10,7 @@ import { RelatedPages } from "@/components/seo/RelatedPages";
 import { HeroSection } from "@/components/home/sections/HeroSection";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
+import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 import { Shield, Globe, Award } from "lucide-react";
 
@@ -89,6 +90,10 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
 const Index = () => {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  // Prefetch ALL homepage data in a single parallel batch
+  // This populates React Query cache before individual sections mount
+  useHomepageDataPrefetch();
 
   const { data: dbSections = [], isError } = useHomepageSections();
 
