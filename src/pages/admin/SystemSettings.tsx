@@ -46,6 +46,7 @@ import { SettingsImportExport } from "@/components/admin/settings/SettingsImport
 import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
 import { GenericSettingsEditor } from "@/components/admin/settings/GenericSettingsEditor";
 import { IntegrationsSecretsPanel } from "@/components/admin/settings/IntegrationsSecretsPanel";
+import { SEOAnalyticsSettings } from "@/components/admin/settings/SEOAnalyticsSettings";
 import { DatabaseOverviewWidget } from "@/components/admin/DatabaseOverviewWidget";
 import { RecentAdminActions } from "@/components/admin/RecentAdminActions";
 
