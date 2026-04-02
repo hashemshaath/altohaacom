@@ -92,6 +92,7 @@ export default function Profile() {
     ] : []),
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "verification", label: isAr ? "التوثيق" : "Verification", icon: ShieldCheck, href: "/verification" },
+    { id: "security", label: isAr ? "الأمان" : "Security", icon: KeyRound },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 
