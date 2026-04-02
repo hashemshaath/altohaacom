@@ -1,11 +1,11 @@
 import { useGoogleTracking } from "@/hooks/useGoogleTracking";
 
 /**
- * Invisible component that injects Google tracking scripts
- * based on admin-configured marketing_tracking_config.
+ * Invisible component that injects all tracking scripts
+ * (Google, Meta, TikTok, Snap, LinkedIn, Hotjar)
+ * based on admin-configured integration_settings table.
  */
 export function GoogleTrackingProvider() {
   useGoogleTracking();
   return null;
 }
-
