@@ -220,7 +220,7 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان", fullAdminOnly: true },
       { to: "/admin/localization", icon: Globe, labelEn: "Languages", labelAr: "اللغات" },
       { to: "/admin/countries", icon: MapPin, labelEn: "Countries", labelAr: "الدول", fullAdminOnly: true },
-      { to: "/admin/settings", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات", fullAdminOnly: true },
+      { to: "/admin/settings?tab=integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات", fullAdminOnly: true },
     ],
   },
 
