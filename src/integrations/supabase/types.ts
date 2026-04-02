@@ -22337,11 +22337,18 @@ export type Database = {
       user_sessions: {
         Row: {
           created_at: string
+          device_fingerprint: string | null
           device_info: Json | null
+          device_name: string | null
+          device_os: string | null
+          expires_at: string | null
           id: string
           ip_address: string | null
           is_active: boolean | null
           last_active_at: string | null
+          location_city: string | null
+          location_country: string | null
+          login_method: string | null
           revoked_at: string | null
           session_token_hash: string | null
           user_agent: string | null
@@ -22349,11 +22356,18 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          device_fingerprint?: string | null
           device_info?: Json | null
+          device_name?: string | null
+          device_os?: string | null
+          expires_at?: string | null
           id?: string
           ip_address?: string | null
           is_active?: boolean | null
           last_active_at?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          login_method?: string | null
           revoked_at?: string | null
           session_token_hash?: string | null
           user_agent?: string | null
@@ -22361,11 +22375,18 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          device_fingerprint?: string | null
           device_info?: Json | null
+          device_name?: string | null
+          device_os?: string | null
+          expires_at?: string | null
           id?: string
           ip_address?: string | null
           is_active?: boolean | null
           last_active_at?: string | null
+          location_city?: string | null
+          location_country?: string | null
+          login_method?: string | null
           revoked_at?: string | null
           session_token_hash?: string | null
           user_agent?: string | null
@@ -23303,7 +23324,17 @@ export type Database = {
         Args: { p_identifier: string }
         Returns: boolean
       }
+      check_suspicious_login: {
+        Args: {
+          p_device_fingerprint: string
+          p_ip_address: string
+          p_login_hour: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       check_username_taken: { Args: { p_username: string }; Returns: boolean }
+      cleanup_expired_sessions: { Args: never; Returns: number }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
