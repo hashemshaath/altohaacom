@@ -489,7 +489,8 @@ export default function Auth() {
     setErrors({});
     const errs: Record<string, string> = {};
 
-    if (!username || !usernameRegex.test(username)) errs.username = isAr ? "اسم مستخدم غير صالح (حروف وأرقام و _ فقط)" : "Invalid username (letters, numbers, _ only)";
+    const usernameValidation = validateUsername(username);
+    if (!usernameValidation.valid) errs.username = isAr ? (usernameValidation.errorAr || "اسم مستخدم غير صالح") : (usernameValidation.error || "Invalid username");
     if (usernameStatus === "taken") errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
     if (usernameStatus === "checking") errs.username = isAr ? "جاري التحقق..." : "Still checking...";
     if (password.length < 8) {
