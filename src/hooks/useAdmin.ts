@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * Checks if the current user has any admin-level role (supervisor, organizer, content_writer).
+ * Checks if the current user is a supervisor (full platform admin).
  * Uses server-side RPC (is_admin) — cannot be bypassed client-side.
  */
 export function useIsAdmin() {
