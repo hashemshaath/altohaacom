@@ -91,6 +91,10 @@ const Index = () => {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
+  // Prefetch ALL homepage data in a single parallel batch
+  // This populates React Query cache before individual sections mount
+  useHomepageDataPrefetch();
+
   const { data: dbSections = [], isError } = useHomepageSections();
 
   const showHero = useMemo(() => {
