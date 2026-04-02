@@ -16,7 +16,7 @@ const StatItem = forwardRef<HTMLDivElement, { value: number; label: string; icon
     <div
       ref={ref}
       className={cn(
-        "group relative flex flex-col items-center gap-1 sm:gap-2 rounded-xl border border-border/30 bg-card/50 backdrop-blur-sm p-2.5 sm:p-4 transition-all duration-700 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
+        "group relative flex flex-col items-center gap-1 sm:gap-2 rounded-xl border border-border/30 bg-card/50 backdrop-blur-sm p-2.5 sm:p-4 transition-[transform,opacity] duration-700 hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       )}
       style={{ transitionDelay: `${delay}ms` }}
