@@ -388,7 +388,7 @@ export default function AdminDashboard() {
               <div className="space-y-3">
                 {[
                   { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary" },
-                  { label: isAr ? "متابع" : "Follower", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4" },
+                  { label: isAr ? "مستخدم عادي" : "Regular User", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4" },
                 ].map((type) => {
                   const pct = stats?.totalUsers ? Math.round((type.value / stats.totalUsers) * 100) : 0;
                   return (

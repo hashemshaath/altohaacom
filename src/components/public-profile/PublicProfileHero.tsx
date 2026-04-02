@@ -137,7 +137,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                   {profile.account_type === "fan" && (
                     <Badge variant="secondary" className="text-[10px] gap-1 h-5">
                       <Heart className="h-3 w-3" />
-                      {isAr ? "متابع" : "Follower"}
+                      {isAr ? "مستخدم عادي" : "Regular User"}
                     </Badge>
                    )}
                   {profile.is_open_to_work && profile.job_availability_visibility === "public" && (

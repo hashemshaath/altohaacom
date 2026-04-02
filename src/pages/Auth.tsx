@@ -259,20 +259,52 @@ export default function Auth() {
   const handleSignInPhoneVerified = async (phone: string) => {
     const normalizedPhone = normalizePhoneForStorage(phone);
     setSignInVerifiedPhone(normalizedPhone);
-    // Lookup account by phone (try both normalized and raw)
     setLoading(true);
-    const { data: phoneExists } = await supabase.rpc("check_phone_exists", { p_phone: normalizedPhone });
-    const profile = phoneExists ? { user_id: "found" } : null;
 
-    if (!profile) {
-      setLoading(false);
-      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
+    try {
+      // OTP is sufficient — sign in directly via edge function
+      const { data, error: fnError } = await supabase.functions.invoke("pin-auth", {
+        body: { action: "phone_otp_login", phone: normalizedPhone },
+      });
+
+      if (fnError || data?.error) {
+        const code = data?.code;
+        if (code === "NO_ACCOUNT") {
+          setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
+        } else {
+          setFormError(data?.error || fnError?.message || "Login failed");
+        }
+        setSignInPhoneStep("phone");
+        setLoading(false);
+        return;
+      }
+
+      // Use the magic link token to verify OTP and create session
+      if (data?.token_hash && data?.email) {
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          email: data.email,
+          token_hash: data.token_hash,
+          type: "magiclink",
+        });
+
+        if (verifyError) {
+          setFormError(isAr ? "فشل تسجيل الدخول" : "Login failed");
+          setSignInPhoneStep("phone");
+          setLoading(false);
+          return;
+        }
+
+        toast({
+          title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
+          description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
+        });
+      }
+    } catch (err: any) {
+      setFormError(err.message || "Login failed");
       setSignInPhoneStep("phone");
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-    setSignInPhoneStep("password");
   };
 
   const handleSignInPhonePassword = async () => {
