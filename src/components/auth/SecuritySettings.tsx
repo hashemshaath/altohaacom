@@ -2,26 +2,29 @@ import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
+import { useSessionManager } from "@/hooks/useSessionManager";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { PinSetupDialog } from "./PinSetupDialog";
 import { ChangePasswordDialog } from "./ChangePasswordDialog";
 import {
   KeyRound, Lock, Smartphone, Trash2, Loader2, Shield, Clock, AlertTriangle,
+  Monitor, Globe, LogOut, Activity,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { formatDistanceToNow } from "date-fns";
+import { ar } from "date-fns/locale";
 
 export const SecuritySettings = memo(function SecuritySettings() {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
   const isAr = language === "ar";
+  const {
+    sessions, loading: sessionsLoading, currentSessionId,
+    listSessions, revokeSession, revokeAllSessions,
+  } = useSessionManager();
 
   const [pinStatus, setPinStatus] = useState<any>(null);
   const [devices, setDevices] = useState<any[]>([]);
@@ -29,16 +32,16 @@ export const SecuritySettings = memo(function SecuritySettings() {
   const [loadingDevices, setLoadingDevices] = useState(true);
   const [disablingPin, setDisablingPin] = useState(false);
   const [removingDevice, setRemovingDevice] = useState<string | null>(null);
+  const [revokingSession, setRevokingSession] = useState<string | null>(null);
+  const [revokingAll, setRevokingAll] = useState(false);
   const [pinSetupOpen, setPinSetupOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const fetchPinStatus = async () => {
     setLoadingPin(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const { data } = await supabase.functions.invoke("pin-auth", {
         body: { action: "check_pin_status" },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       setPinStatus(data);
     } catch {
@@ -51,10 +54,8 @@ export const SecuritySettings = memo(function SecuritySettings() {
   const fetchDevices = async () => {
     setLoadingDevices(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       const { data } = await supabase.functions.invoke("pin-auth", {
         body: { action: "list_devices" },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       setDevices(data?.devices || []);
     } catch {
@@ -68,16 +69,15 @@ export const SecuritySettings = memo(function SecuritySettings() {
     if (user) {
       fetchPinStatus();
       fetchDevices();
+      listSessions();
     }
   }, [user]);
 
   const handleDisablePin = async () => {
     setDisablingPin(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       await supabase.functions.invoke("pin-auth", {
         body: { action: "disable_pin" },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       setPinStatus({ has_pin: false });
       toast({ title: isAr ? "تم تعطيل الرمز" : "PIN disabled" });
@@ -91,10 +91,8 @@ export const SecuritySettings = memo(function SecuritySettings() {
   const handleRemoveDevice = async (deviceId: string) => {
     setRemovingDevice(deviceId);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       await supabase.functions.invoke("pin-auth", {
         body: { action: "remove_device", device_id: deviceId },
-        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       setDevices((prev) => prev.filter((d) => d.id !== deviceId));
       toast({ title: isAr ? "تم إزالة الجهاز" : "Device removed" });
@@ -105,8 +103,153 @@ export const SecuritySettings = memo(function SecuritySettings() {
     }
   };
 
+  const handleRevokeSession = async (sessionId: string) => {
+    setRevokingSession(sessionId);
+    try {
+      const success = await revokeSession(sessionId);
+      toast({
+        title: success
+          ? (isAr ? "تم إنهاء الجلسة" : "Session revoked")
+          : (isAr ? "حدث خطأ" : "Error occurred"),
+        variant: success ? "default" : "destructive",
+      });
+    } finally {
+      setRevokingSession(null);
+    }
+  };
+
+  const handleRevokeAll = async () => {
+    setRevokingAll(true);
+    try {
+      const success = await revokeAllSessions();
+      toast({
+        title: success
+          ? (isAr ? "تم إنهاء جميع الجلسات الأخرى" : "All other sessions revoked")
+          : (isAr ? "حدث خطأ" : "Error occurred"),
+        variant: success ? "default" : "destructive",
+      });
+    } finally {
+      setRevokingAll(false);
+    }
+  };
+
+  const getDeviceIcon = (name: string | null) => {
+    if (!name) return <Globe className="h-4 w-4" />;
+    const lower = name.toLowerCase();
+    if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
+      return <Smartphone className="h-4 w-4" />;
+    return <Monitor className="h-4 w-4" />;
+  };
+
   return (
     <div className="space-y-6">
+      {/* Active Sessions Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Activity className="h-5 w-5 text-primary" />
+                {isAr ? "الجلسات النشطة" : "Active Sessions"}
+                <Badge variant="secondary" className="text-xs ms-1">
+                  {sessions.length}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                {isAr
+                  ? "الأجهزة التي سجلت دخولك منها حالياً"
+                  : "Devices where you're currently logged in"}
+              </CardDescription>
+            </div>
+            {sessions.length > 1 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleRevokeAll}
+                disabled={revokingAll}
+              >
+                {revokingAll && <Loader2 className="me-1 h-3 w-3 animate-spin" />}
+                <LogOut className="me-1 h-3.5 w-3.5" />
+                {isAr ? "إنهاء الكل" : "Revoke All"}
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {sessionsLoading ? (
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              {isAr ? "جارٍ التحميل..." : "Loading..."}
+            </div>
+          ) : sessions.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {isAr ? "لا توجد جلسات نشطة" : "No active sessions"}
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {sessions.map((s) => {
+                const isCurrent = s.id === currentSessionId;
+                return (
+                  <div
+                    key={s.id}
+                    className={`flex items-center justify-between rounded-lg border p-3 ${
+                      isCurrent ? "border-primary/30 bg-primary/5" : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                        {getDeviceIcon(s.device_name)}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium">
+                            {s.device_name || (isAr ? "جهاز غير معروف" : "Unknown Device")}
+                          </p>
+                          {isCurrent && (
+                            <Badge variant="default" className="text-[9px] px-1.5 py-0">
+                              {isAr ? "الحالية" : "Current"}
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          {s.device_os && <span>{s.device_os}</span>}
+                          {s.ip_address && <span>• {s.ip_address}</span>}
+                          {s.login_method && (
+                            <Badge variant="outline" className="text-[9px] px-1 py-0">
+                              {s.login_method}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          {isAr ? "آخر نشاط: " : "Last active: "}
+                          {formatDistanceToNow(new Date(s.last_active_at), {
+                            addSuffix: true,
+                            locale: isAr ? ar : undefined,
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    {!isCurrent && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => handleRevokeSession(s.id)}
+                        disabled={revokingSession === s.id}
+                      >
+                        {revokingSession === s.id
+                          ? <Loader2 className="h-4 w-4 animate-spin" />
+                          : <LogOut className="h-4 w-4" />}
+                      </Button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Quick Login PIN Section */}
       <Card>
         <CardHeader>
@@ -146,7 +289,7 @@ export const SecuritySettings = memo(function SecuritySettings() {
                 </div>
               </div>
               {pinStatus.is_locked && (
-                <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-500/10 dark:bg-amber-500/10 rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-500/10 rounded-lg px-3 py-2">
                   <AlertTriangle className="h-3.5 w-3.5" />
                   {isAr ? "الرمز مقفل مؤقتاً بسبب محاولات فاشلة" : "PIN temporarily locked due to failed attempts"}
                 </div>
@@ -248,16 +391,8 @@ export const SecuritySettings = memo(function SecuritySettings() {
         </CardContent>
       </Card>
 
-      {/* Dialogs */}
-      <PinSetupDialog
-        open={pinSetupOpen}
-        onOpenChange={setPinSetupOpen}
-        onSuccess={() => fetchPinStatus()}
-      />
-      <ChangePasswordDialog
-        open={changePasswordOpen}
-        onOpenChange={setChangePasswordOpen}
-      />
+      <PinSetupDialog open={pinSetupOpen} onOpenChange={setPinSetupOpen} onSuccess={() => fetchPinStatus()} />
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </div>
   );
 });
