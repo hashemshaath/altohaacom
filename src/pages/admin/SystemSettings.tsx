@@ -42,6 +42,9 @@ import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel
 import { TypographySettings } from "@/components/admin/settings/TypographySettings";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
+import { MetaPixelPanel } from "@/components/ads/MetaPixelPanel";
+import { TikTokPixelPanel } from "@/components/ads/TikTokPixelPanel";
+import { SnapPixelPanel } from "@/components/ads/SnapPixelPanel";
 import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
 import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
 import { GenericSettingsEditor } from "@/components/admin/settings/GenericSettingsEditor";
