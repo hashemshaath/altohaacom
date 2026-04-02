@@ -172,7 +172,9 @@ export default function Search() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr ? "بحث في المنصة" : "Search Altoha"}
+        title={filters.query
+          ? (isAr ? `نتائج البحث عن: "${filters.query}" | الطهاة` : `Search results for: "${filters.query}" | AlToha`)
+          : (isAr ? "بحث في المنصة | الطهاة" : "Search AlToha")}
         description={isAr ? "ابحث عن الطهاة والمسابقات والوصفات والمقالات والمعارض" : "Search chefs, competitions, recipes, articles, and exhibitions on Altoha"}
         noIndex
       />
