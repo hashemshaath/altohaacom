@@ -333,6 +333,10 @@ export default function SystemSettings() {
               </div>
             </TabsContent>
 
+            <TabsContent value="seo-analytics" className="mt-0">
+              <SEOAnalyticsSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+            </TabsContent>
+
             <TabsContent value="custom-entries" className="mt-0">
               <GenericSettingsEditor settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
             </TabsContent>
