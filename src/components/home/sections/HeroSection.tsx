@@ -32,7 +32,9 @@ function heroImgUrl(path: string, width: number, quality = 80): string {
   return path;
 }
 
-function heroSrcSet(path: string): string {
+function heroSrcSet(path: string): string | undefined {
+  // Local public files can't be server-resized — skip srcset
+  if (!path || path.startsWith("/")) return undefined;
   return [
     `${heroImgUrl(path, 390)} 390w`,
     `${heroImgUrl(path, 800)} 800w`,
