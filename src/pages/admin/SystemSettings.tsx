@@ -242,7 +242,7 @@ export default function SystemSettings() {
             {/* Tab Navigation */}
             <Card className="rounded-2xl border-border/40 bg-muted/30 backdrop-blur overflow-hidden">
               <CardContent className="p-1.5 sm:p-2 relative">
-                <TabsList className="flex sm:grid h-auto w-auto sm:w-full gap-1.5 overflow-x-auto scrollbar-none sm:overflow-visible sm:grid-cols-4 lg:grid-cols-7 bg-transparent p-0 justify-start sm:justify-center">
+                <TabsList className="flex sm:grid h-auto w-auto sm:w-full gap-1.5 overflow-x-auto scrollbar-none sm:overflow-visible sm:grid-cols-4 lg:grid-cols-8 bg-transparent p-0 justify-start sm:justify-center">
                   {tabs.map(tab => {
                     const isConfigured = (() => {
                       if (tab.value === "branding") return !!settings.branding;
