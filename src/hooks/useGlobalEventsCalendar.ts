@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { ROUTES } from "@/config/routes";
 
 export type GlobalEventType =
   | "competition" | "exhibition" | "chefs_table" | "tv_interview"
@@ -113,7 +114,7 @@ export function useGlobalEventsCalendar(filters?: {
             status: c.status || "upcoming",
             is_international: false,
             is_recurring: false,
-            link: `/competitions/${c.id}`,
+            link: ROUTES.competition(c.id),
             color: "chart-1",
             icon: "Trophy",
             source: "competition",
@@ -148,7 +149,7 @@ export function useGlobalEventsCalendar(filters?: {
             status: e.status || "upcoming",
             is_international: false,
             is_recurring: false,
-            link: e.slug ? `/exhibitions/${e.slug}` : null,
+            link: e.slug ? ROUTES.exhibition(e.slug) : null,
             color: "chart-3",
             icon: "Landmark",
             source: "exhibition",

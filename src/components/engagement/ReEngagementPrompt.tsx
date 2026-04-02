@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { ROUTES } from "@/config/routes";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -66,7 +67,7 @@ export const ReEngagementPrompt = memo(function ReEngagementPrompt() {
 
   const handleExplore = () => {
     setOpen(false);
-    navigate("/competitions");
+    navigate(ROUTES.competitions);
   };
 
   if (!user || location.pathname === "/" || !open) return null;
@@ -116,7 +117,7 @@ export const ReEngagementPrompt = memo(function ReEngagementPrompt() {
           {/* Quick stats */}
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => { setOpen(false); navigate("/competitions"); }}
+              onClick={() => { setOpen(false); navigate(ROUTES.competitions); }}
               className="rounded-xl border border-border/50 p-3 text-center hover:bg-accent/50 transition-colors active:scale-95"
             >
               <Trophy className="h-5 w-5 mx-auto text-primary mb-1" />

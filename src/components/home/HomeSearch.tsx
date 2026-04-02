@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, forwardRef } from "react";
+import { ROUTES } from "@/config/routes";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Search, Trophy, Globe, ChefHat, Utensils, BookOpen, Store, TrendingUp, X } from "lucide-react";
@@ -125,7 +126,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                     type="button"
                     onClick={() => {
                       setShowSuggestions(false);
-                      navigate(`/news/${item.slug}`);
+                      navigate(ROUTES.article(item.slug));
                     }}
                     className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-start text-sm hover:bg-muted/60 transition-colors"
                   >
