@@ -12,7 +12,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["publicProfile", username],
     queryFn: async () => {
-      const selectCols = "user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, cover_image_url, bio, bio_ar, specialization, specialization_ar, country_code, city, nationality, years_of_experience, job_title, job_title_ar, is_verified, account_type, view_count, created_at, instagram, twitter, facebook, linkedin, youtube, website, snapchat, tiktok, is_open_to_work, job_availability_visibility, membership_tier";
+      const selectCols = "user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, cover_image_url, bio, bio_ar, specialization, specialization_ar, country_code, city, nationality, years_of_experience, job_title, job_title_ar, is_verified, account_type, view_count, created_at, instagram, twitter, facebook, linkedin, youtube, website, snapchat, tiktok, membership_tier";
       const { data, error } = await supabase
         .from("profiles_public").select(selectCols).eq("username", username?.toLowerCase()).maybeSingle();
       if (error) throw error;
