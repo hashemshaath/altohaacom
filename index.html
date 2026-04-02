@@ -158,16 +158,21 @@
     ]
     </script>
 
-    <!-- Inline critical CSS for fastest FCP -->
+    <!-- Inline critical CSS for fastest FCP — covers boot spinner, nav, hero above-fold -->
     <style>
-      #root { min-height: 100vh; min-height: 100dvh; }
-      .h-screen { height: 100vh; height: 100dvh; }
-      .animate-spin { animation: spin 1s linear infinite; }
-      @keyframes spin { to { transform: rotate(360deg); } }
-      /* Prevent content shift from scrollbar */
-      html { scrollbar-gutter: stable; }
-      /* Safe area insets for notched devices */
-      body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+      *,::after,::before{box-sizing:border-box;border:0 solid}
+      html{line-height:1.5;-webkit-text-size-adjust:100%;scrollbar-gutter:stable;font-family:'DM Sans','Noto Sans Arabic',ui-sans-serif,system-ui,sans-serif}
+      body{margin:0;line-height:inherit;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background-color:hsl(0 0% 100%);color:hsl(220 20% 12%)}
+      #root{min-height:100vh;min-height:100dvh}
+      img,video{max-width:100%;height:auto;display:block}
+      .h-screen{height:100vh;height:100dvh}
+      .min-h-screen{min-height:100vh;min-height:100dvh}
+      .flex{display:flex}.items-center{align-items:center}.justify-center{justify-content:center}
+      .relative{position:relative}.absolute{position:absolute}.overflow-hidden{overflow:hidden}
+      .w-full{width:100%}.h-full{height:100%}.object-cover{object-fit:cover}
+      .text-center{text-align:center}.font-bold{font-weight:700}
+      .animate-spin{animation:spin 1s linear infinite}
+      @keyframes spin{to{transform:rotate(360deg)}}
     </style>
 
     <!-- Content Security Policy -->
