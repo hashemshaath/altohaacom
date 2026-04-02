@@ -70,7 +70,7 @@ export const protectedRoutes = (
     <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
     <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
     <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
-    <Route path="/recipes/create" element={<ProtectedRoute><CreateRecipe /></ProtectedRoute>} />
+    <Route path="/recipes/create" element={<ProtectedRoute><FanRouteGuard><CreateRecipe /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/my-evaluations" element={<ProtectedRoute><MyEvaluations /></ProtectedRoute>} />
     <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="/advertise" element={<ProtectedRoute><AdvertiseWithUs /></ProtectedRoute>} />
@@ -82,7 +82,7 @@ export const protectedRoutes = (
     <Route path="/membership/gifts" element={<ProtectedRoute><MembershipGiftsHistory /></ProtectedRoute>} />
     <Route path="/for-you" element={<ProtectedRoute><ForYou /></ProtectedRoute>} />
     <Route path="/tastings" element={<ProtectedRoute><Tastings /></ProtectedRoute>} />
-    <Route path="/tastings/create" element={<ProtectedRoute><CreateTasting /></ProtectedRoute>} />
+    <Route path="/tastings/create" element={<ProtectedRoute><FanRouteGuard><CreateTasting /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/tastings/:id" element={<ProtectedRoute><TastingDetail /></ProtectedRoute>} />
     <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
   </>

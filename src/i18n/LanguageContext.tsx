@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { translations, type Language, type TranslationKey } from "./translations";
 
 interface LanguageContextType {
@@ -46,7 +46,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     [language]
   );
 
-  const dir = language === "ar" ? "rtl" : "ltr";
+  const dir: "ltr" | "rtl" = language === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -54,8 +54,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("lang", language);
   }, [dir, language]);
 
+  const contextValue = useMemo(
+    () => ({ language, setLanguage, t, dir }),
+    [language, setLanguage, t, dir]
+  );
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );
