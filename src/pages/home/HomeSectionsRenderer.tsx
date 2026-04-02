@@ -137,8 +137,9 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
       {ordered.map((entry, index) => {
         const sectionKey = entry.section_key;
         const Component = HOME_SECTION_COMPONENTS[sectionKey];
+        const isAboveFold = index < EAGER_SECTION_COUNT;
 
-        return (
+        const sectionContent = (
           <ErrorBoundary key={`${sectionKey}-${entry.sort_order}-${index}`} fallback={SECTION_ERROR_FALLBACK}>
             <Suspense fallback={<TimedSkeleton index={index} />}>
               <SectionKeyProvider sectionKey={sectionKey}>
@@ -148,6 +149,15 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
               </SectionKeyProvider>
             </Suspense>
           </ErrorBoundary>
+        );
+
+        // Above-fold sections render immediately; below-fold defer until near viewport
+        if (isAboveFold) return sectionContent;
+
+        return (
+          <DeferredSection key={`${sectionKey}-${entry.sort_order}-${index}`} index={index}>
+            {sectionContent}
+          </DeferredSection>
         );
       })}
     </>
