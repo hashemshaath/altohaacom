@@ -337,12 +337,6 @@ export function HeroSection() {
                       />
                     )}
                   </span>
-                  {idx === safeCurrent && (
-                    <span
-                      className="absolute inset-y-0 start-0 rounded-full bg-primary shadow-[var(--shadow-glow)]"
-                      style={{ width: `${progress}%`, transition: "width 80ms linear" }}
-                    />
-                  )}
                 </button>
               ))}
             </div>
