@@ -238,11 +238,14 @@ export default function EntityDetail() {
   const BackIcon = isAr ? ArrowRight : ArrowLeft;
 
   // SEO
-  const seoTitle = name;
+  const entitySuffix = isEducational
+    ? (isAr ? "أكاديمية الطهي | الطهاة" : "Culinary Academy | AlToha")
+    : (isAr ? "جمعية طهاة | الطهاة" : "Chef Association | AlToha");
+  const seoTitle = `${name} — ${entitySuffix}`;
   const seoDescription = description
     ? description.substring(0, 155)
     : `${isAr ? tLabel.ar : tLabel.en} - ${[localizedCity, localizedCountry].filter(Boolean).join(", ")}`;
-  const canonicalUrl = `${window.location.origin}/entities/${entity.slug}`;
+  const canonicalUrl = `https://altoha.com/entities/${entity.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": isEducational ? "EducationalOrganization" : "Organization",
