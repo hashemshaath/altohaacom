@@ -34,7 +34,7 @@ const loginSchema = z.object({
 });
 
 const MAX_LOGIN_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
 type SignUpStep = "contact" | "verify" | "details" | "credentials";
 type SignUpMethod = "phone" | "email";
@@ -190,8 +190,20 @@ export default function Auth() {
       setLoginAttempts(newAttempts);
 
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
+        const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+        setLockoutUntil(lockUntil);
         setLoginAttempts(0);
+        // Log lockout security event (fire-and-forget)
+        try {
+          supabase.rpc("log_security_event", {
+            p_user_id: null as any,
+            p_event_type: "account_locked",
+            p_severity: "warning",
+            p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts`,
+            p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة`,
+            p_metadata: { email: signInEmail.trim(), attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
+          });
+        } catch {}
         return;
       }
 
@@ -274,8 +286,19 @@ export default function Auth() {
       setLoginAttempts(newAttempts);
 
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
+        const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+        setLockoutUntil(lockUntil);
         setLoginAttempts(0);
+        try {
+          supabase.rpc("log_security_event", {
+            p_user_id: null as any,
+            p_event_type: "account_locked",
+            p_severity: "warning",
+            p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts (phone login)`,
+            p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة (تسجيل بالهاتف)`,
+            p_metadata: { phone: signInVerifiedPhone, attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
+          });
+        } catch {}
         return;
       }
 
@@ -305,7 +328,9 @@ export default function Auth() {
     setFormError("");
     const errs: Record<string, string> = {};
     if (resetPassword.length < 8) errs.resetPassword = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
-    if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
+    else if (!/[A-Z]/.test(resetPassword)) errs.resetPassword = isAr ? "يجب أن تحتوي على حرف كبير" : "Must contain an uppercase letter";
+    else if (!/\d/.test(resetPassword)) errs.resetPassword = isAr ? "يجب أن تحتوي على رقم" : "Must contain a number";
+    else if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
     if (resetPassword !== resetConfirm) errs.resetConfirm = isAr ? "غير متطابقة" : "Passwords don't match";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
