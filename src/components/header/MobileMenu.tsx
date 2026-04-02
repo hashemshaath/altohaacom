@@ -130,8 +130,8 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
     <div ref={ref} className="lg:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-9 w-9 active:scale-90 transition-transform touch-manipulation">
-            <Menu className="h-5 w-5" />
+          <Button variant="ghost" size="icon" className="h-9 w-9 active:scale-90 transition-transform touch-manipulation" aria-label="Open menu">
+            <Menu className="h-5 w-5" aria-hidden="true" />
           </Button>
         </SheetTrigger>
         <SheetContent side={isAr ? "right" : "left"} className="w-[280px] p-0 overflow-hidden">

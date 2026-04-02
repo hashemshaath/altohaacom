@@ -145,9 +145,9 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           {/* Nav columns */}
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h4 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-3">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-3">
                 {l(col.titleEn, col.titleAr)}
-              </h4>
+              </h3>
               <ul className="space-y-2 sm:space-y-1.5">
                 {col.links.map((link) => (
                   <li key={link.to}>
@@ -166,8 +166,8 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
 
         {/* Bottom bar */}
         <div className="border-t border-border/20 py-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-muted-foreground/40">{copyrightText}</p>
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground/40">
+          <p className="text-[11px] text-muted-foreground/60">{copyrightText}</p>
+          <div className="flex items-center gap-3 text-[11px] text-muted-foreground/60">
             {legalLinks.map((link, i) => (
               <span key={link.to} className="flex items-center gap-3">
                 <Link to={link.to} className="hover:text-foreground transition-colors">
