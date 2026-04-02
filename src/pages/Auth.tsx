@@ -435,8 +435,15 @@ export default function Auth() {
     if (!username || !usernameRegex.test(username)) errs.username = isAr ? "اسم مستخدم غير صالح (حروف وأرقام و _ فقط)" : "Invalid username (letters, numbers, _ only)";
     if (usernameStatus === "taken") errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
     if (usernameStatus === "checking") errs.username = isAr ? "جاري التحقق..." : "Still checking...";
-    if (password.length < 8) errs.password = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
-    if (getPasswordStrength(password) < 2) errs.password = isAr ? "كلمة المرور ضعيفة جداً" : "Password is too weak";
+    if (password.length < 8) {
+      errs.password = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
+    } else if (!/[A-Z]/.test(password)) {
+      errs.password = isAr ? "يجب أن تحتوي على حرف كبير واحد على الأقل" : "Must contain at least 1 uppercase letter";
+    } else if (!/\d/.test(password)) {
+      errs.password = isAr ? "يجب أن تحتوي على رقم واحد على الأقل" : "Must contain at least 1 number";
+    } else if (getPasswordStrength(password) < 2) {
+      errs.password = isAr ? "كلمة المرور ضعيفة جداً" : "Password is too weak";
+    }
     if (password !== confirmPassword) errs.confirmPassword = isAr ? "غير متطابقة" : "Passwords don't match";
     if (!termsAccepted) errs.terms = isAr ? "يجب الموافقة على الشروط والأحكام" : "You must accept the Terms & Conditions";
 
