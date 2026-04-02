@@ -70,7 +70,7 @@ export const protectedRoutes = (
     <Route path="/judging" element={<ProtectedRoute><Judging /></ProtectedRoute>} />
     <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
     <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
-    <Route path="/recipes/create" element={<ProtectedRoute><CreateRecipe /></ProtectedRoute>} />
+    <Route path="/recipes/create" element={<ProtectedRoute><FanRouteGuard><CreateRecipe /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/my-evaluations" element={<ProtectedRoute><MyEvaluations /></ProtectedRoute>} />
     <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="/advertise" element={<ProtectedRoute><AdvertiseWithUs /></ProtectedRoute>} />
