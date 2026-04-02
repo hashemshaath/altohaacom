@@ -76,7 +76,7 @@ export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) 
             {user.account_status || "active"}
           </Badge>
           <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-xl">
-            {user.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "متابع" : "Fan")}
+            {user.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "مستخدم عادي" : "Regular")}
           </Badge>
           {user.membership_tier && user.membership_tier !== "basic" && (
             <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-xl border-chart-4/50 text-chart-4">

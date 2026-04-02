@@ -97,7 +97,7 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
           <Users className="h-4 w-4 text-primary" />
           {isAr ? "إحصائيات المستخدمين المباشرة" : "Users Live Stats"}
           <Badge variant="outline" className="ms-auto text-[10px]">
-            {data.pros} {isAr ? "محترف" : "Pro"} / {data.fans} {isAr ? "متابع" : "Fan"}
+            {data.pros} {isAr ? "محترف" : "Pro"} / {data.fans} {isAr ? "مستخدم عادي" : "Regular"}
           </Badge>
         </CardTitle>
       </CardHeader>

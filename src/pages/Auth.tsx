@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { normalizePhoneForStorage } from "@/lib/arabicNumerals";
+import { getDeviceFingerprint } from "@/lib/deviceFingerprint";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,8 +61,11 @@ export default function Auth() {
   const [signInCountry, setSignInCountry] = useState(DEFAULT_COUNTRY);
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
-  const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password">("phone");
+  const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password" | "pin">("phone");
   const [signInVerifiedPhone, setSignInVerifiedPhone] = useState("");
+  const [signInPin, setSignInPin] = useState("");
+  const [pinAvailable, setPinAvailable] = useState(false);
+  const [pinError, setPinError] = useState("");
 
   // Sign-up contact step
   const [phoneInput, setPhoneInput] = useState("");
@@ -259,20 +263,52 @@ export default function Auth() {
   const handleSignInPhoneVerified = async (phone: string) => {
     const normalizedPhone = normalizePhoneForStorage(phone);
     setSignInVerifiedPhone(normalizedPhone);
-    // Lookup account by phone (try both normalized and raw)
     setLoading(true);
-    const { data: phoneExists } = await supabase.rpc("check_phone_exists", { p_phone: normalizedPhone });
-    const profile = phoneExists ? { user_id: "found" } : null;
 
-    if (!profile) {
-      setLoading(false);
-      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
+    try {
+      // OTP is sufficient — sign in directly via edge function
+      const { data, error: fnError } = await supabase.functions.invoke("pin-auth", {
+        body: { action: "phone_otp_login", phone: normalizedPhone },
+      });
+
+      if (fnError || data?.error) {
+        const code = data?.code;
+        if (code === "NO_ACCOUNT") {
+          setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
+        } else {
+          setFormError(data?.error || fnError?.message || "Login failed");
+        }
+        setSignInPhoneStep("phone");
+        setLoading(false);
+        return;
+      }
+
+      // Use the magic link token to verify OTP and create session
+      if (data?.token_hash && data?.email) {
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          email: data.email,
+          token_hash: data.token_hash,
+          type: "magiclink",
+        });
+
+        if (verifyError) {
+          setFormError(isAr ? "فشل تسجيل الدخول" : "Login failed");
+          setSignInPhoneStep("phone");
+          setLoading(false);
+          return;
+        }
+
+        toast({
+          title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
+          description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
+        });
+      }
+    } catch (err: any) {
+      setFormError(err.message || "Login failed");
       setSignInPhoneStep("phone");
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-    setSignInPhoneStep("password");
   };
 
   const handleSignInPhonePassword = async () => {
@@ -347,6 +383,76 @@ export default function Auth() {
         title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
         description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
       });
+    }
+  };
+
+  // ── PIN Login (phone + PIN, no OTP) ──
+  const handlePinLogin = async () => {
+    setPinError("");
+    if (signInPin.length !== 6) {
+      setPinError(isAr ? "أدخل الرمز المكون من 6 أرقام" : "Enter your 6-digit PIN");
+      return;
+    }
+    setLoading(true);
+    try {
+      const fingerprint = await getDeviceFingerprint();
+      const fullPhone = normalizePhoneForStorage(signInPhoneCode + signInPhone.replace(/\s/g, ""));
+      const { data, error: fnError } = await supabase.functions.invoke("pin-auth", {
+        body: { action: "pin_login", phone: fullPhone, pin: signInPin, device_fingerprint: fingerprint },
+      });
+
+      if (fnError || data?.error) {
+        const code = data?.code;
+        if (code === "UNTRUSTED_DEVICE") {
+          setPinError(isAr ? "جهاز غير معروف. سجّل الدخول بالتحقق أولاً" : "Unrecognized device. Please login with OTP first.");
+        } else if (code === "WRONG_PIN") {
+          setPinError(isAr ? `رمز غير صحيح (${data.remaining_attempts} محاولات متبقية)` : `Incorrect PIN (${data.remaining_attempts} attempts remaining)`);
+        } else if (code === "PIN_LOCKED") {
+          setPinError(isAr ? "تم قفل الرمز مؤقتاً. حاول لاحقاً" : "PIN temporarily locked. Try again later.");
+        } else if (code === "PIN_EXPIRED") {
+          setPinError(isAr ? "انتهت صلاحية الرمز. أعد إعداده" : "PIN expired. Please set a new one.");
+        } else {
+          setPinError(data?.error || fnError?.message || "Login failed");
+        }
+        setLoading(false);
+        return;
+      }
+
+      if (data?.token_hash && data?.email) {
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          email: data.email,
+          token_hash: data.token_hash,
+          type: "magiclink",
+        });
+
+        if (verifyError) {
+          setPinError(isAr ? "فشل تسجيل الدخول" : "Login failed");
+          setLoading(false);
+          return;
+        }
+
+        toast({
+          title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
+          description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
+        });
+      }
+    } catch (err: any) {
+      setPinError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Check PIN availability for phone ──
+  const checkPinForPhone = async (fullPhone: string) => {
+    try {
+      const fingerprint = await getDeviceFingerprint();
+      const { data } = await supabase.functions.invoke("pin-auth", {
+        body: { action: "check_pin_by_phone", phone: fullPhone, device_fingerprint: fingerprint },
+      });
+      setPinAvailable(data?.has_pin && !data?.is_expired && data?.device_trusted);
+    } catch {
+      setPinAvailable(false);
     }
   };
 
@@ -816,9 +922,9 @@ export default function Auth() {
                     <Heart className={`h-5 w-5 ${accountType === "fan" ? "text-primary" : "text-muted-foreground"}`} />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
-                      {isAr ? "متابع" : "Follower"}
-                    </p>
+                     <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
+                       {isAr ? "مستخدم عادي" : "Regular User"}
+                     </p>
                     <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
                       {isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}
                     </p>
@@ -979,6 +1085,67 @@ export default function Auth() {
               phoneCode={signInPhoneCode}
               mode="login"
             />
+          </div>
+        </Card>
+      </AuthLayout>
+    );
+  }
+
+  // ── Sign In: PIN step (phone + PIN only) ──
+  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "pin") {
+    return (
+      <AuthLayout stage="login" isAr={isAr}>
+        <SEOHead title={isAr ? "الدخول بالرمز السري" : "PIN Login"} description="Sign in with your PIN" />
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <KeyRound className="h-7 w-7 text-primary" />
+              </div>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
+                {isAr ? "الدخول بالرمز السري" : "PIN Login"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isAr ? "أدخل رمز الدخول السريع المكون من 6 أرقام" : "Enter your 6-digit quick login PIN"}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
+              <Phone className="h-5 w-5 text-primary shrink-0" />
+              <span className="font-mono text-sm text-primary" dir="ltr">{signInPhoneCode + signInPhone}</span>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "رمز الدخول السريع (PIN)" : "Quick Login PIN"}</Label>
+              <Input
+                type="password"
+                inputMode="numeric"
+                maxLength={6}
+                value={signInPin}
+                onChange={(e) => { setSignInPin(e.target.value.replace(/\D/g, "").slice(0, 6)); setPinError(""); }}
+                placeholder="••••••"
+                className="text-center text-2xl tracking-[0.5em] font-mono"
+                autoFocus
+                onKeyDown={(e) => e.key === "Enter" && signInPin.length === 6 && handlePinLogin()}
+              />
+            </div>
+
+            {pinError && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2">
+                <p className="flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />{pinError}
+                </p>
+              </div>
+            )}
+
+            <Button className="w-full gap-2" size="lg" onClick={handlePinLogin} disabled={loading || signInPin.length !== 6}>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
+              {isAr ? "تسجيل الدخول" : "Sign In"}
+            </Button>
+
+            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("otp"); setSignInPin(""); setPinError(""); }}>
+              {isAr ? "الدخول بالتحقق من الهاتف بدلاً من ذلك" : "Use phone verification instead"}
+            </button>
           </div>
         </Card>
       </AuthLayout>
@@ -1187,35 +1354,61 @@ export default function Auth() {
 
               {signInMethod === "phone" ? (
                 <>
-                  <PhoneInputWithFlag
-                    phone={signInPhone}
-                    onPhoneChange={setSignInPhone}
-                    countryCode={signInCountry}
-                    phoneCode={signInPhoneCode}
-                    onCountryChange={(code, pc) => {
-                      setSignInCountry(code);
-                      setSignInPhoneCode(pc);
-                    }}
-                    error={errors.signInPhone}
-                    label={isAr ? "رقم الهاتف" : "Phone Number"}
-                    isAr={isAr}
-                  />
+                   <PhoneInputWithFlag
+                     phone={signInPhone}
+                     onPhoneChange={(val) => {
+                       setSignInPhone(val);
+                       setPinAvailable(false);
+                     }}
+                     countryCode={signInCountry}
+                     phoneCode={signInPhoneCode}
+                     onCountryChange={(code, pc) => {
+                       setSignInCountry(code);
+                       setSignInPhoneCode(pc);
+                       setPinAvailable(false);
+                     }}
+                     error={errors.signInPhone}
+                     label={isAr ? "رقم الهاتف" : "Phone Number"}
+                     isAr={isAr}
+                   />
 
-                  <Button
-                    className="w-full gap-2"
-                    size="lg"
-                    onClick={() => {
-                      const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
-                      if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
-                        setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
-                        return;
-                      }
-                      setErrors({});
-                      setSignInPhoneStep("otp");
-                    }}
-                  >
-                    {isAr ? "التالي — التحقق" : "Next — Verify"}
-                  </Button>
+                   <Button
+                     className="w-full gap-2"
+                     size="lg"
+                     onClick={async () => {
+                       const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
+                       if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
+                         setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
+                         return;
+                       }
+                       setErrors({});
+                       // Check if PIN is available for this phone
+                       await checkPinForPhone(normalizePhoneForStorage(fullPhone));
+                       setSignInPhoneStep("otp");
+                     }}
+                   >
+                     {isAr ? "التالي — التحقق" : "Next — Verify"}
+                   </Button>
+
+                   {/* PIN login shortcut */}
+                   {pinAvailable && (
+                     <button
+                       type="button"
+                       className="w-full text-center text-xs text-primary hover:underline flex items-center justify-center gap-1.5"
+                       onClick={() => {
+                         const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
+                         if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
+                           setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
+                           return;
+                         }
+                         setErrors({});
+                         setSignInPhoneStep("pin");
+                       }}
+                     >
+                       <KeyRound className="h-3 w-3" />
+                       {isAr ? "الدخول بالرمز السري (PIN)" : "Login with PIN"}
+                     </button>
+                   )}
                 </>
               ) : (
                 <>

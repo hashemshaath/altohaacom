@@ -76,7 +76,7 @@ export const AccountTypeCard = memo(function AccountTypeCard() {
                   {isAr ? "نوع الحساب" : "Account Type"}
                 </p>
                 <Badge variant={isFan ? "secondary" : "default"}>
-                  {isFan ? (isAr ? "متابع" : "Follower") : (isAr ? "محترف" : "Professional")}
+                  {isFan ? (isAr ? "مستخدم عادي" : "Regular User") : (isAr ? "محترف" : "Professional")}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">

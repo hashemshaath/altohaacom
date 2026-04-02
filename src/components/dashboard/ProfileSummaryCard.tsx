@@ -91,7 +91,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
           <MembershipBadge tier={profile.membership_tier} isAr={isAr} size="sm" />
           <Badge variant="outline" className="text-[9px] gap-1 px-1.5 py-0.5">
             {profile.account_type === "professional" ? <Briefcase className="h-2.5 w-2.5" /> : <Users className="h-2.5 w-2.5" />}
-            {profile.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "متابع" : "Fan")}
+            {profile.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "مستخدم عادي" : "Regular")}
           </Badge>
           {spec && (
             <Badge variant="secondary" className="text-[9px] px-1.5 py-0.5 truncate max-w-[120px]">
