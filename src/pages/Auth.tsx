@@ -305,7 +305,9 @@ export default function Auth() {
     setFormError("");
     const errs: Record<string, string> = {};
     if (resetPassword.length < 8) errs.resetPassword = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
-    if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
+    else if (!/[A-Z]/.test(resetPassword)) errs.resetPassword = isAr ? "يجب أن تحتوي على حرف كبير" : "Must contain an uppercase letter";
+    else if (!/\d/.test(resetPassword)) errs.resetPassword = isAr ? "يجب أن تحتوي على رقم" : "Must contain a number";
+    else if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
     if (resetPassword !== resetConfirm) errs.resetConfirm = isAr ? "غير متطابقة" : "Passwords don't match";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
