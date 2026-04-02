@@ -167,7 +167,7 @@ export default function Auth() {
     setLoading(false);
   };
 
-  // ── Sign In with Email ──
+  // ── Sign In with Email/Username ──
   const handleSignInEmail = async () => {
     setErrors({});
     setFormError("");
@@ -175,15 +175,47 @@ export default function Auth() {
     if (isLockedOut) return;
 
     const errs: Record<string, string> = {};
-    const emailVal = signInEmail.trim();
-    const emailResult = loginSchema.shape.email.safeParse(emailVal);
-    if (!emailResult.success) errs.signInEmail = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email";
+    const inputVal = signInEmail.trim();
+    if (!inputVal) {
+      errs.signInEmail = isAr ? "هذا الحقل مطلوب" : "This field is required";
+    }
     if (signInPassword.length < 6) errs.signInPassword = isAr ? "كلمة المرور قصيرة جداً" : "Password too short";
     if (signInPassword.length > 128) errs.signInPassword = isAr ? "كلمة المرور طويلة جداً" : "Password too long";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: emailVal, password: signInPassword });
+
+    // Detect input type: email or username
+    const inputType = detectLoginInputType(inputVal);
+    let loginEmail = inputVal;
+
+    if (inputType === "username") {
+      // Resolve username → email via DB
+      const { data: resolvedEmail } = await supabase.rpc("get_user_email_by_username", { p_username: inputVal });
+      if (!resolvedEmail) {
+        setLoading(false);
+        // Generic error to prevent enumeration
+        setFormError(isAr ? "بيانات الدخول غير صحيحة" : "Invalid credentials");
+        const newAttempts = loginAttempts + 1;
+        setLoginAttempts(newAttempts);
+        if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+          const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+          setLockoutUntil(lockUntil);
+          setLoginAttempts(0);
+        }
+        return;
+      }
+      loginEmail = resolvedEmail as string;
+    } else if (inputType === "email") {
+      const emailResult = loginSchema.shape.email.safeParse(inputVal);
+      if (!emailResult.success) {
+        setLoading(false);
+        setErrors({ signInEmail: isAr ? "البريد الإلكتروني غير صالح" : "Invalid email" });
+        return;
+      }
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: signInPassword });
     setLoading(false);
 
     if (error) {
@@ -194,7 +226,6 @@ export default function Auth() {
         const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
         setLockoutUntil(lockUntil);
         setLoginAttempts(0);
-        // Log lockout security event (fire-and-forget)
         try {
           supabase.rpc("log_security_event", {
             p_user_id: null as any,
@@ -202,7 +233,7 @@ export default function Auth() {
             p_severity: "warning",
             p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts`,
             p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة`,
-            p_metadata: { email: signInEmail.trim(), attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
+            p_metadata: { identifier: inputVal, attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
           });
         } catch {}
         return;
