@@ -376,7 +376,7 @@ export default function UserManagement() {
                   <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
-                    <SelectItem value="fan">{isAr ? "متابع" : "Fan"}</SelectItem>
+                    <SelectItem value="fan">{isAr ? "مستخدم عادي" : "Regular User"}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

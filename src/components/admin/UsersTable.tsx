@@ -225,7 +225,7 @@ export const UsersTable = memo(function UsersTable({
                       {visibleColumns.type && (
                         <TableCell>
                           <Badge variant={profile.account_type === "fan" ? "secondary" : "outline"} className="text-[10px]">
-                            {profile.account_type === "fan" ? (isAr ? "متابع" : "Fan") : (isAr ? "محترف" : "Pro")}
+                            {profile.account_type === "fan" ? (isAr ? "مستخدم عادي" : "Regular") : (isAr ? "محترف" : "Pro")}
                           </Badge>
                         </TableCell>
                       )}

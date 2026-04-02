@@ -293,7 +293,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                     <InfoRow icon={CreditCard} label={isAr ? "رقم الحساب" : "Account #"} value={profile.account_number || "—"} dir="ltr" onCopy={() => copyToClipboard(profile.account_number || "")} isAr={isAr} />
                     <InfoRow icon={Calendar} label={isAr ? "تاريخ الانضمام" : "Joined"} value={profile.created_at ? format(new Date(profile.created_at), "yyyy-MM-dd") : "—"} isAr={isAr} />
                     <InfoRow icon={Clock} label={isAr ? "آخر تسجيل دخول" : "Last Login"} value={profile.last_login_at ? format(new Date(profile.last_login_at), "yyyy-MM-dd HH:mm") : "—"} isAr={isAr} />
-                    <InfoRow icon={TrendingUp} label={isAr ? "نوع الحساب" : "Account Type"} value={profile.account_type === "professional" ? (isAr ? "محترف" : "Professional") : (isAr ? "متابع" : "Fan")} isAr={isAr} />
+                    <InfoRow icon={TrendingUp} label={isAr ? "نوع الحساب" : "Account Type"} value={profile.account_type === "professional" ? (isAr ? "محترف" : "Professional") : (isAr ? "مستخدم عادي" : "Regular User")} isAr={isAr} />
                     <InfoRow icon={Award} label={isAr ? "العضوية" : "Membership"} value={profile.membership_tier === "enterprise" ? (isAr ? "مؤسسي" : "Enterprise") : profile.membership_tier === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "أساسي" : "Basic")} isAr={isAr} />
                   </div>
 
