@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,9 +8,8 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 
-function StatItem({ value, label, icon: Icon, isVisible, delay }: {
-  value: number; label: string; icon: any; isVisible: boolean; delay: number;
-}) {
+const StatItem = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number }>(
+  function StatItem({ value, label, icon: Icon, isVisible, delay }, ref) {
   const count = useCountUp(value, isVisible);
 
   return (
