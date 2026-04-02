@@ -54,8 +54,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("lang", language);
   }, [dir, language]);
 
+  const contextValue = useMemo(
+    () => ({ language, setLanguage, t, dir }),
+    [language, setLanguage, t, dir]
+  );
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );
