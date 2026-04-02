@@ -1076,6 +1076,36 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_audit_log: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       auth_hero_slides: {
         Row: {
           created_at: string
@@ -16217,6 +16247,24 @@ export type Database = {
         }
         Relationships: []
       }
+      password_reset_requests: {
+        Row: {
+          id: string
+          identifier: string
+          requested_at: string
+        }
+        Insert: {
+          id?: string
+          identifier: string
+          requested_at?: string
+        }
+        Update: {
+          id?: string
+          identifier?: string
+          requested_at?: string
+        }
+        Relationships: []
+      }
       permissions: {
         Row: {
           category: string
@@ -21692,6 +21740,42 @@ export type Database = {
         }
         Relationships: []
       }
+      trusted_devices: {
+        Row: {
+          created_at: string
+          device_fingerprint: string
+          device_name: string | null
+          id: string
+          ip_address: string | null
+          is_active: boolean
+          last_used_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_fingerprint: string
+          device_name?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean
+          last_used_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_fingerprint?: string
+          device_name?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean
+          last_used_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_affiliations: {
         Row: {
           affiliation_type: string
@@ -22192,6 +22276,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_pins: {
+        Row: {
+          created_at: string
+          device_fingerprint: string
+          failed_pin_attempts: number
+          hashed_pin: string
+          id: string
+          is_active: boolean
+          pin_created_at: string
+          pin_locked_until: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_fingerprint: string
+          failed_pin_attempts?: number
+          hashed_pin: string
+          id?: string
+          is_active?: boolean
+          pin_created_at?: string
+          pin_locked_until?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_fingerprint?: string
+          failed_pin_attempts?: number
+          hashed_pin?: string
+          id?: string
+          is_active?: boolean
+          pin_created_at?: string
+          pin_locked_until?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -23176,6 +23299,10 @@ export type Database = {
       }
       check_email_exists: { Args: { p_email: string }; Returns: boolean }
       check_phone_exists: { Args: { p_phone: string }; Returns: boolean }
+      check_reset_rate_limit: {
+        Args: { p_identifier: string }
+        Returns: boolean
+      }
       check_username_taken: { Args: { p_username: string }; Returns: boolean }
       delete_email: {
         Args: { message_id: number; queue_name: string }

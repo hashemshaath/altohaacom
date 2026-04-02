@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageShell } from "@/components/PageShell";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
-import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Lock, ShieldCheck } from "lucide-react";
+import { User, Edit, Shield, Crown, BarChart3, Wallet, FileText, Gift, Trophy, ShoppingBag, ExternalLink, Link2, Heart, Users, Lock, ShieldCheck, KeyRound } from "lucide-react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -21,7 +21,7 @@ const ProfileInvoicesTab = lazy(() => import("@/components/profile/ProfileInvoic
 const ProfileReferralsTab = lazy(() => import("@/components/profile/ProfileReferralsTab").then(m => ({ default: m.ProfileReferralsTab })));
 const CompetitionHistory = lazy(() => import("@/components/profile/CompetitionHistory").then(m => ({ default: m.CompetitionHistory })));
 const ProfileOrdersTab = lazy(() => import("@/components/profile/ProfileOrdersTab").then(m => ({ default: m.ProfileOrdersTab })));
-
+const SecuritySettings = lazy(() => import("@/components/auth/SecuritySettings").then(m => ({ default: m.SecuritySettings })));
 
 
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
@@ -92,6 +92,7 @@ export default function Profile() {
     ] : []),
     { id: "edit", label: isAr ? "تعديل" : "Edit", icon: Edit },
     { id: "verification", label: isAr ? "التوثيق" : "Verification", icon: ShieldCheck, href: "/verification" },
+    { id: "security", label: isAr ? "الأمان" : "Security", icon: KeyRound },
     { id: "privacy", label: isAr ? "الخصوصية" : "Privacy", icon: Shield },
   ];
 
@@ -211,6 +212,10 @@ export default function Profile() {
 
           <TabsContent value="edit" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
             {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={refetchProfile} />}
+          </TabsContent>
+
+          <TabsContent value="security" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+            <SecuritySettings />
           </TabsContent>
 
           <TabsContent value="privacy" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
