@@ -10,6 +10,7 @@ import { RelatedPages } from "@/components/seo/RelatedPages";
 import { HeroSection } from "@/components/home/sections/HeroSection";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
+import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 import { Shield, Globe, Award } from "lucide-react";
 
