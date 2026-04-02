@@ -15,13 +15,7 @@ export function useScrollReveal(options: UseScrollRevealOptions = {}) {
     const el = ref.current;
     if (!el) return;
 
-    // If element is already in viewport on mount, mark visible immediately
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      setIsVisible(true);
-      if (once) return;
-    }
-
+    // Use IntersectionObserver only — no getBoundingClientRect to avoid forced reflow
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

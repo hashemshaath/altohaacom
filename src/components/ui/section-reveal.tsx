@@ -17,31 +17,43 @@ export function SectionReveal({ children, className, direction = "up", delay = 0
     const el = ref.current;
     if (!el) return;
 
-    const rect = el.getBoundingClientRect();
-    if (rect.top >= window.innerHeight) {
-      setShouldAnimate(true);
+    // Use IntersectionObserver for initial check too — avoids forced reflow from getBoundingClientRect
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Element was already in viewport on mount — no animation needed
+          setHasAnimated(true);
+          observer.unobserve(el);
+        } else {
+          // Element is below fold — animate it in when it enters
+          setShouldAnimate(true);
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setHasAnimated(true);
-            observer.unobserve(el);
-          }
-        },
-        { threshold: 0.01, rootMargin: "0px 0px 80px 0px" }
-      );
+          const revealObserver = new IntersectionObserver(
+            ([e]) => {
+              if (e.isIntersecting) {
+                setHasAnimated(true);
+                revealObserver.unobserve(el);
+              }
+            },
+            { threshold: 0.01, rootMargin: "0px 0px 80px 0px" }
+          );
+          revealObserver.observe(el);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0 }
+    );
 
-      observer.observe(el);
-      return () => observer.disconnect();
-    }
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const hiddenTransform =
     direction === "up"
-      ? "translate-y-5"
+      ? "translate-y-4"
       : direction === "left"
-        ? "-translate-x-5"
-        : "translate-x-5";
+        ? "-translate-x-4"
+        : "translate-x-4";
 
   const isHidden = shouldAnimate && !hasAnimated;
 
@@ -49,8 +61,9 @@ export function SectionReveal({ children, className, direction = "up", delay = 0
     <div
       ref={ref}
       className={cn(
-        shouldAnimate && "transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        isHidden ? `opacity-0 blur-[2px] ${hiddenTransform}` : "opacity-100 blur-0 translate-y-0 translate-x-0",
+        // Only animate GPU-composited properties: transform + opacity
+        shouldAnimate && "transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,opacity]",
+        isHidden ? `opacity-0 ${hiddenTransform}` : "opacity-100 translate-y-0 translate-x-0",
         className
       )}
       style={shouldAnimate && hasAnimated ? { transitionDelay: `${delay}ms` } : undefined}
