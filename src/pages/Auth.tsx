@@ -1091,6 +1091,67 @@ export default function Auth() {
     );
   }
 
+  // ── Sign In: PIN step (phone + PIN only) ──
+  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "pin") {
+    return (
+      <AuthLayout stage="login" isAr={isAr}>
+        <SEOHead title={isAr ? "الدخول بالرمز السري" : "PIN Login"} description="Sign in with your PIN" />
+        <Card className="border-border/50 shadow-xl shadow-primary/5">
+          <div className="p-5 md:p-6 space-y-5">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
+                <KeyRound className="h-7 w-7 text-primary" />
+              </div>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
+                {isAr ? "الدخول بالرمز السري" : "PIN Login"}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isAr ? "أدخل رمز الدخول السريع المكون من 6 أرقام" : "Enter your 6-digit quick login PIN"}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
+              <Phone className="h-5 w-5 text-primary shrink-0" />
+              <span className="font-mono text-sm text-primary" dir="ltr">{signInPhoneCode + signInPhone}</span>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs">{isAr ? "رمز الدخول السريع (PIN)" : "Quick Login PIN"}</Label>
+              <Input
+                type="password"
+                inputMode="numeric"
+                maxLength={6}
+                value={signInPin}
+                onChange={(e) => { setSignInPin(e.target.value.replace(/\D/g, "").slice(0, 6)); setPinError(""); }}
+                placeholder="••••••"
+                className="text-center text-2xl tracking-[0.5em] font-mono"
+                autoFocus
+                onKeyDown={(e) => e.key === "Enter" && signInPin.length === 6 && handlePinLogin()}
+              />
+            </div>
+
+            {pinError && (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2">
+                <p className="flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />{pinError}
+                </p>
+              </div>
+            )}
+
+            <Button className="w-full gap-2" size="lg" onClick={handlePinLogin} disabled={loading || signInPin.length !== 6}>
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
+              {isAr ? "تسجيل الدخول" : "Sign In"}
+            </Button>
+
+            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("otp"); setSignInPin(""); setPinError(""); }}>
+              {isAr ? "الدخول بالتحقق من الهاتف بدلاً من ذلك" : "Use phone verification instead"}
+            </button>
+          </div>
+        </Card>
+      </AuthLayout>
+    );
+  }
+
   // ── Sign In: Phone password step (no email needed) ──
   if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "password") {
     return (
