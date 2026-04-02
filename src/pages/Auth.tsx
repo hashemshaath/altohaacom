@@ -1181,7 +1181,7 @@ export default function Auth() {
                   }`}
                 >
                   <Mail className="h-4 w-4" />
-                  {isAr ? "البريد" : "Email"}
+                  {isAr ? "البريد / المستخدم" : "Email / Username"}
                 </button>
               </div>
 
