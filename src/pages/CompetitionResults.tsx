@@ -171,7 +171,7 @@ export default function CompetitionResults() {
           </div>
           <div className="container relative py-10 md:py-14">
             <Button variant="ghost" size="sm" asChild className="mb-6 -ms-2">
-              <Link to={`/competitions/${id}`}>
+              <Link to={`/competitions/${competition?.slug || slug}`}>
                 <ArrowLeft className="me-1.5 h-4 w-4" />
                 {isAr ? "العودة للمسابقة" : "Back to Competition"}
               </Link>
