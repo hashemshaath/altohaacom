@@ -23013,6 +23013,89 @@ export type Database = {
       }
     }
     Views: {
+      company_contacts_safe: {
+        Row: {
+          accepted_at: string | null
+          avatar_url: string | null
+          can_login: boolean | null
+          company_id: string | null
+          created_at: string | null
+          department: string | null
+          email: string | null
+          id: string | null
+          invitation_status: string | null
+          invited_at: string | null
+          invited_by: string | null
+          is_primary: boolean | null
+          mobile: string | null
+          name: string | null
+          name_ar: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["company_contact_role"] | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          user_id: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          avatar_url?: string | null
+          can_login?: boolean | null
+          company_id?: string | null
+          created_at?: string | null
+          department?: string | null
+          email?: string | null
+          id?: string | null
+          invitation_status?: string | null
+          invited_at?: string | null
+          invited_by?: string | null
+          is_primary?: boolean | null
+          mobile?: string | null
+          name?: string | null
+          name_ar?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["company_contact_role"] | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          avatar_url?: string | null
+          can_login?: boolean | null
+          company_id?: string | null
+          created_at?: string | null
+          department?: string | null
+          email?: string | null
+          id?: string | null
+          invitation_status?: string | null
+          invited_at?: string | null
+          invited_by?: string | null
+          is_primary?: boolean | null
+          mobile?: string | null
+          name?: string | null
+          name_ar?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["company_contact_role"] | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_contacts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       competitions_public: {
         Row: {
           city: string | null
