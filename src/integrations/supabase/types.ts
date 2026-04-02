@@ -23418,6 +23418,7 @@ export type Database = {
         Args: { p_username: string }
         Returns: string
       }
+      has_organizer_role: { Args: never; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -23435,6 +23436,15 @@ export type Database = {
       }
       is_admin: { Args: { p_user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
+      is_competition_organizer: {
+        Args: { p_competition_id: string }
+        Returns: boolean
+      }
+      is_content_manager: { Args: never; Returns: boolean }
+      is_exhibition_organizer: {
+        Args: { p_exhibition_id: string }
+        Returns: boolean
+      }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
       is_valid_chef: { Args: { p_user_id: string }; Returns: boolean }
       log_feature_access: {
