@@ -10,9 +10,13 @@ export function getPasswordStrength(password: string) {
   let score = 0;
   if (password.length >= 8) score++;
   if (password.length >= 12) score++;
-  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
   if (/\d/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
+  // Require at least uppercase + number for score >= 2
+  const hasUpper = /[A-Z]/.test(password);
+  const hasNum = /\d/.test(password);
+  if (!hasUpper || !hasNum) score = Math.min(score, 1);
   return Math.min(score, 4);
 }
 
