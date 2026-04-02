@@ -112,7 +112,7 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           <div className="flex items-center gap-1 sm:gap-0.5 ms-auto shrink-0">
             {headerCfg.showSearch !== false && (
               <Button variant="ghost" size="icon" asChild className="rounded-xl h-9 w-9 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground hover:bg-accent/10 touch-manipulation">
-                <Link to="/search"><Search className="h-[18px] w-[18px] sm:h-4 sm:w-4" /></Link>
+                <Link to="/search" aria-label={isAr ? "البحث" : "Search"}><Search className="h-[18px] w-[18px] sm:h-4 sm:w-4" aria-hidden="true" /></Link>
               </Button>
             )}
             {user && headerCfg.showNotifications !== false && <NotificationBell />}
