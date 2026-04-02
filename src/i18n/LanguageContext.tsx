@@ -46,7 +46,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     [language]
   );
 
-  const dir = language === "ar" ? "rtl" : "ltr";
+  const dir: "ltr" | "rtl" = language === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     if (typeof document === "undefined") return;
