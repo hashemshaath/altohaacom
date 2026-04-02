@@ -286,8 +286,19 @@ export default function Auth() {
       setLoginAttempts(newAttempts);
 
       if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        setLockoutUntil(Date.now() + LOCKOUT_DURATION_MS);
+        const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+        setLockoutUntil(lockUntil);
         setLoginAttempts(0);
+        try {
+          supabase.rpc("log_security_event", {
+            p_user_id: null as any,
+            p_event_type: "account_locked",
+            p_severity: "warning",
+            p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts (phone login)`,
+            p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة (تسجيل بالهاتف)`,
+            p_metadata: { phone: signInVerifiedPhone, attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
+          });
+        } catch {}
         return;
       }
 
