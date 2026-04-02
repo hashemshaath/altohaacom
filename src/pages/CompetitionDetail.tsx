@@ -165,60 +165,60 @@ export default function CompetitionDetail() {
   const { isWatched, toggle: toggleWatchlist } = useEventWatchlist("competition", competitionId);
 
   const { data: categories } = useQuery({
-    queryKey: ["competition-categories", id],
+    queryKey: ["competition-categories", competitionId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar, description, description_ar, max_participants, gender, sort_order, cover_image_url, participant_level, status").eq("competition_id", id).order("sort_order");
+      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar, description, description_ar, max_participants, gender, sort_order, cover_image_url, participant_level, status").eq("competition_id", competitionId!).order("sort_order");
       if (error) throw error;
       return data;
     },
-    enabled: !!id,
+    enabled: !!competitionId,
     staleTime: 1000 * 60 * 5,
   });
 
   const { data: criteria } = useQuery({
-    queryKey: ["judging-criteria", id],
+    queryKey: ["judging-criteria", competitionId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("judging_criteria").select("id, name, name_ar, description, description_ar, max_score, weight, sort_order").eq("competition_id", id).order("sort_order");
+      const { data, error } = await supabase.from("judging_criteria").select("id, name, name_ar, description, description_ar, max_score, weight, sort_order").eq("competition_id", competitionId!).order("sort_order");
       if (error) throw error;
       return data;
     },
-    enabled: !!id,
+    enabled: !!competitionId,
     staleTime: 1000 * 60 * 5,
   });
 
   const { data: myRegistration } = useQuery({
-    queryKey: ["my-registration", id, user?.id],
+    queryKey: ["my-registration", competitionId, user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase.from("competition_registrations").select("id, status, competition_id, participant_id, category_id, dish_name, entry_type, team_name, registered_at").eq("competition_id", id).eq("participant_id", user.id).maybeSingle();
+      const { data } = await supabase.from("competition_registrations").select("id, status, competition_id, participant_id, category_id, dish_name, entry_type, team_name, registered_at").eq("competition_id", competitionId!).eq("participant_id", user.id).maybeSingle();
       return data;
     },
-    enabled: !!id && !!user,
+    enabled: !!competitionId && !!user,
   });
 
   const { data: competitionTypes } = useQuery({
-    queryKey: ["competition-detail-types", id],
+    queryKey: ["competition-detail-types", competitionId],
     queryFn: async () => {
-      const { data: assignments } = await supabase.from("competition_type_assignments").select("type_id").eq("competition_id", id);
+      const { data: assignments } = await supabase.from("competition_type_assignments").select("type_id").eq("competition_id", competitionId!);
       if (!assignments || assignments.length === 0) return [];
       const typeIds = assignments.map((a) => a.type_id);
       const { data: types } = await supabase.from("competition_types").select("id, name, name_ar, icon, cover_image_url").in("id", typeIds);
       return types || [];
     },
-    enabled: !!id,
+    enabled: !!competitionId,
   });
 
   const { data: supervisingBodies } = useQuery({
-    queryKey: ["competition-detail-bodies", id],
+    queryKey: ["competition-detail-bodies", competitionId],
     queryFn: async () => {
-      const { data: assignments } = await supabase.from("competition_supervising_bodies").select("entity_id, role").eq("competition_id", id);
+      const { data: assignments } = await supabase.from("competition_supervising_bodies").select("entity_id, role").eq("competition_id", competitionId!);
       if (!assignments || assignments.length === 0) return [];
       const entityIds = assignments.map((a) => a.entity_id);
       const roles = new Map(assignments.map(a => [a.entity_id, a.role]));
       const { data: entities } = await supabase.from("culinary_entities").select("id, name, name_ar, abbreviation, logo_url, type, country").in("id", entityIds);
       return (entities || []).map(e => ({ ...e, bodyRole: roles.get(e.id) || "supervisor" }));
     },
-    enabled: !!id,
+    enabled: !!competitionId,
   });
 
   const { data: userRoles } = useQuery({
