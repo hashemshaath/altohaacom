@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +12,39 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const SESSION_CREATED_KEY = "tabaq_session_created";
+
+async function createLoginSession(loginMethod = "email") {
+  try {
+    const fingerprint = await getDeviceFingerprint();
+    const deviceName = getDeviceName();
+    const ua = navigator.userAgent;
+    let deviceOs = "Unknown";
+    if (/Windows/i.test(ua)) deviceOs = "Windows";
+    else if (/Mac OS/i.test(ua)) deviceOs = "macOS";
+    else if (/Android/i.test(ua)) deviceOs = "Android";
+    else if (/iPhone|iPad/i.test(ua)) deviceOs = "iOS";
+    else if (/Linux/i.test(ua)) deviceOs = "Linux";
+
+    const { data } = await supabase.functions.invoke("session-manager", {
+      body: {
+        action: "create_session",
+        device_fingerprint: fingerprint,
+        device_name: deviceName,
+        device_os: deviceOs,
+        login_method: loginMethod,
+      },
+    });
+
+    if (data?.session_id) {
+      sessionStorage.setItem("tabaq_session_id", data.session_id);
+      sessionStorage.setItem(SESSION_CREATED_KEY, "true");
+    }
+  } catch (e) {
+    console.warn("Session creation failed:", e);
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -18,18 +52,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const listenerFired = useRef(false);
 
   useEffect(() => {
-    // 1. Set up the auth state listener FIRST — this is the single source of truth.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      (event, newSession) => {
         listenerFired.current = true;
         setSession(newSession);
         setUser(newSession?.user ?? null);
         setLoading(false);
+
+        // Create session record on sign-in (not on token refresh or initial load)
+        if (event === "SIGNED_IN" && newSession?.user) {
+          const alreadyCreated = sessionStorage.getItem(SESSION_CREATED_KEY);
+          if (!alreadyCreated) {
+            // Determine login method from user metadata
+            const provider = newSession.user.app_metadata?.provider || "email";
+            setTimeout(() => createLoginSession(provider), 0);
+          }
+        }
+
+        // Clear session tracking on sign-out
+        if (event === "SIGNED_OUT") {
+          sessionStorage.removeItem("tabaq_session_id");
+          sessionStorage.removeItem(SESSION_CREATED_KEY);
+        }
       }
     );
 
-    // 2. Bootstrap with getSession ONLY if the listener hasn't fired yet.
-    //    This prevents a stale cached session from overwriting a fresh one.
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       if (!listenerFired.current) {
         setSession(initialSession);
