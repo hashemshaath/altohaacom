@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { USERNAME_REGEX, isReservedUsername } from "@/lib/usernameValidation";
 
 interface UsernameSuggestionsProps {
   baseUsername: string;
@@ -10,7 +11,7 @@ interface UsernameSuggestionsProps {
 }
 
 function generateCandidates(base: string): string[] {
-  const clean = base.replace(/[^a-z0-9_]/g, "").slice(0, 24);
+  const clean = base.replace(/[^a-z0-9_-]/g, "").slice(0, 24);
   if (!clean) return [];
   const now = new Date();
   const year = now.getFullYear().toString().slice(-2);
@@ -21,7 +22,7 @@ function generateCandidates(base: string): string[] {
   candidates.push(`the_${clean}`);
   candidates.push(`${clean}_official`);
   candidates.push(`${clean}pro`);
-  return candidates.filter((c) => /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/.test(c));
+  return candidates.filter((c) => USERNAME_REGEX.test(c) && !isReservedUsername(c));
 }
 
 export const UsernameSuggestions = memo(function UsernameSuggestions({ baseUsername, onSelect }: UsernameSuggestionsProps) {

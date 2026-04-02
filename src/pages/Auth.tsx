@@ -26,7 +26,8 @@ import {
   Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
-const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
+import { USERNAME_REGEX, validateUsername, isReservedUsername, detectLoginInputType } from "@/lib/usernameValidation";
+const usernameRegex = USERNAME_REGEX;
 
 const loginSchema = z.object({
   email: z.string().trim().email().max(255),
@@ -132,18 +133,15 @@ export default function Auth() {
 
   // Username availability check
   useEffect(() => {
-    if (!username || username.length < 3 || !usernameRegex.test(username)) {
-      setUsernameStatus("idle");
+    const validation = validateUsername(username);
+    if (!username || username.length < 3 || !validation.valid) {
+      setUsernameStatus(validation.valid === false && username.length >= 3 ? "taken" : "idle");
       return;
     }
     setUsernameStatus("checking");
     const timer = setTimeout(async () => {
-      const { data } = await supabase
-        .from("profiles_public")
-        .select("username")
-        .eq("username", username.toLowerCase())
-        .maybeSingle();
-      setUsernameStatus(data ? "taken" : "available");
+      const { data: taken } = await supabase.rpc("check_username_taken", { p_username: username.toLowerCase() });
+      setUsernameStatus(taken ? "taken" : "available");
     }, 500);
     return () => clearTimeout(timer);
   }, [username]);
@@ -166,7 +164,7 @@ export default function Auth() {
     setLoading(false);
   };
 
-  // ── Sign In with Email ──
+  // ── Sign In with Email/Username ──
   const handleSignInEmail = async () => {
     setErrors({});
     setFormError("");
@@ -174,15 +172,47 @@ export default function Auth() {
     if (isLockedOut) return;
 
     const errs: Record<string, string> = {};
-    const emailVal = signInEmail.trim();
-    const emailResult = loginSchema.shape.email.safeParse(emailVal);
-    if (!emailResult.success) errs.signInEmail = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email";
+    const inputVal = signInEmail.trim();
+    if (!inputVal) {
+      errs.signInEmail = isAr ? "هذا الحقل مطلوب" : "This field is required";
+    }
     if (signInPassword.length < 6) errs.signInPassword = isAr ? "كلمة المرور قصيرة جداً" : "Password too short";
     if (signInPassword.length > 128) errs.signInPassword = isAr ? "كلمة المرور طويلة جداً" : "Password too long";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email: emailVal, password: signInPassword });
+
+    // Detect input type: email or username
+    const inputType = detectLoginInputType(inputVal);
+    let loginEmail = inputVal;
+
+    if (inputType === "username") {
+      // Resolve username → email via DB
+      const { data: resolvedEmail } = await supabase.rpc("get_user_email_by_username", { p_username: inputVal });
+      if (!resolvedEmail) {
+        setLoading(false);
+        // Generic error to prevent enumeration
+        setFormError(isAr ? "بيانات الدخول غير صحيحة" : "Invalid credentials");
+        const newAttempts = loginAttempts + 1;
+        setLoginAttempts(newAttempts);
+        if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+          const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+          setLockoutUntil(lockUntil);
+          setLoginAttempts(0);
+        }
+        return;
+      }
+      loginEmail = resolvedEmail as string;
+    } else if (inputType === "email") {
+      const emailResult = loginSchema.shape.email.safeParse(inputVal);
+      if (!emailResult.success) {
+        setLoading(false);
+        setErrors({ signInEmail: isAr ? "البريد الإلكتروني غير صالح" : "Invalid email" });
+        return;
+      }
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: signInPassword });
     setLoading(false);
 
     if (error) {
@@ -193,7 +223,6 @@ export default function Auth() {
         const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
         setLockoutUntil(lockUntil);
         setLoginAttempts(0);
-        // Log lockout security event (fire-and-forget)
         try {
           supabase.rpc("log_security_event", {
             p_user_id: null as any,
@@ -201,7 +230,7 @@ export default function Auth() {
             p_severity: "warning",
             p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts`,
             p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة`,
-            p_metadata: { email: signInEmail.trim(), attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
+            p_metadata: { identifier: inputVal, attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
           });
         } catch {}
         return;
@@ -457,7 +486,8 @@ export default function Auth() {
     setErrors({});
     const errs: Record<string, string> = {};
 
-    if (!username || !usernameRegex.test(username)) errs.username = isAr ? "اسم مستخدم غير صالح (حروف وأرقام و _ فقط)" : "Invalid username (letters, numbers, _ only)";
+    const usernameValidation = validateUsername(username);
+    if (!usernameValidation.valid) errs.username = isAr ? (usernameValidation.errorAr || "اسم مستخدم غير صالح") : (usernameValidation.error || "Invalid username");
     if (usernameStatus === "taken") errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
     if (usernameStatus === "checking") errs.username = isAr ? "جاري التحقق..." : "Still checking...";
     if (password.length < 8) {
@@ -846,7 +876,7 @@ export default function Auth() {
                 <Input
                   id="username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
                   className="pe-10"
                   placeholder="your_username"
                 />
@@ -1151,7 +1181,7 @@ export default function Auth() {
                   }`}
                 >
                   <Mail className="h-4 w-4" />
-                  {isAr ? "البريد" : "Email"}
+                  {isAr ? "البريد / المستخدم" : "Email / Username"}
                 </button>
               </div>
 
@@ -1211,25 +1241,22 @@ export default function Auth() {
                   )}
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"}</Label>
+                    <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد أو اسم المستخدم" : "Email or Username"}</Label>
                     <Input
                       id="signInEmail"
-                      type="email"
+                      type="text"
                       value={signInEmail}
                       onChange={(e) => {
                         setSignInEmail(e.target.value);
                         if (errors.signInEmail) setErrors((prev) => ({ ...prev, signInEmail: "" }));
                         if (formError) setFormError("");
                       }}
-                      placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
+                      placeholder={isAr ? "البريد الإلكتروني أو اسم المستخدم" : "Email or username"}
                       onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
                       maxLength={255}
-                      autoComplete="email"
+                      autoComplete="username"
                       disabled={isLockedOut}
                     />
-                    {signInEmail && !z.string().email().safeParse(signInEmail.trim()).success && (
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "يرجى إدخال بريد إلكتروني صحيح" : "Please enter a valid email"}</p>
-                    )}
                     {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
                   </div>
 
