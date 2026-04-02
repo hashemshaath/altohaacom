@@ -470,7 +470,11 @@ export default function Auth() {
 
     if (error) {
       setLoading(false);
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+      let errMsg = error.message;
+      if (error.message?.toLowerCase().includes("already registered") || error.message?.toLowerCase().includes("already been registered")) {
+        errMsg = isAr ? "هذا البريد الإلكتروني مسجل بالفعل" : "This email is already registered. Please sign in instead.";
+      }
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: errMsg });
       return;
     }
 
