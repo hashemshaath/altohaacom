@@ -1,3 +1,4 @@
+import { sanitizeCss } from "@/utils/sanitize";
 import { useParams, useSearchParams, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialLinkPageByUsername } from "@/hooks/useSocialLinkPage";
