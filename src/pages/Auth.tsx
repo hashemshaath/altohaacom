@@ -816,9 +816,9 @@ export default function Auth() {
                     <Heart className={`h-5 w-5 ${accountType === "fan" ? "text-primary" : "text-muted-foreground"}`} />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
-                      {isAr ? "متابع" : "Follower"}
-                    </p>
+                     <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
+                       {isAr ? "مستخدم عادي" : "Regular User"}
+                     </p>
                     <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
                       {isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}
                     </p>
