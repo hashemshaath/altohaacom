@@ -26,6 +26,23 @@ import { useSearchParams } from "react-router-dom";
 import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
 import { cn } from "@/lib/utils";
 
+const DEFAULT_ROBOTS_TXT = `User-agent: *
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/settings
+Allow: /competitions/
+Allow: /exhibitions/
+Allow: /blog/
+Allow: /masterclasses/
+Allow: /recipes/
+Allow: /entities/
+Allow: /mentorship/
+Allow: /jobs/
+Allow: /pro-suppliers/
+Allow: /establishments/
+Allow: /organizers/
+Sitemap: https://altoha.com/sitemap.xml`;
+
 // Lazy load sub-components
 const SEOAuditPanel = lazy(() => import("@/components/admin/seo/SEOAuditPanel").then(m => ({ default: m.SEOAuditPanel })));
 const SEOMetaConfigurator = lazy(() => import("@/components/admin/seo/SEOMetaConfigurator").then(m => ({ default: m.SEOMetaConfigurator })));
