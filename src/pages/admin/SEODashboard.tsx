@@ -83,7 +83,8 @@ function getVitalStatus(metric: keyof typeof CWV_THRESHOLDS, value: number): "go
 // Navigation sections
 type SectionKey = "overview" | "vitals" | "keywords" | "indexing" | "crawlers" | "pages" | "devices"
   | "keyword-gaps" | "competitors" | "backlinks" | "content" | "meta" | "schema" | "technical"
-  | "audit" | "crawl" | "crawl-analytics" | "internal-links" | "page-speed" | "health" | "recommendations";
+  | "audit" | "crawl" | "crawl-analytics" | "internal-links" | "page-speed" | "health" | "recommendations"
+  | "url-health" | "sitemap-config" | "robots-txt";
 
 interface NavGroup {
   label: string;
