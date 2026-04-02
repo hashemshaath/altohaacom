@@ -34,12 +34,12 @@ export const ROUTES = {
   exhibition: (slug: string) => `/exhibitions/${slug}`,
   compareExhibitions: '/exhibitions/compare',
 
-  // ── News / Blog ───────────────────────────────────
-  news: '/news',
-  article: (slug: string) => `/news/${slug}`,
+  // ── Blog (canonical) ───────────────────────────────
+  blog: '/blog',
+  article: (slug: string) => `/blog/${slug}`,
 
   // ── Chefs & Profiles ──────────────────────────────
-  profile: (username: string) => `/profile/${username}`,
+  profile: (username: string) => `/${username}`,
   publicProfile: (username: string) => `/${username}`,
   portfolio: (userId: string) => `/portfolio/${userId}`,
   bio: (username: string) => `/bio/${username}`,

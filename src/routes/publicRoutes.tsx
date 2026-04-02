@@ -67,6 +67,16 @@ function LegacyLinksRedirect() {
   return <Navigate to={`/bio/${username ?? ""}`} replace />;
 }
 
+function NewsSlugRedirect() {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/blog/${slug ?? ""}`} replace />;
+}
+
+function ProfileRedirect() {
+  const { username } = useParams<{ username: string }>();
+  return <Navigate to={`/${username ?? ""}`} replace />;
+}
+
 export const publicRoutes = (
   <>
     <Route path="/" element={<Index />} />
@@ -79,14 +89,16 @@ export const publicRoutes = (
     <Route path="/reset-password" element={<Auth />} />
     <Route path="/competitions" element={<Competitions />} />
     <Route path="/discover" element={<CompetitionDiscovery />} />
-    <Route path="/competitions/:id" element={<CompetitionDetail />} />
-    <Route path="/competitions/:id/results" element={<CompetitionResults />} />
+    <Route path="/competitions/:slug" element={<CompetitionDetail />} />
+    <Route path="/competitions/:slug/results" element={<CompetitionResults />} />
     <Route path="/rankings" element={<Rankings />} />
     <Route path="/portfolio/:userId" element={<ChefPortfolio />} />
     <Route path="/search" element={<Search />} />
     <Route path="/help" element={<HelpCenter />} />
-    <Route path="/news" element={<News />} />
-    <Route path="/news/:slug" element={<ArticleDetail />} />
+    <Route path="/blog" element={<News />} />
+    <Route path="/blog/:slug" element={<ArticleDetail />} />
+    <Route path="/news" element={<Navigate to="/blog" replace />} />
+    <Route path="/news/:slug" element={<NewsSlugRedirect />} />
     <Route path="/sponsors" element={<SponsorsLanding />} />
     <Route path="/for-organizers" element={<OrganizersLanding />} />
     <Route path="/for-companies" element={<CompaniesLanding />} />
@@ -131,7 +143,7 @@ export const publicRoutes = (
     <Route path="/jobs/search" element={<JobSearch />} />
     <Route path="/jobs/:id" element={<JobDetail />} />
     <Route path="/unsubscribe" element={<Unsubscribe />} />
-    <Route path="/profile/:username" element={<PublicProfile />} />
+    <Route path="/profile/:username" element={<ProfileRedirect />} />
     <Route path="/offline" element={<OfflinePage />} />
     <Route path="/:username/links" element={<LegacyLinksRedirect />} />
     <Route path="/bio/:username" element={<SocialLinks />} />
