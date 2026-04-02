@@ -297,7 +297,6 @@ export default function ArticleDetail() {
         lang={language}
         publishedTime={article.published_at || article.created_at}
         modifiedTime={article.updated_at}
-        author={authorName || undefined}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Article",
