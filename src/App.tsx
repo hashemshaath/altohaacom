@@ -22,7 +22,6 @@ import { BackToTop } from "@/components/ui/back-to-top";
 import { AnnouncementBanner } from "@/components/engagement/AnnouncementBanner";
 import { safeLazy } from "@/lib/safeLazy";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
-import { TrackingScriptsInjector } from "@/components/tracking/TrackingScriptsInjector";
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
 import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
@@ -130,7 +129,6 @@ function AppContent() {
       <SkipToContent />
       {/* ─── Global Tracking ─── */}
       <GoogleTrackingProvider />
-      <TrackingScriptsInjector />
       <PageTracker />
       {!isHome && <AnnouncementBanner />}
       <AppRoutes />

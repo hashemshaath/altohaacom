@@ -42,6 +42,9 @@ import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel
 import { TypographySettings } from "@/components/admin/settings/TypographySettings";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
+import { MetaPixelPanel } from "@/components/ads/MetaPixelPanel";
+import { TikTokPixelPanel } from "@/components/ads/TikTokPixelPanel";
+import { SnapPixelPanel } from "@/components/ads/SnapPixelPanel";
 import { SettingsImportExport } from "@/components/admin/settings/SettingsImportExport";
 import { SettingsChangeLog } from "@/components/admin/settings/SettingsChangeLog";
 import { GenericSettingsEditor } from "@/components/admin/settings/GenericSettingsEditor";
@@ -123,10 +126,10 @@ const tabs = [
   { value: "cover", icon: Layout, en: "Cover & Themes", ar: "الأغلفة والمظهر", descEn: "Cover height, gradient & pages", descAr: "ارتفاع الغطاء والتدرج والصفحات" },
   { value: "layout-seo", icon: Layout, en: "Layout & SEO", ar: "التخطيط و SEO", descEn: "Container, animations & meta", descAr: "الحاوية والرسوم والبيانات الوصفية" },
   { value: "security", icon: Shield, en: "Security & Content", ar: "الأمان والمحتوى", descEn: "Passwords, moderation & alerts", descAr: "كلمات المرور والإشراف والتنبيهات" },
-  { value: "tracking", icon: BarChart3, en: "Tracking & Analytics", ar: "التتبع والتحليلات", descEn: "Google, Meta, TikTok & more", descAr: "جوجل وميتا وتيك توك والمزيد" },
-  { value: "seo-analytics", icon: Search, en: "SEO & Analytics", ar: "SEO والتحليلات", descEn: "GTM, GA4, meta tags & sitemap", descAr: "GTM, GA4, العلامات الوصفية وخريطة الموقع" },
+  { value: "tracking", icon: BarChart3, en: "Tracking & Integrations", ar: "التتبع والتكاملات", descEn: "All tracking pixels & analytics", descAr: "جميع بكسلات التتبع والتحليلات" },
+  { value: "seo-analytics", icon: Search, en: "SEO & Sitemap", ar: "SEO وخريطة الموقع", descEn: "Meta tags, keywords & sitemap", descAr: "العلامات الوصفية والكلمات وخريطة الموقع" },
   { value: "custom-entries", icon: Database, en: "Custom Entries", ar: "إدخالات مخصصة", descEn: "Generic key-value settings", descAr: "إعدادات مفتاح-قيمة عامة" },
-  { value: "integrations", icon: Shield, en: "Integrations", ar: "التكاملات", descEn: "API keys & secrets setup", descAr: "مفاتيح API وإعدادات الأسرار" },
+  { value: "integrations", icon: Shield, en: "API Keys", ar: "مفاتيح API", descEn: "Backend secrets setup", descAr: "إعدادات الأسرار" },
 ];
 
 // Settings completion calculator
@@ -330,6 +333,9 @@ export default function SystemSettings() {
             <TabsContent value="tracking" className="mt-0">
               <div className="space-y-6">
                 <GoogleIntegrationPanel />
+                <MetaPixelPanel />
+                <TikTokPixelPanel />
+                <SnapPixelPanel />
                 <TrackingStatusCard />
               </div>
             </TabsContent>
