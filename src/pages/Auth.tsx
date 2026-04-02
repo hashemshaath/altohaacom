@@ -1307,21 +1307,43 @@ export default function Auth() {
                     isAr={isAr}
                   />
 
-                  <Button
-                    className="w-full gap-2"
-                    size="lg"
-                    onClick={() => {
-                      const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
-                      if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
-                        setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
-                        return;
-                      }
-                      setErrors({});
-                      setSignInPhoneStep("otp");
-                    }}
-                  >
-                    {isAr ? "التالي — التحقق" : "Next — Verify"}
-                  </Button>
+                   <Button
+                     className="w-full gap-2"
+                     size="lg"
+                     onClick={async () => {
+                       const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
+                       if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
+                         setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
+                         return;
+                       }
+                       setErrors({});
+                       // Check if PIN is available for this phone
+                       await checkPinForPhone(normalizePhoneForStorage(fullPhone));
+                       setSignInPhoneStep("otp");
+                     }}
+                   >
+                     {isAr ? "التالي — التحقق" : "Next — Verify"}
+                   </Button>
+
+                   {/* PIN login shortcut */}
+                   {pinAvailable && (
+                     <button
+                       type="button"
+                       className="w-full text-center text-xs text-primary hover:underline flex items-center justify-center gap-1.5"
+                       onClick={() => {
+                         const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
+                         if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
+                           setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
+                           return;
+                         }
+                         setErrors({});
+                         setSignInPhoneStep("pin");
+                       }}
+                     >
+                       <KeyRound className="h-3 w-3" />
+                       {isAr ? "الدخول بالرمز السري (PIN)" : "Login with PIN"}
+                     </button>
+                   )}
                 </>
               ) : (
                 <>
